@@ -5,7 +5,7 @@ cd "$(dirname "$0")/../.."
 DOWNLOAD_DIR="target/ic"
 
 help_text() {
-    cat <<-EOF
+  cat <<-EOF
 	Installs NNS canisters locally.
 
 	Note: This should be done immediately after a "dfx start --clean"
@@ -19,28 +19,31 @@ help_text() {
 	EOF
 }
 
-
-while (($# > 0)) ; do
-	arg="$1" ; shift 1
-	case "$arg" in
-	--help)
-		help_text
-		exit 0 ;;
-	--download-dir)
-		DOWNLOAD_DIR="$(realpath "$1")"
-		test -d "$DOWNLOAD_DIR" || {
-			printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
-			exit 1
-		} >&2
-		shift 1 ;;
-	*)
-		{
-			printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg" 
-			printf "Usage:"
-			help_text
-		} >&2
-		exit 1 ;;
-	esac
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --download-dir)
+    DOWNLOAD_DIR="$(realpath "$1")"
+    test -d "$DOWNLOAD_DIR" || {
+      printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+      exit 1
+    } >&2
+    shift 1
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      help_text
+    } >&2
+    exit 1
+    ;;
+  esac
 done
 
 test -x "${DOWNLOAD_DIR}/ic-nns-init" || {

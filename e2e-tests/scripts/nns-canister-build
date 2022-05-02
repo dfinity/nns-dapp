@@ -6,7 +6,7 @@ DOWNLOAD_DIR="$(realpath ../../target/ic)"
 IC_COMMIT=eba88796cf8dff32f5788c9167cdd8e292b6072a
 
 help_text() {
-    cat <<-EOF
+  cat <<-EOF
 	Builds some NNS canisters locally:
 	- ledger
 
@@ -21,29 +21,35 @@ help_text() {
 	EOF
 }
 
-while (($# > 0)) ; do
-        arg="$1" ; shift 1
-        case "$arg" in
-        --help)
-                help_text
-                exit 0 ;;
-        --download-dir)
-                DOWNLOAD_DIR="$(realpath "$1")"
-                test -d "$DOWNLOAD_DIR" || {
-                        printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
-                        exit 1
-                } >&2
-                shift 1 ;;
-	--ic-commit)
-		IC_COMMIT="$1" ; shift 1 ;;
-        *)
-                {
-                        printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
-                        printf "Usage:"
-                        help_text
-                } >&2
-                exit 1 ;;
-        esac
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --download-dir)
+    DOWNLOAD_DIR="$(realpath "$1")"
+    test -d "$DOWNLOAD_DIR" || {
+      printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+      exit 1
+    } >&2
+    shift 1
+    ;;
+  --ic-commit)
+    IC_COMMIT="$1"
+    shift 1
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      help_text
+    } >&2
+    exit 1
+    ;;
+  esac
 done
 
 mkdir -p "${DOWNLOAD_DIR}"

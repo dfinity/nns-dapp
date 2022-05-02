@@ -7,7 +7,7 @@ DOWNLOAD_DIR="$PWD/target/ic"
 NO_CLOBBER=""
 
 help_text() {
-    cat <<-EOF
+  cat <<-EOF
 	Downloads prebuilt internet computer artifacts:
 	- NNS wasm canisters
 	- NNS wasm canister installer
@@ -31,59 +31,63 @@ help_text() {
 	EOF
 }
 
-
-while (($# > 0)) ; do
-	arg="$1" ; shift 1
-	case "$arg" in
-	--help)
-		help_text
-		exit 0 ;;
-	--download-dir)
-                DOWNLOAD_DIR="$(realpath "$1")"
-                test -d "$DOWNLOAD_DIR" || {
-                        printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
-                        exit 1
-                } >&2
-                shift 1 ;;
-	--ic-commit)
-		IC_COMMIT="$1" ; shift 1 ;;
-	--no-clobber)
-		NO_CLOBBER=nc ;;
-	*)
-		{
-			printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg" 
-			printf "Usage:"
-			help_text
-		} >&2
-		exit 1 ;;
-	esac
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --download-dir)
+    DOWNLOAD_DIR="$(realpath "$1")"
+    test -d "$DOWNLOAD_DIR" || {
+      printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+      exit 1
+    } >&2
+    shift 1
+    ;;
+  --ic-commit)
+    IC_COMMIT="$1"
+    shift 1
+    ;;
+  --no-clobber)
+    NO_CLOBBER=nc
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      help_text
+    } >&2
+    exit 1
+    ;;
+  esac
 done
-
 
 mkdir -p "$DOWNLOAD_DIR"
 echo "$DOWNLOAD_DIR"
 
 get_binary() {
-	local FILENAME="$1"
-	if test -e "$DOWNLOAD_DIR/$FILENAME" && test -n "${NO_CLOBBER:-}"
-	then return
-	fi
-	local TMP_FILE="$(mktemp)"
-	curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/${FILENAME}.gz" | gunzip > "$TMP_FILE"
-	install -m 755 "$TMP_FILE" "$DOWNLOAD_DIR/$FILENAME"
-	rm "$TMP_FILE"
+  local FILENAME="$1"
+  if test -e "$DOWNLOAD_DIR/$FILENAME" && test -n "${NO_CLOBBER:-}"; then
+    return
+  fi
+  local TMP_FILE="$(mktemp)"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/${FILENAME}.gz" | gunzip >"$TMP_FILE"
+  install -m 755 "$TMP_FILE" "$DOWNLOAD_DIR/$FILENAME"
+  rm "$TMP_FILE"
 }
 get_wasm() {
-	local FILENAME="$1"
-	if test -e "$DOWNLOAD_DIR/$FILENAME" && test -n "${NO_CLOBBER:-}"
-	then return
-	fi
-	local TMP_FILE="$(mktemp)"
-	curl "https://download.dfinity.systems/ic/${IC_COMMIT}/canisters/${FILENAME}.gz" | gunzip > "$TMP_FILE"
-	install -m 644 "$TMP_FILE" "$DOWNLOAD_DIR/$FILENAME"
-	rm "$TMP_FILE"
+  local FILENAME="$1"
+  if test -e "$DOWNLOAD_DIR/$FILENAME" && test -n "${NO_CLOBBER:-}"; then
+    return
+  fi
+  local TMP_FILE="$(mktemp)"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/canisters/${FILENAME}.gz" | gunzip >"$TMP_FILE"
+  install -m 644 "$TMP_FILE" "$DOWNLOAD_DIR/$FILENAME"
+  rm "$TMP_FILE"
 }
-
 
 get_binary ic-nns-init
 get_wasm registry-canister.wasm
