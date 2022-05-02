@@ -1,6 +1,6 @@
 <script lang="ts">
   import Modal from "../Modal.svelte";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
