@@ -55,6 +55,6 @@
   <Card>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
     <CastVoteCardNeuronSelect />
-    <VotingConfirmationToolbar on:nnsConfirm={vote} />
+    <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
   </Card>
 {/if}
