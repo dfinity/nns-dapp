@@ -1,5 +1,12 @@
 <script lang="ts">
+  import { i18n } from "../../stores/i18n";
   import { isPrincipal } from "../../utils/utils";
+
+  export let json: unknown | undefined;
+  export let defaultExpandedLevel: number = Infinity;
+  export let _key: string = "";
+  export let _level: number = 1;
+  export let _collapsed: boolean | undefined;
 
   type ValueType =
     | "bigint"
@@ -12,12 +19,6 @@
     | "string"
     | "symbol"
     | "undefined";
-
-  export let json: unknown | undefined;
-  export let defaultExpandedLevel: number = Infinity;
-  export let _level: number = 1;
-  export let _isLastEntry: boolean = true;
-
   const valueType = (value): ValueType => {
     if (value === null) return "null";
     if (isPrincipal(value)) return "principal";
@@ -52,75 +53,103 @@
     }
   };
 
-  let keys: string[];
-  let values: unknown[];
+  let keyLabel: string;
+  let children: [string, unknown][];
+  let hasChildren: boolean;
+  let isExpandable: boolean;
   let isArray: boolean;
-  let openBracket;
-  let closeBracket;
+  let openBracket: string;
+  let closeBracket: string;
   $: {
-    keys = valueType(json) === "object" ? Object.keys(json as object) : [];
-    values = keys.length > 0 ? Object.values(json as object) : [];
+    keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
+    children = isExpandable ? Object.entries(json as object) : [];
+    hasChildren = children.length > 0;
+    isExpandable = valueType(json) === "object";
     isArray = Array.isArray(json);
     openBracket = isArray ? "[" : "{";
     closeBracket = isArray ? "]" : "}";
   }
 
   let collapsed: boolean = true;
-  $: collapsed = defaultExpandedLevel < _level;
+  $: collapsed =
+    _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
-  const clicked = () => {
+  const click = () => {
     collapsed = !collapsed;
   };
 </script>
 
-{#if keys.length}
+{#if isExpandable && hasChildren}
   {#if collapsed}
     <span
-      class="bracket collapsed"
-      on:click|stopPropagation={clicked}
-      tabindex="0">{openBracket} ... {closeBracket}</span
-    >{#if !_isLastEntry && collapsed}<span class="comma">,</span>{/if}
+      on:click|stopPropagation={click}
+      class="key"
+      class:expanded={!collapsed}
+      class:collapsed
+      class:root={_level === 1}
+      class:arrow={isExpandable && hasChildren}
+      role="button"
+      aria-label={$i18n.core.toggle}
+      >{keyLabel}
+      <span class="bracket" on:click|stopPropagation={click} tabindex="0"
+        >{openBracket} ... {closeBracket}</span
+      >
+    </span>
   {:else}
-    <span class="bracket open" on:click|stopPropagation={clicked} tabindex="0"
-      >{openBracket}</span
+    <!-- key -->
+    <span
+      on:click|stopPropagation={click}
+      class="key"
+      class:expanded={!collapsed}
+      class:collapsed
+      class:root={_level === 1}
+      class:arrow={isExpandable && hasChildren}
+      role="button"
+      aria-label={$i18n.core.toggle}
+      >{keyLabel}<span
+        class="bracket open"
+        on:click|stopPropagation={click}
+        tabindex="0">{openBracket}</span
+      ></span
     >
+    <!-- value -->
     <ul>
-      {#each keys as key, index}
-        {@const value = values[index]}
+      {#each children as [key, value]}
         <li>
-          {#if !isArray}
-            <span class="key">{key}:</span>
-          {/if}
-          {#if valueType(value) === "object"}
-            <svelte:self
-              json={value}
-              {defaultExpandedLevel}
-              _level={_level + 1}
-              _isLastEntry={index === keys.length - 1}
-            />
-          {:else}
-            <span class="value {valueType(value)}"
-              >{stringify(value)}{#if index < keys.length - 1}<span
-                  class="comma">,</span
-                >{/if}</span
-            >
-          {/if}
+          <svelte:self
+            json={value}
+            _key={key}
+            {defaultExpandedLevel}
+            _level={_level + 1}
+          />
         </li>
       {/each}
     </ul>
-    <span class="bracket close" on:click|stopPropagation={clicked} tabindex="0"
+    <span class="bracket close" on:click|stopPropagation={click} tabindex="0"
       >{closeBracket}</span
-    >{#if !_isLastEntry}<span class="comma">,</span>{/if}
+    >
   {/if}
-{:else if isArray}
-  [ ]
+{:else if isExpandable}
+  <!-- TODO: : to var -->
+  <span class="key" class:root={_level === 1}
+    >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
+  >
 {:else}
-  {"{ }"}
+  <span class="key-value">
+    <span class="key" class:root={_level === 1}>{keyLabel}</span><span
+      class="value {valueType(json)}">{stringify(json)}</span
+    ></span
+  >
 {/if}
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
 
+  .root,
+  .root + ul {
+    // first arrow extra space
+    margin-left: var(--padding-1_5x);
+  }
   ul {
     // reset
     margin: 0;
@@ -130,37 +159,54 @@
     list-style: none;
     color: var(--gray-100);
   }
-  .bracket {
+  .key {
+    display: inline-block;
+    position: relative;
+  }
+  .key-value {
+    // word-wrap long values in it's column
+    display: inline-flex;
+  }
+  .arrow {
     @include interaction.tappable;
     // increase click area
+    // TODO: add arrow
     padding: calc(0.25 * var(--padding));
     min-width: var(--padding);
 
     display: inline-block;
+    position: relative;
     border-radius: var(--padding-0_5x);
+
+    &:hover {
+      color: var(--blue-500-contrast);
+      background: var(--blue-500);
+      &::before {
+        color: var(--blue-500);
+      }
+    }
 
     &::before {
       display: inline-block;
-      padding-right: var(--padding);
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(
+        calc(-1 * var(--padding-1_5x)),
+        calc(0.6 * var(--padding))
+      );
       font-size: var(--padding);
     }
-    &.open::before {
+    &.expanded::before {
       content: "▼";
     }
     &.collapsed::before {
       content: "▶";
     }
-    &.close {
-      // remove due to space before comma
-      min-width: 0;
-    }
   }
-  .bracket:hover {
-    color: var(--blue-500-contrast);
-    background: var(--blue-500);
-  }
-  .comma {
-    color: var(--gray-200);
+  // value type colors
+  .bracket {
+    color: var(--gray-400);
   }
   .value {
     color: var(--gray-100);
@@ -175,7 +221,7 @@
     color: var(--blue-200-shade);
   }
   .value.principal {
-    color: var(--yellow-400);
+    color: var(--pink);
   }
   .value.bigint {
     color: var(--blue-200-shade);

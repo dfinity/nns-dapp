@@ -5,7 +5,6 @@
     proposalFirstActionKey,
     proposalActionFields,
   } from "../../../../lib/utils/proposals.utils";
-  import { stringifyJson } from "../../../utils/utils";
   import Json from "../../common/Json.svelte";
 
   export let proposal: Proposal | undefined;
