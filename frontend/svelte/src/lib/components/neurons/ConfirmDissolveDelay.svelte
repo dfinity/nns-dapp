@@ -13,7 +13,6 @@
     votingPower,
   } from "../../utils/neuron.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { toastsStore } from "../../stores/toasts.store";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -35,9 +34,6 @@
     loading = false;
     if (neuronId !== undefined) {
       dispatcher("nnsUpdated");
-      toastsStore.success({
-        labelKey: "neurons.dissolve_delay_success",
-      });
     }
   };
 </script>

@@ -164,7 +164,6 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
-  dissolve_delay_success: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
   cannot_merge_neuron_community: string;
@@ -180,8 +179,6 @@ interface I18nNew_followee {
   options_title: string;
   follow: string;
   unfollow: string;
-  success_add_followee: string;
-  success_remove_followee: string;
   same_neuron: string;
   already_followed: string;
 }
@@ -292,6 +289,7 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
+  vote_status: string;
   accept_or_reject: string;
 }
 
@@ -322,8 +320,6 @@ interface I18nNeuron_detail {
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
-  start_dissolve_success: string;
-  stop_dissolve_success: string;
   dummy_proposal_success: string;
   following_title: string;
   following_description: string;
@@ -340,7 +336,6 @@ interface I18nNeuron_detail {
   no_notkeys: string;
   add_hotkey_modal_title: string;
   enter_hotkey: string;
-  add_hotkey_success: string;
   remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;

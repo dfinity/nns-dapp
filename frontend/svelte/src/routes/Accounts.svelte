@@ -121,6 +121,11 @@
 
     --icp-font-size: var(--font-size-h1);
 
+    // Minimum height of ICP value + ICP label (ICP component)
+    min-height: calc(
+      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
+    );
+
     @include media.min-width(medium) {
       display: inline-flex;
       justify-content: space-between;
