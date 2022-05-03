@@ -4,18 +4,32 @@
   import { i18n } from "../../../stores/i18n";
   import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
   import InfiniteScroll from "../../ui/InfiniteScroll.svelte";
+  import { debounce } from "../../../utils/utils";
 
   export let neuron: NeuronInfo | undefined;
 
   const PAGE_LIMIT = 5;
 
   let ballots: Required<BallotInfo>[] = [];
+  // Each `BallotSummary` fetches the proposal from the canister.
+  // We want to avoid making too many calls, since a neuron can vote in many proposals.
   let ballotsToShow: Required<BallotInfo>[] = [];
   let ballotsIndex: number = PAGE_LIMIT;
   $: ballots = neuron === undefined ? [] : ballotsWithDefinedProposal(neuron);
   $: ballotsToShow = ballots.slice(0, ballotsIndex);
-  const showMore = () => {
+
+  // We fake fetching the next `PAGE_LIMIT` ballots.
+  const nextPage = debounce(() => {
     ballotsIndex += PAGE_LIMIT;
+    fakeLoading = false;
+  });
+  let fakeLoading: boolean = false;
+  const showMore = () => {
+    if (fakeLoading) {
+      return;
+    }
+    fakeLoading = true;
+    nextPage();
   };
 </script>
 
