@@ -8,12 +8,11 @@
   export let size: "small" | "normal" = "normal";
   export let link: boolean = true;
 
-  let proposer: NeuronId | undefined;
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
 
-  $: ({ proposer, id, url, topic } = mapProposalInfo(proposalInfo));
+  $: ({ id, url, topic } = mapProposalInfo(proposalInfo));
 </script>
 
 {#if link && url}
