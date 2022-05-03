@@ -1,7 +1,9 @@
+import { Principal } from "@dfinity/principal";
 import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../lib/constants/accounts.constants";
 import {
   emptyAddress,
   getAccountByPrincipal,
+  getPrincipalFromString,
   invalidAddress,
 } from "../../../lib/utils/accounts.utils";
 import {
@@ -38,30 +40,50 @@ describe("accounts-utils", () => {
     });
   });
 
-  it("should be a invalid address", () => {
-    expect(invalidAddress(undefined)).toBeTruthy();
-    expect(invalidAddress("test")).toBeTruthy();
+  describe("invalidAddress", () => {
+    it("should be a invalid address", () => {
+      expect(invalidAddress(undefined)).toBeTruthy();
+      expect(invalidAddress("test")).toBeTruthy();
 
-    expect(
-      invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH - 1))
-    ).toBeTruthy();
+      expect(
+        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH - 1))
+      ).toBeTruthy();
+    });
+
+    it("should be a valid address", () => {
+      expect(
+        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH))
+      ).toBeFalsy();
+      expect(
+        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1))
+      ).toBeFalsy();
+    });
   });
 
-  it("should be a valid address", () => {
-    expect(
-      invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH))
-    ).toBeFalsy();
-    expect(
-      invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1))
-    ).toBeFalsy();
+  describe("emptyAddress", () => {
+    it("should be an empty address", () => {
+      expect(emptyAddress(undefined)).toBeTruthy();
+      expect(emptyAddress("")).toBeTruthy();
+    });
+
+    it("should not be an empty address", () => {
+      expect(emptyAddress("test")).toBeFalsy();
+    });
   });
 
-  it("should be an empty address", () => {
-    expect(emptyAddress(undefined)).toBeTruthy();
-    expect(emptyAddress("")).toBeTruthy();
-  });
+  describe("getPrincipalFromString", () => {
+    it("returns undefined when invalid address", () => {
+      expect(getPrincipalFromString("aa")).toBeUndefined();
+      expect(getPrincipalFromString("aaasfdadaasdf")).toBeUndefined();
+    });
 
-  it("should not be an empty address", () => {
-    expect(emptyAddress("test")).toBeFalsy();
+    it("returns principal when valid address", () => {
+      expect(getPrincipalFromString("aaaaa-aa")).toBeInstanceOf(Principal);
+      expect(
+        getPrincipalFromString(
+          "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe"
+        )
+      ).toBeInstanceOf(Principal);
+    });
   });
 });
