@@ -21,7 +21,7 @@
     threshold: 0,
   };
 
-  let container: HTMLDivElement | HTMLUListElement;
+  let container: HTMLUListElement;
 
   const dispatch = createEventDispatcher();
 
