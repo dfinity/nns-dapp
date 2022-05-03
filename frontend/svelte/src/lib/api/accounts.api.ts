@@ -9,7 +9,7 @@ import {
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "../constants/canister-ids.constants";
-import { identityServiceURL } from "../constants/identity.constants";
+import { host } from "../constants/host.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
@@ -24,7 +24,7 @@ export const loadAccounts = async ({
 }): Promise<AccountsStore> => {
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 
-  const agent = await createAgent({ identity, host: identityServiceURL });
+  const agent = await createAgent({ identity, host });
   // ACCOUNTS
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
     agent,
@@ -85,7 +85,7 @@ export const createSubAccount = async ({
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} call...`);
 
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
-    agent: await createAgent({ identity, host: identityServiceURL }),
+    agent: await createAgent({ identity, host }),
     canisterId: OWN_CANISTER_ID,
   });
 
