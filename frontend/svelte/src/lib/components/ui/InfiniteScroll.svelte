@@ -6,7 +6,6 @@
   } from "../../constants/constants";
 
   export let pageLimit: number = DEFAULT_LIST_PAGINATION_LIMIT;
-  export let containerElement: "ul" | "div" = "div";
 
   /**
    * The Infinite Scroll component calls an action to be performed when the user scrolls a specified distance from the bottom or top of the page.
