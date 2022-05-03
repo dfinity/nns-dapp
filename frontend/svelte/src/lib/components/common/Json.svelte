@@ -2,11 +2,11 @@
   import { i18n } from "../../stores/i18n";
   import { isPrincipal } from "../../utils/utils";
 
-  export let json: unknown | undefined;
+  export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel: number = Infinity;
   export let _key: string = "";
   export let _level: number = 1;
-  export let _collapsed: boolean | undefined;
+  export let _collapsed: boolean | undefined = undefined;
 
   type ValueType =
     | "bigint"
@@ -130,7 +130,6 @@
     >
   {/if}
 {:else if isExpandable}
-  <!-- TODO: : to var -->
   <span class="key" class:root={_level === 1}
     >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
   >
@@ -170,7 +169,6 @@
   .arrow {
     @include interaction.tappable;
     // increase click area
-    // TODO: add arrow
     padding: calc(0.25 * var(--padding));
     min-width: var(--padding);
 
@@ -183,6 +181,9 @@
       background: var(--blue-500);
       &::before {
         color: var(--blue-500);
+      }
+      .bracket {
+        color: var(--blue-500-contrast);
       }
     }
 
