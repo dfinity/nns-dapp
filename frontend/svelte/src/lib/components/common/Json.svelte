@@ -61,6 +61,7 @@
   let openBracket: string;
   let closeBracket: string;
   $: {
+    isExpandable = valueType(json) === "object";
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -228,6 +229,6 @@
     color: var(--blue-200-shade);
   }
   .value.boolean {
-    color: var(--background-contrast);
+    color: var(--blue-200-shade);
   }
 </style>
