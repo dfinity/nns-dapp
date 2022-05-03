@@ -16,6 +16,7 @@
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
+  let title: string | undefined;
   $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
