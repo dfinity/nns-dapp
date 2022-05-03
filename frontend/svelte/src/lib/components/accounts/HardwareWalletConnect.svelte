@@ -1,14 +1,18 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { connectToHardwareWallet } from "../../services/ledger.services";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
 
   let connectionState: LedgerConnectionState = LedgerConnectionState.CONNECTING;
 
-  const connect = async () =>
+  const connect = async () => {
+    const { connectToHardwareWallet } = await import(
+      "../../services/ledger.services"
+    );
+
     await connectToHardwareWallet(
       (state: LedgerConnectionState) => (connectionState = state)
     );
+  };
 
   const onSubmit = () => {
     // TODO: Attach wallet
