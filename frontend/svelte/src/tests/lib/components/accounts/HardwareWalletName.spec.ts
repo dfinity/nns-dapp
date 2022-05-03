@@ -27,16 +27,6 @@ describe("HardwareWalletName", () => {
     })
   );
 
-  it("should render an explanation text", () => {
-    const { queryByText } = render(AddAccountTest, {
-      props,
-    });
-
-    expect(
-      queryByText(en.accounts.attach_hardware_enter_name)
-    ).toBeInTheDocument();
-  });
-
   it("should enable and disable submit according text input length", async () => {
     const { container } = render(AddAccountTest, {
       props,

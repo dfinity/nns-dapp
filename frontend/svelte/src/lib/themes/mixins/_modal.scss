@@ -14,7 +14,7 @@
 @mixin wizard-single-input-form {
   --input-width: 100%;
 
-  div {
+  > div {
     // push button to the bottom
     flex-grow: 1;
 

@@ -106,6 +106,8 @@ interface I18nAccounts {
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   connect_hardware_wallet: string;
+  connect_hardware_wallet_text: string;
+  attach_wallet: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
@@ -372,6 +374,7 @@ interface I18nError__ledger {
   connect_many_apps: string;
   connect_not_supported: string;
   unexpected_wallet: string;
+  user_cancel: string;
 }
 
 interface I18n {

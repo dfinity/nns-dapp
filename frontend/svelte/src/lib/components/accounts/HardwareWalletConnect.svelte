@@ -1,8 +1,9 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import Spinner from "../ui/Spinner.svelte";
 
-  let connectionState: LedgerConnectionState = LedgerConnectionState.CONNECTING;
+  let connectionState: LedgerConnectionState = LedgerConnectionState.NOT_CONNECTED;
 
   const connect = async () => {
     const { connectToHardwareWallet } = await import(
@@ -15,23 +16,61 @@
   };
 
   const onSubmit = () => {
-    // TODO: Attach wallet
+    // TODO(L2-433): Attach wallet
+    alert("TODO(L2-433): Attach wallet");
   };
 
-  let disabled: boolean;
+  let disabled, connecting: boolean;
   $: disabled = connectionState !== LedgerConnectionState.CONNECTED;
+  $: connecting = connectionState === LedgerConnectionState.CONNECTING;
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
-  <button
-    class="primary full-width"
-    type="button"
-    on:click|stopPropagation={connect}
-  >
-    {$i18n.core.continue}
-  </button>
+  <div>
+    <p>{$i18n.accounts.connect_hardware_wallet_text}</p>
+    <div class="connect">
+      {#if connecting}
+        <Spinner />
+      {:else}
+        <button
+                class="primary"
+                type="button"
+                on:click|stopPropagation={connect}
+        >
+          {$i18n.accounts.connect_hardware_wallet}
+        </button>
+      {/if}
+    </div>
+  </div>
 
-  <button class="primary full-width" type="submit" {disabled}>
-    {$i18n.core.continue}
+  <button class="primary full-width submit" type="submit" {disabled}>
+    {$i18n.accounts.attach_wallet}
   </button>
 </form>
+
+<style lang="scss">
+  @use "../../themes/mixins/modal.scss";
+
+  form {
+    @include modal.wizard-single-input-form;
+  }
+
+  p {
+    margin-bottom: var(--padding-2x);
+  }
+
+  .connect {
+    min-height: var(--button-min-height);
+  }
+
+  .submit {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 150ms, visibility 150ms;
+
+    &:not([disabled]) {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+</style>

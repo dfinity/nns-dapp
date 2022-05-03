@@ -103,6 +103,10 @@ export class LedgerIdentity extends SignIdentity {
       const app = new LedgerApp(transport);
       return { app, transport };
     } catch (err: unknown) {
+      if ((err as LedgerHQTransportError)?.name === "TransportOpenUserCancelled") {
+        throw new LedgerErrorKey("error__ledger.user_cancel");
+      }
+
       if ((err as LedgerHQTransportError)?.id === "NoDeviceFound") {
         throw new LedgerErrorKey("error__ledger.connect_no_device");
       }
