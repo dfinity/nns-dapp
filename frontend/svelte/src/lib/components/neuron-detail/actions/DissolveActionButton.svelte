@@ -8,7 +8,6 @@
   } from "../../../services/neurons.services";
   import { startBusy, stopBusy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
-  import { toastsStore } from "../../../stores/toasts.store";
 
   export let neuronId: NeuronId;
   export let neuronState: NeuronState;
@@ -31,17 +30,8 @@
 
   const dissolveAction = async () => {
     const action = isDissolving ? stopDissolving : startDissolving;
-    const successKey = isDissolving
-      ? "neuron_detail.stop_dissolve_success"
-      : "neuron_detail.start_dissolve_success";
     startBusy("dissolve-action");
-    const id = await action(neuronId);
-    if (id !== undefined) {
-      toastsStore.show({
-        labelKey: successKey,
-        level: "info",
-      });
-    }
+    await action(neuronId);
     closeModal();
     stopBusy("dissolve-action");
   };

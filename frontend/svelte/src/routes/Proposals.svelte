@@ -14,7 +14,6 @@
   } from "../lib/stores/proposals.store";
   import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
   import {
@@ -28,6 +27,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -90,7 +90,7 @@
       isReferrerProposalDetail
     ) {
       initDebounceFindProposals();
-
+      initialized = true;
       return;
     }
 
@@ -166,7 +166,8 @@
 
       {#if loading}
         <div class="spinner">
-          <Spinner />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       {/if}
     </section>
@@ -175,10 +176,8 @@
 
 <style lang="scss">
   .spinner {
-    position: relative;
     display: flex;
-
-    padding: var(--padding-2x) 0;
+    flex-direction: column;
   }
 
   .no-proposals {

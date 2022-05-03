@@ -5,11 +5,11 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  getProposalId,
   listNextProposals,
   listProposals,
   loadProposal,
   registerVotes,
+  routePathProposalId,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -17,7 +17,6 @@ import {
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { ToastMsg } from "../../../lib/types/toast";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
@@ -103,6 +102,31 @@ describe("proposals-services", () => {
     });
   });
 
+  describe("error message in details", () => {
+    beforeEach(() => {
+      jest.spyOn(api, "queryProposal").mockImplementation(() => {
+        throw new Error("test-message");
+      });
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
+    afterEach(() => jest.clearAllMocks());
+
+    it("should show error message in details", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "show");
+
+      await loadProposal({
+        proposalId: BigInt(0),
+        setProposal: jest.fn,
+      });
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        detail: 'id: "0". test-message',
+        labelKey: "error.proposal_not_found",
+        level: "error",
+      });
+    });
+  });
+
   describe("empty list", () => {
     afterAll(() =>
       proposalsStore.setProposals({ proposals: [], certified: true })
@@ -128,15 +152,15 @@ describe("proposals-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     afterAll(() => jest.clearAllMocks());
-    it("should get proposalId from valid path", async () => {
-      expect(getProposalId("/#/proposal/123")).toBe(BigInt(123));
-      expect(getProposalId("/#/proposal/0")).toBe(BigInt(0));
+    it("should get proposalId from valid path", () => {
+      expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
+      expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
     });
 
-    it("should not get proposalId from invalid path", async () => {
-      expect(getProposalId("/#/proposal/")).toBeUndefined();
-      expect(getProposalId("/#/proposal/1.5")).toBeUndefined();
-      expect(getProposalId("/#/proposal/123n")).toBeUndefined();
+    it("should not get proposalId from invalid path", () => {
+      expect(routePathProposalId("/#/proposal/")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/1.5")).toBeUndefined();
+      expect(routePathProposalId("/#/proposal/123n")).toBeUndefined();
     });
   });
 
@@ -254,20 +278,17 @@ describe("proposals-services", () => {
         });
       };
 
-      let lastToastMessage: ToastMsg;
-      const spyToastShow = jest
-        .spyOn(toastsStore, "show")
-        .mockImplementation((params) => (lastToastMessage = params));
+      const resetToasts = () => {
+        const toasts = get(toastsStore);
+        toasts.forEach(() => toastsStore.hide());
+      };
 
-      beforeEach(
-        () =>
-          (lastToastMessage = {
-            labelKey: "",
-            level: "info",
-          })
-      );
+      beforeEach(resetToasts);
 
-      afterAll(() => jest.clearAllMocks());
+      afterAll(() => {
+        jest.clearAllMocks();
+        resetToasts();
+      });
 
       it("should show error.register_vote_unknown on not nns-js-based error", async () => {
         await registerVotes({
@@ -275,8 +296,11 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage.labelKey).toBe("error.register_vote_unknown");
-        expect(lastToastMessage.level).toBe("error");
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote_unknown");
+        expect(first.level).toBe("error");
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -288,9 +312,11 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(spyToastShow).toBeCalled();
-        expect(lastToastMessage.labelKey).toBe("error.register_vote");
-        expect(lastToastMessage.level).toBe("error");
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first.labelKey).toBe("error.register_vote");
+        expect(first.level).toBe("error");
       });
 
       it("should show reason per neuron Error in detail", async () => {
@@ -302,9 +328,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/test/).length).toBe(
-          neuronIds.length + 1
-        );
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
       });
 
       it("should show reason per neuron GovernanceError in detail", async () => {
@@ -316,7 +343,10 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.NO,
         });
-        expect(lastToastMessage?.detail?.split(/governance-error/).length).toBe(
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [first, rest] = get(toastsStore);
+        expect(first?.detail?.split(/governance-error/).length).toBe(
           neuronIds.length + 1
         );
       });
@@ -326,7 +356,7 @@ describe("proposals-services", () => {
   describe("errors", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => jest.fn());
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
       setNoIdentity();
     });
 
@@ -375,27 +405,39 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("suspisious responses", () => {
-    beforeAll(() => {
-      jest.clearAllMocks();
+  describe("ignore errors", () => {
+    const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+    const proposalId = BigInt(0);
+
+    const mockRegisterVoteGovernanceAlreadyVotedError =
+      async (): Promise<void> => {
+        throw new GovernanceError({
+          error_message: "Neuron already voted on proposal.",
+          error_type: 0,
+        });
+      };
+
+    let spyToastShow;
+
+    beforeEach(() => {
+      jest
+        .spyOn(api, "registerVote")
+        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
+
+      spyToastShow = jest
+        .spyOn(toastsStore, "show")
+        .mockImplementation(jest.fn());
     });
 
-    it("should display suspicious_response error", async () => {
-      let requestIndex = 0;
-      const spyQueryProposals = jest
-        .spyOn(api, "queryProposals")
-        .mockImplementation(() =>
-          Promise.resolve(mockProposals.slice(requestIndex++))
-        );
-      const spyToastShow = jest.spyOn(toastsStore, "show");
+    afterAll(() => jest.clearAllMocks());
 
-      await listProposals();
-
-      expect(spyQueryProposals).toBeCalled();
-      expect(spyToastShow).toBeCalledWith({
-        labelKey: "error.suspicious_response",
-        level: "error",
+    it("should ignore already voted error", async () => {
+      await registerVotes({
+        neuronIds,
+        proposalId,
+        vote: Vote.NO,
       });
+      expect(spyToastShow).not.toBeCalled();
     });
   });
 

@@ -7,7 +7,7 @@
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
-  import { neuronsStore } from "../../../stores/neurons.store";
+  import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import Card from "../../ui/Card.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -17,18 +17,19 @@
 
   const votableNeurons = () =>
     getVotableNeurons({
-      neurons: $neuronsStore,
+      neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     });
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
 
-  $: visible =
-    votableNeurons().length > 0 &&
-    proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  $: $definedNeuronsStore,
+    (visible =
+      votableNeurons().length > 0 &&
+      proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN);
 
-  const unsubcribe = neuronsStore.subscribe(() => {
+  const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -45,7 +46,7 @@
     });
 
   onDestroy(() => {
-    unsubcribe();
+    unsubscribe();
     votingNeuronSelectStore.reset();
   });
 </script>
@@ -54,6 +55,6 @@
   <Card>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
     <CastVoteCardNeuronSelect />
-    <VotingConfirmationToolbar on:nnsConfirm={vote} />
+    <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
   </Card>
 {/if}

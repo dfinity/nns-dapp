@@ -5,6 +5,7 @@
   import { invalidAddress } from "../../utils/accounts.utils";
 
   export let address: string = "";
+  // TODO: Validate valid address on blur https://dfinity.atlassian.net/browse/L2-479
 </script>
 
 <article>
@@ -20,6 +21,7 @@
     <button
       class="primary small"
       type="submit"
+      data-tid="address-submit-button"
       disabled={invalidAddress(address)}
     >
       {$i18n.core.continue}

@@ -3,15 +3,19 @@ import {
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
   InsufficientFundsError,
+  InvalidAccountIDError,
+  InvalidPercentageError,
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
 import {
+  CannotBeMerged,
   InsufficientAmountError,
   InvalidAmountError,
   NotAuthorizedError,
   NotFoundError,
 } from "../types/errors";
+import type { ToastMsg } from "../types/toast";
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -22,7 +26,7 @@ export const errorToString = (err?: unknown): string | undefined =>
     ? (err as Error).message
     : undefined;
 
-export const mapNeuronErrorToToastMessage = (error: Error): string => {
+export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   /* eslint-disable-next-line @typescript-eslint/ban-types */
   const collection: Array<[Function, string]> = [
     [NotFoundError, "error.neuron_not_found"],
@@ -33,11 +37,15 @@ export const mapNeuronErrorToToastMessage = (error: Error): string => {
     [InsufficientAmountNNSError, "error.amount_not_enough"],
     [InvalidSenderError, "error.invalid_sender"],
     [InsufficientFundsError, "error.insufficient_funds"],
+    [InvalidAccountIDError, "error.invalid_account_id"],
+    [InvalidPercentageError, "error.invalid_percentage"],
+    [GovernanceError, "error.governance_error"],
     [TransferError, "error.transfer_error"],
+    [CannotBeMerged, "error.cannot_merge"],
   ];
   const pair = collection.find(([classType]) => error instanceof classType);
   if (pair === undefined) {
-    return "error.unknown";
+    return { labelKey: "error.unknown", level: "error" };
   }
-  return pair[1];
+  return { labelKey: pair[1], detail: errorToString(error), level: "error" };
 };

@@ -8,6 +8,7 @@ import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svel
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
+import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
@@ -17,7 +18,7 @@ describe("VotesCard", () => {
     let renderResult: RenderResult;
     let yes: number, no: number;
     beforeEach(() => {
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified: true });
       renderResult = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -71,7 +72,7 @@ describe("VotesCard", () => {
     };
     const votedNeurons = [mockNeuron, noVoted, yesVoted];
     it("should have title when proposal has been voted by some owned neuron", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -81,7 +82,7 @@ describe("VotesCard", () => {
     });
 
     it("should not have title when proposal has not been voted by some owned neuron", () => {
-      neuronsStore.setNeurons([]);
+      neuronsStore.setNeurons({ neurons: [], certified: true });
       const { getByText } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -91,7 +92,7 @@ describe("VotesCard", () => {
     });
 
     it("should render an item per voted neuron", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -104,7 +105,7 @@ describe("VotesCard", () => {
     });
 
     it("should render the proper icon item for YES and NO", () => {
-      neuronsStore.setNeurons(votedNeurons);
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
           proposalInfo: mockProposalInfo,
@@ -119,6 +120,47 @@ describe("VotesCard", () => {
         '[data-tid="thumb-down"]'
       );
       expect(thumbDownElements.length).toBe(1);
+    });
+
+    it("should have title attribute per voted neuron for YES or NO", () => {
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
+      const { getByTitle } = render(VotesCard, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+
+      expect(
+        getByTitle(
+          replacePlaceholders(en.proposal_detail__vote.vote_status, {
+            $neuronId: noVoted.neuronId.toString(),
+            $vote: en.core.no,
+          })
+        )
+      ).toBeInTheDocument();
+
+      expect(
+        getByTitle(
+          replacePlaceholders(en.proposal_detail__vote.vote_status, {
+            $neuronId: yesVoted.neuronId.toString(),
+            $vote: en.core.yes,
+          })
+        )
+      ).toBeInTheDocument();
+    });
+
+    it("should have aria-label attribute", () => {
+      neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
+      const { container } = render(VotesCard, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+      const element = container.querySelector(`[data-tid="neuron-data"]`);
+
+      expect(element).toBeInTheDocument();
+
+      expect(element?.getAttribute("aria-label")).toBeTruthy();
     });
   });
 });

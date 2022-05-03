@@ -43,7 +43,7 @@ describe("SelectAccount", () => {
 
     const { queryByText } = render(SelectAccount, {
       props: {
-        filterIdentifier: mockMainAccount.identifier,
+        displayTitle: true,
       },
     });
 

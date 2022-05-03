@@ -3,6 +3,7 @@ import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+import 'package:nns_dapp/ui/neurons/following/followee_suggestions.dart';
 import 'package:nns_dapp/ui/transaction/wizard_overlay.dart';
 
 import '../../../nns_dapp.dart';
@@ -22,9 +23,9 @@ class NeuronFolloweesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isFolloweeSelected = false;
     final followeeTopics = neuron.followees
-        .flatMap((followee) =>
-            followee.followees.map((e) => TopicFollowee(e, followee.topic)))
+        .flatMap((followee) => followee.followees.map((e) => TopicFollowee(e, followee.topic)))
         .groupBy((element) => element.neuron)
         .entries
         .toList();
@@ -60,59 +61,65 @@ class NeuronFolloweesCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextButton(
-                                  onPressed: () {
-                                    showNeuronInfo(context, e.key);
-                                  },
-                                  child: SelectableText(
-                                    e.key.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: Fonts.circularBold,
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.w700,
-                                        decoration: TextDecoration.underline),
-                                    onTap: () {
-                                      showNeuronInfo(context, e.key);
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Wrap(
-                                    children:
-                                        e.value.mapToList((topic) => Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 4.0, left: 4.0),
-                                              child: Container(
-                                                decoration: ShapeDecoration(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        side: BorderSide(
-                                                            width: 2,
-                                                            color: Color(
-                                                                0xffFBB03B)))),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    topic.topic.name,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily:
-                                                            Fonts.circularBook,
-                                                        color:
-                                                            Color(0xffFBB03B),
-                                                        fontWeight:
-                                                            FontWeight.normal),
+                                FutureBuilder(
+                                  future: context.icApi.followeeSuggestions(),
+                                  builder: (BuildContext context, AsyncSnapshot<List<FolloweeSuggestion>> snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot.data!
+                                                .filter(
+                                                  (element) {
+                                                    isFolloweeSelected = false;
+                                                    if (e.key == element.id) {
+                                                      isFolloweeSelected = true;
+                                                    } else {
+                                                      isFolloweeSelected = false;
+                                                    }
+                                                    return isFolloweeSelected;
+                                                  },
+                                                )
+                                                .mapToList((e) => e.name)
+                                                .firstWhere(
+                                                  (element) => true,
+                                                  orElse: () {
+                                                    return e.key.toString();
+                                                  },
+                                                ),
+                                          ),
+                                          Wrap(
+                                            children: e.value.mapToList(
+                                              (topic) => Padding(
+                                                padding: EdgeInsets.only(top: 4.0, left: 4.0),
+                                                child: Container(
+                                                  decoration: ShapeDecoration(
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                          side: BorderSide(width: 2, color: Color(0xffFBB03B)))),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(4.0),
+                                                    child: Text(
+                                                      topic.topic.name,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: Fonts.circularBook,
+                                                          color: Color(0xffFBB03B),
+                                                          fontWeight: FontWeight.normal),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            )),
-                                  ),
-                                )
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return Text('Loading...');
+                                  },
+                                ),
                               ],
                             ),
                           ))
@@ -138,17 +145,13 @@ class NeuronFolloweesCard extends StatelessWidget {
                                 OverlayBaseWidget.of(context)?.dismiss();
                               }),
                         ),
-                        maxSize: Size(
-                            700, MediaQuery.of(context).size.height - 100));
+                        maxSize: Size(700, MediaQuery.of(context).size.height - 100));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      followeeTopics.isEmpty
-                          ? "Follow Neurons"
-                          : "Edit Followees",
-                      style: TextStyle(
-                          fontSize: Responsive.isMobile(context) ? 14 : 16),
+                      followeeTopics.isEmpty ? "Follow Neurons" : "Edit Followees",
+                      style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
                     ),
                   )),
             )

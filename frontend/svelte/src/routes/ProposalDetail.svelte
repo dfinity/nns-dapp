@@ -1,9 +1,8 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
-    getProposalId,
+    routePathProposalId,
     loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
@@ -18,14 +17,31 @@
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { listNeurons } from "../lib/services/neurons.services";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import {
+    definedNeuronsStore,
+    neuronsStore,
+  } from "../lib/stores/neurons.store";
   import {
     proposalIdStore,
     proposalInfoStore,
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+
+  const neuronsStoreReady = (): boolean => {
+    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
+    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
+    if (neuronsReady) {
+      return true;
+    }
+
+    return (
+      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
+    );
+  };
 
   let neuronsReady = false;
+  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
 
   onMount(async () => {
     if (!SHOW_PROPOSALS_ROUTE) {
@@ -33,8 +49,12 @@
       return;
     }
 
+    // We query the neurons only if they were not yet fully fetched - i.e. never initialized
+    if (neuronsStoreReady()) {
+      return;
+    }
+
     await listNeurons();
-    neuronsReady = true;
   });
 
   const unsubscribeRouteStore = routeStore.subscribe(
@@ -42,7 +62,7 @@
       if (!isRoutePath({ path: AppPath.ProposalDetail, routePath })) {
         return;
       }
-      const proposalId = getProposalId(routePath);
+      const proposalId = routePathProposalId(routePath);
 
       if (proposalId === undefined) {
         // Navigate to the proposal list in no proposalId found
@@ -54,7 +74,11 @@
     }
   );
 
-  const onError = () => {
+  const onError = (certified: boolean) => {
+    // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
+    if (certified) {
+      return;
+    }
     routeStore.replace({ path: AppPath.Proposals });
   };
 
@@ -67,6 +91,7 @@
       setProposal: (proposalInfo: ProposalInfo) =>
         proposalInfoStore.set(proposalInfo),
       handleError: onError,
+      silentUpdateErrorMessages: true,
     });
   });
 
@@ -90,17 +115,43 @@
     >
 
     <section>
-      {#if $proposalInfoStore && $neuronsStore && neuronsReady}
+      {#if $proposalInfoStore}
         <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-        <VotesCard proposalInfo={$proposalInfoStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} />
-        <IneligibleNeuronsCard
-          proposalInfo={$proposalInfoStore}
-          neurons={$neuronsStore}
-        />
+
+        {#if neuronsReady}
+          <VotesCard proposalInfo={$proposalInfoStore} />
+          <VotingCard proposalInfo={$proposalInfoStore} />
+          <IneligibleNeuronsCard
+            proposalInfo={$proposalInfoStore}
+            neurons={$definedNeuronsStore}
+          />
+        {:else}
+          <div class="loader">
+            <SkeletonCard />
+            <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+          </div>
+        {/if}
       {:else}
-        <Spinner />
+        <SkeletonCard size="large" />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       {/if}
     </section>
   </HeadlessLayout>
 {/if}
+
+<style lang="scss">
+  .loader {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--padding-2x) 0;
+
+    span {
+      text-align: center;
+    }
+  }
+</style>

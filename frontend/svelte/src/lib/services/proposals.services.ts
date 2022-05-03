@@ -6,7 +6,11 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { startBusy, stopBusy } from "../stores/busy.store";
+import {
+  startBusy,
+  stopBusy,
+  type BusyStateInitiator,
+} from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
@@ -16,6 +20,7 @@ import {
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
+import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import {
@@ -29,19 +34,19 @@ import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
   type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
 } from "./utils.services";
 
-const handleFindProposalsError = ({ error, certified }) => {
-  console.error(error);
+const handleFindProposalsError = ({ error: err, certified }) => {
+  console.error(err);
 
   // Explicitly handle only UPDATE errors
   if (certified === true) {
     proposalsStore.setProposals({ proposals: [], certified });
 
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.list_proposals",
-      level: "error",
-      detail: errorToString(error),
+      err,
     });
   }
 };
@@ -108,11 +113,7 @@ const findProposals = async ({
       return;
     }
 
-    console.error("suspisious u->t", untrustedProposals, trustedProposals);
-    toastsStore.show({
-      labelKey: "error.suspicious_response",
-      level: "error",
-    });
+    console.error("query != update", untrustedProposals, trustedProposals);
 
     // Remove proven untrusted proposals (in query but not in update)
     const proposalsToRemove = excludeProposals({
@@ -142,6 +143,9 @@ const findProposals = async ({
       onLoad({ response: proposals, certified });
     },
     onError,
+    logMessage: `Syncing proposals ${
+      beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
+    }`,
   });
 };
 
@@ -153,37 +157,59 @@ export const loadProposal = async ({
   proposalId,
   setProposal,
   handleError,
+  callback,
+  silentErrorMessages,
+  silentUpdateErrorMessages,
+  strategy = "query_and_update",
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
-  handleError?: () => void;
+  handleError?: (certified: boolean) => void;
+  callback?: (certified: boolean) => void;
+  silentErrorMessages?: boolean;
+  silentUpdateErrorMessages?: boolean;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
-  const catchError = (error: unknown) => {
-    console.error(error);
+  const catchError: QueryAndUpdateOnError<Error | unknown> = (
+    erroneusResponse
+  ) => {
+    console.error(erroneusResponse);
 
-    toastsStore.show({
-      labelKey: "error.proposal_not_found",
-      level: "error",
-      detail: `id: "${proposalId}"`,
-    });
+    const skipUpdateErrorHandling =
+      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
 
-    handleError?.();
+    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
+      const details = errorToString(erroneusResponse?.error);
+      toastsStore.show({
+        labelKey: "error.proposal_not_found",
+        level: "error",
+        detail: `id: "${proposalId}"${
+          details === undefined ? "" : `. ${details}`
+        }`,
+      });
+    }
+
+    handleError?.(erroneusResponse.certified);
   };
 
   try {
     return await getProposal({
       proposalId,
-      onLoad: ({ response: proposal }) => {
+      onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError(new Error("Proposal not found"));
+          catchError({ certified, error: undefined });
           return;
         }
+
         setProposal(proposal);
+
+        callback?.(certified);
       },
       onError: catchError,
+      strategy,
     });
   } catch (error: unknown) {
-    catchError(error);
+    catchError({ certified: true, error });
   }
 };
 
@@ -194,10 +220,12 @@ const getProposal = async ({
   proposalId,
   onLoad,
   onError,
+  strategy,
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<unknown>;
+  onError: QueryAndUpdateOnError<Error | undefined>;
+  strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
 
@@ -206,10 +234,12 @@ const getProposal = async ({
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
+    strategy,
+    logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
 };
 
-export const getProposalId = (path: string): ProposalId | undefined =>
+export const routePathProposalId = (path: string): ProposalId | undefined =>
   getLastPathDetailId(path);
 
 /**
@@ -230,39 +260,78 @@ export const registerVotes = async ({
   const identity: Identity = await getIdentity();
 
   try {
+    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
     await requestRegisterVotes({
       neuronIds,
       proposalId,
       identity,
       vote,
     });
-  } catch (error: unknown) {
-    console.error("vote unknown:", error);
+    logWithTimestamp(
+      `Registering [${neuronIds.map(hashCode)}] votes complete.`
+    );
+  } catch (err: unknown) {
+    console.error("vote unknown:", err);
 
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.register_vote_unknown",
-      level: "error",
-      detail: errorToString(error),
+      err,
     });
   }
 
-  await Promise.all([
-    listNeurons().catch((err) => {
+  const stopBusySpinner = ({
+    certified,
+    initiator,
+  }: {
+    certified: boolean;
+    initiator: BusyStateInitiator;
+  }) => {
+    if (!certified) {
+      return;
+    }
+
+    stopBusy(initiator);
+  };
+
+  const reloadListNeurons = async () => {
+    startBusy("reload-neurons");
+
+    try {
+      await listNeurons({
+        callback: (certified: boolean) =>
+          stopBusySpinner({ certified, initiator: "reload-neurons" }),
+      });
+    } catch (err) {
       console.error(err);
       toastsStore.error({
         labelKey: "error.list_proposals",
         err,
       });
-    }),
-    loadProposal({
+
+      stopBusy("reload-neurons");
+    }
+  };
+
+  const reloadProposal = async () => {
+    startBusy("reload-proposal");
+
+    await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
         proposalInfoStore.set(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
-    }),
-  ]);
+      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
+      strategy: "update",
+      callback: (certified: boolean) =>
+        stopBusySpinner({ certified, initiator: "reload-proposal" }),
+      handleError: () => stopBusy("reload-proposal"),
+      silentUpdateErrorMessages: true,
+    });
+  };
+
+  await Promise.all([reloadListNeurons(), reloadProposal()]);
 
   stopBusy("vote");
 };
@@ -306,12 +375,29 @@ const requestRegisterVotes = async ({
         })
     )
   );
+
+  const rejectedResponses = responses.filter(
+    (response: PromiseSettledResult<void>) => {
+      const { status } = response;
+
+      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
+      // 1. the error truly means the neuron has already voted.
+      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
+      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
+      const hasAlreadyVoted: boolean =
+        "reason" in response &&
+        response.reason?.detail?.error_message ===
+          "Neuron already voted on proposal.";
+
+      return status === "rejected" && !hasAlreadyVoted;
+    }
+  );
+
   const details: string[] = responses
     .map((response, i) => errorDetail(neuronIds[i], response))
     .filter(isDefined);
-
-  if (details.length > 0) {
-    console.error("vote", details);
+  if (rejectedResponses.length > 0) {
+    console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",

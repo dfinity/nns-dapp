@@ -22,6 +22,7 @@
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
+  export let disabled: boolean | undefined = undefined;
 
   // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo;
@@ -39,7 +40,7 @@
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
-<Card {role} {selected} on:click {ariaLabel}>
+<Card {role} {selected} {disabled} on:click {ariaLabel}>
   <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3>{neuron.neuronId}</h3>
 

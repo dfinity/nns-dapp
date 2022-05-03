@@ -8,7 +8,7 @@
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
   import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let loading: boolean = false;
 
@@ -63,9 +63,8 @@
       <!-- TODO(L2-335): message if no canisters -->
 
       {#if loading}
-        <div class="spinner">
-          <Spinner />
-        </div>
+        <SkeletonCard />
+        <SkeletonCard />
       {/if}
     </section>
 

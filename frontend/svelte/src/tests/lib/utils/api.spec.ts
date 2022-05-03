@@ -1,5 +1,6 @@
 import { tick } from "svelte";
 import { queryAndUpdate } from "../../../lib/services/utils.services";
+import * as devUtils from "../../../lib/utils/dev.utils";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
@@ -41,13 +42,13 @@ describe("api-utils", () => {
       expect(onError).not.toBeCalled();
     });
 
-    it("should request w/ different certified values", async () => {
+    it('should support "query_and_update" strategy', async () => {
       const requestCertified: boolean[] = [];
       const request = jest
         .fn()
         .mockImplementation(({ certified }: { certified: boolean }) => {
           requestCertified.push(certified);
-          return Promise.resolve({ certified: true });
+          return Promise.resolve();
         });
       const onLoad = jest.fn();
 
@@ -57,6 +58,44 @@ describe("api-utils", () => {
       });
 
       expect(requestCertified.sort()).toEqual([false, true]);
+    });
+
+    it('should support "query" strategy', async () => {
+      const requestCertified: boolean[] = [];
+      const request = jest
+        .fn()
+        .mockImplementation(({ certified }: { certified: boolean }) => {
+          requestCertified.push(certified);
+          return Promise.resolve();
+        });
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        strategy: "query",
+      });
+
+      expect(requestCertified.sort()).toEqual([false]);
+    });
+
+    it('should support "update" strategy', async () => {
+      const requestCertified: boolean[] = [];
+      const request = jest
+        .fn()
+        .mockImplementation(({ certified }: { certified: boolean }) => {
+          requestCertified.push(certified);
+          return Promise.resolve();
+        });
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        strategy: "update",
+      });
+
+      expect(requestCertified.sort()).toEqual([true]);
     });
 
     it("should catch errors", async () => {
@@ -137,6 +176,20 @@ describe("api-utils", () => {
       });
       expect(updateDone).toBeTruthy();
       expect(queryDone).toBeFalsy();
+    });
+
+    it("should log", async () => {
+      const log = jest.spyOn(devUtils, "logWithTimestamp");
+      const request = jest.fn().mockImplementation(() => Promise.resolve());
+      const onLoad = jest.fn();
+
+      await queryAndUpdate<number, unknown>({
+        request,
+        onLoad,
+        logMessage: "test-log",
+      });
+
+      expect(log).toBeCalled();
     });
   });
 });

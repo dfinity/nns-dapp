@@ -8,7 +8,6 @@
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -18,6 +17,7 @@
   import { ICP } from "@dfinity/nns";
   import { sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   // TODO: To be removed once this page has been implemented
   onMount(() => {
@@ -79,17 +79,23 @@
           >
         {/each}
       {:else}
-        <Spinner />
+        <SkeletonCard />
       {/if}
     </section>
 
     <svelte:fragment slot="footer">
       {#if accounts}
         <Toolbar>
-          <button class="primary" on:click={openNewTransaction}
+          <button
+            class="primary"
+            on:click={openNewTransaction}
+            data-tid="open-new-transaction"
             >{$i18n.accounts.new_transaction}</button
           >
-          <button class="primary" on:click={openAddAccountModal}
+          <button
+            class="primary"
+            on:click={openAddAccountModal}
+            data-tid="open-add-account-modal"
             >{$i18n.accounts.add_account}</button
           >
         </Toolbar>
@@ -99,7 +105,7 @@
       <AddAcountModal on:nnsClose={closeModal} />
     {/if}
     {#if modal === "NewTransaction"}
-      <NewTransactionModal on:nnsClose={closeModal} canSelectAccount={true} />
+      <NewTransactionModal on:nnsClose={closeModal} />
     {/if}
   </Layout>
 {/if}
@@ -114,6 +120,11 @@
     margin-bottom: var(--padding-2x);
 
     --icp-font-size: var(--font-size-h1);
+
+    // Minimum height of ICP value + ICP label (ICP component)
+    min-height: calc(
+      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
+    );
 
     @include media.min-width(medium) {
       display: inline-flex;

@@ -13,7 +13,8 @@
     "unspecified": "Unspecified",
     "continue": "Continue",
     "amount": "Amount",
-    "max": "Max"
+    "max": "Max",
+    "principal": "Principal"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -33,11 +34,10 @@
     "register_vote_unknown": "Sorry, there was an unexpected error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpected error while adding the followee. Please try again later.",
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
-    "followee_does_not_exist": "Sorry, followee already removed, refresh the page to have the latest data.",
+    "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
-    "suspicious_response": "Suspicious response detected. Page reload suggested.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
@@ -49,12 +49,20 @@
     "transaction_no_destination_address": "No destination address has been selected to execute the transaction.",
     "transaction_error": "Sorry, there was an error trying to execute the transaction.",
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
-    "cannot_merge": "Those two neurons cannot be merged. Check the article: ",
+    "cannot_merge": "Those two neurons cannot be merged.",
     "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
     "not_authorized": "Sorry, you are not authorized to perform this action.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
     "insufficient_funds": "Sorry, there are not enough funds in this account",
-    "transfer_error": "Sorry, there was an error with the transaction. Please try again later."
+    "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
+    "merge_neurons_same_id": "Two neurons with same id can't be merged.",
+    "merge_neurons_not_same_controller": "Two neurons need to have the same controller.",
+    "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\".",
+    "governance_error": "Sorry, there was an error. Please try again.",
+    "not_mergeable": "This neuron can't be merged.",
+    "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
+    "invalid_percentage": "Sorry, the percentage amount is not valid.",
+    "principal_not_valid": "Please enter a valid principal."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -82,11 +90,14 @@
     "copy_identifier": "Copy identifier to clipboard",
     "new_transaction": "New Transaction",
     "add_account": "Add Account",
-    "new_linked_title": "New Linked-Account",
+    "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
     "attach_hardware_title": "Attach Hardware Wallet",
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
-    "new_linked_account_title": "New Linked Account",
+    "attach_hardware_name_placeholder": "Hardware Wallet Name",
+    "attach_hardware_enter_name": "Enter Wallet Name",
+    "connect_hardware_wallet": "Connect to Wallet",
+    "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
     "linked_account": "LINKED ACCOUNT",
     "select_source": "Select Source Account",
@@ -143,9 +154,12 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
-    "dissolve_delay_success": "Dissolve delay successfully updated.",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully splitted."
+    "split_neuron_success": "Neuron successfully splitted.",
+    "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
+    "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
+    "only_merge_two": "You can only merge two neurons at a time.",
+    "irreversible_action": "This action is irreversible."
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -154,8 +168,8 @@
     "options_title": "Options for Following",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "success_add_followee": "Followee added successfully",
-    "success_remove_followee": "Followee removed successfully"
+    "same_neuron": "You can't add the same neuron as followee.",
+    "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
@@ -241,7 +255,8 @@
     "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
     "reject": "Reject",
-    "my_votes": "My Votes"
+    "my_votes": "My Votes",
+    "loading_neurons": "Loading your neurons..."
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
@@ -253,7 +268,9 @@
     "confirm_adopt_headline": "Adopt Proposal",
     "confirm_adopt_text": "You are about to cast $votingPower votes for this proposal, are you sure you want to proceed?",
     "confirm_reject_headline": "Reject Proposal",
-    "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?"
+    "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?",
+    "vote_status": "Neuron $neuronId has voted $vote",
+    "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?"
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
@@ -263,7 +280,6 @@
   },
   "neuron_detail": {
     "title": "Neuron",
-    "proposer": "Proposer",
     "voting_history": "Voting History",
     "vote": "Vote",
     "join_community_fund": "Join Community Fund",
@@ -282,16 +298,33 @@
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
-    "start_dissolve_success": "Your neuron has started dissolving.",
-    "stop_dissolve_success": "Your neuron has stoped dissolving.",
     "dummy_proposal_success": "Dummy proposals created successfully",
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
     "follow_neurons": "Follow Neurons",
     "no_ballots": "No recent ballots",
     "split_neuron_confirm": "Confirm Split",
+    "merge_neurons_success": "Your neurons have been successfully merged.",
+    "disburse_neuron_title": "Disburse Neuron",
     "split_neuron_success": "Your neuron has successfully been splitted.",
-    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable."
+    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "merge_maturity_disabled_tooltip": "You need at least $amount ICP to merge maturity.",
+    "hotkeys_title": "Hotkeys",
+    "add_hotkey": "Add Hotkey",
+    "no_notkeys": "No hotkeys",
+    "add_hotkey_modal_title": "Add Hotkey",
+    "enter_hotkey": "Enter Hotkey:",
+    "remove_hotkey_success": "Hotkey removed successfully.",
+    "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
+    "disburse_success": "Neuron disbursed successfully",
+    "merge_maturity_modal_title": "Merge Maturity",
+    "merge_maturity_modal_description": "Choose how much of your neuron's maturity to merge into its stake.",
+    "merge_maturity_success": "Maturity merged successfully.",
+    "current_stake": "Current Stake",
+    "current_maturity": "Current Maturity",
+    "dissolve_delay_range": "Dissolve Delay Range",
+    "merge_maturity_range": "Merge Maturity Range",
+    "add_hotkey_placeholder": "Principal ID"
   },
   "time": {
     "year": "year",

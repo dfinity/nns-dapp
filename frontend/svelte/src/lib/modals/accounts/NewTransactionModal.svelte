@@ -13,10 +13,19 @@
   import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
   import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
+  import type { Account } from "../../types/account";
 
-  export let canSelectAccount: boolean;
+  export let selectedAccount: Account | undefined = undefined;
+  export let destinationAddress: string | undefined = undefined;
 
-  const steps: Steps = [
+  let canSelectAccount: boolean;
+  $: canSelectAccount = selectedAccount === undefined;
+
+  let canSelectDestination: boolean;
+  $: canSelectDestination = destinationAddress === undefined;
+
+  let steps: Steps;
+  $: steps = [
     ...((canSelectAccount
       ? [
           {
@@ -26,11 +35,15 @@
           },
         ]
       : []) as Steps),
-    {
-      name: "SelectDestination",
-      showBackButton: canSelectAccount,
-      title: $i18n.accounts.select_destination,
-    },
+    ...((canSelectDestination
+      ? [
+          {
+            name: "SelectDestination",
+            showBackButton: canSelectAccount,
+            title: $i18n.accounts.select_destination,
+          },
+        ]
+      : []) as Steps),
     {
       name: "SelectAmount",
       showBackButton: true,
@@ -44,8 +57,8 @@
   ];
 
   const newTransactionStore = writable<TransactionStore>({
-    selectedAccount: undefined,
-    destinationAddress: undefined,
+    selectedAccount,
+    destinationAddress,
     amount: undefined,
   });
 
@@ -53,6 +66,18 @@
     store: newTransactionStore,
     next: () => modal?.next(),
   });
+
+  // Update store with selectedAccount in case the property would be set after the component is initialized
+  $: newTransactionStore.update((data) => ({
+    ...data,
+    selectedAccount,
+  }));
+
+  // Update store with destinationAddress in case the property would be set after the component is initialized
+  $: newTransactionStore.update((data) => ({
+    ...data,
+    destinationAddress,
+  }));
 
   let currentStep: Step | undefined;
   let modal: WizardModal | undefined;

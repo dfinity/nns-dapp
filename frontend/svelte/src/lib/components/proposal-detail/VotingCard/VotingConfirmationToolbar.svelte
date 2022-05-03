@@ -1,14 +1,25 @@
 <script lang="ts">
-  import { Vote } from "@dfinity/nns";
+  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import {
+    mapProposalInfo,
+    selectedNeuronsVotingPower,
+  } from "../../../utils/proposals.utils";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
 
   const dispatch = createEventDispatcher();
 
+  export let proposalInfo: ProposalInfo;
+
+  let id: ProposalId | undefined;
+  let topic: string | undefined;
+  $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
+
   let total: bigint;
+  let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote = Vote.YES;
 
@@ -16,6 +27,7 @@
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });
+  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.YES;
@@ -34,16 +46,24 @@
   };
 </script>
 
+<p class="question">
+  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
+    $id: `${id ?? ""}`,
+    $title: `${title ?? ""}`,
+    $topic: topic ?? "",
+  })}
+</p>
+
 <div role="toolbar">
   <button
     data-tid="vote-yes"
-    disabled={total === 0n}
+    {disabled}
     on:click={showAdoptConfirmation}
     class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
   >
   <button
     data-tid="vote-no"
-    disabled={total === 0n}
+    {disabled}
     on:click={showRejectConfirmation}
     class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
   >
@@ -64,5 +84,9 @@
 
     display: flex;
     gap: var(--padding);
+  }
+
+  .question {
+    margin: 0 0 var(--padding-2x);
   }
 </style>

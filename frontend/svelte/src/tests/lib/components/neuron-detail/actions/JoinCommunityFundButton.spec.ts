@@ -13,7 +13,7 @@ jest.mock("../../../../../lib/services/neurons.services", () => {
   };
 });
 
-describe("DissolveActionButton", () => {
+describe("JoinCommunityFundButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
