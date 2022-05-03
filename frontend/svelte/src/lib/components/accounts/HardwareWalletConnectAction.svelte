@@ -1,0 +1,59 @@
+<script lang="ts">
+  import { i18n } from "../../stores/i18n";
+  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import Spinner from "../ui/Spinner.svelte";
+  import { LedgerIdentity } from "../../identities/ledger.identity";
+  import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
+
+  export let connectionState: LedgerConnectionState =
+    LedgerConnectionState.NOT_CONNECTED;
+
+  let ledgerIdentity: LedgerIdentity | undefined = undefined;
+
+  const connect = async () => {
+    const { connectToHardwareWallet } = await import(
+      "../../services/ledger.services"
+    );
+
+    await connectToHardwareWallet(
+      ({ ledgerIdentity: identity, connectionState: state }) => {
+        connectionState = state;
+        ledgerIdentity = identity;
+      }
+    );
+  };
+
+  let connecting, connected: boolean;
+  $: connecting = connectionState === LedgerConnectionState.CONNECTING;
+  $: connected =
+    connectionState === LedgerConnectionState.CONNECTED &&
+    ledgerIdentity !== undefined;
+</script>
+
+{#if connected}
+  <h4>Connected to Hardware Wallet</h4>
+  <HardwareWalletInfo {ledgerIdentity} />
+{:else}
+  <p>{$i18n.accounts.connect_hardware_wallet_text}</p>
+  <div class="connect">
+    {#if connecting}
+      <!-- // TODO(L2-433): spinner processing accessibility -->
+      <Spinner />
+    {:else}
+      <button class="primary" type="button" on:click|stopPropagation={connect}>
+        {$i18n.accounts.connect_hardware_wallet}
+      </button>
+    {/if}
+  </div>
+{/if}
+
+<style lang="scss">
+  h4,
+  p {
+    margin-bottom: var(--padding-2x);
+  }
+
+  .connect {
+    min-height: var(--button-min-height);
+  }
+</style>
