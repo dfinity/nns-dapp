@@ -7,14 +7,20 @@ import { toastsStore } from "../stores/toasts.store";
  * Create a LedgerIdentity using the Web USB transport
  */
 export const connectToHardwareWallet = async (
-  connectionState: (LedgerConnectionState) => void
+  callback: (state: {
+    connectionState: LedgerConnectionState;
+    ledgerIdentity?: LedgerIdentity;
+  }) => void
 ): Promise<void> => {
   try {
-    connectionState(LedgerConnectionState.CONNECTING);
+    callback({ connectionState: LedgerConnectionState.CONNECTING });
 
-    await LedgerIdentity.create();
+    const ledgerIdentity: LedgerIdentity = await LedgerIdentity.create();
 
-    connectionState(LedgerConnectionState.CONNECTED);
+    callback({
+      connectionState: LedgerConnectionState.CONNECTED,
+      ledgerIdentity,
+    });
   } catch (err: unknown) {
     const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
 
@@ -25,6 +31,6 @@ export const connectToHardwareWallet = async (
       ...(!ledgerErrorKey && { err }),
     });
 
-    connectionState(LedgerConnectionState.NOT_CONNECTED);
+    callback({ connectionState: LedgerConnectionState.NOT_CONNECTED });
   }
 };

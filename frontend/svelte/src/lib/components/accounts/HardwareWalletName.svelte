@@ -31,6 +31,7 @@
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
   <div>
+    <h4>{$i18n.accounts.attach_hardware_enter_name}</h4>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"

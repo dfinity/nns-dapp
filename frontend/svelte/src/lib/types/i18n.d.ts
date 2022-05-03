@@ -123,6 +123,7 @@ interface I18nAccounts {
   review_transaction: string;
   current_balance: string;
   confirm_and_send: string;
+  account_identifier: string;
 }
 
 interface I18nNeurons {

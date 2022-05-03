@@ -113,7 +113,8 @@
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
     "current_balance": "Current balance",
-    "confirm_and_send": "Confirm and Send"
+    "confirm_and_send": "Confirm and Send",
+    "account_identifier": "Account Identifier"
   },
   "neurons": {
     "title": "Neurons",

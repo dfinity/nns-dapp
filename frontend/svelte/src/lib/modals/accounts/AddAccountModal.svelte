@@ -27,7 +27,7 @@
   const hardwareWalletSteps: Steps = [
     {
       name: "HardwareWalletName",
-      title: $i18n.accounts.attach_hardware_enter_name,
+      title: $i18n.accounts.attach_hardware_title,
       showBackButton: true,
     },
     {
