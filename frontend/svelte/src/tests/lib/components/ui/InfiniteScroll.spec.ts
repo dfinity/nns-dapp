@@ -27,16 +27,6 @@ describe("InfiniteScroll", () => {
     expect(container.querySelector("div")).not.toBeNull();
   });
 
-  it("should render the expected container", () => {
-    const { container } = render(InfiniteScroll, {
-      props: {
-        containerElement: "ul",
-      },
-    });
-
-    expect(container.querySelector("ul")).not.toBeNull();
-  });
-
   it("should trigger an intersect event", () => {
     const spyIntersect = jest.fn();
 

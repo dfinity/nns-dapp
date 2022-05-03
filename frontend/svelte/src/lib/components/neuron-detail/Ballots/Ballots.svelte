@@ -28,6 +28,9 @@
     if (fakeLoading) {
       return;
     }
+    if (ballotsIndex >= ballots.length) {
+      return;
+    }
     fakeLoading = true;
     nextPage();
   };
@@ -42,11 +45,7 @@
       <span>{$i18n.neuron_detail.vote}</span>
     </h4>
 
-    <InfiniteScroll
-      pageLimit={PAGE_LIMIT}
-      containerElement="ul"
-      on:nnsIntersect={showMore}
-    >
+    <InfiniteScroll pageLimit={PAGE_LIMIT} on:nnsIntersect={showMore}>
       {#each ballotsToShow as ballot}
         <li>
           <BallotSummary {ballot} />

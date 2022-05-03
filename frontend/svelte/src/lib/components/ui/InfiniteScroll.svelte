@@ -102,15 +102,9 @@
   onDestroy(() => observer.disconnect());
 </script>
 
-{#if containerElement === "ul"}
-  <ul bind:this={container}>
-    <slot />
-  </ul>
-{:else}
-  <div bind:this={container}>
-    <slot />
-  </div>
-{/if}
+<ul bind:this={container}>
+  <slot />
+</ul>
 
 <style lang="scss">
   ul {

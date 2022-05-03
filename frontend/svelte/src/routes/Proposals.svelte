@@ -156,7 +156,9 @@
 
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
         {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-          <ProposalCard {hidden} {proposalInfo} />
+          <li>
+            <ProposalCard {hidden} {proposalInfo} />
+          </li>
         {/each}
       </InfiniteScroll>
 
