@@ -154,7 +154,6 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
-    "dissolve_delay_success": "Dissolve delay successfully updated.",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "split_neuron_success": "Neuron successfully splitted.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
@@ -169,8 +168,6 @@
     "options_title": "Options for Following",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "success_add_followee": "Followee added successfully",
-    "success_remove_followee": "Followee removed successfully",
     "same_neuron": "You can't add the same neuron as followee.",
     "already_followed": "You are already following this neuron."
   },
@@ -272,6 +269,7 @@
     "confirm_adopt_text": "You are about to cast $votingPower votes for this proposal, are you sure you want to proceed?",
     "confirm_reject_headline": "Reject Proposal",
     "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?",
+    "vote_status": "Neuron $neuronId has voted $vote",
     "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?"
   },
   "proposal_detail__ineligible": {
@@ -300,8 +298,6 @@
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
-    "start_dissolve_success": "Your neuron has started dissolving.",
-    "stop_dissolve_success": "Your neuron has stoped dissolving.",
     "dummy_proposal_success": "Dummy proposals created successfully",
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
@@ -318,7 +314,6 @@
     "no_notkeys": "No hotkeys",
     "add_hotkey_modal_title": "Add Hotkey",
     "enter_hotkey": "Enter Hotkey:",
-    "add_hotkey_success": "Hotkey added successfully.",
     "remove_hotkey_success": "Hotkey removed successfully.",
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
