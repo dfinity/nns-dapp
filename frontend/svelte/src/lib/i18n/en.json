@@ -99,6 +99,7 @@
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "attach_wallet": "Attach Wallet",
+    "hardware_wallet_connected": "Connected to Hardware Wallet",
     "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
     "linked_account": "LINKED ACCOUNT",

@@ -31,7 +31,7 @@
 </script>
 
 {#if connected}
-  <h4>Connected to Hardware Wallet</h4>
+  <h4>{$i18n.accounts.hardware_wallet_connected}</h4>
   <HardwareWalletInfo {ledgerIdentity} />
 {:else}
   <p>{$i18n.accounts.connect_hardware_wallet_text}</p>

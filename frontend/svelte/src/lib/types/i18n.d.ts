@@ -108,6 +108,7 @@ interface I18nAccounts {
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   attach_wallet: string;
+  hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
