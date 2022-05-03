@@ -4,9 +4,9 @@ import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
 import {
-  type AllLedgerError,
   ExtendedLedgerError,
   LEDGER_SIGNATURE_LENGTH,
+  type AllLedgerError,
 } from "../constants/ledger.constants";
 import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
 import { Secp256k1PublicKey } from "../keys/secp256k1";

@@ -7,7 +7,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
-import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {

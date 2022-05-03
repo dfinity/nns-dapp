@@ -30,7 +30,9 @@
   let disabled, connecting, connected: boolean;
   $: disabled = connectionState !== LedgerConnectionState.CONNECTED;
   $: connecting = connectionState === LedgerConnectionState.CONNECTING;
-  $: connected = connectionState === LedgerConnectionState.CONNECTED && ledgerIdentity !== undefined;
+  $: connected =
+    connectionState === LedgerConnectionState.CONNECTED &&
+    ledgerIdentity !== undefined;
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
@@ -69,7 +71,8 @@
     @include modal.wizard-single-input-form;
   }
 
-  h4, p {
+  h4,
+  p {
     margin-bottom: var(--padding-2x);
   }
 
