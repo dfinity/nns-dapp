@@ -3,11 +3,20 @@
   import BallotSummary from "./BallotSummary.svelte";
   import { i18n } from "../../../stores/i18n";
   import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
+  import InfiniteScroll from "../../ui/InfiniteScroll.svelte";
 
   export let neuron: NeuronInfo | undefined;
 
+  const PAGE_LIMIT = 5;
+
   let ballots: Required<BallotInfo>[] = [];
+  let ballotsToShow: Required<BallotInfo>[] = [];
+  let ballotsIndex: number = PAGE_LIMIT;
   $: ballots = neuron === undefined ? [] : ballotsWithDefinedProposal(neuron);
+  $: ballotsToShow = ballots.slice(0, ballotsIndex);
+  const showMore = () => {
+    ballotsIndex += PAGE_LIMIT;
+  };
 </script>
 
 {#if neuron !== undefined}
@@ -19,13 +28,17 @@
       <span>{$i18n.neuron_detail.vote}</span>
     </h4>
 
-    <ul>
-      {#each ballots as ballot}
+    <InfiniteScroll
+      pageLimit={PAGE_LIMIT}
+      containerElement="ul"
+      on:nnsIntersect={showMore}
+    >
+      {#each ballotsToShow as ballot}
         <li>
           <BallotSummary {ballot} />
         </li>
       {/each}
-    </ul>
+    </InfiniteScroll>
   {/if}
 {/if}
 
@@ -34,12 +47,6 @@
     display: flex;
     justify-content: space-between;
     line-height: var(--line-height-standard);
-  }
-
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
 
   li {
