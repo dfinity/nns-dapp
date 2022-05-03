@@ -24,7 +24,7 @@ describe("InfiniteScroll", () => {
   it("should render a container", () => {
     const { container } = render(InfiniteScroll);
 
-    expect(container.querySelector("div")).not.toBeNull();
+    expect(container.querySelector("ul")).not.toBeNull();
   });
 
   it("should trigger an intersect event", () => {
