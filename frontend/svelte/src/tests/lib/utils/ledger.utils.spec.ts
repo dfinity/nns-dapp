@@ -1,7 +1,14 @@
-import { LedgerError, type ResponseAddress } from "@zondax/ledger-icp";
+import {
+  LedgerError,
+  type ResponseAddress,
+  type ResponseSign,
+} from "@zondax/ledger-icp";
 import { ExtendedLedgerError } from "../../../lib/constants/ledger.constants";
 import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
-import { decodePublicKey } from "../../../lib/utils/ledger.utils";
+import {
+  decodePublicKey,
+  decodeSignature,
+} from "../../../lib/utils/ledger.utils";
 import { mockPrincipalText } from "../../mocks/auth.store.mock";
 import {
   derEncodedPublicKeyHex,
@@ -70,6 +77,38 @@ describe("ledger-utils", () => {
 
       const expectedDerPublicKey = fromHexString(derEncodedPublicKeyHex);
       expect(publicKey.toDer()).toEqual(expectedDerPublicKey);
+    });
+  });
+
+  describe("decodeSignature", () => {
+    it("should throw an error if no signature is provided", () => {
+      const call = () =>
+        decodeSignature({
+          signatureRS: undefined,
+          returnCode: LedgerError.TransactionRejected,
+        } as unknown as ResponseSign);
+
+      expect(call).toThrow(
+        new LedgerErrorKey(
+          `A ledger error happened during signature. undefined (code ${LedgerError.TransactionRejected}).`
+        )
+      );
+    });
+
+    it("should throw an error if signature too short", () => {
+      const test = "test";
+
+      const call = () =>
+        decodeSignature({
+          signatureRS: Uint8Array.from(test, (x) => x.charCodeAt(0)),
+          returnCode: LedgerError.TransactionRejected,
+        } as unknown as ResponseSign);
+
+      expect(call).toThrow(
+        new LedgerErrorKey(
+          `Signature must be 64 bytes long (is ${test.length})`
+        )
+      );
     });
   });
 });
