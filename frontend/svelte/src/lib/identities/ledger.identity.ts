@@ -15,8 +15,10 @@ import { i18n } from "../stores/i18n";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
 
+// TODO(L2-433): should we use @dfinity/identity-ledgerhq
+
 export class LedgerIdentity extends SignIdentity {
-  // TODO: is there a better way to solve this requirements than a class variable that is set and unset?
+  // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
   private neuronStakeFlag = false;
 

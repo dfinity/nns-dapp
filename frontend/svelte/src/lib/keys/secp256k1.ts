@@ -1,5 +1,7 @@
 import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
 
+// TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
+
 // This implementation is adjusted from the Ed25519PublicKey.
 // The RAW_KEY_LENGTH and DER_PREFIX are modified accordingly
 export class Secp256k1PublicKey implements PublicKey {
