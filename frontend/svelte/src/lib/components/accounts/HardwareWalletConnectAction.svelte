@@ -37,7 +37,12 @@
       <!-- // TODO(L2-433): spinner processing accessibility -->
       <Spinner />
     {:else}
-      <button class="primary" type="button" on:click|stopPropagation={connect}>
+      <button
+        class="primary"
+        type="button"
+        on:click|stopPropagation={connect}
+        data-tid="ledger-connect-button"
+      >
         {$i18n.accounts.connect_hardware_wallet}
       </button>
     {/if}
