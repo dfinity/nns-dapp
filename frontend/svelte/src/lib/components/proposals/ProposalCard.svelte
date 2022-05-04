@@ -45,7 +45,7 @@
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
-<div class:hidden>
+<li class:hidden>
   {#if !hide}
     <Card role="link" on:click={showProposal}>
       <div slot="start" class="title-container">
@@ -58,14 +58,14 @@
       <ProposalMeta {proposalInfo} size="small" link={false} />
     </Card>
   {/if}
-</div>
+</li>
 
 <style lang="scss">
   @use "../../themes/mixins/text";
   @use "../../themes/mixins/card";
   @use "../../themes/mixins/media.scss";
 
-  div.hidden {
+  li.hidden {
     visibility: hidden;
   }
 

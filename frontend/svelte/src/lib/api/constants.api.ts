@@ -9,3 +9,5 @@ export const icNeuron = {
   name: "Internet Computer Association",
   description: undefined,
 };
+
+export const host: string = process.env.HOST as string;

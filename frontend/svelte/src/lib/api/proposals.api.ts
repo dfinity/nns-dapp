@@ -7,11 +7,12 @@ import type {
   Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister, Topic } from "@dfinity/nns";
-import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { enumsExclude } from "../utils/enum.utils";
+import { host } from "./constants.api";
 
 export const queryProposals = async ({
   beforeProposal,
@@ -31,7 +32,7 @@ export const queryProposals = async ({
   );
 
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   const { rewards, status, topics }: ProposalsFiltersStore = filters;
@@ -42,7 +43,7 @@ export const queryProposals = async ({
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
-      limit: LIST_PAGINATION_LIMIT,
+      limit: DEFAULT_LIST_PAGINATION_LIMIT,
       beforeProposal,
       excludeTopic: enumsExclude<Topic>({
         obj: Topic as unknown as Topic,
@@ -76,7 +77,7 @@ export const queryProposal = async ({
     `Querying Proposal (${hashCode(proposalId)}) certified:${certified} call...`
   );
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   const response = await governance.getProposal({ proposalId, certified });
@@ -104,7 +105,7 @@ export const registerVote = async ({
   );
 
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   await governance.registerVote({
