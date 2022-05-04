@@ -12,6 +12,7 @@ import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { enumsExclude } from "../utils/enum.utils";
+import { host } from "./constants.api";
 
 export const queryProposals = async ({
   beforeProposal,
@@ -31,7 +32,7 @@ export const queryProposals = async ({
   );
 
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   const { rewards, status, topics }: ProposalsFiltersStore = filters;
@@ -76,7 +77,7 @@ export const queryProposal = async ({
     `Querying Proposal (${hashCode(proposalId)}) certified:${certified} call...`
   );
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   const response = await governance.getProposal({ proposalId, certified });
@@ -104,7 +105,7 @@ export const registerVote = async ({
   );
 
   const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: process.env.HOST }),
+    agent: await createAgent({ identity, host }),
   });
 
   await governance.registerVote({
