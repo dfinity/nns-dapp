@@ -223,7 +223,7 @@
     color: var(--blue-200-shade);
   }
   .value.principal {
-    color: var(--pink);
+    color: var(--yellow-400);
   }
   .value.bigint {
     color: var(--blue-200-shade);
