@@ -3,9 +3,14 @@ Wasm sha256 hash: `<WASM_HASH>` (`<LINK_TO_GITHUB_ACTION>`)
 
 ## Change Log:
 
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+- Usability and accessibility improvements
+  - Display topic and proposal ID to the proposal detail page
+  - Update colours
+  - Better loading skeletons
+  - Add button titles
+- Prevent duplicate hardware wallets from being attached to an account
+- Preparations for svelte neurons tab
+- Test with NNS canisters running in dfx
 
 ## Commit log:
 
