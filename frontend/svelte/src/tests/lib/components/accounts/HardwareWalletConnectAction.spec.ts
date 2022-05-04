@@ -4,6 +4,7 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import HardwareWalletConnectAction from "../../../../lib/components/accounts/HardwareWalletConnectAction.svelte";
 import { LedgerConnectionState } from "../../../../lib/constants/ledger.constants";
 import { connectToHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
@@ -54,7 +55,7 @@ describe("HardwareWalletConnectAction", () => {
       );
     });
 
-    it("should display a connected innforation", async () => {
+    it("should display a connected inforation", async () => {
       const { getByRole, getByText } = render(HardwareWalletConnectAction);
 
       fireEvent.click(getByRole("button"));
@@ -69,6 +70,27 @@ describe("HardwareWalletConnectAction", () => {
       expect(
         getByText(mockIdentity.getPrincipal().toString())
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("not connected", () => {
+    beforeAll(() => {
+      (connectToHardwareWalletProxy as jest.Mock).mockImplementation(
+        async (callback) =>
+          callback({
+            connectionState: LedgerConnectionState.NOT_CONNECTED,
+          })
+      );
+    });
+
+    it("should reactive action if not connected", async () => {
+      const { getByRole } = render(HardwareWalletConnectAction);
+
+      fireEvent.click(getByRole("button"));
+
+      await tick();
+
+      expect(getByRole("button")).not.toBeNull();
     });
   });
 });
