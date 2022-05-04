@@ -9,6 +9,7 @@ import {
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { host } from "./constants.api";
 
 export const getNeuronBalance = async ({
   neuron,
@@ -72,7 +73,7 @@ const ledgerCanister = async ({
   logWithTimestamp(`LC call...`);
   const agent = await createAgent({
     identity,
-    host: process.env.HOST,
+    host,
   });
 
   const canister = LedgerCanister.create({

@@ -9,11 +9,11 @@ import {
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "../constants/canister-ids.constants";
-import { host } from "../constants/host.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
+import { host } from "./constants.api";
 
 export const loadAccounts = async ({
   identity,
