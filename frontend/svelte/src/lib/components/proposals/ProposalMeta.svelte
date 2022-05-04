@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Proposer from "./Proposer.svelte";
   import { mapProposalInfo } from "../../utils/proposals.utils";
@@ -8,12 +8,11 @@
   export let size: "small" | "normal" = "normal";
   export let link: boolean = true;
 
-  let proposer: NeuronId | undefined;
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
 
-  $: ({ proposer, id, url, topic } = mapProposalInfo(proposalInfo));
+  $: ({ id, url, topic } = mapProposalInfo(proposalInfo));
 </script>
 
 {#if link && url}
