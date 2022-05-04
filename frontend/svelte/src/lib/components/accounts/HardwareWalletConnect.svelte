@@ -20,7 +20,12 @@
     <HardwareWalletConnectAction bind:connectionState />
   </div>
 
-  <button class="primary full-width submit" type="submit" {disabled} data-tid="ledger-attach-button">
+  <button
+    class="primary full-width submit"
+    type="submit"
+    {disabled}
+    data-tid="ledger-attach-button"
+  >
     {$i18n.accounts.attach_wallet}
   </button>
 </form>

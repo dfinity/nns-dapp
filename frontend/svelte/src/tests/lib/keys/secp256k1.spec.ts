@@ -1,34 +1,41 @@
 import type { DerEncodedPublicKey } from "@dfinity/agent";
 import { Secp256k1PublicKey } from "../../../lib/keys/secp256k1";
-import {fromHexString, testSecp256k1Vectors} from '../../mocks/ledger.identity.mock';
+import {
+  fromHexString,
+  testSecp256k1Vectors,
+} from "../../mocks/ledger.identity.mock";
 
 // Copied from @dfinity/identity-ledgerhq
 
 describe("secp256k1", () => {
   test("DER encoding of secp256k1 keys", async () => {
-    testSecp256k1Vectors.forEach(([rawPublicKeyHex, derEncodedPublicKeyHex]) => {
-      const publicKey = Secp256k1PublicKey.fromRaw(
-        fromHexString(rawPublicKeyHex)
-      );
-      const expectedDerPublicKey = fromHexString(derEncodedPublicKeyHex);
-      expect(publicKey.toDer()).toEqual(expectedDerPublicKey);
-    });
+    testSecp256k1Vectors.forEach(
+      ([rawPublicKeyHex, derEncodedPublicKeyHex]) => {
+        const publicKey = Secp256k1PublicKey.fromRaw(
+          fromHexString(rawPublicKeyHex)
+        );
+        const expectedDerPublicKey = fromHexString(derEncodedPublicKeyHex);
+        expect(publicKey.toDer()).toEqual(expectedDerPublicKey);
+      }
+    );
   });
 
   // TODO(L2-433): test copied and adapted for hexString from @dfinity/identity-ledgerhq but fails
   // TypeError: secp256k1 public key must be 65 bytes long (is 23)
 
   test.skip("DER decoding of ED25519 keys", async () => {
-    testSecp256k1Vectors.forEach(([rawPublicKeyHex, derEncodedPublicKeyHex]) => {
-      const derPublicKey = fromHexString(
-        derEncodedPublicKeyHex
-      ) as DerEncodedPublicKey;
+    testSecp256k1Vectors.forEach(
+      ([rawPublicKeyHex, derEncodedPublicKeyHex]) => {
+        const derPublicKey = fromHexString(
+          derEncodedPublicKeyHex
+        ) as DerEncodedPublicKey;
 
-      const expectedPublicKey = fromHexString(rawPublicKeyHex);
-      expect(
-        new Uint8Array(Secp256k1PublicKey.fromDer(derPublicKey).toRaw())
-      ).toEqual(new Uint8Array(expectedPublicKey));
-    });
+        const expectedPublicKey = fromHexString(rawPublicKeyHex);
+        expect(
+          new Uint8Array(Secp256k1PublicKey.fromDer(derPublicKey).toRaw())
+        ).toEqual(new Uint8Array(expectedPublicKey));
+      }
+    );
   });
 
   test("DER encoding of invalid keys", async () => {
