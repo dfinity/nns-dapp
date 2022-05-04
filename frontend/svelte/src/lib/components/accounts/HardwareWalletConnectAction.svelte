@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
   import Spinner from "../ui/Spinner.svelte";
-  import { LedgerIdentity } from "../../identities/ledger.identity";
+  import type { LedgerIdentity } from "../../identities/ledger.identity";
   import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
 
   export let connectionState: LedgerConnectionState =
@@ -23,14 +23,15 @@
     );
   };
 
-  let connecting, connected: boolean;
+  let connecting: boolean;
+  let connected: boolean
   $: connecting = connectionState === LedgerConnectionState.CONNECTING;
   $: connected =
     connectionState === LedgerConnectionState.CONNECTED &&
     ledgerIdentity !== undefined;
 </script>
 
-{#if connected}
+{#if connected && ledgerIdentity !== undefined}
   <h4>{$i18n.accounts.hardware_wallet_connected}</h4>
   <HardwareWalletInfo {ledgerIdentity} />
 {:else}

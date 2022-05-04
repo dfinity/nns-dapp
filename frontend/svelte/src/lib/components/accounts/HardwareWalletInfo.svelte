@@ -5,7 +5,8 @@
 
   export let ledgerIdentity: LedgerIdentity;
 
-  let principalText, accountIdentifier: string;
+  let principalText: string;
+  let accountIdentifier: string;
   $: principalText = ledgerIdentity.getPrincipal().toString();
   $: accountIdentifier = principalToAccountIdentifier(
     ledgerIdentity.getPrincipal()
