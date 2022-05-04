@@ -7,7 +7,7 @@ import type {
   Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister, Topic } from "@dfinity/nns";
-import { LIST_PAGINATION_LIMIT } from "../constants/constants";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
@@ -43,7 +43,7 @@ export const queryProposals = async ({
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
-      limit: LIST_PAGINATION_LIMIT,
+      limit: DEFAULT_LIST_PAGINATION_LIMIT,
       beforeProposal,
       excludeTopic: enumsExclude<Topic>({
         obj: Topic as unknown as Topic,

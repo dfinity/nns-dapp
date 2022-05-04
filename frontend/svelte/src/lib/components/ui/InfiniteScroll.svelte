@@ -2,8 +2,10 @@
   import { afterUpdate, createEventDispatcher, onDestroy } from "svelte";
   import {
     INFINITE_SCROLL_OFFSET,
-    LIST_PAGINATION_LIMIT,
+    DEFAULT_LIST_PAGINATION_LIMIT,
   } from "../../constants/constants";
+
+  export let pageLimit: number = DEFAULT_LIST_PAGINATION_LIMIT;
 
   /**
    * The Infinite Scroll component calls an action to be performed when the user scrolls a specified distance from the bottom or top of the page.
@@ -19,7 +21,7 @@
     threshold: 0,
   };
 
-  let container: HTMLDivElement;
+  let container: HTMLUListElement;
 
   const dispatch = createEventDispatcher();
 
@@ -56,9 +58,7 @@
       return;
     }
 
-    const pageIndex: number =
-      container.children.length / LIST_PAGINATION_LIMIT - 1;
-
+    const pageIndex: number = container.children.length / pageLimit - 1;
     // If the pageIndex is not an integer the all page was not fetched - e.g. 50 elements instead of 100 - therefore there is no more elements to fetch
     if (!Number.isInteger(pageIndex)) {
       return;
@@ -68,6 +68,7 @@
      * The infinite scroll observe an element that finds place after x % of last page.
      *
      * For example given following list of elements:
+     *
      * [0-100]
      * [101-200]
      *
@@ -87,8 +88,7 @@
      * Infinite scroll does not observe because all data are fetched.
      */
     const element: Element | undefined = Array.from(container.children)[
-      pageIndex * LIST_PAGINATION_LIMIT +
-        Math.round(LIST_PAGINATION_LIMIT * INFINITE_SCROLL_OFFSET)
+      pageIndex * pageLimit + Math.round(pageLimit * INFINITE_SCROLL_OFFSET)
     ];
 
     if (element === undefined) {
@@ -101,6 +101,14 @@
   onDestroy(() => observer.disconnect());
 </script>
 
-<div bind:this={container}>
+<ul bind:this={container}>
   <slot />
-</div>
+</ul>
+
+<style lang="scss">
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>
