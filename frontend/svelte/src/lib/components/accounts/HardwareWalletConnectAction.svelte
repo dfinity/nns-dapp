@@ -4,27 +4,23 @@
   import Spinner from "../ui/Spinner.svelte";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
   import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
+  import { connectToHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
 
   export let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
 
   let ledgerIdentity: LedgerIdentity | undefined = undefined;
 
-  const connect = async () => {
-    const { connectToHardwareWallet } = await import(
-      "../../services/ledger.services"
-    );
-
-    await connectToHardwareWallet(
+  const connect = async () =>
+    await connectToHardwareWalletProxy(
       ({ ledgerIdentity: identity, connectionState: state }) => {
         connectionState = state;
         ledgerIdentity = identity;
       }
     );
-  };
 
   let connecting: boolean;
-  let connected: boolean
+  let connected: boolean;
   $: connecting = connectionState === LedgerConnectionState.CONNECTING;
   $: connected =
     connectionState === LedgerConnectionState.CONNECTED &&

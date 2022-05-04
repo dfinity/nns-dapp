@@ -3,14 +3,16 @@ import { LedgerErrorKey } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { toastsStore } from "../stores/toasts.store";
 
+export interface ConnectToHardwareWalletParams {
+  connectionState: LedgerConnectionState;
+  ledgerIdentity?: LedgerIdentity;
+}
+
 /**
  * Create a LedgerIdentity using the Web USB transport
  */
 export const connectToHardwareWallet = async (
-  callback: (state: {
-    connectionState: LedgerConnectionState;
-    ledgerIdentity?: LedgerIdentity;
-  }) => void
+  callback: (params: ConnectToHardwareWalletParams) => void
 ): Promise<void> => {
   try {
     callback({ connectionState: LedgerConnectionState.CONNECTING });
