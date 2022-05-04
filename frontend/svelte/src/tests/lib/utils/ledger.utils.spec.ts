@@ -110,5 +110,17 @@ describe("ledger-utils", () => {
         )
       );
     });
+
+    it("should return a signature", () => {
+      const signature = decodeSignature({
+        signatureRS: Uint8Array.from(
+          "0410d34980a51af89d3331ad5fa80fe30d8868ad87526460b3b3e15596ee58e8",
+          (x) => x.charCodeAt(0)
+        ),
+        returnCode: LedgerError.TransactionRejected,
+      } as unknown as ResponseSign);
+
+      expect(signature).not.toBeNull();
+    });
   });
 });
