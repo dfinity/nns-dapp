@@ -28,12 +28,7 @@ export class MockLedgerIdentity extends LedgerIdentity {
     );
   }
 
-  public static async create(
-      derivePath = LEDGER_DEFAULT_DERIVE_PATH
-  ): Promise<LedgerIdentity> {
-
-    console.log('mock')
-
+  public static async create(): Promise<LedgerIdentity> {
     return new MockLedgerIdentity();
   }
 }
