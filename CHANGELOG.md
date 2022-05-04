@@ -1,6 +1,14 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 58151
+- Usability and accessibility improvements
+  - Display topic and proposal ID to the proposal detail page
+  - Update colours
+  - Better loading skeletons
+  - Add button titles
+- Prevent duplicate hardware wallets from being attached to an account
+- Preparations for svelte neurons tab
+- Test with NNS canisters running in dfx
 
 ## Proposal 56265
 * UI fixes:
