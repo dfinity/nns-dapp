@@ -40,6 +40,7 @@ export class MockNNSDappCanister extends NNSDappCanister {
   }
 
   public async registerHardwareWallet(
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     request: RegisterHardwareWalletRequest
   ): Promise<void> {
     // Do nothing
