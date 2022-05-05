@@ -41,26 +41,36 @@ function serve() {
   };
 }
 
-const replaceMap = {
-  preventAssignment: true,
-  "process.env.ROLLUP_WATCH": JSON.stringify(envConfig.ROLLUP_WATCH),
-  "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-    envConfig.IDENTITY_SERVICE_URL
-  ),
-  "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
-  "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-    envConfig.REDIRECT_TO_LEGACY
-  ),
-  "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
-  "process.env.HOST": JSON.stringify(envConfig.HOST),
-  "process.env.OWN_CANISTER_ID": JSON.stringify(envConfig.OWN_CANISTER_ID),
-  "process.env.LEDGER_CANISTER_ID": JSON.stringify(
-    envConfig.LEDGER_CANISTER_ID
-  ),
-  "process.env.GOVERNANCE_CANISTER_ID": JSON.stringify(
-    envConfig.GOVERNANCE_CANISTER_ID
-  ),
-};
+const replaceMap = [
+  "ROLLUP_WATCH",
+  "IDENTITY_SERVICE_URL",
+  "DEPLOY_ENV",
+  "REDIRECT_TO_LEGACY",
+  "FETCH_ROOT_KEY",
+  "HOST",
+  "OWN_CANISTER_ID",
+  "LEDGER_CANISTER_ID",
+  "GOVERNANCE_CANISTER_ID",
+].reduce(
+  (ans, key) => {
+    // Each key is transferred from envConfig as a string.
+    // Theoretically it is possible to pass other types, such as a bool, however
+    // the linter assumes that process.env.X is a string so it is best to comply.
+    let value = envConfig[key];
+    if (undefined === value) {
+      throw new Error(`In rollup, envConfig[${key}] is undefined.`);
+    }
+    ans[`process.env.${key}`] = JSON.stringify(String(envConfig[key]));
+    return ans;
+  },
+  {
+    // This is a rollup configuration, it is not inserted into the compiled code.
+    // Quote: @rollup/plugin-replace: 'preventAssignment' currently defaults to false.
+    //        It is recommended to set this option to true, as the next major version
+    //        will default this option to true.
+    preventAssignment: true,
+  }
+);
 
 const configApp = {
   input: "src/main.ts",
