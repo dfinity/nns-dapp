@@ -71,4 +71,6 @@ export const envConfig = {
 };
 
 // Note: This is a useful printout at build time.  Please do not remove.
-console.log(JSON.stringify({ svelteEnvironmentVariables: envConfig }, null, 2));
+if (ENVIRONMENT !== "local") {
+  console.log(JSON.stringify({ svelteEnvironmentVariables: envConfig }, null, 2));
+}
