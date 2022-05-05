@@ -8,9 +8,9 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "../../stores/add-account.store";
-  import {createEventDispatcher, getContext} from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
-  import {busy, startBusy, stopBusy} from '../../stores/busy.store';
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
