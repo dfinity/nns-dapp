@@ -5,8 +5,8 @@
   import Tooltip from "../../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { formatICP } from "../../../utils/icp.utils";
-  import { hasEnoughMaturity } from "../../../utils/neuron.utils";
-  import { MIN_MATURITY } from "../../../constants/neurons.constants";
+  import { hasEnoughMaturityToMerge } from "../../../utils/neuron.utils";
+  import { MIN_MATURITY_MERGE } from "../../../constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 
@@ -20,12 +20,12 @@
   text={replacePlaceholders(
     $i18n.neuron_detail.merge_maturity_disabled_tooltip,
     {
-      $amount: formatICP(BigInt(MIN_MATURITY)),
+      $amount: formatICP(BigInt(MIN_MATURITY_MERGE)),
     }
   )}
 >
   <button
-    disabled={!hasEnoughMaturity(neuron)}
+    disabled={!hasEnoughMaturityToMerge(neuron)}
     class="primary small"
     on:click={showModal}>{$i18n.neuron_detail.merge_maturity}</button
   >

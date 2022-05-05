@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { MIN_MATURITY } from "../../../constants/neurons.constants";
+  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import { MIN_NEURON_STAKE } from "../../../constants/neurons.constants";
   import SpawnNeuronModal from "../../../modals/neurons/SpawnNeuronModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { formatICP } from "../../../utils/icp.utils";
-  import { hasEnoughMaturity } from "../../../utils/neuron.utils";
+  import { isEnoughToStakeNeuron } from "../../../utils/neuron.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
 
   export let neuron: NeuronInfo;
@@ -13,6 +13,14 @@
   let isOpen: boolean = false;
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
+
+  let isEnoughMaturity: boolean;
+  $: isEnoughMaturity =
+    neuron.fullNeuron === undefined
+      ? false
+      : isEnoughToStakeNeuron({
+          stake: ICP.fromE8s(neuron.fullNeuron?.maturityE8sEquivalent),
+        });
 </script>
 
 <Tooltip
@@ -20,12 +28,12 @@
   text={replacePlaceholders(
     $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
     {
-      $amount: formatICP(BigInt(MIN_MATURITY)),
+      $amount: formatICP(BigInt(MIN_NEURON_STAKE)),
     }
   )}
 >
   <button
-    disabled={!hasEnoughMaturity(neuron)}
+    disabled={!isEnoughMaturity}
     class="primary small"
     on:click={showModal}>{$i18n.neuron_detail.spawn_neuron}</button
   >

@@ -9,7 +9,7 @@ import {
 import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
-  MIN_MATURITY,
+  MIN_MATURITY_MERGE,
 } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
@@ -26,7 +26,7 @@ import {
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
-  hasEnoughMaturity,
+  hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughToStakeNeuron,
@@ -295,13 +295,13 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("hasEnoughMaturity", () => {
+  describe("hasEnoughMaturityToMerge", () => {
     it("returns false when no full neuron", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: undefined,
       };
-      expect(hasEnoughMaturity(neuron)).toBe(false);
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
 
     it("returns false if neuron maturity is 0", () => {
@@ -312,7 +312,7 @@ describe("neuron-utils", () => {
           maturityE8sEquivalent: BigInt(0),
         },
       };
-      expect(hasEnoughMaturity(neuron)).toBe(false);
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
 
     it("returns true if maturity larger than needed", () => {
@@ -320,10 +320,10 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY) + BigInt(1000),
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) + BigInt(1000),
         },
       };
-      expect(hasEnoughMaturity(neuron)).toBe(true);
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(true);
     });
 
     it("returns false if maturity smaller than needed", () => {
@@ -331,10 +331,10 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY) - BigInt(100),
+          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) - BigInt(100),
         },
       };
-      expect(hasEnoughMaturity(neuron)).toBe(false);
+      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
   });
 

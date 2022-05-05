@@ -18,7 +18,8 @@ import {
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
-  MIN_MATURITY,
+  MIN_MATURITY_MERGE,
+  MIN_NEURON_STAKE,
   MIN_NEURON_STAKE_SPLITTABLE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
@@ -257,7 +258,8 @@ export const isEnoughToStakeNeuron = ({
   stake: ICP;
   withTransactionFee?: boolean;
 }): boolean =>
-  stake.toE8s() >= E8S_PER_ICP + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+  stake.toE8s() >=
+  MIN_NEURON_STAKE + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
 const isMergeableNeuron = ({
   neuron,
@@ -494,6 +496,6 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
     ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
     : enumValues(Topic);
 
-export const hasEnoughMaturity = (neuron: NeuronInfo): boolean =>
+export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined &&
-  neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY;
+  neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
