@@ -7,7 +7,7 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-const ROLLUP_WATCH: boolean = process.env.ROLLUP_WATCH === "true";
+const ROLLUP_WATCH = process.env.ROLLUP_WATCH === "true";
 
 const ENVIRONMENT = ROLLUP_WATCH
   ? "local" // Note: This is also deployed to testnets.
