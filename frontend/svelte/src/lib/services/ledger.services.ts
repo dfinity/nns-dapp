@@ -1,5 +1,6 @@
 import type { Identity } from "@dfinity/agent";
 import { nnsDappCanister } from "../api/nns-dapp.api";
+import { HardwareWalletAttachError } from "../canisters/nns-dapp/nns-dapp.errors";
 import { LedgerConnectionState } from "../constants/ledger.constants";
 import { LedgerErrorKey } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
@@ -7,7 +8,6 @@ import { toastsStore } from "../stores/toasts.store";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
-import {HardwareWalletAttachError} from '../canisters/nns-dapp/nns-dapp.errors';
 
 export interface ConnectToHardwareWalletParams {
   connectionState: LedgerConnectionState;
@@ -86,8 +86,8 @@ export const registerHardwareWallet = async ({
 
     toastsStore.error({
       labelKey: ledgerErrorKey
-          ? (err as HardwareWalletAttachError).message
-          : "error_attach_wallet.unexpected",
+        ? (err as HardwareWalletAttachError).message
+        : "error_attach_wallet.unexpected",
       ...(!ledgerErrorKey && { err }),
     });
   }

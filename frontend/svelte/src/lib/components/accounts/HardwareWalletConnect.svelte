@@ -2,11 +2,14 @@
   import { i18n } from "../../stores/i18n";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
   import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
-  import {toastsStore} from '../../stores/toasts.store';
-  import {registerHardwareWalletProxy} from '../../proxy/ledger.services.proxy';
-  import {ADD_ACCOUNT_CONTEXT_KEY, type AddAccountContext} from '../../stores/add-account.store';
-  import {getContext} from 'svelte';
-  import type {LedgerIdentity} from '../../identities/ledger.identity';
+  import { toastsStore } from "../../stores/toasts.store";
+  import { registerHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
+  import {
+    ADD_ACCOUNT_CONTEXT_KEY,
+    type AddAccountContext,
+  } from "../../stores/add-account.store";
+  import { getContext } from "svelte";
+  import type { LedgerIdentity } from "../../identities/ledger.identity";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -14,10 +17,10 @@
   let ledgerIdentity: LedgerIdentity | undefined = undefined;
 
   const context: AddAccountContext = getContext<AddAccountContext>(
-          ADD_ACCOUNT_CONTEXT_KEY
+    ADD_ACCOUNT_CONTEXT_KEY
   );
 
-  const { store, next }: AddAccountContext = context;
+  const { store }: AddAccountContext = context;
 
   const onSubmit = async () => {
     if (disabled) {
@@ -29,7 +32,7 @@
 
     await registerHardwareWalletProxy({
       name: $store.hardwareWalletName,
-      ledgerIdentity
+      ledgerIdentity,
     });
   };
 

@@ -2,6 +2,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type {
   AccountDetails,
+  RegisterHardwareWalletRequest,
   SubAccountDetails,
 } from "../../lib/canisters/nns-dapp/nns-dapp.types";
 import {
@@ -9,7 +10,6 @@ import {
   mockMainAccount,
   mockSubAccountDetails,
 } from "./accounts.store.mock";
-import type {RegisterHardwareWalletRequest} from '../../lib/canisters/nns-dapp/nns-dapp.types';
 
 // eslint-disable-next-line
 // @ts-ignore: test file
@@ -40,8 +40,8 @@ export class MockNNSDappCanister extends NNSDappCanister {
   }
 
   public async registerHardwareWallet(
-      request: RegisterHardwareWalletRequest
+    request: RegisterHardwareWalletRequest
   ): Promise<void> {
-      // Do nothing
+    // Do nothing
   }
 }
