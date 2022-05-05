@@ -8,8 +8,9 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "../../stores/add-account.store";
-  import { getContext } from "svelte";
+  import {createEventDispatcher, getContext} from "svelte";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
+  import {busy, startBusy, stopBusy} from '../../stores/busy.store';
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -22,6 +23,8 @@
 
   const { store }: AddAccountContext = context;
 
+  const dispatcher = createEventDispatcher();
+
   const onSubmit = async () => {
     if (disabled) {
       toastsStore.error({
@@ -30,14 +33,20 @@
       return;
     }
 
+    startBusy("accounts");
+
     await registerHardwareWalletProxy({
       name: $store.hardwareWalletName,
       ledgerIdentity,
     });
+
+    stopBusy("accounts");
+
+    dispatcher("nnsClose");
   };
 
   let disabled: boolean;
-  $: disabled = connectionState !== LedgerConnectionState.CONNECTED;
+  $: disabled = connectionState !== LedgerConnectionState.CONNECTED || $busy;
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
@@ -50,6 +59,7 @@
     type="submit"
     {disabled}
     data-tid="ledger-attach-button"
+    class:busy={$busy}
   >
     {$i18n.accounts.attach_wallet}
   </button>
@@ -62,7 +72,7 @@
     @include modal.wizard-single-input-form;
   }
 
-  .submit {
+  .submit:not(.busy) {
     opacity: 0;
     transition: opacity 150ms;
 
