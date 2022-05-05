@@ -1,6 +1,10 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import IconClose from "../../icons/IconClose.svelte";
+  import {
+    IS_TESTNET,
+    ROLLUP_WATCH,
+  } from "../../constants/environment.constants";
 
   export let headless: boolean = false;
 
@@ -10,10 +14,8 @@
     localStorage.getItem(localstorageKey) ?? "true"
   ) as boolean;
 
-  const testnet: boolean = process.env.DEPLOY_ENV === "testnet";
-  const localEnv: boolean = JSON.parse(
-    process.env.ROLLUP_WATCH ?? "false"
-  ) as boolean;
+  const testnet: boolean = IS_TESTNET;
+  const localEnv: boolean = ROLLUP_WATCH;
   const banner: boolean = testnet && !localEnv;
 
   const rootStyle: string = `
