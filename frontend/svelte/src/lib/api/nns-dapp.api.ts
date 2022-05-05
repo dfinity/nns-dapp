@@ -2,7 +2,7 @@ import type { HttpAgent, Identity } from "@dfinity/agent";
 import { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import { createAgent } from "../utils/agent.utils";
-import { host } from "./constants.api";
+import {HOST} from '../constants/environment.constants';
 
 export const nnsDappCanister = async ({
   identity,
@@ -12,7 +12,7 @@ export const nnsDappCanister = async ({
   canister: NNSDappCanister;
   agent: HttpAgent;
 }> => {
-  const agent = await createAgent({ identity, host });
+  const agent = await createAgent({ identity, host: HOST });
 
   const canister: NNSDappCanister = NNSDappCanister.create({
     agent,
