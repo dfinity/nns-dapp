@@ -1,11 +1,48 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
+  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
 
-  // TODO(L2-433): effectively connect hardware wallet
+  let connectionState: LedgerConnectionState =
+    LedgerConnectionState.NOT_CONNECTED;
+
+  const onSubmit = () => {
+    // TODO(L2-433): Attach wallet
+    alert("TODO(L2-433): Attach wallet");
+  };
+
+  let disabled: boolean;
+  $: disabled = connectionState !== LedgerConnectionState.CONNECTED;
 </script>
 
-<div class="wizard-wrapper">
-  <h4>{$i18n.accounts.connect_hardware_wallet}</h4>
+<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+  <div>
+    <HardwareWalletConnectAction bind:connectionState />
+  </div>
 
-  <span>TODO</span>
-</div>
+  <button
+    class="primary full-width submit"
+    type="submit"
+    {disabled}
+    data-tid="ledger-attach-button"
+  >
+    {$i18n.accounts.attach_wallet}
+  </button>
+</form>
+
+<style lang="scss">
+  @use "../../themes/mixins/modal.scss";
+
+  form {
+    @include modal.wizard-single-input-form;
+  }
+
+  .submit {
+    opacity: 0;
+    transition: opacity 150ms;
+
+    &:not([disabled]) {
+      opacity: 1;
+    }
+  }
+</style>

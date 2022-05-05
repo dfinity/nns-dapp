@@ -7,7 +7,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
-import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {
@@ -26,16 +25,6 @@ describe("HardwareWalletName", () => {
       hardwareWalletName: undefined,
     })
   );
-
-  it("should render an explanation text", () => {
-    const { queryByText } = render(AddAccountTest, {
-      props,
-    });
-
-    expect(
-      queryByText(en.accounts.attach_hardware_enter_name)
-    ).toBeInTheDocument();
-  });
 
   it("should enable and disable submit according text input length", async () => {
     const { container } = render(AddAccountTest, {
