@@ -9,7 +9,7 @@ import {
   mockMainAccount,
   mockSubAccountDetails,
 } from "./accounts.store.mock";
-import {RegisterHardwareWalletRequest} from '../../lib/canisters/nns-dapp/nns-dapp.types';
+import type {RegisterHardwareWalletRequest} from '../../lib/canisters/nns-dapp/nns-dapp.types';
 
 // eslint-disable-next-line
 // @ts-ignore: test file
