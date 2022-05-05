@@ -106,6 +106,9 @@ interface I18nAccounts {
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   connect_hardware_wallet: string;
+  connect_hardware_wallet_text: string;
+  attach_wallet: string;
+  hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
@@ -121,6 +124,7 @@ interface I18nAccounts {
   review_transaction: string;
   current_balance: string;
   confirm_and_send: string;
+  account_identifier: string;
 }
 
 interface I18nNeurons {
@@ -360,6 +364,21 @@ interface I18nTime {
   minute_plural: string;
 }
 
+interface I18nError__ledger {
+  unexpected: string;
+  please_open: string;
+  locked: string;
+  fetch_public_key: string;
+  principal_not_match: string;
+  signature_unexpected: string;
+  signature_length: string;
+  connect_no_device: string;
+  connect_many_apps: string;
+  connect_not_supported: string;
+  unexpected_wallet: string;
+  user_cancel: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -383,4 +402,5 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
+  error__ledger: I18nError__ledger;
 }
