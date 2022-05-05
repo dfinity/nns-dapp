@@ -40,9 +40,9 @@ const OWN_CANISTER_ID =
   process.env.OWN_CANISTER_ID ||
   (development ? "qaa6y-5yaaa-aaaaa-aaafa-cai" : "qoctq-giaaa-aaaaa-aaaea-cai");
 
-const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}${domain}/`;
-const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}${domain}/`;
-const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}${domain}/`;
+const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}.${domain}/`;
+const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}.${domain}/`;
+const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}.${domain}/`;
 
 // For values, see the [README](../../README.md).
 // The default should match production.  Except during local development.
