@@ -39,12 +39,10 @@
 
   .submit {
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 150ms, visibility 150ms;
+    transition: opacity 150ms;
 
     &:not([disabled]) {
       opacity: 1;
-      visibility: visible;
     }
   }
 </style>
