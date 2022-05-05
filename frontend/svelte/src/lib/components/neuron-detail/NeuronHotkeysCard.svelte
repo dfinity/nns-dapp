@@ -42,6 +42,7 @@
           {#if isControllable}
             <button
               class="text"
+              aria-label="close"
               on:click={() => remove(hotkey)}
               data-tid="remove-hotkey-button">x</button
             >
