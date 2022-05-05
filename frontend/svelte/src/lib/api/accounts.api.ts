@@ -13,7 +13,7 @@ import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { host } from "./constants.api";
+import { HOST } from "./environment.constants.api";
 
 export const loadAccounts = async ({
   identity,
@@ -24,7 +24,7 @@ export const loadAccounts = async ({
 }): Promise<AccountsStore> => {
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 
-  const agent = await createAgent({ identity, host });
+  const agent = await createAgent({ identity, host: HOST });
   // ACCOUNTS
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
     agent,
@@ -85,7 +85,7 @@ export const createSubAccount = async ({
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} call...`);
 
   const nnsDapp: NNSDappCanister = NNSDappCanister.create({
-    agent: await createAgent({ identity, host }),
+    agent: await createAgent({ identity, host: HOST }),
     canisterId: OWN_CANISTER_ID,
   });
 
