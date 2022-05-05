@@ -54,9 +54,6 @@
       topic,
       followee,
     });
-    toastsStore.success({
-      labelKey: "new_followee.success_remove_followee",
-    });
     stopBusy("remove-followee");
   };
 </script>
