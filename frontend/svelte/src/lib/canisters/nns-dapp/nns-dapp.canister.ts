@@ -4,6 +4,7 @@ import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
+  HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "./nns-dapp.errors";
@@ -13,6 +14,8 @@ import type {
   AccountDetails,
   CanisterDetails,
   CreateSubAccountResponse,
+  RegisterHardwareWalletRequest,
+  RegisterHardwareWalletResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
 
@@ -71,7 +74,7 @@ export class NNSDappCanister {
       certified
     ).get_account();
     if (AccountNotFound === null) {
-      throw new AccountNotFoundError("Error creating subAccount");
+      throw new AccountNotFoundError("Account not found");
     }
 
     if (Ok) {
@@ -121,6 +124,35 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
+  };
+
+  public registerHardwareWallet = async (
+    request: RegisterHardwareWalletRequest
+  ): Promise<void> => {
+    const response: RegisterHardwareWalletResponse =
+      await this.certifiedService.register_hardware_wallet(request);
+
+    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+      throw new AccountNotFoundError("Error registering hardware wallet");
+    }
+
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new NameTooLongError(`Error, name ${request.name} is too long`);
+    }
+
+    if (
+      "HardwareWalletAlreadyRegistered" in response &&
+      response.HardwareWalletAlreadyRegistered === null
+    ) {
+      throw new HardwareWalletAttachError("error_attach_wallet.already_registered");
+    }
+
+    if (
+      "HardwareWalletLimitExceeded" in response &&
+      response.HardwareWalletLimitExceeded === null
+    ) {
+      throw new HardwareWalletAttachError("error_attach_wallet.limit_exceeded");
+    }
   };
 
   public getCanisters = async ({
