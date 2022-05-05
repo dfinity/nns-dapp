@@ -143,7 +143,8 @@
     width: var(--modal-small-width);
     height: fit-content;
     max-width: calc(100vw - var(--padding-4x));
-    max-height: calc(100vh - var(--padding-2x));
+    max-height: calc(100vh - var(--padding-8x));
+    margin-bottom: calc(2rem + env(safe-area-inset-bottom));
 
     --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
