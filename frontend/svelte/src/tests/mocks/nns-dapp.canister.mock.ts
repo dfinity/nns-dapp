@@ -9,6 +9,7 @@ import {
   mockMainAccount,
   mockSubAccountDetails,
 } from "./accounts.store.mock";
+import {RegisterHardwareWalletRequest} from '../../lib/canisters/nns-dapp/nns-dapp.types';
 
 // eslint-disable-next-line
 // @ts-ignore: test file
@@ -36,5 +37,11 @@ export class MockNNSDappCanister extends NNSDappCanister {
     subAccountName: string;
   }): Promise<SubAccountDetails> {
     return mockSubAccountDetails;
+  }
+
+  public async registerHardwareWallet(
+      request: RegisterHardwareWalletRequest
+  ): Promise<void> {
+      // Do nothing
   }
 }
