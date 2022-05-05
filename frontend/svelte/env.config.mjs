@@ -7,7 +7,9 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-const ENVIRONMENT = process.env.ROLLUP_WATCH
+const ROLLUP_WATCH: boolean = process.env.ROLLUP_WATCH === "true";
+
+const ENVIRONMENT = ROLLUP_WATCH
   ? "local" // Note: This is also deployed to testnets.
   : process.env.DEPLOY_ENV === "testnet"
   ? "testnet"
@@ -64,4 +66,8 @@ export const envConfig = {
   LEDGER_CANISTER_ID,
   GOVERNANCE_CANISTER_URL,
   LEDGER_CANISTER_URL,
+  ROLLUP_WATCH,
 };
+
+// Note: This is a useful printout at build time.  Please do not remove.
+console.log(JSON.stringify({ svelteEnvironmentVariables: envConfig }, null, 2));

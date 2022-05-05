@@ -43,7 +43,7 @@ function serve() {
 
 const replaceMap = {
   preventAssignment: true,
-  "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
+  "process.env.ROLLUP_WATCH": JSON.stringify(envConfig.ROLLUP_WATCH),
   "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
     envConfig.IDENTITY_SERVICE_URL
   ),
