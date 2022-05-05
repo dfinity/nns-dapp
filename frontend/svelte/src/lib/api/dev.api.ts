@@ -3,7 +3,7 @@ import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
-import { DEPLOY_ENV, HOST } from "../environment.constants.api";
+import { DEPLOY_ENV, HOST } from "../constants/environment.constants";
 import { governanceCanister } from "./governance.api";
 
 /*

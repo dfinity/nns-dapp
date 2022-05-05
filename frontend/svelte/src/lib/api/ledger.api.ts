@@ -7,9 +7,9 @@ import {
   type Neuron,
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
+import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-import { HOST } from "./environment.constants.api";
 
 export const getNeuronBalance = async ({
   neuron,
