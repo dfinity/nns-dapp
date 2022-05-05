@@ -3,7 +3,7 @@ set -euo pipefail
 
 print_help() {
   cat <<-EOF
-	Checks for conventions not covered by eslint.
+	Checks adherence to conventions and eslint
 
 	Flags:
 	--help

@@ -31,7 +31,6 @@ export const acquireICPTs = async ({
     base64ToUInt8Array(privateKey)
   );
 
-  // If https://nnsdapp.dfinity.network/ is ever used anywhere else, extract or use an environment variable
   const agent: HttpAgent = new HttpAgent({
     host: HOST,
     identity,
