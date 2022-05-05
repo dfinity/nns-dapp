@@ -55,21 +55,21 @@ export class NNSDappCanister {
    *
    * @returns Promise<void>
    */
-  public addAccount = async (): Promise<AccountIdentifier> => {
+  public async addAccount(): Promise<AccountIdentifier> {
     const identifierText = await this.certifiedService.add_account();
     return AccountIdentifier.fromHex(identifierText);
-  };
+  }
 
   /**
    * Get Account Details
    *
    * @returns Promise<void>
    */
-  public getAccount = async ({
+  public async getAccount({
     certified,
   }: {
     certified: boolean;
-  }): Promise<AccountDetails> => {
+  }): Promise<AccountDetails> {
     const { AccountNotFound, Ok } = await this.getNNSDappService(
       certified
     ).get_account();
@@ -83,16 +83,16 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error getting account details");
-  };
+  }
 
   /**
    * Creates a subaccount with the name and returns the Subaccount details
    */
-  public createSubAccount = async ({
+  public async createSubAccount({
     subAccountName,
   }: {
     subAccountName: string;
-  }): Promise<SubAccountDetails> => {
+  }): Promise<SubAccountDetails> {
     const {
       AccountNotFound,
       NameTooLong,
@@ -124,11 +124,11 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
-  };
+  }
 
-  public registerHardwareWallet = async (
+  public async registerHardwareWallet(
     request: RegisterHardwareWalletRequest
-  ): Promise<void> => {
+  ): Promise<void> {
     const response: RegisterHardwareWalletResponse =
       await this.certifiedService.register_hardware_wallet(request);
 
@@ -144,7 +144,9 @@ export class NNSDappCanister {
       "HardwareWalletAlreadyRegistered" in response &&
       response.HardwareWalletAlreadyRegistered === null
     ) {
-      throw new HardwareWalletAttachError("error_attach_wallet.already_registered");
+      throw new HardwareWalletAttachError(
+        "error_attach_wallet.already_registered"
+      );
     }
 
     if (
@@ -153,7 +155,7 @@ export class NNSDappCanister {
     ) {
       throw new HardwareWalletAttachError("error_attach_wallet.limit_exceeded");
     }
-  };
+  }
 
   public getCanisters = async ({
     certified,
