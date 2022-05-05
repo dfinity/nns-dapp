@@ -30,8 +30,9 @@ const IDENTITY_SERVICE_URL =
     ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
+// The host that nns-js connects to
 const HOST =
-  process.env.HOST || (development ? `https://${domainTestnet}/` : undefined);
+  process.env.HOST || (development ? `https://${domainTestnet}/` : MAINNET);
 
 // Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";

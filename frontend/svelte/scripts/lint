@@ -28,7 +28,7 @@ while (($# > 0)); do
   esac
 done
 
-: Configuration from env vars should be accessed ONLY via constans files
+: Configuration from env vars should be accessed ONLY via constants files
 ENVIRONMENT_CONSTANTS_DIR="src/lib/constants/"
 if git grep -w process.env src/ | grep -vE "^${ENVIRONMENT_CONSTANTS_DIR}"; then
   {
