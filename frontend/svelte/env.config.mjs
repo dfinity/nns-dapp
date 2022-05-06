@@ -12,7 +12,7 @@
  */
 function getRequiredEnvVar(key) {
   const value = process.env[key];
-  if ((undefined === value) || (value === "")) {
+  if (undefined === value || value === "") {
     throw new Error(`Environment variable '${key}' is undefined.`);
   }
   return value;
