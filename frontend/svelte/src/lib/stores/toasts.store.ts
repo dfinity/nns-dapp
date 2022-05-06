@@ -12,16 +12,21 @@ import { errorToString } from "../utils/error.utils";
  * - hide: remove the toast message with that timestamp or the first one.
  */
 const initToastsStore = () => {
-  const { subscribe, update } = writable<ToastMsg[]>([]);
+  const { subscribe, update, set } = writable<ToastMsg[]>([]);
 
   return {
     subscribe,
 
     show(msg: ToastMsg) {
-      update((messages: ToastMsg[]) => [
-        ...messages,
-        { ...msg, timestamp: Date.now() },
-      ]);
+      update((messages: ToastMsg[]) => {
+        const now = Date.now();
+        // To cover the edge case where two messages are sent at exactly the same time
+        const currentMsg = messages.find(({ timestamp }) => timestamp === now);
+        if (currentMsg !== undefined) {
+          return [...messages, { ...msg, timestamp: Math.random() }];
+        }
+        return [...messages, { ...msg, timestamp: Date.now() }];
+      });
     },
 
     success({ labelKey }: Pick<ToastMsg, "labelKey">) {
@@ -41,6 +46,7 @@ const initToastsStore = () => {
     },
 
     hide(timestampToHide?: number) {
+      // If not specified, we remove the first one
       if (timestampToHide === undefined) {
         update((messages: ToastMsg[]) => messages.slice(1));
       } else {
@@ -48,6 +54,10 @@ const initToastsStore = () => {
           messages.filter(({ timestamp }) => timestamp !== timestampToHide)
         );
       }
+    },
+
+    reset() {
+      set([]);
     },
   };
 };

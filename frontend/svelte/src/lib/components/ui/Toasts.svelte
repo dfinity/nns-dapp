@@ -3,8 +3,11 @@
   import Toast from "./Toast.svelte";
 </script>
 
+<!-- We need the wrapper to avoid having an error in the tests -->
+<!-- TypeError: Cannot read properties of null (reading 'removeChild') -->
+<!-- https://github.com/sveltejs/svelte/issues/6037 -->
 <div class="wrapper">
-  {#each $toastsStore as msg (msg.labelKey)}
+  {#each $toastsStore as msg (msg.timestamp)}
     <Toast {msg} />
   {/each}
 </div>
