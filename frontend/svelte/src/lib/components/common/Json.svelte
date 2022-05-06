@@ -203,27 +203,27 @@
 
   // value type colors
   .bracket {
-    color: var(--gray-400);
+    color: var(--json-bracket-color);
   }
   .value {
-    color: var(--gray-100);
+    color: var(--json-value-color);
   }
   .value.string {
-    color: var(--yellow-400);
+    color: var(--json-string-color);
   }
   .value.number {
-    color: var(--blue-200-shade);
+    color: var(--json-number-color);
   }
   .value.null {
-    color: var(--blue-200-shade);
+    color: var(--json-null-color);
   }
   .value.principal {
-    color: var(--yellow-400);
+    color: var(--json-principal-color);
   }
   .value.bigint {
-    color: var(--blue-200-shade);
+    color: var(--json-bigint-color);
   }
   .value.boolean {
-    color: var(--blue-200-shade);
+    color: var(--json-boolean-color);
   }
 </style>

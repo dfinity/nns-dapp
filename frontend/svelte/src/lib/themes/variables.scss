@@ -12,7 +12,6 @@
   --padding-2_5x: calc(2.5 * var(--padding));
   --padding-3x: calc(3 * var(--padding));
   --padding-4x: calc(4 * var(--padding));
-  --padding-5x: calc(5 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
   --border-radius: 10px;
@@ -33,6 +32,16 @@
     --modal-small-width: 500px;
     --modal-medium-width: 600px;
   }
+
+  // Json colors
+  --json-bracket-color: var(--gray-400);
+  --json-value-color: var(--gray-100);
+  --json-string-color: var(--yellow-400);
+  --json-number-color: var(--blue-200-shade);
+  --json-null-color: var(--blue-200-shade);
+  --json-principal-color: var(--yellow-400);
+  --json-bigint-color: var(--blue-200-shade);
+  --json-boolean-color: var(--blue-200-shade);
 
   // BRAND COLORS
   --brand-picton-blue: #29abe2;
