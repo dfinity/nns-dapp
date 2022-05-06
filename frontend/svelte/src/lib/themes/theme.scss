@@ -23,18 +23,19 @@ body {
 }
 
 ::-webkit-scrollbar {
-  background: #6c6e6e;
+  background: var(--gray-600);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #48494c;
+  background: var(--gray-50-background);
   height: 200px;
-  border: solid 2px #6c6e6e;
-  -webkit-border-radius: 1ex;
+  border: solid 2.5px var(--gray-600);
+  border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #6c6e6e;
+  background: var(--gray-600);
 }
 
 a,
