@@ -4,6 +4,7 @@ import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
+  HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
@@ -17,7 +18,7 @@ import {
   mockAccountDetails,
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("NNSDapp", () => {
@@ -141,7 +142,7 @@ describe("NNSDapp", () => {
   });
 
   describe("NNSDapp.getCanisters", () => {
-    it("shoudl return canisters", async () => {
+    it("should return canisters", async () => {
       const service = mock<NNSDappService>();
       service.get_canisters.mockResolvedValue(mockCanisters);
 
@@ -151,5 +152,69 @@ describe("NNSDapp", () => {
 
       expect(res).toEqual(mockCanisters);
     });
+  });
+
+  describe("NNSDapp.registerHardwareWallet", () => {
+    it("should register hardware wallet", async () => {
+      const service = mock<NNSDappService>();
+      service.register_hardware_wallet.mockResolvedValue({ Ok: null });
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        await nnsDapp.registerHardwareWallet({
+          name: "test",
+          principal: mockPrincipal,
+        });
+
+      expect(async () => await call()).not.toThrow();
+    });
+
+    const testError = async (params, err) => {
+      const service = mock<NNSDappService>();
+      service.register_hardware_wallet.mockResolvedValue(params);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () =>
+        await nnsDapp.registerHardwareWallet({
+          name: "test",
+          principal: mockPrincipal,
+        });
+
+      expect(call).rejects.toThrow(err);
+    };
+
+    it("should throw register hardware wallet error not found", async () =>
+      await testError(
+        {
+          AccountNotFound: null,
+        },
+        new AccountNotFoundError("Error registering hardware wallet")
+      ));
+
+    it("should throw register hardware wallet error name too long", async () =>
+      await testError(
+        {
+          NameTooLong: null,
+        },
+        new NameTooLongError(`Error, name test is too long`)
+      ));
+
+    it("should throw register hardware wallet error already registered", async () =>
+      await testError(
+        {
+          HardwareWalletAlreadyRegistered: null,
+        },
+        new HardwareWalletAttachError("error_attach_wallet.already_registered")
+      ));
+
+    it("should throw register hardware wallet error limit exceeded", async () =>
+      await testError(
+        {
+          HardwareWalletLimitExceeded: null,
+        },
+        new HardwareWalletAttachError("error_attach_wallet.limit_exceeded")
+      ));
   });
 });

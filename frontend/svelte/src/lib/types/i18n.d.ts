@@ -60,10 +60,10 @@ interface I18nError {
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
-  governance_error: string;
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  governance_error: string;
   not_mergeable: string;
   invalid_account_id: string;
   invalid_percentage: string;
@@ -107,6 +107,9 @@ interface I18nAccounts {
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
   connect_hardware_wallet: string;
+  connect_hardware_wallet_text: string;
+  attach_wallet: string;
+  hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
@@ -122,6 +125,7 @@ interface I18nAccounts {
   review_transaction: string;
   current_balance: string;
   confirm_and_send: string;
+  account_identifier: string;
 }
 
 interface I18nNeurons {
@@ -165,7 +169,6 @@ interface I18nNeurons {
   skip: string;
   update_delay: string;
   confirm_delay: string;
-  dissolve_delay_success: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
   cannot_merge_neuron_community: string;
@@ -181,8 +184,6 @@ interface I18nNew_followee {
   options_title: string;
   follow: string;
   unfollow: string;
-  success_add_followee: string;
-  success_remove_followee: string;
   same_neuron: string;
   already_followed: string;
 }
@@ -293,6 +294,8 @@ interface I18nProposal_detail__vote {
   confirm_adopt_text: string;
   confirm_reject_headline: string;
   confirm_reject_text: string;
+  vote_status: string;
+  accept_or_reject: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -304,7 +307,6 @@ interface I18nProposal_detail__ineligible {
 
 interface I18nNeuron_detail {
   title: string;
-  proposer: string;
   voting_history: string;
   vote: string;
   join_community_fund: string;
@@ -323,8 +325,6 @@ interface I18nNeuron_detail {
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
-  start_dissolve_success: string;
-  stop_dissolve_success: string;
   dummy_proposal_success: string;
   following_title: string;
   following_description: string;
@@ -341,7 +341,6 @@ interface I18nNeuron_detail {
   no_notkeys: string;
   add_hotkey_modal_title: string;
   enter_hotkey: string;
-  add_hotkey_success: string;
   remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;
@@ -364,6 +363,30 @@ interface I18nTime {
   hour_plural: string;
   minute: string;
   minute_plural: string;
+}
+
+interface I18nError__ledger {
+  unexpected: string;
+  please_open: string;
+  locked: string;
+  fetch_public_key: string;
+  principal_not_match: string;
+  signature_unexpected: string;
+  signature_length: string;
+  connect_no_device: string;
+  connect_many_apps: string;
+  connect_not_supported: string;
+  unexpected_wallet: string;
+  user_cancel: string;
+}
+
+interface I18nError_attach_wallet {
+  unexpected: string;
+  connect: string;
+  no_name: string;
+  no_identity: string;
+  already_registered: string;
+  limit_exceeded: string;
 }
 
 interface I18n {
@@ -389,4 +412,6 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
+  error__ledger: I18nError__ledger;
+  error_attach_wallet: I18nError_attach_wallet;
 }

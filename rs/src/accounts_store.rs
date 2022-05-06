@@ -433,9 +433,10 @@ impl AccountsStore {
                 account
                     .hardware_wallet_accounts
                     .sort_unstable_by_key(|hw| hw.name.clone());
+
+                self.hardware_wallet_accounts_count += 1;
+                self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
             }
-            self.hardware_wallet_accounts_count += 1;
-            self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
 
             response
         } else {

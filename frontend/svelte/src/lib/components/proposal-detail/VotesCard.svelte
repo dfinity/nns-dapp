@@ -9,6 +9,7 @@
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
   import { votedNeurons } from "@dfinity/nns";
   import { definedNeuronsStore } from "../../stores/neurons.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -30,7 +31,21 @@
     [Vote.YES]: IconThumbUp,
     [Vote.UNSPECIFIED]: undefined,
   };
+
   let neuronsVotedForProposal: CompactNeuronInfo[];
+
+  const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
+    const stringMapper = {
+      [Vote.NO]: $i18n.core.no,
+      [Vote.YES]: $i18n.core.yes,
+      [Vote.UNSPECIFIED]: "",
+    };
+
+    return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
+      $neuronId: neuron.toString(),
+      $vote: stringMapper[vote],
+    });
+  };
 
   $: {
     neuronsVotedForProposal = votedNeurons({
@@ -75,7 +90,11 @@
     <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
     <ul>
       {#each neuronsVotedForProposal as neuron}
-        <li data-tid="neuron-data">
+        <li
+          data-tid="neuron-data"
+          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+        >
           <p>{neuron.id}</p>
           <p class="vote-details">
             <span>{neuron.votingPower}</span>

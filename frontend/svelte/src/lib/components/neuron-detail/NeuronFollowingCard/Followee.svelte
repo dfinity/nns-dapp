@@ -64,8 +64,8 @@
     display: inline-block;
     padding: calc(0.5 * var(--padding)) var(--padding);
 
-    color: var(--brand-sea-buckthorn);
-    border: 1px solid var(--brand-sea-buckthorn);
+    color: var(--gray-200);
+    border: 1px solid var(--gray-400-shade);
     border-radius: var(--border-radius);
   }
 </style>

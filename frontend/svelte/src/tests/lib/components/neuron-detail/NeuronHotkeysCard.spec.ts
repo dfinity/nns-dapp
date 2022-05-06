@@ -64,11 +64,12 @@ describe("NeuronHotkeysCard", () => {
   });
 
   it("renders no actions if user not controller", () => {
-    const { queryByTestId } = render(NeuronHotkeysCard, {
+    const { queryByTestId, queryAllByTestId } = render(NeuronHotkeysCard, {
       props: { neuron: unControlledNeuron },
     });
 
     expect(queryByTestId("add-hotkey-button")).toBeNull();
+    expect(queryAllByTestId("remove-hotkey-button")).toHaveLength(0);
   });
 
   it("renders hotkeys", () => {

@@ -7,6 +7,7 @@ if test -n "${1:-}"; then
   DOWNLOAD_PATH="$1"
   DOWNLOAD_FILENAME="$(basename "$DOWNLOAD_PATH")"
 else
+  read -rn 1 -p "Remember to use the VPN to deploy to testnet"
   # Prompts the user to download the wasm file.  Note:  This cannot be done with a simple curl.
   DOWNLOADS_DIR="$HOME/Downloads"
   echo

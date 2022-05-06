@@ -13,6 +13,7 @@ import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
+import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
@@ -355,7 +356,7 @@ export const governanceCanister = async ({
 }> => {
   const agent = await createAgent({
     identity,
-    host: process.env.HOST,
+    host: HOST,
   });
 
   const canister = GovernanceCanister.create({

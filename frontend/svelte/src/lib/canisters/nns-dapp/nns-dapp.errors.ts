@@ -15,3 +15,9 @@ export class NameTooLongError extends Error {
     super(message);
   }
 }
+
+export class HardwareWalletAttachError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}

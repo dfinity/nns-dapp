@@ -12,6 +12,7 @@
   --padding-2_5x: calc(2.5 * var(--padding));
   --padding-3x: calc(3 * var(--padding));
   --padding-4x: calc(4 * var(--padding));
+  --padding-6x: calc(4 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
   --border-radius: 10px;
@@ -23,10 +24,12 @@
   --section-max-width: 800px;
   --footer-height: 20vh;
 
+  --animation-time-normal: 0.2s;
+
+  --button-min-height: 60px;
+
   --modal-small-width: calc(100% - var(--padding-8x));
   --modal-medium-width: calc(100% - var(--padding-2x));
-
-  --animation-time-normal: 0.2s;
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
@@ -50,6 +53,8 @@
   --brand-sea-buckthorn: #fbb03b;
   --brand-razzmatazz: #ed1e79;
   --brand-meteorite: #522785;
+
+  --error-color: #ff2e00;
 
   --background: #272929;
   --background-rgb: 39, 41, 41;

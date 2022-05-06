@@ -5,7 +5,13 @@ import type {
   ProposalId,
   ProposalInfo,
 } from "@dfinity/nns";
-import { ProposalStatus, Vote } from "@dfinity/nns";
+import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import { get } from "svelte/store";
+import {
+  PROPOSAL_COLOR,
+  type ProposalColor,
+} from "../constants/proposals.constants";
+import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { isDefined } from "./utils";
 
@@ -245,4 +251,32 @@ export const excludeProposals = ({
 }): ProposalInfo[] => {
   const excludeIds = proposalIdSet(exclusion);
   return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
+};
+
+export const mapProposalInfo = (
+  proposalInfo: ProposalInfo
+): {
+  id: ProposalId | undefined;
+  proposal: Proposal | undefined;
+  proposer: NeuronId | undefined;
+  title: string | undefined;
+  url: string | undefined;
+  topic: string | undefined;
+  color: ProposalColor | undefined;
+  status: ProposalStatus;
+} => {
+  const { proposal, proposer, id, status } = proposalInfo;
+
+  const { topics } = get(i18n);
+
+  return {
+    id,
+    proposer,
+    proposal,
+    title: proposal?.title,
+    topic: topics[Topic[proposalInfo?.topic]],
+    url: proposal?.url,
+    color: PROPOSAL_COLOR[status],
+    status,
+  };
 };

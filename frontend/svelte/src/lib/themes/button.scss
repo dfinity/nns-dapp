@@ -48,7 +48,7 @@ button {
     border-radius: var(--border-radius);
 
     position: relative;
-    min-height: 60px;
+    min-height: var(--button-min-height);
 
     font-size: var(--font-size-small);
 
@@ -82,7 +82,7 @@ button {
   }
 
   &.primary {
-    padding: var(--padding);
+    padding: var(--padding) var(--padding-2x);
 
     &:hover {
       background: var(--blue-400);

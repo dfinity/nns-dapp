@@ -5,7 +5,6 @@
   import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
@@ -23,15 +22,10 @@
 
   const remove = async (hotkey: string) => {
     startBusy("remove-hotkey-neuron");
-    const neuronId = await removeHotkey({
+    await removeHotkey({
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
-    if (neuronId !== undefined) {
-      toastsStore.success({
-        labelKey: "neuron_detail.remove_hotkey_success",
-      });
-    }
     stopBusy("remove-hotkey-neuron");
   };
 </script>
@@ -44,11 +38,15 @@
     <ul>
       {#each hotkeys as hotkey (hotkey)}
         <li>
-          <span>{hotkey}</span><button
-            class="text"
-            on:click={() => remove(hotkey)}
-            data-tid="remove-hotkey-button">x</button
-          >
+          <span>{hotkey}</span>
+          {#if isControllable}
+            <button
+              class="text"
+              aria-label={$i18n.core.close}
+              on:click={() => remove(hotkey)}
+              data-tid="remove-hotkey-button">x</button
+            >
+          {/if}
         </li>
       {/each}
     </ul>

@@ -11,7 +11,7 @@
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
-    "lint": "eslint --max-warnings 0 './src/**/*.{js,ts,svelte}'",
+    "lint": "./scripts/lint",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
     "test:watch": "npm run test -- --watchAll",
@@ -60,6 +60,9 @@
   "dependencies": {
     "@dfinity/agent": "^0.11.0",
     "@dfinity/auth-client": "^0.11.0",
-    "@dfinity/nns": "nightly"
+    "@dfinity/nns": "nightly",
+    "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
+    "@ledgerhq/hw-transport-webhid": "^6.27.1",
+    "@zondax/ledger-icp": "^0.6.0"
   }
 }

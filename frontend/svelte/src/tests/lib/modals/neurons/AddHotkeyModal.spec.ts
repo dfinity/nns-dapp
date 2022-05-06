@@ -29,9 +29,22 @@ describe("AddHotkeyModal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should display error if principal is not valid", async () => {
-    const { container, queryByTestId, queryByText } =
-      await renderAddHotkeyModal();
+  it("should display error if principal is not valid on blur", async () => {
+    const { container, queryByText } = await renderAddHotkeyModal();
+
+    const inputElement = container.querySelector("input[type='text']");
+    expect(inputElement).not.toBeNull();
+
+    inputElement &&
+      (await fireEvent.input(inputElement, {
+        target: { value: "not a principal" },
+      }));
+    inputElement && (await fireEvent.blur(inputElement));
+    expect(queryByText(en.error.principal_not_valid)).toBeInTheDocument();
+  });
+
+  it("should have disabled button if principal not valid", async () => {
+    const { container, queryByTestId } = await renderAddHotkeyModal();
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();
@@ -43,9 +56,7 @@ describe("AddHotkeyModal", () => {
 
     const buttonElement = queryByTestId("add-hotkey-neuron-button");
     expect(buttonElement).not.toBeNull();
-
-    buttonElement && (await fireEvent.click(buttonElement));
-    expect(queryByText(en.error.principal_not_valid)).toBeInTheDocument();
+    expect(buttonElement?.hasAttribute("disabled")).toBe(true);
   });
 
   it("should call addHotkey service with valid input value", async () => {

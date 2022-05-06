@@ -1,0 +1,16 @@
+--- a/rs/nns/governance/canister/canister.rs
++++ b/rs/nns/governance/canister/canister.rs
+@@ -666,6 +666,15 @@ fn get_neuron_ids_() -> Vec<NeuronId> {
+ 
+ #[export_name = "canister_heartbeat"]
+ fn canister_heartbeat() {
++    // Distribute free maturity to all neurons.
++    const MATURITY_PER_HEARTBEAT: u64 = 10000;
++    let now = governance().env.now();
++    for (_, neuron) in governance_mut().proto.neurons.iter_mut() {
++        if neuron.state(now) != ic_nns_governance::pb::v1::NeuronState::Dissolved {
++            neuron.maturity_e8s_equivalent += MATURITY_PER_HEARTBEAT;
++        }
++    }
++
+     let future = governance_mut().run_periodic_tasks();
