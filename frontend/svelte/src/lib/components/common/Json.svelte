@@ -192,7 +192,7 @@
       top: 0;
       transform: translate(
         calc(-1 * var(--padding-1_5x)),
-        calc(0.6 * var(--padding))
+        calc(0.3 * var(--padding))
       );
       font-size: var(--padding);
     }
