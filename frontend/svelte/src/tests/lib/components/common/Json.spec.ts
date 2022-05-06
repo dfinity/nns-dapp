@@ -10,15 +10,15 @@ import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 // remove (array-index:|spaces|")
-const simplify = (json: string | null) =>
-  json?.replace(/(\d+\s*:\s*)(\w+|"|{|}|\[|])/g, "$2").replace(/"| |,/g, "");
+export const simplifyJson = (json: string | null) =>
+  json?.replace(/(\d+\s*:\s*)(\w+|"|{|}|\[|])/g, "$2").replace(/"| |,|\\/g, "");
 
 const testJsonRender = (json: unknown, result?: string) => {
   const { container } = render(Json, {
     props: { json },
   });
-  expect(simplify(container.textContent)).toBe(
-    result ?? simplify(stringifyJson(json))
+  expect(simplifyJson(container.textContent)).toBe(
+    result ?? simplifyJson(stringifyJson(json))
   );
 };
 
@@ -110,13 +110,17 @@ describe("Json", () => {
     });
     const obj = () => getAllByRole("button")[1];
 
-    expect(simplify(container.textContent)).toBe(simplify(stringifyJson(json)));
+    expect(simplifyJson(container.textContent)).toBe(
+      simplifyJson(stringifyJson(json))
+    );
 
     await fireEvent.click(obj());
-    expect(simplify(container.textContent)).toBe("{obj:{...}}");
+    expect(simplifyJson(container.textContent)).toBe("{obj:{...}}");
 
     await fireEvent.click(obj());
-    expect(simplify(container.textContent)).toBe(simplify(stringifyJson(json)));
+    expect(simplifyJson(container.textContent)).toBe(
+      simplifyJson(stringifyJson(json))
+    );
   });
 
   it("should render role=button", async () => {

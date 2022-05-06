@@ -9,7 +9,9 @@ import {
   proposalActionFields,
   proposalFirstActionKey,
 } from "../../../../../lib/utils/proposals.utils";
+import { stringifyJson } from "../../../../../lib/utils/utils";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import { simplifyJson } from "../../common/Json.spec";
 
 describe("ProposalActions", () => {
   it("should render action key", () => {
@@ -38,6 +40,10 @@ describe("ProposalActions", () => {
       expect(element).toBeInTheDocument();
       if (typeof value !== "object") {
         expect(element.nextElementSibling?.textContent).toBe(`${value}`);
+      } else {
+        expect(
+          simplifyJson(element.nextElementSibling?.textContent ?? "42")
+        ).toBe(simplifyJson(stringifyJson(value)));
       }
     }
   });
