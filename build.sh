@@ -25,6 +25,9 @@ set -euo pipefail
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 DEPLOY_ENV="${DEPLOY_ENV:-${DFX_NETWORK:-}}"
+DFX_NETWORK="${DEPLOY_ENV}"
+export DEPLOY_ENV
+export DFX_NETWORK
 
 if [[ $DEPLOY_ENV = "nobuild" ]]; then
   echo "Skipping build as requested"

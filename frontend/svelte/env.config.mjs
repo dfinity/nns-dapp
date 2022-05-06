@@ -28,8 +28,6 @@ const ENVIRONMENT = ROLLUP_WATCH
   ? "testnet"
   : "mainnet";
 
-const development = ["local", "testnet"].includes(ENVIRONMENT);
-
 // agent-js connects per default to mainnet with the anonymous identity
 const MAINNET = `https://ic0.app`;
 
@@ -46,13 +44,18 @@ const GOVERNANCE_CANISTER_URL = getRequiredEnvVar("GOVERNANCE_CANISTER_URL");
 const LEDGER_CANISTER_URL = getRequiredEnvVar("LEDGER_CANISTER_URL");
 const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
 
-// Redirects between the svelte and flutter frontends
+// Configuration
+// ... Redirects between the svelte and flutter frontends
 const REDIRECT_TO_LEGACY = getRequiredEnvVar("REDIRECT_TO_LEGACY");
+// ... The testnet name
+const DEPLOY_ENV = getRequiredEnvVar("DEPLOY_ENV");
+// ... Whether to get the root key
+const FETCH_ROOT_KEY = getRequiredEnvVar("FETCH_ROOT_KEY");
 
 export const envConfig = {
   ENVIRONMENT,
-  DEPLOY_ENV: process.env.DEPLOY_ENV || (development ? "testnet" : "mainnet"),
-  FETCH_ROOT_KEY: development,
+  DEPLOY_ENV,
+  FETCH_ROOT_KEY,
   REDIRECT_TO_LEGACY,
   MAINNET,
   HOST,
