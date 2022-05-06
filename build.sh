@@ -40,8 +40,6 @@ export HOST
 export IDENTITY_SERVICE_URL
 export OWN_CANISTER_ID
 export HOST
-
-FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
 export FETCH_ROOT_KEY
 
 set -x
