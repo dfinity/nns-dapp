@@ -17,7 +17,7 @@
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 </script>
 
-<CardBlock>
+<CardBlock limitHeight={false}>
   <svelte:fragment slot="title">{actionKey}</svelte:fragment>
   <ul>
     {#each actionFields as [key, value]}

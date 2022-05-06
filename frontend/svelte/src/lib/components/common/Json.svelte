@@ -140,16 +140,17 @@
   @use "../../themes/mixins/interaction";
 
   .root,
-  .root + ul {
+  .root ~ ul,
+  .root ~ span {
     // first arrow extra space
-    margin-left: var(--padding-1_5x);
+    margin-left: var(--padding-2x);
   }
   ul {
     // reset
     margin: 0;
     padding: 0;
 
-    padding-left: var(--padding);
+    padding-left: var(--padding-1_5x);
     list-style: none;
     color: var(--gray-100);
   }
@@ -164,7 +165,9 @@
   .arrow {
     @include interaction.tappable;
     // increase click area
-    padding: calc(0.25 * var(--padding));
+    padding: 0 var(--padding-0_5x);
+    // compensate click area
+    transform: translateX(calc(-1 * var(--padding-0_5x)));
     min-width: var(--padding);
 
     display: inline-block;

@@ -38,7 +38,6 @@ export const proposalActionFields = (
       case "object":
         return value && Object.keys(value).length > 0;
       case "string":
-        return value.length > 0;
       case "bigint":
       case "boolean":
       case "number":
