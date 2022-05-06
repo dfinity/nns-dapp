@@ -56,10 +56,10 @@ local_deployment_data="$(
 : "- next, look at the environment,"
 : "- last is the defaults section in dfx.json"
 : ""
-: "After assembling the configuration, replace OWN_CANISTER_ID in HOST."
+: "After assembling the configuration, replace OWN_CANISTER_ID."
 jq -s '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
-  . as $config | .HOST=(.HOST | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+  . as $config | .OWN_URL=(.OWN_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
 echo "Config has been defined.  Let it never be changed." >&2
 
