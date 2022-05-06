@@ -36,7 +36,6 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "https://nnsdapp.dfinity.network",
-        "OWN_CANISTER_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
       },
       "providers": [
@@ -50,7 +49,6 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "https://small11.dfinity.network",
-        "OWN_CANISTER_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small11.dfinity.network"
       },
       "providers": [
