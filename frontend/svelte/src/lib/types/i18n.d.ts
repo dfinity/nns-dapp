@@ -379,6 +379,15 @@ interface I18nError__ledger {
   user_cancel: string;
 }
 
+interface I18nError_attach_wallet {
+  unexpected: string;
+  connect: string;
+  no_name: string;
+  no_identity: string;
+  already_registered: string;
+  limit_exceeded: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -403,4 +412,5 @@ interface I18n {
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
+  error_attach_wallet: I18nError_attach_wallet;
 }

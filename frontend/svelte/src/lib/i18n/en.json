@@ -353,5 +353,13 @@
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device."
+  },
+  "error_attach_wallet": {
+    "unexpected": "There was an error trying to attach the hardware wallet.",
+    "connect": "You need to connect your hardware wallet first.",
+    "no_name": "No account name provided.",
+    "no_identity": "No identity connected to your hardware wallet.",
+    "already_registered": "The hardware wallet is already registered with another account.",
+    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached."
   }
 }
