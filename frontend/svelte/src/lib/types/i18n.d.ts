@@ -113,6 +113,7 @@ interface I18nAccounts {
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   linked_account: string;
+  hardware_wallet_account: string;
   select_source: string;
   select_destination: string;
   address: string;

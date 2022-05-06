@@ -2,13 +2,29 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import type {
   AccountDetails,
+  HardwareWalletAccountDetails,
   SubAccountDetails,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { AccountType } from "../stores/add-account.store";
 import type { Account } from "../types/account";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { nnsDappCanister } from "./nns-dapp.api";
+
+const getAccountBalance = async ({
+  ledger,
+  identifierString,
+  certified,
+}: {
+  ledger: LedgerCanister;
+  identifierString: string;
+  certified: boolean;
+}): Promise<ICP> =>
+  ledger.accountBalance({
+    accountIdentifier: AccountIdentifier.fromHex(identifierString),
+    certified,
+  });
 
 export const loadAccounts = async ({
   identity,
@@ -34,37 +50,57 @@ export const loadAccounts = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const mapAccount = async (
-    account: AccountDetails | SubAccountDetails
-  ): Promise<Account> => {
-    const balance: ICP = await ledger.accountBalance({
-      accountIdentifier: AccountIdentifier.fromHex(account.account_identifier),
+  const mapMainAccount = async (account: AccountDetails): Promise<Account> => ({
+    identifier: account.account_identifier,
+    principal: account.principal,
+    balance: await getAccountBalance({
+      ledger,
       certified,
-    });
+      identifierString: account.account_identifier,
+    }),
+    type: "main" as AccountType,
+  });
 
-    return {
-      identifier: account.account_identifier,
-      // SubAccountDetails does not have "principal"
-      principal: "principal" in account ? account.principal : undefined,
-      balance,
-      // AccountDetails does not have "name" or "sub_account" property. Typescript needed a check like this.
-      subAccount: "sub_account" in account ? account.sub_account : undefined,
-      name: "name" in account ? account.name : undefined,
-    };
-  };
+  const mapHardwareAccount = async (
+    account: HardwareWalletAccountDetails
+  ): Promise<Account> => ({
+    identifier: account.account_identifier,
+    principal: account.principal,
+    balance: await getAccountBalance({
+      ledger,
+      certified,
+      identifierString: account.account_identifier,
+    }),
+    name: account.name,
+    type: "hardwareWallet" as AccountType,
+  });
 
-  // TODO(L2-433): map hardware_wallet_accounts
+  const mapSubAccount = async (
+    account: SubAccountDetails
+  ): Promise<Account> => ({
+    identifier: account.account_identifier,
+    balance: await getAccountBalance({
+      ledger,
+      certified,
+      identifierString: account.account_identifier,
+    }),
+    subAccount: account.sub_account,
+    name: account.name,
+    type: "subAccount" as AccountType,
+  });
 
-  const [main, ...subAccounts] = await Promise.all([
-    mapAccount(mainAccount),
-    ...mainAccount.sub_accounts.map(mapAccount),
+  const accounts = await Promise.all([
+    mapMainAccount(mainAccount),
+    ...mainAccount.sub_accounts.map(mapSubAccount),
+    ...mainAccount.hardware_wallet_accounts.map(mapHardwareAccount),
   ]);
 
   logWithTimestamp(`Loading Accounts certified:${certified} complete.`);
 
   return {
-    main,
-    subAccounts,
+    main: accounts.find(({ type }) => type === "main"),
+    subAccounts: accounts.filter(({ type }) => type === "subAccount"),
+    hardwareWallets: accounts.filter(({ type }) => type === "hardwareWallet"),
   };
 };
 

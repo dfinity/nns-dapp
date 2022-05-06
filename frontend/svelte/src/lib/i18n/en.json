@@ -104,6 +104,7 @@
     "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
     "linked_account": "LINKED ACCOUNT",
+    "hardware_wallet_account": "HARDWARE WALLET",
     "select_source": "Select Source Account",
     "select_destination": "Select Destination",
     "address": "Address",

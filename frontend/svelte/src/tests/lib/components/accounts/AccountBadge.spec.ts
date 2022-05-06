@@ -4,7 +4,11 @@
 
 import { render } from "@testing-library/svelte";
 import AccountBadge from "../../../../lib/components/accounts/AccountBadge.svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 describe("AccountBadge", () => {
@@ -20,11 +24,17 @@ describe("AccountBadge", () => {
 
   it("should render linked account badge", () => {
     const { getByText } = render(AccountBadge, {
-      props: { account: { ...mockMainAccount, subAccount: [0] } },
+      props: { account: mockSubAccount },
     });
 
-    expect(
-      getByText(en.accounts.linked_account, { exact: false })
-    ).toBeInTheDocument();
+    expect(getByText(en.accounts.linked_account)).toBeInTheDocument();
+  });
+
+  it("should render hardware wallet badge", () => {
+    const { getByText } = render(AccountBadge, {
+      props: { account: mockHardwareWalletAccount },
+    });
+
+    expect(getByText(en.accounts.hardware_wallet_account)).toBeInTheDocument();
   });
 });
