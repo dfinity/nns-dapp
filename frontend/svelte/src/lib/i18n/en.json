@@ -333,6 +333,7 @@
     "spawn_confirmation_modal_title": "Confirm Spawn",
     "spawn_maturity_modal_description": "Choose how much of your neuron's maturity to give to the new neuron.",
     "spawn_maturity_success": "New neuron spawned successfully.",
+    "spawn_maturity_confirmation": "Are you sure you wish to spawn a new neuron? This will use $percentage of your neuron's earned maturity for the new neuron",
     "current_stake": "Current Stake",
     "current_maturity": "Current Maturity",
     "dissolve_delay_range": "Dissolve Delay Range",

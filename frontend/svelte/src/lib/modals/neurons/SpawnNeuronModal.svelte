@@ -7,11 +7,11 @@
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
   import { neuronStake } from "../../utils/neuron.utils";
-  import Icp from "../../components/ic/ICP.svelte";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let neuron: NeuronInfo;
 
@@ -88,25 +88,23 @@
     />
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmActionScreen {loading} on:nnsConfirm={spawnNeuronFromMaturity}>
-      <h3 slot="main-info">
-        <Icp inline icp={newNeuronICP} />
-      </h3>
-      <div>
-        <h5>{$i18n.neurons.neuron_id}</h5>
-        <p>{neuron.neuronId}</p>
-      </div>
-      <div>
-        <h5>{$i18n.neuron_detail.maturity_percentage}</h5>
-        <p>
-          {formatPercentage(percentageToSpawn / 100, {
+      <h4 slot="main-info">
+        {replacePlaceholders($i18n.neuron_detail.spawn_maturity_confirmation, {
+          $percentage: formatPercentage(percentageToSpawn / 100, {
             minFraction: 0,
             maxFraction: 0,
-          })}
-        </p>
-      </div>
+          }),
+        })}
+      </h4>
       <svelte:fragment slot="button-content"
         >{$i18n.core.confirm}</svelte:fragment
       >
     </ConfirmActionScreen>
   {/if}
 </WizardModal>
+
+<style lang="scss">
+  h4 {
+    text-align: center;
+  }
+</style>

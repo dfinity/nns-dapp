@@ -11,10 +11,10 @@
 </script>
 
 <div class="wizard-wrapper" data-tid="confirm-action-screen">
-  <div class="main-info">
-    <slot name="main-info" />
-  </div>
   <div class="info">
+    <div class="main">
+      <slot name="main-info" />
+    </div>
     <slot />
   </div>
   <div>
@@ -34,17 +34,17 @@
 </div>
 
 <style lang="scss">
-  .main-info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--padding-3x);
-  }
-
   .info {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
-    flex-grow: 1;
+
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: var(--padding-3x);
+      flex-grow: 1;
+    }
   }
 </style>
