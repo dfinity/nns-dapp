@@ -21,6 +21,7 @@ JSON_CONFIG_FILE="config.json"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
 
 : "Scan environment:"
+DFX_NETWORK="${DFX_NETWORK:-$DEPLOY_ENV}"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
 
@@ -54,7 +55,12 @@ local_deployment_data="$(
 : "- The dfx.json networks section has the highest priority,"
 : "- next, look at the environment,"
 : "- last is the defaults section in dfx.json"
-jq -s '(.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
+: ""
+: "After assembling the configuration, replace OWN_CANISTER_ID."
+jq -s '
+  (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
+  . as $config | .OWN_URL=(.OWN_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
 echo "Config has been defined.  Let it never be changed." >&2
 
 : "Export values used by bash:"

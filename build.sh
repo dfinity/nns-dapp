@@ -34,6 +34,14 @@ if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $D
   exit 1
 fi
 
+# Assemble the configuration
+. config.sh
+export HOST
+export IDENTITY_SERVICE_URL
+export OWN_CANISTER_ID
+export HOST
+export FETCH_ROOT_KEY
+
 set -x
 
 ###############

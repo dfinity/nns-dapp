@@ -34,14 +34,6 @@ jobs:
     strategy:
       matrix:
        include:
-         - BUILD_NAME: "testnet"
-           DEPLOY_ENV: "testnet"
-           OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
-           REDIRECT_TO_LEGACY: "both"
-         - BUILD_NAME: "staging"
-           DEPLOY_ENV: "testnet"
-           OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
-           REDIRECT_TO_LEGACY: "staging"
          - BUILD_NAME: "mainnet"
            DEPLOY_ENV: "mainnet"
            OWN_CANISTER_ID: ""
