@@ -44,7 +44,6 @@ export HOST
 FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
 export FETCH_ROOT_KEY
 
-
 set -x
 
 ###############
