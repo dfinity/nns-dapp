@@ -1,12 +1,11 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
-  import { neuronStake } from "../../utils/neuron.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
@@ -33,22 +32,6 @@
 
   let percentageToSpawn: number = 0;
   let loading: boolean;
-
-  let neuronICP: bigint;
-  $: neuronICP = neuronStake(neuron);
-
-  let newNeuronICP: ICP;
-  $: newNeuronICP =
-    neuron.fullNeuron === undefined
-      ? ICP.fromE8s(BigInt(0))
-      : ICP.fromE8s(
-          BigInt(
-            Math.round(
-              (percentageToSpawn / 100) *
-                Number(neuron.fullNeuron.maturityE8sEquivalent)
-            )
-          )
-        );
 
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
