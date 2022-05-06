@@ -24,15 +24,18 @@ set -euo pipefail
 
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+DEPLOY_ENV="${DEPLOY_ENV:-${DFX_NETWORK:-}}"
+
 if [[ $DEPLOY_ENV = "nobuild" ]]; then
   echo "Skipping build as requested"
   exit 0
 fi
 
-if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
+DEPLOY_ENV="$DEPLOY_ENV" jq -e '.networks[env.DEPLOY_ENV]' dfx.json || {
+  echo "Which deployment environment? Set DEPLOY_ENV to one of:"
+  jq -er '.networks | keys | join("  ")' dfx.json
   exit 1
-fi
+} >&2
 
 # Assemble the configuration
 . config.sh
