@@ -7,6 +7,8 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
+import { IDENTITY_SERVICE_URL } from "../ts/src/config.json";
+
 const ROLLUP_WATCH = process.env.ROLLUP_WATCH === "true";
 
 const ENVIRONMENT = ROLLUP_WATCH
@@ -23,12 +25,6 @@ const domain = development ? domainTestnet : domainMainnet;
 
 // agent-js connects per default to mainnet with the anonymous identity
 const MAINNET = `https://${domainMainnet}`;
-
-const IDENTITY_SERVICE_URL =
-  process.env.IDENTITY_SERVICE_URL ||
-  (development
-    ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
-    : "https://identity.ic0.app/");
 
 // The host that nns-js connects to
 const HOST =
