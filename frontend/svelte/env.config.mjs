@@ -30,6 +30,10 @@ const IDENTITY_SERVICE_URL =
     ? `https://qjdve-lqaaa-aaaaa-aaaeq-cai.${domainTestnet}/`
     : "https://identity.ic0.app/");
 
+// The host that nns-js connects to
+const HOST =
+  process.env.HOST || (development ? `https://${domainTestnet}/` : MAINNET);
+
 // Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -42,9 +46,6 @@ const OWN_CANISTER_ID =
 const GOVERNANCE_CANISTER_URL = `https://${GOVERNANCE_CANISTER_ID}.${domain}/`;
 const LEDGER_CANISTER_URL = `https://${LEDGER_CANISTER_ID}.${domain}/`;
 const OWN_CANISTER_URL = `https://${OWN_CANISTER_ID}.${domain}/`;
-
-// The host that nns-js connects to
-const HOST = process.env.HOST || OWN_CANISTER_URL;
 
 // For values, see the [README](../../README.md).
 // The default should match production.  Except during local development.
