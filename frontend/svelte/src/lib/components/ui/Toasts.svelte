@@ -20,14 +20,16 @@
     left: 50%;
     transform: translate(-50%, 0);
 
-    width: calc(100% - var(--padding-8x));
+    // A little narrowwer than the section to differentiate notifications from content
+    width: calc(100% - var(--padding-8x) - var(--padding-0_5x));
 
     display: flex;
     flex-direction: column;
     gap: var(--padding);
 
     @include media.min-width(large) {
-      max-width: var(--section-max-width);
+      // A little narrowwer than the section to differentiate notifications from content
+      max-width: calc(var(--section-max-width) - var(--padding-2x));
     }
   }
 </style>
