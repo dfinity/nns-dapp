@@ -19,13 +19,8 @@ const initToastsStore = () => {
 
     show(msg: ToastMsg) {
       update((messages: ToastMsg[]) => {
-        const now = Date.now();
-        // To cover the edge case where two messages are sent at exactly the same time
-        const currentMsg = messages.find(({ timestamp }) => timestamp === now);
-        if (currentMsg !== undefined) {
-          return [...messages, { ...msg, timestamp: Math.random() }];
-        }
-        return [...messages, { ...msg, timestamp: Date.now() }];
+        const id = Math.floor(Math.random() * 1e6) + performance.now();
+        return [...messages, { ...msg, id }];
       });
     },
 
@@ -45,13 +40,13 @@ const initToastsStore = () => {
       }
     },
 
-    hide(timestampToHide?: number) {
+    hide(idToHide?: number) {
       // If not specified, we remove the first one
-      if (timestampToHide === undefined) {
+      if (idToHide === undefined) {
         update((messages: ToastMsg[]) => messages.slice(1));
       } else {
         update((messages: ToastMsg[]) =>
-          messages.filter(({ timestamp }) => timestamp !== timestampToHide)
+          messages.filter(({ id }) => id !== idToHide)
         );
       }
     },

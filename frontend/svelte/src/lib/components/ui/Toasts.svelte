@@ -7,7 +7,7 @@
 <!-- TypeError: Cannot read properties of null (reading 'removeChild') -->
 <!-- https://github.com/sveltejs/svelte/issues/6037 -->
 <div class="wrapper">
-  {#each $toastsStore as msg (msg.timestamp)}
+  {#each $toastsStore as msg (msg.id)}
     <Toast {msg} />
   {/each}
 </div>

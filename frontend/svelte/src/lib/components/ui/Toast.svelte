@@ -11,7 +11,7 @@
 
   export let msg: ToastMsg;
 
-  const close = () => toastsStore.hide(msg.timestamp);
+  const close = () => toastsStore.hide(msg.id);
   let text: string | undefined;
 
   let labelKey: string;
