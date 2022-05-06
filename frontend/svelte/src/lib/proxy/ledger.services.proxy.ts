@@ -1,4 +1,7 @@
-import type { ConnectToHardwareWalletParams } from "../services/ledger.services";
+import type {
+  ConnectToHardwareWalletParams,
+  RegisterHardwareWalletParams,
+} from "../services/ledger.services";
 
 export const connectToHardwareWalletProxy = async (
   callback: (params: ConnectToHardwareWalletParams) => void
@@ -8,4 +11,14 @@ export const connectToHardwareWalletProxy = async (
   );
 
   return connectToHardwareWallet(callback);
+};
+
+export const registerHardwareWalletProxy = async (
+  params: RegisterHardwareWalletParams
+): Promise<void> => {
+  const { registerHardwareWallet } = await import(
+    "../services/ledger.services"
+  );
+
+  return registerHardwareWallet(params);
 };

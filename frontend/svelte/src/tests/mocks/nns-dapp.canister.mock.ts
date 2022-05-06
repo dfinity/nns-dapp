@@ -2,6 +2,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type {
   AccountDetails,
+  RegisterHardwareWalletRequest,
   SubAccountDetails,
 } from "../../lib/canisters/nns-dapp/nns-dapp.types";
 import {
@@ -22,21 +23,26 @@ export class MockNNSDappCanister extends NNSDappCanister {
     return this;
   }
 
-  public addAccount = async (): Promise<AccountIdentifier> => {
+  public async addAccount(): Promise<AccountIdentifier> {
     return AccountIdentifier.fromHex(mockMainAccount.identifier);
-  };
+  }
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  public getAccount = async (_: {
-    certified: boolean;
-  }): Promise<AccountDetails> => {
+  public async getAccount(_: { certified: boolean }): Promise<AccountDetails> {
     return mockAccountDetails;
-  };
+  }
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  public createSubAccount = async (_: {
+  public async createSubAccount(_: {
     subAccountName: string;
-  }): Promise<SubAccountDetails> => {
+  }): Promise<SubAccountDetails> {
     return mockSubAccountDetails;
-  };
+  }
+
+  public async registerHardwareWallet(
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    request: RegisterHardwareWalletRequest
+  ): Promise<void> {
+    // Do nothing
+  }
 }
