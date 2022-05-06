@@ -7,6 +7,7 @@ import { render } from "@testing-library/svelte";
 import Json from "../../../../lib/components/common/Json.svelte";
 import { stringifyJson } from "../../../../lib/utils/utils";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import en from "../../../mocks/i18n.mock";
 
 // remove (array-index:|spaces|")
 const simplify = (json: string | null) =>
@@ -24,19 +25,19 @@ const testJsonRender = (json: unknown, result?: string) => {
 describe("Json", () => {
   it("should render empty object", () => testJsonRender({}));
 
-  it("should render empty array", () => {
-    const json = [];
-    const { container } = render(Json, {
-      props: { json },
-    });
-    expect(simplify(container.textContent)).toBe(simplify(stringifyJson(json)));
-  });
+  it("should render empty array", () => testJsonRender([]));
+
+  it("should render null", () => testJsonRender(null));
+
+  it("should render undefined", () => testJsonRender(undefined, "undefined"));
 
   it("should render simple types", () =>
     testJsonRender({
       string: "value",
       number: 123,
       n: null,
+      t: true,
+      f: false,
     }));
 
   it("should render undefined", () =>
@@ -54,10 +55,43 @@ describe("Json", () => {
       list: [0, 1, 2, "end", { hello: "world" }, [13]],
     }));
 
+  it("should render deep structures", () =>
+    testJsonRender([
+      [
+        {
+          obj: { test: null },
+          list: [
+            0,
+            1,
+            2,
+            "end",
+            { hello: [{ test: ["world", 13, null] }] },
+            [13],
+          ],
+        },
+      ],
+    ]));
+
   it("should render bigint", () =>
     testJsonRender({
-      bigint: BigInt(123),
+      bigint: BigInt("12345678901234567890123456789012345678901234567890"),
     }));
+
+  it("should render function", () =>
+    testJsonRender(
+      {
+        func: () => null,
+      },
+      "{func:f(){...}}"
+    ));
+
+  it("should render symbol", () =>
+    testJsonRender(
+      {
+        sym: Symbol("test"),
+      },
+      "{sym:Symbol(test)}"
+    ));
 
   it("should render principal", () =>
     testJsonRender({
@@ -71,15 +105,49 @@ describe("Json", () => {
         second: 2,
       },
     };
-    const { container, getByText } = render(Json, {
+    const { container, getAllByRole } = render(Json, {
       props: { json },
     });
-    console.log("container", container.innerHTML);
+    const obj = () => getAllByRole("button")[1];
 
     expect(simplify(container.textContent)).toBe(simplify(stringifyJson(json)));
-    await fireEvent.click(getByText("obj:"));
+
+    await fireEvent.click(obj());
     expect(simplify(container.textContent)).toBe("{obj:{...}}");
-    await fireEvent.click(getByText("obj:"));
+
+    await fireEvent.click(obj());
     expect(simplify(container.textContent)).toBe(simplify(stringifyJson(json)));
+  });
+
+  it("should render role=button", async () => {
+    const json = {
+      obj: {
+        first: 1,
+        second: 2,
+      },
+    };
+    const { getAllByRole } = render(Json, {
+      props: { json },
+    });
+    expect(getAllByRole("button").length).toBe(2);
+  });
+
+  it("should render aria-label for role=button", async () => {
+    const json = {
+      obj: {
+        first: 1,
+        second: 2,
+      },
+    };
+    const { getAllByRole } = render(Json, {
+      props: { json },
+    });
+    const buttons = getAllByRole("button");
+
+    expect(buttons.length).toBe(2);
+
+    buttons.forEach((button) =>
+      expect(button.getAttribute("aria-label")).toBe(en.core.toggle)
+    );
   });
 });

@@ -75,15 +75,12 @@
   $: collapsed =
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
-  const click = () => {
-    collapsed = !collapsed;
-  };
+  const toggle = () => (collapsed = !collapsed);
 </script>
 
 {#if isExpandable && hasChildren}
   {#if collapsed}
     <span
-      on:click|stopPropagation={click}
       class="key"
       class:expanded={!collapsed}
       class:collapsed
@@ -91,15 +88,14 @@
       class:arrow={isExpandable && hasChildren}
       role="button"
       aria-label={$i18n.core.toggle}
+      tabindex="0"
+      on:click|stopPropagation={toggle}
       >{keyLabel}
-      <span class="bracket" on:click|stopPropagation={click} tabindex="0"
-        >{openBracket} ... {closeBracket}</span
-      >
+      <span class="bracket">{openBracket} ... {closeBracket}</span>
     </span>
   {:else}
     <!-- key -->
     <span
-      on:click|stopPropagation={click}
       class="key"
       class:expanded={!collapsed}
       class:collapsed
@@ -107,13 +103,11 @@
       class:arrow={isExpandable && hasChildren}
       role="button"
       aria-label={$i18n.core.toggle}
-      >{keyLabel}<span
-        class="bracket open"
-        on:click|stopPropagation={click}
-        tabindex="0">{openBracket}</span
-      ></span
+      tabindex="0"
+      on:click|stopPropagation={toggle}
+      >{keyLabel}<span class="bracket open">{openBracket}</span></span
     >
-    <!-- value -->
+    <!-- children -->
     <ul>
       {#each children as [key, value]}
         <li>
@@ -126,15 +120,15 @@
         </li>
       {/each}
     </ul>
-    <span class="bracket close" on:click|stopPropagation={click} tabindex="0"
-      >{closeBracket}</span
-    >
+    <span class="bracket close">{closeBracket}</span>
   {/if}
 {:else if isExpandable}
+  <!-- no childre -->
   <span class="key" class:root={_level === 1}
     >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
   >
 {:else}
+  <!-- key:value -->
   <span class="key-value">
     <span class="key" class:root={_level === 1}>{keyLabel}</span><span
       class="value {valueType(json)}">{stringify(json)}</span
@@ -206,6 +200,7 @@
       content: "▶";
     }
   }
+
   // value type colors
   .bracket {
     color: var(--gray-400);
