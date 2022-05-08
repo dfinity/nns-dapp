@@ -20,8 +20,8 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let isLoading: boolean = false;
-  // TODO: To be removed once this page has been implemented
   onMount(async () => {
+    // TODO: To be removed once this page has been implemented
     if (!SHOW_NEURONS_ROUTE) {
       window.location.replace("/#/neurons");
     }

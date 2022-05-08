@@ -18,6 +18,7 @@ interface I18nCore {
   amount: string;
   max: string;
   principal: string;
+  toggle: string;
 }
 
 interface I18nError {
