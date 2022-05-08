@@ -47,7 +47,7 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "svelte",
+        "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small11.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small11.dfinity.network"
       },
