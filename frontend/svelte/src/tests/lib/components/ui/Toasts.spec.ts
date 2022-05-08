@@ -7,6 +7,10 @@ import Toasts from "../../../../lib/components/ui/Toasts.svelte";
 import { toastsStore } from "../../../../lib/stores/toasts.store";
 
 describe("Toasts", () => {
+  afterEach(() => {
+    toastsStore.reset();
+  });
+
   it("should not display any toast per default", () => {
     const { container } = render(Toasts);
 
@@ -52,7 +56,11 @@ describe("Toasts", () => {
     toastsStore.hide();
   });
 
-  it("should display multiple toasts once at a time", async () => {
+  it("should display multiple toasts", async () => {
+    jest
+      .spyOn(global.Math, "random")
+      .mockReturnValueOnce(0.123456789)
+      .mockReturnValueOnce(0.25555);
     const { container } = render(Toasts);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
@@ -60,25 +68,31 @@ describe("Toasts", () => {
     toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+      expect(container.querySelectorAll("div.toast").length).toEqual(3)
     );
+  });
 
-    toastsStore.hide();
+  it("should display multiple toasts and user is able to close one", async () => {
+    jest
+      .spyOn(global.Math, "random")
+      .mockReturnValueOnce(0.123456789)
+      .mockReturnValueOnce(0.25555);
+    const { container } = render(Toasts);
+
+    toastsStore.show({ labelKey: "test.test", level: "error" });
+    toastsStore.show({ labelKey: "test.test", level: "error" });
+    toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+      expect(container.querySelectorAll("div.toast").length).toEqual(3)
     );
 
-    toastsStore.hide();
+    const button: HTMLButtonElement | null =
+      container.querySelector("button.close");
+    button && (await fireEvent.click(button));
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
-    );
-
-    toastsStore.hide();
-
-    await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(0)
+      expect(container.querySelectorAll("div.toast").length).toEqual(2)
     );
   });
 
