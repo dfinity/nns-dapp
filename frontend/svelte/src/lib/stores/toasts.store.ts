@@ -19,7 +19,7 @@ const initToastsStore = () => {
 
     show(msg: ToastMsg) {
       update((messages: ToastMsg[]) => {
-        const id = Math.floor(Math.random() * 1e6) + performance.now();
+        const id = Symbol();
         return [...messages, { ...msg, id }];
       });
     },
@@ -40,7 +40,7 @@ const initToastsStore = () => {
       }
     },
 
-    hide(idToHide?: number) {
+    hide(idToHide?: symbol) {
       // If not specified, we remove the first one
       if (idToHide === undefined) {
         update((messages: ToastMsg[]) => messages.slice(1));
