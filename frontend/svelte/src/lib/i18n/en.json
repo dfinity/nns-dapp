@@ -356,7 +356,7 @@
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device."
   },
-  "error_attach_wallet": {
+  "error__attach_wallet": {
     "unexpected": "There was an error trying to attach the hardware wallet.",
     "connect": "You need to connect your hardware wallet first.",
     "no_name": "No account name provided.",

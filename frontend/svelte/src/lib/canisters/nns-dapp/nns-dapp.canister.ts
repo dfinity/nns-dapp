@@ -145,7 +145,7 @@ export class NNSDappCanister {
       response.HardwareWalletAlreadyRegistered === null
     ) {
       throw new HardwareWalletAttachError(
-        "error_attach_wallet.already_registered"
+        "error__attach_wallet.already_registered"
       );
     }
 
@@ -153,7 +153,9 @@ export class NNSDappCanister {
       "HardwareWalletLimitExceeded" in response &&
       response.HardwareWalletLimitExceeded === null
     ) {
-      throw new HardwareWalletAttachError("error_attach_wallet.limit_exceeded");
+      throw new HardwareWalletAttachError(
+        "error__attach_wallet.limit_exceeded"
+      );
     }
   }
 
