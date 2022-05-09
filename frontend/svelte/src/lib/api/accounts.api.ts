@@ -89,18 +89,18 @@ export const loadAccounts = async ({
     type: "subAccount" as AccountType,
   });
 
-  const accounts = await Promise.all([
+  const [main, subAccounts, hardwareWallets] = await Promise.all([
     mapMainAccount(mainAccount),
-    ...mainAccount.sub_accounts.map(mapSubAccount),
-    ...mainAccount.hardware_wallet_accounts.map(mapHardwareAccount),
+    Promise.all(mainAccount.sub_accounts.map(mapSubAccount)),
+    Promise.all(mainAccount.hardware_wallet_accounts.map(mapHardwareAccount)),
   ]);
 
   logWithTimestamp(`Loading Accounts certified:${certified} complete.`);
 
   return {
-    main: accounts.find(({ type }) => type === "main"),
-    subAccounts: accounts.filter(({ type }) => type === "subAccount"),
-    hardwareWallets: accounts.filter(({ type }) => type === "hardwareWallet"),
+    main,
+    subAccounts,
+    hardwareWallets,
   };
 };
 
