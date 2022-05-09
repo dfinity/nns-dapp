@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { bytesToHexString, hexStringBytes } from "../../utils/utils";
+  import { bytesToHexString, isHexStringBytes } from "../../utils/utils";
   import { isPrincipal } from "../../utils/utils";
 
   export let json: unknown | undefined = undefined;
@@ -24,7 +24,7 @@
   const getValueType = (value): ValueType => {
     if (value === null) return "null";
     if (isPrincipal(value)) return "principal";
-    if (Array.isArray(json) && hexStringBytes(json)) return "hash";
+    if (Array.isArray(json) && isHexStringBytes(json)) return "hash";
     return typeof value;
   };
   const stringify = (value: unknown): string | object => {
@@ -42,7 +42,7 @@
           }
         }
         // optimistic hash stringifying
-        if (Array.isArray(value) && hexStringBytes(value)) {
+        if (Array.isArray(value) && isHexStringBytes(value)) {
           return bytesToHexString(value);
         }
         return value;

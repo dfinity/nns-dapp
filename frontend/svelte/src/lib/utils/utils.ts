@@ -104,7 +104,7 @@ export const createChunks = <T>(
 };
 
 // e.g. state_hash
-export const hexStringBytes = (bytes: number[]): boolean =>
+export const isHexStringBytes = (bytes: number[]): boolean =>
   bytes.length === 32 &&
   bytes.find(
     (value) => !Number.isInteger(value) || value < 0 || value > 255
