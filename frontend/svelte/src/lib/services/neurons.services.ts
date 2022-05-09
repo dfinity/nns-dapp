@@ -21,6 +21,7 @@ import {
   queryNeurons,
   removeHotkey as removeHotkeyApi,
   setFollowees,
+  spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
   startDissolving as startDissolvingApi,
@@ -557,6 +558,28 @@ export const mergeMaturity = async ({
     const identity: Identity = await getIdentityByNeuron(neuronId);
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
+export const spawnNeuron = async ({
+  neuronId,
+  percentageToSpawn,
+}: {
+  neuronId: NeuronId;
+  percentageToSpawn: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
 

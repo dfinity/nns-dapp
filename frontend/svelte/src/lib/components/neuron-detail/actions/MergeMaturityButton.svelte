@@ -5,8 +5,8 @@
   import Tooltip from "../../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { formatICP } from "../../../utils/icp.utils";
-  import { MIN_MATURITY_MERGE } from "../../../constants/neurons.constants";
   import { hasEnoughMaturityToMerge } from "../../../utils/neuron.utils";
+  import { MIN_MATURITY_MERGE } from "../../../constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 

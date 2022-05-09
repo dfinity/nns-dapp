@@ -13,6 +13,7 @@ import {
   queryNeurons,
   removeHotkey,
   setFollowees,
+  spawnNeuron,
   splitNeuron,
   stakeNeuron,
   startDissolving,
@@ -247,6 +248,39 @@ describe("neurons-api", () => {
         mergeMaturity({
           identity: mockIdentity,
           percentageToMerge: 50,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("spawnNeuron", () => {
+    it("spawn a neuron from a percentage of the maturity successfully", async () => {
+      mockGovernanceCanister.spawnNeuron.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await spawnNeuron({
+        identity: mockIdentity,
+        percentageToSpawn: 50,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.spawnNeuron).toBeCalled();
+    });
+
+    it("throws error when spawnNeuron fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.spawnNeuron.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        spawnNeuron({
+          identity: mockIdentity,
+          percentageToSpawn: 50,
           neuronId: BigInt(10),
         });
       await expect(call).rejects.toThrow(error);

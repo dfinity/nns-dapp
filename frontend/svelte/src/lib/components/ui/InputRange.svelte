@@ -16,6 +16,7 @@
 
 <!-- Order of on:input and bind:value matters: https://svelte.dev/docs#template-syntax-element-directives-bind-property -->
 <input
+  data-tid="input-range"
   {min}
   {max}
   aria-label={ariaLabel}
