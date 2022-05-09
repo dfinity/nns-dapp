@@ -17,9 +17,7 @@ describe("AccountBadge", () => {
       props: { account: mockMainAccount },
     });
 
-    expect(() =>
-      getByText(en.accounts.linked_account, { exact: false })
-    ).toThrow();
+    expect(() => getByText(en.accounts.subAccount, { exact: false })).toThrow();
   });
 
   it("should render linked account badge", () => {
@@ -27,7 +25,7 @@ describe("AccountBadge", () => {
       props: { account: mockSubAccount },
     });
 
-    expect(getByText(en.accounts.linked_account)).toBeInTheDocument();
+    expect(getByText(en.accounts.subAccount)).toBeInTheDocument();
   });
 
   it("should render hardware wallet badge", () => {
@@ -35,6 +33,6 @@ describe("AccountBadge", () => {
       props: { account: mockHardwareWalletAccount },
     });
 
-    expect(getByText(en.accounts.hardware_wallet_account)).toBeInTheDocument();
+    expect(getByText(en.accounts.hardwareWallet)).toBeInTheDocument();
   });
 });
