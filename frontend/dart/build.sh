@@ -13,6 +13,7 @@ MYPATH="$(
 echo "Assuming dart codebase path is $MYPATH"
 cd "$MYPATH"
 
+DEPLOY_ENV="${DEPLOY_ENV:-${DFX_NETWORK:-}}"
 if [[ $DEPLOY_ENV = "mainnet" ]]; then
   flutter build web --web-renderer html --release --no-sound-null-safety --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=/assets/canvaskit/ --dart-define=REDIRECT_TO_LEGACY="prod"
 else
