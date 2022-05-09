@@ -7,20 +7,22 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import fs from "fs";
 import child_process from "child_process";
+import fs from "fs";
 
 /**
  * Configuration is provided in a JSON file.  The JSON file SHOULD exist, if it doesn't it
  * will be created with the mainnet values.  The values in the file MAY then be overridden
  * using environment variables.
  */
-const CONFIG_FILE="../ts/src/config.json";
-const CONFIG_SCRIPT="../../config.sh";
+const CONFIG_FILE = "../ts/src/config.json";
+const CONFIG_SCRIPT = "../../config.sh";
 if (!fs.existsSync(CONFIG_FILE)) {
-  child_process.execFileSync(CONFIG_SCRIPT, {env: {DEPLOY_ENV: "mainnet"}});
+  child_process.execFileSync(CONFIG_SCRIPT, { env: { DEPLOY_ENV: "mainnet" } });
 }
-const configFromFile = JSON.parse(fs.readFileSync(CONFIG_FILE, {encoding: "utf8"}));
+const configFromFile = JSON.parse(
+  fs.readFileSync(CONFIG_FILE, { encoding: "utf8" })
+);
 
 /**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
