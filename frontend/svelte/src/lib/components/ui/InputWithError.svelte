@@ -19,9 +19,8 @@
   export let theme: "dark" | "light" = "light";
 </script>
 
-<div class="wrapper">
+<div class="wrapper" class:error={errorMessage !== undefined}>
   <Input
-    error={errorMessage !== undefined}
     {theme}
     {inputType}
     {required}
@@ -55,9 +54,14 @@
 
   .wrapper {
     position: relative;
+    width: 100%;
 
     // Leave enough space for the error message
     margin-bottom: var(--padding-6x);
+  }
+
+  .error {
+    --input-error-color: var(--error);
   }
 
   .error-message {
@@ -76,7 +80,7 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    color: var(--error-color);
+    color: var(--error);
 
     span {
       color: var(--gray-600);
