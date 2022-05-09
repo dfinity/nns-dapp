@@ -7,7 +7,6 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import child_process from "child_process";
 import fs from "fs";
 
 /**
@@ -16,9 +15,10 @@ import fs from "fs";
  * using environment variables.
  */
 const CONFIG_FILE = "../ts/src/config.json";
-const CONFIG_SCRIPT = "../../config.sh";
 if (!fs.existsSync(CONFIG_FILE)) {
-  child_process.execFileSync(CONFIG_SCRIPT, { env: { DEPLOY_ENV: "mainnet" } });
+  throw new Error(
+    "Config file missing. Run `npm run build:dev-config` for local development."
+  );
 }
 const configFromFile = JSON.parse(
   fs.readFileSync(CONFIG_FILE, { encoding: "utf8" })
