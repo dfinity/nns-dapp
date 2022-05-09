@@ -3,7 +3,7 @@ import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
-import { DEPLOY_ENV, HOST } from "../constants/environment.constants";
+import { IS_TESTNET, HOST } from "../constants/environment.constants";
 import { governanceCanister } from "./governance.api";
 
 /*
@@ -66,7 +66,7 @@ export const makeDummyProposals = async ({
 };
 
 const assertTestnet = () => {
-  if (DEPLOY_ENV !== "testnet") {
+  if (!IS_TESTNET) {
     throw new Error('The environment is not "testnet"');
   }
 };
