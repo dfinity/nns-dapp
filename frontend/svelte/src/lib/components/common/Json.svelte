@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
+  import { bytesToHexString, isHexStringBytes } from "../../utils/utils";
   import { isPrincipal } from "../../utils/utils";
 
   export let json: unknown | undefined = undefined;
@@ -16,12 +17,14 @@
     | "number"
     | "object"
     | "principal"
+    | "hash"
     | "string"
     | "symbol"
     | "undefined";
-  const valueType = (value): ValueType => {
+  const getValueType = (value): ValueType => {
     if (value === null) return "null";
     if (isPrincipal(value)) return "principal";
+    if (Array.isArray(json) && isHexStringBytes(json)) return "hash";
     return typeof value;
   };
   const stringify = (value: unknown): string | object => {
@@ -38,6 +41,10 @@
             return `"${asText}"`;
           }
         }
+        // optimistic hash stringifying
+        if (Array.isArray(value) && isHexStringBytes(value)) {
+          return bytesToHexString(value);
+        }
         return value;
       }
       case "string":
@@ -53,6 +60,8 @@
     }
   };
 
+  let valueType: ValueType;
+  let value: unknown;
   let keyLabel: string;
   let children: [string, unknown][];
   let hasChildren: boolean;
@@ -61,15 +70,19 @@
   let openBracket: string;
   let closeBracket: string;
   $: {
-    isExpandable = valueType(json) === "object";
+    valueType = getValueType(json);
+    isExpandable = valueType === "object";
+    value = isExpandable ? json : stringify(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
-    isExpandable = valueType(json) === "object";
     isArray = Array.isArray(json);
     openBracket = isArray ? "[" : "{";
     closeBracket = isArray ? "]" : "}";
   }
+
+  let title: string | undefined;
+  $: title = valueType === "hash" ? (json as number[]).join() : undefined;
 
   let collapsed: boolean = true;
   $: collapsed =
@@ -131,7 +144,8 @@
   <!-- key:value -->
   <span class="key-value">
     <span class="key" class:root={_level === 1}>{keyLabel}</span><span
-      class="value {valueType(json)}">{stringify(json)}</span
+      class="value {valueType}"
+      {title}>{value}</span
     ></span
   >
 {/if}
@@ -204,7 +218,7 @@
     }
   }
 
-  // value type colors
+  // value types
   .bracket {
     color: var(--json-bracket-color);
   }
@@ -222,6 +236,10 @@
   }
   .value.principal {
     color: var(--json-principal-color);
+  }
+  .value.hash {
+    word-break: break-all;
+    color: var(--json-hash-color);
   }
   .value.bigint {
     color: var(--json-bigint-color);

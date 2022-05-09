@@ -5,7 +5,7 @@
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import Json from "../../../../lib/components/common/Json.svelte";
-import { stringifyJson } from "../../../../lib/utils/utils";
+import { bytesToHexString, stringifyJson } from "../../../../lib/utils/utils";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
@@ -97,6 +97,19 @@ describe("Json", () => {
     testJsonRender({
       principal: mockPrincipal,
     }));
+
+  it("should render hash like objects", () => {
+    const hash = Array(32).fill(0);
+    testJsonRender(hash, bytesToHexString(hash));
+  });
+
+  it("should render title with original value for hash like objects", () => {
+    const hash = Array(32).fill(0);
+    const { getByTitle } = render(Json, {
+      props: { json: hash },
+    });
+    expect(getByTitle(hash.join())).toBeInTheDocument();
+  });
 
   it("should collaps and expand", async () => {
     const json = {
