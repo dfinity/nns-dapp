@@ -133,7 +133,7 @@ describe("ledger-services", () => {
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error_attach_wallet.no_name",
+          labelKey: "error__attach_wallet.no_name",
         });
 
         spyToastError.mockRestore();
@@ -149,7 +149,7 @@ describe("ledger-services", () => {
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error_attach_wallet.no_identity",
+          labelKey: "error__attach_wallet.no_identity",
         });
 
         spyToastError.mockRestore();
