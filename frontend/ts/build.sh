@@ -14,7 +14,7 @@ fi
 
 cd "$TOPLEVEL"
 # Create config file with proper configurations.
-./update_config.sh
+./config.sh
 
 cd "$TS_DIR"
 

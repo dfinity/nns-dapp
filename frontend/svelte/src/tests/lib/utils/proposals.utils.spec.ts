@@ -403,21 +403,12 @@ describe("proposals-utils", () => {
       expect(fields.length).toBe(0);
     });
 
-    it("should stringify all objects", () => {
-      const fields = proposalActionFields(
-        mockProposalInfo.proposal as Proposal
-      );
-      const asText = fields.map((fields) => fields.join()).join();
-
-      expect(/\[object Object\]/.test(asText)).toBeFalsy();
-    });
-
     it("should simulate flutter dapp formatting (temp solution)", () => {
       const fields = proposalActionFields(
         mockProposalInfo.proposal as Proposal
       );
       expect(fields[0][0]).toBe("nnsFunctionId");
-      expect(fields[0][1]).toBe("4");
+      expect(fields[0][1]).toBe(4);
       expect(fields[2][0]).toBe("nnsFunctionName");
       expect(fields[2][1]).toBe("nnsFunctionValue");
     });
