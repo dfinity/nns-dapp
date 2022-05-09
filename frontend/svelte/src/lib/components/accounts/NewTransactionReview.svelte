@@ -12,7 +12,7 @@
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store }: TransactionContext = context;
+  const { store, next }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
 
@@ -21,15 +21,25 @@
   const executeTransaction = async () => {
     startBusy("accounts");
 
-    await transferICP($store);
+    const { success } = await transferICP($store);
 
     stopBusy("accounts");
 
+    if (!success) {
+      // We close the modal only if no error. If the user is using the hardware wallet errors can be hints to what to do - e.g. open the app or unlock the wallet etc.
+      return;
+    }
+
     dispatcher("nnsClose");
   };
+
+  const action: () => Promise<void> =
+    $store.selectedAccount?.type === "hardwareWallet"
+      ? async () => next()
+      : executeTransaction;
 </script>
 
-<form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
+<form on:submit|preventDefault={action} class="wizard-wrapper">
   <div class="amount">
     <ICP inline={true} icp={amount} />
   </div>

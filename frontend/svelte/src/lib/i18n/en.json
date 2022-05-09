@@ -116,6 +116,7 @@
     "destination": "Destination",
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
+    "authorize_on_hardware_wallet": "Authorize on Hardware Wallet",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier"

@@ -14,6 +14,8 @@
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
   import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
   import type { Account } from "../../types/account";
+  import NewTransactionHardwareWalletAuthorize
+    from "../../components/accounts/NewTransactionHardwareWalletAuthorize.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
@@ -23,6 +25,9 @@
 
   let canSelectDestination: boolean;
   $: canSelectDestination = destinationAddress === undefined;
+
+  let shouldAuthorize: boolean = false;
+  $: shouldAuthorize = $newTransactionStore.selectedAccount?.type === "hardwareWallet";
 
   let steps: Steps;
   $: steps = [
@@ -54,6 +59,15 @@
       showBackButton: true,
       title: $i18n.accounts.review_transaction,
     },
+    ...((shouldAuthorize
+      ? [
+          {
+            name: "Authorize",
+            showBackButton: true,
+            title: $i18n.accounts.authorize_on_hardware_wallet,
+          },
+        ]
+      : []) as Steps),
   ];
 
   const newTransactionStore = writable<TransactionStore>({
@@ -100,6 +114,9 @@
     {/if}
     {#if currentStep?.name === "Review"}
       <NewTransactionReview on:nnsClose />
+    {/if}
+    {#if currentStep?.name === "Authorize"}
+      <NewTransactionHardwareWalletAuthorize on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>

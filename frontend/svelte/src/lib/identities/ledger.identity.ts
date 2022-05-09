@@ -40,6 +40,8 @@ export class LedgerIdentity extends SignIdentity {
         derivePath,
       });
 
+      console.log('5', derivePath, publicKey);
+
       return new this(derivePath, publicKey);
     } finally {
       // Always close the transport.
@@ -61,6 +63,8 @@ export class LedgerIdentity extends SignIdentity {
 
       // Remove the "neuron stake" flag, since we already signed the transaction.
       this.neuronStakeFlag = false;
+
+      console.log('2', app, this.derivePath, blob, this.neuronStakeFlag, responseSign);
 
       return decodeSignature(responseSign);
     };
