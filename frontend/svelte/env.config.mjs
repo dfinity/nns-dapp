@@ -17,7 +17,7 @@ import fs from "fs";
 const CONFIG_FILE = "../ts/src/config.json";
 if (!fs.existsSync(CONFIG_FILE)) {
   throw new Error(
-    "Config file missing. Run `npm run build:dev-config` for local development."
+    "Config file missing. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
   );
 }
 const configFromFile = JSON.parse(
