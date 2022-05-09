@@ -7,7 +7,7 @@
     "i18n": "node scripts/i18n.types.js",
     "import-assets-for-dev": "cp -R ../dart/assets public/assets && cp ../dart/web/manifest.json public/ && cp ../dart/web/favicon.ico public/",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && npm run import-assets-for-dev",
-    "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run build:index",
+    "build": "rm -fr public/assets/assets && npm run i18n && npm run build:dev-config && rollup -c && npm run build:index",
     "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "build:dev-config": "DEPLOY_ENV=testnet ../../config.js",
     "start": "sirv public",
