@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, type RenderResult } from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import MergeMaturityModal from "../../../../lib/modals/neurons/MergeMaturityModal.svelte";
 import { mergeMaturity } from "../../../../lib/services/neurons.services";
 import { formatPercentage } from "../../../../lib/utils/format.utils";
@@ -50,10 +50,25 @@ describe("MergeMaturityModal", () => {
   it("should call mergeMaturity service on confirm click", async () => {
     const { queryByTestId } = await renderMergeMaturityModal();
 
-    const button = queryByTestId("merge-maturity-button");
-    expect(button).toBeInTheDocument();
+    const rangeElement = queryByTestId("input-range");
+    expect(rangeElement).toBeInTheDocument();
+    rangeElement &&
+      (await fireEvent.input(rangeElement, { target: { value: 50 } }));
 
-    button && (await fireEvent.click(button));
+    const selectMaturityButton = queryByTestId(
+      "select-maturity-percentage-button"
+    );
+    expect(selectMaturityButton).toBeInTheDocument();
+    selectMaturityButton && (await fireEvent.click(selectMaturityButton));
+
+    await waitFor(() =>
+      expect(queryByTestId("confirm-action-screen")).toBeInTheDocument()
+    );
+
+    const confirmButton = queryByTestId("confirm-action-button");
+    expect(confirmButton).toBeInTheDocument();
+    confirmButton && (await fireEvent.click(confirmButton));
+
     expect(mergeMaturity).toBeCalled();
   });
 });
