@@ -68,6 +68,7 @@ interface I18nError {
   invalid_account_id: string;
   invalid_percentage: string;
   principal_not_valid: string;
+  input_length: string;
 }
 
 interface I18nWarning {
