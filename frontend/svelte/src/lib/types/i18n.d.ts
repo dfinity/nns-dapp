@@ -68,6 +68,7 @@ interface I18nError {
   invalid_account_id: string;
   invalid_percentage: string;
   principal_not_valid: string;
+  input_length: string;
 }
 
 interface I18nWarning {
@@ -322,6 +323,7 @@ interface I18nNeuron_detail {
   maturity_title: string;
   merge_maturity: string;
   spawn_neuron: string;
+  spawn: string;
   maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
@@ -337,6 +339,7 @@ interface I18nNeuron_detail {
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
   merge_maturity_disabled_tooltip: string;
+  spawn_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
@@ -348,10 +351,17 @@ interface I18nNeuron_detail {
   merge_maturity_modal_title: string;
   merge_maturity_modal_description: string;
   merge_maturity_success: string;
+  spawn_maturity_modal_title: string;
+  spawn_confirmation_modal_title: string;
+  spawn_maturity_modal_description: string;
+  spawn_maturity_success: string;
+  spawn_maturity_confirmation_q: string;
+  spawn_maturity_confirmation_a: string;
   current_stake: string;
   current_maturity: string;
   dissolve_delay_range: string;
-  merge_maturity_range: string;
+  maturity_range: string;
+  maturity_percentage: string;
   add_hotkey_placeholder: string;
 }
 
@@ -381,7 +391,7 @@ interface I18nError__ledger {
   user_cancel: string;
 }
 
-interface I18nError_attach_wallet {
+interface I18nError__attach_wallet {
   unexpected: string;
   connect: string;
   no_name: string;
@@ -414,5 +424,5 @@ interface I18n {
   neuron_detail: I18nNeuron_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
-  error_attach_wallet: I18nError_attach_wallet;
+  error__attach_wallet: I18nError__attach_wallet;
 }

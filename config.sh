@@ -24,8 +24,10 @@ pushd "$(dirname "${BASH_SOURCE[0]}")"
 
 : "Scan environment:"
 DFX_NETWORK="${DFX_NETWORK:-$DEPLOY_ENV}"
+DEPLOY_ENV="${DFX_NETWORK}"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
+export DEPLOY_ENV
 
 local_deployment_data="$(
   set -euo pipefail
@@ -58,10 +60,18 @@ local_deployment_data="$(
 : "- next, look at the environment,"
 : "- last is the defaults section in dfx.json"
 : ""
-: "After assembling the configuration, replace OWN_CANISTER_ID."
+: "After assembling the configuration:"
+: "- replace OWN_CANISTER_ID"
+: "- construct ledger and governance canister URLs"
 jq -s '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
-  . as $config | .OWN_URL=(.OWN_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+  .DEPLOY_ENV = env.DEPLOY_ENV |
+  .DFX_NETWORK = env.DFX_NETWORK |
+  . as $config |
+  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
+  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
+  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
+  .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
 echo "Config has been defined.  Let it never be changed." >&2
 
@@ -73,15 +83,29 @@ get_var() {
 IDENTITY_SERVICE_URL="$(get_var IDENTITY_SERVICE_URL)"
 export IDENTITY_SERVICE_URL
 
+GOVERNANCE_CANISTER_ID="$(get_var GOVERNANCE_CANISTER_ID)"
+export GOVERNANCE_CANISTER_ID
+GOVERNANCE_CANISTER_URL="$(get_var GOVERNANCE_CANISTER_URL)"
+export GOVERNANCE_CANISTER_URL
+
+LEDGER_CANISTER_ID="$(get_var LEDGER_CANISTER_ID)"
+export LEDGER_CANISTER_ID
+LEDGER_CANISTER_URL="$(get_var LEDGER_CANISTER_URL)"
+export LEDGER_CANISTER_URL
+
 OWN_CANISTER_ID="$(get_var OWN_CANISTER_ID)"
 export OWN_CANISTER_ID
+OWN_CANISTER_URL="$(get_var OWN_CANISTER_URL)"
+export OWN_CANISTER_URL
 
-# Mainnet has an undefined HOST.  The HOST is an identifier for the calling page.
-HOST="$(get_var HOST 2>/dev/null || echo "")"
+HOST="$(get_var HOST)"
 export HOST
 
 FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
 export FETCH_ROOT_KEY
+
+REDIRECT_TO_LEGACY="$(get_var REDIRECT_TO_LEGACY)"
+export REDIRECT_TO_LEGACY
 
 : "Return to the original working directory."
 popd

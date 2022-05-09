@@ -54,14 +54,14 @@ export const registerHardwareWallet = async ({
 }: RegisterHardwareWalletParams): Promise<void> => {
   if (name === undefined) {
     toastsStore.error({
-      labelKey: "error_attach_wallet.no_name",
+      labelKey: "error__attach_wallet.no_name",
     });
     return;
   }
 
   if (ledgerIdentity === undefined) {
     toastsStore.error({
-      labelKey: "error_attach_wallet.no_identity",
+      labelKey: "error__attach_wallet.no_identity",
     });
     return;
   }
@@ -87,7 +87,7 @@ export const registerHardwareWallet = async ({
     toastsStore.error({
       labelKey: ledgerErrorKey
         ? (err as HardwareWalletAttachError).message
-        : "error_attach_wallet.unexpected",
+        : "error__attach_wallet.unexpected",
       ...(!ledgerErrorKey && { err }),
     });
   }
