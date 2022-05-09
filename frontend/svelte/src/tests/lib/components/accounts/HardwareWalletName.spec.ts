@@ -7,8 +7,8 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
-import AddAccountTest from "./AddAccountTest.svelte";
 import en from "../../../mocks/i18n.mock";
+import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {
   const props = { testComponent: HardwareWalletName };
@@ -102,6 +102,8 @@ describe("HardwareWalletName", () => {
 
     getByText(en.accounts.attach_hardware_enter_name).focus();
 
-    await waitFor(() => expect(getByText(en.accounts.attach_hardware_enter_name)).not.toBeNull());
+    await waitFor(() =>
+      expect(getByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
+    );
   });
 });
