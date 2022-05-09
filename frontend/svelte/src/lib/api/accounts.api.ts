@@ -50,9 +50,9 @@ export const loadAccounts = async ({
       identifier: account.account_identifier,
       balance: await getAccountBalance(account.account_identifier),
       type,
-      subAccount: "sub_account" in account ? account.sub_account : undefined,
-      name: "name" in account ? account.name : undefined,
-      principal: "principal" in account ? account.principal : undefined,
+      ...("sub_account" in account && { subAccount: account.sub_account }),
+      ...("name" in account && { name: account.name }),
+      ...("principal" in account && { principal: account.principal }),
     });
 
   const [main, subAccounts, hardwareWallets] = await Promise.all([
