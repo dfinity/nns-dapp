@@ -9,17 +9,12 @@
     NEW_TRANSACTION_CONTEXT_KEY
   );
 
-  const onSelectAccount = ({
+  const onSelectAccount = async ({
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) => {
-    const { store, next }: TransactionContext = context;
+    const { selectSource }: TransactionContext = context;
 
-    store.update((data) => ({
-      ...data,
-      selectedAccount: detail.selectedAccount,
-    }));
-
-    next?.();
+    await selectSource(detail.selectedAccount);
   };
 </script>
 
