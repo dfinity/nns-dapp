@@ -131,21 +131,22 @@ jobs:
           name: wdio-logs
           path: e2e-tests/wdio.log
 
-      - name: Commit screenshots
-        if: ${{ github.ref != 'refs/heads/main' }}
-        uses: EndBug/add-and-commit@v7.4.0
-        with:
-          add: e2e-tests/screenshots
-          author_name: Screenshot Committer
-          author_email: "<nobody@example.com>"
-          message: "Update screenshots"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull: "NO-PULL"
-
-      - name: Archive screenshots
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: e2e-screenshots
-          path: screenshots/**/*.png
+# Disable screenshot saving until screenshots are stable.
+#      - name: Commit screenshots
+#        if: ${{ github.ref != 'refs/heads/main' }}
+#        uses: EndBug/add-and-commit@v7.4.0
+#        with:
+#          add: e2e-tests/screenshots
+#          author_name: Screenshot Committer
+#          author_email: "<nobody@example.com>"
+#          message: "Update screenshots"
+#          # do not pull: if this branch is behind, then we might as well let
+#          # the pushing fail
+#          pull: "NO-PULL"
+#
+#      - name: Archive screenshots
+#        if: ${{ always() }}
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: e2e-screenshots
+#          path: screenshots/**/*.png
