@@ -47,7 +47,8 @@
   $: {
     totalBalance = sumICPs(
       accounts?.main?.balance || zeroICPs,
-      ...(accounts?.subAccounts || []).map(({ balance }) => balance)
+      ...(accounts?.subAccounts || []).map(({ balance }) => balance),
+      ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
     );
   }
 </script>
@@ -76,6 +77,14 @@
             on:click={() => cardClick(subAccount.identifier)}
             showCopy
             account={subAccount}>{subAccount.name}</AccountCard
+          >
+        {/each}
+        {#each accounts.hardwareWallets || [] as walletAccount}
+          <AccountCard
+            role="link"
+            on:click={() => cardClick(walletAccount.identifier)}
+            showCopy
+            account={walletAccount}>{walletAccount.name}</AccountCard
           >
         {/each}
       {:else}
