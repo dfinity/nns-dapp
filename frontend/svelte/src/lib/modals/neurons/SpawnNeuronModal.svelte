@@ -63,22 +63,31 @@
   {#if currentStep.name === "SelectPercentage"}
     <SelectPercentage
       {neuron}
-      cardTitle={$i18n.neuron_detail.spawn_maturity_modal_title}
-      cardSubtitle={$i18n.neuron_detail.spawn_maturity_modal_description}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
       bind:percentage={percentageToSpawn}
-    />
+    >
+      <svelte:fragment slot="text">
+        <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
+        <p>{$i18n.neuron_detail.spawn_maturity_modal_description}</p>
+      </svelte:fragment>
+    </SelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmActionScreen {loading} on:nnsConfirm={spawnNeuronFromMaturity}>
-      <h4 slot="main-info">
-        {replacePlaceholders($i18n.neuron_detail.spawn_maturity_confirmation, {
-          $percentage: formatPercentage(percentageToSpawn / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          }),
-        })}
-      </h4>
+      <div class="confirm" slot="main-info">
+        <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
+        <p class="confirm-answer">
+          {replacePlaceholders(
+            $i18n.neuron_detail.spawn_maturity_confirmation_a,
+            {
+              $percentage: formatPercentage(percentageToSpawn / 100, {
+                minFraction: 0,
+                maxFraction: 0,
+              }),
+            }
+          )}
+        </p>
+      </div>
       <svelte:fragment slot="button-content"
         >{$i18n.core.confirm}</svelte:fragment
       >
@@ -89,5 +98,15 @@
 <style lang="scss">
   h4 {
     text-align: center;
+  }
+
+  .confirm-answer {
+    margin: 0;
+    text-align: center;
+  }
+
+  .confirm {
+    display: flex;
+    flex-direction: column;
   }
 </style>

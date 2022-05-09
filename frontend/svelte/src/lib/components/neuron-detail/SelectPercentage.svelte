@@ -11,8 +11,6 @@
 
   export let neuron: NeuronInfo;
   export let percentage: number;
-  export let cardTitle: string;
-  export let cardSubtitle: string;
   export let buttonText: string;
 
   let neuronICP: bigint;
@@ -40,8 +38,7 @@
 
   <Card>
     <div slot="start">
-      <h5>{cardTitle}</h5>
-      <p>{cardSubtitle}</p>
+      <slot name="text" />
     </div>
     <div class="select-container">
       <InputRange
