@@ -23,7 +23,11 @@
   let disabled: boolean;
   $: hardwareWalletName, (() => (disabled = invalidInputLength()))();
 
-  let invalidInput: boolean = false;
+  // We display the error message only if at least one character has been entered
+  const showInvalidInputLength = () =>
+    (invalidInputMessage =
+      hardwareWalletName.length > 0 && invalidInputLength());
+  let invalidInputMessage: boolean = false;
 
   const onSubmit = () => {
     store.update((data) => ({
@@ -44,8 +48,8 @@
       name="walletName"
       bind:value={hardwareWalletName}
       theme="dark"
-      on:blur={() => (invalidInput = invalidInputLength())}
-      errorMessage={invalidInput
+      on:blur={showInvalidInputLength}
+      errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {
             $length: `${HARDWARE_WALLET_NAME_MIN_LENGTH}`,
           })
