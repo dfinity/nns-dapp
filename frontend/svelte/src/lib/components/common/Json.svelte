@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { bytesToHexString, hexStringBytes } from "../../utils/html.utils";
+  import { bytesToHexString, hexStringBytes } from "../../utils/utils";
   import { isPrincipal } from "../../utils/utils";
 
   export let json: unknown | undefined = undefined;
@@ -81,6 +81,9 @@
     closeBracket = isArray ? "]" : "}";
   }
 
+  let title: string | undefined;
+  $: title = valueType === "hash" ? (json as number[]).join() : undefined;
+
   let collapsed: boolean = true;
   $: collapsed =
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
@@ -141,7 +144,8 @@
   <!-- key:value -->
   <span class="key-value">
     <span class="key" class:root={_level === 1}>{keyLabel}</span><span
-      class="value {valueType}">{value}</span
+      class="value {valueType}"
+      {title}>{value}</span
     ></span
   >
 {/if}
