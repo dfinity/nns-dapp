@@ -3,14 +3,13 @@
   import Toast from "./Toast.svelte";
 </script>
 
-<!-- We need the wrapper to avoid having an error in the tests -->
-<!-- TypeError: Cannot read properties of null (reading 'removeChild') -->
-<!-- https://github.com/sveltejs/svelte/issues/6037 -->
-<div class="wrapper">
-  {#each $toastsStore as msg (msg.id)}
-    <Toast {msg} />
-  {/each}
-</div>
+{#if $toastsStore.length > 0}
+  <div class="wrapper">
+    {#each $toastsStore as msg (msg.id)}
+      <Toast {msg} />
+    {/each}
+  </div>
+{/if}
 
 <style lang="scss">
   @use "../../themes/mixins/media";
@@ -26,6 +25,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+
+    z-index: calc(var(--z-index) + 999);
 
     @include media.min-width(large) {
       // A little narrowwer than the section to differentiate notifications from content

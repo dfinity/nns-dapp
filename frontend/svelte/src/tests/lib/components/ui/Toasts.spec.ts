@@ -3,8 +3,8 @@
  */
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import Toasts from "../../../../lib/components/ui/Toasts.svelte";
 import { toastsStore } from "../../../../lib/stores/toasts.store";
+import ToastsTest from "./ToastsTest.svelte";
 
 describe("Toasts", () => {
   afterEach(() => {
@@ -12,7 +12,7 @@ describe("Toasts", () => {
   });
 
   it("should not display any toast per default", () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     expect(container.querySelector("div.toast")).toBeNull();
   });
@@ -23,7 +23,7 @@ describe("Toasts", () => {
     );
 
   it("should display a toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "success" });
 
@@ -33,7 +33,7 @@ describe("Toasts", () => {
   });
 
   it("should display an informative toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "success" });
 
@@ -45,7 +45,7 @@ describe("Toasts", () => {
   });
 
   it("should display an error toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
 
@@ -57,11 +57,7 @@ describe("Toasts", () => {
   });
 
   it("should display multiple toasts", async () => {
-    jest
-      .spyOn(global.Math, "random")
-      .mockReturnValueOnce(0.123456789)
-      .mockReturnValueOnce(0.25555);
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
     toastsStore.show({ labelKey: "test.test", level: "error" });
@@ -73,11 +69,7 @@ describe("Toasts", () => {
   });
 
   it("should display multiple toasts and user is able to close one", async () => {
-    jest
-      .spyOn(global.Math, "random")
-      .mockReturnValueOnce(0.123456789)
-      .mockReturnValueOnce(0.25555);
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
     toastsStore.show({ labelKey: "test.test", level: "error" });
@@ -97,7 +89,7 @@ describe("Toasts", () => {
   });
 
   it("should close toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "success" });
 

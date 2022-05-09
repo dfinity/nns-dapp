@@ -28,7 +28,7 @@
   const onSubmit = async () => {
     if (disabled) {
       toastsStore.error({
-        labelKey: "error_attach_wallet.connect",
+        labelKey: "error__attach_wallet.connect",
       });
       return;
     }

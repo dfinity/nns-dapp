@@ -6,7 +6,6 @@
 </script>
 
 <!-- No badge for main account -->
-
-{#if account.subAccount !== undefined}
-  <small>{$i18n.accounts.linked_account}</small>
+{#if account.type !== "main"}
+  <small>{$i18n.accounts[account.type]}</small>
 {/if}
