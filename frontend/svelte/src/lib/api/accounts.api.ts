@@ -7,24 +7,9 @@ import type {
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { AccountsStore } from "../stores/accounts.store";
-import type { AccountType } from "../stores/add-account.store";
-import type { Account } from "../types/account";
+import type { Account, AccountType } from "../types/account";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { nnsDappCanister } from "./nns-dapp.api";
-
-const getAccountBalance = async ({
-  ledger,
-  identifierString,
-  certified,
-}: {
-  ledger: LedgerCanister;
-  identifierString: string;
-  certified: boolean;
-}): Promise<ICP> =>
-  ledger.accountBalance({
-    accountIdentifier: AccountIdentifier.fromHex(identifierString),
-    certified,
-  });
 
 export const loadAccounts = async ({
   identity,
@@ -33,6 +18,13 @@ export const loadAccounts = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<AccountsStore> => {
+  // Helper
+  const getAccountBalance = async (identifierString: string): Promise<ICP> =>
+    ledger.accountBalance({
+      accountIdentifier: AccountIdentifier.fromHex(identifierString),
+      certified,
+    });
+
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 
   const { canister, agent } = await nnsDappCanister({ identity });
@@ -50,49 +42,25 @@ export const loadAccounts = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const mapMainAccount = async (account: AccountDetails): Promise<Account> => ({
-    identifier: account.account_identifier,
-    principal: account.principal,
-    balance: await getAccountBalance({
-      ledger,
-      certified,
-      identifierString: account.account_identifier,
-    }),
-    type: "main" as AccountType,
-  });
-
-  const mapHardwareAccount = async (
-    account: HardwareWalletAccountDetails
-  ): Promise<Account> => ({
-    identifier: account.account_identifier,
-    principal: account.principal,
-    balance: await getAccountBalance({
-      ledger,
-      certified,
-      identifierString: account.account_identifier,
-    }),
-    name: account.name,
-    type: "hardwareWallet" as AccountType,
-  });
-
-  const mapSubAccount = async (
-    account: SubAccountDetails
-  ): Promise<Account> => ({
-    identifier: account.account_identifier,
-    balance: await getAccountBalance({
-      ledger,
-      certified,
-      identifierString: account.account_identifier,
-    }),
-    subAccount: account.sub_account,
-    name: account.name,
-    type: "subAccount" as AccountType,
-  });
+  const mapAccount =
+    (type: AccountType) =>
+    async (
+      account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
+    ): Promise<Account> => ({
+      identifier: account.account_identifier,
+      balance: await getAccountBalance(account.account_identifier),
+      type,
+      subAccount: "sub_account" in account ? account.sub_account : undefined,
+      name: "name" in account ? account.name : undefined,
+      principal: "principal" in account ? account.principal : undefined,
+    });
 
   const [main, subAccounts, hardwareWallets] = await Promise.all([
-    mapMainAccount(mainAccount),
-    Promise.all(mainAccount.sub_accounts.map(mapSubAccount)),
-    Promise.all(mainAccount.hardware_wallet_accounts.map(mapHardwareAccount)),
+    mapAccount("main")(mainAccount),
+    Promise.all(mainAccount.sub_accounts.map(mapAccount("subAccount"))),
+    Promise.all(
+      mainAccount.hardware_wallet_accounts.map(mapAccount("hardwareWallet"))
+    ),
   ]);
 
   logWithTimestamp(`Loading Accounts certified:${certified} complete.`);

@@ -2,7 +2,7 @@ import type { ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 
-type AccountType = "main" | "subAccount" | "hardwareWallet";
+export type AccountType = "main" | "subAccount" | "hardwareWallet";
 export interface Account {
   identifier: string;
   // Main and HardwareWallet accounts have Principal
