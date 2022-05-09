@@ -66,7 +66,7 @@
       </div>
       <div class="select-container">
         <InputRange
-          ariaLabel={$i18n.neuron_detail.merge_maturity_range}
+          ariaLabel={$i18n.neuron_detail.maturity_range}
           min={0}
           max={100}
           bind:value={percentageToMerge}

@@ -17,6 +17,7 @@ export type BusyStateInitiator =
   | "reload-proposal"
   | "merge-neurons"
   | "merge-maturity"
+  | "spawn-neuron"
   | "disburse-neuron"
   | "remove-followee";
 
