@@ -15,6 +15,7 @@ import fs from "fs";
  * using environment variables.
  */
 const CONFIG_FILE = "../ts/src/config.json";
+// Edge case: we run the script to create the config file earlier than this file is executed.
 if (!fs.existsSync(CONFIG_FILE)) {
   throw new Error(
     "Config file missing. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
