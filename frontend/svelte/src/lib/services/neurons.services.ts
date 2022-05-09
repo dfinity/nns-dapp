@@ -28,9 +28,12 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
+import { LedgerConnectionState } from "../constants/ledger.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import { connectToHardwareWalletProxy } from "../proxy/ledger.services.proxy";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -139,6 +142,33 @@ export const getIdentityByNeuronOrHotkey = async (
   }
 };
 
+const stakeAndLoadNeuronHelper = async ({
+  stake,
+  identity,
+  subAccount,
+}: {
+  stake: ICP;
+  identity: Identity;
+  subAccount?: SubAccountArray;
+}): Promise<void> => {
+  const neuronId: NeuronId = await stakeNeuron({
+    stake,
+    identity,
+    fromSubAccount: subAccount,
+  });
+
+  await loadNeuron({
+    neuronId,
+    setNeuron: ({
+      neuron,
+      certified,
+    }: {
+      neuron: NeuronInfo;
+      certified: boolean;
+    }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
+  });
+};
+
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
@@ -159,26 +189,32 @@ export const stakeAndLoadNeuron = async ({
       });
       return;
     }
-    const identity: Identity = await getIdentity();
 
-    const neuronId: NeuronId = await stakeNeuron({
-      stake,
-      identity,
-      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
-    });
-
-    await loadNeuron({
-      neuronId,
-      setNeuron: ({
-        neuron,
-        certified,
-      }: {
-        neuron: NeuronInfo;
-        certified: boolean;
-      }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
-    });
-
-    return neuronId;
+    if (account.type === "hardwareWallet") {
+      // callback might be called more than once
+      await connectToHardwareWalletProxy(
+        ({ ledgerIdentity, connectionState }) => {
+          console.log("in da callback");
+          if (
+            connectionState === LedgerConnectionState.CONNECTED &&
+            ledgerIdentity
+          ) {
+            ledgerIdentity?.flagUpcomingStakeNeuron();
+            stakeAndLoadNeuronHelper({
+              stake,
+              identity: ledgerIdentity,
+            });
+          }
+        }
+      );
+    } else {
+      const identity: Identity = await getIdentity();
+      await stakeAndLoadNeuronHelper({
+        stake,
+        identity,
+        subAccount: "subAccount" in account ? account.subAccount : undefined,
+      });
+    }
   } catch (err) {
     toastsStore.error({
       labelKey: "error.stake_neuron",

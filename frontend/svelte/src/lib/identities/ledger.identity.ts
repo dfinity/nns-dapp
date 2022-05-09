@@ -77,6 +77,13 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   /**
+   * Signals that the upcoming transaction to be signed will be a "stake neuron" transaction.
+   */
+  public flagUpcomingStakeNeuron(): void {
+    this.neuronStakeFlag = true;
+  }
+
+  /**
    * Required by Ledger.com that the user should be able to press a Button in UI
    * and verify the address/pubkey are the same as on the device screen.
    */
