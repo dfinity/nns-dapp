@@ -102,3 +102,17 @@ export const createChunks = <T>(
   }
   return chunks;
 };
+
+// e.g. state_hash
+export const hexStringBytes = (bytes: number[]): boolean =>
+  bytes.length === 32 &&
+  bytes.find(
+    (value) => !Number.isInteger(value) || value < 0 || value > 255
+  ) === undefined;
+
+// Convert a byte array to a hex string
+export const bytesToHexString = (bytes: number[]): string =>
+  bytes.reduce(
+    (str, byte) => `${str}${byte.toString(16).padStart(2, "0")}`,
+    ""
+  );
