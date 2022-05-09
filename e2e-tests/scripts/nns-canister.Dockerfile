@@ -25,17 +25,28 @@ RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
 
 RUN export CARGO_TARGET_DIR=/ic/rs/target && \
     cd ic/rs/ && \
-    cargo build --target wasm32-unknown-unknown --release -p ledger-canister && \
-    ic-cdk-optimizer -o $CARGO_TARGET_DIR/ledger-canister.wasm $CARGO_TARGET_DIR/wasm32-unknown-unknown/release/ledger-canister.wasm
+    cargo fetch
 
-RUN export CARGO_TARGET_DIR=/ic/rs/target && \
-    cd ic/rs/ && \
-    cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance && \
-    ic-cdk-optimizer -o $CARGO_TARGET_DIR/governance-canister.wasm $CARGO_TARGET_DIR/wasm32-unknown-unknown/release/governance-canister.wasm
+ENV CARGO_TARGET_DIR=/ic/rs/target
+WORKDIR /ic/rs
+
+RUN binary=ledger-canister && \
+    features="notify-method" && \
+    cargo build --target wasm32-unknown-unknown --release -p "$binary" --features "$features"
+RUN binary=ledger-canister && \
+    features="notify-method" && \
+    ls "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+
+RUN binary="governance-canister" && \
+    features="test" && \
+    cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance --features "$features"
+RUN binary="governance-canister" && \
+    features="test" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
 FROM scratch AS scratch
-COPY --from=builder /ic/rs/target/ledger-canister.wasm /
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
 COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public.did
-COPY --from=builder /ic/rs/target/governance-canister.wasm /governance-canister.wasm
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
+COPY --from=builder /ic/rs/target/*.wasm /
