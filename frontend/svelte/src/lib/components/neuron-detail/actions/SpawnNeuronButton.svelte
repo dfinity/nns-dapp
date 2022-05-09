@@ -19,7 +19,7 @@
     neuron.fullNeuron === undefined
       ? false
       : isEnoughToStakeNeuron({
-          stake: ICP.fromE8s(neuron.fullNeuron?.maturityE8sEquivalent),
+          stake: ICP.fromE8s(neuron.fullNeuron.maturityE8sEquivalent),
         });
 </script>
 
