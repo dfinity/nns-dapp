@@ -30,6 +30,9 @@ RUN export CARGO_TARGET_DIR=/ic/rs/target && \
 ENV CARGO_TARGET_DIR=/ic/rs/target
 WORKDIR /ic/rs
 
+# Note: The naming convention of the wasm files needs to match this:
+#       https://github.com/dfinity/ic/blob/master/gitlab-ci/src/job_scripts/cargo_build_canisters.py#L82
+#       Otherwise the built binary will simply not be deployed by ic-nns-init.
 RUN binary=ledger-canister && \
     features="notify-method" && \
     cargo build --target wasm32-unknown-unknown --release -p "$binary" --features "$features"
