@@ -1,5 +1,8 @@
 # Changelog
 
+## XXX
+
+
 ## Proposal 56265
 * UI fixes:
   * Show the ID of followed neurons again
