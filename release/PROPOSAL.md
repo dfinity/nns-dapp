@@ -6,7 +6,6 @@ Wasm sha256 hash: `67166f3b6d350762036446fb8c464e97bafe1a7cdd436743c4493e9518572
 * Render 32 byte hashes in proposals as strings rather than byte arrays
 * New JSON payload renderer
 * Refactor the configuration to suport more testing scenarios
-* Hide "remove hotkeys" if the user is not the controller
 * Prepare to render the Neurons tab using svelte
 * Fix CSP domains
 
