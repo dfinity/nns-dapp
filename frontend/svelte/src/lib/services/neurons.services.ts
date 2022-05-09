@@ -28,12 +28,12 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import {
   CannotBeMerged,
   InsufficientAmountError,
@@ -145,10 +145,10 @@ export const getIdentityByNeuronOrHotkey = async (
  */
 export const stakeAndLoadNeuron = async ({
   amount,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
@@ -164,7 +164,7 @@ export const stakeAndLoadNeuron = async ({
     const neuronId: NeuronId = await stakeNeuron({
       stake,
       identity,
-      fromSubAccount,
+      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
 
     await loadNeuron({

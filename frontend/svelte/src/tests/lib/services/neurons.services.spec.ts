@@ -12,7 +12,10 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -153,8 +156,17 @@ describe("neurons-services", () => {
   });
 
   describe("stake new neuron", () => {
-    it("should stake and load a neuron", async () => {
-      await stakeAndLoadNeuron({ amount: 10 });
+    it("should stake and load a neuron from main account", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake and load a neuron from subaccount", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -171,6 +183,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 0.1,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -184,6 +197,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: NaN,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -195,6 +209,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 10,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
