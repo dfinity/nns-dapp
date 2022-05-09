@@ -3,7 +3,7 @@ import {
   createChunks,
   debounce,
   isDefined,
-  isHexStringBytes,
+  isHash,
   stringifyJson,
   uniqueObjects,
 } from "../../../lib/utils/utils";
@@ -163,7 +163,7 @@ describe("utils", () => {
     });
   });
 
-  describe("isHexStringBytes", () => {
+  describe("isHash", () => {
     const bytes = (specialValue: unknown = undefined) => {
       const res = Array(32).fill(0);
       if (specialValue !== undefined) {
@@ -173,20 +173,20 @@ describe("utils", () => {
     };
 
     it("should identify similar to hash arrays", () => {
-      expect(isHexStringBytes(bytes())).toBe(true);
-      expect(isHexStringBytes(bytes(255))).toBe(true);
-      expect(isHexStringBytes([])).toBe(false);
-      expect(isHexStringBytes(bytes().slice(1))).toBe(false);
+      expect(isHash(bytes())).toBe(true);
+      expect(isHash(bytes(255))).toBe(true);
+      expect(isHash([])).toBe(false);
+      expect(isHash(bytes().slice(1))).toBe(false);
     });
 
     it("should identify not byte values", () => {
-      expect(isHexStringBytes(bytes(-1))).toBe(false);
-      expect(isHexStringBytes(bytes(null))).toBe(false);
-      expect(isHexStringBytes(bytes(256))).toBe(false);
-      expect(isHexStringBytes(bytes(1.5))).toBe(false);
-      expect(isHexStringBytes(bytes(""))).toBe(false);
-      expect(isHexStringBytes(bytes(NaN))).toBe(false);
-      expect(isHexStringBytes(bytes(Infinity))).toBe(false);
+      expect(isHash(bytes(-1))).toBe(false);
+      expect(isHash(bytes(null))).toBe(false);
+      expect(isHash(bytes(256))).toBe(false);
+      expect(isHash(bytes(1.5))).toBe(false);
+      expect(isHash(bytes(""))).toBe(false);
+      expect(isHash(bytes(NaN))).toBe(false);
+      expect(isHash(bytes(Infinity))).toBe(false);
     });
   });
 });
