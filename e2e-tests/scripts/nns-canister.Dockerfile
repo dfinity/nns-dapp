@@ -28,7 +28,14 @@ RUN export CARGO_TARGET_DIR=/ic/rs/target && \
     cargo build --target wasm32-unknown-unknown --release -p ledger-canister && \
     ic-cdk-optimizer -o $CARGO_TARGET_DIR/ledger-canister.wasm $CARGO_TARGET_DIR/wasm32-unknown-unknown/release/ledger-canister.wasm
 
+RUN export CARGO_TARGET_DIR=/ic/rs/target && \
+    cd ic/rs/ && \
+    cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance && \
+    ic-cdk-optimizer -o $CARGO_TARGET_DIR/governance-canister.wasm $CARGO_TARGET_DIR/wasm32-unknown-unknown/release/governance-canister.wasm
+
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/target/ledger-canister.wasm /
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
 COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public.did
+COPY --from=builder /ic/rs/target/governance-canister.wasm /governance-canister.wasm
+COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
