@@ -17,8 +17,6 @@
 
   export let theme: "dark" | "light" = "light";
 
-  export let error: boolean = false;
-
   const handleInput = ({ currentTarget }: InputEventHandler) =>
     (value =
       inputType === "number" ? +currentTarget.value : currentTarget.value);
@@ -30,7 +28,7 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme}`} class:disabled class:error>
+<div class={`input-block ${theme}`} class:disabled>
   <input
     data-tid="input-ui-element"
     type={inputType}
@@ -68,10 +66,6 @@
 
     width: var(--input-width);
 
-    &.error input {
-      border: 1px solid var(--error-color) !important;
-    }
-
     :global(button) {
       position: absolute;
       right: var(--padding-2x);
@@ -105,10 +99,11 @@
 
       input {
         background-color: var(--gray-50-background);
-        border: 1px solid var(--black);
+        border: 1px solid var(--input-error-color, var(--black));
 
         &:not(:placeholder-shown) + span.placeholder {
           background-color: var(--gray-50-background);
+          color: var(--input-error-color, currentColor);
         }
       }
 
@@ -126,7 +121,7 @@
 
     border-radius: calc(4 * var(--border-radius));
 
-    border: 1px solid currentColor;
+    border: 1px solid var(--input-error-color, currentColor);
     outline: none;
 
     @include media.min-width(medium) {
@@ -141,7 +136,7 @@
     left: var(--padding-2x);
     transform: translate(0, -50%);
 
-    transition: all var(--animation-time-normal);
+    transition: transform var(--animation-time-normal);
     transform-origin: top left;
 
     pointer-events: none;

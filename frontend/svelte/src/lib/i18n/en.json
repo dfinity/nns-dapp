@@ -63,7 +63,8 @@
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
-    "principal_not_valid": "Please enter a valid principal."
+    "principal_not_valid": "Please enter a valid principal.",
+    "input_length": "Input must be longer than $length characters."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -356,7 +357,7 @@
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device."
   },
-  "error_attach_wallet": {
+  "error__attach_wallet": {
     "unexpected": "There was an error trying to attach the hardware wallet.",
     "connect": "You need to connect your hardware wallet first.",
     "no_name": "No account name provided.",
