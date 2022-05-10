@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { ICP, type NeuronInfo } from "@dfinity/nns";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
@@ -11,6 +11,7 @@
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { isEnoughToStakeNeuron } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
@@ -32,6 +33,24 @@
 
   let percentageToSpawn: number = 0;
   let loading: boolean;
+
+  let notEnoughMaturityToSpawn: boolean;
+  $: {
+    const maturitySelected: number =
+      neuron.fullNeuron === undefined
+        ? 0
+        : Math.floor(
+            (Number(neuron.fullNeuron.maturityE8sEquivalent) *
+              percentageToSpawn) /
+              100
+          );
+    notEnoughMaturityToSpawn =
+      neuron.fullNeuron === undefined
+        ? false
+        : isEnoughToStakeNeuron({
+            stake: ICP.fromE8s(BigInt(maturitySelected)),
+          });
+  }
 
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
@@ -66,6 +85,7 @@
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
       bind:percentage={percentageToSpawn}
+      disabled={!notEnoughMaturityToSpawn}
     >
       <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
