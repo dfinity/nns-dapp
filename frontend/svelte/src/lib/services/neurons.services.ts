@@ -197,6 +197,7 @@ export const stakeAndLoadNeuron = async ({
       isHardwareWallet(account) &&
       "flagUpcomingStakeNeuron" in accountIdentity
     ) {
+      // TODO: Find a better solution than setting a flag.
       accountIdentity.flagUpcomingStakeNeuron();
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
