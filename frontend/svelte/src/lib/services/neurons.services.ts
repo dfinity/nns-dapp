@@ -220,6 +220,8 @@ export const stakeAndLoadNeuron = async ({
         certified: boolean;
       }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
     });
+
+    return neuronId;
   } catch (err) {
     toastsStore.error({
       labelKey: "error.stake_neuron",
