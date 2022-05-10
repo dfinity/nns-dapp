@@ -34,22 +34,19 @@
   let percentageToSpawn: number = 0;
   let loading: boolean;
 
-  let notEnoughMaturityToSpawn: boolean;
+  let enoughMaturityToSpawn: boolean;
   $: {
-    const maturitySelected: number =
-      neuron.fullNeuron === undefined
-        ? 0
-        : Math.floor(
-            (Number(neuron.fullNeuron.maturityE8sEquivalent) *
-              percentageToSpawn) /
-              100
-          );
-    notEnoughMaturityToSpawn =
-      neuron.fullNeuron === undefined
-        ? false
-        : isEnoughToStakeNeuron({
-            stake: ICP.fromE8s(BigInt(maturitySelected)),
-          });
+    if (neuron.fullNeuron !== undefined) {
+      const maturitySelected: number = Math.floor(
+        (Number(neuron.fullNeuron.maturityE8sEquivalent) * percentageToSpawn) /
+          100
+      );
+      enoughMaturityToSpawn = isEnoughToStakeNeuron({
+        stake: ICP.fromE8s(BigInt(maturitySelected)),
+      });
+    } else {
+      enoughMaturityToSpawn = false;
+    }
   }
 
   const dispatcher = createEventDispatcher();
@@ -85,7 +82,7 @@
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
       bind:percentage={percentageToSpawn}
-      disabled={!notEnoughMaturityToSpawn}
+      disabled={!enoughMaturityToSpawn}
     >
       <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
