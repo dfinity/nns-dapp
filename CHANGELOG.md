@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal 59149
+* Remove slider option for spawning maturity on wallets that don't support it.
+* Confirmation screen in Merge Maturity
+
 ## Proposal 58993
 * Render 32 byte hashes in proposals as strings rather than byte arrays
 * New JSON payload renderer
