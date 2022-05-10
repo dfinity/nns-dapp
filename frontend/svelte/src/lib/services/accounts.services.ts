@@ -177,23 +177,25 @@ const getAccountIdentity = async (identifier: string): Promise<Identity> => {
  * Unlike getIdentity(), getting the ledger identity does not automatically logout if no identity is found - i.e. if errors happen.
  * User might need several tries to attach properly the ledger to the computer.
  */
-const getLedgerIdentity = async (identifier: string): Promise<LedgerIdentity> => {
+const getLedgerIdentity = async (
+  identifier: string
+): Promise<LedgerIdentity> => {
   const ledgerIdentity: LedgerIdentity = await getLedgerIdentityProxy();
 
   const ledgerIdentifier: string = principalToAccountIdentifier(
-      ledgerIdentity.getPrincipal()
+    ledgerIdentity.getPrincipal()
   );
 
   if (ledgerIdentifier !== identifier) {
     const labels = get(i18n);
 
     throw new LedgerErrorMessage(
-        replacePlaceholders(labels.error__ledger.incorrect_identifier, {
-          $identifier: `${identifier}`,
-          $ledgerIdentifier: `${ledgerIdentifier}`,
-        })
+      replacePlaceholders(labels.error__ledger.incorrect_identifier, {
+        $identifier: `${identifier}`,
+        $ledgerIdentifier: `${ledgerIdentifier}`,
+      })
     );
   }
 
   return ledgerIdentity;
-}
+};
