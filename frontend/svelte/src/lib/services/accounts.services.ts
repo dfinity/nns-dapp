@@ -1,5 +1,4 @@
 import type { Identity } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { createSubAccount, loadAccounts } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
@@ -8,18 +7,14 @@ import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
-import { LedgerErrorMessage } from "../errors/ledger.errors";
-import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
-import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { toLedgerError } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -167,35 +162,8 @@ const getAccountIdentity = async (identifier: string): Promise<Identity> => {
   const account: Account | undefined = getAccountFromStore(identifier);
 
   if (account?.type === "hardwareWallet") {
-    return getLedgerIdentity(identifier);
+    return getLedgerIdentityProxy(identifier);
   }
 
   return getIdentity();
-};
-
-/**
- * Unlike getIdentity(), getting the ledger identity does not automatically logout if no identity is found - i.e. if errors happen.
- * User might need several tries to attach properly the ledger to the computer.
- */
-const getLedgerIdentity = async (
-  identifier: string
-): Promise<LedgerIdentity> => {
-  const ledgerIdentity: LedgerIdentity = await getLedgerIdentityProxy();
-
-  const ledgerIdentifier: string = principalToAccountIdentifier(
-    ledgerIdentity.getPrincipal()
-  );
-
-  if (ledgerIdentifier !== identifier) {
-    const labels = get(i18n);
-
-    throw new LedgerErrorMessage(
-      replacePlaceholders(labels.error__ledger.incorrect_identifier, {
-        $identifier: `${identifier}`,
-        $ledgerIdentifier: `${ledgerIdentifier}`,
-      })
-    );
-  }
-
-  return ledgerIdentity;
 };

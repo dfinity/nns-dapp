@@ -1,11 +1,15 @@
 import type { Identity } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { LedgerConnectionState } from "../constants/ledger.constants";
-import { LedgerErrorKey } from "../errors/ledger.errors";
+import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
+import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { toLedgerError } from "../utils/error.utils";
+import { replacePlaceholders } from "../utils/i18n.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 
@@ -28,7 +32,7 @@ export const connectToHardwareWallet = async (
   try {
     callback({ connectionState: LedgerConnectionState.CONNECTING });
 
-    const ledgerIdentity: LedgerIdentity = await getLedgerIdentity();
+    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
 
     callback({
       connectionState: LedgerConnectionState.CONNECTED,
@@ -91,5 +95,32 @@ export const registerHardwareWallet = async ({
   }
 };
 
-export const getLedgerIdentity = (): Promise<LedgerIdentity> =>
+const createLedgerIdentity = (): Promise<LedgerIdentity> =>
   LedgerIdentity.create();
+
+/**
+ * Unlike getIdentity(), getting the ledger identity does not automatically logout if no identity is found - i.e. if errors happen.
+ * User might need several tries to attach properly the ledger to the computer.
+ */
+export const getLedgerIdentity = async (
+  identifier: string
+): Promise<LedgerIdentity> => {
+  const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+
+  const ledgerIdentifier: string = principalToAccountIdentifier(
+    ledgerIdentity.getPrincipal()
+  );
+
+  if (ledgerIdentifier !== identifier) {
+    const labels = get(i18n);
+
+    throw new LedgerErrorMessage(
+      replacePlaceholders(labels.error__ledger.incorrect_identifier, {
+        $identifier: `${identifier}`,
+        $ledgerIdentifier: `${ledgerIdentifier}`,
+      })
+    );
+  }
+
+  return ledgerIdentity;
+};
