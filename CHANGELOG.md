@@ -4,6 +4,13 @@
 * Remove slider option for spawning maturity on wallets that don't support it.
 * Confirmation screen in Merge Maturity
 
+## Proposal 58993
+* Render 32 byte hashes in proposals as strings rather than byte arrays
+* New JSON payload renderer
+* Refactor the configuration to suport more testing scenarios
+* Prepare to render the Neurons tab using svelte
+* Fix CSP domains
+
 ## Proposal 58151
 - Usability and accessibility improvements
   - Add a question that reminds title and topic of the proposal before vote on related detail page
