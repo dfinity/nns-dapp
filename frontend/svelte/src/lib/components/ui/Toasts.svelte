@@ -26,6 +26,8 @@
     flex-direction: column;
     gap: var(--padding);
 
+    z-index: calc(var(--z-index) + 999);
+
     @include media.min-width(large) {
       // A little narrowwer than the section to differentiate notifications from content
       max-width: calc(var(--section-max-width) - var(--padding-2x));
