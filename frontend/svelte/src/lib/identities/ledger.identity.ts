@@ -192,7 +192,7 @@ export class LedgerIdentity extends SignIdentity {
   /**
    * Required implementation for agent-js transformRequest.
    *
-   * Without following function, transaction processed by the ledger would ends in error "27012 - Data is invalid : Unexpected data type"
+   * Without following function, transaction processed by the ledger would end in error "27012 - Data is invalid : Unexpected data type"
    */
   public override async transformRequest(
     request: HttpAgentRequest

@@ -54,7 +54,7 @@ export const decodeSignature = ({
 }: ResponseSign): Signature => {
   const labels = get(i18n);
 
-  console.log('1', signatureRS)
+  console.log("1", signatureRS);
 
   if (signatureRS === null || signatureRS === undefined) {
     throw new LedgerErrorMessage(

@@ -5,9 +5,9 @@ import { LedgerErrorKey } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { toastsStore } from "../stores/toasts.store";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
+import { toLedgerError } from "../utils/error.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
-import {toLedgerError} from '../utils/error.utils';
 
 export interface ConnectToHardwareWalletParams {
   connectionState: LedgerConnectionState;
@@ -82,8 +82,14 @@ export const registerHardwareWallet = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(toLedgerError({err, fallbackErrorLabelKey: "error__attach_wallet.unexpected"}));
+    toastsStore.error(
+      toLedgerError({
+        err,
+        fallbackErrorLabelKey: "error__attach_wallet.unexpected",
+      })
+    );
   }
 };
 
-export const getLedgerIdentity = (): Promise<LedgerIdentity> => LedgerIdentity.create();
+export const getLedgerIdentity = (): Promise<LedgerIdentity> =>
+  LedgerIdentity.create();

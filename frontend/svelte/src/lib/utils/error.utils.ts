@@ -52,15 +52,19 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   return { labelKey: pair[1], detail: errorToString(error), level: "error" };
 };
 
-export const toLedgerError = (
-    {err, fallbackErrorLabelKey}: {err: unknown, fallbackErrorLabelKey: string}
-): { labelKey: string; err?: unknown } => {
+export const toLedgerError = ({
+  err,
+  fallbackErrorLabelKey,
+}: {
+  err: unknown;
+  fallbackErrorLabelKey: string;
+}): { labelKey: string; err?: unknown } => {
   const ledgerErrorKey: boolean =
     err instanceof HardwareWalletAttachError || err instanceof LedgerErrorKey;
 
   return {
     labelKey: ledgerErrorKey
-      ? (err as {message: string}).message
+      ? (err as { message: string }).message
       : fallbackErrorLabelKey,
     ...(!ledgerErrorKey && { err }),
   };

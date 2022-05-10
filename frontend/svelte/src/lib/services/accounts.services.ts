@@ -94,7 +94,7 @@ export const transferICP = async ({
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    console.log('3', identity, subAccount);
+    console.log("3", identity, subAccount);
 
     // TODO: refactor accountStore => we can keep in store the subAccountId, doing so we can avoid to transform it each time we call the backend
     const fromSubAccountId =
@@ -167,7 +167,6 @@ const getAccountIdentity = async (identifier: string): Promise<Identity> => {
   }
 
   if (account.type === "hardwareWallet") {
-
     /**
      * TODO: test
      *

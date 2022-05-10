@@ -84,8 +84,10 @@
       selectedAccount,
     }));
 
-    const {type} = selectedAccount;
-    const stepAuthorize: Step | undefined = steps.find(({title}: Step) => title === "Authorize");
+    const { type } = selectedAccount;
+    const stepAuthorize: Step | undefined = steps.find(
+      ({ title }: Step) => title === "Authorize"
+    );
 
     // Wait steps to be applied - components to be updated - before being able to navigate to next step
     const wait = async () => tick();
