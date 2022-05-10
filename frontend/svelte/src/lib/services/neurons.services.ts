@@ -28,9 +28,11 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import type { LedgerIdentity } from "../identities/ledger.identity";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -146,16 +148,23 @@ const getStakeNeuronPropsByAccount = ({
 }: {
   account: Account;
   accountIdentity: Identity;
-}) => {
+}): {
+  ledgerCanisterIdentity: LedgerIdentity | Identity;
+  identity: LedgerIdentity | Identity;
+  controller: Principal;
+  fromSubAccount?: SubAccountArray;
+} => {
   if (isHardwareWallet(account)) {
+    // The software of the hardware wallet cannot sign the call to the governance canister to claim the neuron.
+    // Therefore we use an `AnonymousIdentity`.
     return {
-      ledgerIdentity: accountIdentity,
+      ledgerCanisterIdentity: accountIdentity,
       identity: new AnonymousIdentity(),
       controller: accountIdentity.getPrincipal(),
     };
   }
   return {
-    ledgerIdentity: accountIdentity,
+    ledgerCanisterIdentity: accountIdentity,
     identity: accountIdentity,
     controller: accountIdentity.getPrincipal(),
     fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
@@ -190,12 +199,12 @@ export const stakeAndLoadNeuron = async ({
     ) {
       accountIdentity.flagUpcomingStakeNeuron();
     }
-    const { ledgerIdentity, controller, fromSubAccount, identity } =
+    const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
     const neuronId: NeuronId = await stakeNeuron({
       stake,
       identity,
-      ledgerIdentity,
+      ledgerCanisterIdentity,
       controller,
       fromSubAccount,
     });
