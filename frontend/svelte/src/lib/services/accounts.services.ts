@@ -7,6 +7,7 @@ import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
@@ -158,7 +159,9 @@ export const getAccountFromStore = (
   );
 };
 
-const getAccountIdentity = async (identifier: string): Promise<Identity> => {
+export const getAccountIdentity = async (
+  identifier: string
+): Promise<Identity | LedgerIdentity> => {
   const account: Account | undefined = getAccountFromStore(identifier);
 
   if (account?.type === "hardwareWallet") {

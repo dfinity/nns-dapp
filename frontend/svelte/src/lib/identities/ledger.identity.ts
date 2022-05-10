@@ -25,16 +25,6 @@ import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq
 
-/**
- * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
- * @param request - body of the HttpAgentRequest
- */
-function _prepareCborForLedger(
-  request: ReadRequest | CallRequest
-): ArrayBuffer {
-  return Cbor.encode({ content: request });
-}
-
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
@@ -91,19 +81,6 @@ export class LedgerIdentity extends SignIdentity {
    */
   public flagUpcomingStakeNeuron(): void {
     this.neuronStakeFlag = true;
-  }
-
-  public async transformRequest(request: HttpAgentRequest): Promise<unknown> {
-    const { body, ...fields } = request;
-    const signature = await this.sign(_prepareCborForLedger(body));
-    return {
-      ...fields,
-      body: {
-        content: body,
-        sender_pubkey: this.publicKey.toDer(),
-        sender_sig: signature,
-      },
-    };
   }
 
   /**

@@ -6,7 +6,6 @@ import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
-import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
 import * as services from "../../../lib/services/neurons.services";
 import {
   definedNeuronsStore,
@@ -54,16 +53,9 @@ jest.mock("../../../lib/stores/toasts.store", () => {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
-  };
-});
-
-jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
-  return {
-    connectToHardwareWalletProxy: (callback) =>
-      callback({
-        ledgerIdentity: mockIdentity,
-        connectionState: LedgerConnectionState.CONNECTED,
-      }),
+    getAccountIdentity: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockIdentity)),
   };
 });
 
@@ -165,6 +157,7 @@ describe("neurons-services", () => {
 
   afterEach(() => {
     spyGetNeuron.mockClear();
+    jest.clearAllMocks();
   });
 
   describe("stake new neuron", () => {
@@ -193,6 +186,9 @@ describe("neurons-services", () => {
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
     });
 
     it(`stakeNeuron return undefined if amount less than ${
