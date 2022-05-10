@@ -61,8 +61,7 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
-        "HOST": "http://localhost:8080",
-        "OWN_CANISTER_URL": "https://OWN_CANISTER_ID.localhost:8080"
+        "HOST": "http://localhost:8080"
       },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
