@@ -16,6 +16,8 @@
 
   const dispatcher = createEventDispatcher();
 
+  // TODO: remove extra step
+
   const executeTransaction = async () => {
     startBusy("accounts");
 

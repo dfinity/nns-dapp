@@ -8,7 +8,7 @@
 </script>
 
 {#if !feeOnly}
-  <h5>{$i18n.accounts.source}</h5>
+  <h5>{$i18n.accounts.source} (HARDWARE WALLET)</h5>
   <p>{source}</p>
 
   <h5>{$i18n.accounts.destination}</h5>

@@ -8,6 +8,7 @@
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
+  import {toastsStore} from '../../stores/toasts.store';
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -25,6 +26,7 @@
 
     stopBusy("accounts");
 
+    // TODO: don't close if error and hw but close it error and not hw
     dispatcher("nnsClose");
   };
 
