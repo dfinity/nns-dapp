@@ -1,7 +1,11 @@
 # Changelog
 
-## XXX
-
+## Proposal 58993
+* Render 32 byte hashes in proposals as strings rather than byte arrays
+* New JSON payload renderer
+* Refactor the configuration to suport more testing scenarios
+* Prepare to render the Neurons tab using svelte
+* Fix CSP domains
 
 ## Proposal 56265
 * UI fixes:
