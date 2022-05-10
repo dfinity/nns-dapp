@@ -6,7 +6,6 @@
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { knownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { toastsStore } from "../../stores/toasts.store";
   import { followeesByTopic } from "../../utils/neuron.utils";
   import Collapsible from "../ui/Collapsible.svelte";
 
@@ -53,9 +52,6 @@
       neuronId: neuron.neuronId,
       topic,
       followee,
-    });
-    toastsStore.success({
-      labelKey: "new_followee.success_remove_followee",
     });
     stopBusy("remove-followee");
   };

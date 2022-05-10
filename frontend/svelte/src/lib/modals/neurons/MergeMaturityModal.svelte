@@ -1,23 +1,34 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import Modal from "../Modal.svelte";
-  import { maturityByStake, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
-  import Card from "../../components/ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
-  import InputRange from "../../components/ui/InputRange.svelte";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { mergeMaturity } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import type { Step, Steps } from "../../stores/steps.state";
+  import WizardModal from "../WizardModal.svelte";
+  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
+  import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
 
   export let neuron: NeuronInfo;
 
-  let neuronICP: bigint;
-  $: neuronICP = neuronStake(neuron);
+  const steps: Steps = [
+    {
+      name: "SelectPercentage",
+      showBackButton: false,
+      title: $i18n.neuron_detail.merge_maturity_modal_title,
+    },
+    {
+      name: "ConfirmMerge",
+      showBackButton: true,
+      title: $i18n.neuron_detail.merge_confirmation_modal_title,
+    },
+  ];
+
+  let currentStep: Step;
+  let modal: WizardModal;
 
   let percentageToMerge: number = 0;
   let loading: boolean;
@@ -39,81 +50,63 @@
     loading = false;
     stopBusy("merge-maturity");
   };
+  const goToConfirm = () => {
+    modal.next();
+  };
 </script>
 
-<Modal theme="dark" size="medium" on:nnsClose>
-  <svelte:fragment slot="title"
-    >{$i18n.neuron_detail.merge_maturity_modal_title}</svelte:fragment
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+  <span slot="title" data-tid="merge-maturity-neuron-modal"
+    >{currentStep?.title ??
+      $i18n.neuron_detail.merge_maturity_modal_title}</span
   >
-  <section data-tid="merge-maturity-neuron-modal">
-    <div>
-      <h5>{$i18n.neuron_detail.current_maturity}</h5>
-      <p>{formatPercentage(maturityByStake(neuron))}</p>
-    </div>
-    <div>
-      <h5>{$i18n.neuron_detail.current_stake}</h5>
-      <p data-tid="neuron-stake">
-        {replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: formatICP(neuronICP),
-        })}
-      </p>
-    </div>
-
-    <Card>
-      <div slot="start">
+  {#if currentStep.name === "SelectPercentage"}
+    <SelectPercentage
+      {neuron}
+      buttonText={$i18n.neuron_detail.merge}
+      on:nnsSelectPercentage={goToConfirm}
+      bind:percentage={percentageToMerge}
+    >
+      <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.merge_maturity_modal_title}</h5>
         <p>{$i18n.neuron_detail.merge_maturity_modal_description}</p>
+      </svelte:fragment>
+    </SelectPercentage>
+  {:else if currentStep.name === "ConfirmMerge"}
+    <ConfirmActionScreen {loading} on:nnsConfirm={mergeNeuronMaturity}>
+      <div class="confirm" slot="main-info">
+        <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
+        <p class="confirm-answer">
+          {replacePlaceholders(
+            $i18n.neuron_detail.merge_maturity_confirmation_a,
+            {
+              $percentage: formatPercentage(percentageToMerge / 100, {
+                minFraction: 0,
+                maxFraction: 0,
+              }),
+            }
+          )}
+        </p>
       </div>
-      <div class="select-container">
-        <InputRange
-          ariaLabel={$i18n.neuron_detail.merge_maturity_range}
-          min={0}
-          max={100}
-          bind:value={percentageToMerge}
-        />
-        <h5>
-          {formatPercentage(percentageToMerge / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          })}
-        </h5>
-      </div>
-    </Card>
-
-    <button
-      data-tid="merge-maturity-button"
-      class="primary full-width"
-      on:click={mergeNeuronMaturity}
-      disabled={loading || percentageToMerge === 0}
-    >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.core.confirm}
-      {/if}
-    </button>
-  </section>
-</Modal>
+      <svelte:fragment slot="button-content"
+        >{$i18n.core.confirm}</svelte:fragment
+      >
+    </ConfirmActionScreen>
+  {/if}
+</WizardModal>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
-
-  section {
-    @include modal.section;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: var(--padding);
-    margin-top: calc(4 * var(--padding));
+  h4 {
+    text-align: center;
   }
 
-  .select-container {
-    width: 100%;
+  .confirm-answer {
+    margin: 0;
+    text-align: center;
+  }
 
-    h5 {
-      margin-top: var(--padding);
-      text-align: center;
-    }
+  .confirm {
+    display: flex;
+    flex-direction: column;
   }
 </style>

@@ -3,6 +3,7 @@ import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { HOST, IS_TESTNET } from "../constants/environment.constants";
 import { governanceCanister } from "./governance.api";
 
 /*
@@ -30,9 +31,8 @@ export const acquireICPTs = async ({
     base64ToUInt8Array(privateKey)
   );
 
-  // If https://nnsdapp.dfinity.network/ is ever used anywhere else, extract or use an environment variable
   const agent: HttpAgent = new HttpAgent({
-    host: "https://nnsdapp.dfinity.network/",
+    host: HOST,
     identity,
   });
   await agent.fetchRootKey();
@@ -66,7 +66,7 @@ export const makeDummyProposals = async ({
 };
 
 const assertTestnet = () => {
-  if (process.env.DEPLOY_ENV !== "testnet") {
+  if (!IS_TESTNET) {
     throw new Error('The environment is not "testnet"');
   }
 };

@@ -13,9 +13,10 @@ import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
+import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { dfinityNeuron, host, icNeuron } from "./constants.api";
+import { dfinityNeuron, icNeuron } from "./constants.api";
 import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
@@ -115,6 +116,22 @@ export const mergeMaturity = async ({
 
   await canister.mergeMaturity({ neuronId, percentageToMerge });
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
+};
+
+export const spawnNeuron = async ({
+  neuronId,
+  percentageToSpawn,
+  identity,
+}: {
+  neuronId: NeuronId;
+  percentageToSpawn: number;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.spawnNeuron({ neuronId, percentageToSpawn });
+  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
 };
 
 export const addHotkey = async ({
@@ -355,7 +372,7 @@ export const governanceCanister = async ({
 }> => {
   const agent = await createAgent({
     identity,
-    host,
+    host: HOST,
   });
 
   const canister = GovernanceCanister.create({

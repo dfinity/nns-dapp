@@ -22,11 +22,16 @@
   $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
+
+  let hardwareWalletAccounts: Account[];
+  $: hardwareWalletAccounts = ($accountsStore?.hardwareWallets ?? []).filter(
+    ({ identifier }: Account) => identifier !== filterIdentifier
+  );
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    {#if displayTitle}
+    {#if displayTitle && subAccounts?.length > 0}
       <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
 
@@ -44,6 +49,15 @@
         role="button"
         on:click={() => chooseAccount(subAccount)}
         account={subAccount}>{subAccount.name}</AccountCard
+      >
+    {/each}
+
+    {#each hardwareWalletAccounts as hardwareWalletAccount}
+      <AccountCard
+        role="button"
+        on:click={() => chooseAccount(hardwareWalletAccount)}
+        account={hardwareWalletAccount}
+        >{hardwareWalletAccount.name}</AccountCard
       >
     {/each}
   {:else}

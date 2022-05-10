@@ -27,16 +27,6 @@ describe("HardwareWalletName", () => {
     })
   );
 
-  it("should render an explanation text", () => {
-    const { queryByText } = render(AddAccountTest, {
-      props,
-    });
-
-    expect(
-      queryByText(en.accounts.attach_hardware_enter_name)
-    ).toBeInTheDocument();
-  });
-
   it("should enable and disable submit according text input length", async () => {
     const { container } = render(AddAccountTest, {
       props,
@@ -95,5 +85,25 @@ describe("HardwareWalletName", () => {
     fireEvent.click(button);
 
     await waitFor(() => expect(spyOnNext).toHaveBeenCalled());
+  });
+
+  it("should display an error if wallet name is too short", async () => {
+    const spyOnNext = jest.fn();
+
+    const { container, getByText } = render(AddAccountTest, {
+      props: {
+        ...props,
+        nextCallback: spyOnNext,
+      },
+    });
+
+    const input = container.querySelector("input") as HTMLInputElement;
+    await fireEvent.input(input, { target: { value: "1" } });
+
+    getByText(en.accounts.attach_hardware_enter_name).focus();
+
+    await waitFor(() =>
+      expect(getByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
+    );
   });
 });

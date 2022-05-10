@@ -2,6 +2,7 @@
   import Collapsible from "./Collapsible.svelte";
 
   export let expandable = false;
+  export let limitHeight = true;
 
   let expanded: boolean = expandable;
 
@@ -24,7 +25,7 @@
     </Collapsible>
   {:else}
     <h3><slot name="title" /></h3>
-    <div class="content limit-height">
+    <div class="content" class:limit-height={limitHeight}>
       <slot />
     </div>
   {/if}
@@ -71,6 +72,7 @@
 
   .content {
     margin: var(--padding-2x) 0 var(--padding);
+    overflow-x: auto;
 
     &.limit-height {
       max-height: 300px;

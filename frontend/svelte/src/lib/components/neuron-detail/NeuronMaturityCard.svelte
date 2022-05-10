@@ -38,7 +38,7 @@
   <div class="actions">
     {#if isControllable}
       <MergeMaturityButton {neuron} />
-      <SpawnNeuronButton />
+      <SpawnNeuronButton {neuron} />
     {/if}
   </div>
 </Card>
