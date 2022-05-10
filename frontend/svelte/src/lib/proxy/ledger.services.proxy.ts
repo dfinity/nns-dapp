@@ -22,7 +22,9 @@ export const registerHardwareWalletProxy = async (
   return registerHardwareWallet(params);
 };
 
-export const getLedgerIdentityProxy = async (identifier: string): Promise<LedgerIdentity> => {
+export const getLedgerIdentityProxy = async (
+  identifier: string
+): Promise<LedgerIdentity> => {
   const { getLedgerIdentity } = await importLedgerServices();
 
   return getLedgerIdentity(identifier);
