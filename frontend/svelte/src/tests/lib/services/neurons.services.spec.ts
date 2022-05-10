@@ -6,6 +6,7 @@ import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
 import * as services from "../../../lib/services/neurons.services";
 import {
   definedNeuronsStore,
@@ -13,6 +14,7 @@ import {
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import {
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
@@ -52,6 +54,16 @@ jest.mock("../../../lib/stores/toasts.store", () => {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+  };
+});
+
+jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+  return {
+    connectToHardwareWalletProxy: (callback) =>
+      callback({
+        ledgerIdentity: mockIdentity,
+        connectionState: LedgerConnectionState.CONNECTED,
+      }),
   };
 });
 
@@ -172,6 +184,15 @@ describe("neurons-services", () => {
 
       const neuron = get(definedNeuronsStore)[0];
       expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake neuron from hardware wallet", async () => {
+      await stakeAndLoadNeuron({
+        amount: 10,
+        account: mockHardwareWalletAccount,
+      });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
     });
 
     it(`stakeNeuron return undefined if amount less than ${

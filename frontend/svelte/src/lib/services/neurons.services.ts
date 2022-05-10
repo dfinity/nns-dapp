@@ -1,4 +1,4 @@
-import { AnonymousIdentity, Identity } from "@dfinity/agent";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
   Topic,
   type ICP,
@@ -166,11 +166,10 @@ export const stakeAndLoadNeuron = async ({
       return new Promise((resolve) => {
         connectToHardwareWalletProxy(
           async ({ ledgerIdentity, connectionState }) => {
-            console.log("in da callback");
             try {
               if (
                 connectionState === LedgerConnectionState.CONNECTED &&
-                ledgerIdentity
+                ledgerIdentity !== undefined
               ) {
                 ledgerIdentity?.flagUpcomingStakeNeuron();
                 const neuronId = await stakeNeuron({
