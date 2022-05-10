@@ -123,6 +123,7 @@ interface I18nAccounts {
   enter_icp_amount: string;
   source: string;
   destination: string;
+  hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
   authorize_on_hardware_wallet: string;

@@ -16,4 +16,5 @@
   {feeOnly}
   source={$store.selectedAccount?.identifier ?? ""}
   destination={$store.destinationAddress ?? ""}
+  hardwareWallet={$store.selectedAccount?.type === "hardwareWallet"}
 />
