@@ -287,18 +287,23 @@ export const queryNeurons = async ({
  */
 export const stakeNeuron = async ({
   stake,
+  controller,
+  ledgerCanisterIdentity,
   identity,
   fromSubAccount,
 }: {
   stake: ICP;
+  controller: Principal;
+  ledgerCanisterIdentity: Identity;
   identity: Identity;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`);
-  const { canister, agent } = await governanceCanister({ identity });
+  const { canister } = await governanceCanister({ identity });
 
+  // The use case of staking from Hardware wallet uses a different agent for governance and ledger canister.
   const ledgerCanister: LedgerCanister = LedgerCanister.create({
-    agent,
+    agent: await createAgent({ identity: ledgerCanisterIdentity, host: HOST }),
     canisterId: LEDGER_CANISTER_ID,
   });
 
@@ -307,7 +312,7 @@ export const stakeNeuron = async ({
 
   const response = await canister.stakeNeuron({
     stake,
-    principal: identity.getPrincipal(),
+    principal: controller,
     fromSubAccountId,
     ledgerCanister,
   });

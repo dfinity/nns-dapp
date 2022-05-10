@@ -52,6 +52,8 @@ describe("neurons-api", () => {
 
     await stakeNeuron({
       stake: ICP.fromString("2") as ICP,
+      controller: mockIdentity.getPrincipal(),
+      ledgerCanisterIdentity: mockIdentity,
       identity: mockIdentity,
     });
 

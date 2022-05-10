@@ -20,7 +20,7 @@
     creating = true;
     const neuronId = await stakeAndLoadNeuron({
       amount,
-      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
+      account,
     });
     if (neuronId !== undefined) {
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
