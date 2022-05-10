@@ -9,6 +9,7 @@ describe("accountsStore", () => {
 
     expect(initState.main).toBeUndefined();
     expect(initState.subAccounts).toBeUndefined();
+    expect(initState.hardwareWallets).toBeUndefined();
   };
 
   it("initializes to undefined", () => {

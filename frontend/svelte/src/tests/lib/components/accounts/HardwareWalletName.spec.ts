@@ -7,6 +7,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStore } from "../../../../lib/stores/add-account.store";
+import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {
@@ -84,5 +85,25 @@ describe("HardwareWalletName", () => {
     fireEvent.click(button);
 
     await waitFor(() => expect(spyOnNext).toHaveBeenCalled());
+  });
+
+  it("should display an error if wallet name is too short", async () => {
+    const spyOnNext = jest.fn();
+
+    const { container, getByText } = render(AddAccountTest, {
+      props: {
+        ...props,
+        nextCallback: spyOnNext,
+      },
+    });
+
+    const input = container.querySelector("input") as HTMLInputElement;
+    await fireEvent.input(input, { target: { value: "1" } });
+
+    getByText(en.accounts.attach_hardware_enter_name).focus();
+
+    await waitFor(() =>
+      expect(getByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
+    );
   });
 });

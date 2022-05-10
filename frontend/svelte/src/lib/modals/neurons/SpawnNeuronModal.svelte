@@ -1,16 +1,16 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formatPercentage } from "../../utils/format.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { mergeMaturity } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { createEventDispatcher } from "svelte";
+  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
+  import { formatPercentage } from "../../utils/format.utils";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { createEventDispatcher } from "svelte";
+  import { spawnNeuron } from "../../services/neurons.services";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let neuron: NeuronInfo;
 
@@ -18,37 +18,37 @@
     {
       name: "SelectPercentage",
       showBackButton: false,
-      title: $i18n.neuron_detail.merge_maturity_modal_title,
+      title: $i18n.neuron_detail.spawn_maturity_modal_title,
     },
     {
-      name: "ConfirmMerge",
+      name: "ConfirmSpawn",
       showBackButton: true,
-      title: $i18n.neuron_detail.merge_confirmation_modal_title,
+      title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
 
   let currentStep: Step;
   let modal: WizardModal;
 
-  let percentageToMerge: number = 0;
+  let percentageToSpawn: number = 0;
   let loading: boolean;
 
   const dispatcher = createEventDispatcher();
-  const mergeNeuronMaturity = async () => {
+  const spawnNeuronFromMaturity = async () => {
     loading = true;
-    startBusy("merge-maturity");
-    const { success } = await mergeMaturity({
+    startBusy("spawn-neuron");
+    const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToMerge,
+      percentageToSpawn,
     });
     if (success) {
       toastsStore.success({
-        labelKey: "neuron_detail.merge_maturity_success",
+        labelKey: "neuron_detail.spawn_maturity_success",
       });
       dispatcher("nnsClose");
     }
     loading = false;
-    stopBusy("merge-maturity");
+    stopBusy("spawn-neuron");
   };
   const goToConfirm = () => {
     modal.next();
@@ -56,31 +56,31 @@
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <span slot="title" data-tid="merge-maturity-neuron-modal"
+  <svelte:fragment slot="title"
     >{currentStep?.title ??
-      $i18n.neuron_detail.merge_maturity_modal_title}</span
+      $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
   >
   {#if currentStep.name === "SelectPercentage"}
     <SelectPercentage
       {neuron}
-      buttonText={$i18n.neuron_detail.merge}
+      buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
-      bind:percentage={percentageToMerge}
+      bind:percentage={percentageToSpawn}
     >
       <svelte:fragment slot="text">
-        <h5>{$i18n.neuron_detail.merge_maturity_modal_title}</h5>
-        <p>{$i18n.neuron_detail.merge_maturity_modal_description}</p>
+        <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
+        <p>{$i18n.neuron_detail.spawn_maturity_modal_description}</p>
       </svelte:fragment>
     </SelectPercentage>
-  {:else if currentStep.name === "ConfirmMerge"}
-    <ConfirmActionScreen {loading} on:nnsConfirm={mergeNeuronMaturity}>
+  {:else if currentStep.name === "ConfirmSpawn"}
+    <ConfirmActionScreen {loading} on:nnsConfirm={spawnNeuronFromMaturity}>
       <div class="confirm" slot="main-info">
-        <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
+        <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
         <p class="confirm-answer">
           {replacePlaceholders(
-            $i18n.neuron_detail.merge_maturity_confirmation_a,
+            $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: formatPercentage(percentageToMerge / 100, {
+              $percentage: formatPercentage(percentageToSpawn / 100, {
                 minFraction: 0,
                 maxFraction: 0,
               }),

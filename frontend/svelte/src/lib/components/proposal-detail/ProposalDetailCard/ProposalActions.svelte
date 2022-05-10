@@ -5,24 +5,33 @@
     proposalFirstActionKey,
     proposalActionFields,
   } from "../../../../lib/utils/proposals.utils";
+  import Json from "../../common/Json.svelte";
 
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
-  let actionFields: [string, string][] = [];
+  let actionFields: [string, unknown][] = [];
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
   $: actionFields =
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 </script>
 
-<CardBlock>
+<CardBlock limitHeight={false}>
   <svelte:fragment slot="title">{actionKey}</svelte:fragment>
   <ul>
     {#each actionFields as [key, value]}
       <li>
         <h4>{key}</h4>
-        <p>{value}</p>
+        {#if typeof value === "object"}
+          <p class="json">
+            <Json json={value} />
+          </p>
+        {:else}
+          <p>
+            {value}
+          </p>
+        {/if}
       </li>
     {/each}
   </ul>

@@ -4,6 +4,7 @@ import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
+  HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "./nns-dapp.errors";
@@ -13,6 +14,8 @@ import type {
   AccountDetails,
   CanisterDetails,
   CreateSubAccountResponse,
+  RegisterHardwareWalletRequest,
+  RegisterHardwareWalletResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
 
@@ -52,26 +55,26 @@ export class NNSDappCanister {
    *
    * @returns Promise<void>
    */
-  public addAccount = async (): Promise<AccountIdentifier> => {
+  public async addAccount(): Promise<AccountIdentifier> {
     const identifierText = await this.certifiedService.add_account();
     return AccountIdentifier.fromHex(identifierText);
-  };
+  }
 
   /**
    * Get Account Details
    *
    * @returns Promise<void>
    */
-  public getAccount = async ({
+  public async getAccount({
     certified,
   }: {
     certified: boolean;
-  }): Promise<AccountDetails> => {
+  }): Promise<AccountDetails> {
     const { AccountNotFound, Ok } = await this.getNNSDappService(
       certified
     ).get_account();
     if (AccountNotFound === null) {
-      throw new AccountNotFoundError("Error creating subAccount");
+      throw new AccountNotFoundError("Account not found");
     }
 
     if (Ok) {
@@ -80,16 +83,16 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error getting account details");
-  };
+  }
 
   /**
    * Creates a subaccount with the name and returns the Subaccount details
    */
-  public createSubAccount = async ({
+  public async createSubAccount({
     subAccountName,
   }: {
     subAccountName: string;
-  }): Promise<SubAccountDetails> => {
+  }): Promise<SubAccountDetails> {
     const {
       AccountNotFound,
       NameTooLong,
@@ -121,7 +124,40 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
-  };
+  }
+
+  public async registerHardwareWallet(
+    request: RegisterHardwareWalletRequest
+  ): Promise<void> {
+    const response: RegisterHardwareWalletResponse =
+      await this.certifiedService.register_hardware_wallet(request);
+
+    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+      throw new AccountNotFoundError("Error registering hardware wallet");
+    }
+
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new NameTooLongError(`Error, name ${request.name} is too long`);
+    }
+
+    if (
+      "HardwareWalletAlreadyRegistered" in response &&
+      response.HardwareWalletAlreadyRegistered === null
+    ) {
+      throw new HardwareWalletAttachError(
+        "error__attach_wallet.already_registered"
+      );
+    }
+
+    if (
+      "HardwareWalletLimitExceeded" in response &&
+      response.HardwareWalletLimitExceeded === null
+    ) {
+      throw new HardwareWalletAttachError(
+        "error__attach_wallet.limit_exceeded"
+      );
+    }
+  }
 
   public getCanisters = async ({
     certified,

@@ -36,6 +36,17 @@
     --modal-medium-width: 600px;
   }
 
+  // Json colors
+  --json-bracket-color: var(--gray-400);
+  --json-value-color: var(--gray-100);
+  --json-string-color: var(--brand-sea-buckthorn);
+  --json-number-color: var(--brand-picton-blue);
+  --json-null-color: var(--gray-400);
+  --json-principal-color: var(--yellow-400);
+  --json-hash-color: var(--yellow-400);
+  --json-bigint-color: var(--brand-picton-blue);
+  --json-boolean-color: var(--brand-picton-blue);
+
   // BRAND COLORS
   --brand-picton-blue: #29abe2;
   --brand-black: #000000;
@@ -44,7 +55,12 @@
   --brand-razzmatazz: #ed1e79;
   --brand-meteorite: #522785;
 
-  --error-color: #ff2e00;
+  --error: #ed254e;
+  --error-rgb: 237, 37, 78;
+  --error-contrast: #ffffff;
+  --error-contrast-rgb: 255, 255, 255;
+  --error-shade: #d12145;
+  --error-tint: #ef3b60;
 
   --background: #272929;
   --background-rgb: 39, 41, 41;

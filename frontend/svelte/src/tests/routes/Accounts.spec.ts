@@ -9,6 +9,7 @@ import { formatICP } from "../../lib/utils/icp.utils";
 import Accounts from "../../routes/Accounts.svelte";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../mocks/accounts.store.mock";
@@ -94,16 +95,37 @@ describe("Accounts", () => {
     expect(articles.length).toBe(2);
   });
 
+  it("should render hardware wallet account cards", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+    const { container } = render(Accounts);
+
+    const articles = container.querySelectorAll("article");
+
+    expect(articles).not.toBeNull();
+    expect(articles.length).toBe(2);
+  });
+
   it("should render total accounts icp", () => {
     accountsStoreMock = jest
       .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      .mockImplementation(
+        mockAccountsStoreSubscribe(
+          [mockSubAccount],
+          [mockHardwareWalletAccount]
+        )
+      );
     const { container } = render(Accounts);
 
     const titleRow = container.querySelector("section > div");
 
     const totalBalance =
-      mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
+      mockMainAccount.balance.toE8s() +
+      mockSubAccount.balance.toE8s() +
+      mockHardwareWalletAccount.balance.toE8s();
     expect(titleRow?.textContent).toEqual(
       `Accounts ${formatICP(totalBalance)} ICP`
     );

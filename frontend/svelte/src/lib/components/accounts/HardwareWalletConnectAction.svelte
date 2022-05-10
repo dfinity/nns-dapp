@@ -9,7 +9,7 @@
   export let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
 
-  let ledgerIdentity: LedgerIdentity | undefined = undefined;
+  export let ledgerIdentity: LedgerIdentity | undefined = undefined;
 
   const connect = async () =>
     await connectToHardwareWalletProxy(

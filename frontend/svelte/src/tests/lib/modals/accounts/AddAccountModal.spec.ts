@@ -3,8 +3,10 @@
  */
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import { LedgerConnectionState } from "../../../../lib/constants/ledger.constants";
 import AddAccountModal from "../../../../lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "../../../../lib/services/accounts.services";
+import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
@@ -13,6 +15,20 @@ import { renderModal } from "../../../mocks/modal.mock";
 jest.mock("../../../../lib/services/accounts.services", () => {
   return {
     addSubAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("../../../../lib/proxy/ledger.services.proxy", () => {
+  return {
+    connectToHardwareWalletProxy: jest
+      .fn()
+      .mockImplementation(async (callback) =>
+        callback({
+          connectionState: LedgerConnectionState.CONNECTED,
+          ledgerIdentity: mockIdentity,
+        })
+      ),
+    registerHardwareWalletProxy: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -200,5 +216,38 @@ describe("AddAccountModal", () => {
     await shouldNavigateHardwareWalletStep(renderResult);
 
     await shouldNavigateHardwareWalletConnect(renderResult);
+  });
+
+  const shouldAttachWallet = async ({
+    getByTestId,
+    component,
+  }: RenderResult) => {
+    const connect = getByTestId("ledger-connect-button") as HTMLButtonElement;
+
+    fireEvent.click(connect);
+
+    await waitFor(() => {
+      const button = getByTestId("ledger-attach-button") as HTMLButtonElement;
+
+      expect(button.getAttribute("disabled")).toBeNull();
+    });
+
+    const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
+
+    fireEvent.click(attach);
+
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+    await waitFor(() => expect(onClose).toBeCalled());
+  };
+
+  it("should attach wallet to new account ", async () => {
+    const renderResult = await renderModal({ component: AddAccountModal });
+
+    await shouldNavigateHardwareWalletStep(renderResult);
+
+    await shouldNavigateHardwareWalletConnect(renderResult);
+
+    await shouldAttachWallet(renderResult);
   });
 });

@@ -5,16 +5,19 @@ set -euo pipefail
 TS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOPLEVEL="$TS_DIR/../../"
 
-# Check that the DEPLOY_ENV is set
-DEPLOY_ENV="${DEPLOY_ENV:-}"
-if ! [[ $DEPLOY_ENV = "testnet" ]] && ! [[ $DEPLOY_ENV = "mainnet" ]] && ! [[ $DEPLOY_ENV = "local" ]]; then
-  echo "Which deployment environment? Set DEPLOY_ENV to 'testnet' or 'mainnet' or 'local'"
-  exit 1
-fi
-
 cd "$TOPLEVEL"
+
+# Check that the DEPLOY_ENV is set
+DEPLOY_ENV="${DEPLOY_ENV:-${DFX_NETWORK:-}}"
+
+DEPLOY_ENV="$DEPLOY_ENV" jq -e '.networks[env.DEPLOY_ENV]' dfx.json || {
+  echo "Which deployment environment? Set DEPLOY_ENV to one of:"
+  jq -er '.networks | keys | join("  ")' dfx.json
+  exit 1
+} >&2
+
 # Create config file with proper configurations.
-./update_config.sh
+./config.sh
 
 cd "$TS_DIR"
 

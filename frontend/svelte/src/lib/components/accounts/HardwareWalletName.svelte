@@ -1,11 +1,13 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import Input from "../ui/Input.svelte";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "../../stores/add-account.store";
   import { getContext } from "svelte";
+  import InputWithError from "../ui/InputWithError.svelte";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "../../constants/accounts.constants";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -15,9 +17,17 @@
 
   let hardwareWalletName: string = $store.hardwareWalletName ?? "";
 
-  // TODO(L2-433): display error hint - needs UI/UX decision about the display of such hint next to input first
+  const invalidInputLength = (): boolean =>
+    hardwareWalletName.length < HARDWARE_WALLET_NAME_MIN_LENGTH;
+
   let disabled: boolean;
-  $: disabled = hardwareWalletName.length < 2;
+  $: hardwareWalletName, (() => (disabled = invalidInputLength()))();
+
+  // We display the error message only if at least one character has been entered
+  const showInvalidInputLength = () =>
+    (invalidInputMessage =
+      hardwareWalletName.length > 0 && invalidInputLength());
+  let invalidInputMessage: boolean = false;
 
   const onSubmit = () => {
     store.update((data) => ({
@@ -32,12 +42,18 @@
 <form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
   <div>
     <h4>{$i18n.accounts.attach_hardware_enter_name}</h4>
-    <Input
+    <InputWithError
       inputType="text"
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
       name="walletName"
       bind:value={hardwareWalletName}
       theme="dark"
+      on:blur={showInvalidInputLength}
+      errorMessage={invalidInputMessage
+        ? replacePlaceholders($i18n.error.input_length, {
+            $length: `${HARDWARE_WALLET_NAME_MIN_LENGTH}`,
+          })
+        : undefined}
     />
   </div>
   <button class="primary full-width" type="submit" {disabled}>

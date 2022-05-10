@@ -4,6 +4,7 @@ import type { Account } from "../types/account";
 export interface AccountsStore {
   main?: Account;
   subAccounts?: Account[];
+  hardwareWallets?: Account[];
 }
 
 /**
@@ -13,6 +14,7 @@ export const initAccountsStore = () => {
   const initialAccounts: AccountsStore = {
     main: undefined,
     subAccounts: undefined,
+    hardwareWallets: undefined,
   };
 
   const { subscribe, set } = writable<AccountsStore>(initialAccounts);

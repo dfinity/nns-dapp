@@ -13,7 +13,7 @@ import {
 } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import { isDefined, stringifyJson } from "./utils";
+import { isDefined } from "./utils";
 
 export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
   length <= 0;
@@ -29,44 +29,28 @@ export const proposalFirstActionKey = (
   proposal: Proposal
 ): string | undefined => Object.keys(proposal.action || {})[0];
 
-/**
- * Temporary solution till JSON renderer
- * (removes redundant wrappers)
- */
-const mockFlutterJSONFormatting = (value: string = ""): string => {
-  // "text" -> text
-  let formattedText = value.replace(/^"(.*)"$/g, "$1");
-  // "123" -> 123 (bigint is a string because of poor JSON.stringify support. See stringifyJson)
-  formattedText = formattedText.replace(/"([\d]+)"/g, "$1");
-  // \" -> "
-  formattedText = formattedText.replace(/\\"/g, '"');
-  return formattedText;
-};
-
 export const proposalActionFields = (
   proposal: Proposal
-): [string, string][] => {
+): [string, unknown][] => {
   const key = proposalFirstActionKey(proposal);
   if (key === undefined) {
     return [];
   }
-
-  return Object.entries(proposal.action?.[key] ?? {})
-    .filter(([key]) => key !== "payloadBytes")
-    .map(([key, value]: [string, object]) => [
-      key,
-      mockFlutterJSONFormatting(stringifyJson(value, { indentation: 2 })),
-    ]);
-};
-
-// TODO: replace w/ markdown renderer -- eg https://nns.ic0.app/#/proposal/43574
-export const formatProposalSummary = (summary: string): string => {
-  if (summary?.length === 0) return "";
-  // extend urls
-  return summary.replace(
-    /(https?:\/\/[\S]+)/g,
-    '<a target="_blank" href="$1">$1</a>'
-  );
+  return Object.entries(proposal.action?.[key] ?? {}).filter(([key, value]) => {
+    if (key === "payloadBytes") {
+      return false;
+    }
+    switch (typeof value) {
+      case "object":
+        return value && Object.keys(value).length > 0;
+      case "string":
+      case "bigint":
+      case "boolean":
+      case "number":
+        return true;
+    }
+    return false;
+  });
 };
 
 export const hideProposal = ({

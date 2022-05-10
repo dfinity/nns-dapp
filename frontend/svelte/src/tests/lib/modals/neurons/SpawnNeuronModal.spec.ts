@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import MergeMaturityModal from "../../../../lib/modals/neurons/MergeMaturityModal.svelte";
-import { mergeMaturity } from "../../../../lib/services/neurons.services";
+import { fireEvent, waitFor } from "@testing-library/svelte";
+import SpawnNeuronModal from "../../../../lib/modals/neurons/SpawnNeuronModal.svelte";
+import { spawnNeuron } from "../../../../lib/services/neurons.services";
 import { formatPercentage } from "../../../../lib/utils/format.utils";
 import { maturityByStake } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
@@ -12,11 +12,11 @@ import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    mergeMaturity: jest.fn().mockResolvedValue(BigInt(10)),
+    spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
   };
 });
 
-describe("MergeMaturityModal", () => {
+describe("SpawnNeuronModal", () => {
   const neuron = {
     ...mockNeuron,
     fullNeuron: {
@@ -24,31 +24,40 @@ describe("MergeMaturityModal", () => {
       maturityE8sEquivalent: BigInt(1_000_000),
     },
   };
-  const renderMergeMaturityModal = async (): Promise<RenderResult> => {
-    return renderModal({
-      component: MergeMaturityModal,
+
+  afterAll(() => jest.clearAllMocks());
+
+  it("should display modal", async () => {
+    const { container } = await renderModal({
+      component: SpawnNeuronModal,
       props: {
         neuron,
       },
     });
-  };
-
-  it("should display modal", async () => {
-    const { container } = await renderMergeMaturityModal();
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should display current maturity", async () => {
-    const { queryByText } = await renderMergeMaturityModal();
+    const { queryByText } = await renderModal({
+      component: SpawnNeuronModal,
+      props: {
+        neuron,
+      },
+    });
 
     expect(
       queryByText(formatPercentage(maturityByStake(neuron)))
     ).toBeInTheDocument();
   });
 
-  it("should call mergeMaturity service on confirm click", async () => {
-    const { queryByTestId } = await renderMergeMaturityModal();
+  it("should call spawnNeuron service on confirm click", async () => {
+    const { queryByTestId } = await renderModal({
+      component: SpawnNeuronModal,
+      props: {
+        neuron,
+      },
+    });
 
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).toBeInTheDocument();
@@ -69,6 +78,6 @@ describe("MergeMaturityModal", () => {
     expect(confirmButton).toBeInTheDocument();
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(mergeMaturity).toBeCalled();
+    expect(spawnNeuron).toBeCalled();
   });
 });
