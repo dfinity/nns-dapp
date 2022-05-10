@@ -21,14 +21,9 @@
   const executeTransaction = async () => {
     startBusy("accounts");
 
-    const { success } = await transferICP($store);
+    await transferICP($store);
 
     stopBusy("accounts");
-
-    if (!success) {
-      // We close the modal only if no error. If the user is using the hardware wallet errors can be hints to what to do - e.g. open the app or unlock the wallet etc.
-      return;
-    }
 
     dispatcher("nnsClose");
   };

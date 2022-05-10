@@ -16,7 +16,6 @@
 
   const dispatcher = createEventDispatcher();
 
-  // TODO: refactor double code
   const executeTransaction = async () => {
     startBusy("accounts");
 
