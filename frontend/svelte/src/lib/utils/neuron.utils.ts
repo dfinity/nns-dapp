@@ -261,6 +261,24 @@ export const isEnoughToStakeNeuron = ({
   stake.toE8s() >=
   MIN_NEURON_STAKE + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
+export const isEnoughMaturityToSpawn = ({
+  neuron: { fullNeuron },
+  percentage,
+}: {
+  neuron: NeuronInfo;
+  percentage: number;
+}): boolean => {
+  if (fullNeuron === undefined) {
+    return false;
+  }
+  const maturitySelected: number = Math.floor(
+    (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
+  );
+  return isEnoughToStakeNeuron({
+    stake: ICP.fromE8s(BigInt(maturitySelected)),
+  });
+};
+
 const isMergeableNeuron = ({
   neuron,
   identity,

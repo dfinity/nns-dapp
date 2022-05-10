@@ -61,7 +61,7 @@
     data-tid="select-maturity-percentage-button"
     class="primary full-width"
     on:click={selectPercentage}
-    disabled={percentage === 0 || disabled}
+    {disabled}
   >
     {buttonText}
   </button>

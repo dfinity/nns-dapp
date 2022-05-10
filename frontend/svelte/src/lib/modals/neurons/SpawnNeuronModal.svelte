@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
@@ -11,7 +11,7 @@
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { isEnoughToStakeNeuron } from "../../utils/neuron.utils";
+  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
@@ -35,19 +35,10 @@
   let loading: boolean;
 
   let enoughMaturityToSpawn: boolean;
-  $: {
-    if (neuron.fullNeuron !== undefined) {
-      const maturitySelected: number = Math.floor(
-        (Number(neuron.fullNeuron.maturityE8sEquivalent) * percentageToSpawn) /
-          100
-      );
-      enoughMaturityToSpawn = isEnoughToStakeNeuron({
-        stake: ICP.fromE8s(BigInt(maturitySelected)),
-      });
-    } else {
-      enoughMaturityToSpawn = false;
-    }
-  }
+  $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
+    neuron,
+    percentage: percentageToSpawn,
+  });
 
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
