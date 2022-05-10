@@ -6,6 +6,7 @@ import { ICP, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { transactionStore } from "../../../../lib/stores/transaction.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
@@ -18,7 +19,6 @@ import en from "../../../mocks/i18n.mock";
 import { MockLedgerCanister } from "../../../mocks/ledger.canister.mock";
 import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
-import {accountsStore} from '../../../../lib/stores/accounts.store';
 
 describe("NewTransactionReview", () => {
   const props = { testComponent: NewTransactionReview };
@@ -35,7 +35,11 @@ describe("NewTransactionReview", () => {
       amount,
     });
 
-    accountsStore.set({main: mockMainAccount, subAccounts: [mockSubAccount], hardwareWallets: undefined});
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+      hardwareWallets: undefined,
+    });
 
     jest
       .spyOn(LedgerCanister, "create")

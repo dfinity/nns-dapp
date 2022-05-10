@@ -395,6 +395,7 @@ interface I18nError__ledger {
   connect_not_supported: string;
   unexpected_wallet: string;
   user_cancel: string;
+  incorrect_identifier: string;
 }
 
 interface I18nError__attach_wallet {

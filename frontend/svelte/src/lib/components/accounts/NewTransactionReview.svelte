@@ -8,7 +8,7 @@
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
-  import {isHardwareWallet} from '../../utils/accounts.utils';
+  import { isHardwareWallet } from "../../utils/accounts.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -22,7 +22,7 @@
   const executeTransaction = async () => {
     startBusy("accounts");
 
-    const {success} = await transferICP($store);
+    const { success } = await transferICP($store);
 
     stopBusy("accounts");
 
