@@ -11,7 +11,6 @@ export interface TransactionStore {
 
 export interface TransactionContext {
   store: Writable<TransactionStore>;
-  selectSource: (selectedAccount: Account) => Promise<void>;
   next: () => void;
 }
 

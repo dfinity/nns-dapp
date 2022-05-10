@@ -8,12 +8,11 @@
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
-  import {toastsStore} from '../../stores/toasts.store';
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store, next }: TransactionContext = context;
+  const { store }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
 
@@ -29,14 +28,9 @@
     // TODO: don't close if error and hw but close it error and not hw
     dispatcher("nnsClose");
   };
-
-  const action: () => Promise<void> =
-    $store.selectedAccount?.type === "hardwareWallet"
-      ? async () => next()
-      : executeTransaction;
 </script>
 
-<form on:submit|preventDefault={action} class="wizard-wrapper">
+<form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
     <ICP inline={true} icp={amount} />
   </div>
