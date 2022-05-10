@@ -1,4 +1,4 @@
-import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity, Identity } from "@dfinity/agent";
 import {
   Topic,
   type ICP,
@@ -28,7 +28,6 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import { getNeuronBalance } from "../api/ledger.api";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { LedgerConnectionState } from "../constants/ledger.constants";
@@ -142,33 +141,6 @@ export const getIdentityByNeuronOrHotkey = async (
   }
 };
 
-const stakeAndLoadNeuronHelper = async ({
-  stake,
-  identity,
-  subAccount,
-}: {
-  stake: ICP;
-  identity: Identity;
-  subAccount?: SubAccountArray;
-}): Promise<void> => {
-  const neuronId: NeuronId = await stakeNeuron({
-    stake,
-    identity,
-    fromSubAccount: subAccount,
-  });
-
-  await loadNeuron({
-    neuronId,
-    setNeuron: ({
-      neuron,
-      certified,
-    }: {
-      neuron: NeuronInfo;
-      certified: boolean;
-    }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
-  });
-};
-
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
@@ -191,28 +163,55 @@ export const stakeAndLoadNeuron = async ({
     }
 
     if (account.type === "hardwareWallet") {
-      // callback might be called more than once
-      await connectToHardwareWalletProxy(
-        ({ ledgerIdentity, connectionState }) => {
-          console.log("in da callback");
-          if (
-            connectionState === LedgerConnectionState.CONNECTED &&
-            ledgerIdentity
-          ) {
-            ledgerIdentity?.flagUpcomingStakeNeuron();
-            stakeAndLoadNeuronHelper({
-              stake,
-              identity: ledgerIdentity,
-            });
+      return new Promise((resolve) => {
+        connectToHardwareWalletProxy(
+          async ({ ledgerIdentity, connectionState }) => {
+            console.log("in da callback");
+            try {
+              if (
+                connectionState === LedgerConnectionState.CONNECTED &&
+                ledgerIdentity
+              ) {
+                ledgerIdentity?.flagUpcomingStakeNeuron();
+                const neuronId = await stakeNeuron({
+                  stake,
+                  controller: ledgerIdentity.getPrincipal(),
+                  ledgerIdentity,
+                  identity: new AnonymousIdentity(),
+                });
+                // TODO: Add hotkey of current user to new neuron https://dfinity.atlassian.net/browse/L2-523
+                // TODO: Continue with flow https://dfinity.atlassian.net/browse/L2-524
+                resolve(neuronId);
+              }
+            } catch (err) {
+              toastsStore.error({
+                labelKey: "error.stake_neuron",
+                err,
+              });
+              resolve(undefined);
+            }
           }
-        }
-      );
+        );
+      });
     } else {
       const identity: Identity = await getIdentity();
-      await stakeAndLoadNeuronHelper({
+      const neuronId: NeuronId = await stakeNeuron({
         stake,
         identity,
-        subAccount: "subAccount" in account ? account.subAccount : undefined,
+        ledgerIdentity: identity,
+        controller: identity.getPrincipal(),
+        fromSubAccount:
+          "subAccount" in account ? account.subAccount : undefined,
+      });
+      await loadNeuron({
+        neuronId,
+        setNeuron: ({
+          neuron,
+          certified,
+        }: {
+          neuron: NeuronInfo;
+          certified: boolean;
+        }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
       });
     }
   } catch (err) {

@@ -287,18 +287,22 @@ export const queryNeurons = async ({
  */
 export const stakeNeuron = async ({
   stake,
+  controller,
+  ledgerIdentity,
   identity,
   fromSubAccount,
 }: {
   stake: ICP;
+  controller: Principal;
+  ledgerIdentity: Identity;
   identity: Identity;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`);
-  const { canister, agent } = await governanceCanister({ identity });
+  const { canister } = await governanceCanister({ identity });
 
   const ledgerCanister: LedgerCanister = LedgerCanister.create({
-    agent,
+    agent: await createAgent({ identity: ledgerIdentity, host: HOST }),
     canisterId: LEDGER_CANISTER_ID,
   });
 
@@ -307,7 +311,7 @@ export const stakeNeuron = async ({
 
   const response = await canister.stakeNeuron({
     stake,
-    principal: identity.getPrincipal(),
+    principal: controller,
     fromSubAccountId,
     ledgerCanister,
   });
