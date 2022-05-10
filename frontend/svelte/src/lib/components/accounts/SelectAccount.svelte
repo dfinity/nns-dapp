@@ -31,7 +31,7 @@
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    {#if displayTitle}
+    {#if displayTitle && subAccounts?.length > 0}
       <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
 

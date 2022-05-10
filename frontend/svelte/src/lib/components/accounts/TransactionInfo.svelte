@@ -5,10 +5,15 @@
   export let feeOnly: boolean = false;
   export let source: string;
   export let destination: string;
+  export let hardwareWallet: boolean = false;
 </script>
 
 {#if !feeOnly}
-  <h5>{$i18n.accounts.source}</h5>
+  <h5>
+    {$i18n.accounts.source}{hardwareWallet
+      ? ` – ${$i18n.accounts.hardware_wallet_text}`
+      : ""}
+  </h5>
   <p>{source}</p>
 
   <h5>{$i18n.accounts.destination}</h5>

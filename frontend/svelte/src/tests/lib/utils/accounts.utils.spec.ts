@@ -5,10 +5,13 @@ import {
   getAccountByPrincipal,
   getPrincipalFromString,
   invalidAddress,
+  isHardwareWallet,
 } from "../../../lib/utils/accounts.utils";
 import {
   mockAddressInput,
+  mockHardwareWalletAccount,
   mockMainAccount,
+  mockSubAccount,
 } from "../../mocks/accounts.store.mock";
 
 describe("accounts-utils", () => {
@@ -84,6 +87,21 @@ describe("accounts-utils", () => {
           "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe"
         )
       ).toBeInstanceOf(Principal);
+    });
+  });
+
+  describe("isHardwareWallet", () => {
+    it("returns true if type hardware wallet", () => {
+      expect(isHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
+    });
+
+    it("returns false if type no hardware wallet", () => {
+      expect(isHardwareWallet(mockMainAccount)).toBeFalsy();
+      expect(isHardwareWallet(mockSubAccount)).toBeFalsy();
+    });
+
+    it("returns false if no account", () => {
+      expect(isHardwareWallet(undefined)).toBeFalsy();
     });
   });
 });

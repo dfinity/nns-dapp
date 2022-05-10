@@ -1,4 +1,12 @@
-import { SignIdentity, type PublicKey, type Signature } from "@dfinity/agent";
+import {
+  Cbor,
+  SignIdentity,
+  type CallRequest,
+  type HttpAgentRequest,
+  type PublicKey,
+  type ReadRequest,
+  type Signature,
+} from "@dfinity/agent";
 import type Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
@@ -168,5 +176,33 @@ export class LedgerIdentity extends SignIdentity {
     } finally {
       await transport.close();
     }
+  }
+
+  /**
+   * Required implementation for agent-js transformRequest.
+   *
+   * Without following function, transaction processed by the ledger would end in error "27012 - Data is invalid : Unexpected data type"
+   */
+  public override async transformRequest(
+    request: HttpAgentRequest
+  ): Promise<unknown> {
+    /**
+     * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
+     * @param request - body of the HttpAgentRequest
+     */
+    const prepareCborForLedger = (
+      request: ReadRequest | CallRequest
+    ): ArrayBuffer => Cbor.encode({ content: request });
+
+    const { body, ...fields } = request;
+    const signature = await this.sign(prepareCborForLedger(body));
+    return {
+      ...fields,
+      body: {
+        content: body,
+        sender_pubkey: this.publicKey.toDer(),
+        sender_sig: signature,
+      },
+    };
   }
 }
