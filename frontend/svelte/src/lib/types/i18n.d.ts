@@ -130,6 +130,7 @@ interface I18nAccounts {
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
+  transaction_success: string;
 }
 
 interface I18nNeurons {
