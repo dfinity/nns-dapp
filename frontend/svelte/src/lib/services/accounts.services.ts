@@ -94,8 +94,6 @@ export const transferICP = async ({
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    console.log("3", identity, subAccount);
-
     // TODO: refactor accountStore => we can keep in store the subAccountId, doing so we can avoid to transform it each time we call the backend
     const fromSubAccountId =
       subAccount !== undefined ? toSubAccountId(subAccount) : undefined;
