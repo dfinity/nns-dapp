@@ -72,6 +72,7 @@
 
   .content {
     margin: var(--padding-2x) 0 var(--padding);
+    overflow-x: auto;
 
     &.limit-height {
       max-height: 300px;

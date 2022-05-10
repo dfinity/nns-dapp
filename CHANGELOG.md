@@ -7,6 +7,18 @@
 * Prepare to render the Neurons tab using svelte
 * Fix CSP domains
 
+## Proposal 58151
+- Usability and accessibility improvements
+  - Add a question that reminds title and topic of the proposal before vote on related detail page
+  - Add titles to my votes icons (a11y improvement)
+  - Display topic and proposal ID to the proposal detail page
+  - Update colours
+  - Better loading skeletons
+  - Add button titles
+- Prevent duplicate hardware wallets from being attached to an account
+- Preparations for svelte neurons tab
+- Test with NNS canisters running in dfx
+
 ## Proposal 56265
 * UI fixes:
   * Show the ID of followed neurons again

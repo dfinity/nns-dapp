@@ -206,7 +206,7 @@ describe("NNSDapp", () => {
         {
           HardwareWalletAlreadyRegistered: null,
         },
-        new HardwareWalletAttachError("error_attach_wallet.already_registered")
+        new HardwareWalletAttachError("error__attach_wallet.already_registered")
       ));
 
     it("should throw register hardware wallet error limit exceeded", async () =>
@@ -214,7 +214,7 @@ describe("NNSDapp", () => {
         {
           HardwareWalletLimitExceeded: null,
         },
-        new HardwareWalletAttachError("error_attach_wallet.limit_exceeded")
+        new HardwareWalletAttachError("error__attach_wallet.limit_exceeded")
       ));
   });
 });

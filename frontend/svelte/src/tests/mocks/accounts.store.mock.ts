@@ -39,13 +39,13 @@ export const mockAccountDetails: AccountDetails = {
   principal: Principal.fromText("aaaaa-aa"),
   sub_accounts: [],
   hardware_wallet_accounts: [],
-  account_identifier: "account-identifier",
+  account_identifier: mockMainAccount.identifier,
 };
 
 export const mockSubAccountDetails: SubAccountDetails = {
   name: "test",
   sub_account: [0, 0],
-  account_identifier: "account-identifier",
+  account_identifier: mockSubAccount.identifier,
 };
 
 export const mockHardwareWalletAccountDetails: HardwareWalletAccountDetails = {
