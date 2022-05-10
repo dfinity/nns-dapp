@@ -18,6 +18,7 @@ import en from "../../../mocks/i18n.mock";
 import { MockLedgerCanister } from "../../../mocks/ledger.canister.mock";
 import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
+import {accountsStore} from '../../../../lib/stores/accounts.store';
 
 describe("NewTransactionReview", () => {
   const props = { testComponent: NewTransactionReview };
@@ -33,6 +34,8 @@ describe("NewTransactionReview", () => {
       destinationAddress: mockSubAccount.identifier,
       amount,
     });
+
+    accountsStore.set({main: mockMainAccount, subAccounts: [mockSubAccount], hardwareWallets: undefined});
 
     jest
       .spyOn(LedgerCanister, "create")
@@ -53,6 +56,8 @@ describe("NewTransactionReview", () => {
       destinationAddress: undefined,
       amount: undefined,
     });
+
+    accountsStore.reset();
 
     jest.clearAllMocks();
   });
