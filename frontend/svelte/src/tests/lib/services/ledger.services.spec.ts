@@ -1,4 +1,5 @@
 import type { HttpAgent } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
@@ -7,11 +8,13 @@ import * as accountsServices from "../../../lib/services/accounts.services";
 import * as authServices from "../../../lib/services/auth.services";
 import {
   connectToHardwareWallet,
+  getLedgerIdentity,
   registerHardwareWallet,
 } from "../../../lib/services/ledger.services";
 import { authStore } from "../../../lib/stores/auth.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import * as agent from "../../../lib/utils/agent.utils";
+import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,
@@ -19,7 +22,11 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
+import en from "../../mocks/i18n.mock";
+import {
+  mockLedgerIdentifier,
+  MockLedgerIdentity,
+} from "../../mocks/ledger.identity.mock";
 import { MockNNSDappCanister } from "../../mocks/nns-dapp.canister.mock";
 
 describe("ledger-services", () => {
@@ -168,6 +175,43 @@ describe("ledger-services", () => {
 
         resetIdentity();
       });
+    });
+  });
+
+  describe("get ledger identity", () => {
+    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+
+    beforeAll(() =>
+      jest
+        .spyOn(LedgerIdentity, "create")
+        .mockImplementation(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        )
+    );
+
+    afterAll(() => {
+      jest.clearAllMocks();
+      jest.restoreAllMocks();
+    });
+
+    it("should return ledger identity", async () => {
+      const identity = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity).not.toBeNull();
+      expect(principalToAccountIdentifier(identity.getPrincipal())).toEqual(
+        mockLedgerIdentifier
+      );
+    });
+
+    it("should throw an error if identifier does not match", async () => {
+      const call = async () => await getLedgerIdentity("test");
+
+      await expect(call).rejects.toThrow(
+        replacePlaceholders(en.error__ledger.incorrect_identifier, {
+          $identifier: "test",
+          $ledgerIdentifier: mockLedgerIdentifier,
+        })
+      );
     });
   });
 });

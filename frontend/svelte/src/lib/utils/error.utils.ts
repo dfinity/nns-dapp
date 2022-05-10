@@ -8,6 +8,8 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
+import { HardwareWalletAttachError } from "../canisters/nns-dapp/nns-dapp.errors";
+import { LedgerErrorKey } from "../errors/ledger.errors";
 import {
   CannotBeMerged,
   InsufficientAmountError,
@@ -48,4 +50,22 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     return { labelKey: "error.unknown", level: "error" };
   }
   return { labelKey: pair[1], detail: errorToString(error), level: "error" };
+};
+
+export const toLedgerError = ({
+  err,
+  fallbackErrorLabelKey,
+}: {
+  err: unknown;
+  fallbackErrorLabelKey: string;
+}): { labelKey: string; err?: unknown } => {
+  const ledgerErrorKey: boolean =
+    err instanceof HardwareWalletAttachError || err instanceof LedgerErrorKey;
+
+  return {
+    labelKey: ledgerErrorKey
+      ? (err as { message: string }).message
+      : fallbackErrorLabelKey,
+    ...(!ledgerErrorKey && { err }),
+  };
 };
