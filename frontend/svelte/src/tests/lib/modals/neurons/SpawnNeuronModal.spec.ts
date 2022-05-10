@@ -51,7 +51,7 @@ describe("SpawnNeuronModal", () => {
     ).toBeInTheDocument();
   });
 
-  it("should call mergeMaturity service on confirm click", async () => {
+  it("should call spawnNeuron service on confirm click", async () => {
     const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {
