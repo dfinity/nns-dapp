@@ -103,8 +103,8 @@ export const createChunks = <T>(
   return chunks;
 };
 
-// e.g. state_hash
-export const isHexStringBytes = (bytes: number[]): boolean =>
+// e.g. payloads.did/state_hash
+export const isHash = (bytes: number[]): boolean =>
   bytes.length === 32 &&
   bytes.find(
     (value) => !Number.isInteger(value) || value < 0 || value > 255

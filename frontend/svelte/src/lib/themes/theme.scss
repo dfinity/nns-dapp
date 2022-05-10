@@ -22,6 +22,22 @@ body {
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  background: var(--gray-600);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-50-background);
+  height: 200px;
+  border: solid 2.5px var(--gray-600);
+  border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--gray-600);
+}
+
 a,
 input,
 button,

@@ -63,7 +63,8 @@
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
-    "principal_not_valid": "Please enter a valid principal."
+    "principal_not_valid": "Please enter a valid principal.",
+    "input_length": "Input must be longer than $length characters."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -299,7 +300,9 @@
     "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
     "maturity_title": "Maturity",
     "merge_maturity": "Merge Maturity",
+    "merge": "Merge",
     "spawn_neuron": "Spawn Neuron",
+    "spawn": "Spawn",
     "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
@@ -315,6 +318,7 @@
     "split_neuron_success": "Your neuron has successfully been splitted.",
     "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
     "merge_maturity_disabled_tooltip": "You need at least $amount ICP to merge maturity.",
+    "spawn_maturity_disabled_tooltip": "You need at least $amount ICP to spawn a new neuron from maturity.",
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
@@ -324,12 +328,22 @@
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
     "merge_maturity_modal_title": "Merge Maturity",
+    "merge_confirmation_modal_title": "Confirm Merge",
     "merge_maturity_modal_description": "Choose how much of your neuron's maturity to merge into its stake.",
+    "merge_maturity_confirmation_q": "Are you sure you wish to merge maturity?",
+    "merge_maturity_confirmation_a": "This will merge $percentage of your neuron's earned maturity into its stake",
     "merge_maturity_success": "Maturity merged successfully.",
+    "spawn_maturity_modal_title": "Spawn Maturity",
+    "spawn_confirmation_modal_title": "Confirm Spawn",
+    "spawn_maturity_modal_description": "Choose how much of your neuron's maturity to give to the new neuron.",
+    "spawn_maturity_success": "New neuron spawned successfully.",
+    "spawn_maturity_confirmation_q": "Are you sure you wish to spawn a new neuron?",
+    "spawn_maturity_confirmation_a": "This will use $percentage of your neuron's earned maturity for the new neuron",
     "current_stake": "Current Stake",
     "current_maturity": "Current Maturity",
     "dissolve_delay_range": "Dissolve Delay Range",
-    "merge_maturity_range": "Merge Maturity Range",
+    "maturity_range": "Select Maturity Range",
+    "maturity_percentage": "Percentage of maturity",
     "add_hotkey_placeholder": "Principal ID"
   },
   "time": {
@@ -356,7 +370,7 @@
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device."
   },
-  "error_attach_wallet": {
+  "error__attach_wallet": {
     "unexpected": "There was an error trying to attach the hardware wallet.",
     "connect": "You need to connect your hardware wallet first.",
     "no_name": "No account name provided.",

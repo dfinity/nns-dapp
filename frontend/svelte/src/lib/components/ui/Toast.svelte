@@ -85,8 +85,6 @@
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
-    z-index: calc(var(--z-index) + 999);
-
     &.error {
       background: var(--pink);
       color: var(--pink-contrast);
