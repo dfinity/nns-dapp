@@ -119,9 +119,11 @@ jobs:
       - name: Install Rust
         run: |
           echo "${{ env.CARGO_HOME }}/bin" >> $GITHUB_PATH
+          ls "${{ env.CARGO_HOME }}/bin"
+          echo "$PATH"
           command -v cargo
-          command -v ic-cdk-optimizer
           cargo --version
+          command -v ic-cdk-optimizer
           ic-cdk-optimizer --version
 
       - name: Install DFX
