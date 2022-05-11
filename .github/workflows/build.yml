@@ -83,7 +83,7 @@ jobs:
           build-args: |
             IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
           cache-from: type=gha,scope=cached-stage
-          cache-to: [ "type=gha,scope=cached-stage,mode=max", "type=local,src=~/cache/docker-nns-canisters" ]
+          cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
 
 
