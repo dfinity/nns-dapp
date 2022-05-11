@@ -112,7 +112,6 @@ while (($# > 0)); do
 done
 
 export DFX_NETWORK
-: $DFX_NETWORK
 
 if [[ "$GUESS" == "true" ]]; then
   case "$DFX_NETWORK" in
