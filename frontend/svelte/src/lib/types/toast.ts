@@ -5,4 +5,5 @@ export interface ToastMsg {
   level: ToastLevel;
   detail?: string;
   duration?: number;
+  id?: symbol;
 }

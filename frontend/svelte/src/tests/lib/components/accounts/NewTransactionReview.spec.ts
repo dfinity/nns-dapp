@@ -6,6 +6,7 @@ import { ICP, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { transactionStore } from "../../../../lib/stores/transaction.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
@@ -34,6 +35,12 @@ describe("NewTransactionReview", () => {
       amount,
     });
 
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+      hardwareWallets: undefined,
+    });
+
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => mockLedgerCanister);
@@ -53,6 +60,8 @@ describe("NewTransactionReview", () => {
       destinationAddress: undefined,
       amount: undefined,
     });
+
+    accountsStore.reset();
 
     jest.clearAllMocks();
   });

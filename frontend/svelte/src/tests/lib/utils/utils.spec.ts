@@ -1,7 +1,9 @@
 import {
+  bytesToHexString,
   createChunks,
   debounce,
   isDefined,
+  isHash,
   stringifyJson,
   uniqueObjects,
 } from "../../../lib/utils/utils";
@@ -147,6 +149,44 @@ describe("utils", () => {
       expect(createChunks(twenty, 5)[0].length).toBe(5);
       expect(createChunks(twenty, 1).length).toBe(twenty.length);
       expect(createChunks(twenty, 1)[0].length).toBe(1);
+    });
+  });
+
+  describe("bytesToHexString", () => {
+    it("converts bytes to string", () => {
+      expect(bytesToHexString([])).toBe("");
+      expect(bytesToHexString([0])).toBe("00");
+      expect(bytesToHexString([1])).toBe("01");
+      expect(bytesToHexString([15])).toBe("0f");
+      expect(bytesToHexString([255])).toBe("ff");
+      expect(bytesToHexString([1, 255, 3, 0])).toBe("01ff0300");
+    });
+  });
+
+  describe("isHash", () => {
+    const bytes = (specialValue: unknown = undefined) => {
+      const res = Array(32).fill(0);
+      if (specialValue !== undefined) {
+        res[1] = specialValue;
+      }
+      return res as number[];
+    };
+
+    it("should identify similar to hash arrays", () => {
+      expect(isHash(bytes())).toBe(true);
+      expect(isHash(bytes(255))).toBe(true);
+      expect(isHash([])).toBe(false);
+      expect(isHash(bytes().slice(1))).toBe(false);
+    });
+
+    it("should identify not byte values", () => {
+      expect(isHash(bytes(-1))).toBe(false);
+      expect(isHash(bytes(null))).toBe(false);
+      expect(isHash(bytes(256))).toBe(false);
+      expect(isHash(bytes(1.5))).toBe(false);
+      expect(isHash(bytes(""))).toBe(false);
+      expect(isHash(bytes(NaN))).toBe(false);
+      expect(isHash(bytes(Infinity))).toBe(false);
     });
   });
 });

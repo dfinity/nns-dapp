@@ -7,6 +7,7 @@ import {
   type Neuron,
 } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
+import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 
@@ -72,7 +73,7 @@ const ledgerCanister = async ({
   logWithTimestamp(`LC call...`);
   const agent = await createAgent({
     identity,
-    host: process.env.HOST,
+    host: HOST,
   });
 
   const canister = LedgerCanister.create({

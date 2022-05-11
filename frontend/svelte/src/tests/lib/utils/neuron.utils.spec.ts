@@ -10,6 +10,7 @@ import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_MATURITY_MERGE,
+  MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
 import { InvalidAmountError } from "../../../lib/types/errors";
@@ -29,6 +30,7 @@ import {
   hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
+  isEnoughMaturityToSpawn,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
@@ -609,7 +611,52 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("isEnoughToStakeNeuron", () => {
+  describe("isEnoughMaturityToSpawn", () => {
+    it("return true if enough ICP to create a neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 2 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
+        true
+      );
+    });
+    it("returns false if not enough ICP to create a neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE - 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(false);
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 2 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 10 })).toBe(
+        false
+      );
+    });
+  });
+
+  describe("isEnoughMaturityToSpawn", () => {
     it("return true if enough ICP to create a neuron", () => {
       const stake = ICP.fromString("3") as ICP;
       expect(isEnoughToStakeNeuron({ stake })).toBe(true);
@@ -617,12 +664,6 @@ describe("neuron-utils", () => {
     it("returns false if not enough ICP to create a neuron", () => {
       const stake = ICP.fromString("0.000001") as ICP;
       expect(isEnoughToStakeNeuron({ stake })).toBe(false);
-    });
-    it("takes into account transaction fee", () => {
-      const stake = ICP.fromString("1") as ICP;
-      expect(isEnoughToStakeNeuron({ stake, withTransactionFee: true })).toBe(
-        false
-      );
     });
   });
 

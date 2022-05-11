@@ -12,7 +12,11 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -49,6 +53,9 @@ jest.mock("../../../lib/stores/toasts.store", () => {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    getAccountIdentity: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockIdentity)),
   };
 });
 
@@ -108,6 +115,10 @@ describe("neurons-services", () => {
     .spyOn(api, "mergeMaturity")
     .mockImplementation(() => Promise.resolve());
 
+  const spySpawnNeuron = jest
+    .spyOn(api, "spawnNeuron")
+    .mockImplementation(() => Promise.resolve());
+
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
     .mockImplementation(() => Promise.resolve());
@@ -146,11 +157,33 @@ describe("neurons-services", () => {
 
   afterEach(() => {
     spyGetNeuron.mockClear();
+    jest.clearAllMocks();
   });
 
   describe("stake new neuron", () => {
-    it("should stake and load a neuron", async () => {
-      await stakeAndLoadNeuron({ amount: 10 });
+    it("should stake and load a neuron from main account", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake and load a neuron from subaccount", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake neuron from hardware wallet", async () => {
+      await stakeAndLoadNeuron({
+        amount: 10,
+        account: mockHardwareWalletAccount,
+      });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -167,6 +200,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 0.1,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -180,6 +214,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: NaN,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -191,6 +226,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 10,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -463,6 +499,54 @@ describe("neurons-services", () => {
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyMergeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+  });
+
+  describe("spawnNeuron", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should spawn a neuron from maturity", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const { success } = await services.spawnNeuron({
+        neuronId: controlledNeuron.neuronId,
+        percentageToSpawn: 50,
+      });
+
+      expect(spySpawnNeuron).toHaveBeenCalled();
+      expect(success).toBe(true);
+    });
+
+    it("should not spawn neuron if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await services.spawnNeuron({
+        neuronId: controlledNeuron.neuronId,
+        percentageToSpawn: 50,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spySpawnNeuron).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+
+      resetIdentity();
+    });
+
+    it("should not spawn neuron if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      const { success } = await services.spawnNeuron({
+        neuronId: notControlledNeuron.neuronId,
+        percentageToSpawn: 50,
+      });
+
+      expect(toastsStore.show).toHaveBeenCalled();
+      expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
   });

@@ -11,7 +11,7 @@
 
   export let msg: ToastMsg;
 
-  const close = () => toastsStore.hide();
+  const close = () => toastsStore.hide(msg.id);
   let text: string | undefined;
 
   let labelKey: string;
@@ -68,9 +68,6 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
-  @use "../../themes/mixins/media";
-
   .toast {
     display: flex;
     justify-content: space-between;
@@ -80,26 +77,13 @@
     // (>=3 lines x 1rem) + top/bottom paddings
     height: calc(8.5 * var(--padding));
 
-    position: fixed;
-    bottom: var(--padding-2x);
-    left: 50%;
-    transform: translate(-50%, 0);
-
     border-radius: var(--border-radius);
     background: var(--green-500);
     color: var(--green-500-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
-    width: calc(100% - var(--padding-8x));
-
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
-
-    z-index: calc(var(--z-index) + 999);
-
-    @include media.min-width(large) {
-      max-width: var(--section-max-width);
-    }
 
     &.error {
       background: var(--pink);

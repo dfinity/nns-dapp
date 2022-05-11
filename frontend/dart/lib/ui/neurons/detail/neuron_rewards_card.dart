@@ -45,19 +45,48 @@ class NeuronRewardsCard extends StatelessWidget {
         SizedBox(height: 8)
       else
         SizedBox(width: 8),
-      ElevatedButton(
+      neuron.isCurrentUserController
+          ? ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
               context,
               SpawnNeuron(
                   neuron: neuron,
-                  cancelTitle: "Skip",
+                  cancelTitle: "Cancel",
                   onCompleteAction: (context) {
                     OverlayBaseWidget.of(context)?.dismiss();
                   }),
             );
           }.takeIf((e) =>
-              neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
+          neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
+              context.icApi.isNeuronControllable(neuron)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Spawn Neuron",
+              style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+            ),
+          ))
+          : ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+                context,
+                ConfirmDialog(
+                  title: "Really Spawn Neuron",
+                  description: "Are you sure you wish to spawn a new neuron?",
+                  onConfirm: () async {
+                    context.callUpdate(() async {
+                      try {
+                        final newNeuron = await context.icApi.spawnNeuron(neuron: neuron, percentageToSpawn: null);
+                        context.nav.push(neuronPageDef.createPageConfig(newNeuron));
+                      } catch (err) {
+                        js.context.callMethod("alert", ["$err"]);
+                      }
+                    });
+                  },
+                ));
+          }.takeIf((e) =>
+          neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
               context.icApi.isNeuronControllable(neuron)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),

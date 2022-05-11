@@ -4,9 +4,10 @@ import type { Subscriber } from "svelte/store";
 import type { AuthStore } from "../../lib/stores/auth.store";
 import en from "./i18n.mock";
 
-export const mockPrincipal = Principal.fromText(
-  "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
-);
+export const mockPrincipalText =
+  "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe";
+
+export const mockPrincipal = Principal.fromText(mockPrincipalText);
 
 export const mockIdentity = {
   getPrincipal: () => mockPrincipal,

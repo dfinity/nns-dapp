@@ -1,11 +1,83 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
+  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { registerHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
+  import {
+    ADD_ACCOUNT_CONTEXT_KEY,
+    type AddAccountContext,
+  } from "../../stores/add-account.store";
+  import { createEventDispatcher, getContext } from "svelte";
+  import type { LedgerIdentity } from "../../identities/ledger.identity";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
 
-  // TODO(L2-433): effectively connect hardware wallet
+  let connectionState: LedgerConnectionState =
+    LedgerConnectionState.NOT_CONNECTED;
+
+  let ledgerIdentity: LedgerIdentity | undefined = undefined;
+
+  const context: AddAccountContext = getContext<AddAccountContext>(
+    ADD_ACCOUNT_CONTEXT_KEY
+  );
+
+  const { store }: AddAccountContext = context;
+
+  const dispatcher = createEventDispatcher();
+
+  const onSubmit = async () => {
+    if (disabled) {
+      toastsStore.error({
+        labelKey: "error__attach_wallet.connect",
+      });
+      return;
+    }
+
+    startBusy("accounts");
+
+    await registerHardwareWalletProxy({
+      name: $store.hardwareWalletName,
+      ledgerIdentity,
+    });
+
+    stopBusy("accounts");
+
+    dispatcher("nnsClose");
+  };
+
+  let disabled: boolean;
+  $: disabled = connectionState !== LedgerConnectionState.CONNECTED || $busy;
 </script>
 
-<div class="wizard-wrapper">
-  <h4>{$i18n.accounts.connect_hardware_wallet}</h4>
+<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+  <div>
+    <HardwareWalletConnectAction bind:connectionState bind:ledgerIdentity />
+  </div>
 
-  <span>TODO</span>
-</div>
+  <button
+    class="primary full-width submit"
+    type="submit"
+    {disabled}
+    data-tid="ledger-attach-button"
+    class:busy={$busy}
+  >
+    {$i18n.accounts.attach_wallet}
+  </button>
+</form>
+
+<style lang="scss">
+  @use "../../themes/mixins/modal.scss";
+
+  form {
+    @include modal.wizard-single-input-form;
+  }
+
+  .submit:not(.busy) {
+    opacity: 0;
+    transition: opacity 150ms;
+
+    &:not([disabled]) {
+      opacity: 1;
+    }
+  }
+</style>

@@ -13,6 +13,7 @@ import {
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
+import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
@@ -115,6 +116,22 @@ export const mergeMaturity = async ({
 
   await canister.mergeMaturity({ neuronId, percentageToMerge });
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
+};
+
+export const spawnNeuron = async ({
+  neuronId,
+  percentageToSpawn,
+  identity,
+}: {
+  neuronId: NeuronId;
+  percentageToSpawn: number;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.spawnNeuron({ neuronId, percentageToSpawn });
+  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
 };
 
 export const addHotkey = async ({
@@ -270,18 +287,23 @@ export const queryNeurons = async ({
  */
 export const stakeNeuron = async ({
   stake,
+  controller,
+  ledgerCanisterIdentity,
   identity,
   fromSubAccount,
 }: {
   stake: ICP;
+  controller: Principal;
+  ledgerCanisterIdentity: Identity;
   identity: Identity;
   fromSubAccount?: SubAccountArray;
 }): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`);
-  const { canister, agent } = await governanceCanister({ identity });
+  const { canister } = await governanceCanister({ identity });
 
+  // The use case of staking from Hardware wallet uses a different agent for governance and ledger canister.
   const ledgerCanister: LedgerCanister = LedgerCanister.create({
-    agent,
+    agent: await createAgent({ identity: ledgerCanisterIdentity, host: HOST }),
     canisterId: LEDGER_CANISTER_ID,
   });
 
@@ -290,7 +312,7 @@ export const stakeNeuron = async ({
 
   const response = await canister.stakeNeuron({
     stake,
-    principal: identity.getPrincipal(),
+    principal: controller,
     fromSubAccountId,
     ledgerCanister,
   });
@@ -355,7 +377,7 @@ export const governanceCanister = async ({
 }> => {
   const agent = await createAgent({
     identity,
-    host: process.env.HOST,
+    host: HOST,
   });
 
   const canister = GovernanceCanister.create({

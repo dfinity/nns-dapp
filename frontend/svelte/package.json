@@ -7,11 +7,12 @@
     "i18n": "node scripts/i18n.types.js",
     "import-assets-for-dev": "cp -R ../dart/assets public/assets && cp ../dart/web/manifest.json public/ && cp ../dart/web/favicon.ico public/",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && npm run import-assets-for-dev",
-    "build": "rm -fr public/assets/assets && npm run i18n && rollup -c && npm run build:index",
-    "dev": "npm run import-assets && npm run i18n && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
+    "build": "rm -fr public/assets/assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
+    "dev": "npm run import-assets && npm run i18n && CANISTER_ID=q4eej-kyaaa-aaaaa-aaaha-cai DEPLOY_ENV=nnsdapp_both npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
+    "build:config": "../../config.sh",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
-    "lint": "eslint --max-warnings 0 './src/**/*.{js,ts,svelte}'",
+    "lint": "./scripts/lint",
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "jest",
     "test:watch": "npm run test -- --watchAll",
@@ -60,6 +61,9 @@
   "dependencies": {
     "@dfinity/agent": "^0.11.0",
     "@dfinity/auth-client": "^0.11.0",
-    "@dfinity/nns": "nightly"
+    "@dfinity/nns": "nightly",
+    "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
+    "@ledgerhq/hw-transport-webhid": "^6.27.1",
+    "@zondax/ledger-icp": "^0.6.0"
   }
 }

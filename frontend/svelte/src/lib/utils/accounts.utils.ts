@@ -49,3 +49,6 @@ export const getPrincipalFromString = (
     return undefined;
   }
 };
+
+export const isHardwareWallet = (account: Account | undefined): boolean =>
+  account?.type === "hardwareWallet";

@@ -1,4 +1,4 @@
-import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
   Topic,
   type ICP,
@@ -21,6 +21,7 @@ import {
   queryNeurons,
   removeHotkey as removeHotkeyApi,
   setFollowees,
+  spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
   stakeNeuron,
   startDissolving as startDissolvingApi,
@@ -31,14 +32,17 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import type { LedgerIdentity } from "../identities/ledger.identity";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import {
   CannotBeMerged,
   InsufficientAmountError,
   NotAuthorizedError,
   NotFoundError,
 } from "../types/errors";
+import { isHardwareWallet } from "../utils/accounts.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
@@ -50,7 +54,7 @@ import {
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
-import { syncAccounts } from "./accounts.services";
+import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -138,16 +142,45 @@ export const getIdentityByNeuronOrHotkey = async (
   }
 };
 
+const getStakeNeuronPropsByAccount = ({
+  account,
+  accountIdentity,
+}: {
+  account: Account;
+  accountIdentity: Identity;
+}): {
+  ledgerCanisterIdentity: LedgerIdentity | Identity;
+  identity: LedgerIdentity | Identity;
+  controller: Principal;
+  fromSubAccount?: SubAccountArray;
+} => {
+  if (isHardwareWallet(account)) {
+    // The software of the hardware wallet cannot sign the call to the governance canister to claim the neuron.
+    // Therefore we use an `AnonymousIdentity`.
+    return {
+      ledgerCanisterIdentity: accountIdentity,
+      identity: new AnonymousIdentity(),
+      controller: accountIdentity.getPrincipal(),
+    };
+  }
+  return {
+    ledgerCanisterIdentity: accountIdentity,
+    identity: accountIdentity,
+    controller: accountIdentity.getPrincipal(),
+    fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
+  };
+};
+
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
  */
 export const stakeAndLoadNeuron = async ({
   amount,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
@@ -158,14 +191,26 @@ export const stakeAndLoadNeuron = async ({
       });
       return;
     }
-    const identity: Identity = await getIdentity();
 
+    const accountIdentity = await getAccountIdentity(account.identifier);
+    if (
+      isHardwareWallet(account) &&
+      "flagUpcomingStakeNeuron" in accountIdentity
+    ) {
+      // TODO: Find a better solution than setting a flag.
+      accountIdentity.flagUpcomingStakeNeuron();
+    }
+    const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
+      getStakeNeuronPropsByAccount({ account, accountIdentity });
     const neuronId: NeuronId = await stakeNeuron({
       stake,
       identity,
+      ledgerCanisterIdentity,
+      controller,
       fromSubAccount,
     });
-
+    // TODO: Add hotkey of current user to new neuron https://dfinity.atlassian.net/browse/L2-523
+    // TODO: Continue with flow https://dfinity.atlassian.net/browse/L2-524
     await loadNeuron({
       neuronId,
       setNeuron: ({
@@ -557,6 +602,28 @@ export const mergeMaturity = async ({
     const identity: Identity = await getIdentityByNeuron(neuronId);
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuronHelper({ neuronId, identity });
+
+    return { success: true };
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
+export const spawnNeuron = async ({
+  neuronId,
+  percentageToSpawn,
+}: {
+  neuronId: NeuronId;
+  percentageToSpawn: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityByNeuron(neuronId);
+
+    await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
     await getAndLoadNeuronHelper({ neuronId, identity });
 

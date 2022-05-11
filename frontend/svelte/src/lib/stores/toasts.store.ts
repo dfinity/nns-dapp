@@ -9,16 +9,19 @@ import { errorToString } from "../utils/error.utils";
  * - show: display a message in toast component - messages are stacked but only one is displayed
  * - success: display a message of type "success" - something went really well ;)
  * - error: display an error and print the issue in the console as well
- * - hide: remove the toast message at the first position i.e. hide the currently displayed message
+ * - hide: remove the toast message with that timestamp or the first one.
  */
 const initToastsStore = () => {
-  const { subscribe, update } = writable<ToastMsg[]>([]);
+  const { subscribe, update, set } = writable<ToastMsg[]>([]);
 
   return {
     subscribe,
 
     show(msg: ToastMsg) {
-      update((messages: ToastMsg[]) => [...messages, msg]);
+      update((messages: ToastMsg[]) => {
+        const id = Symbol();
+        return [...messages, { ...msg, id }];
+      });
     },
 
     success({ labelKey }: Pick<ToastMsg, "labelKey">) {
@@ -37,8 +40,19 @@ const initToastsStore = () => {
       }
     },
 
-    hide() {
-      update((messages: ToastMsg[]) => messages.slice(1));
+    hide(idToHide?: symbol) {
+      // If not specified, we remove the first one
+      if (idToHide === undefined) {
+        update((messages: ToastMsg[]) => messages.slice(1));
+      } else {
+        update((messages: ToastMsg[]) =>
+          messages.filter(({ id }) => id !== idToHide)
+        );
+      }
+    },
+
+    reset() {
+      set([]);
     },
   };
 };
