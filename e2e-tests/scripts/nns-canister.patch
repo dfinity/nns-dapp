@@ -5,7 +5,7 @@
  #[export_name = "canister_heartbeat"]
  fn canister_heartbeat() {
 +    // Distribute free maturity to all neurons.
-+    const MATURITY_PER_HEARTBEAT: u64 = 10000;
++    const MATURITY_PER_HEARTBEAT: u64 = 1000000;
 +    let now = governance().env.now();
 +    for (_, neuron) in governance_mut().proto.neurons.iter_mut() {
 +        if neuron.state(now) != ic_nns_governance::pb::v1::NeuronState::Dissolved {
