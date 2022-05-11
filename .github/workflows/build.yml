@@ -134,6 +134,7 @@ jobs:
           echo "$CARGO_BIN" >> $GITHUB_PATH
           ls "$CARGO_BIN"
       - name: Check Rust
+        run: |
           echo "PATH should contain cargo home:"
           echo "$PATH" | tr : "\n" | grep rust
           echo
