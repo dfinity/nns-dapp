@@ -99,7 +99,6 @@ while (($# > 0)); do
     DEPLOY_NNS_DAPP="true"
     ;;
   --open)
-    GUESS="false"
     OPEN_NNS_DAPP="true"
     ;;
   --dry-run)
@@ -120,7 +119,6 @@ if [[ "$GUESS" == "true" ]]; then
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
     DEPLOY_NNS_DAPP=true
-    OPEN_NNS_DAPP=true
     ;;
   *)
     { # Can we find an existing II?
@@ -131,7 +129,6 @@ if [[ "$GUESS" == "true" ]]; then
       DEPLOY_II=true
     }
     DEPLOY_NNS_DAPP=true
-    OPEN_NNS_DAPP=true
     ;;
   esac
 fi
