@@ -135,9 +135,8 @@ jobs:
           ls "$CARGO_BIN"
       - name: Check Rust
         run: |
-          echo "PATH should contain cargo home: $(echo "$PATH" | tr : "\n")"
-          echo "$PATH" | tr : "\n" | grep rust
-          echo
+          echo "PATH should contain cargo home: $(echo "$PATH" | tr : "\n" | grep cargo)"
+          ls "$HOME/.cargo/bin"
           command -v cargo
           cargo --version
           echo "Target list should contain wasm:"
