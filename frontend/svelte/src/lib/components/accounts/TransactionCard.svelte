@@ -4,64 +4,72 @@
   import ICP from "../ic/ICP.svelte";
   import Identifier from "../ic/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";
-  import type { Transaction } from "../../canisters/nns-dapp/nns-dapp.types";
+  import type {
+    AccountIdentifierString,
+    Transaction,
+  } from "../../canisters/nns-dapp/nns-dapp.types";
   import {
     mapTransaction,
     transactionDisplayAmount,
     AccountTransactionType,
   } from "../../utils/accounts.utils";
+  import { i18n } from "../../stores/i18n";
+  import { AccountIdentifier } from "@dfinity/nns/dist/proto/ledger_pb";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
-  const getName = ({
+  const getHeadline = ({
     type,
     isReceive,
   }: {
     type: AccountTransactionType;
     isReceive: boolean;
-  }) => {
-    switch (type) {
-      case AccountTransactionType.Send:
-        return isReceive ? "Received ICP" : "Sent ICP";
-      case AccountTransactionType.Mint:
-        return "Received ICP";
-      case AccountTransactionType.Burn:
-        return "Sent ICP";
-      case AccountTransactionType.StakeNeuron:
-        return "Stake Neuron";
-      case AccountTransactionType.StakeNeuronNotification:
-        return "Stake Neuron (Part 2 of 2)";
-      case AccountTransactionType.TopUpNeuron:
-        return "Top-up Neuron";
-      case AccountTransactionType.CreateCanister:
-        return "Create Canister";
-      case AccountTransactionType.TopUpCanister:
-        return "Top-up Canister";
-    }
-  };
+  }): string =>
+    type === AccountTransactionType.Send
+      ? isReceive
+        ? $i18n.transaction_names.receive
+        : $i18n.transaction_names.send
+      : $i18n.transaction_names[type] ?? type;
 
   export let account: Account;
   export let transaction: Transaction;
 
-  const { identifier } = account;
-  const { type, isReceive, from, to, amount, fee, date } = mapTransaction({
+  let identifier: AccountIdentifierString;
+  $: ({ identifier } = account);
+
+  let type: AccountTransactionType;
+  let isReceive: boolean;
+  let from: AccountIdentifierString | undefined;
+  let to: AccountIdentifierString | undefined;
+  let displayAmount: ICPType;
+  let date: Date;
+  $: ({ type, isReceive, from, to, displayAmount, date } = mapTransaction({
     transaction,
     account,
-  });
-  const displayAmount = transactionDisplayAmount({
-    type,
-    isReceive,
-    amount,
-    fee,
-  });
+  }));
+
+  let headline: string;
+  $: headline = getHeadline({ type, isReceive });
+
+  let direction: string;
+  // TODO: refactor to have the same logic as in flutter
+  // with isReceive and isSend
+  $: direction = isReceive
+    ? replacePlaceholders($i18n.transactions.direction_from, {
+        $address: from ?? "",
+      })
+    : replacePlaceholders($i18n.transactions.direction_to, {
+        $address: to ?? "",
+      });
 </script>
 
 <Card on:click>
   <div slot="start" class="title">
-    <h3>Sent ICP</h3>
+    <h3>{headline}</h3>
   </div>
   <ICP slot="end" icp={displayAmount} />
-  <span>Date</span>
-  <span>To: lasdfasdfjsadf</span>
-  <div>Source: <Identifier {identifier} /></div>
+  <span>{date.toLocaleString()}</span>
+
+  <div>{direction}</div>
 </Card>
 
 <style lang="scss">

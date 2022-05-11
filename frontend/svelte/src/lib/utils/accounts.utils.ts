@@ -172,8 +172,7 @@ export const mapTransaction = ({
   isReceive: boolean;
   from: AccountIdentifierString | undefined;
   to: AccountIdentifierString | undefined;
-  amount: ICP;
-  fee: ICP | undefined;
+  displayAmount: ICP;
   date: Date;
 } => {
   const { transfer, timestamp } = transaction;
@@ -200,13 +199,22 @@ export const mapTransaction = ({
     throw new Error("Unsupported transfer type");
   }
 
-  return {
-    isReceive: to === account.identifier,
-    type: transactionType(transaction),
-    from,
-    to,
+  const type = transactionType(transaction);
+  const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
+  const isReceive = to === account.identifier;
+  const displayAmount = transactionDisplayAmount({
+    type,
+    isReceive,
     amount,
     fee,
-    date: new Date(Number(timestamp.timestamp_nanos / BigInt(1e6))),
+  });
+
+  return {
+    isReceive,
+    type,
+    from,
+    to,
+    displayAmount,
+    date,
   };
 };

@@ -179,6 +179,23 @@ interface I18nNeurons {
   irreversible_action: string;
 }
 
+interface I18nTransaction_names {
+  receive: string;
+  send: string;
+  mint: string;
+  burn: string;
+  stakeNeuron: string;
+  stakeNeuronNotification: string;
+  topUpNeuron: string;
+  createCanister: string;
+  topUpCanister: string;
+}
+
+interface I18nTransactions {
+  direction_from: string;
+  direction_to: string;
+}
+
 interface I18nNew_followee {
   title: string;
   address_placeholder: string;
@@ -410,6 +427,8 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neurons: I18nNeurons;
+  transaction_names: I18nTransaction_names;
+  transactions: I18nTransactions;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
