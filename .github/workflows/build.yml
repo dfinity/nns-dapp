@@ -134,10 +134,14 @@ jobs:
           echo "$CARGO_BIN" >> $GITHUB_PATH
           ls "$CARGO_BIN"
       - name: Check Rust
-          echo "PATH contains: $(echo "$PATH" | tr : "\n" | grep rust)"
+          echo "PATH should contain cargo home:"
+          echo "$PATH" | tr : "\n" | grep rust
+          echo
           command -v cargo
           cargo --version
-          echo "Target list should contain wasm: $(rustup target list --installed | grep wasm)"
+          echo "Target list should contain wasm:"
+          rustup target list --installed | grep wasm
+          echo
           echo "Start cargo fetch..."
           cargo fetch
           echo "Finish cargo fetch"
