@@ -52,6 +52,7 @@ jobs:
           rustup update "$RUSTC_VERSION" --no-self-update
           rustup default "$RUSTC_VERSION"
           rustup target add wasm32-unknown-unknown
+          cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
 
   nns_canisters:
     runs-on: ubuntu-20.04
@@ -109,32 +110,16 @@ jobs:
           tar xJf /opt/flutter.tar.xz -C "$HOME"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Install Rust
-        run: |
-          # make sure we're installing the right version
-          grep "$RUSTC_VERSION" rust-toolchain.toml
-          rustup update "$RUSTC_VERSION" --no-self-update
-          rustup default "$RUSTC_VERSION"
-          rustup target add wasm32-unknown-unknown
-
-      - name: Get cached ic-cdk-optimizer
+      - name: Get cached rust
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.local/bin/ic-cdk-optimizer
-            target
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
-
-      - name: Install ic-cdk-optimizer
+          path: /opt/flutter.tar.xz
+          key: cargo-${{ env.RUSTC_VERSION }}
+      - name: Install Rust
         run: |
-          install_dir="$HOME/.local/bin/"
-          mkdir -p "$install_dir"
-          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
-          then
-            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
-            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
-            echo "$install_dir" >> $GITHUB_PATH
-          fi
+          echo "${{ env.CARGO_HOME }}/bin" >> $GITHUB_PATH
+          cargo --version
+          ic-cdk-optimizer --version
 
       - name: Install DFX
         run: |
