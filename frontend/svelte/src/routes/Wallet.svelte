@@ -16,6 +16,7 @@
   import type { Account } from "../lib/types/account";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
+  import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -48,7 +49,11 @@
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     {#if mainAccount}
-      <section>TBD - TODO(L2-429)</section>
+      <section>
+        <h1>TBD - TODO(L2-429)</h1>
+
+        <HardwareWalletShowAction />
+      </section>
     {:else}
       <Spinner />
     {/if}

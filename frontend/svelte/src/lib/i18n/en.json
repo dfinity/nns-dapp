@@ -100,6 +100,7 @@
     "attach_hardware_enter_name": "Enter Wallet Name",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
+    "show_info_hardware_wallet": "Show Principal And Address On Device",
     "attach_wallet": "Attach Wallet",
     "hardware_wallet_connected": "Connected to Hardware Wallet",
     "new_linked_account_enter_name": "Enter Account Name",
