@@ -42,7 +42,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: flutter.tar.xz
-          key: flutter-${{ FLUTTER_VERSION }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
 
       - name: Install Flutter
         run: |
