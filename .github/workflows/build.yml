@@ -135,7 +135,7 @@ jobs:
           ls "$CARGO_BIN"
       - name: Check Rust
         run: |
-          echo "PATH should contain cargo home:"
+          echo "PATH should contain cargo home: $(echo "$PATH" | tr : "\n")"
           echo "$PATH" | tr : "\n" | grep rust
           echo
           command -v cargo
