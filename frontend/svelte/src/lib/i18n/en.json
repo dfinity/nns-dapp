@@ -168,6 +168,17 @@
     "only_merge_two": "You can only merge two neurons at a time.",
     "irreversible_action": "This action is irreversible."
   },
+  "transaction_names": {
+    "receive": "Received ICP",
+    "send": "Sent ICP",
+    "mint": "Received ICP",
+    "burn": "Sent ICP",
+    "stakeNeuron": "Stake Neuron",
+    "stakeNeuronNotification": "TODO: check me -- Stake Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up Neuron",
+    "createCanister": "Create Canister",
+    "topUpCanister": "Top-up Canister"
+  },
   "new_followee": {
     "title": "Enter New Followee",
     "address_placeholder": "Followee Address",
