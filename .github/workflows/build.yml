@@ -51,7 +51,7 @@ jobs:
         with:
           path: |
             ~/.cargo
-          key: "cargo-${{ env.RUSTC_VERSION }}-v0"
+          key: "cargo-${{ env.RUSTC_VERSION }}-v10"
       - name: Install Rust
         if: steps.create_rust_cache.outputs.cache-hit != 'true'
         run: |
@@ -127,7 +127,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cargo
-          key: cargo-${{ env.RUSTC_VERSION }}-v0
+          key: cargo-${{ env.RUSTC_VERSION }}-v10
       - name: Install Rust
         run: |
           CARGO_BIN="$HOME/.cargo/bin"
