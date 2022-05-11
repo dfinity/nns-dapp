@@ -66,6 +66,7 @@
       buttonText={$i18n.neuron_detail.merge}
       on:nnsSelectPercentage={goToConfirm}
       bind:percentage={percentageToMerge}
+      disabled={percentageToMerge === 0}
     >
       <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.merge_maturity_modal_title}</h5>
