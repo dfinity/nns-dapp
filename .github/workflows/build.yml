@@ -109,7 +109,7 @@ jobs:
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: target/ic
       - name: Show nns canisters
-        run: \
+        run: |
           ls -ltr target/ic
           sha256sum target/ic
 
