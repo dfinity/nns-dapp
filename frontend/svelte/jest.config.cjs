@@ -19,5 +19,5 @@ module.exports = {
   testPathIgnorePatterns: ["nns-js"],
   testEnvironmentOptions: {
     url: "https://nns.ic0.app/",
-  }
+  },
 };
