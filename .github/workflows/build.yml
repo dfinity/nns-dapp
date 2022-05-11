@@ -113,12 +113,13 @@ jobs:
         with:
           path: /opt/flutter.tar.xz
           key: flutter-${{ env.FLUTTER_VERSION }}
-
       - name: Install Flutter
         run: |
           mkdir -p ~/flutter
           tar xJf /opt/flutter.tar.xz -C /opt
           echo "/opt/flutter/bin" >> $GITHUB_PATH
+      - name: Check Flutter
+          echo "$PATH" | tr : "\n"
           flutter --version
 
       - name: Get cached rust
