@@ -51,6 +51,8 @@ jobs:
           grep "$RUSTC_VERSION" rust-toolchain.toml
           rustup update "$RUSTC_VERSION" --no-self-update
           rustup default "$RUSTC_VERSION"
+          cargo --version
+          command -v cargo
           rustup target add wasm32-unknown-unknown
           cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
 
