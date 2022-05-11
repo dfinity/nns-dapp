@@ -2,99 +2,124 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+help_text() {
+  cat <<-EOF
+	Installs the dependencies needed to run ./build.sh
+
+	Warning: This is a record of one installation on an M1 mac.
+	         The code is untested on Linux and on CI.
+	EOF
+}
+
+while (($# > 0)); do
+  arg="$1"
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  *)
+    echo "Unsupported argument: $arg" >&2
+    exit 1
+    ;;
+  esac
+done
+
 USER_PROFILE="$HOME/.bashrc"
 
 have_correct_dfx() {
-    expected="$(jq -r .dfx dfx.json)"
-    actual="$(dfx --version | awk '{print $2}')"
-    [[ "$expected" == "$actual" ]]
+  expected="$(jq -r .dfx dfx.json)"
+  actual="$(dfx --version | awk '{print $2}')"
+  [[ "$expected" == "$actual" ]]
 }
 install_dfx() {
-    DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+  DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 }
 
 install_rosetta_maybe() {
-	[[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] &&
-	test -d /usr/libexec/rosetta/ ||
-	softwareupdate --install-rosetta || true
+  [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] &&
+    test -d /usr/libexec/rosetta/ ||
+    softwareupdate --install-rosetta || true
 }
 
 install_coreutils_darwin() {
-	echo "Installing coreutils..."
-	brew install coreutils
+  echo "Installing coreutils..."
+  brew install coreutils
 }
 install_coreutils_linux() {
-	echo "Installing coreutils..."
-	# Coreutils is included in build-essential, but you almost certainly need the other packages as well.
-	sudo apt-get install build-essential
+  echo "Installing coreutils..."
+  # Coreutils is included in build-essential, but you almost certainly need the other packages as well.
+  sudo apt-get install build-essential
 }
 
 install_jq_darwin() {
-	echo "Installing jq..."
-	brew install jq
+  echo "Installing jq..."
+  brew install jq
 }
 install_jq_linux() {
-	echo "Installing jq..."
-	sudo apt-get install jq
+  echo "Installing jq..."
+  sudo apt-get install jq
 }
 
 install_npm_darwin() {
-	echo "Installing npm"
-	brew install node
+  echo "Installing npm"
+  brew install node
 }
 install_npm_linux() {
-	echo "Installing npm"
-	sudo apt-get install nodejs
+  echo "Installing npm"
+  sudo apt-get install nodejs
 }
 
 install_rust() {
-	echo "Installing rust"
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	printf '\nexport CARGO_BUILD_JOBS=2\n' >> "$USER_PROFILE"
-	. "$USER_PROFILE"
+  echo "Installing rust"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  printf '\nexport CARGO_BUILD_JOBS=2\n' >>"$USER_PROFILE"
+  . "$USER_PROFILE"
 }
 
 install_xz_darwin() {
-	brew install xz
+  brew install xz
 }
 install_xz_linux() {
-	sudo apt-get install xz-utils
+  sudo apt-get install xz-utils
 }
 
 install_tar_darwin() {
-	brew install gnu-tar
+  brew install gnu-tar
 }
 install_tar_linux() {
-	sudo apt-get install tar
+  sudo apt-get install tar
 }
 
 install_flutter() {
-	FLUTTER_VERSION=2.2.3
-	rm -fr flutter
-	case "$(uname)" in
-	Darwin)
-		FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
-		FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}" ;;
-	Linux)
-		FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
-		URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP" ;;
-	esac
-	wget -c "$FLUTTER_URL"
-	unzip "$FLUTTER_ZIP"
-	mkdir -p "${HOME}/.cache/flutter"
-	rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
-	mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
-	printf '\nexport PATH="$PATH:%s"\n' "${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin" >> "$USER_PROFILE"
-	. "$USER_PROFILE"
+  FLUTTER_VERSION=2.2.3
+  rm -fr flutter
+  case "$(uname)" in
+  Darwin)
+    FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
+    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}"
+    ;;
+  Linux)
+    FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
+    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP"
+    ;;
+  esac
+  wget -c "$FLUTTER_URL"
+  unzip "$FLUTTER_ZIP"
+  mkdir -p "${HOME}/.cache/flutter"
+  rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+  mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+  # shellcheck disable=SC2016
+  printf '\nexport PATH="$PATH:%s"\n' "${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin" >>"$USER_PROFILE"
+  . "$USER_PROFILE"
 }
 
 install_ic_cdk_optimizer() {
-	# Nit: Needs rust to be in a working state.
-	cargo install --version 0.3.2 ic-cdk-optimizer
+  # Nit: Needs rust to be in a working state.
+  cargo install --version 0.3.2 ic-cdk-optimizer
 }
 
-
-OS="$(uname | tr A-Z a-z)"
+OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 install_rosetta_maybe
 command -v realpath || "install_coreutils_$OS"
