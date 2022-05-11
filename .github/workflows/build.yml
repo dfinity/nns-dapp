@@ -107,8 +107,9 @@ jobs:
       - name: Install Flutter
         run: |
           mkdir -p ~/flutter
-          tar xJf /opt/flutter.tar.xz -C "$HOME"
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+          tar xJf /opt/flutter.tar.xz -C /opt
+          echo "/opt/flutter/bin" >> $GITHUB_PATH
+          flutter --version
 
       - name: Get cached rust
         uses: actions/cache@v2
@@ -118,6 +119,8 @@ jobs:
       - name: Install Rust
         run: |
           echo "${{ env.CARGO_HOME }}/bin" >> $GITHUB_PATH
+          command -v cargo
+          command -v ic-cdk-optimizer
           cargo --version
           ic-cdk-optimizer --version
 
