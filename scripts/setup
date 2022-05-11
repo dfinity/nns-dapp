@@ -1,5 +1,8 @@
+#!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+USER_PROFILE="$HOME/.bashrc"
 
 have_correct_dfx() {
     expected="$(jq -r .dfx dfx.json)"
@@ -10,24 +13,100 @@ install_dfx() {
     DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 }
 
+install_rosetta_maybe() {
+	[[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] &&
+	test -d /usr/libexec/rosetta/ ||
+	softwareupdate --install-rosetta || true
+}
 
 install_coreutils_darwin() {
+	echo "Installing coreutils..."
 	brew install coreutils
 }
 install_coreutils_linux() {
+	echo "Installing coreutils..."
 	# Coreutils is included in build-essential, but you almost certainly need the other packages as well.
 	sudo apt-get install build-essential
 }
 
 install_jq_darwin() {
+	echo "Installing jq..."
 	brew install jq
 }
 install_jq_linux() {
+	echo "Installing jq..."
 	sudo apt-get install jq
 }
 
+install_npm_darwin() {
+	echo "Installing npm"
+	brew install node
+}
+install_npm_linux() {
+	echo "Installing npm"
+	sudo apt-get install nodejs
+}
+
+install_rust() {
+	echo "Installing rust"
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	printf '\nexport CARGO_BUILD_JOBS=2\n' >> "$USER_PROFILE"
+	. "$USER_PROFILE"
+}
+
+install_xz_darwin() {
+	brew install xz
+}
+install_xz_linux() {
+	sudo apt-get install xz-utils
+}
+
+install_tar_darwin() {
+	brew install gnu-tar
+}
+install_tar_linux() {
+	sudo apt-get install tar
+}
+
+install_flutter() {
+	FLUTTER_VERSION=2.2.3
+	rm -fr flutter
+	case "$(uname)" in
+	Darwin)
+		FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
+		FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}" ;;
+	Linux)
+		FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
+		URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP" ;;
+	esac
+	wget -c "$FLUTTER_URL"
+	unzip "$FLUTTER_ZIP"
+	mkdir -p "${HOME}/.cache/flutter"
+	rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+	mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+	printf '\nexport PATH="$PATH:%s"\n' "${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin" >> "$USER_PROFILE"
+	. "$USER_PROFILE"
+}
+
+install_ic_cdk_optimizer() {
+	# Nit: Needs rust to be in a working state.
+	cargo install --version 0.3.2 ic-cdk-optimizer
+}
+
+
 OS="$(uname | tr A-Z a-z)"
 
+install_rosetta_maybe
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
+command -v npm || "install_npm_$OS"
+command -v cargo || install_rust
+command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
+tar --help | grep GNU >/dev/null || "install_tar_$OS"
+command -v flutter || "install_flutter"
+command -v cmake || "install_cmake_$OS"
+command -v ic-cdk-optimizer || install_ic_cdk_optimizer
+
+echo "OK, all set to go!"
+echo "Please open a fresh terminal for these changes to take effect."
