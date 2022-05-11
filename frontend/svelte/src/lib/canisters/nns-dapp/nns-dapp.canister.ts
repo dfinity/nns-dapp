@@ -12,8 +12,10 @@ import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
+  AccountIdentifierString,
   CanisterDetails,
   CreateSubAccountResponse,
+  GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   SubAccountDetails,
@@ -174,4 +176,26 @@ export class NNSDappCanister {
 
     return this.service;
   }
+
+  public getTransactions = async ({
+    accountIdentifier,
+    pageSize,
+    offset,
+    certified,
+  }: {
+    accountIdentifier: AccountIdentifierString;
+    pageSize: number;
+    offset: number;
+    certified: boolean;
+  }): Promise<GetTransactionsResponse> => {
+    // TODO: error management
+    const response = await this.getNNSDappService(certified).get_transactions({
+      page_size: pageSize,
+      // TODO: add infinite scroll
+      offset,
+      account_identifier: accountIdentifier,
+    });
+
+    return response;
+  };
 }

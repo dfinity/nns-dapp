@@ -1,12 +1,20 @@
 import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
-import { createSubAccount, loadAccounts } from "../api/accounts.api";
+import {
+  createSubAccount,
+  loadAccounts,
+  loadAccountTransactions,
+} from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
 import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import type {
+  AccountIdentifierString,
+  Transaction,
+} from "../canisters/nns-dapp/nns-dapp.types";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -146,4 +154,29 @@ export const getAccountFromStore = (
   return subAccounts?.find(
     (account: Account) => account.identifier === identifier
   );
+};
+
+export const getAccountTransactions = async ({
+  accountIdentifier,
+}: {
+  accountIdentifier: AccountIdentifierString;
+}): Promise<Transaction[]> => {
+  try {
+    const identity: Identity = await getIdentity();
+
+    const response = await loadAccountTransactions({
+      identity,
+      accountIdentifier,
+      pageSize: 100,
+      offset: 0,
+      certified: false,
+    });
+
+    return response.transactions ?? [];
+  } catch (err) {
+    console.error(err);
+    // TODO: error management
+  }
+
+  return [];
 };
