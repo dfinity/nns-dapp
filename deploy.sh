@@ -3,38 +3,83 @@ set -euo pipefail
 cd "$(dirname "$(realpath "$0")")" || exit
 
 help_text() {
-  cat <<-EOF
-	Deploys the nns-dapp to a network.
+  cat <<-"EOF"
+
+	Deploys the nns-dapp to a network or to local dfx:
+	- Starts dfx (optional)
+	- Installs goverance canisters (optional)
+	- Installs Internet Identity (optional)
+	- Installs the NNS Dapp
+	- Opens the NNS dapp in a browser (optional)
+
+	On success the deployment is ready for development or testing:
+	- svelte:
+	    cd frontend/svelte
+	    npm ci
+	    npm run dev
+	- testing:
+	    cd e2e-tests
+	    npm ci
+	    npm run test
 
 	Usage:
 
 	./deploy.sh
-	  Creates a local network with the nns-dapp and supporting canisters.
+	  Creates a local network with the nns-dapp and supporting NNS and II canisters.
+	  This is the same as: ./deploy.sh local
+
+	./deploy.sh <network> --dry-run
+	  Prints the steps that would be executed if run against the given network.
 
 	./deploy.sh <network>
-	  Deploys just the nns-dapp to the given network, creating it if necessary.
+	  Deploys nns-dapp and required, apparently missing canisters to the given network.
+
+	./deploy.sh [network] <flags>
+	  Executes just the steps specified in the flags.
 
 	Flags:
+	--help
+	  Print this help message and exit.
+
+	--dry-run
+	  Print the steps that seem to be necessary for deployment.
+
+	--start
+	  Start dfx in the background.
+
+	--nns-backend
+	  Deploy NNS backend canisters.
+
 	--ii
 	  Create the internet_identity canister.
+
+	--nns-dapp
+	  Depoy the NNS dapp.
+
+	--open
+	  Open the NNS dapp in a browser.
+
 	EOF
 }
 
-GUESS="true"
-JUST_GUESS="false"
+# 
+GUESS="true" # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false" # print what would be done but don't do anything
+DFX_NETWORK=local # which network to deploy to
+
+# Whether to run each action:
 START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
 OPEN_NNS_DAPP="false"
-DFX_NETWORK=local
 
 while (($# > 0)); do
   env="$1"
   shift 1
   case "$env" in
   --help)
-    help_text
+    help_text | "${PAGER:-less}"
     exit 0
     ;;
   --start)
@@ -57,9 +102,8 @@ while (($# > 0)); do
     GUESS="false"
     OPEN_NNS_DAPP="true"
     ;;
-  --guess)
-    JUST_GUESS="true"
-    GUESS="true"
+  --dry-run)
+    DRY_RUN="true"
     ;;
   *)
     DFX_NETWORK="$env"
@@ -92,12 +136,13 @@ if [[ "$GUESS" == "true" ]]; then
     ;;
   esac
 fi
+
 echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
 echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
-[[ "$JUST_GUESS" != "true" ]] || exit 0
+[[ "$DRY_RUN" != "true" ]] || exit 0
 
 if [[ "$START_DFX" == "true" ]]; then
   dfx start --clean &
