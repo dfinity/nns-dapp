@@ -12,15 +12,33 @@ name: Native build
 on:
   push:
 
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    env:
+
+env:
       DFX_VERSION: 0.9.2
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
+
+jobs:
+  flutter:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Get cached flutter
+        uses: actions/cache@v2
+        with:
+          path: /opt/flutter.tar.xz
+          key: flutter-${{ env.FLUTTER_VERSION }}
+      - name: Download Flutter
+        run: |
+          cd $(mktemp -d)
+          test -e flutter.tar.xz || curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
+          mv flutter.tar.xz /opt/flutter.tar.xz
+
+  build:
+    needs: flutter
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
 
@@ -41,15 +59,13 @@ jobs:
       - name: Get cached flutter
         uses: actions/cache@v2
         with:
-          path: flutter.tar.xz
+          path: /opt/flutter.tar.xz
           key: flutter-${{ env.FLUTTER_VERSION }}
 
       - name: Install Flutter
         run: |
-          cd $(mktemp -d)
-          test -e flutter.tar.xz || curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
           mkdir -p ~/flutter
-          tar xJf flutter.tar.xz -C "$HOME"
+          tar xJf /opt/flutter.tar.xz -C "$HOME"
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
       - name: Install Rust
