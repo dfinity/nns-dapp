@@ -62,9 +62,9 @@ help_text() {
 	EOF
 }
 
-# 
-GUESS="true" # figure out which steps to run, as opposed to just performing the requested steps.
-DRY_RUN="false" # print what would be done but don't do anything
+#
+GUESS="true"      # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false"   # print what would be done but don't do anything
 DFX_NETWORK=local # which network to deploy to
 
 # Whether to run each action:
