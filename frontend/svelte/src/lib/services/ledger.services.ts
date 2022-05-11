@@ -133,7 +133,7 @@ export const showAddressAndPubKeyOnHardwareWallet = async () => {
     toastsStore.error(
       toLedgerError({
         err,
-        fallbackErrorLabelKey: "error__attach_wallet.unexpected",
+        fallbackErrorLabelKey: "error__ledger.unexpected",
       })
     );
   }
