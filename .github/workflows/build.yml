@@ -97,7 +97,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: e2e-tests/scripts
-          file: nns-canister.Dockerfile
+          file: e2e-tests/scripts/nns-canister.Dockerfile
           build-args: |
             IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
             # IC_COMMIT MUST match the value in ./e2e-tests/scripts/nns-canister-build
