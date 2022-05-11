@@ -83,7 +83,7 @@ jobs:
           build-args: |
             IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
           cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
+          cache-to: [ "type=gha,scope=cached-stage,mode=max", "type=local,src=~/cache/docker-nns-canisters" ]
           outputs: type=cacheonly
 
 
@@ -93,6 +93,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
+
+
+      - name: Deploy NNS canisters
+        run: |
+          ./e2e-tests/scripts/nns-canister-download
+          DOCKER_BUILDKIT=1 docker build  --target scratch -t "ledger" -f ./e2e-tests/scripts/nns-canister.Dockerfile --build-arg=IC_COMMIT="$IC_COMMIT" -o target/ic --cache-from "type=local,src=~/cache/docker-nns-canisters" ./e2e-tests/scripts
+
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
