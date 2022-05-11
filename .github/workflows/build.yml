@@ -111,7 +111,7 @@ jobs:
       - name: Show nns canisters
         run: |
           ls -ltr target/ic
-          sha256sum target/ic
+          sha256sum target/ic/*wasm
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
