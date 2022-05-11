@@ -18,7 +18,6 @@ env:
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
-      CARGO_HOME: "/opt/cargo"
 
 jobs:
   flutter_download:
@@ -41,12 +40,20 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
-      - name: Get cached rust
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - name: Get cached rust files
+        id: create_rust_cache
         uses: actions/cache@v2
         with:
-          path: "{{ env.CARGO_HOME }}"
-          key: cargo-${{ env.RUSTC_VERSION }}
+          path: |
+            ~/.cargo
+          key: "cargo-${{ env.RUSTC_VERSION }}-v0"
       - name: Install Rust
+        if: steps.create_rust_cache.outputs.cache-hit != 'true'
         run: |
           grep "$RUSTC_VERSION" rust-toolchain.toml
           rustup update "$RUSTC_VERSION" --no-self-update
@@ -54,7 +61,8 @@ jobs:
           cargo --version
           command -v cargo
           rustup target add wasm32-unknown-unknown
-          cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
+          cargo fetch
+          #cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
 
   nns_canisters:
     runs-on: ubuntu-20.04
@@ -116,17 +124,20 @@ jobs:
       - name: Get cached rust
         uses: actions/cache@v2
         with:
-          path: /opt/flutter.tar.xz
-          key: cargo-${{ env.RUSTC_VERSION }}
+          path: ~/.cargo
+          key: cargo-${{ env.RUSTC_VERSION }}-v0
       - name: Install Rust
         run: |
-          echo "${{ env.CARGO_HOME }}/bin" >> $GITHUB_PATH
-          ls "${{ env.CARGO_HOME }}/bin"
+          CARGO_BIN="$HOME/.cargo/bin"
+          echo "$CARGO_BIN" >> $GITHUB_PATH
+          ls "$CARGO_BIN"
           echo "$PATH"
           command -v cargo
           cargo --version
-          command -v ic-cdk-optimizer
-          ic-cdk-optimizer --version
+          rustup target list --installed
+          cargo fetch
+          #command -v ic-cdk-optimizer
+          #ic-cdk-optimizer --version
 
       - name: Install DFX
         run: |
