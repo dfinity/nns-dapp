@@ -119,6 +119,7 @@ jobs:
           tar xJf /opt/flutter.tar.xz -C /opt
           echo "/opt/flutter/bin" >> $GITHUB_PATH
       - name: Check Flutter
+        run: |
           echo "$PATH" | tr : "\n"
           flutter --version
 
