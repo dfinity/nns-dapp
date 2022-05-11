@@ -1,0 +1,33 @@
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+have_correct_dfx() {
+    expected="$(jq -r .dfx dfx.json)"
+    actual="$(dfx --version | awk '{print $2}')"
+    [[ "$expected" == "$actual" ]]
+}
+install_dfx() {
+    DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+}
+
+
+install_coreutils_darwin() {
+	brew install coreutils
+}
+install_coreutils_linux() {
+	# Coreutils is included in build-essential, but you almost certainly need the other packages as well.
+	sudo apt-get install build-essential
+}
+
+install_jq_darwin() {
+	brew install jq
+}
+install_jq_linux() {
+	sudo apt-get install jq
+}
+
+OS="$(uname | tr A-Z a-z)"
+
+command -v realpath || "install_coreutils_$OS"
+command -v jq || "install_jq_$OS"
+have_correct_dfx || install_dfx
