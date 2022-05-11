@@ -12,6 +12,7 @@
   export let neuron: NeuronInfo;
   export let percentage: number;
   export let buttonText: string;
+  export let disabled: boolean = false;
 
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);
@@ -60,7 +61,7 @@
     data-tid="select-maturity-percentage-button"
     class="primary full-width"
     on:click={selectPercentage}
-    disabled={percentage === 0}
+    {disabled}
   >
     {buttonText}
   </button>
