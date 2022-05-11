@@ -103,7 +103,7 @@ command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
-tar --help | grep GNU >/dev/null || "install_tar_$OS"
+command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v flutter || "install_flutter"
 command -v cmake || "install_cmake_$OS"
 command -v ic-cdk-optimizer || install_ic_cdk_optimizer
