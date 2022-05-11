@@ -120,7 +120,7 @@ jobs:
           echo "/opt/flutter/bin" >> $GITHUB_PATH
       - name: Check Flutter
         run: |
-          echo "$PATH" | tr : "\n"
+          echo "PATH contains: $(echo "$PATH" | tr : "\n" | grep flutter)"
           flutter --version
 
       - name: Get cached rust
@@ -133,11 +133,14 @@ jobs:
           CARGO_BIN="$HOME/.cargo/bin"
           echo "$CARGO_BIN" >> $GITHUB_PATH
           ls "$CARGO_BIN"
-          echo "$PATH"
+      - name: Check Rust
+          echo "PATH contains: $(echo "$PATH" | tr : "\n" | grep rust)"
           command -v cargo
           cargo --version
-          rustup target list --installed
+          echo "Target list should contain wasm: $(rustup target list --installed | grep wasm)"
+          echo "Start cargo fetch..."
           cargo fetch
+          echo "Finish cargo fetch"
           #command -v ic-cdk-optimizer
           #ic-cdk-optimizer --version
 
