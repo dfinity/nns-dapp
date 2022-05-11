@@ -62,7 +62,7 @@ jobs:
           command -v cargo
           rustup target add wasm32-unknown-unknown
           cargo fetch
-          #cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
+          cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
 
   nns_canisters:
     runs-on: ubuntu-20.04
@@ -145,8 +145,8 @@ jobs:
           echo "Start cargo fetch..."
           cargo fetch
           echo "Finish cargo fetch"
-          #command -v ic-cdk-optimizer
-          #ic-cdk-optimizer --version
+          command -v ic-cdk-optimizer
+          ic-cdk-optimizer --version
 
       - name: Install DFX
         run: |
