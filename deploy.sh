@@ -25,8 +25,8 @@ help_text() {
 	Usage:
 
 	Preflight: Make sure that you can run build.sh before using deploy.sh.  The build
-	  script requires a number of dependencies.  If you cannot run build.sh then
-	  "dfx deploy" will fail.
+	  script requires a number of dependencies.  If you cannot run "build.sh" then
+	  "dfx deploy" will fail.  To check, run:  DFX_NETWORK=mainnet build.sh
 
 	./deploy.sh
 	  Creates a local network with the nns-dapp and supporting NNS and II canisters.
