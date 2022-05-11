@@ -40,11 +40,6 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
-      # Cache based on the Cargo.lock
-      # The cache key is always an exact match or no match (i.e. no
-      # "restore-keys"-style matching). Because (in case of an exact match)
-      # GitHub actions won't (re-)upload the cache after the build, it means that
-      # our cache won't just grow forever.
       - name: Get cached rust files
         id: create_rust_cache
         uses: actions/cache@v2
@@ -113,20 +108,6 @@ jobs:
           ls -ltr target/ic
           sha256sum target/ic/*wasm
 
-      # Cache based on the Cargo.lock
-      # The cache key is always an exact match or no match (i.e. no
-      # "restore-keys"-style matching). Because (in case of an exact match)
-      # GitHub actions won't (re-)upload the cache after the build, it means that
-      # our cache won't just grow forever.
-      - name: Get cached rust files
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-
       - name: Get cached flutter
         uses: actions/cache@v2
         with:
@@ -187,17 +168,6 @@ jobs:
         run: |
           dfx start --background --clean
 
-      - name: Cache NNS canister docker build
-        uses: docker/build-push-action@v2
-        with:
-          context: e2e-tests/scripts
-          file: e2e-tests/scripts/nns-canister.Dockerfile
-          build-args: |
-            IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
-            # IC_COMMIT MUST match the value in ./e2e-tests/scripts/nns-canister-build
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./nns-canisters-out
       - name: Deploy NNS canisters
         run: |
           ./e2e-tests/scripts/nns-canister-install
@@ -205,12 +175,6 @@ jobs:
       - name: Deploy
         run: |
           ./e2e-tests/scripts/deploy-local-canisters
-
-      - name: Build proxy
-        working-directory: proxy
-        run: |
-          npm ci
-          npm run build
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
