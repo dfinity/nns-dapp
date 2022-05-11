@@ -18,6 +18,7 @@ env:
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
+      CARGO_HOME: "/opt/cargo"
 
 jobs:
   flutter_download:
@@ -34,6 +35,22 @@ jobs:
           cd $(mktemp -d)
           test -e flutter.tar.xz || curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
           mv flutter.tar.xz /opt/flutter.tar.xz
+
+  install_rust:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Get cached rust
+        uses: actions/cache@v2
+        with:
+          path: "{{ env.CARGO_HOME }}"
+          key: cargo-${{ env.RUSTC_VERSION }}
+      - name: Install Rust
+        run: |
+          grep "$RUSTC_VERSION" rust-toolchain.toml
+          rustup update "$RUSTC_VERSION" --no-self-update
+          rustup default "$RUSTC_VERSION"
+          rustup target add wasm32-unknown-unknown
 
   nns_canisters:
     runs-on: ubuntu-20.04
@@ -57,8 +74,9 @@ jobs:
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
 
+
   build:
-    needs: [flutter_download, nns_canisters]
+    needs: [flutter_download, nns_canisters, install_rust]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
@@ -94,7 +112,6 @@ jobs:
         run: |
           # make sure we're installing the right version
           grep "$RUSTC_VERSION" rust-toolchain.toml
-
           rustup update "$RUSTC_VERSION" --no-self-update
           rustup default "$RUSTC_VERSION"
           rustup target add wasm32-unknown-unknown
