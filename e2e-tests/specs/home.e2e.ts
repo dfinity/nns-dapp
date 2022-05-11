@@ -32,26 +32,8 @@ describe("landing page", () => {
 
     expect(titleText).toBe("Accounts");
 
-    try {
-      // remove spinner to make screenshots deterministic
-      const spinner = await browser.$('[data-tid="spinner"]');
-      await spinner.waitForExist();
-      await browser.execute(() =>
-        document.querySelector('[data-tid="spinner"]').remove()
-      );
-      await waitForImages(browser);
-      // remove toast error to make screenshots deterministic
-      const errorToast = await browser.$(".toast");
-      await errorToast.waitForExist({ timeout: 10_000 });
-      await browser.execute(() => document.querySelector(".toast").remove());
-      await errorToast.waitUntil(async () => !(await errorToast.isExisting()));
-    } catch (error) {
-      // Log error, but continue and take screenshot
-      console.log("Error waiting for spinner and toast error");
-      console.log(error);
-    } finally {
-      await browser["screenshot"]("home-page");
-    }
+    await waitForImages(browser);
+    await browser["screenshot"]("home-page");
     // TODO: Deploy Ledger and Governance canisters and proxy them
     // How do we do this when they are in another repo? Do we have a repository of docker images?
     // TODO: Create docker image of NNS Dapp with IDENTITY_SERVICE_URL pointing to these proxies
