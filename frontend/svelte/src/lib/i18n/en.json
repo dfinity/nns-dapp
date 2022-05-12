@@ -174,22 +174,6 @@
     "only_merge_two": "You can only merge two neurons at a time.",
     "irreversible_action": "This action is irreversible."
   },
-  "transaction_names": {
-    "receive": "Received ICP",
-    "send": "Sent ICP",
-    "mint": "Received ICP",
-    "burn": "Sent ICP",
-    "stakeNeuron": "Stake Neuron",
-    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
-    "topUpNeuron": "Top-up Neuron",
-    "createCanister": "Create Canister",
-    "topUpCanister": "Top-up Canister"
-  },
-  "transactions": {
-    "direction_from": "Source:",
-    "direction_to": "To:",
-    "no_transactions": "No transactions"
-  },
   "new_followee": {
     "title": "Enter New Followee",
     "address_placeholder": "Followee Address",
@@ -273,8 +257,23 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "transaction_names": {
+    "receive": "Received ICP",
+    "send": "Sent ICP",
+    "mint": "Received ICP",
+    "burn": "Sent ICP",
+    "stakeNeuron": "Stake Neuron",
+    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up Neuron",
+    "createCanister": "Create Canister",
+    "topUpCanister": "Top-up Canister"
+  },
   "wallet": {
-    "title": "Account"
+    "title": "Account",
+    "address": "Address:",
+    "direction_from": "Source:",
+    "direction_to": "To:",
+    "no_transactions": "No transactions"
   },
   "proposal_detail": {
     "title": "Proposal",

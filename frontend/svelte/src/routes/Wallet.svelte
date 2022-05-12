@@ -23,14 +23,14 @@
   import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { writable } from "svelte/store";
-  import {
-    TRANSACTIONS_CONTEXT_KEY,
-    type TransactionsContext,
-    type TransactionsStore,
-  } from "../lib/stores/transactions.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
+  import {
+    ACCOUNT_CONTEXT_KEY,
+    type AccountContext,
+    type AccountStore,
+  } from "../lib/stores/account.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -47,51 +47,51 @@
     await getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions }) => {
-        if (accountIdentifier !== $transactionsStore.accountIdentifier) {
+        if (accountIdentifier !== $accountStore.accountIdentifier) {
           // skip using outdated transactions if url was changed
           return;
         }
-        $transactionsStore.transactions = transactions;
+        $accountStore.transactions = transactions;
       },
     });
 
-  const transactionsStore = writable<TransactionsStore>({
+  const accountStore = writable<AccountStore>({
     accountIdentifier: undefined,
     account: undefined,
     transactions: undefined,
   });
-  setContext<TransactionsContext>(TRANSACTIONS_CONTEXT_KEY, transactionsStore);
+  setContext<AccountContext>(ACCOUNT_CONTEXT_KEY, accountStore);
 
   let routeAccountIdentifier: string | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
-  // manage transactionsStore state
+  // manage accountStore state
   $: routeAccountIdentifier,
     $accountsStore,
     (() => {
       const identifierChanged =
-        routeAccountIdentifier !== $transactionsStore.accountIdentifier;
+        routeAccountIdentifier !== $accountStore.accountIdentifier;
 
       if (identifierChanged) {
-        $transactionsStore.account = undefined;
-        $transactionsStore.transactions = undefined;
+        $accountStore.account = undefined;
+        $accountStore.transactions = undefined;
       }
-      const noStoreAccount = $transactionsStore.account === undefined;
+      const noStoreAccount = $accountStore.account === undefined;
 
-      $transactionsStore.account = getAccountFromStore(routeAccountIdentifier);
-      $transactionsStore.accountIdentifier = routeAccountIdentifier;
+      $accountStore.account = getAccountFromStore(routeAccountIdentifier);
+      $accountStore.accountIdentifier = routeAccountIdentifier;
 
       // skip same transaction loading
       if (
         (identifierChanged || noStoreAccount) &&
-        $transactionsStore.account !== undefined
+        $accountStore.account !== undefined
       ) {
-        updateTransactions($transactionsStore.account.identifier);
+        updateTransactions($accountStore.account.identifier);
       }
 
       // handle unknown accountIdentifier from URL
       if (
-        $transactionsStore.account === undefined &&
+        $accountStore.account === undefined &&
         $accountsStore.main !== undefined
       ) {
         toastsStore.error({
@@ -104,9 +104,9 @@
     })();
 
   let accountName: string;
-  $: if ($transactionsStore.account) {
+  $: if ($accountStore.account) {
     accountName = getAccountName({
-      account: $transactionsStore.account,
+      account: $accountStore.account,
       mainName: $i18n.accounts.main,
     });
   }
@@ -119,28 +119,26 @@
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>
-      {#if $transactionsStore.account !== undefined}
+      {#if $accountStore.account !== undefined}
         <div class="title">
           <h1>{accountName}</h1>
-          <ICP icp={$transactionsStore.account.balance} />
+          <ICP icp={$accountStore.account.balance} />
         </div>
         <Identifier
-          identifier={$transactionsStore.account.identifier}
+          label={$i18n.wallet.address}
+          identifier={$accountStore.account.identifier}
           showCopy
         />
 
         <HardwareWalletShowAction />
 
-        {#if $transactionsStore.transactions === undefined}
+        {#if $accountStore.transactions === undefined}
           <SkeletonCard />
-        {:else if $transactionsStore.transactions.length === 0}
-          {$i18n.transactions.no_transactions}
+        {:else if $accountStore.transactions.length === 0}
+          {$i18n.wallet.no_transactions}
         {:else}
-          {#each $transactionsStore.transactions as transaction}
-            <TransactionCard
-              account={$transactionsStore.account}
-              {transaction}
-            />
+          {#each $accountStore.transactions as transaction}
+            <TransactionCard account={$accountStore.account} {transaction} />
           {/each}
         {/if}
       {:else}
@@ -153,7 +151,7 @@
         <button
           class="primary"
           on:click={() => (showNewTransactionModal = true)}
-          disabled={$transactionsStore.account === undefined}
+          disabled={$accountStore.account === undefined}
           >{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>
@@ -163,7 +161,7 @@
   {#if showNewTransactionModal}
     <NewTransactionModal
       on:nnsClose={() => (showNewTransactionModal = false)}
-      selectedAccount={$transactionsStore.account}
+      selectedAccount={$accountStore.account}
     />
   {/if}
 {/if}
@@ -189,5 +187,9 @@
       justify-content: space-between;
       align-items: center;
     }
+  }
+
+  .address {
+    display: flex;
   }
 </style>

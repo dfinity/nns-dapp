@@ -3,18 +3,22 @@
   import { i18n } from "../../stores/i18n";
 
   export let identifier: string;
+  export let label: string | undefined;
   export let showCopy: boolean = false;
+
+  let labelText: string;
+  $: labelText = label === undefined ? "" : `${label} `;
 
   const copyToClipboard = async () =>
     await navigator.clipboard.writeText(identifier);
 </script>
 
 <p>
-  <small>{identifier}</small>
+  <small>{labelText}{identifier}</small>
   {#if showCopy}
     <button
       on:click|stopPropagation={copyToClipboard}
-      aria-label={$i18n.accounts.copy_identifier}
+      aria-label={labelText + $i18n.accounts.copy_identifier}
       class="icon-only"
     >
       <IconCopy />

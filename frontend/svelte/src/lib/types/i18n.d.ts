@@ -185,24 +185,6 @@ interface I18nNeurons {
   irreversible_action: string;
 }
 
-interface I18nTransaction_names {
-  receive: string;
-  send: string;
-  mint: string;
-  burn: string;
-  stakeNeuron: string;
-  stakeNeuronNotification: string;
-  topUpNeuron: string;
-  createCanister: string;
-  topUpCanister: string;
-}
-
-interface I18nTransactions {
-  direction_from: string;
-  direction_to: string;
-  no_transactions: string;
-}
-
 interface I18nNew_followee {
   title: string;
   address_placeholder: string;
@@ -293,8 +275,24 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nTransaction_names {
+  receive: string;
+  send: string;
+  mint: string;
+  burn: string;
+  stakeNeuron: string;
+  stakeNeuronNotification: string;
+  topUpNeuron: string;
+  createCanister: string;
+  topUpCanister: string;
+}
+
 interface I18nWallet {
   title: string;
+  address: string;
+  direction_from: string;
+  direction_to: string;
+  no_transactions: string;
 }
 
 interface I18nProposal_detail {
@@ -439,8 +437,6 @@ interface I18n {
   auth: I18nAuth;
   accounts: I18nAccounts;
   neurons: I18nNeurons;
-  transaction_names: I18nTransaction_names;
-  transactions: I18nTransactions;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
@@ -448,6 +444,7 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;
+  transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;

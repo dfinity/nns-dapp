@@ -46,11 +46,11 @@
   let headline: string;
   $: headline = getHeadline({ type, isReceive });
 
-  let direction: string | undefined;
-  $: direction = isReceive
-    ? $i18n.transactions.direction_from
+  let label: string | undefined;
+  $: label = isReceive
+    ? $i18n.wallet.direction_from
     : isSend
-    ? $i18n.transactions.direction_to
+    ? $i18n.wallet.direction_to
     : undefined;
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
@@ -63,8 +63,8 @@
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
   <span>{date.toLocaleString()}</span>
 
-  {#if identifier !== undefined && direction !== undefined}
-    <div>{direction}<Identifier {identifier} /></div>
+  {#if identifier !== undefined}
+    <Identifier {label} {identifier} showCopy />
   {/if}
 </Card>
 
