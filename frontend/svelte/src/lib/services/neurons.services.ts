@@ -501,7 +501,7 @@ export const mergeNeurons = async ({
 };
 
 // This service is used when creating a new neuron from a Hardware Wallet.
-// The new neuron is not yet in the neuronsStore.
+// The new neuron is not yet in the neuronsStore because the user should add first a hotkey to make nns-dapp control the neuron on the hardware wallet.
 export const addHotkeyFromHW = async ({
   neuronId,
   principal,
@@ -518,6 +518,7 @@ export const addHotkeyFromHW = async ({
 
     return neuronId;
   } catch (err) {
+    // TODO: Manage edge cases https://dfinity.atlassian.net/browse/L2-526
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error

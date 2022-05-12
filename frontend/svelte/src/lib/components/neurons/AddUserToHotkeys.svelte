@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
-  import type { Principal } from "@dfinity/principal";
+  import { createEventDispatcher } from "svelte";
   import { getIdentity } from "../../services/auth.services";
   import { addHotkeyFromHW } from "../../services/neurons.services";
   import { startBusy, stopBusy } from "../../stores/busy.store";
@@ -12,16 +11,12 @@
   import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { authStore } from "../../stores/auth.store";
 
   export let account: Account;
   export let neuron: NeuronInfo;
 
   let loading: boolean = false;
-
-  let principal: Principal | undefined;
-  onMount(async () => {
-    principal = (await getIdentity()).getPrincipal();
-  });
 
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);
@@ -31,6 +26,7 @@
     dispatcher("nnsNext");
   };
 
+  // Add the auth identity principal as hotkey
   const addCurrentUserToHotkey = async () => {
     loading = true;
     startBusy("add-hotkey-neuron");
@@ -56,7 +52,7 @@
     <h5>{$i18n.neurons.add_user_as_hotkey_message_1}</h5>
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.add_user_as_hotkey_message_2, {
-        $principal: principal?.toText() ?? "",
+        $principal: $authStore.identity?.getPrincipal().toText() ?? "",
       })}
     </p>
   </div>
@@ -80,7 +76,7 @@
       class="primary full-width"
       on:click={addCurrentUserToHotkey}
       data-tid="confirm-add-principal-to-hotkey-modal"
-      disabled={principal === undefined}
+      disabled={$authStore.identity?.getPrincipal() === undefined}
     >
       {#if loading}
         <Spinner />
