@@ -43,20 +43,16 @@
       loading = false;
       stopBusy("add-hotkey-neuron");
       if (neuronId !== undefined) {
-        dispatchNext();
         toastsStore.success({
           labelKey: "neurons.add_user_as_hotkey_success",
         });
+        dispatchNext();
       }
     }
   };
-
-  $: {
-    console.log();
-  }
 </script>
 
-<div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
+<div class="wizard-wrapper" data-tid="add-principal-to-hotkeys-modal">
   <div class="main-info">
     <h5>{$i18n.neurons.add_user_as_hotkey_message_1}</h5>
     <p data-tid="neuron-stake">
@@ -78,13 +74,13 @@
   <div class="buttons">
     <button
       on:click={dispatchNext}
-      data-tid="cancel-neuron-delay"
+      data-tid="skip-add-principal-to-hotkey-modal"
       class="secondary full-width">{$i18n.neurons.skip}</button
     >
     <button
       class="primary full-width"
       on:click={addCurrentUserToHotkey}
-      data-tid="go-confirm-delay-button"
+      data-tid="confirm-add-principal-to-hotkey-modal"
     >
       {#if loading}
         <Spinner />

@@ -521,8 +521,6 @@ export const addHotkeyFromHW = async ({
     return neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
-    console.log("in da error");
-    console.log(err);
 
     // To inform there was an error
     return undefined;

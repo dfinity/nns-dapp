@@ -120,9 +120,7 @@
   const goNext = () => {
     modal.next();
   };
-  const goToDissolveDelay = ({
-    detail,
-  }: CustomEvent<{ neuron: NeuronInfo }>) => {
+  const addNeuron = ({ detail }: CustomEvent<{ neuron: NeuronInfo }>) => {
     newNeuron = detail.neuron;
     modal.next();
   };
@@ -141,10 +139,7 @@
   {#if currentStep?.name === "StakeNeuron"}
     <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
     {#if selectedAccount !== undefined}
-      <StakeNeuron
-        account={selectedAccount}
-        on:nnsNeuronCreated={goToDissolveDelay}
-      />
+      <StakeNeuron account={selectedAccount} on:nnsNeuronCreated={addNeuron} />
     {/if}
   {/if}
   {#if currentStep?.name === "AddUserToHotkeys"}
