@@ -32,7 +32,10 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0001"
+
+      - name: Download prebuilt nns canisters
+        run: ./e2e-tests/scripts/nns-canister-download
 
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
