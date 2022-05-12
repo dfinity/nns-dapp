@@ -26,6 +26,12 @@ while (($# > 0)); do
 done
 
 USER_PROFILE="$HOME/.bashrc"
+NEW_TERMINAL_NEEDED=false
+append_to_profile() {
+  printf '\n%s\n' "$1" >>"$USER_PROFILE"
+  . "$USER_PROFILE"
+  NEW_TERMINAL_NEEDED=true
+}
 
 have_correct_dfx() {
   expected="$(jq -r .dfx dfx.json)"
@@ -37,9 +43,12 @@ install_dfx() {
 }
 
 install_rosetta_maybe() {
-  [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] &&
-    test -d /usr/libexec/rosetta/ ||
-    softwareupdate --install-rosetta || true
+  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] ; then
+    test -d /usr/libexec/rosetta/ || {
+      read -rp "Installing Rosetta for M1.  It lets you run x86_64 binaries.  Press enter to proceed... "
+      softwareupdate --install-rosetta
+    }
+  fi
 }
 
 install_coreutils_darwin() {
@@ -73,8 +82,7 @@ install_npm_linux() {
 install_rust() {
   echo "Installing rust"
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  printf '\nexport CARGO_BUILD_JOBS=2\n' >>"$USER_PROFILE"
-  . "$USER_PROFILE"
+  append_to_profile 'export CARGO_BUILD_JOBS=2'
 }
 
 install_xz_darwin() {
@@ -110,8 +118,7 @@ install_flutter() {
   rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
   mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
   # shellcheck disable=SC2016
-  printf '\nexport PATH="$PATH:%s"\n' "${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin" >>"$USER_PROFILE"
-  . "$USER_PROFILE"
+  append_to_profile "export PATH=\"\$PATH:${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin\""
 }
 
 install_ic_cdk_optimizer() {
@@ -142,4 +149,4 @@ command -v cmake || "install_cmake_$OS"
 command -v ic-cdk-optimizer || install_ic_cdk_optimizer
 
 echo "OK, all set to go!"
-echo "Please open a fresh terminal for these changes to take effect."
+[[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
