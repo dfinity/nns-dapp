@@ -7,18 +7,23 @@
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
   import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { createEventDispatcher, onMount } from "svelte";
-  import {
-    isNeuronControlledByHardwareWallet,
-    spawnNeuron,
-  } from "../../services/neurons.services";
+  import { createEventDispatcher } from "svelte";
+  import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
+  export let controlledByHarwareWallet: boolean;
 
-  let steps: Steps = [
+  const hardwareWalletSteps: Steps = [
+    {
+      name: "ConfirmSpawn",
+      showBackButton: false,
+      title: $i18n.neuron_detail.spawn_confirmation_modal_title,
+    },
+  ];
+  const nnsDappAccountSteps: Steps = [
     {
       name: "SelectPercentage",
       showBackButton: false,
@@ -30,15 +35,9 @@
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-
-  onMount(async () => {
-    const controlledByHarwareWallet = await isNeuronControlledByHardwareWallet(
-      neuron
-    );
-    if (controlledByHarwareWallet) {
-      modal.next();
-    }
-  });
+  const steps: Steps = controlledByHarwareWallet
+    ? hardwareWalletSteps
+    : nnsDappAccountSteps;
 
   let currentStep: Step;
   let modal: WizardModal;

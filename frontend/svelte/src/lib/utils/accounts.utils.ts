@@ -19,8 +19,9 @@ export const getAccountByPrincipal = ({
     return accounts.main;
   }
 
-  // TODO: Check also the hardware wallets L2-433
-  return undefined;
+  return accounts.hardwareWallets?.find(
+    (account) => account.principal?.toText() === principal
+  );
 };
 
 /**
