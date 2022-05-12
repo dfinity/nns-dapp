@@ -41,6 +41,7 @@
   <button
     class="primary full-width"
     type="submit"
+    data-tid="rename-subaccount-button"
     disabled={newAccountName.length === 0 ||
       $busy ||
       selectedAccount === undefined}
