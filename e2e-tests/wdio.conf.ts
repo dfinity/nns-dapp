@@ -1,5 +1,6 @@
 const { existsSync, mkdirSync, writeFileSync } = require("fs");
 const { NNS_DAPP_URL } = require("./common/constants");
+import { Options as WebDriverOptions } from '@wdio/types';
 
 export const config: WebdriverIO.Config = {
   baseUrl: NNS_DAPP_URL,
@@ -11,7 +12,7 @@ export const config: WebdriverIO.Config = {
 
     browser.addCommand(
       "screenshot",
-      async (name: string, options?: { saveDom?: boolean } = {}) => {
+      async (name: string, options?: { saveDom?: boolean }) => {
         // Safe increment.  If you see screenshot counts this high, think why.
         browser["screenshot-count"] =
           (Number.isNaN(browser["screenshot-count"])
@@ -94,7 +95,7 @@ export const config: WebdriverIO.Config = {
     },
   ],
   logLevel:
-    process.env.LOG_LEVEL === undefined ? "warn" : process.env.LOG_LEVEL,
+    process.env.LOG_LEVEL === undefined ? "warn" : process.env.LOG_LEVEL as (WebDriverOptions.WebDriverLogTypes|undefined),
   services: ["chromedriver"],
 
   framework: "mocha",
