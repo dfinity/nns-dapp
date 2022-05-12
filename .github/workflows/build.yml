@@ -12,6 +12,13 @@ name: Native build
 on:
   push:
 
+
+env:
+      DFX_VERSION: 0.9.2
+      RUSTC_VERSION: 1.58.1
+      FLUTTER_VERSION: 2.2.3
+      IC_CDK_OPTIMIZER_VERSION: 0.3.1
+
 jobs:
   nns_canisters:
     runs-on: ubuntu-20.04
@@ -36,11 +43,6 @@ jobs:
     needs: [nns_canisters]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
-    env:
-      DFX_VERSION: 0.9.2
-      RUSTC_VERSION: 1.58.1
-      FLUTTER_VERSION: 2.2.3
-      IC_CDK_OPTIMIZER_VERSION: 0.3.1
     steps:
       - uses: actions/checkout@v2
 
