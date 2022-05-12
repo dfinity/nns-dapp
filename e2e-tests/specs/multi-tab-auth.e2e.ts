@@ -10,8 +10,7 @@ import { AuthPage } from "../components/auth";
  */
 describe("multi-tab-auth", () => {
   const nnsTabs: Array<string> = [];
-  var identityAnchor: string|undefined = undefined;
-  var navigator;
+  let navigator;
 
   before(() => {
     navigator = new Navigator(browser);
@@ -30,7 +29,7 @@ describe("multi-tab-auth", () => {
   });
 
   it("registerTabOne", async () => {
-    identityAnchor = (await register(browser)).identityAnchor;
+    await register(browser);
     await waitForImages(browser);
     await browser["screenshot"]("register-tab-one");
   });
