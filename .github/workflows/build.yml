@@ -12,61 +12,12 @@ name: Native build
 on:
   push:
 
-
-env:
-      DFX_VERSION: 0.9.2
-      RUSTC_VERSION: 1.58.1
-      FLUTTER_VERSION: 2.2.3
-      IC_CDK_OPTIMIZER_VERSION: 0.3.1
-
 jobs:
-  flutter_download:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    steps:
-      - name: Get cached flutter
-        uses: actions/cache@v2
-        with:
-          path: /opt/flutter.tar.xz
-          key: flutter-${{ env.FLUTTER_VERSION }}
-      - name: Download Flutter
-        run: |
-          cd $(mktemp -d)
-          test -e flutter.tar.xz || curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
-          mv flutter.tar.xz /opt/flutter.tar.xz
-
-  install_rust:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v2
-      - name: Get cached rust files
-        id: create_rust_cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo
-          key: "cargo-${{ env.RUSTC_VERSION }}-v10"
-      - name: Install Rust
-        if: steps.create_rust_cache.outputs.cache-hit != 'true'
-        run: |
-          grep "$RUSTC_VERSION" rust-toolchain.toml
-          rustup update "$RUSTC_VERSION" --no-self-update
-          rustup default "$RUSTC_VERSION"
-          cargo --version
-          command -v cargo
-          rustup target add wasm32-unknown-unknown
-          cargo fetch
-          cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
-
   nns_canisters:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
-      # We use buildx and its GitHub Actions caching support `type=gha`. For
-      # more information, see
-      # https://github.com/docker/build-push-action/issues/539
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
 
@@ -81,72 +32,66 @@ jobs:
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
 
-
   build:
-    needs: [flutter_download, nns_canisters, install_rust]
+    needs: [nns_canisters]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
+    env:
+      DFX_VERSION: 0.9.2
+      RUSTC_VERSION: 1.58.1
+      FLUTTER_VERSION: 2.2.3
+      IC_CDK_OPTIMIZER_VERSION: 0.3.1
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download nns canisters
-        run: ./e2e-tests/scripts/nns-canister-download
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build nns canisters
-        uses: docker/build-push-action@v2
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - uses: actions/cache@v2
         with:
-          context: e2e-tests/scripts
-          file: e2e-tests/scripts/nns-canister.Dockerfile
-          build-args: |
-            IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
-          outputs: target/ic
-      - name: Show nns canisters
-        run: |
-          ls -ltr target/ic
-          sha256sum target/ic/*wasm
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Get cached flutter
-        uses: actions/cache@v2
-        with:
-          path: /opt/flutter.tar.xz
-          key: flutter-${{ env.FLUTTER_VERSION }}
       - name: Install Flutter
         run: |
+          cd $(mktemp -d)
+          curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
           mkdir -p ~/flutter
-          tar xJf /opt/flutter.tar.xz -C /opt
-          echo "/opt/flutter/bin" >> $GITHUB_PATH
-      - name: Check Flutter
-        run: |
-          echo "PATH contains: $(echo "$PATH" | tr : "\n" | grep flutter)"
-          flutter --version
+          tar xJf flutter.tar.xz -C "$HOME"
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Get cached rust
-        uses: actions/cache@v2
-        with:
-          path: ~/.cargo
-          key: cargo-${{ env.RUSTC_VERSION }}-v10
       - name: Install Rust
         run: |
-          CARGO_BIN="$HOME/.cargo/bin"
-          echo "$CARGO_BIN" >> $GITHUB_PATH
-          ls "$CARGO_BIN"
-      - name: Check Rust
+          # make sure we're installing the right version
+          grep "$RUSTC_VERSION" rust-toolchain.toml
+
+          rustup update "$RUSTC_VERSION" --no-self-update
+          rustup default "$RUSTC_VERSION"
+          rustup target add wasm32-unknown-unknown
+
+      # Cache the ic-cdk-optimizer
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.local/bin/ic-cdk-optimizer
+            target
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
+
+      - name: Install ic-cdk-optimizer
         run: |
-          echo "PATH should contain cargo home: $(echo "$PATH" | tr : "\n" | grep cargo)"
-          ls "$HOME/.cargo/bin"
-          command -v cargo
-          cargo --version
-          echo "Target list should contain wasm:"
-          rustup target list --installed | grep wasm
-          echo
-          echo "Start cargo fetch..."
-          cargo fetch
-          echo "Finish cargo fetch"
-          command -v ic-cdk-optimizer
-          ic-cdk-optimizer --version
+          install_dir="$HOME/.local/bin/"
+          mkdir -p "$install_dir"
+          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
+          then
+            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
+            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
+            echo "$install_dir" >> $GITHUB_PATH
+          fi
 
       - name: Install DFX
         run: |
@@ -168,13 +113,23 @@ jobs:
         run: |
           dfx start --background --clean
 
+      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
+      # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy NNS canisters
         run: |
+          ./e2e-tests/scripts/nns-canister-download
+          ./e2e-tests/scripts/nns-canister-build
           ./e2e-tests/scripts/nns-canister-install
 
       - name: Deploy
         run: |
           ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Build proxy
+        working-directory: proxy
+        run: |
+          npm ci
+          npm run build
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
