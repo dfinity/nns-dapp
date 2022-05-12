@@ -125,6 +125,7 @@ export const spawnNeuron = async ({
   identity,
 }: {
   neuronId: NeuronId;
+  // percentageToSpawn is not yet supported by the ledger IC app
   percentageToSpawn?: number;
   identity: Identity;
 }): Promise<void> => {

@@ -51,6 +51,14 @@
     percentage: percentageToSpawn,
   });
 
+  let percentageMessage: string;
+  $: percentageMessage = controlledByHarwareWallet
+    ? "100%"
+    : formatPercentage(percentageToSpawn / 100, {
+        minFraction: 0,
+        maxFraction: 0,
+      });
+
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
     loading = true;
@@ -101,12 +109,7 @@
           {replacePlaceholders(
             $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: controlledByHarwareWallet
-                ? "100%"
-                : formatPercentage(percentageToSpawn / 100, {
-                    minFraction: 0,
-                    maxFraction: 0,
-                  }),
+              $percentage: percentageMessage,
             }
           )}
         </p>

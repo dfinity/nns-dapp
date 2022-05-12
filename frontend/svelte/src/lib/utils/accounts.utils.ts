@@ -10,17 +10,17 @@ import type { Account } from "../types/account";
  */
 export const getAccountByPrincipal = ({
   principal,
-  accounts,
+  accounts: { main, hardwareWallets },
 }: {
   principal: string;
   accounts: AccountsStore;
 }): Account | undefined => {
-  if (accounts.main?.principal?.toText() === principal) {
-    return accounts.main;
+  if (main?.principal?.toText() === principal) {
+    return main;
   }
 
-  return accounts.hardwareWallets?.find(
-    (account) => account.principal?.toText() === principal
+  return hardwareWallets?.find(
+    ({ principal: hwPrincipal }) => hwPrincipal?.toText() === principal
   );
 };
 
