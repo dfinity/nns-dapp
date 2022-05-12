@@ -23,6 +23,7 @@
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { accountName as getAccountName } from "../lib/utils/accounts.utils";
   import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -86,7 +87,7 @@
         <Identifier identifier={selectedAccount.identifier} showCopy />
 
         {#if loading}
-          <Spinner />
+          <SkeletonCard />
         {:else if transactions.length === 0}
           No transactions!
         {:else}

@@ -210,7 +210,6 @@ export const mapTransaction = ({
 
   const type = transactionType(transaction);
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
-
   const isReceive = from !== account.identifier;
   const isSend = to !== account.identifier;
   const displayAmount = transactionDisplayAmount({

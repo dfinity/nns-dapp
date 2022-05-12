@@ -52,16 +52,10 @@
   $: headline = getHeadline({ type, isReceive });
 
   let direction: string;
-  // TODO: refactor to have the same logic as in flutter
-  // with isReceive and isSend
   $: direction = isReceive
-    ? replacePlaceholders($i18n.transactions.direction_from, {
-        $address: from ?? "",
-      })
+    ? $i18n.transactions.direction_from
     : isSend
-    ? replacePlaceholders($i18n.transactions.direction_to, {
-        $address: to ?? "",
-      })
+    ? $i18n.transactions.direction_to
     : "";
 </script>
 
@@ -72,7 +66,9 @@
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
   <span>{date.toLocaleString()}</span>
 
-  <div>{direction}</div>
+  {#if direction.length > 0}
+    <div>{direction}<Identifier {identifier} /></div>
+  {/if}
 </Card>
 
 <style lang="scss">

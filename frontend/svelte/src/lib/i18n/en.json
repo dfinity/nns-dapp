@@ -180,8 +180,8 @@
     "topUpCanister": "Top-up Canister"
   },
   "transactions": {
-    "direction_from": "Source: $address",
-    "direction_to": "To: $address"
+    "direction_from": "Source:",
+    "direction_to": "To:"
   },
   "new_followee": {
     "title": "Enter New Followee",
