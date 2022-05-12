@@ -57,7 +57,9 @@
     startBusy("spawn-neuron");
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToSpawn,
+      percentageToSpawn: controlledByHarwareWallet
+        ? undefined
+        : percentageToSpawn,
     });
     if (success) {
       toastsStore.success({
@@ -99,10 +101,12 @@
           {replacePlaceholders(
             $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: formatPercentage(percentageToSpawn / 100, {
-                minFraction: 0,
-                maxFraction: 0,
-              }),
+              $percentage: controlledByHarwareWallet
+                ? "100%"
+                : formatPercentage(percentageToSpawn / 100, {
+                    minFraction: 0,
+                    maxFraction: 0,
+                  }),
             }
           )}
         </p>
