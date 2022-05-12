@@ -160,6 +160,20 @@
     }
   }
 
+  .light > div.wrapper {
+    --scrollbar-light-background: var(--gray-50er-background-contrast);
+    ::-webkit-scrollbar {
+      background: var(--scrollbar-light-background);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--light-background-shade);
+      border: solid 2.5px var(--scrollbar-light-background);
+    }
+    ::-webkit-scrollbar-corner {
+      background: var(--light-background);
+    }
+  }
+
   .toolbar {
     padding: var(--padding) var(--padding-2x);
 

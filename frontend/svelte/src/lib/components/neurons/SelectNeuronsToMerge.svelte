@@ -88,7 +88,6 @@
 <style lang="scss">
   .wrapper {
     position: relative;
-    height: 100%;
 
     display: flex;
     flex-direction: column;
@@ -99,7 +98,6 @@
 
   .items {
     height: 100%;
-    overflow-y: scroll;
 
     padding: 0;
     list-style-type: none;

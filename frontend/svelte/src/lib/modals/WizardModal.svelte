@@ -20,6 +20,8 @@
   export const set = (step: number) => (stepState = stepState.set(step));
 
   let presented = false;
+
+  export let customHeight: string | undefined;
 </script>
 
 <Modal
@@ -31,7 +33,7 @@
   on:nnsBack={back}
 >
   <span slot="title"><slot name="title" /></span>
-  <section>
+  <section style={customHeight !== undefined ? `height:${customHeight};` : null}>
     {#if presented}
       <Transition {transition}>
         <slot />

@@ -291,8 +291,9 @@ class RegisterVoteRequest {
 class SpawnRequest {
   external dynamic neuronId;
   external dynamic newController;
+  external int? percentageToSpawn;
 
-  external factory SpawnRequest({dynamic neuronId, int percentageToSpawn, dynamic newController});
+  external factory SpawnRequest({dynamic neuronId, int? percentageToSpawn, dynamic newController});
 }
 
 @JS()
