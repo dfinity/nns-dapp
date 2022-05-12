@@ -16,7 +16,7 @@ import {
   NotFoundError,
 } from "../types/errors";
 import type { ToastMsg } from "../types/toast";
-import {translate} from './i18n.utils';
+import { translate } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -67,7 +67,7 @@ export const toToastError = ({
   const message: string | undefined = (err as Error)?.message;
 
   if (message !== undefined) {
-    const label: string = translate({labelKey: message});
+    const label: string = translate({ labelKey: message });
     errorKey = label !== message;
   }
 
