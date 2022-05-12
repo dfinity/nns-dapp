@@ -94,12 +94,8 @@ export const config: WebdriverIO.Config = {
       acceptInsecureCerts: true,
     },
   ],
-  logLevel:
-    process.env.LOG_LEVEL === undefined
-      ? "warn"
-      : (process.env.LOG_LEVEL as
-          | WebDriverOptions.WebDriverLogTypes
-          | undefined),
+  logLevel: (process.env.LOG_LEVEL ??
+    "warn") as WebDriverOptions.WebDriverLogTypes,
   services: ["chromedriver"],
 
   framework: "mocha",
