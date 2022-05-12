@@ -5,6 +5,7 @@ import * as ledgerApi from "../../../lib/api/ledger.api";
 import {
   addSubAccount,
   getAccountFromStore,
+  renameSubAccount,
   routePathAccountIdentifier,
   syncAccounts,
   transferICP,
@@ -135,6 +136,93 @@ describe("accounts-services", () => {
       expect(errAmount).toEqual("error.transaction_invalid_amount");
     });
   });
+
+  describe("rename", () => {
+    const mockAccounts = { main: mockMainAccount, subAccounts: [] };
+
+    const spyLoadAccounts = jest
+        .spyOn(accountsApi, "loadAccounts")
+        .mockImplementation(() => Promise.resolve(mockAccounts));
+
+    const spyRenameSubAccount = jest
+        .spyOn(accountsApi, "renameSubAccount")
+        .mockImplementation(() => Promise.resolve());
+
+    beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should rename a subaccount", async () => {
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyRenameSubAccount).toHaveBeenCalled();
+    });
+
+    it("should sync accounts after rename", async () => {
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyLoadAccounts).toHaveBeenCalled();
+    });
+
+    it("should not rename subaccount if no identity", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      setNoIdentity();
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount",
+        err: new Error(en.error.missing_identity),
+      });
+
+      resetIdentity();
+
+      spyToastError.mockClear();
+    });
+
+    it("should not rename subaccount if no selected account", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: undefined,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount_no_account"
+      });
+
+      spyToastError.mockClear();
+    });
+
+    it("should not rename subaccount if type is not subaccount", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockMainAccount,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount_type"
+      });
+
+      spyToastError.mockClear();
+    });
+  })
 
   describe("details", () => {
     beforeAll(() => {
