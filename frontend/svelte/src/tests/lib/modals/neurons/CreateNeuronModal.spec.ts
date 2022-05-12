@@ -9,7 +9,7 @@ import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  stakeAndLoadNeuron,
+  stakeNeuron,
   updateDelay,
 } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
@@ -33,7 +33,7 @@ import {
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     // need to return the same neuron id as mockNeuron.neuronId
-    stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
+    stakeNeuron: jest.fn().mockResolvedValue(BigInt(1)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
   };
@@ -173,7 +173,7 @@ describe("CreateNeuronModal", () => {
 
     createButton && (await fireEvent.click(createButton));
 
-    expect(stakeAndLoadNeuron).toBeCalled();
+    expect(stakeNeuron).toBeCalled();
   });
 
   it("should move to update dissolve delay after creating a neuron", async () => {

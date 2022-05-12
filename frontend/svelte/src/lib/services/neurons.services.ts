@@ -23,7 +23,7 @@ import {
   setFollowees,
   spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
-  stakeNeuron,
+  stakeNeuron as stakeNeuronApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
@@ -32,7 +32,8 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
-import type { LedgerIdentity } from "../identities/ledger.identity";
+import { LedgerIdentity } from "../identities/ledger.identity";
+import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -97,18 +98,37 @@ const getNeuron = async ({
   return neuron || queryNeuron({ neuronId, identity, certified });
 };
 
+const getNeuronHW = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: LedgerIdentity;
+}): Promise<NeuronInfo | undefined> => {
+  const neurons = await queryNeurons({ certified: true, identity });
+
+  return neurons.find((currentNeuron) => currentNeuron.neuronId === neuronId);
+};
+
 const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
 export const getIdentityByNeuron = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
-  const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
+  const { neuron } = await getIdentityAndNeuronHelper(neuronId);
 
-  if (isIdentityController({ neuron, identity })) {
-    return identity;
+  if (neuron.fullNeuron === undefined) {
+    throw new NotAuthorizedError();
   }
-  // TODO: Check Linked Hardware Wallets
+
+  const neuronIdentity = await getAccountIdentity(
+    neuron.fullNeuron.accountIdentifier
+  );
+  if (isIdentityController({ neuron, identity: neuronIdentity })) {
+    return neuronIdentity;
+  }
+
   throw new NotAuthorizedError();
 };
 
@@ -175,13 +195,13 @@ const getStakeNeuronPropsByAccount = ({
  * Uses governance api to create a neuron and adds it to the store
  *
  */
-export const stakeAndLoadNeuron = async ({
+export const stakeNeuron = async ({
   amount,
   account,
 }: {
   amount: number;
   account: Account;
-}): Promise<NeuronId | undefined> => {
+}): Promise<NeuronInfo | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
 
@@ -202,27 +222,25 @@ export const stakeAndLoadNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
-    const neuronId: NeuronId = await stakeNeuron({
+    const neuronId: NeuronId = await stakeNeuronApi({
       stake,
       identity,
       ledgerCanisterIdentity,
       controller,
       fromSubAccount,
     });
-    // TODO: Add hotkey of current user to new neuron https://dfinity.atlassian.net/browse/L2-523
-    // TODO: Continue with flow https://dfinity.atlassian.net/browse/L2-524
-    await loadNeuron({
+    if (
+      isHardwareWallet(account) &&
+      accountIdentity instanceof LedgerIdentity
+    ) {
+      return getNeuronHW({ neuronId, identity: accountIdentity });
+    }
+    return await getNeuron({
       neuronId,
-      setNeuron: ({
-        neuron,
-        certified,
-      }: {
-        neuron: NeuronInfo;
-        certified: boolean;
-      }) => neuronsStore.pushNeurons({ neurons: [neuron], certified }),
+      identity: accountIdentity,
+      certified: true,
+      forceFetch: true,
     });
-
-    return neuronId;
   } catch (err) {
     toastsStore.error({
       labelKey: "error.stake_neuron",
@@ -481,6 +499,33 @@ export const mergeNeurons = async ({
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
+  }
+};
+
+// This service is used when creating a new neuron from a Hardware Wallet.
+// The new neuron is not yet in the neuronsStore.
+export const addHotkeyFromHW = async ({
+  neuronId,
+  principal,
+  accountIdentifier,
+}: {
+  neuronId: NeuronId;
+  principal: Principal;
+  accountIdentifier: string;
+}): Promise<NeuronId | undefined> => {
+  try {
+    const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
+
+    await addHotkeyApi({ neuronId, identity: ledgerIdentity, principal });
+
+    return neuronId;
+  } catch (err) {
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    console.log("in da error");
+    console.log(err);
+
+    // To inform there was an error
+    return undefined;
   }
 };
 

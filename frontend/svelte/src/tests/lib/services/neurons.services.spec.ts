@@ -34,7 +34,7 @@ const {
   loadNeuron,
   removeFollowee,
   removeHotkey,
-  stakeAndLoadNeuron,
+  stakeNeuron,
   startDissolving,
   stopDissolving,
   updateDelay,
@@ -162,7 +162,7 @@ describe("neurons-services", () => {
 
   describe("stake new neuron", () => {
     it("should stake and load a neuron from main account", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
+      await stakeNeuron({ amount: 10, account: mockMainAccount });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -171,7 +171,7 @@ describe("neurons-services", () => {
     });
 
     it("should stake and load a neuron from subaccount", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
+      await stakeNeuron({ amount: 10, account: mockSubAccount });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -180,7 +180,7 @@ describe("neurons-services", () => {
     });
 
     it("should stake neuron from hardware wallet", async () => {
-      await stakeAndLoadNeuron({
+      await stakeNeuron({
         amount: 10,
         account: mockHardwareWalletAccount,
       });
@@ -198,7 +198,7 @@ describe("neurons-services", () => {
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: 0.1,
         account: mockMainAccount,
       });
@@ -212,7 +212,7 @@ describe("neurons-services", () => {
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: NaN,
         account: mockMainAccount,
       });
@@ -224,7 +224,7 @@ describe("neurons-services", () => {
     it("should not stake neuron if no identity", async () => {
       setNoIdentity();
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: 10,
         account: mockMainAccount,
       });

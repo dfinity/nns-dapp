@@ -14,6 +14,7 @@ import {
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
+import { LedgerIdentity } from "../identities/ledger.identity";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
@@ -383,6 +384,7 @@ export const governanceCanister = async ({
   const canister = GovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
+    hardwareWallet: identity instanceof LedgerIdentity,
   });
 
   return {
