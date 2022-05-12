@@ -41,6 +41,8 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  account_not_found: string;
+  transactions_not_found: string;
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
@@ -194,6 +196,7 @@ interface I18nTransaction_names {
 interface I18nTransactions {
   direction_from: string;
   direction_to: string;
+  no_transactions: string;
 }
 
 interface I18nNew_followee {

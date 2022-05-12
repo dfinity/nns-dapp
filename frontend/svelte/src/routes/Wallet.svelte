@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
@@ -19,11 +19,18 @@
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import Identifier from "../lib/components/ic/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
-  import type { Transaction } from "../lib/canisters/nns-dapp/nns-dapp.types";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { accountName as getAccountName } from "../lib/utils/accounts.utils";
   import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { writable } from "svelte/store";
+  import {
+    TRANSACTIONS_CONTEXT_KEY,
+    type TransactionsContext,
+    type TransactionsStore,
+  } from "../lib/stores/transactions.store";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import { replacePlaceholders } from "../lib/utils/i18n.utils";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -36,47 +43,75 @@
       path: AppPath.Accounts,
     });
 
-  let showNewTransactionModal = false;
-
-  let accountIdentifier: string | undefined;
-  $: accountIdentifier = routePathAccountIdentifier($routeStore.path);
-
-  let mainAccount: Account | undefined;
-  $: mainAccount = $accountsStore?.main;
-
-  let selectedAccount: Account | undefined;
-  $: accountIdentifier,
-    $accountsStore,
-    (() => (selectedAccount = getAccountFromStore(accountIdentifier)))();
-  // TODO: handle unknown accountIdentifier from URL
-
-  let transactions: Transaction[] = [];
-  let loading: boolean = false;
-  const updateTransactions = async (accountIdentifier: AccountIdentifier) => {
-    loading = true;
-    getAccountTransactions({
+  const updateTransactions = async (accountIdentifier: AccountIdentifier) =>
+    await getAccountTransactions({
       accountIdentifier,
-      onLoad: ({
-        accountIdentifier: responseAccountIdentifier,
-        transactions: loadedTransactions,
-      }) => {
-        if (responseAccountIdentifier !== accountIdentifier) {
+      onLoad: ({ accountIdentifier, transactions }) => {
+        if (accountIdentifier !== $transactionsStore.accountIdentifier) {
+          // skip using outdated transactions if url was changed
           return;
         }
-        transactions = loadedTransactions;
+        $transactionsStore.transactions = transactions;
       },
     });
-    loading = false;
-  };
+
+  const transactionsStore = writable<TransactionsStore>({
+    accountIdentifier: undefined,
+    account: undefined,
+    transactions: undefined,
+  });
+  setContext<TransactionsContext>(TRANSACTIONS_CONTEXT_KEY, transactionsStore);
+
+  let routeAccountIdentifier: string | undefined;
+  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+
+  // manage transactionsStore state
+  $: routeAccountIdentifier,
+    $accountsStore,
+    (() => {
+      const identifierChanged =
+        routeAccountIdentifier !== $transactionsStore.accountIdentifier;
+
+      if (identifierChanged) {
+        $transactionsStore.account = undefined;
+        $transactionsStore.transactions = undefined;
+      }
+      const noStoreAccount = $transactionsStore.account === undefined;
+
+      $transactionsStore.account = getAccountFromStore(routeAccountIdentifier);
+      $transactionsStore.accountIdentifier = routeAccountIdentifier;
+
+      // skip same transaction loading
+      if (
+        (identifierChanged || noStoreAccount) &&
+        $transactionsStore.account !== undefined
+      ) {
+        updateTransactions($transactionsStore.account.identifier);
+      }
+
+      // handle unknown accountIdentifier from URL
+      if (
+        $transactionsStore.account === undefined &&
+        $accountsStore.main !== undefined
+      ) {
+        toastsStore.error({
+          labelKey: replacePlaceholders($i18n.error.account_not_found, {
+            account_identifier: routeAccountIdentifier ?? "",
+          }),
+        });
+        goBack();
+      }
+    })();
 
   let accountName: string;
-  $: if (selectedAccount) {
+  $: if ($transactionsStore.account) {
     accountName = getAccountName({
-      account: selectedAccount,
+      account: $transactionsStore.account,
       mainName: $i18n.accounts.main,
     });
-    updateTransactions(selectedAccount.identifier);
   }
+
+  let showNewTransactionModal = false;
 </script>
 
 {#if SHOW_ACCOUNTS_ROUTE}
@@ -84,20 +119,26 @@
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>
-      {#if selectedAccount}
+      {#if $transactionsStore.account !== undefined}
         <div class="title">
           <h1>{accountName}</h1>
-          <ICP icp={selectedAccount.balance} />
+          <ICP icp={$transactionsStore.account.balance} />
         </div>
-        <Identifier identifier={selectedAccount.identifier} showCopy />
+        <Identifier
+          identifier={$transactionsStore.account.identifier}
+          showCopy
+        />
 
-        {#if loading}
+        {#if $transactionsStore.transactions === undefined}
           <SkeletonCard />
-        {:else if transactions.length === 0}
-          No transactions!
+        {:else if $transactionsStore.transactions.length === 0}
+          {$i18n.transactions.no_transactions}
         {:else}
-          {#each transactions as transaction}
-            <TransactionCard account={selectedAccount} {transaction} />
+          {#each $transactionsStore.transactions as transaction}
+            <TransactionCard
+              account={$transactionsStore.account}
+              {transaction}
+            />
           {/each}
         {/if}
       {:else}
@@ -110,7 +151,7 @@
         <button
           class="primary"
           on:click={() => (showNewTransactionModal = true)}
-          disabled={selectedAccount === undefined || !mainAccount}
+          disabled={$transactionsStore.account === undefined}
           >{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>
@@ -120,7 +161,7 @@
   {#if showNewTransactionModal}
     <NewTransactionModal
       on:nnsClose={() => (showNewTransactionModal = false)}
-      {selectedAccount}
+      selectedAccount={$transactionsStore.account}
     />
   {/if}
 {/if}
