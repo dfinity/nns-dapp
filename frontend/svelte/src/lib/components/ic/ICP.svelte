@@ -44,10 +44,10 @@
     }
 
     &.plus-sign {
-      color: var(--green-500);
+      color: var(--green-600);
 
       span:first-of-type {
-        color: var(--green-600);
+        color: var(--green-500);
       }
     }
   }
