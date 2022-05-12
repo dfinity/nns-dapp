@@ -4,6 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Steps } from "../../stores/steps.state";
   import type { Account } from "../../types/account";
+  import type { Step } from "../../stores/steps.state";
 
   export let selectedAccount: Account | undefined;
 
@@ -15,10 +16,10 @@
     },
   ];
 
-  let modal: WizardModal;
+  let currentStep: Step | undefined;
 </script>
 
-<WizardModal {steps} bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     >{$i18n.accounts.rename_linked_account}</svelte:fragment
   >

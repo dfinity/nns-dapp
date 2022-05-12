@@ -141,12 +141,12 @@ describe("accounts-services", () => {
     const mockAccounts = { main: mockMainAccount, subAccounts: [] };
 
     const spyLoadAccounts = jest
-        .spyOn(accountsApi, "loadAccounts")
-        .mockImplementation(() => Promise.resolve(mockAccounts));
+      .spyOn(accountsApi, "loadAccounts")
+      .mockImplementation(() => Promise.resolve(mockAccounts));
 
     const spyRenameSubAccount = jest
-        .spyOn(accountsApi, "renameSubAccount")
-        .mockImplementation(() => Promise.resolve());
+      .spyOn(accountsApi, "renameSubAccount")
+      .mockImplementation(() => Promise.resolve());
 
     beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
 
@@ -201,7 +201,7 @@ describe("accounts-services", () => {
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
-        labelKey: "error.rename_subaccount_no_account"
+        labelKey: "error.rename_subaccount_no_account",
       });
 
       spyToastError.mockClear();
@@ -217,12 +217,12 @@ describe("accounts-services", () => {
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
-        labelKey: "error.rename_subaccount_type"
+        labelKey: "error.rename_subaccount_type",
       });
 
       spyToastError.mockClear();
     });
-  })
+  });
 
   describe("details", () => {
     beforeAll(() => {

@@ -1,11 +1,16 @@
 import { ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
-import { createSubAccount, loadAccounts, renameSubAccount } from "../../../lib/api/accounts.api";
+import {
+  createSubAccount,
+  loadAccounts,
+  renameSubAccount,
+} from "../../../lib/api/accounts.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type { AccountDetails } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import {
   mockAccountDetails,
-  mockHardwareWalletAccountDetails, mockSubAccount,
+  mockHardwareWalletAccountDetails,
+  mockSubAccount,
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -94,7 +99,7 @@ describe("accounts-api", () => {
     await renameSubAccount({
       newName: "test subaccount",
       subAccountIdentifier: mockSubAccount.identifier,
-      identity: mockIdentity
+      identity: mockIdentity,
     });
 
     expect(nnsDappMock.renameSubAccount).toBeCalled();
