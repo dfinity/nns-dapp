@@ -29,3 +29,8 @@ export const getLedgerIdentityProxy = async (
 
   return getLedgerIdentity(identifier);
 };
+
+export const showAddressAndPubKeyOnHardwareWalletProxy = async () => {
+  const { showAddressAndPubKeyOnHardwareWallet } = await importLedgerServices();
+  return showAddressAndPubKeyOnHardwareWallet();
+};

@@ -124,3 +124,17 @@ export const getLedgerIdentity = async (
 
   return ledgerIdentity;
 };
+
+export const showAddressAndPubKeyOnHardwareWallet = async () => {
+  try {
+    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    await ledgerIdentity.showAddressAndPubKeyOnDevice();
+  } catch (err: unknown) {
+    toastsStore.error(
+      toLedgerError({
+        err,
+        fallbackErrorLabelKey: "error__ledger.unexpected",
+      })
+    );
+  }
+};
