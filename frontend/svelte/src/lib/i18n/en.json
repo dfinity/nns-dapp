@@ -37,6 +37,7 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "transactions_not_found": "An error occurred while loading the transactions.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",

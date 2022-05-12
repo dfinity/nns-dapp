@@ -13,6 +13,7 @@ import {
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountIdentifierString,
+  GetTransactionsResponse,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
@@ -159,25 +160,39 @@ export const getAccountFromStore = (
 
 export const getAccountTransactions = async ({
   accountIdentifier,
+  onLoad,
 }: {
   accountIdentifier: AccountIdentifierString;
-}): Promise<Transaction[]> => {
-  try {
-    const identity: Identity = await getIdentity();
+  onLoad: ({
+    accountIdentifier,
+    transactions,
+  }: {
+    accountIdentifier: AccountIdentifierString;
+    transactions: Transaction[];
+  }) => void;
+}): Promise<void> =>
+  queryAndUpdate<GetTransactionsResponse, unknown>({
+    request: ({ certified, identity }) =>
+      getTransactions({
+        identity,
+        certified,
+        accountIdentifier,
+        pageSize: TRANSACTION_PAGE_LIMIT,
+        offset: 0,
+      }),
+    onLoad: ({ response }) =>
+      onLoad({ accountIdentifier, transactions: response.transactions }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
 
-    const response = await getTransactions({
-      identity,
-      accountIdentifier,
-      pageSize: TRANSACTION_PAGE_LIMIT,
-      offset: 0,
-      certified: false,
-    });
+      if (certified !== true) {
+        return;
+      }
 
-    return response.transactions ?? [];
-  } catch (err) {
-    console.error(err);
-    // TODO: error management
-  }
-
-  return [];
-};
+      toastsStore.error({
+        labelKey: "error.transactions_not_found",
+        err,
+      });
+    },
+    logMessage: "Syncing Transactions",
+  });

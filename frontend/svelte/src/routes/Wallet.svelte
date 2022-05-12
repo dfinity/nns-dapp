@@ -48,14 +48,23 @@
   $: accountIdentifier,
     $accountsStore,
     (() => (selectedAccount = getAccountFromStore(accountIdentifier)))();
+  // TODO: handle unknown accountIdentifier from URL
 
   let transactions: Transaction[] = [];
   let loading: boolean = false;
   const updateTransactions = async (accountIdentifier: AccountIdentifier) => {
-    // TODO: get rid of doubleloading (skip if same?)
     loading = true;
-    transactions = await getAccountTransactions({
+    getAccountTransactions({
       accountIdentifier,
+      onLoad: ({
+        accountIdentifier: responseAccountIdentifier,
+        transactions: loadedTransactions,
+      }) => {
+        if (responseAccountIdentifier !== accountIdentifier) {
+          return;
+        }
+        transactions = loadedTransactions;
+      },
     });
     loading = false;
   };
