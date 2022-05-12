@@ -43,7 +43,7 @@ install_dfx() {
 }
 
 install_rosetta_maybe() {
-  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] ; then
+  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]]; then
     test -d /usr/libexec/rosetta/ || {
       read -rp "Installing Rosetta for M1.  It lets you run x86_64 binaries.  Press enter to proceed... "
       softwareupdate --install-rosetta
@@ -127,7 +127,7 @@ install_ic_cdk_optimizer() {
 }
 
 install_docker() {
-  while ! command -v docker ; do
+  while ! command -v docker; do
     echo "Please install docker from: https://docs.docker.com/get-docker/"
     read -rp "Press enter when docker has been installed...  "
   done
