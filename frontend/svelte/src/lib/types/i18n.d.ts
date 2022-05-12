@@ -109,6 +109,7 @@ interface I18nAccounts {
   attach_hardware_enter_name: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
+  show_info_hardware_wallet: string;
   attach_wallet: string;
   hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
@@ -145,6 +146,10 @@ interface I18nNeurons {
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_with: string;
   set_dissolve_delay: string;
+  add_user_as_hotkey: string;
+  add_user_as_hotkey_message_1: string;
+  add_user_as_hotkey_message_2: string;
+  add_user_as_hotkey_success: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_neuron: string;

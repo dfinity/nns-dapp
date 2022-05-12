@@ -29,7 +29,7 @@ describe("utils", () => {
   });
 
   it("should debounce one function call", () => {
-    debounce(callback);
+    debounce(callback)();
 
     expect(callback).not.toBeCalled();
 
@@ -40,14 +40,17 @@ describe("utils", () => {
   });
 
   it("should debounce multiple functions call", () => {
-    debounce(callback);
-    debounce(callback);
-    debounce(callback);
+    const anotherCallback = jest.fn();
+
+    const test = debounce(anotherCallback);
+    test();
+    test();
+    test();
 
     jest.runAllTimers();
 
-    expect(callback).toBeCalled();
-    expect(callback).toHaveBeenCalledTimes(1);
+    expect(anotherCallback).toBeCalled();
+    expect(anotherCallback).toHaveBeenCalledTimes(1);
   });
 
   describe("stringifyJson", () => {

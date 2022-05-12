@@ -9,33 +9,38 @@ import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  stakeAndLoadNeuron,
+  addHotkeyFromHW,
+  stakeNeuron,
   updateDelay,
 } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
 import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockFullNeuron,
-  mockNeuron,
-} from "../../../mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
+const neuronStake = 2.2;
+const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
+const newNeuron: NeuronInfo = {
+  ...mockNeuron,
+  fullNeuron: {
+    ...mockFullNeuron,
+    cachedNeuronStake: neuronStakeE8s,
+  },
+};
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    // need to return the same neuron id as mockNeuron.neuronId
-    stakeAndLoadNeuron: jest.fn().mockResolvedValue(BigInt(1)),
+    stakeNeuron: jest.fn().mockImplementation(() => Promise.resolve(newNeuron)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
+    addHotkeyFromHW: jest.fn().mockResolvedValue(BigInt(10)),
   };
 });
 
@@ -56,388 +61,383 @@ jest.mock("../../../../lib/stores/toasts.store", () => {
     toastsStore: {
       error: jest.fn(),
       show: jest.fn(),
+      success: jest.fn(),
     },
   };
 });
 
 describe("CreateNeuronModal", () => {
-  beforeEach(() => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation(() => mock<GovernanceCanister>());
-  });
-
-  it("should display modal", async () => {
-    const { container } = await renderModal({ component: CreateNeuronModal });
-
-    expect(container.querySelector("div.modal")).not.toBeNull();
-  });
-
-  it("should display accounts as cards", async () => {
-    const { container } = await renderModal({ component: CreateNeuronModal });
-
-    expect(container.querySelector('article[role="button"]')).not.toBeNull();
-  });
-
-  it("should be able to select an account and move to the next view", async () => {
-    const { container, queryByText } = await renderModal({
-      component: CreateNeuronModal,
+  describe("main account selection", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+      jest
+        .spyOn(GovernanceCanister, "create")
+        .mockImplementation(() => mock<GovernanceCanister>());
     });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+    it("should display modal", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
 
-    accountCard && (await fireEvent.click(accountCard));
-
-    expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
-  });
-
-  it("should be able to select a subaccount and move to the next view", async () => {
-    const { container, queryByText } = await renderModal({
-      component: CreateNeuronModal,
+      expect(container.querySelector("div.modal")).not.toBeNull();
     });
 
-    const accountCards = container.querySelectorAll('article[role="button"]');
-    expect(accountCards.length).toBe(2);
+    it("should display accounts as cards", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
 
-    const subAccountCard = queryByText(mockSubAccount.name as string, {
-      exact: false,
+      expect(container.querySelector('article[role="button"]')).not.toBeNull();
     });
 
-    subAccountCard && (await fireEvent.click(subAccountCard));
+    it("should be able to select an account and move to the next view", async () => {
+      const { container, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    expect(queryByText(en.neurons.stake_neuron)).toBeInTheDocument();
-    expect(queryByText(mockSubAccount.identifier)).toBeInTheDocument();
-  });
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
 
-  it("should have disabled Create neuron button", async () => {
-    const { container, queryByText } = await renderModal({
-      component: CreateNeuronModal,
+      accountCard && (await fireEvent.click(accountCard));
+
+      expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
     });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+    it("should be able to select a subaccount and move to the next view", async () => {
+      const { container, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    accountCard && (await fireEvent.click(accountCard));
+      const accountCards = container.querySelectorAll('article[role="button"]');
+      expect(accountCards.length).toBe(2);
 
-    expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
+      const subAccountCard = queryByText(mockSubAccount.name as string, {
+        exact: false,
+      });
 
-    const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton?.getAttribute("disabled")).not.toBeNull();
-  });
+      subAccountCard && (await fireEvent.click(subAccountCard));
 
-  it("should have enabled Create neuron button when entering amount", async () => {
-    const { container, queryByText } = await renderModal({
-      component: CreateNeuronModal,
+      expect(queryByText(en.neurons.stake_neuron)).toBeInTheDocument();
+      expect(queryByText(mockSubAccount.identifier)).toBeInTheDocument();
     });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+    it("should have disabled Create neuron button", async () => {
+      const { container, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    accountCard && (await fireEvent.click(accountCard));
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
 
-    expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
+      accountCard && (await fireEvent.click(accountCard));
 
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
+      expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
-    const createButton = container.querySelector('button[type="submit"]');
-    expect(createButton?.getAttribute("disabled")).toBeNull();
-  });
+      const createButton = container.querySelector('button[type="submit"]');
+      expect(createButton?.getAttribute("disabled")).not.toBeNull();
+    });
 
-  it("should be able to create a new neuron", async () => {
-    const { container } = await renderModal({ component: CreateNeuronModal });
+    it("should have enabled Create neuron button when entering amount", async () => {
+      const { container, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
 
-    accountCard && (await fireEvent.click(accountCard));
+      accountCard && (await fireEvent.click(accountCard));
 
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
+      expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
-    const createButton = container.querySelector('button[type="submit"]');
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
 
-    createButton && (await fireEvent.click(createButton));
+      const createButton = container.querySelector('button[type="submit"]');
+      expect(createButton?.getAttribute("disabled")).toBeNull();
+    });
 
-    expect(stakeAndLoadNeuron).toBeCalled();
-  });
+    it("should be able to create a new neuron", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
 
-  it("should move to update dissolve delay after creating a neuron", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal({ component: CreateNeuronModal });
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+      accountCard && (await fireEvent.click(accountCard));
 
-    accountCard && (await fireEvent.click(accountCard));
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
 
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
+      const createButton = container.querySelector('button[type="submit"]');
 
-    const createButton = container.querySelector('button[type="submit"]');
+      createButton && (await fireEvent.click(createButton));
 
-    createButton && (await fireEvent.click(createButton));
+      expect(stakeNeuron).toBeCalled();
+    });
 
-    await waitFor(() =>
+    it("should move to update dissolve delay after creating a neuron", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
+
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      createButton && (await fireEvent.click(createButton));
+
+      await waitFor(() =>
+        expect(
+          container.querySelector("[data-tid='go-confirm-delay-button']")
+        ).not.toBeNull()
+      );
+    });
+
+    it("should have the update delay button disabled", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
+
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      createButton && (await fireEvent.click(createButton));
+
+      await waitFor(() =>
+        expect(
+          container.querySelector("[data-tid='go-confirm-delay-button']")
+        ).not.toBeNull()
+      );
+      const updateDelayButton = container.querySelector(
+        '[data-tid="go-confirm-delay-button"]'
+      );
+      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+    });
+
+    it("should have disabled button for dissolve less than six months", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
+
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      createButton && (await fireEvent.click(createButton));
+
+      await waitFor(() =>
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      );
+      const inputRange = container.querySelector('input[type="range"]');
+
+      const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
+      inputRange &&
+        (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
+
+      const updateDelayButton = container.querySelector(
+        '[data-tid="go-confirm-delay-button"]'
+      );
+      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+    });
+
+    it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
+      const { container, getByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
+
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input &&
+        (await fireEvent.input(input, { target: { value: neuronStake } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      createButton && (await fireEvent.click(createButton));
+
+      await waitFor(() =>
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      );
+
       expect(
-        container.querySelector("[data-tid='go-confirm-delay-button']")
-      ).not.toBeNull()
-    );
-  });
-
-  it("should close modal if it finds an invalid state", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([]));
-    const { container, component } = await renderModal({
-      component: CreateNeuronModal,
+        getByText(formatVotingPower(neuronStakeE8s), { exact: false })
+      ).not.toBeNull();
     });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+    it("should be able to change dissolve delay in the confirmation screen", async () => {
+      const { container } = await renderModal({ component: CreateNeuronModal });
 
-    accountCard && (await fireEvent.click(accountCard));
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
 
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
+      accountCard && (await fireEvent.click(accountCard));
 
-    const createButton = container.querySelector('button[type="submit"]');
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
 
-    createButton && (await fireEvent.click(createButton));
+      const createButton = container.querySelector('button[type="submit"]');
 
-    // Confirm Delay is not rendered.
-    expect(
-      container.querySelector("[data-tid='go-confirm-delay-button']")
-    ).toBeNull();
+      createButton && (await fireEvent.click(createButton));
 
-    // cannost use `done` callback with async
-    let closed = false;
-    component.$on("nnsClose", async () => {
-      closed = true;
+      await waitFor(() =>
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      );
+      const inputRange = container.querySelector('input[type="range"]');
+
+      const ONE_YEAR = 60 * 60 * 24 * 365;
+      inputRange &&
+        (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
+
+      const goToConfirmDelayButton = container.querySelector(
+        '[data-tid="go-confirm-delay-button"]'
+      );
+      await waitFor(() =>
+        expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+      );
+
+      goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
+
+      await waitFor(() =>
+        expect(
+          container.querySelector(
+            '[data-tid="confirm-dissolve-delay-container"]'
+          )
+        ).not.toBeNull()
+      );
+
+      const confirmButton = container.querySelector(
+        '[data-tid="confirm-delay-button"]'
+      );
+      confirmButton && (await fireEvent.click(confirmButton));
+
+      await waitFor(() => expect(updateDelay).toBeCalled());
     });
 
-    expect(toastsStore.error).toBeCalled();
+    it("should go to edit followers when skipping dissolve delay", async () => {
+      const { container, queryByTestId } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    await waitFor(() => closed);
+      // SCREEN: Select Account
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      // SCREEN: Create Neuron
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      createButton && (await fireEvent.click(createButton));
+
+      // SCREEN: Set Dissolve Delay
+      await waitFor(() =>
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      );
+
+      const skipButton = queryByTestId("cancel-neuron-delay");
+
+      skipButton && (await fireEvent.click(skipButton));
+
+      // SCREEN: Edit Followers
+      await waitFor(() =>
+        expect(queryByTestId("edit-followers-screen")).not.toBeNull()
+      );
+    });
   });
 
-  it("should have the update delay button disabled", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal({ component: CreateNeuronModal });
-
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
-
-    accountCard && (await fireEvent.click(accountCard));
-
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
-
-    const createButton = container.querySelector('button[type="submit"]');
-
-    createButton && (await fireEvent.click(createButton));
-
-    await waitFor(() =>
-      expect(
-        container.querySelector("[data-tid='go-confirm-delay-button']")
-      ).not.toBeNull()
-    );
-    const updateDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
-    );
-    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
-  });
-
-  it("should have disabled button for dissolve less than six months", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    const { container } = await renderModal({ component: CreateNeuronModal });
-
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
-
-    accountCard && (await fireEvent.click(accountCard));
-
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
-
-    const createButton = container.querySelector('button[type="submit"]');
-
-    createButton && (await fireEvent.click(createButton));
-
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
-    const inputRange = container.querySelector('input[type="range"]');
-
-    const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
-    inputRange &&
-      (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
-
-    const updateDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
-    );
-    expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
-  });
-
-  it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
-    const neuronStake = 2.2;
-    const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
-    const newNeuron: NeuronInfo = {
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockFullNeuron,
-        cachedNeuronStake: neuronStakeE8s,
-      },
-    };
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([newNeuron]));
-
-    const { container, getByText } = await renderModal({
-      component: CreateNeuronModal,
+  describe("hardware wallet account selection", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        );
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
     });
 
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
-
-    accountCard && (await fireEvent.click(accountCard));
-
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: neuronStake } }));
-
-    const createButton = container.querySelector('button[type="submit"]');
-
-    createButton && (await fireEvent.click(createButton));
-
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
-
-    expect(
-      getByText(formatVotingPower(neuronStakeE8s), { exact: false })
-    ).not.toBeNull();
-  });
-
-  it("should be able to change dissolve delay in the confirmation screen", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-
-    const { container } = await renderModal({ component: CreateNeuronModal });
-
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
-
-    accountCard && (await fireEvent.click(accountCard));
-
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
-
-    const createButton = container.querySelector('button[type="submit"]');
-
-    createButton && (await fireEvent.click(createButton));
-
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
-    const inputRange = container.querySelector('input[type="range"]');
-
-    const ONE_YEAR = 60 * 60 * 24 * 365;
-    inputRange &&
-      (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
-
-    const goToConfirmDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
-    );
-    await waitFor(() =>
-      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
-    );
-
-    goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
-
-    await waitFor(() =>
-      expect(
-        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
-      ).not.toBeNull()
-    );
-
-    const confirmButton = container.querySelector(
-      '[data-tid="confirm-delay-button"]'
-    );
-    confirmButton && (await fireEvent.click(confirmButton));
-
-    await waitFor(() => expect(updateDelay).toBeCalled());
-  });
-
-  it("should go to edit followers when skipping dissolve delay", async () => {
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-
-    const { container, queryByTestId } = await renderModal({
-      component: CreateNeuronModal,
+    afterEach(() => {
+      jest.clearAllMocks();
     });
 
-    // SCREEN: Select Account
-    const accountCard = container.querySelector('article[role="button"]');
-    expect(accountCard).not.toBeNull();
+    it("should create neuron for hardwareWallet", async () => {
+      const { container, queryByTestId, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
 
-    accountCard && (await fireEvent.click(accountCard));
+      // SCREEN: Select Hardware Wallet Account
+      const hardwareWalletAccount = queryByText(
+        mockHardwareWalletAccount.name as string,
+        {
+          exact: false,
+        }
+      );
+      expect(hardwareWalletAccount).not.toBeNull();
 
-    // SCREEN: Create Neuron
-    const input = container.querySelector('input[name="amount"]');
-    // Svelte generates code for listening to the `input` event
-    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: 22 } }));
+      hardwareWalletAccount && (await fireEvent.click(hardwareWalletAccount));
 
-    const createButton = container.querySelector('button[type="submit"]');
+      // SCREEN: Create Neuron
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input && (await fireEvent.input(input, { target: { value: 22 } }));
 
-    createButton && (await fireEvent.click(createButton));
+      const createButton = container.querySelector('button[type="submit"]');
 
-    // SCREEN: Set Dissolve Delay
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
+      createButton && (await fireEvent.click(createButton));
 
-    const skipButton = queryByTestId("cancel-neuron-delay");
+      // SCREEN: Add NNS App Principal as Hotkey
+      await waitFor(() =>
+        expect(queryByTestId("add-principal-to-hotkeys-modal")).not.toBeNull()
+      );
 
-    skipButton && (await fireEvent.click(skipButton));
+      const skipButton = queryByTestId("confirm-add-principal-to-hotkey-modal");
 
-    // SCREEN: Edit Followers
-    await waitFor(() =>
-      expect(queryByTestId("edit-followers-screen")).not.toBeNull()
-    );
+      skipButton && (await fireEvent.click(skipButton));
+
+      expect(addHotkeyFromHW).toBeCalled();
+
+      // TODO: Continue flow https://dfinity.atlassian.net/browse/L2-524
+    });
   });
 });
