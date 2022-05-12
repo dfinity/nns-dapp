@@ -42,7 +42,7 @@
   )}
 >
   <button
-    disabled={isEnoughMaturity}
+    disabled={!isEnoughMaturity}
     class="primary small"
     on:click={showModal}
   >
