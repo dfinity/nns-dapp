@@ -12,16 +12,14 @@ describe("RenameSubAccount", () => {
     const { getByText } = render(RenameSubAccount, {
       props: { selectedAccount: undefined },
     });
-    expect(
-      getByText(en.accounts.rename_linked_account)
-    ).not.toBeInTheDocument();
+    expect(() => getByText(en.accounts.rename_linked_account)).toThrow();
   });
 
   it("should contains an action named rename", async () => {
     const { getByText } = render(RenameSubAccount, {
       props: { selectedAccount: undefined },
     });
-    expect(getByText(en.accounts.rename)).not.toBeInTheDocument();
+    expect(getByText(en.accounts.rename)).toBeInTheDocument();
   });
 
   it("should open modal", async () => {
