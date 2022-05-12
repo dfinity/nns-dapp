@@ -1,4 +1,4 @@
-const { register } = require("../common/register");
+import { register } from "../common/register";
 const { waitForLoad } = require("../common/waitForLoad");
 const {
   RouteHash,
@@ -137,7 +137,7 @@ const waitForPath = async (
   path: string,
   options?: { timeout?: number }
 ) => {
-  const { timeout } = options;
+  const timeout = options?.timeout;
   const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   return browser.waitUntil(
     async () =>
