@@ -8,7 +8,12 @@
   let modalOpen = false;
 </script>
 
-<button class="primary" type="button" on:click={() => (modalOpen = true)}>
+<button
+  class="primary"
+  type="button"
+  on:click={() => (modalOpen = true)}
+  data-tid="open-rename-subaccount-button"
+>
   {$i18n.accounts.rename}
 </button>
 
