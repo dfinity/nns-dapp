@@ -59,13 +59,7 @@
   };
 </script>
 
-<WizardModal
-  {steps}
-  customHeight="726px"
-  bind:currentStep
-  bind:this={modal}
-  on:nnsClose
->
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ??
       $i18n.neurons.merge_neurons_modal_title}</svelte:fragment

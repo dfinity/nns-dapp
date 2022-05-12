@@ -36,13 +36,7 @@
   };
 </script>
 
-<WizardModal
-  {steps}
-  customHeight="542px"
-  bind:currentStep
-  bind:this={modal}
-  on:nnsClose
->
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
