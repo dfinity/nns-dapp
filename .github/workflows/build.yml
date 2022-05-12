@@ -12,17 +12,62 @@ name: Native build
 on:
   push:
 
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    env:
+
+env:
       DFX_VERSION: 0.9.2
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
+      IC_COMMIT: 6dc5e2dcb50569e20891af02b846a7d9a58e3489
+
+jobs:
+  nns_canisters:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0001"
+
+      - name: Download prebuilt nns canisters
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        run: ./e2e-tests/scripts/nns-canister-download
+
+      - name: Set up docker buildx
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build nns canisters
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v2
+        with:
+          context: e2e-tests/scripts
+          file: e2e-tests/scripts/nns-canister.Dockerfile
+          build-args: |
+            "IC_COMMIT=${{ env.IC_COMMIT }}"
+          cache-from: type=gha,scope=cached-stage
+          cache-to: type=gha,scope=cached-stage,mode=max
+          outputs: target/ic
+
+  build:
+    needs: [nns_canisters]
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0001"
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
@@ -89,16 +134,35 @@ jobs:
           cargo --version
           ic-cdk-optimizer --version
 
-      - name: Install local replica
+      - name: Start replica
         run: |
-	  ./deploy.sh local
+          dfx start --background --clean
+
+      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
+      # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
+      - name: Deploy NNS canisters
+        run: |
+          ./e2e-tests/scripts/nns-canister-install
+
+      - name: Deploy
+        run: |
+          ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Build proxy
+        working-directory: proxy
+        run: |
+          npm ci
+          npm run build
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
           npm ci
+
+          # wipe the screenshots, they will be re-committed
+          rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop

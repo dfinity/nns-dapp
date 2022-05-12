@@ -1,4 +1,12 @@
-import { SignIdentity, type PublicKey, type Signature } from "@dfinity/agent";
+import {
+  Cbor,
+  SignIdentity,
+  type CallRequest,
+  type HttpAgentRequest,
+  type PublicKey,
+  type ReadRequest,
+  type Signature,
+} from "@dfinity/agent";
 import type Transport from "@ledgerhq/hw-transport";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
@@ -69,14 +77,20 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   /**
+   * Signals that the upcoming transaction to be signed will be a "stake neuron" transaction.
+   */
+  public flagUpcomingStakeNeuron(): void {
+    this.neuronStakeFlag = true;
+  }
+
+  /**
    * Required by Ledger.com that the user should be able to press a Button in UI
    * and verify the address/pubkey are the same as on the device screen.
    */
   public async showAddressAndPubKeyOnDevice(): Promise<ResponseAddress> {
-    const callback = ({
-      showAddressAndPubKey,
-    }: LedgerApp): Promise<ResponseAddress> =>
-      showAddressAndPubKey(this.derivePath);
+    // The function `showAddressAndPubKey` should not be destructured from the `app` because it internally accesses `this.transport` that refers to an `app` variable
+    const callback = (app: LedgerApp): Promise<ResponseAddress> =>
+      app.showAddressAndPubKey(this.derivePath);
 
     return this.executeWithApp<ResponseAddress>(callback);
   }
@@ -85,9 +99,9 @@ export class LedgerIdentity extends SignIdentity {
    * @returns The version of the `Internet Computer' app installed on the Ledger device.
    */
   public async getVersion(): Promise<ResponseVersion> {
-    const callback = async ({
-      getVersion,
-    }: LedgerApp): Promise<ResponseVersion> => getVersion();
+    // See comment about `app` in function `showAddressAndPubKeyOnDevice`
+    const callback = async (app: LedgerApp): Promise<ResponseVersion> =>
+      app.getVersion();
 
     return this.executeWithApp<ResponseVersion>(callback);
   }
@@ -168,5 +182,33 @@ export class LedgerIdentity extends SignIdentity {
     } finally {
       await transport.close();
     }
+  }
+
+  /**
+   * Required implementation for agent-js transformRequest.
+   *
+   * Without following function, transaction processed by the ledger would end in error "27012 - Data is invalid : Unexpected data type"
+   */
+  public override async transformRequest(
+    request: HttpAgentRequest
+  ): Promise<unknown> {
+    /**
+     * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
+     * @param request - body of the HttpAgentRequest
+     */
+    const prepareCborForLedger = (
+      request: ReadRequest | CallRequest
+    ): ArrayBuffer => Cbor.encode({ content: request });
+
+    const { body, ...fields } = request;
+    const signature = await this.sign(prepareCborForLedger(body));
+    return {
+      ...fields,
+      body: {
+        content: body,
+        sender_pubkey: this.publicKey.toDer(),
+        sender_sig: signature,
+      },
+    };
   }
 }

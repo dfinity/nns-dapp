@@ -7,6 +7,7 @@ import { render } from "@testing-library/svelte";
 import NewTransactionInfo from "../../../../lib/components/accounts/NewTransactionInfo.svelte";
 import { transactionStore } from "../../../../lib/stores/transaction.store";
 import {
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
@@ -55,5 +56,19 @@ describe("NewTransactionInfo", () => {
 
     expect(getByText(en.accounts.transaction_fee)).toBeTruthy();
     expect(getByText("0.00010000 ICP", { exact: false })).toBeInTheDocument();
+  });
+
+  it("should render hardware wallet information", () => {
+    transactionStore.set({
+      selectedAccount: mockHardwareWalletAccount,
+      destinationAddress: mockSubAccount.identifier,
+      amount: ICP.fromString("10.25") as ICP,
+    });
+
+    const { getByText } = render(NewTransactionTest, { props });
+
+    expect(
+      getByText(en.accounts.hardware_wallet_text, { exact: false })
+    ).toBeTruthy();
   });
 });
