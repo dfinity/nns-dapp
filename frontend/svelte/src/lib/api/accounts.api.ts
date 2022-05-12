@@ -92,7 +92,7 @@ export const createSubAccount = async ({
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} complete.`);
 };
 
-export const loadAccountTransactions = async ({
+export const getTransactions = async ({
   identity,
   accountIdentifier,
   pageSize,
@@ -104,8 +104,7 @@ export const loadAccountTransactions = async ({
   pageSize: number;
   offset: number;
   certified: boolean;
-}
-): Promise<GetTransactionsResponse> => {
+}): Promise<GetTransactionsResponse> => {
   const { canister } = await nnsDappCanister({ identity });
 
   return await canister.getTransactions({

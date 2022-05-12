@@ -2,8 +2,8 @@ import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
 import {
   createSubAccount,
+  getTransactions,
   loadAccounts,
-  loadAccountTransactions,
 } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
@@ -15,6 +15,7 @@ import type {
   AccountIdentifierString,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
+import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -164,10 +165,10 @@ export const getAccountTransactions = async ({
   try {
     const identity: Identity = await getIdentity();
 
-    const response = await loadAccountTransactions({
+    const response = await getTransactions({
       identity,
       accountIdentifier,
-      pageSize: 100,
+      pageSize: TRANSACTION_PAGE_LIMIT,
       offset: 0,
       certified: false,
     });

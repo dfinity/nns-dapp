@@ -10,12 +10,9 @@
   } from "../../canisters/nns-dapp/nns-dapp.types";
   import {
     mapTransaction,
-    transactionDisplayAmount,
     AccountTransactionType,
   } from "../../utils/accounts.utils";
   import { i18n } from "../../stores/i18n";
-  import { AccountIdentifier } from "@dfinity/nns/dist/proto/ledger_pb";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   const getHeadline = ({
     type,
@@ -33,11 +30,9 @@
   export let account: Account;
   export let transaction: Transaction;
 
-  let identifier: AccountIdentifierString;
-  $: ({ identifier } = account);
-
   let type: AccountTransactionType;
   let isReceive: boolean;
+  let isSend: boolean;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
   let displayAmount: ICPType;
@@ -51,12 +46,14 @@
   let headline: string;
   $: headline = getHeadline({ type, isReceive });
 
-  let direction: string;
+  let direction: string | undefined;
   $: direction = isReceive
     ? $i18n.transactions.direction_from
     : isSend
     ? $i18n.transactions.direction_to
-    : "";
+    : undefined;
+  let identifier: string | undefined;
+  $: identifier = isReceive ? from : to;
 </script>
 
 <Card on:click>
@@ -66,7 +63,7 @@
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
   <span>{date.toLocaleString()}</span>
 
-  {#if direction.length > 0}
+  {#if identifier !== undefined && direction !== undefined}
     <div>{direction}<Identifier {identifier} /></div>
   {/if}
 </Card>

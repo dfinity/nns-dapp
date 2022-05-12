@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
@@ -44,7 +44,6 @@
   let mainAccount: Account | undefined;
   $: mainAccount = $accountsStore?.main;
 
-  // TODO(L2-429): context and store for selectedAccount
   let selectedAccount: Account | undefined;
   $: accountIdentifier,
     $accountsStore,
@@ -53,6 +52,7 @@
   let transactions: Transaction[] = [];
   let loading: boolean = false;
   const updateTransactions = async (accountIdentifier: AccountIdentifier) => {
+    // TODO: get rid of doubleloading (skip if same?)
     loading = true;
     transactions = await getAccountTransactions({
       accountIdentifier,
@@ -60,18 +60,14 @@
     loading = false;
   };
 
-  let accountName1: string;
+  let accountName: string;
   $: if (selectedAccount) {
-    accountName1 = getAccountName({
+    accountName = getAccountName({
       account: selectedAccount,
       mainName: $i18n.accounts.main,
     });
     updateTransactions(selectedAccount.identifier);
   }
-  // final isReceive = transaction.from != currentAccount.accountIdentifier;
-  // final isSend = transaction.to != currentAccount.accountIdentifier;
-
-  $: console.log("selectedAccount", accountName1, selectedAccount);
 </script>
 
 {#if SHOW_ACCOUNTS_ROUTE}
@@ -81,7 +77,7 @@
     <section>
       {#if selectedAccount}
         <div class="title">
-          <h1>{accountName1}</h1>
+          <h1>{accountName}</h1>
           <ICP icp={selectedAccount.balance} />
         </div>
         <Identifier identifier={selectedAccount.identifier} showCopy />
