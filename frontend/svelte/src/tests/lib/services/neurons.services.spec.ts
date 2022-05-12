@@ -61,9 +61,6 @@ jest.mock("../../../lib/services/accounts.services", () => {
     syncAccounts: jest.fn(),
     getAccountIdentity: jest
       .fn()
-<<<<<<< HEAD
-      .mockImplementation(() => Promise.resolve(mockIdentity)),
-=======
       .mockImplementation(() => Promise.resolve(testIdentity)),
   };
 });
@@ -82,7 +79,6 @@ jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
     getLedgerIdentityProxy: jest
       .fn()
       .mockImplementation(() => getLedgerIdentityImplementation()),
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
   };
 });
 
@@ -188,30 +184,6 @@ describe("neurons-services", () => {
   });
 
   describe("stake new neuron", () => {
-<<<<<<< HEAD
-    it("should stake and load a neuron from main account", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
-
-      expect(spyStakeNeuron).toHaveBeenCalled();
-
-      const neuron = get(definedNeuronsStore)[0];
-      expect(neuron).toEqual(mockNeuron);
-    });
-
-    it("should stake and load a neuron from subaccount", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
-
-      expect(spyStakeNeuron).toHaveBeenCalled();
-
-      const neuron = get(definedNeuronsStore)[0];
-      expect(neuron).toEqual(mockNeuron);
-    });
-
-    it("should stake neuron from hardware wallet", async () => {
-      await stakeAndLoadNeuron({
-        amount: 10,
-        account: mockHardwareWalletAccount,
-=======
     afterEach(() => {
       jest.clearAllMocks();
     });
@@ -229,7 +201,6 @@ describe("neurons-services", () => {
       const newNeuron = await stakeNeuron({
         amount: 10,
         account: mockSubAccount,
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();

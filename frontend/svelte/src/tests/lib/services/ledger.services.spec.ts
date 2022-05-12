@@ -216,8 +216,6 @@ describe("ledger-services", () => {
       );
     });
   });
-<<<<<<< HEAD
-=======
 
   describe("show info on ledger", () => {
     const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
@@ -266,5 +264,4 @@ describe("ledger-services", () => {
       });
     });
   });
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
 });

@@ -199,11 +199,7 @@ export const stakeNeuron = async ({
 }: {
   amount: number;
   account: Account;
-<<<<<<< HEAD
-}): Promise<NeuronId | undefined> => {
-=======
 }): Promise<NeuronInfo | undefined> => {
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
   try {
     const stake = convertNumberToICP(amount);
 
@@ -224,22 +220,13 @@ export const stakeNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
-<<<<<<< HEAD
-    const neuronId: NeuronId = await stakeNeuron({
-=======
     const neuronId: NeuronId = await stakeNeuronApi({
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
       stake,
       identity,
       ledgerCanisterIdentity,
       controller,
       fromSubAccount,
     });
-<<<<<<< HEAD
-    // TODO: Add hotkey of current user to new neuron https://dfinity.atlassian.net/browse/L2-523
-    // TODO: Continue with flow https://dfinity.atlassian.net/browse/L2-524
-    await loadNeuron({
-=======
     if (
       isHardwareWallet(account) &&
       accountIdentity instanceof LedgerIdentity
@@ -247,7 +234,6 @@ export const stakeNeuron = async ({
       return getNeuronHW({ neuronId, identity: accountIdentity });
     }
     return await getNeuron({
->>>>>>> be51e1aaea58f8093d1052f37c543d09e4ceb1d3
       neuronId,
       identity: accountIdentity,
       certified: true,
