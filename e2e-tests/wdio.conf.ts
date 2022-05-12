@@ -11,7 +11,7 @@ export const config: WebdriverIO.Config = {
 
     browser.addCommand(
       "screenshot",
-      async (name: string, options: { saveDom: boolean } = {}) => {
+      async (name: string, options?: { saveDom?: boolean } = {}) => {
         // Safe increment.  If you see screenshot counts this high, think why.
         browser["screenshot-count"] =
           (Number.isNaN(browser["screenshot-count"])
@@ -37,12 +37,19 @@ export const config: WebdriverIO.Config = {
           mkdirSync(SCREENSHOTS_DIR);
         }
 
+        // Make screenshots deterministic by removing the spinner and other unstable elements, if they exist.
+        await browser.execute(() =>
+          document
+            .querySelectorAll('[data-tid="spinner"], .toast')
+            .forEach((element) => element.remove())
+        );
+        // Make the screenshot.
         await browser.saveScreenshot(`${SCREENSHOTS_DIR}/${filename}.png`);
 
-        if (options.saveDom === true) {
+        if (options?.saveDom === true) {
           writeFileSync(
             `${SCREENSHOTS_DIR}/${filename}.html`,
-            await $(":root", { encoding: "utf8" }).getHTML(),
+            await $(":root").getHTML(),
             { encoding: "utf8" }
           );
         }
