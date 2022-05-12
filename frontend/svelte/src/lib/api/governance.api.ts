@@ -125,7 +125,7 @@ export const spawnNeuron = async ({
   identity,
 }: {
   neuronId: NeuronId;
-  percentageToSpawn: number;
+  percentageToSpawn?: number;
   identity: Identity;
 }): Promise<void> => {
   logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);

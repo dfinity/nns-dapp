@@ -110,6 +110,18 @@ const getNeuronHW = async ({
   return neurons.find((currentNeuron) => currentNeuron.neuronId === neuronId);
 };
 
+export const isNeuronControlledByHardwareWallet = async (
+  neuron: NeuronInfo
+) => {
+  if (neuron.fullNeuron === undefined) {
+    return false;
+  }
+  const identity = await getAccountIdentity(
+    neuron.fullNeuron.accountIdentifier
+  );
+  return identity instanceof LedgerIdentity;
+};
+
 const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
@@ -660,7 +672,7 @@ export const spawnNeuron = async ({
   percentageToSpawn,
 }: {
   neuronId: NeuronId;
-  percentageToSpawn: number;
+  percentageToSpawn?: number;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity = await getIdentityByNeuron(neuronId);
