@@ -13,7 +13,9 @@ import { Header } from "../components/header";
 /**
  * Registers a new identity on the Internet Identity.
  */
-export const register = async (browser: WebdriverIO.Browser): Promise<{ identityAnchor: string }> => {
+export const register = async (
+  browser: WebdriverIO.Browser
+): Promise<{ identityAnchor: string }> => {
   if (undefined === browser) {
     throw new Error("Browser is undefined in 'register(..)'");
   }
@@ -128,5 +130,5 @@ export const register = async (browser: WebdriverIO.Browser): Promise<{ identity
 
   // Log change of state:
   console.warn("Created identity", identityAnchor);
-  return {identityAnchor};
+  return { identityAnchor };
 };

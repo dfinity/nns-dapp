@@ -1,6 +1,6 @@
 const { existsSync, mkdirSync, writeFileSync } = require("fs");
 const { NNS_DAPP_URL } = require("./common/constants");
-import { Options as WebDriverOptions } from '@wdio/types';
+import { Options as WebDriverOptions } from "@wdio/types";
 
 export const config: WebdriverIO.Config = {
   baseUrl: NNS_DAPP_URL,
@@ -95,7 +95,11 @@ export const config: WebdriverIO.Config = {
     },
   ],
   logLevel:
-    process.env.LOG_LEVEL === undefined ? "warn" : process.env.LOG_LEVEL as (WebDriverOptions.WebDriverLogTypes|undefined),
+    process.env.LOG_LEVEL === undefined
+      ? "warn"
+      : (process.env.LOG_LEVEL as
+          | WebDriverOptions.WebDriverLogTypes
+          | undefined),
   services: ["chromedriver"],
 
   framework: "mocha",
