@@ -41,7 +41,9 @@
   <button
     class="primary full-width"
     type="submit"
-    disabled={newAccountName.length === 0 || $busy}
+    disabled={newAccountName.length === 0 ||
+      $busy ||
+      selectedAccount === undefined}
   >
     {$i18n.accounts.rename}
   </button>
