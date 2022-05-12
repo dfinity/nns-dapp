@@ -34,20 +34,19 @@
   const addCurrentUserToHotkey = async () => {
     loading = true;
     startBusy("add-hotkey-neuron");
-    if (principal !== undefined) {
-      const neuronId = await addHotkeyFromHW({
-        neuronId: neuron.neuronId,
-        principal,
-        accountIdentifier: account.identifier,
+    const identity = await getIdentity();
+    const neuronId = await addHotkeyFromHW({
+      neuronId: neuron.neuronId,
+      principal: identity.getPrincipal(),
+      accountIdentifier: account.identifier,
+    });
+    loading = false;
+    stopBusy("add-hotkey-neuron");
+    if (neuronId !== undefined) {
+      toastsStore.success({
+        labelKey: "neurons.add_user_as_hotkey_success",
       });
-      loading = false;
-      stopBusy("add-hotkey-neuron");
-      if (neuronId !== undefined) {
-        toastsStore.success({
-          labelKey: "neurons.add_user_as_hotkey_success",
-        });
-        dispatchNext();
-      }
+      dispatchNext();
     }
   };
 </script>
@@ -81,11 +80,12 @@
       class="primary full-width"
       on:click={addCurrentUserToHotkey}
       data-tid="confirm-add-principal-to-hotkey-modal"
+      disabled={principal === undefined}
     >
       {#if loading}
         <Spinner />
       {:else}
-        {$i18n.neurons.update_delay}
+        {$i18n.neuron_detail.add_hotkey}
       {/if}
     </button>
   </div>

@@ -11,7 +11,7 @@
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, tick } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import AddUserToHotkeys from "../../components/neurons/AddUserToHotkeys.svelte";
   import { isHardwareWallet } from "../../utils/accounts.utils";
@@ -107,7 +107,7 @@
   }
   let delayInSeconds: number = 0;
 
-  const chooseAccount = ({
+  const chooseAccount = async ({
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) => {
     selectedAccount = detail.selectedAccount;
@@ -115,6 +115,8 @@
       steps.push(extraStepHW);
     }
     steps.push(...lastSteps);
+    // Wait steps to be applied - components to be updated - before being able to navigate to next step
+    await tick();
     modal.next();
   };
   const goNext = () => {
