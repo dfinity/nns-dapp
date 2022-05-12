@@ -1,5 +1,4 @@
 import { register } from "../common/register";
-import { loginWithIdentity } from "../common/login";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 import { Header } from "../components/header.ts";
@@ -11,8 +10,8 @@ import { AuthPage } from "../components/auth";
  * Verifies that the login/logout state is synchronised across tabs.
  */
 describe("multi-tab-auth", () => {
-  const nnsTabs = [];
-  var identityAnchor = undefined;
+  const nnsTabs: Array<string> = [];
+  var identityAnchor: string|undefined = undefined;
   var navigator;
 
   before(() => {
