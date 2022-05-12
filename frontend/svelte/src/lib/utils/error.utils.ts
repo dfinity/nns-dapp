@@ -16,6 +16,7 @@ import {
   NotFoundError,
 } from "../types/errors";
 import type { ToastMsg } from "../types/toast";
+import {translate} from './i18n.utils';
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -57,16 +58,18 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
  */
 export const toToastError = ({
   err,
-  errorsWithMessage = [],
   fallbackErrorLabelKey,
 }: {
   err: unknown | undefined;
-  errorsWithMessage?: { new (message?: string): Error }[];
   fallbackErrorLabelKey: string;
 }): { labelKey: string; err?: unknown } => {
-  const errorKey: boolean =
-    errorsWithMessage.find((type: typeof Error) => err instanceof type) !==
-    undefined;
+  let errorKey: boolean = false;
+  const message: string | undefined = (err as Error)?.message;
+
+  if (message !== undefined) {
+    const label: string = translate({labelKey: message});
+    errorKey = label !== message;
+  }
 
   return {
     labelKey: errorKey

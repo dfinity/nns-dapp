@@ -1,5 +1,4 @@
 import { HardwareWalletAttachError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import { LedgerErrorMessage } from "../../../lib/errors/ledger.errors";
 import { errorToString, toToastError } from "../../../lib/utils/error.utils";
 
 class TestError extends Error {
@@ -46,22 +45,20 @@ describe("error-utils", () => {
       expect(
         toToastError({
           fallbackErrorLabelKey: "test.test",
-          errorsWithMessage: [LedgerErrorMessage],
           err,
         })
       ).toEqual({ labelKey: "test.test", err });
     });
 
     it("should use error message key", () => {
-      const err = new HardwareWalletAttachError("test.error");
+      const err = new HardwareWalletAttachError("error.rename_subaccount");
 
       expect(
         toToastError({
           fallbackErrorLabelKey: "test.test",
-          errorsWithMessage: [HardwareWalletAttachError],
           err,
         })
-      ).toEqual({ labelKey: "test.error" });
+      ).toEqual({ labelKey: "error.rename_subaccount" });
     });
   });
 });

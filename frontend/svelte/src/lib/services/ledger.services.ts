@@ -2,7 +2,6 @@ import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
-import { HardwareWalletAttachError } from "../canisters/nns-dapp/nns-dapp.errors";
 import { LedgerConnectionState } from "../constants/ledger.constants";
 import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
@@ -146,7 +145,6 @@ const toastUnexpectedError = ({
   toastsStore.error(
     toToastError({
       err,
-      errorsWithMessage: [HardwareWalletAttachError, LedgerErrorKey],
       fallbackErrorLabelKey,
     })
   );

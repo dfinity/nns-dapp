@@ -8,11 +8,9 @@ import {
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
 import {
-  HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
-import { LedgerErrorKey } from "../errors/ledger.errors";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -127,7 +125,6 @@ const transferError = ({
   toastsStore.error(
     toToastError({
       err,
-      errorsWithMessage: [HardwareWalletAttachError, LedgerErrorKey],
       fallbackErrorLabelKey: labelKey,
     })
   );
