@@ -64,14 +64,14 @@ export const toToastError = ({
   errorsWithMessage?: { new (message?: string): Error }[];
   fallbackErrorLabelKey: string;
 }): { labelKey: string; err?: unknown } => {
-  const ledgerErrorKey: boolean =
+  const errorKey: boolean =
     errorsWithMessage.find((type: typeof Error) => err instanceof type) !==
     undefined;
 
   return {
-    labelKey: ledgerErrorKey
+    labelKey: errorKey
       ? (err as { message: string }).message
       : fallbackErrorLabelKey,
-    ...(!ledgerErrorKey && { err }),
+    ...(!errorKey && { err }),
   };
 };
