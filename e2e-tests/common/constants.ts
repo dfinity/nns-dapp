@@ -18,8 +18,6 @@ export enum RedirectToLegacy {
 
 export const REDIRECT_TO_LEGACY: RedirectToLegacy = ((
   env = RedirectToLegacy.prod
-) => env)(RedirectToLegacy[process.env.REDIRECT_TO_LEGACY]);
+) => env)(RedirectToLegacy[process.env.REDIRECT_TO_LEGACY as string]);
 
-export const NNS_DAPP_URL: string = (process.env.NNS_DAPP_URL as boolean)
-  ? String(process.env.NNS_DAPP_URL)
-  : "http://localhost:8080";
+export const NNS_DAPP_URL: string = process.env.NNS_DAPP_URL ?? "http://localhost:8080";

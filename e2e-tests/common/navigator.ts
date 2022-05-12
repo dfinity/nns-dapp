@@ -2,6 +2,8 @@
  * Additional functionality for the wdio "browser".
  */
 export class Navigator {
+  browser: WebdriverIO.Browser;
+
   constructor(browser: WebdriverIO.Browser) {
     this.browser = browser;
   }

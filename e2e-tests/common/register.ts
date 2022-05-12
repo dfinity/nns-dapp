@@ -1,7 +1,6 @@
 import { AuthPage } from "../components/auth";
 import { IIWelcomeBackPage } from "../components/ii-welcome-back-page";
 import { IIWelcomePage } from "../components/ii-welcome-page";
-import { IIWelcomePage } from "../components/ii-add-device-page";
 import { IICaptchaPage } from "../components/ii-captcha-page";
 import { IICongratulationsPage } from "../components/ii-congratulations-page";
 import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
@@ -14,7 +13,7 @@ import { Header } from "../components/header";
 /**
  * Registers a new identity on the Internet Identity.
  */
-export const register = async (browser: WebdriverIO.Browser): string => {
+export const register = async (browser: WebdriverIO.Browser): { identityAnchor: string } => {
   if (undefined === browser) {
     throw new Error("Browser is undefined in 'register(..)'");
   }
@@ -88,7 +87,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Congratulations Page
-  const newIdentity = await navigator
+  const identityAnchor = await navigator
     .getElement(
       IICongratulationsPage.IDENTITY_SELECTOR,
       "registration-ii-new-identity",
@@ -128,6 +127,6 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Log change of state:
-  console.warn("Created identity", newIdentity);
-  return newIdentity;
+  console.warn("Created identity", identityAnchor);
+  return {identityAnchor};
 };

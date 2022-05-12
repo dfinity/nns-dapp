@@ -1,8 +1,7 @@
 import { register } from "../common/register";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
-import { Header } from "../components/header.ts";
-import { getLoginButton } from "../components/auth";
+import { Header } from "../components/header";
 import { Navigator } from "../common/navigator";
 import { AuthPage } from "../components/auth";
 
