@@ -18,12 +18,21 @@ env:
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
+      IC_COMMIT: 6dc5e2dcb50569e20891af02b846a7d9a58e3489
 
 jobs:
   nns_canisters:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+
+      - name: Get cached nns canisters
+        id: create_nns_canister_ccahe
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}"
 
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
@@ -34,10 +43,10 @@ jobs:
           context: e2e-tests/scripts
           file: e2e-tests/scripts/nns-canister.Dockerfile
           build-args: |
-            IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+            "IC_COMMIT=${{ env.IC_COMMIT }}"
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
-          outputs: type=cacheonly
+          outputs: target/ic
 
   build:
     needs: [nns_canisters]
