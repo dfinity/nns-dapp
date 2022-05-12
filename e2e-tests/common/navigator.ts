@@ -46,7 +46,7 @@ export class Navigator {
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
     await button.waitForEnabled({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
-      await browser["screenshot"](description);
+      await this.browser["screenshot"](description);
     }
     await button.click();
   }
@@ -68,13 +68,13 @@ export class Navigator {
     const lengthBefore = (await this.browser.getWindowHandles()).length;
     await this.click(selector, description, { timeout });
     // Wait for a new tab to open, then switch to it.
-    await browser.waitUntil(
-      async () => (await browser.getWindowHandles()).length > lengthBefore,
+    await this.browser.waitUntil(
+      async () => (await this.browser.getWindowHandles()).length > lengthBefore,
       { timeout, timeoutMsg }
     );
-    const newWindowHandle = await browser
+    const newWindowHandle = await this.browser
       .getWindowHandles()
       .then((handles) => handles[handles.length - 1]);
-    await browser.switchToWindow(newWindowHandle);
+    await this.browser.switchToWindow(newWindowHandle);
   }
 }
