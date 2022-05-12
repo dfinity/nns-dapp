@@ -30,7 +30,7 @@ describe("multi-tab-auth", () => {
   });
 
   it("registerTabOne", async () => {
-    identityAnchor = await register(browser);
+    identityAnchor = (await register(browser)).identityAnchor;
     await waitForImages(browser);
     await browser["screenshot"]("register-tab-one");
   });
