@@ -107,7 +107,7 @@
   }
   let delayInSeconds: number = 0;
 
-  const chooseAccount = async ({
+  const chooseAccount = ({
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) => {
     selectedAccount = detail.selectedAccount;

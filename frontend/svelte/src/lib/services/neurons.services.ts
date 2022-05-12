@@ -113,9 +113,7 @@ const getNeuronHW = async ({
 const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
-export const getIdentityByNeuron = async (
-  neuronId: NeuronId
-): Promise<Identity> => {
+const getIdentityByNeuron = async (neuronId: NeuronId): Promise<Identity> => {
   const { neuron } = await getIdentityAndNeuronHelper(neuronId);
 
   if (neuron.fullNeuron === undefined) {
