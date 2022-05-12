@@ -85,14 +85,33 @@
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
+    --scrollbar-background: #9dd196;
+    --scrollbar-thumb: var(--green-600-shade);
+
+    ::-webkit-scrollbar {
+      background: var(--scrollbar-background);
+      width: 0.8em;
+      border-radius: 0.5em;
+      -webkit-border-radius: 0.5em;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border: solid 2.5px var(--scrollbar-thumb);
+      height: auto;
+    }
+
     &.error {
       background: var(--pink);
       color: var(--pink-contrast);
+      --scrollbar-background: #ffa3c5;
+      --scrollbar-thumb: #a9054c;
     }
 
     &.warn {
       background: var(--yellow-500);
       color: var(--yellow-500-contrast);
+      --scrollbar-background: var(--yellow-400-tint);
+      --scrollbar-thumb: var(--yellow-600);
 
       button.close {
         color: var(--yellow-500-contrast);

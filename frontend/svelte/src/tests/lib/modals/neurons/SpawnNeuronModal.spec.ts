@@ -21,7 +21,7 @@ describe("SpawnNeuronModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(1_000_000),
+      maturityE8sEquivalent: BigInt(10_000_000),
     },
   };
 
@@ -51,7 +51,33 @@ describe("SpawnNeuronModal", () => {
     ).toBeInTheDocument();
   });
 
-  it("should call mergeMaturity service on confirm click", async () => {
+  it("should have disabled button if percentage is not enought to spawn a new neuron", async () => {
+    const { queryByTestId } = await renderModal({
+      component: SpawnNeuronModal,
+      props: {
+        neuron: {
+          ...neuron,
+          fullNeuron: {
+            ...neuron.fullNeuron,
+            maturityE8sEquivalent: BigInt(1_000_000),
+          },
+        },
+      },
+    });
+
+    const rangeElement = queryByTestId("input-range");
+    expect(rangeElement).toBeInTheDocument();
+    rangeElement &&
+      (await fireEvent.input(rangeElement, { target: { value: 50 } }));
+
+    const selectMaturityButton = queryByTestId(
+      "select-maturity-percentage-button"
+    );
+    expect(selectMaturityButton).toBeInTheDocument();
+    expect(selectMaturityButton?.getAttribute("disabled")).not.toBeNull();
+  });
+
+  it("should call spawnNeuron service on confirm click", async () => {
     const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {

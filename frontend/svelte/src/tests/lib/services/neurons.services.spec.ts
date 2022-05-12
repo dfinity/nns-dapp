@@ -12,7 +12,11 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -49,6 +53,9 @@ jest.mock("../../../lib/stores/toasts.store", () => {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    getAccountIdentity: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockIdentity)),
   };
 });
 
@@ -150,11 +157,33 @@ describe("neurons-services", () => {
 
   afterEach(() => {
     spyGetNeuron.mockClear();
+    jest.clearAllMocks();
   });
 
   describe("stake new neuron", () => {
-    it("should stake and load a neuron", async () => {
-      await stakeAndLoadNeuron({ amount: 10 });
+    it("should stake and load a neuron from main account", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake and load a neuron from subaccount", async () => {
+      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
+
+      expect(spyStakeNeuron).toHaveBeenCalled();
+
+      const neuron = get(definedNeuronsStore)[0];
+      expect(neuron).toEqual(mockNeuron);
+    });
+
+    it("should stake neuron from hardware wallet", async () => {
+      await stakeAndLoadNeuron({
+        amount: 10,
+        account: mockHardwareWalletAccount,
+      });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
 
@@ -171,6 +200,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 0.1,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -184,6 +214,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: NaN,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();
@@ -195,6 +226,7 @@ describe("neurons-services", () => {
 
       const response = await stakeAndLoadNeuron({
         amount: 10,
+        account: mockMainAccount,
       });
 
       expect(response).toBeUndefined();

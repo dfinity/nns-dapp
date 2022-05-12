@@ -14,7 +14,6 @@
     getAccountTransactions,
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
-  import type { Account } from "../lib/types/account";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import Identifier from "../lib/components/ic/Identifier.svelte";
@@ -31,6 +30,7 @@
   } from "../lib/stores/transactions.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
+  import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -128,6 +128,8 @@
           identifier={$transactionsStore.account.identifier}
           showCopy
         />
+
+        <HardwareWalletShowAction />
 
         {#if $transactionsStore.transactions === undefined}
           <SkeletonCard />

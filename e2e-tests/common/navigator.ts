@@ -10,7 +10,7 @@ export class Navigator {
    * Gets an element, waiting for it to exist.
    * Motivation: Consistently useful error messages on timeout.
    */
-  async get(
+  async getElement(
     selector: string,
     description: string,
     options?: { timeout?: number }
@@ -20,8 +20,8 @@ export class Navigator {
       throw new Error(`Cannot get undefined selector for "${description}".`);
     }
     const element = await this.browser.$(selector);
-    const timeout = options?.timeout;
-    const timeoutMsg = `Timeout waiting for "${description}" with selector "${selector}".`;
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with selector "${selector}".`;
     await element.waitForExist({ timeout, timeoutMsg });
     return element;
   }
@@ -40,8 +40,8 @@ export class Navigator {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
     const button = await this.browser.$(selector);
-    const timeout = options?.timeout;
-    const timeoutMsg = `Timeout waiting to click "${description}" with selector "${selector}".`;
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
     await button.waitForEnabled({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
       await browser["screenshot"](description);

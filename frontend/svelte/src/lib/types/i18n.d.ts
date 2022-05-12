@@ -111,6 +111,7 @@ interface I18nAccounts {
   attach_hardware_enter_name: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
+  show_info_hardware_wallet: string;
   attach_wallet: string;
   hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
@@ -125,11 +126,14 @@ interface I18nAccounts {
   enter_icp_amount: string;
   source: string;
   destination: string;
+  hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
+  authorize_on_hardware_wallet: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
+  transaction_success: string;
 }
 
 interface I18nNeurons {
@@ -342,6 +346,7 @@ interface I18nNeuron_detail {
   join_community_fund_description: string;
   maturity_title: string;
   merge_maturity: string;
+  merge: string;
   spawn_neuron: string;
   spawn: string;
   maturity_tooltip: string;
@@ -369,7 +374,10 @@ interface I18nNeuron_detail {
   invalid_hotkey: string;
   disburse_success: string;
   merge_maturity_modal_title: string;
+  merge_confirmation_modal_title: string;
   merge_maturity_modal_description: string;
+  merge_maturity_confirmation_q: string;
+  merge_maturity_confirmation_a: string;
   merge_maturity_success: string;
   spawn_maturity_modal_title: string;
   spawn_confirmation_modal_title: string;
@@ -409,6 +417,7 @@ interface I18nError__ledger {
   connect_not_supported: string;
   unexpected_wallet: string;
   user_cancel: string;
+  incorrect_identifier: string;
 }
 
 interface I18nError__attach_wallet {

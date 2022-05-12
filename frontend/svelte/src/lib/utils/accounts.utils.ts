@@ -229,3 +229,6 @@ export const mapTransaction = ({
     date,
   };
 };
+
+export const isHardwareWallet = (account: Account | undefined): boolean =>
+  account?.type === "hardwareWallet";

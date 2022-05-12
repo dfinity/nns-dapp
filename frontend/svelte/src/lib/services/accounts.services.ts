@@ -17,12 +17,15 @@ import type {
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
+import type { LedgerIdentity } from "../identities/ledger.identity";
+import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
 import { getLastPathDetail } from "../utils/app-path.utils";
+import { toLedgerError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -98,17 +101,19 @@ export const transferICP = async ({
   }
 
   try {
-    const identity: Identity = await getIdentity();
+    const { identifier, subAccount } = selectedAccount;
+
+    const identity: Identity = await getAccountIdentity(identifier);
 
     // TODO: refactor accountStore => we can keep in store the subAccountId, doing so we can avoid to transform it each time we call the backend
     const fromSubAccountId =
-      selectedAccount.subAccount !== undefined
-        ? toSubAccountId(selectedAccount.subAccount)
-        : undefined;
+      subAccount !== undefined ? toSubAccountId(subAccount) : undefined;
 
     await sendICP({ identity, to, fromSubAccountId, amount });
 
     await syncAccounts();
+
+    toastsStore.success({ labelKey: "accounts.transaction_success" });
 
     return { success: true };
   } catch (err) {
@@ -123,10 +128,7 @@ const transferError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error({
-    labelKey,
-    err,
-  });
+  toastsStore.error(toLedgerError({ err, fallbackErrorLabelKey: labelKey }));
 
   return { success: false, err: labelKey };
 };
@@ -147,13 +149,22 @@ export const getAccountFromStore = (
     return undefined;
   }
 
-  const { main, subAccounts }: AccountsStore = get(accountsStore);
+  const { main, subAccounts, hardwareWallets }: AccountsStore =
+    get(accountsStore);
 
   if (main?.identifier === identifier) {
     return main;
   }
 
-  return subAccounts?.find(
+  const subAccount: Account | undefined = subAccounts?.find(
+    (account: Account) => account.identifier === identifier
+  );
+
+  if (subAccount !== undefined) {
+    return subAccount;
+  }
+
+  return hardwareWallets?.find(
     (account: Account) => account.identifier === identifier
   );
 };
@@ -196,3 +207,15 @@ export const getAccountTransactions = async ({
     },
     logMessage: "Syncing Transactions",
   });
+
+export const getAccountIdentity = async (
+  identifier: string
+): Promise<Identity | LedgerIdentity> => {
+  const account: Account | undefined = getAccountFromStore(identifier);
+
+  if (account?.type === "hardwareWallet") {
+    return getLedgerIdentityProxy(identifier);
+  }
+
+  return getIdentity();
+};

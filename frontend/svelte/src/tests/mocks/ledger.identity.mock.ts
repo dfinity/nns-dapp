@@ -17,6 +17,9 @@ export const testSecp256k1Vectors: Array<[string, string]> = [
   [rawPublicKeyHex, derEncodedPublicKeyHex],
 ];
 
+export const mockLedgerIdentifier =
+  "4f3d4b40cdb852732601fccf8bd24dffe44957a647cb867913e982d98cf85676";
+
 // eslint-disable-next-line
 // @ts-ignore: test file
 export class MockLedgerIdentity extends LedgerIdentity {
