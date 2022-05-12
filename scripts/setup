@@ -119,9 +119,17 @@ install_ic_cdk_optimizer() {
   cargo install --version 0.3.2 ic-cdk-optimizer
 }
 
+install_docker() {
+  while ! command -v docker ; do
+    echo "Please install docker from: https://docs.docker.com/get-docker/"
+    read -rp "Press enter when docker has been installed...  "
+  done
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 install_rosetta_maybe
+command -v docker || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"
