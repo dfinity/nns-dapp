@@ -153,6 +153,10 @@ interface I18nNeurons {
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_with: string;
   set_dissolve_delay: string;
+  add_user_as_hotkey: string;
+  add_user_as_hotkey_message_1: string;
+  add_user_as_hotkey_message_2: string;
+  add_user_as_hotkey_success: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_neuron: string;
