@@ -248,8 +248,6 @@ describe("ledger-services", () => {
     describe("error", () => {
       it("should not display info if ledger throw an error", async () => {
         spy.mockImplementation(() => {
-          console.log("her");
-
           throw new LedgerErrorKey("error__ledger.unexpected_wallet");
         });
 
