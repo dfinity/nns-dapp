@@ -1,11 +1,11 @@
 import { register } from "../common/register";
-const { waitForLoad } = require("../common/waitForLoad");
-const {
+import { waitForLoad } from "../common/waitForLoad";
+import {
   RouteHash,
   FrontendPath,
   RedirectToLegacy,
   REDIRECT_TO_LEGACY,
-} = require("../common/constants");
+} from "../common/constants";
 
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
@@ -121,8 +121,7 @@ const waitForHash = async (
     throw new Error(
       `Expected hash '${hash}' but have: '${currentHash}' with ${JSON.stringify(
         options
-      )}`,
-      { cause: err }
+      )} (caused by ${err})`
     );
   }
 };
