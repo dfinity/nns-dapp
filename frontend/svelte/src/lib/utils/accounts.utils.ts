@@ -3,12 +3,10 @@ import { Principal } from "@dfinity/principal";
 import type {
   AccountIdentifierString,
   Transaction,
-  TransactionType,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../constants/accounts.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
-import { enumKeys } from "./enum.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -95,28 +93,38 @@ export const transactionType = (
   transaction: Transaction
 ): AccountTransactionType => {
   const { transaction_type } = transaction;
-  if (transaction_type.length > 0) {
-    const transactionType = transaction_type[0] as TransactionType;
-    const key = enumKeys(AccountTransactionType).find(
-      (key) => key in transactionType
-    );
-    if (key === undefined) {
-      console.error(transactionType);
-      throw new Error(
-        "Unknown TransactionType: " + JSON.stringify(transactionType)
-      );
+  if (transaction_type.length === 0) {
+    // This should never be hit since people running the latest front end code should have had their principal stored in
+    // the NNS UI canister and therefore will have all of their transaction types set.
+    if ("Burn" in transaction) {
+      return AccountTransactionType.Burn;
+    } else if ("Mint" in transaction) {
+      return AccountTransactionType.Mint;
     }
-    return AccountTransactionType[key] as AccountTransactionType;
+    return AccountTransactionType.Send;
   }
 
-  // This should never be hit since people running the latest front end code should have had their principal stored in
-  // the NNS UI canister and therefore will have all of their transaction types set.
-  if ("Burn" in transaction) {
+  if ("Transfer" in transaction_type[0]) {
+    return AccountTransactionType.Send;
+  } else if ("StakeNeuron" in transaction_type[0]) {
+    return AccountTransactionType.StakeNeuron;
+  } else if ("StakeNeuronNotification" in transaction_type[0]) {
+    return AccountTransactionType.StakeNeuronNotification;
+  } else if ("TopUpNeuron" in transaction_type[0]) {
+    return AccountTransactionType.TopUpNeuron;
+  } else if ("CreateCanister" in transaction_type[0]) {
+    return AccountTransactionType.CreateCanister;
+  } else if ("TopUpCanister" in transaction_type[0]) {
+    return AccountTransactionType.TopUpCanister;
+  } else if ("Burn" in transaction_type[0]) {
     return AccountTransactionType.Burn;
-  } else if ("Mint" in transaction) {
+  } else if ("Mint" in transaction_type[0]) {
     return AccountTransactionType.Mint;
   }
-  return AccountTransactionType.Send;
+
+  throw new Error(
+    "Unknown TransactionType: " + JSON.stringify(transactionType)
+  );
 };
 
 // TODO: tests
@@ -170,6 +178,7 @@ export const mapTransaction = ({
 }): {
   type: AccountTransactionType;
   isReceive: boolean;
+  isSend: boolean;
   from: AccountIdentifierString | undefined;
   to: AccountIdentifierString | undefined;
   displayAmount: ICP;
@@ -201,7 +210,9 @@ export const mapTransaction = ({
 
   const type = transactionType(transaction);
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
-  const isReceive = to === account.identifier;
+
+  const isReceive = from !== account.identifier;
+  const isSend = to !== account.identifier;
   const displayAmount = transactionDisplayAmount({
     type,
     isReceive,
@@ -211,6 +222,7 @@ export const mapTransaction = ({
 
   return {
     isReceive,
+    isSend,
     type,
     from,
     to,

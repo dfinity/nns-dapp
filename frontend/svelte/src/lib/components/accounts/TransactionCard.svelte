@@ -42,10 +42,11 @@
   let to: AccountIdentifierString | undefined;
   let displayAmount: ICPType;
   let date: Date;
-  $: ({ type, isReceive, from, to, displayAmount, date } = mapTransaction({
-    transaction,
-    account,
-  }));
+  $: ({ type, isReceive, isSend, from, to, displayAmount, date } =
+    mapTransaction({
+      transaction,
+      account,
+    }));
 
   let headline: string;
   $: headline = getHeadline({ type, isReceive });
@@ -57,16 +58,18 @@
     ? replacePlaceholders($i18n.transactions.direction_from, {
         $address: from ?? "",
       })
-    : replacePlaceholders($i18n.transactions.direction_to, {
+    : isSend
+    ? replacePlaceholders($i18n.transactions.direction_to, {
         $address: to ?? "",
-      });
+      })
+    : "";
 </script>
 
 <Card on:click>
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
-  <ICP slot="end" icp={displayAmount} />
+  <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
   <span>{date.toLocaleString()}</span>
 
   <div>{direction}</div>
