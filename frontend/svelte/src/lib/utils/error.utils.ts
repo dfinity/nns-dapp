@@ -8,8 +8,6 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import { HardwareWalletAttachError } from "../canisters/nns-dapp/nns-dapp.errors";
-import { LedgerErrorKey } from "../errors/ledger.errors";
 import {
   CannotBeMerged,
   InsufficientAmountError,
@@ -52,15 +50,23 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   return { labelKey: pair[1], detail: errorToString(error), level: "error" };
 };
 
-export const toLedgerError = ({
+/**
+ * The "message" of some type of errors that extends Error is used to map an i18n label.
+ * This helper map such "message" to the "labelKey" of the toast.
+ * If the error does not contain a matching "message", it fallbacks to the "fallbackErrorLabelKey" and add the error as details of the toast.
+ */
+export const toToastError = ({
   err,
+  errorsWithMessage = [],
   fallbackErrorLabelKey,
 }: {
-  err: unknown;
+  err: unknown | undefined;
+  errorsWithMessage?: { new (message?: string): Error }[];
   fallbackErrorLabelKey: string;
 }): { labelKey: string; err?: unknown } => {
   const ledgerErrorKey: boolean =
-    err instanceof HardwareWalletAttachError || err instanceof LedgerErrorKey;
+    errorsWithMessage.find((type: typeof Error) => err instanceof type) !==
+    undefined;
 
   return {
     labelKey: ledgerErrorKey

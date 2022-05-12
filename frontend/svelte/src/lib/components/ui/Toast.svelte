@@ -123,6 +123,7 @@
     margin: 0;
     max-height: 100%;
     overflow-y: auto;
+    word-break: break-word;
   }
 
   button.close {

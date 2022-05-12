@@ -198,7 +198,7 @@ describe("NNSDapp", () => {
         {
           NameTooLong: null,
         },
-        new NameTooLongError(`Error, name test is too long`)
+        new NameTooLongError(`Error, name "test" is too long`)
       ));
 
     it("should throw register hardware wallet error already registered", async () =>

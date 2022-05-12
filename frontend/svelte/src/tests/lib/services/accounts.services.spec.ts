@@ -77,7 +77,7 @@ describe("accounts-services", () => {
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
-        labelKey: "create_subaccount",
+        labelKey: "accounts.create_subaccount",
         err: new Error(en.error.missing_identity),
       });
 

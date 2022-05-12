@@ -2,13 +2,14 @@ import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
+import { HardwareWalletAttachError } from "../canisters/nns-dapp/nns-dapp.errors";
 import { LedgerConnectionState } from "../constants/ledger.constants";
 import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { toLedgerError } from "../utils/error.utils";
+import { toToastError } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -86,12 +87,10 @@ export const registerHardwareWallet = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(
-      toLedgerError({
-        err,
-        fallbackErrorLabelKey: "error__attach_wallet.unexpected",
-      })
-    );
+    toastUnexpectedError({
+      err,
+      fallbackErrorLabelKey: "error__attach_wallet.unexpected",
+    });
   }
 };
 
@@ -130,11 +129,24 @@ export const showAddressAndPubKeyOnHardwareWallet = async () => {
     const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
     await ledgerIdentity.showAddressAndPubKeyOnDevice();
   } catch (err: unknown) {
-    toastsStore.error(
-      toLedgerError({
-        err,
-        fallbackErrorLabelKey: "error__ledger.unexpected",
-      })
-    );
+    toastUnexpectedError({
+      err,
+      fallbackErrorLabelKey: "error__ledger.unexpected",
+    });
   }
 };
+
+const toastUnexpectedError = ({
+  err,
+  fallbackErrorLabelKey,
+}: {
+  fallbackErrorLabelKey: string;
+  err: unknown;
+}) =>
+  toastsStore.error(
+    toToastError({
+      err,
+      errorsWithMessage: [HardwareWalletAttachError, LedgerErrorKey],
+      fallbackErrorLabelKey,
+    })
+  );
