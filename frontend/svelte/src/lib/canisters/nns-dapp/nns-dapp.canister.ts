@@ -188,10 +188,8 @@ export class NNSDappCanister {
     offset: number;
     certified: boolean;
   }): Promise<GetTransactionsResponse> => {
-    // TODO: error management
     const response = await this.getNNSDappService(certified).get_transactions({
       page_size: pageSize,
-      // TODO: add infinite scroll
       offset,
       account_identifier: accountIdentifier,
     });

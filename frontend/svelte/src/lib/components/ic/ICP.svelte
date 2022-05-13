@@ -6,8 +6,6 @@
   export let icp: ICP;
   export let label: string = $i18n.core.icp;
   export let inline: boolean = false;
-
-  // TODO: add to spec
   export let sign: "+" | "-" | "" = "";
 </script>
 

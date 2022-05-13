@@ -88,7 +88,6 @@ export interface AccountTransaction {
   blockHeight: bigint;
 }
 
-// TODO: tests
 export const transactionType = (
   transaction: Transaction
 ): AccountTransactionType => {
@@ -127,7 +126,6 @@ export const transactionType = (
   );
 };
 
-// TODO: tests
 export const showTransactionFee = ({
   type,
   isReceive,

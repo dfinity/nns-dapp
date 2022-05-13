@@ -14,8 +14,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
     "lint": "./scripts/lint",
     "format": "prettier --write --plugin-search-dir=. .",
-    "test": "jest",
-    "test:watch": "npm run test -- --watchAll",
+    "test": "TZ=UTC jest",
+    "test:watch": "TZ=UTC npm run test -- --watchAll",
     "update:nns": "npm i @dfinity/nns@nightly"
   },
   "devDependencies": {

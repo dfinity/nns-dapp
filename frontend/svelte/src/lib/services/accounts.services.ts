@@ -191,6 +191,7 @@ export const getAccountTransactions = async ({
         identity,
         certified,
         accountIdentifier,
+        // TODO: think about infinite scroll
         pageSize: TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
