@@ -52,60 +52,62 @@
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
     <p>{neuron.neuronId}</p>
-  </div>
-  <div>
+
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.icp_stake, {
         $amount: formatICP(neuronICP),
       })}
     </p>
-  </div>
-  <div>
+
     {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
       <h5>{$i18n.neurons.current_dissolve_delay}</h5>
       <p class="duration">
         {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
-          .staked}
+              .staked}
       </p>
     {/if}
   </div>
-  <Card>
-    <div slot="start">
-      <h5>{$i18n.neurons.dissolve_delay_title}</h5>
-      <p>{$i18n.neurons.dissolve_delay_description}</p>
-    </div>
-    <div class="select-delay-container">
-      <InputRange
-        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-        min={0}
-        max={SECONDS_IN_EIGHT_YEARS}
-        bind:value={delayInSeconds}
-        handleInput={checkMinimum}
-      />
-      <div class="details">
-        <div>
-          <h5>
-            {formatVotingPower(
-              votingPower({
-                stake: neuronICP,
-                dissolveDelayInSeconds: delayInSeconds,
-              })
-            )}
-          </h5>
-          <p>{$i18n.neurons.voting_power}</p>
-        </div>
-        <div>
-          {#if delayInSeconds > 0}
-            <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
-          {:else}
-            <h5>{$i18n.neurons.no_delay}</h5>
-          {/if}
-          <p>{$i18n.neurons.dissolve_delay_title}</p>
+
+  <div class="delay">
+    <Card>
+      <div slot="start">
+        <h5>{$i18n.neurons.dissolve_delay_title}</h5>
+        <p>{$i18n.neurons.dissolve_delay_description}</p>
+      </div>
+      <div class="select-delay-container">
+        <InputRange
+                ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
+                min={0}
+                max={SECONDS_IN_EIGHT_YEARS}
+                bind:value={delayInSeconds}
+                handleInput={checkMinimum}
+        />
+        <div class="details">
+          <div>
+            <h5>
+              {formatVotingPower(
+                      votingPower({
+                        stake: neuronICP,
+                        dissolveDelayInSeconds: delayInSeconds,
+                      })
+              )}
+            </h5>
+            <p>{$i18n.neurons.voting_power}</p>
+          </div>
+          <div>
+            {#if delayInSeconds > 0}
+              <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
+            {:else}
+              <h5>{$i18n.neurons.no_delay}</h5>
+            {/if}
+            <p>{$i18n.neurons.dissolve_delay_title}</p>
+          </div>
         </div>
       </div>
-    </div>
-  </Card>
+    </Card>
+  </div>
+
   <div class="buttons">
     {#if cancelButtonText !== undefined}
       <button
@@ -148,12 +150,11 @@
   .buttons {
     display: flex;
     gap: var(--padding);
+    padding: 0 0 var(--padding-2x);
   }
 
-  .wrapper {
-    :global(article) {
-      flex-grow: 1;
-      margin: 0 0 var(--padding-2x);
-    }
+  .delay {
+    flex-grow: 1;
+    margin: var(--padding-0_5x) 0 var(--padding-2x);
   }
 </style>
