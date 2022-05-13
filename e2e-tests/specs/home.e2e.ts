@@ -1,6 +1,6 @@
-const { register } = require("../common/register");
-const { waitForImages } = require("../common/waitForImages");
-const { waitForLoad } = require("../common/waitForLoad");
+import { register } from "../common/register";
+import { waitForImages } from "../common/waitForImages";
+import { waitForLoad } from "../common/waitForLoad";
 
 describe("landing page", () => {
   it("loads", async () => {
