@@ -311,25 +311,24 @@ export const isEnoughMaturityToSpawn = ({
 
 const isMergeableNeuron = ({
   neuron,
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): boolean =>
-  !hasJoinedCommunityFund(neuron) &&
-  !isHotKeyControllable({ neuron, identity });
+  !hasJoinedCommunityFund(neuron) && isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
   }
-  if (isHotKeyControllable({ neuron, identity })) {
+  if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
   }
 };
@@ -350,11 +349,11 @@ export type MergeableNeuron = {
  */
 export const mapMergeableNeurons = ({
   neurons,
-  identity,
+  accounts,
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  identity?: Identity | null;
+  accounts: AccountsStore;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
@@ -364,8 +363,8 @@ export const mapMergeableNeurons = ({
       selected: selectedNeurons
         .map(({ neuronId }) => neuronId)
         .includes(neuron.neuronId),
-      mergeable: isMergeableNeuron({ neuron, identity }),
-      messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
+      mergeable: isMergeableNeuron({ neuron, accounts }),
+      messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
     }))
     // Then we calculate the neuron with the current selection
     .map(({ mergeable, selected, messageKey, neuron }: MergeableNeuron) => {

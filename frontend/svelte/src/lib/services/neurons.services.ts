@@ -410,13 +410,9 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   return listNeurons({ skipCheck: true });
 };
 
-const getAndLoadNeuronHelper = async ({
-  neuronId,
-  identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}) => {
+// We always want to call this with the user identity
+const getAndLoadNeuronHelper = async (neuronId: NeuronId) => {
+  const identity = await getIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -444,8 +440,7 @@ export const updateDelay = async ({
       identity: neuronIdentity,
     });
 
-    const identity: Identity = await getIdentity();
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -465,7 +460,7 @@ export const joinCommunityFund = async (
 
     await joinCommunityFundApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -507,6 +502,8 @@ export const mergeNeurons = async ({
     return targetNeuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
+    console.log("in da error");
+    console.log(err);
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
@@ -551,7 +548,7 @@ export const addHotkey = async ({
 
     await addHotkeyApi({ neuronId, identity, principal });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -583,11 +580,13 @@ export const removeHotkey = async ({
 
     await removeHotkeyApi({ neuronId, identity, principal });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
+    console.log("in da error");
+    console.log(err);
 
     // To inform there was an error
     return undefined;
@@ -615,7 +614,7 @@ export const splitNeuron = async ({
       labelKey: "neuron_detail.split_neuron_success",
     });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -658,11 +657,13 @@ export const mergeMaturity = async ({
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return { success: true };
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
+    console.log("in da error");
+    console.log(err);
 
     return { success: false };
   }
@@ -680,7 +681,7 @@ export const spawnNeuron = async ({
 
     await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return { success: true };
   } catch (err) {
@@ -698,7 +699,7 @@ export const startDissolving = async (
 
     await startDissolvingApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -716,7 +717,7 @@ export const stopDissolving = async (
 
     await stopDissolvingApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -737,10 +738,11 @@ const setFolloweesHelper = async ({
 }) => {
   try {
     // ManageNeuron topic followes can only be handled by controllers
+    // The other topics can be handled by hotkey user
     const identity: Identity =
       topic === Topic.ManageNeuron
         ? await getIdentityByNeuron(neuronId)
-        : await getIdentityByNeuronOrHotkey(neuronId);
+        : await getIdentity();
 
     await setFollowees({
       identity,
@@ -748,7 +750,7 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    await getAndLoadNeuronHelper({ neuronId, identity });
+    await getAndLoadNeuronHelper(neuronId);
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
   }
