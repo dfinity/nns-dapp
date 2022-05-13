@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
@@ -22,15 +22,10 @@
   import { accountName as getAccountName } from "../lib/utils/accounts.utils";
   import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import { writable } from "svelte/store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
-  import {
-    ACCOUNT_CONTEXT_KEY,
-    type AccountContext,
-    type AccountStore,
-  } from "../lib/stores/account.store";
+  import { accountStore } from "../lib/stores/account.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -55,13 +50,6 @@
       },
     });
 
-  const accountStore = writable<AccountStore>({
-    accountIdentifier: undefined,
-    account: undefined,
-    transactions: undefined,
-  });
-  setContext<AccountContext>(ACCOUNT_CONTEXT_KEY, accountStore);
-
   let routeAccountIdentifier: string | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
@@ -72,14 +60,17 @@
       const identifierChanged =
         routeAccountIdentifier !== $accountStore.accountIdentifier;
 
-      if (identifierChanged) {
-        $accountStore.account = undefined;
-        $accountStore.transactions = undefined;
+      if (identifierChanged && routeAccountIdentifier !== undefined) {
+        accountStore.selectAccountIdentifier(routeAccountIdentifier);
       }
       const noStoreAccount = $accountStore.account === undefined;
 
-      $accountStore.account = getAccountFromStore(routeAccountIdentifier);
-      $accountStore.accountIdentifier = routeAccountIdentifier;
+      if (noStoreAccount) {
+        const account = getAccountFromStore(routeAccountIdentifier);
+        if (account !== undefined) {
+          accountStore.selectAccount(account);
+        }
+      }
 
       // skip same transaction loading
       if (
