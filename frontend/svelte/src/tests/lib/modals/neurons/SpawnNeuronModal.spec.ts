@@ -112,7 +112,7 @@ describe("SpawnNeuronModal", () => {
   });
 
   it("should show only confirm screen for hardware wallet controlled neurons", async () => {
-    const { queryByTestId } = await renderModal({
+    const { queryByTestId, queryByText } = await renderModal({
       component: SpawnNeuronModal,
       props: {
         neuron,
@@ -124,6 +124,8 @@ describe("SpawnNeuronModal", () => {
 
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).not.toBeInTheDocument();
+
+    expect(queryByText("100%", { exact: false })).toBeInTheDocument();
 
     const confirmButton = queryByTestId("confirm-action-button");
     expect(confirmButton).toBeInTheDocument();
