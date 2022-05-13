@@ -13,6 +13,7 @@
     AccountTransactionType,
   } from "../../utils/accounts.utils";
   import { i18n } from "../../stores/i18n";
+  import { secondsToDate, secondsToTime } from "../../utils/date.utils";
 
   const getHeadline = ({
     type,
@@ -54,6 +55,8 @@
     : undefined;
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
+  let seconds: number;
+  $: seconds = date.getTime() / 1000;
 </script>
 
 <Card on:click>
@@ -61,7 +64,7 @@
     <h3>{headline}</h3>
   </div>
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
-  <span>{date.toLocaleString()}</span>
+  <span>{secondsToDate(seconds)} {secondsToTime(seconds)}</span>
 
   {#if identifier !== undefined}
     <Identifier {label} {identifier} showCopy />
