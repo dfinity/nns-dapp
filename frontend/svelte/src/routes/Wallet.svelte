@@ -25,7 +25,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
-  import { accountStore } from "../lib/stores/account.store";
+  import { selectedAccountStore } from "../lib/stores/selectedAccount.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -42,11 +42,11 @@
     await getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions }) => {
-        if (accountIdentifier !== $accountStore.accountIdentifier) {
+        if (accountIdentifier !== $selectedAccountStore.accountIdentifier) {
           // skip using outdated transactions if url was changed
           return;
         }
-        $accountStore.transactions = transactions;
+        $selectedAccountStore.transactions = transactions;
       },
     });
 
@@ -58,31 +58,31 @@
     $accountsStore,
     (() => {
       const identifierChanged =
-        routeAccountIdentifier !== $accountStore.accountIdentifier;
+        routeAccountIdentifier !== $selectedAccountStore.accountIdentifier;
 
       if (identifierChanged && routeAccountIdentifier !== undefined) {
-        accountStore.selectAccountIdentifier(routeAccountIdentifier);
+        selectedAccountStore.selectAccountIdentifier(routeAccountIdentifier);
       }
-      const noStoreAccount = $accountStore.account === undefined;
+      const noStoreAccount = $selectedAccountStore.account === undefined;
 
       if (noStoreAccount) {
         const account = getAccountFromStore(routeAccountIdentifier);
         if (account !== undefined) {
-          accountStore.selectAccount(account);
+          selectedAccountStore.selectAccount(account);
         }
       }
 
       // skip same transaction loading
       if (
         (identifierChanged || noStoreAccount) &&
-        $accountStore.account !== undefined
+        $selectedAccountStore.account !== undefined
       ) {
-        updateTransactions($accountStore.account.identifier);
+        updateTransactions($selectedAccountStore.account.identifier);
       }
 
       // handle unknown accountIdentifier from URL
       if (
-        $accountStore.account === undefined &&
+        $selectedAccountStore.account === undefined &&
         $accountsStore.main !== undefined
       ) {
         toastsStore.error({
@@ -95,9 +95,9 @@
     })();
 
   let accountName: string;
-  $: if ($accountStore.account) {
+  $: if ($selectedAccountStore.account) {
     accountName = getAccountName({
-      account: $accountStore.account,
+      account: $selectedAccountStore.account,
       mainName: $i18n.accounts.main,
     });
   }
@@ -110,26 +110,29 @@
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>
-      {#if $accountStore.account !== undefined}
+      {#if $selectedAccountStore.account !== undefined}
         <div class="title">
           <h1>{accountName}</h1>
-          <ICP icp={$accountStore.account.balance} />
+          <ICP icp={$selectedAccountStore.account.balance} />
         </div>
         <Identifier
           label={$i18n.wallet.address}
-          identifier={$accountStore.account.identifier}
+          identifier={$selectedAccountStore.account.identifier}
           showCopy
         />
 
         <HardwareWalletShowAction />
 
-        {#if $accountStore.transactions === undefined}
+        {#if $selectedAccountStore.transactions === undefined}
           <SkeletonCard />
-        {:else if $accountStore.transactions.length === 0}
+        {:else if $selectedAccountStore.transactions.length === 0}
           {$i18n.wallet.no_transactions}
         {:else}
-          {#each $accountStore.transactions as transaction}
-            <TransactionCard account={$accountStore.account} {transaction} />
+          {#each $selectedAccountStore.transactions as transaction}
+            <TransactionCard
+              account={$selectedAccountStore.account}
+              {transaction}
+            />
           {/each}
         {/if}
       {:else}
@@ -142,7 +145,7 @@
         <button
           class="primary"
           on:click={() => (showNewTransactionModal = true)}
-          disabled={$accountStore.account === undefined}
+          disabled={$selectedAccountStore.account === undefined}
           >{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>
@@ -152,7 +155,7 @@
   {#if showNewTransactionModal}
     <NewTransactionModal
       on:nnsClose={() => (showNewTransactionModal = false)}
-      selectedAccount={$accountStore.account}
+      selectedAccount={$selectedAccountStore.account}
     />
   {/if}
 {/if}

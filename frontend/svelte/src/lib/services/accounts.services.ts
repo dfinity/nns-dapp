@@ -19,9 +19,9 @@ import type {
 import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { accountStore } from "../stores/account.store";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
+import { selectedAccountStore } from "../stores/selectedAccount.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
@@ -34,7 +34,7 @@ import { queryAndUpdate } from "./utils.services";
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
 export const syncAccounts = (): Promise<void> => {
-  accountStore.reset();
+  selectedAccountStore.reset();
 
   return queryAndUpdate<AccountsStore, unknown>({
     request: (options) => loadAccounts(options),
