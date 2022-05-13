@@ -64,7 +64,7 @@
       <h5>{$i18n.neurons.current_dissolve_delay}</h5>
       <p class="duration">
         {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
-              .staked}
+          .staked}
       </p>
     {/if}
   </div>
@@ -77,20 +77,20 @@
       </div>
       <div class="select-delay-container">
         <InputRange
-                ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-                min={0}
-                max={SECONDS_IN_EIGHT_YEARS}
-                bind:value={delayInSeconds}
-                handleInput={checkMinimum}
+          ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
+          min={0}
+          max={SECONDS_IN_EIGHT_YEARS}
+          bind:value={delayInSeconds}
+          handleInput={checkMinimum}
         />
         <div class="details">
           <div>
             <h5>
               {formatVotingPower(
-                      votingPower({
-                        stake: neuronICP,
-                        dissolveDelayInSeconds: delayInSeconds,
-                      })
+                votingPower({
+                  stake: neuronICP,
+                  dissolveDelayInSeconds: delayInSeconds,
+                })
               )}
             </h5>
             <p>{$i18n.neurons.voting_power}</p>

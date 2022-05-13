@@ -66,7 +66,7 @@
         </div>
       {/if}
 
-      <div class="content" id="modalContent" class:small={size === 'small'}>
+      <div class="content" id="modalContent" class:small={size === "small"}>
         <slot />
       </div>
 
