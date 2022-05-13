@@ -145,6 +145,19 @@ export const sortNeuronsByCreatedTimestamp = (
   );
 
 /*
+ * Returns true if the neuron can be controlled by current user
+ */
+export const isNeuronControllableByUser = ({
+  neuron: { fullNeuron },
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
+  fullNeuron?.controller !== undefined &&
+  fullNeuron.controller === identity?.getPrincipal().toText();
+
+/*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
  *
  *  1. The user is the controller

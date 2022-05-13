@@ -55,7 +55,11 @@ import {
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
-import { getAccountIdentity, syncAccounts } from "./accounts.services";
+import {
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  syncAccounts,
+} from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -116,12 +120,15 @@ const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
 const getIdentityByNeuron = async (neuronId: NeuronId): Promise<Identity> => {
   const { neuron } = await getIdentityAndNeuronHelper(neuronId);
 
-  if (neuron.fullNeuron === undefined) {
+  if (
+    neuron.fullNeuron === undefined ||
+    neuron.fullNeuron.controller === undefined
+  ) {
     throw new NotAuthorizedError();
   }
 
-  const neuronIdentity = await getAccountIdentity(
-    neuron.fullNeuron.accountIdentifier
+  const neuronIdentity = await getAccountIdentityByPrincipal(
+    neuron.fullNeuron.controller
   );
   if (isIdentityController({ neuron, identity: neuronIdentity })) {
     return neuronIdentity;
@@ -430,15 +437,21 @@ export const updateDelay = async ({
   dissolveDelayInSeconds: number;
 }): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const neuronIdentity: Identity = await getIdentityByNeuron(neuronId);
+    await increaseDissolveDelay({
+      neuronId,
+      dissolveDelayInSeconds,
+      identity: neuronIdentity,
+    });
 
-    await increaseDissolveDelay({ neuronId, dissolveDelayInSeconds, identity });
-
+    const identity: Identity = await getIdentity();
     await getAndLoadNeuronHelper({ neuronId, identity });
 
     return neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
+    console.log("in da error");
+    console.log(err);
     // To inform there was an error
     return undefined;
   }

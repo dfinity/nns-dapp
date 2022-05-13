@@ -18,6 +18,7 @@ import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
+import { getAccountByPrincipal } from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
@@ -175,6 +176,21 @@ export const getAccountIdentity = async (
 
   if (account?.type === "hardwareWallet") {
     return getLedgerIdentityProxy(identifier);
+  }
+
+  return getIdentity();
+};
+
+export const getAccountIdentityByPrincipal = async (
+  principalString: string
+): Promise<Identity | LedgerIdentity> => {
+  const accounts = get(accountsStore);
+  const account = getAccountByPrincipal({
+    principal: principalString,
+    accounts,
+  });
+  if (account?.type === "hardwareWallet") {
+    return getLedgerIdentityProxy(account.identifier);
   }
 
   return getIdentity();
