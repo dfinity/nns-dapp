@@ -28,7 +28,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
-import { getAccountByPrincipal } from "./accounts.utils";
+import { getAccountByPrincipal, isHardwareWallet } from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
@@ -151,7 +151,7 @@ export const sortNeuronsByCreatedTimestamp = (
  *  OR
  *  2. The main account (same as user) is the controller
  *  OR
- *  3. TODO: The user's hardware wallet is the controller.
+ *  3. The user's hardware wallet is the controller.
  *
  */
 export const isNeuronControllable = ({
@@ -167,6 +167,23 @@ export const isNeuronControllable = ({
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
       undefined);
+
+export const isNeuronControlledByHardwareWallet = ({
+  neuron,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  accounts: AccountsStore;
+}): boolean => {
+  if (neuron.fullNeuron?.controller !== undefined) {
+    const account = getAccountByPrincipal({
+      principal: neuron.fullNeuron.controller,
+      accounts,
+    });
+    return isHardwareWallet(account);
+  }
+  return false;
+};
 
 export const isHotKeyControllable = ({
   neuron: { fullNeuron },
