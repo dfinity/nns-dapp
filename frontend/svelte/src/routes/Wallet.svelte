@@ -115,13 +115,16 @@
           <h1>{accountName}</h1>
           <ICP icp={$selectedAccountStore.account.balance} />
         </div>
-        <Identifier
-          label={$i18n.wallet.address}
-          identifier={$selectedAccountStore.account.identifier}
-          showCopy
-        />
-
-        <HardwareWalletShowAction />
+        <div class="address">
+          <Identifier
+            label={$i18n.wallet.address}
+            identifier={$selectedAccountStore.account.identifier}
+            showCopy
+          />
+        </div>
+        <div class="actions">
+          <HardwareWalletShowAction />
+        </div>
 
         {#if $selectedAccountStore.transactions === undefined}
           <SkeletonCard />
@@ -184,6 +187,11 @@
   }
 
   .address {
+    margin-bottom: var(--padding-4x);
+  }
+  .actions {
+    margin-bottom: var(--padding-3x);
     display: flex;
+    justify-content: end;
   }
 </style>

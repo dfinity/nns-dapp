@@ -64,10 +64,10 @@
     <h3>{headline}</h3>
   </div>
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
-  <span>{secondsToDate(seconds)} {secondsToTime(seconds)}</span>
+  <p>{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
 
   {#if identifier !== undefined}
-    <Identifier {label} {identifier} showCopy />
+    <Identifier {label} {identifier} />
   {/if}
 </Card>
 
@@ -84,5 +84,9 @@
     margin: 0 var(--padding) 0 0;
 
     @include text.truncate;
+  }
+
+  p {
+    margin-top: 0;
   }
 </style>
