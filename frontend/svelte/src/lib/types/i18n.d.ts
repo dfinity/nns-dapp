@@ -30,6 +30,9 @@ interface I18nError {
   list_canisters: string;
   missing_identity: string;
   create_subaccount: string;
+  rename_subaccount: string;
+  rename_subaccount_no_account: string;
+  rename_subaccount_type: string;
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
@@ -132,6 +135,10 @@ interface I18nAccounts {
   confirm_and_send: string;
   account_identifier: string;
   transaction_success: string;
+  rename: string;
+  rename_linked_account: string;
+  rename_new_name_placeholder: string;
+  rename_account_enter_new_name: string;
 }
 
 interface I18nNeurons {
