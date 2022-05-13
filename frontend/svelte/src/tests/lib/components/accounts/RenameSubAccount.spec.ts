@@ -8,14 +8,14 @@ import RenameSubAccount from "../../../../lib/components/accounts/RenameSubAccou
 import en from "../../../mocks/i18n.mock";
 
 describe("RenameSubAccount", () => {
-  it("should contains a closed modal per default", () => {
+  it("should contain a closed modal per default", () => {
     const { getByText } = render(RenameSubAccount, {
       props: { selectedAccount: undefined },
     });
     expect(() => getByText(en.accounts.rename_linked_account)).toThrow();
   });
 
-  it("should contains an action named rename", async () => {
+  it("should contain an action named rename", async () => {
     const { getByText } = render(RenameSubAccount, {
       props: { selectedAccount: undefined },
     });
