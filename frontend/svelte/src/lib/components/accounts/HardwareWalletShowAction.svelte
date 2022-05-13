@@ -6,6 +6,11 @@
     await showAddressAndPubKeyOnHardwareWalletProxy();
 </script>
 
-<button class="primary" type="button" on:click={showInfo}>
+<button
+  class="primary"
+  type="button"
+  on:click={showInfo}
+  data-tid="ledger-show-button"
+>
   {$i18n.accounts.show_info_hardware_wallet}
 </button>
