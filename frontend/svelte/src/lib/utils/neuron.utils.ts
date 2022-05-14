@@ -309,6 +309,7 @@ export const isEnoughMaturityToSpawn = ({
   });
 };
 
+// Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
   neuron,
   accounts,
@@ -343,7 +344,7 @@ export type MergeableNeuron = {
  * Returns neuron data wrapped with extra information about mergeability.
  *
  * @neurons NeuronInfo[]
- * @identity Identity | null
+ * @accounts AccountsStore
  * @selectedNeuronIds NeuronId[]
  * @returns MergeableNeuron[]
  */

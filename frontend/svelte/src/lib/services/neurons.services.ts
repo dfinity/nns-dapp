@@ -52,6 +52,7 @@ import {
   convertNumberToICP,
   followeesByTopic,
   isEnoughToStakeNeuron,
+  isHotKeyControllable,
   isIdentityController,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
@@ -117,7 +118,9 @@ const getNeuronHW = async ({
 const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
-const getIdentityByNeuron = async (neuronId: NeuronId): Promise<Identity> => {
+const getIdentityOfNeuronController = async (
+  neuronId: NeuronId
+): Promise<Identity> => {
   const { neuron } = await getIdentityAndNeuronHelper(neuronId);
 
   if (
@@ -137,12 +140,12 @@ const getIdentityByNeuron = async (neuronId: NeuronId): Promise<Identity> => {
   throw new NotAuthorizedError();
 };
 
-export const getIdentityByNeuronOrHotkey = async (
+export const getIdentityOfNeuronControllerOrHotkey = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
   try {
     // No `await` no `catch`
-    return await getIdentityByNeuron(neuronId);
+    return await getIdentityOfNeuronController(neuronId);
   } catch (_) {
     // Check if hotkey
     const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
@@ -433,7 +436,9 @@ export const updateDelay = async ({
   dissolveDelayInSeconds: number;
 }): Promise<NeuronId | undefined> => {
   try {
-    const neuronIdentity: Identity = await getIdentityByNeuron(neuronId);
+    const neuronIdentity: Identity = await getIdentityOfNeuronController(
+      neuronId
+    );
     await increaseDissolveDelay({
       neuronId,
       dissolveDelayInSeconds,
@@ -445,8 +450,6 @@ export const updateDelay = async ({
     return neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
-    console.log("in da error");
-    console.log(err);
     // To inform there was an error
     return undefined;
   }
@@ -456,7 +459,7 @@ export const joinCommunityFund = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await joinCommunityFundApi({ neuronId, identity });
 
@@ -492,7 +495,9 @@ export const mergeNeurons = async ({
         translate({ labelKey: messageKey ?? "error.governance_error" })
       );
     }
-    const identity: Identity = await getIdentityByNeuron(targetNeuronId);
+    const identity: Identity = await getIdentityOfNeuronController(
+      targetNeuronId
+    );
 
     await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
     success = true;
@@ -502,8 +507,6 @@ export const mergeNeurons = async ({
     return targetNeuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
-    console.log("in da error");
-    console.log(err);
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
@@ -544,7 +547,7 @@ export const addHotkey = async ({
   principal: Principal;
 }): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await addHotkeyApi({ neuronId, identity, principal });
 
@@ -576,7 +579,7 @@ export const removeHotkey = async ({
     return;
   }
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await removeHotkeyApi({ neuronId, identity, principal });
 
@@ -585,8 +588,6 @@ export const removeHotkey = async ({
     return neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
-    console.log("in da error");
-    console.log(err);
 
     // To inform there was an error
     return undefined;
@@ -601,7 +602,7 @@ export const splitNeuron = async ({
   amount: number;
 }): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     const stake = convertNumberToICP(amount);
 
@@ -631,7 +632,7 @@ export const disburse = async ({
   toAccountId: string;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await disburseApi({ neuronId, toAccountId, identity });
 
@@ -653,7 +654,7 @@ export const mergeMaturity = async ({
   percentageToMerge: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
@@ -662,8 +663,6 @@ export const mergeMaturity = async ({
     return { success: true };
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
-    console.log("in da error");
-    console.log(err);
 
     return { success: false };
   }
@@ -677,7 +676,7 @@ export const spawnNeuron = async ({
   percentageToSpawn?: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
@@ -695,7 +694,7 @@ export const startDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await startDissolvingApi({ neuronId, identity });
 
@@ -713,7 +712,7 @@ export const stopDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
 
     await stopDissolvingApi({ neuronId, identity });
 
@@ -728,29 +727,36 @@ export const stopDissolving = async (
 };
 
 const setFolloweesHelper = async ({
-  neuronId,
+  neuron,
   topic,
   followees,
 }: {
-  neuronId: NeuronId;
+  neuron: NeuronInfo | undefined;
   topic: Topic;
   followees: NeuronId[];
 }) => {
   try {
+    if (neuron === undefined) {
+      throw new NotFoundError(
+        "Neuron not found in store. We can't check authorization to set followees."
+      );
+    }
+    // We try to control by hotkey by default
+    let identity: Identity = await getIdentity();
+    if (!isHotKeyControllable({ neuron, identity })) {
+      identity = await getIdentityOfNeuronController(neuron.neuronId);
+    }
     // ManageNeuron topic followes can only be handled by controllers
-    // The other topics can be handled by hotkey user
-    const identity: Identity =
-      topic === Topic.ManageNeuron
-        ? await getIdentityByNeuron(neuronId)
-        : await getIdentity();
-
+    if (topic === Topic.ManageNeuron) {
+      identity = await getIdentityOfNeuronController(neuron.neuronId);
+    }
     await setFollowees({
       identity,
-      neuronId,
+      neuronId: neuron.neuronId,
       topic,
       followees,
     });
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuronHelper(neuron.neuronId);
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
   }
@@ -787,7 +793,7 @@ export const addFollowee = async ({
     topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
 
   await setFolloweesHelper({
-    neuronId,
+    neuron,
     topic,
     followees: newFollowees,
   });
@@ -819,7 +825,7 @@ export const removeFollowee = async ({
     (id) => id !== followee
   );
   await setFolloweesHelper({
-    neuronId,
+    neuron,
     topic,
     followees: newFollowees,
   });
@@ -881,7 +887,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     return;
   }
   try {
-    const identity: Identity = await getIdentityByNeuron(neuronId);
+    const identity: Identity = await getIdentityOfNeuronController(neuronId);
     await makeDummyProposalsApi({
       neuronId,
       identity,

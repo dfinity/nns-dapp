@@ -189,11 +189,10 @@ export const getAccountIdentityByPrincipal = async (
     principal: principalString,
     accounts,
   });
-  if (account?.type === "hardwareWallet") {
-    return getLedgerIdentityProxy(account.identifier);
+  if (account === undefined) {
+    throw new Error(`Account with principal ${principalString} not found!`);
   }
-
-  return getIdentity();
+  return getAccountIdentity(account.identifier);
 };
 
 export const renameSubAccount = async ({
