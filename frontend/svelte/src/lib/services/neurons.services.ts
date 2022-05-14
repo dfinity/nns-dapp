@@ -660,7 +660,7 @@ export const spawnNeuron = async ({
   percentageToSpawn,
 }: {
   neuronId: NeuronId;
-  percentageToSpawn: number;
+  percentageToSpawn?: number;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity = await getIdentityByNeuron(neuronId);

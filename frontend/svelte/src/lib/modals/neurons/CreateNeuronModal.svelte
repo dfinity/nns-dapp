@@ -124,6 +124,12 @@
   };
   const addNeuron = ({ detail }: CustomEvent<{ neuron: NeuronInfo }>) => {
     newNeuron = detail.neuron;
+    if (isHardwareWallet(selectedAccount)) {
+      toastsStore.show({
+        labelKey: "neurons.neuron_create_success",
+        level: "success",
+      });
+    }
     modal.next();
   };
   const goEditFollowers = () => {
