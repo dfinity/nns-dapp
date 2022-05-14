@@ -66,7 +66,7 @@
         </div>
       {/if}
 
-      <div class="content" id="modalContent">
+      <div class="content" id="modalContent" class:small={size === "small"}>
         <slot />
       </div>
 
@@ -141,13 +141,16 @@
     flex-direction: column;
 
     width: var(--modal-small-width);
+
+    &.medium {
+      width: var(--modal-medium-width);
+    }
+
     height: fit-content;
     max-width: calc(100vw - var(--padding-4x));
     max-height: calc(100% - var(--padding-6x));
 
-    --modal-min-height: 100px;
     --modal-toolbar-height: 35px;
-    min-height: var(--modal-min-height);
 
     background: white;
 
@@ -222,11 +225,14 @@
     display: flex;
     flex-direction: column;
 
-    min-height: calc(var(--modal-min-height) - var(--modal-toolbar-height));
-    max-height: calc(100vh - 156px);
+    height: calc(100vh - 100px - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
 
     color: var(--gray-800);
+  }
+
+  .small {
+    height: fit-content;
   }
 </style>
