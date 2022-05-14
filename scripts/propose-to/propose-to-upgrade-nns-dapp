@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# It probably makes sense to restrict this to our own canisters.  We don't want any accidents.
+# We can open this up a bit, carefully, if a use case arises.
+get_canister_id() {
+  dfx canister --network "$DFX_NETWORK" id nns-dapp
+}
+get_canister_id >/dev/null || {
+  echo "ERROR: This is supported only for your own nns-dapp canisters." >&2
+  exit 1
+}
+
+WASM_FILE=nns-dapp.wasm
+test -e "$WASM_FILE" || ./scripts/docker-build
+SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
+CANISTER_ID="$(get_canister_id)"
+
+set ic-admin --nns-url "$NNS_URL" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md
