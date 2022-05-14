@@ -53,11 +53,13 @@ on_exit() {
 trap on_exit EXIT
 
 list_proposals() {
-	ls "$PROPOSALS_DIR" | sed -n 's/^propose-to-//g;ta;b;:a;p'
+  ls "$PROPOSALS_DIR"
 }
 
 PROPOSAL_TYPE=""
 DRY_RUN=""
+IC_TESTNET=""
+DFX_NETWORK=""
 while (($# > 0)); do
   arg="$1"
   shift 1
@@ -78,8 +80,9 @@ while (($# > 0)); do
     shift 1
     ;;
   --list)
-    list_proposals
-    exit 0 ;;
+    list_proposals | sed -n 's/^propose-to-//g;ta;b;:a;p'
+    exit 0
+    ;;
   --all)
     PROPOSAL_TYPE=all
     ;;
@@ -102,7 +105,7 @@ while (($# > 0)); do
 	ERROR: Unrecognised argument: '$arg'
 	Please use --help for usage.
 	EOF
-	exit 1
+    exit 1
     ;;
   esac
 done
@@ -110,9 +113,13 @@ done
 if test -n "${IC_TESTNET:-}"; then
   NNS_URL="$(./e2e-tests/scripts/nns-dashboard --testnet "$IC_TESTNET")"
 else
-  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "${DFX_NETWORK:-local}")"
+  DFX_NETWORK="${DFX_NETWORK:-local}"
+  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "${DFX_NETWORK}")"
 fi
+export NNS_URL
 
+# Executes the current arguments as a proposal.
+# shellcheck disable=SC2120
 propose() {
   # Check thet ic-admin is installed.
   command -v ic-admin >/dev/null || {
@@ -123,34 +130,34 @@ propose() {
     exit 1
   }
 
-  . "${PROPOSALS_DIR}/${PROPOSAL_TYPE}"
+  . "${PROPOSALS_DIR}/propose-to-${PROPOSAL_TYPE#propose-to-}"
 
   echo
   echo "Command:"
-  echo "${@}" | sed 's/ --/ \\\n  &/g'
+  printf "${*//--/ \\n   --}\n"
   echo
 
   [[ "$DRY_RUN" == "true" ]] || {
     SEND_PROPOSAL=y
     [[ "$DRY_RUN" == "jfdi" ]] || read -rp "Send the proposal? (Y/n)  " SEND_PROPOSAL
-    if [[ "$SEND_PROPOSAL" == [yY] ]] ; then
+    if [[ "$SEND_PROPOSAL" == [yY] ]]; then
       "${@}"
     fi
   }
 }
 
-if test -z "${PROPOSAL_TYPE:-}" ; then
-	cat <<-EOF >&2
+if test -z "${PROPOSAL_TYPE:-}"; then
+  cat <<-EOF >&2
 	
 	ERROR: PROPOSAL_TYPE is not defined.
 	Please specify a proposal with: --to XXX
 	A list of proposal types can be found with --list
 
 	EOF
-	
+
   exit 1
-elif [[ "$PROPOSAL_TYPE" == "all" ]] ; then
-  for PROPOSAL_TYPE in $(list_proposals) ; do
+elif [[ "$PROPOSAL_TYPE" == "all" ]]; then
+  for PROPOSAL_TYPE in $(list_proposals); do
     propose
   done
 else

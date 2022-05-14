@@ -3,6 +3,10 @@ set -euo pipefail
 
 # It probably makes sense to restrict this to our own canisters.  We don't want any accidents.
 # We can open this up a bit, carefully, if a use case arises.
+test -n "${DFX_NETWORK:-}" || {
+    echo "Skipping ${BASH_SOURCE} as DFX_NETWORK is not defined."
+}
+
 get_canister_id() {
   dfx canister --network "$DFX_NETWORK" id nns-dapp
 }
