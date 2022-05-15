@@ -145,7 +145,7 @@ propose() {
   echo
   echo "Command:"
   # shellcheck disable=SC2059 # Please expand the \n.
-  printf "${*//--/ \\\n   --}\n"
+  printf "${*//--/ \\\\\\n   --}\n"
   echo
 
   [[ "$DRY_RUN" == "true" ]] || {
