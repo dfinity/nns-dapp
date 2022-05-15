@@ -139,7 +139,7 @@ propose() {
 
   [[ "$DRY_RUN" == "true" ]] || {
     SEND_PROPOSAL=y
-    [[ "$DRY_RUN" == "jfdi" ]] || read -rp "Send the proposal? (Y/n)  " SEND_PROPOSAL
+    [[ "$DRY_RUN" == "jfdi" ]] || read -rp "Send the proposal? (y/N)  " SEND_PROPOSAL
     if [[ "$SEND_PROPOSAL" == [yY] ]]; then
       "${@}"
     fi
