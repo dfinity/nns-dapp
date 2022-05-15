@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# It probably makes sense to restrict this to our own canisters.  We don't want any accidents.
-# We can open this up a bit, carefully, if a use case arises.
 test -n "${DFX_NETWORK:-}" || {
-  echo "Skipping ${BASH_SOURCE[0]} as DFX_NETWORK is not defined."
+  echo "Skipping ${BASH_SOURCE[0]} as DFX_NETWORK is not defined and is needed for building the wasm."
 }
 
 get_canister_id() {
@@ -16,7 +14,7 @@ get_canister_id >/dev/null || {
 }
 
 WASM_FILE=nns-dapp.wasm
-test -e "$WASM_FILE" || ./scripts/docker-build
+test -e "$WASM_FILE" || DEPLOY_ENV="$DFX_NETWORK" ./scripts/docker-build
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 CANISTER_ID="$(get_canister_id)"
 
