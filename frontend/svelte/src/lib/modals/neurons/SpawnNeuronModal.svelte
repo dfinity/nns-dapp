@@ -14,8 +14,16 @@
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
+  export let controlledByHarwareWallet: boolean;
 
-  const steps: Steps = [
+  const hardwareWalletSteps: Steps = [
+    {
+      name: "ConfirmSpawn",
+      showBackButton: false,
+      title: $i18n.neuron_detail.spawn_confirmation_modal_title,
+    },
+  ];
+  const nnsDappAccountSteps: Steps = [
     {
       name: "SelectPercentage",
       showBackButton: false,
@@ -27,6 +35,9 @@
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
+  const steps: Steps = controlledByHarwareWallet
+    ? hardwareWalletSteps
+    : nnsDappAccountSteps;
 
   let currentStep: Step;
   let modal: WizardModal;
@@ -40,13 +51,23 @@
     percentage: percentageToSpawn,
   });
 
+  let percentageMessage: string;
+  $: percentageMessage = controlledByHarwareWallet
+    ? "100%"
+    : formatPercentage(percentageToSpawn / 100, {
+        minFraction: 0,
+        maxFraction: 0,
+      });
+
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
     loading = true;
     startBusy("spawn-neuron");
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToSpawn,
+      percentageToSpawn: controlledByHarwareWallet
+        ? undefined
+        : percentageToSpawn,
     });
     if (success) {
       toastsStore.success({
@@ -88,10 +109,7 @@
           {replacePlaceholders(
             $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: formatPercentage(percentageToSpawn / 100, {
-                minFraction: 0,
-                maxFraction: 0,
-              }),
+              $percentage: percentageMessage,
             }
           )}
         </p>

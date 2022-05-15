@@ -48,6 +48,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/modal";
+  @use "../../themes/mixins/media";
 
   .amount {
     display: flex;
@@ -57,9 +58,12 @@
 
     flex-grow: 1;
 
-    --icp-font-size: var(--font-size-huge);
+    padding: var(--padding) 0;
 
-    @include modal.header;
+    @include media.min-width(medium) {
+      --icp-font-size: var(--font-size-huge);
+      @include modal.header;
+    }
   }
 
   button {
