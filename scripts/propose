@@ -92,6 +92,16 @@ while (($# > 0)); do
     ;;
   --dfx-network)
     DFX_NETWORK="$1"
+    DFX_NETWORK="$DFX_NETWORK" jq -e '.networks[env.DFX_NETWORK]' dfx.json >/dev/null || {
+      cat <<-EOF
+
+	ERROR: No such network in dfx.json.
+	       Available networks are:
+	       $(jq -er '.networks | keys | join(" ")' dfx.json)
+
+	EOF
+      exit 1
+    }
     shift 1
     ;;
   --dry-run)
