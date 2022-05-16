@@ -8,12 +8,12 @@
     AccountIdentifierString,
     Transaction,
   } from "../../canisters/nns-dapp/nns-dapp.types";
-  import {
-    mapTransaction,
-    AccountTransactionType,
-  } from "../../utils/accounts.utils";
   import { i18n } from "../../stores/i18n";
   import { secondsToDate, secondsToTime } from "../../utils/date.utils";
+  import {
+    AccountTransactionType,
+    mapTransaction,
+  } from "../../utils/transactions.utils";
 
   const getHeadline = ({
     type,

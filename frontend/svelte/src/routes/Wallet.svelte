@@ -14,20 +14,15 @@
     getAccountTransactions,
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
-  import {
-    accountsStore,
-    type AccountsStore,
-  } from "../lib/stores/accounts.store";
+  import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import Identifier from "../lib/components/ic/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
-  import { accountName as getAccountName } from "../lib/utils/accounts.utils";
   import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
-  import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
@@ -35,6 +30,8 @@
   } from "../lib/stores/selectedAccount.store";
   import type { Account } from "../lib/types/account";
   import { writable } from "svelte/store";
+  import WalletActions from "../lib/components/accounts/WalletActions.svelte";
+  import { accountName as getAccountName } from "../lib/utils/transactions.utils";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -129,7 +126,7 @@
           />
         </div>
         <div class="actions">
-          <HardwareWalletShowAction />
+          <WalletActions />
         </div>
 
         {#if $selectedAccountStore.transactions === undefined}
