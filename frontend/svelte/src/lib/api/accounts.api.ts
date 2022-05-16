@@ -114,3 +114,28 @@ export const getTransactions = async ({
     certified,
   });
 };
+
+export const renameSubAccount = async ({
+  newName,
+  identity,
+  subAccountIdentifier,
+}: {
+  newName: string;
+  identity: Identity;
+  subAccountIdentifier: string;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Renaming SubAccount ${hashCode(subAccountIdentifier)} call...`
+  );
+
+  const { canister } = await nnsDappCanister({ identity });
+
+  await canister.renameSubAccount({
+    new_name: newName,
+    account_identifier: subAccountIdentifier,
+  });
+
+  logWithTimestamp(
+    `Renaming SubAccount ${hashCode(subAccountIdentifier)} complete.`
+  );
+};

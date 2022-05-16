@@ -18,6 +18,8 @@ import type {
   GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
+  RenameSubAccountRequest,
+  RenameSubAccountResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
 
@@ -110,7 +112,7 @@ export class NNSDappCanister {
 
     if (NameTooLong === null) {
       // Which is the character?
-      throw new NameTooLongError(`Error, name ${subAccountName} is too long`);
+      throw new NameTooLongError(`Error, name "${subAccountName}" is too long`);
     }
 
     if (SubAccountLimitExceeded === null) {
@@ -139,7 +141,7 @@ export class NNSDappCanister {
     }
 
     if ("NameTooLong" in response && response.NameTooLong === null) {
-      throw new NameTooLongError(`Error, name ${request.name} is too long`);
+      throw new NameTooLongError(`Error, name "${request.name}" is too long`);
     }
 
     if (
@@ -160,6 +162,34 @@ export class NNSDappCanister {
       );
     }
   }
+
+  public renameSubAccount = async (
+    request: RenameSubAccountRequest
+  ): Promise<void> => {
+    const response: RenameSubAccountResponse =
+      await this.certifiedService.rename_sub_account(request);
+
+    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+      throw new AccountNotFoundError(
+        `Error renaming subAccount, account (${request.account_identifier}) not found`
+      );
+    }
+
+    if (
+      "SubAccountNotFound" in response &&
+      response.SubAccountNotFound === null
+    ) {
+      throw new AccountNotFoundError(
+        `Error renaming subAccount, subAccount (${request.account_identifier}) not found`
+      );
+    }
+
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new NameTooLongError(
+        `Error, name "${request.new_name}" is too long`
+      );
+    }
+  };
 
   public getCanisters = async ({
     certified,

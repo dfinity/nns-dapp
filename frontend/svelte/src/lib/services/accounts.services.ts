@@ -4,6 +4,7 @@ import {
   createSubAccount,
   getTransactions,
   loadAccounts,
+  renameSubAccount as renameSubAccountApi,
 } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
@@ -21,12 +22,11 @@ import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
-import { selectedAccountStore } from "../stores/selectedAccount.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
 import { getLastPathDetail } from "../utils/app-path.utils";
-import { toLedgerError } from "../utils/error.utils";
+import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -34,8 +34,6 @@ import { queryAndUpdate } from "./utils.services";
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
 export const syncAccounts = (): Promise<void> => {
-  selectedAccountStore.reset();
-
   return queryAndUpdate<AccountsStore, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
@@ -72,10 +70,10 @@ export const addSubAccount = async ({
   } catch (err: unknown) {
     const labelKey =
       err instanceof NameTooLongError
-        ? "create_subaccount_too_long"
+        ? "accounts.create_subaccount_too_long"
         : err instanceof SubAccountLimitExceededError
-        ? "create_subaccount_limit_exceeded"
-        : "create_subaccount";
+        ? "accounts.create_subaccount_limit_exceeded"
+        : "accounts.create_subaccount";
 
     toastsStore.error({
       labelKey,
@@ -131,7 +129,12 @@ const transferError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(toLedgerError({ err, fallbackErrorLabelKey: labelKey }));
+  toastsStore.error(
+    toToastError({
+      err,
+      fallbackErrorLabelKey: labelKey,
+    })
+  );
 
   return { success: false, err: labelKey };
 };
@@ -222,4 +225,55 @@ export const getAccountIdentity = async (
   }
 
   return getIdentity();
+};
+
+export const renameSubAccount = async ({
+  newName,
+  selectedAccount,
+}: {
+  newName: string;
+  selectedAccount: Account | undefined;
+}): Promise<{ success: boolean; err?: string }> => {
+  if (!selectedAccount) {
+    return renameError({ labelKey: "error.rename_subaccount_no_account" });
+  }
+
+  const { type, identifier } = selectedAccount;
+
+  if (type !== "subAccount") {
+    return renameError({ labelKey: "error.rename_subaccount_type" });
+  }
+
+  try {
+    const identity: Identity = await getIdentity();
+
+    await renameSubAccountApi({
+      newName,
+      identity,
+      subAccountIdentifier: identifier,
+    });
+
+    await syncAccounts();
+
+    return { success: true };
+  } catch (err: unknown) {
+    return renameError({ labelKey: "error.rename_subaccount", err });
+  }
+};
+
+const renameError = ({
+  labelKey,
+  err,
+}: {
+  labelKey: string;
+  err?: unknown;
+}): { success: boolean; err?: string } => {
+  toastsStore.error(
+    toToastError({
+      err,
+      fallbackErrorLabelKey: labelKey,
+    })
+  );
+
+  return { success: false, err: labelKey };
 };

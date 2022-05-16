@@ -1,9 +1,7 @@
 import { register } from "../common/register";
-import { loginWithIdentity } from "../common/login";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
-import { Header } from "../components/header.ts";
-import { getLoginButton } from "../components/auth";
+import { Header } from "../components/header";
 import { Navigator } from "../common/navigator";
 import { AuthPage } from "../components/auth";
 
@@ -11,9 +9,8 @@ import { AuthPage } from "../components/auth";
  * Verifies that the login/logout state is synchronised across tabs.
  */
 describe("multi-tab-auth", () => {
-  const nnsTabs = [];
-  var identityAnchor = undefined;
-  var navigator;
+  const nnsTabs: Array<string> = [];
+  let navigator;
 
   before(() => {
     navigator = new Navigator(browser);
@@ -32,7 +29,7 @@ describe("multi-tab-auth", () => {
   });
 
   it("registerTabOne", async () => {
-    identityAnchor = await register(browser);
+    await register(browser);
     await waitForImages(browser);
     await browser["screenshot"]("register-tab-one");
   });

@@ -30,8 +30,11 @@ print_help() {
 		  Open the dashoard in a browser.
 
 		--testnet
-		  The name of the testnet.
+		  The name of the ic testnet.
 		  Default: dfx running locally.
+
+		--dfx-network
+		  The name of a network in dfx.json
 	EOF
 }
 
@@ -61,6 +64,10 @@ while (($# > 0)); do
     testnet="$1"
     shift 1
     ;;
+  --dfx-network)
+    DFX_NETWORK="$1"
+    shift 1
+    ;;
   *)
     {
       printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
@@ -72,7 +79,9 @@ while (($# > 0)); do
   esac
 done
 
-if test -n "${testnet:-}"; then
+if test -n "${DFX_NETWORK:-}" && [[ "$DFX_NETWORK" != "local" ]]; then
+  DFX_NETWORK="$DFX_NETWORK" jq -er '.networks[env.DFX_NETWORK].providers[0]' dfx.json
+elif test -n "${testnet:-}"; then
   testnet_config_dir="${ic_repo}/testnet/env/$testnet/"
   test -d "$ic_repo" || {
     printf "ERROR: %s '%s'\n" "IC repo directory does not exist:" "$ic_repo"
@@ -82,7 +91,7 @@ if test -n "${testnet:-}"; then
     printf "ERROR: %s '%s'\n" "Testnet config directory does not exist:" "$testnet_config_dir"
     exit 1
   } >&2
-  "$command" "http://[$(cd "$testnet_config_dir" && ./hosts --nns-nodes | awk '{print $2 ; exit 0}')]:8080/_/dashboard"
+  "$command" "http://[$(cd "$testnet_config_dir" && ./hosts --nns-nodes | awk '{print $2 ; exit 0}')]:8080"
 else
   local_dfx_port_file="$PWD/.dfx/replica-configuration/replica-1.port"
   port="$(cat "$local_dfx_port_file" || true)"
