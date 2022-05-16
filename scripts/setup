@@ -81,6 +81,8 @@ install_rosetta_maybe() {
 install_brew_maybe() {
   [[ "$OS" != "darwin" ]] || command -v brew || {
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Shellcheck: The text in the single quotes is not meant to be expanded here but rather when the user profile is sourced.
+    # shellcheck disable=SC2016
     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>"$USER_PROFILE"
     eval "$(/opt/homebrew/bin/brew shellenv)"
   }
