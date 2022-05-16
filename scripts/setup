@@ -189,9 +189,9 @@ sudo echo I have superpowers || {
   echo "Sorry, you will need admin priveleges on this machine to install software."
   exit 1
 }
-command -v wget || "install_wget_$OS"
 install_rosetta_maybe
 install_brew_maybe
+command -v wget || "install_wget_$OS"
 command -v docker || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
