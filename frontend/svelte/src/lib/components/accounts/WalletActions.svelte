@@ -2,6 +2,7 @@
   import type { Account, AccountType } from "../../types/account";
   import RenameSubAccount from "./RenameSubAccount.svelte";
   import HardwareWalletShowAction from "./HardwareWalletShowAction.svelte";
+  import HardwareWalletListNeurons from "./HardwareWalletListNeurons.svelte";
 
   export let selectedAccount: Account | undefined;
 
@@ -15,6 +16,7 @@
   {/if}
 
   {#if type === "hardwareWallet"}
+    <HardwareWalletListNeurons />
     <HardwareWalletShowAction />
   {/if}
 </div>
@@ -23,5 +25,9 @@
   div {
     display: flex;
     justify-content: flex-end;
+
+    :global(> *:not(:last-of-type)) {
+      margin-right: var(--padding);
+    }
   }
 </style>

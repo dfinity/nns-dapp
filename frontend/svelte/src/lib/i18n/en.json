@@ -101,6 +101,8 @@
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "attach_hardware_name_placeholder": "Hardware Wallet Name",
     "attach_hardware_enter_name": "Enter Wallet Name",
+    "attach_hardware_show_neurons": "Show Neurons",
+    "attach_hardware_neurons_text": "The following are neurons controlled by the hardware wallet. You can optionally add the NNS dapp as a hotkey to these neurons, which allows you to manage the neurons directly from the Neurons tab.",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
@@ -121,7 +123,7 @@
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
-    "authorize_on_hardware_wallet": "Authorize on Hardware Wallet",
+    "authorize_on_hardware_wallet": "Authorize on your hardware wallet",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
@@ -182,7 +184,8 @@
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
     "only_merge_two": "You can only merge two neurons at a time.",
-    "irreversible_action": "This action is irreversible."
+    "irreversible_action": "This action is irreversible.",
+    "stake_amount": "Stake Amount"
   },
   "new_followee": {
     "title": "Enter New Followee",

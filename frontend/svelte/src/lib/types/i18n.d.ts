@@ -110,6 +110,8 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_show_neurons: string;
+  attach_hardware_neurons_text: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -193,6 +195,7 @@ interface I18nNeurons {
   cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
   irreversible_action: string;
+  stake_amount: string;
 }
 
 interface I18nNew_followee {
