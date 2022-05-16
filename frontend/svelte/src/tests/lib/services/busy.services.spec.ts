@@ -6,7 +6,6 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
-import en from "../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("busy-services", () => {
@@ -58,7 +57,7 @@ describe("busy-services", () => {
     });
     expect(startBusySpy).toBeCalledWith(
       initiator,
-      en.busy_screen.pending_approval_hw
+      "busy_screen.pending_approval_hw"
     );
   });
 });
