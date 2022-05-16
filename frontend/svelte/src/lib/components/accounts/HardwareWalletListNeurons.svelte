@@ -37,6 +37,7 @@
   type="button"
   on:click={listNeurons}
   disabled={$busy}
+  data-tid="ledger-list-button"
 >
   {$i18n.accounts.attach_hardware_show_neurons}
 </button>
