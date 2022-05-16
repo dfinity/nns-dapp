@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render } from "@testing-library/svelte";
+import HardwareWalletNeurons from "../../../../lib/components/accounts/HardwareWalletNeurons.svelte";
+import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
-import HardwareWalletNeurons from '../../../../lib/components/accounts/HardwareWalletNeurons.svelte';
-import type {Neuron} from '@dfinity/nns/dist/types/types/governance_converters';
-import {formatICP} from '../../../../lib/utils/icp.utils';
 
 describe("HardwareWalletNeurons", () => {
   const neuron2 = {
@@ -48,7 +48,11 @@ describe("HardwareWalletNeurons", () => {
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
     expect(getByText(neuron2.neuronId.toString())).toBeInTheDocument();
 
-    expect(getByText(formatICP((mockNeuron.fullNeuron as Neuron).cachedNeuronStake))).toBeInTheDocument();
-    expect(getByText(formatICP((neuron2.fullNeuron as Neuron).cachedNeuronStake))).toBeInTheDocument();
+    expect(
+      getByText(formatICP((mockNeuron.fullNeuron as Neuron).cachedNeuronStake))
+    ).toBeInTheDocument();
+    expect(
+      getByText(formatICP((neuron2.fullNeuron as Neuron).cachedNeuronStake))
+    ).toBeInTheDocument();
   });
 });

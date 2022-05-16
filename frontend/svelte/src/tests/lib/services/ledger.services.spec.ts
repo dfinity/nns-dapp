@@ -306,7 +306,7 @@ describe("ledger-services", () => {
       it("should not list neurons if ledger throw an error", async () => {
         const spyToastError = jest.spyOn(toastsStore, "error");
 
-        const {err} = await listNeuronsHardwareWallet();
+        const { err } = await listNeuronsHardwareWallet();
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
