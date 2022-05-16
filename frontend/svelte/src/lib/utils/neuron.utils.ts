@@ -28,7 +28,10 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
-import { getAccountByPrincipal, isAccountHardwareWallet } from "./accounts.utils";
+import {
+  getAccountByPrincipal,
+  isAccountHardwareWallet,
+} from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
