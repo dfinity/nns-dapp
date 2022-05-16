@@ -41,6 +41,7 @@ jest.mock("../../../../lib/services/neurons.services", () => {
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
     addHotkeyFromHW: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

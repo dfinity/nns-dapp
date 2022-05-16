@@ -11,6 +11,7 @@ import { renderModal } from "../../../mocks/modal.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     addHotkey: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

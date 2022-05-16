@@ -2,8 +2,9 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
+  import { startBusyNeuron } from "../../services/busy.services";
   import { mergeNeurons } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -28,7 +29,10 @@
 
   const merge = async () => {
     loading = true;
-    startBusy("merge-neurons");
+    startBusyNeuron({
+      initiator: "merge-neurons",
+      neuronId: neurons[0].neuronId,
+    });
     // We know that neurons has 2 neurons.
     // We have a check above that closes the modal if not.
     const id = await mergeNeurons({
