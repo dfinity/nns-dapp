@@ -268,7 +268,8 @@
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
   "wallet": {
-    "title": "Account"
+    "title": "Account",
+    "pending_approval": "Please use your hardware wallet to approve."
   },
   "proposal_detail": {
     "title": "Proposal",

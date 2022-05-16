@@ -1,7 +1,7 @@
 import type { Readable } from "svelte/store";
 import { derived, writable } from "svelte/store";
 
-export type BusyStateInitiator =
+export type BusyStateInitiatorType =
   | "stake-neuron"
   | "update-delay"
   | "vote"
@@ -21,12 +21,17 @@ export type BusyStateInitiator =
   | "disburse-neuron"
   | "remove-followee";
 
+type BusyItem = {
+  initiator: BusyStateInitiatorType;
+  message?: string;
+};
+
 /**
  * Store that reflects the app busy state.
  * Is used to show the busy-screen that locks the UI
  */
 const initBusyStore = () => {
-  const { subscribe, update } = writable<Set<BusyStateInitiator>>(new Set());
+  const { subscribe, update } = writable<Array<BusyItem>>([]);
 
   return {
     subscribe,
@@ -34,18 +39,17 @@ const initBusyStore = () => {
     /**
      * Show the busy-screen if not visible
      */
-    startBusy(initiator: BusyStateInitiator) {
-      update((state) => state.add(initiator));
+    startBusy(initiator: BusyStateInitiatorType, message?: string) {
+      update((state) => [...state, { initiator, message }]);
     },
 
     /**
      * Hide the busy-screen if no other initiators are done
      */
-    stopBusy(initiator: BusyStateInitiator) {
-      update((state) => {
-        state.delete(initiator);
-        return state;
-      });
+    stopBusy(initiatorToRemove: BusyStateInitiatorType) {
+      update((state) =>
+        state.filter(({ initiator }) => initiator !== initiatorToRemove)
+      );
     },
   };
 };
@@ -56,5 +60,10 @@ export const { startBusy, stopBusy } = busyStore;
 
 export const busy: Readable<boolean> = derived(
   busyStore,
-  ($busyStore) => $busyStore.size > 0
+  ($busyStore) => $busyStore.length > 0
+);
+
+export const firstBusyItem: Readable<BusyItem> = derived(
+  busyStore,
+  ($busyStore) => $busyStore[0]
 );

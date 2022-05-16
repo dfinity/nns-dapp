@@ -287,6 +287,7 @@ interface I18nStatus {
 
 interface I18nWallet {
   title: string;
+  pending_approval: string;
 }
 
 interface I18nProposal_detail {

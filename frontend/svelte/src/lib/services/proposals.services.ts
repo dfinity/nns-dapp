@@ -9,7 +9,7 @@ import {
 import {
   startBusy,
   stopBusy,
-  type BusyStateInitiator,
+  type BusyStateInitiatorType,
 } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
@@ -284,7 +284,7 @@ export const registerVotes = async ({
     initiator,
   }: {
     certified: boolean;
-    initiator: BusyStateInitiator;
+    initiator: BusyStateInitiatorType;
   }) => {
     if (!certified) {
       return;
