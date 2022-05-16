@@ -6,6 +6,10 @@
   import { authStore } from "../../stores/auth.store";
 
   export let neurons: NeuronInfo[] = [];
+
+  // TODO(L2-436):
+  //  - display which neurons is attached to nns-dapp and which not
+  //  - integrate with "attach hotkey for neuron" feature
 </script>
 
 <p>{$i18n.accounts.attach_hardware_neurons_text}</p>
