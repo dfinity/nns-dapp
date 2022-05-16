@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";
   import { authStore } from "../../stores/auth.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
@@ -21,7 +22,10 @@
   $: hotkeys = neuron.fullNeuron?.hotKeys ?? [];
 
   const remove = async (hotkey: string) => {
-    startBusy("remove-hotkey-neuron");
+    startBusyNeuron({
+      initiator: "remove-hotkey-neuron",
+      neuronId: neuron.neuronId,
+    });
     await removeHotkey({
       neuronId: neuron.neuronId,
       principalString: hotkey,
