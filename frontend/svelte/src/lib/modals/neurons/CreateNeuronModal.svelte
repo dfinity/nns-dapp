@@ -66,6 +66,10 @@
   );
 
   const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
+  };
+
   type InvalidState = {
     stepName: string;
     isNeuronIdInvalid?: (n?: NeuronId) => boolean;
@@ -110,7 +114,7 @@
       toastsStore.error({
         labelKey: "error.unknown",
       });
-      dispatcher("nnsClose");
+      close();
     }
   }
   let delayInSeconds: number = 0;
@@ -144,9 +148,6 @@
   };
   const goEditFollowers = () => {
     modal.set(stepIndex({ name: "EditFollowNeurons", steps }));
-  };
-  const close = () => {
-    dispatcher("nnsClose");
   };
 </script>
 

@@ -95,11 +95,11 @@ describe("AddHotkeyModal", () => {
     const buttonElement = queryByTestId("add-hotkey-neuron-button");
     expect(buttonElement).not.toBeNull();
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addHotkey).toBeCalled();
 
-    const onClose = jest.fn();
-    component.$on("nnsClose", onClose);
     await waitFor(() => expect(onClose).toBeCalled());
   });
 });
