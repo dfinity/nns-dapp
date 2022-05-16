@@ -2,7 +2,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-DEFAULT_USER_PROFILE="$HOME/.profile"
+case "$(basename "${SHELL:-}")" in
+bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
+zsh) DEFAULT_USER_PROFILE="$HOME/.zshrc" ;;
+ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
+*) # dash, ash, tsh, tcsh
+  DEFAULT_USER_PROFILE="$HOME/.profile" ;;
+esac
 
 help_text() {
   cat <<-EOF
