@@ -39,12 +39,6 @@
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  .loading {
-    p {
-      margin: var(--padding-0_5x) var(--padding);
-    }
-  }
-
   .table {
     display: grid;
     grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
