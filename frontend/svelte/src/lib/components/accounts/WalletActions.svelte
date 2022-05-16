@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Account, AccountType } from "../../types/account";
-  import RenameSubAccount from "./RenameSubAccount.svelte";
-  import HardwareWalletShowAction from "./HardwareWalletShowAction.svelte";
-  import HardwareWalletListNeurons from "./HardwareWalletListNeurons.svelte";
+  import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
+  import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
+  import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";
 
   export let selectedAccount: Account | undefined;
 
@@ -12,12 +12,12 @@
 
 <div role="menubar">
   {#if type === "subAccount"}
-    <RenameSubAccount {selectedAccount} />
+    <RenameSubAccountButton {selectedAccount} />
   {/if}
 
   {#if type === "hardwareWallet"}
-    <HardwareWalletListNeurons />
-    <HardwareWalletShowAction />
+    <HardwareWalletListNeuronsButton />
+    <HardwareWalletShowActionButton />
   {/if}
 </div>
 

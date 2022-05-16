@@ -4,14 +4,14 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeurons.svelte";
+import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
 import { listNeuronsHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/proxy/ledger.services.proxy");
 
-describe("HardwareWalletListNeurons", () => {
+describe("HardwareWalletListNeuronsButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
