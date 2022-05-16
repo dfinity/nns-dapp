@@ -162,7 +162,13 @@ echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
 
 
 if [[ "$START_DFX" == "true" ]]; then
-  dfx start --clean &
+  echo
+  echo "Please run these commands in a separate terminal:"
+  echo
+  echo "  pkill dfx"
+  echo "  dfx start --clean"
+  echo
+  read -rp "Please press enter when done... "
 fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
