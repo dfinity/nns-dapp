@@ -78,6 +78,14 @@ install_rosetta_maybe() {
   fi
 }
 
+install_brew_maybe() {
+  [[ "$OS" != "darwin" ]] || command -v brew || {
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.profile"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  }
+}
+
 install_coreutils_darwin() {
   echo "Installing coreutils..."
   brew install coreutils
@@ -181,9 +189,9 @@ sudo echo I have superpowers || {
   echo "Sorry, you will need admin priveleges on this machine to install software."
   exit 1
 }
-[[ "$OS" != "darwin" ]] || command -v brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 command -v wget || "install_wget_$OS"
 install_rosetta_maybe
+install_brew_maybe
 command -v docker || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
