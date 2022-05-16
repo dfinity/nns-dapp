@@ -1,5 +1,4 @@
-import type { Readable } from "svelte/store";
-import { derived, writable } from "svelte/store";
+import { derived, writable, type Readable } from "svelte/store";
 
 export type BusyStateInitiatorType =
   | "stake-neuron"
@@ -23,7 +22,7 @@ export type BusyStateInitiatorType =
 
 type BusyItem = {
   initiator: BusyStateInitiatorType;
-  message?: string;
+  labelKey?: string;
 };
 
 /**
@@ -39,10 +38,10 @@ const initBusyStore = () => {
     /**
      * Show the busy-screen if not visible
      */
-    startBusy(newInitiator: BusyStateInitiatorType, message?: string) {
+    startBusy(newInitiator: BusyStateInitiatorType, labelKey?: string) {
       update((state) => [
         ...state.filter(({ initiator }) => newInitiator !== initiator),
-        { initiator: newInitiator, message },
+        { initiator: newInitiator, labelKey },
       ]);
     },
 
@@ -67,8 +66,9 @@ export const busy: Readable<boolean> = derived(
 );
 
 // Returns the newest message that was added to the store
-export const busyMessage: Readable<string | undefined> = derived(
+export const busyMessageKey: Readable<string | undefined> = derived(
   busyStore,
   ($busyStore) =>
-    $busyStore.reverse().find(({ message }) => message !== undefined)?.message
+    $busyStore.reverse().find(({ labelKey }) => labelKey !== undefined)
+      ?.labelKey
 );

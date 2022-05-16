@@ -56,6 +56,9 @@ describe("busy-services", () => {
       initiator,
       neuronId: neuron.neuronId,
     });
-    expect(startBusySpy).toBeCalledWith(initiator, en.wallet.pending_approval);
+    expect(startBusySpy).toBeCalledWith(
+      initiator,
+      en.busy_screen.pending_approval_hw
+    );
   });
 });

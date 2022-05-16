@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { busy, busyMessage } from "../../stores/busy.store";
+  import { busy, busyMessageKey } from "../../stores/busy.store";
+  import { translate } from "../../utils/i18n.utils";
   import Spinner from "./Spinner.svelte";
 </script>
 
@@ -8,8 +9,8 @@
 {#if $busy}
   <div data-tid="busy" transition:fade>
     <div class="content">
-      {#if $busyMessage !== undefined}
-        <h4>{$busyMessage}</h4>
+      {#if $busyMessageKey !== undefined}
+        <h4>{translate({ labelKey: $busyMessageKey })}</h4>
       {/if}
       <span>
         <Spinner inline />

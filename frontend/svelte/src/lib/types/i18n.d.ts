@@ -287,7 +287,10 @@ interface I18nStatus {
 
 interface I18nWallet {
   title: string;
-  pending_approval: string;
+}
+
+interface I18nBusy_screen {
+  pending_approval_hw: string;
 }
 
 interface I18nProposal_detail {
@@ -440,6 +443,7 @@ interface I18n {
   rewards: I18nRewards;
   status: I18nStatus;
   wallet: I18nWallet;
+  busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
