@@ -176,6 +176,12 @@ install_cmake_linux() {
 
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
+echo "Checking that you can install software..."
+sudo echo I have superpowers || {
+  echo "Sorry, you will need admin priveleges on this machine to install software."
+  exit 1
+}
+[[ "$OS" != "darwin" ]] || command -v brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 command -v wget || "install_wget_$OS"
 install_rosetta_maybe
 command -v docker || install_docker
