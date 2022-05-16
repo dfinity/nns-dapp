@@ -115,7 +115,9 @@ const getNeuronHW = async ({
   return neurons.find((currentNeuron) => currentNeuron.neuronId === neuronId);
 };
 
-const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
+export const getNeuronFromStore = (
+  neuronId: NeuronId
+): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
 const getIdentityOfControllerByNeuronId = async (

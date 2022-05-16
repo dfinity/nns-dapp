@@ -6,12 +6,13 @@
   import WizardModal from "../WizardModal.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -62,7 +63,7 @@
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
     loading = true;
-    startBusy("spawn-neuron");
+    startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
       percentageToSpawn: controlledByHarwareWallet
