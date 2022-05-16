@@ -176,8 +176,8 @@ install_cmake_linux() {
 
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
-install_rosetta_maybe
 command -v wget || "install_wget_$OS"
+install_rosetta_maybe
 command -v docker || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
