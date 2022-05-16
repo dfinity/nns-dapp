@@ -7,7 +7,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeurons.svelte";
 import { listNeuronsHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 import en from "../../../mocks/i18n.mock";
-import {mockNeuron} from '../../../mocks/neurons.mock';
+import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/proxy/ledger.services.proxy");
 
@@ -21,7 +21,7 @@ describe("HardwareWalletListNeurons", () => {
 
   beforeAll(() => {
     spy = (listNeuronsHardwareWalletProxy as jest.Mock).mockImplementation(
-      async () => ({neurons: [mockNeuron]})
+      async () => ({ neurons: [mockNeuron] })
     );
   });
 
