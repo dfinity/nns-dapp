@@ -2,6 +2,8 @@
  * Additional functionality for the wdio "browser".
  */
 export class Navigator {
+  browser: WebdriverIO.Browser;
+
   constructor(browser: WebdriverIO.Browser) {
     this.browser = browser;
   }
@@ -10,7 +12,7 @@ export class Navigator {
    * Gets an element, waiting for it to exist.
    * Motivation: Consistently useful error messages on timeout.
    */
-  async get(
+  async getElement(
     selector: string,
     description: string,
     options?: { timeout?: number }
@@ -20,8 +22,8 @@ export class Navigator {
       throw new Error(`Cannot get undefined selector for "${description}".`);
     }
     const element = await this.browser.$(selector);
-    const timeout = options?.timeout;
-    const timeoutMsg = `Timeout waiting for "${description}" with selector "${selector}".`;
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with selector "${selector}".`;
     await element.waitForExist({ timeout, timeoutMsg });
     return element;
   }
@@ -40,11 +42,11 @@ export class Navigator {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
     const button = await this.browser.$(selector);
-    const timeout = options?.timeout;
-    const timeoutMsg = `Timeout waiting to click "${description}" with selector "${selector}".`;
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
     await button.waitForEnabled({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
-      await browser["screenshot"](description);
+      await this.browser["screenshot"](description);
     }
     await button.click();
   }
@@ -66,13 +68,13 @@ export class Navigator {
     const lengthBefore = (await this.browser.getWindowHandles()).length;
     await this.click(selector, description, { timeout });
     // Wait for a new tab to open, then switch to it.
-    await browser.waitUntil(
-      async () => (await browser.getWindowHandles()).length > lengthBefore,
+    await this.browser.waitUntil(
+      async () => (await this.browser.getWindowHandles()).length > lengthBefore,
       { timeout, timeoutMsg }
     );
-    const newWindowHandle = await browser
+    const newWindowHandle = await this.browser
       .getWindowHandles()
       .then((handles) => handles[handles.length - 1]);
-    await browser.switchToWindow(newWindowHandle);
+    await this.browser.switchToWindow(newWindowHandle);
   }
 }

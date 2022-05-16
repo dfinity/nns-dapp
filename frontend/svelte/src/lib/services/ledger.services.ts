@@ -8,7 +8,7 @@ import { LedgerIdentity } from "../identities/ledger.identity";
 import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { toLedgerError } from "../utils/error.utils";
+import { toToastError } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -86,12 +86,10 @@ export const registerHardwareWallet = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(
-      toLedgerError({
-        err,
-        fallbackErrorLabelKey: "error__attach_wallet.unexpected",
-      })
-    );
+    toastUnexpectedError({
+      err,
+      fallbackErrorLabelKey: "error__attach_wallet.unexpected",
+    });
   }
 };
 
@@ -124,3 +122,29 @@ export const getLedgerIdentity = async (
 
   return ledgerIdentity;
 };
+
+export const showAddressAndPubKeyOnHardwareWallet = async () => {
+  try {
+    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    await ledgerIdentity.showAddressAndPubKeyOnDevice();
+  } catch (err: unknown) {
+    toastUnexpectedError({
+      err,
+      fallbackErrorLabelKey: "error__ledger.unexpected",
+    });
+  }
+};
+
+const toastUnexpectedError = ({
+  err,
+  fallbackErrorLabelKey,
+}: {
+  fallbackErrorLabelKey: string;
+  err: unknown;
+}) =>
+  toastsStore.error(
+    toToastError({
+      err,
+      fallbackErrorLabelKey,
+    })
+  );

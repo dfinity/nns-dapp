@@ -1,11 +1,11 @@
 --- a/rs/nns/governance/canister/canister.rs
 +++ b/rs/nns/governance/canister/canister.rs
-@@ -666,6 +666,15 @@ fn get_neuron_ids_() -> Vec<NeuronId> {
+@@ -683,6 +683,15 @@ fn get_network_economics_parameters_() -> NetworkEconomics {
  
  #[export_name = "canister_heartbeat"]
  fn canister_heartbeat() {
 +    // Distribute free maturity to all neurons.
-+    const MATURITY_PER_HEARTBEAT: u64 = 10000;
++    const MATURITY_PER_HEARTBEAT: u64 = 1000000;
 +    let now = governance().env.now();
 +    for (_, neuron) in governance_mut().proto.neurons.iter_mut() {
 +        if neuron.state(now) != ic_nns_governance::pb::v1::NeuronState::Dissolved {
@@ -14,3 +14,18 @@
 +    }
 +
      let future = governance_mut().run_periodic_tasks();
+ 
+     // canister_heartbeat must be synchronous, so we cannot .await the future
+diff --git a/rs/nns/governance/src/governance.rs b/rs/nns/governance/src/governance.rs
+index 329e56bef..2f2d8f826 100644
+--- a/rs/nns/governance/src/governance.rs
++++ b/rs/nns/governance/src/governance.rs
+@@ -81,7 +81,7 @@ const MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO: f64 = 0.03;
+ 
+ // Parameter of the wait for quiet algorithm. This is the maximum amount the
+ // deadline can be delayed on each vote.
+-pub const WAIT_FOR_QUIET_DEADLINE_INCREASE_SECONDS: u64 = 2 * ONE_DAY_SECONDS;
++pub const WAIT_FOR_QUIET_DEADLINE_INCREASE_SECONDS: u64 = 2 * 60;
+ 
+ // 1 KB - maximum payload size of NNS function calls to keep in listing of
+ // proposals

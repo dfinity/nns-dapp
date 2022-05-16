@@ -88,10 +88,9 @@ export class LedgerIdentity extends SignIdentity {
    * and verify the address/pubkey are the same as on the device screen.
    */
   public async showAddressAndPubKeyOnDevice(): Promise<ResponseAddress> {
-    const callback = ({
-      showAddressAndPubKey,
-    }: LedgerApp): Promise<ResponseAddress> =>
-      showAddressAndPubKey(this.derivePath);
+    // The function `showAddressAndPubKey` should not be destructured from the `app` because it internally accesses `this.transport` that refers to an `app` variable
+    const callback = (app: LedgerApp): Promise<ResponseAddress> =>
+      app.showAddressAndPubKey(this.derivePath);
 
     return this.executeWithApp<ResponseAddress>(callback);
   }
@@ -100,9 +99,9 @@ export class LedgerIdentity extends SignIdentity {
    * @returns The version of the `Internet Computer' app installed on the Ledger device.
    */
   public async getVersion(): Promise<ResponseVersion> {
-    const callback = async ({
-      getVersion,
-    }: LedgerApp): Promise<ResponseVersion> => getVersion();
+    // See comment about `app` in function `showAddressAndPubKeyOnDevice`
+    const callback = async (app: LedgerApp): Promise<ResponseVersion> =>
+      app.getVersion();
 
     return this.executeWithApp<ResponseVersion>(callback);
   }
