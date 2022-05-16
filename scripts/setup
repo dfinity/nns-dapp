@@ -2,21 +2,39 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+DEFAULT_USER_PROFILE="$HOME/.profile"
+
 help_text() {
   cat <<-EOF
+
 	Installs the dependencies needed to run ./build.sh
 
 	Warning: This is a record of one installation on an M1 mac.
 	         The code is untested on Linux and on CI.
+
+	Flags:
+	--help
+	  prints this help text.
+
+	--profile
+	  sets the file that is sourced by the user shell.  The script MAY
+	  append lines to that file, if some software is not already installed.
+	  Default: $DEFAULT_USER_PROFILE
+
 	EOF
 }
 
+USER_PROFILE=""
 while (($# > 0)); do
   arg="$1"
   case "$arg" in
   --help)
     help_text
     exit 0
+    ;;
+  --profile)
+    USER_PROFILE="$1"
+    shift 1
     ;;
   *)
     echo "Unsupported argument: $arg" >&2
@@ -25,7 +43,16 @@ while (($# > 0)); do
   esac
 done
 
-USER_PROFILE="$HOME/.bashrc"
+if test -z "${USER_PROFILE:-}"; then
+  USER_PROFILE="$DEFAULT_USER_PROFILE"
+  echo "Assuming user profile script: $USER_PROFILE"
+  read -rp "Is it OK to add to this profile? y/N " _USER_PROFILE_OK
+  [[ "$_USER_PROFILE_OK" = [yY] ]] || {
+    echo "Please specify the profile to use with --profile"
+    exit 1
+  }
+fi
+
 NEW_TERMINAL_NEEDED=false
 append_to_profile() {
   printf '\n%s\n' "$1" >>"$USER_PROFILE"
@@ -43,7 +70,7 @@ install_dfx() {
 }
 
 install_rosetta_maybe() {
-  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]] ; then
+  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]]; then
     test -d /usr/libexec/rosetta/ || {
       read -rp "Installing Rosetta for M1.  It lets you run x86_64 binaries.  Press enter to proceed... "
       softwareupdate --install-rosetta
@@ -127,15 +154,30 @@ install_ic_cdk_optimizer() {
 }
 
 install_docker() {
-  while ! command -v docker ; do
+  while ! command -v docker; do
     echo "Please install docker from: https://docs.docker.com/get-docker/"
     read -rp "Press enter when docker has been installed...  "
   done
 }
 
+install_wget_darwin() {
+  brew install wget
+}
+install_wget_linux() {
+  sudo apt-get install wget
+}
+
+install_cmake_darwin() {
+  brew install cmake
+}
+install_cmake_linux() {
+  sudo apt-get install cmake
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 install_rosetta_maybe
+command -v wget || "install_wget_$OS"
 command -v docker || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
