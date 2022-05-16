@@ -2,14 +2,6 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-case "$(basename "${SHELL:-}")" in
-bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
-zsh) DEFAULT_USER_PROFILE="$HOME/.zshenv" ;;
-ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
-*) # dash, ash, tsh, tcsh
-  DEFAULT_USER_PROFILE="$HOME/.profile" ;;
-esac
-
 help_text() {
   cat <<-EOF
 
@@ -30,7 +22,15 @@ help_text() {
 	EOF
 }
 
+case "$(basename "${SHELL:-}")" in
+bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
+zsh) DEFAULT_USER_PROFILE="$HOME/.zshenv" ;;
+ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
+*) # dash, ash, tsh, tcsh
+  DEFAULT_USER_PROFILE="$HOME/.profile" ;;
+esac
 USER_PROFILE=""
+
 while (($# > 0)); do
   arg="$1"
   case "$arg" in
