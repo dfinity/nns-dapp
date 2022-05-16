@@ -32,7 +32,7 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
-import { LedgerIdentity } from "../identities/ledger.identity";
+import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -43,7 +43,7 @@ import {
   NotAuthorizedError,
   NotFoundError,
 } from "../types/errors";
-import { isHardwareWallet } from "../utils/accounts.utils";
+import { isAccountHardwareWallet } from "../utils/accounts.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
@@ -172,7 +172,7 @@ const getStakeNeuronPropsByAccount = ({
   controller: Principal;
   fromSubAccount?: SubAccountArray;
 } => {
-  if (isHardwareWallet(account)) {
+  if (isAccountHardwareWallet(account)) {
     // The software of the hardware wallet cannot sign the call to the governance canister to claim the neuron.
     // Therefore we use an `AnonymousIdentity`.
     return {
@@ -212,7 +212,7 @@ export const stakeNeuron = async ({
 
     const accountIdentity = await getAccountIdentity(account.identifier);
     if (
-      isHardwareWallet(account) &&
+      isAccountHardwareWallet(account) &&
       "flagUpcomingStakeNeuron" in accountIdentity
     ) {
       // TODO: Find a better solution than setting a flag.
@@ -227,12 +227,14 @@ export const stakeNeuron = async ({
       controller,
       fromSubAccount,
     });
-    if (
-      isHardwareWallet(account) &&
-      accountIdentity instanceof LedgerIdentity
-    ) {
-      return getNeuronHW({ neuronId, identity: accountIdentity });
+
+    if (isAccountHardwareWallet(account)) {
+      return getNeuronHW({
+        neuronId,
+        identity: accountIdentity as LedgerIdentity,
+      });
     }
+
     return await getNeuron({
       neuronId,
       identity: accountIdentity,

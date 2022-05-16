@@ -14,7 +14,7 @@
   import { createEventDispatcher, tick } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import AddUserToHotkeys from "../../components/neurons/AddUserToHotkeys.svelte";
-  import { isHardwareWallet } from "../../utils/accounts.utils";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   const lastSteps: Steps = [
     {
@@ -111,7 +111,7 @@
     detail,
   }: CustomEvent<{ selectedAccount: Account }>) => {
     selectedAccount = detail.selectedAccount;
-    if (isHardwareWallet(selectedAccount)) {
+    if (isAccountHardwareWallet(selectedAccount)) {
       steps.push(extraStepHW);
     }
     steps.push(...lastSteps);
@@ -124,7 +124,7 @@
   };
   const addNeuron = ({ detail }: CustomEvent<{ neuron: NeuronInfo }>) => {
     newNeuron = detail.neuron;
-    if (isHardwareWallet(selectedAccount)) {
+    if (isAccountHardwareWallet(selectedAccount)) {
       toastsStore.show({
         labelKey: "neurons.neuron_create_success",
         level: "success",

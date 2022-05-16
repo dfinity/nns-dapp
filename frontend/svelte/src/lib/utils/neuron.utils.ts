@@ -28,7 +28,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
-import { getAccountByPrincipal, isHardwareWallet } from "./accounts.utils";
+import { getAccountByPrincipal, isAccountHardwareWallet } from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
@@ -180,7 +180,7 @@ export const isNeuronControlledByHardwareWallet = ({
       principal: neuron.fullNeuron.controller,
       accounts,
     });
-    return isHardwareWallet(account);
+    return isAccountHardwareWallet(account);
   }
   return false;
 };
