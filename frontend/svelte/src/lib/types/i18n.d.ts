@@ -132,7 +132,6 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
-  authorize_on_hardware_wallet: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
