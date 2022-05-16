@@ -72,10 +72,10 @@ export const accountName = ({
   account,
   mainName,
 }: {
-  account: Account;
+  account: Account | undefined;
   mainName: string;
 }): string =>
-  account.name ?? (account.type === "main" ? mainName : account.name ?? "");
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
 export interface AccountTransaction {
   from: AccountIdentifierString;

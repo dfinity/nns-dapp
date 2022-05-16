@@ -26,6 +26,7 @@
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
   import { selectedAccountStore } from "../lib/stores/selectedAccount.store";
+  import type { Account } from "../lib/types/account";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -42,8 +43,8 @@
     await getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions }) => {
-        if (accountIdentifier !== $selectedAccountStore.accountIdentifier) {
-          // skip using outdated transactions if url was changed
+        // avoid using outdated transactions
+        if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
           return;
         }
         $selectedAccountStore.transactions = transactions;
@@ -53,38 +54,25 @@
   let routeAccountIdentifier: string | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
-  // manage accountStore state
+  let selectedAccount: Account | undefined;
+  $: $accountsStore,
+    (selectedAccount = getAccountFromStore(routeAccountIdentifier));
+
   $: routeAccountIdentifier,
-    $accountsStore,
+    selectedAccount,
     (() => {
-      const identifierChanged =
-        routeAccountIdentifier !== $selectedAccountStore.accountIdentifier;
+      const storeAccount = $selectedAccountStore.account;
 
-      if (identifierChanged && routeAccountIdentifier !== undefined) {
-        selectedAccountStore.selectAccountIdentifier(routeAccountIdentifier);
-      }
-      const noStoreAccount = $selectedAccountStore.account === undefined;
+      if (storeAccount !== selectedAccount) {
+        selectedAccountStore.resetWithAccount(selectedAccount);
 
-      if (noStoreAccount) {
-        const account = getAccountFromStore(routeAccountIdentifier);
-        if (account !== undefined) {
-          selectedAccountStore.selectAccount(account);
+        if (selectedAccount !== undefined) {
+          updateTransactions(selectedAccount.identifier);
         }
       }
 
-      // skip same transaction loading
-      if (
-        (identifierChanged || noStoreAccount) &&
-        $selectedAccountStore.account !== undefined
-      ) {
-        updateTransactions($selectedAccountStore.account.identifier);
-      }
-
       // handle unknown accountIdentifier from URL
-      if (
-        $selectedAccountStore.account === undefined &&
-        $accountsStore.main !== undefined
-      ) {
+      if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
             account_identifier: routeAccountIdentifier ?? "",
@@ -95,12 +83,10 @@
     })();
 
   let accountName: string;
-  $: if ($selectedAccountStore.account) {
-    accountName = getAccountName({
-      account: $selectedAccountStore.account,
-      mainName: $i18n.accounts.main,
-    });
-  }
+  $: accountName = getAccountName({
+    account: selectedAccount,
+    mainName: $i18n.accounts.main,
+  });
 
   let showNewTransactionModal = false;
 </script>
