@@ -64,7 +64,7 @@
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
-        selectedAccountStore.resetWithAccount(selectedAccount);
+        selectedAccountStore.selectAccount(selectedAccount);
 
         if (selectedAccount !== undefined) {
           updateTransactions(selectedAccount.identifier);

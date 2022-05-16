@@ -20,12 +20,7 @@ const initSelectedAccountStore = () => {
   return {
     subscribe,
     set,
-    selectAccount: (account: Account) =>
-      set({
-        account,
-        transactions: undefined,
-      }),
-    resetWithAccount: (account: Account | undefined) =>
+    selectAccount: (account: Account | undefined) =>
       set({
         ...initialState,
         account,
