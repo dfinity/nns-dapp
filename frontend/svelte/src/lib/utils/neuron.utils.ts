@@ -28,7 +28,10 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import { InvalidAmountError } from "../types/errors";
-import { getAccountByPrincipal } from "./accounts.utils";
+import {
+  getAccountByPrincipal,
+  isAccountHardwareWallet,
+} from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
@@ -145,13 +148,26 @@ export const sortNeuronsByCreatedTimestamp = (
   );
 
 /*
+ * Returns true if the neuron can be controlled by current user
+ */
+export const isNeuronControllableByUser = ({
+  neuron: { fullNeuron },
+  identity,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+}): boolean =>
+  fullNeuron?.controller !== undefined &&
+  fullNeuron.controller === identity?.getPrincipal().toText();
+
+/*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
  *
  *  1. The user is the controller
  *  OR
  *  2. The main account (same as user) is the controller
  *  OR
- *  3. TODO: The user's hardware wallet is the controller.
+ *  3. The user's hardware wallet is the controller.
  *
  */
 export const isNeuronControllable = ({
@@ -167,6 +183,23 @@ export const isNeuronControllable = ({
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
     getAccountByPrincipal({ principal: fullNeuron.controller, accounts }) !==
       undefined);
+
+export const isNeuronControlledByHardwareWallet = ({
+  neuron,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  accounts: AccountsStore;
+}): boolean => {
+  if (neuron.fullNeuron?.controller !== undefined) {
+    const account = getAccountByPrincipal({
+      principal: neuron.fullNeuron.controller,
+      accounts,
+    });
+    return isAccountHardwareWallet(account);
+  }
+  return false;
+};
 
 export const isHotKeyControllable = ({
   neuron: { fullNeuron },
@@ -261,27 +294,45 @@ export const isEnoughToStakeNeuron = ({
   stake.toE8s() >=
   MIN_NEURON_STAKE + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
 
-const isMergeableNeuron = ({
-  neuron,
-  identity,
+export const isEnoughMaturityToSpawn = ({
+  neuron: { fullNeuron },
+  percentage,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  percentage: number;
+}): boolean => {
+  if (fullNeuron === undefined) {
+    return false;
+  }
+  const maturitySelected: number = Math.floor(
+    (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
+  );
+  return isEnoughToStakeNeuron({
+    stake: ICP.fromE8s(BigInt(maturitySelected)),
+  });
+};
+
+// Tested with `mapMergeableNeurons`
+const isMergeableNeuron = ({
+  neuron,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  accounts: AccountsStore;
 }): boolean =>
-  !hasJoinedCommunityFund(neuron) &&
-  !isHotKeyControllable({ neuron, identity });
+  !hasJoinedCommunityFund(neuron) && isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
   }
-  if (isHotKeyControllable({ neuron, identity })) {
+  if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
   }
 };
@@ -296,17 +347,17 @@ export type MergeableNeuron = {
  * Returns neuron data wrapped with extra information about mergeability.
  *
  * @neurons NeuronInfo[]
- * @identity Identity | null
+ * @accounts AccountsStore
  * @selectedNeuronIds NeuronId[]
  * @returns MergeableNeuron[]
  */
 export const mapMergeableNeurons = ({
   neurons,
-  identity,
+  accounts,
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  identity?: Identity | null;
+  accounts: AccountsStore;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
@@ -316,8 +367,8 @@ export const mapMergeableNeurons = ({
       selected: selectedNeurons
         .map(({ neuronId }) => neuronId)
         .includes(neuron.neuronId),
-      mergeable: isMergeableNeuron({ neuron, identity }),
-      messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
+      mergeable: isMergeableNeuron({ neuron, accounts }),
+      messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
     }))
     // Then we calculate the neuron with the current selection
     .map(({ mergeable, selected, messageKey, neuron }: MergeableNeuron) => {

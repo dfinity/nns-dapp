@@ -1,7 +1,6 @@
 import { AuthPage } from "../components/auth";
 import { IIWelcomeBackPage } from "../components/ii-welcome-back-page";
 import { IIWelcomePage } from "../components/ii-welcome-page";
-import { IIWelcomePage } from "../components/ii-add-device-page";
 import { IICaptchaPage } from "../components/ii-captcha-page";
 import { IICongratulationsPage } from "../components/ii-congratulations-page";
 import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
@@ -9,11 +8,17 @@ import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning"
 import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
 import { Navigator } from "./navigator";
+import { Header } from "../components/header";
 
 /**
  * Registers a new identity on the Internet Identity.
  */
-export const register = async (browser: WebdriverIO.Browser): string => {
+export const register = async (
+  browser: WebdriverIO.Browser
+): Promise<{ identityAnchor: string }> => {
+  if (undefined === browser) {
+    throw new Error("Browser is undefined in 'register(..)'");
+  }
   const navigator = new Navigator(browser);
 
   // Record the ID of the tab we started on.
@@ -55,7 +60,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Add Device Page
-  const registerAlias = await navigator.get(
+  const registerAlias = await navigator.getElement(
     IIAddDevicePage.REGISTER_ALIAS_INPUT_SELECTOR,
     "registration-ii-device-name-input"
   );
@@ -66,7 +71,7 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Captcha Page
-  const captchaInput = await navigator.get(
+  const captchaInput = await navigator.getElement(
     IICaptchaPage.CAPTCHA_INPUT_SELECTOR,
     "registration-ii-captcha-input",
     { timeout: 30_000 }
@@ -84,10 +89,11 @@ export const register = async (browser: WebdriverIO.Browser): string => {
   );
 
   // Congratulations Page
-  const newIdentity = await navigator
-    .get(
+  const identityAnchor = await navigator
+    .getElement(
       IICongratulationsPage.IDENTITY_SELECTOR,
-      "registration-ii-new-identity"
+      "registration-ii-new-identity",
+      { timeout: 30_000 }
     )
     .then((element) => element.getText());
   await navigator.click(
@@ -116,7 +122,13 @@ export const register = async (browser: WebdriverIO.Browser): string => {
 
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
+  await navigator.getElement(
+    Header.LOGOUT_BUTTON_SELECTOR,
+    "Wait for login after registration",
+    { timeout: 10_000 }
+  );
 
-  console.log("Created identity", newIdentity);
-  return newIdentity;
+  // Log change of state:
+  console.warn("Created identity", identityAnchor);
+  return { identityAnchor };
 };

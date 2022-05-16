@@ -29,14 +29,19 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/media";
 
   .wizard-wrapper {
     justify-content: center;
   }
 
   .card-item {
-    padding: var(--padding-4x);
+    padding: var(--padding-2x) var(--padding);
     border-radius: var(--border-radius);
+
+    @include media.min-width(medium) {
+      padding: var(--padding-4x);
+    }
 
     @include interaction.tappable;
 

@@ -11,10 +11,19 @@
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
 
   export let neuron: NeuronInfo;
+  export let controlledByHarwareWallet: boolean;
 
-  const steps: Steps = [
+  const hardwareWalletSteps: Steps = [
+    {
+      name: "ConfirmSpawn",
+      showBackButton: false,
+      title: $i18n.neuron_detail.spawn_confirmation_modal_title,
+    },
+  ];
+  const nnsDappAccountSteps: Steps = [
     {
       name: "SelectPercentage",
       showBackButton: false,
@@ -26,6 +35,9 @@
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
+  const steps: Steps = controlledByHarwareWallet
+    ? hardwareWalletSteps
+    : nnsDappAccountSteps;
 
   let currentStep: Step;
   let modal: WizardModal;
@@ -33,13 +45,29 @@
   let percentageToSpawn: number = 0;
   let loading: boolean;
 
+  let enoughMaturityToSpawn: boolean;
+  $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
+    neuron,
+    percentage: percentageToSpawn,
+  });
+
+  let percentageMessage: string;
+  $: percentageMessage = controlledByHarwareWallet
+    ? "100%"
+    : formatPercentage(percentageToSpawn / 100, {
+        minFraction: 0,
+        maxFraction: 0,
+      });
+
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
     loading = true;
     startBusy("spawn-neuron");
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToSpawn,
+      percentageToSpawn: controlledByHarwareWallet
+        ? undefined
+        : percentageToSpawn,
     });
     if (success) {
       toastsStore.success({
@@ -66,6 +94,7 @@
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
       bind:percentage={percentageToSpawn}
+      disabled={!enoughMaturityToSpawn}
     >
       <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
@@ -80,10 +109,7 @@
           {replacePlaceholders(
             $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: formatPercentage(percentageToSpawn / 100, {
-                minFraction: 0,
-                maxFraction: 0,
-              }),
+              $percentage: percentageMessage,
             }
           )}
         </p>

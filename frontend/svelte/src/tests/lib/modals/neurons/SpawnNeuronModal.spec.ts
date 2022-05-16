@@ -21,7 +21,7 @@ describe("SpawnNeuronModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(1_000_000),
+      maturityE8sEquivalent: BigInt(10_000_000),
     },
   };
 
@@ -32,6 +32,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
+        controlledByHarwareWallet: false,
       },
     });
 
@@ -43,6 +44,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
+        controlledByHarwareWallet: false,
       },
     });
 
@@ -51,11 +53,39 @@ describe("SpawnNeuronModal", () => {
     ).toBeInTheDocument();
   });
 
+  it("should have disabled button if percentage is not enought to spawn a new neuron", async () => {
+    const { queryByTestId } = await renderModal({
+      component: SpawnNeuronModal,
+      props: {
+        neuron: {
+          ...neuron,
+          fullNeuron: {
+            ...neuron.fullNeuron,
+            maturityE8sEquivalent: BigInt(1_000_000),
+          },
+        },
+        controlledByHarwareWallet: false,
+      },
+    });
+
+    const rangeElement = queryByTestId("input-range");
+    expect(rangeElement).toBeInTheDocument();
+    rangeElement &&
+      (await fireEvent.input(rangeElement, { target: { value: 50 } }));
+
+    const selectMaturityButton = queryByTestId(
+      "select-maturity-percentage-button"
+    );
+    expect(selectMaturityButton).toBeInTheDocument();
+    expect(selectMaturityButton?.getAttribute("disabled")).not.toBeNull();
+  });
+
   it("should call spawnNeuron service on confirm click", async () => {
     const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {
         neuron,
+        controlledByHarwareWallet: false,
       },
     });
 
@@ -73,6 +103,29 @@ describe("SpawnNeuronModal", () => {
     await waitFor(() =>
       expect(queryByTestId("confirm-action-screen")).toBeInTheDocument()
     );
+
+    const confirmButton = queryByTestId("confirm-action-button");
+    expect(confirmButton).toBeInTheDocument();
+    confirmButton && (await fireEvent.click(confirmButton));
+
+    expect(spawnNeuron).toBeCalled();
+  });
+
+  it("should show only confirm screen for hardware wallet controlled neurons", async () => {
+    const { queryByTestId, queryByText } = await renderModal({
+      component: SpawnNeuronModal,
+      props: {
+        neuron,
+        controlledByHarwareWallet: true,
+      },
+    });
+
+    expect(queryByTestId("confirm-action-screen")).toBeInTheDocument();
+
+    const rangeElement = queryByTestId("input-range");
+    expect(rangeElement).not.toBeInTheDocument();
+
+    expect(queryByText("100%", { exact: false })).toBeInTheDocument();
 
     const confirmButton = queryByTestId("confirm-action-button");
     expect(confirmButton).toBeInTheDocument();

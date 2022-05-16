@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { syncAccounts } from "../../services/accounts.services";
-  import { stakeAndLoadNeuron } from "../../services/neurons.services";
+  import { stakeNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { startBusy, stopBusy } from "../../stores/busy.store";
@@ -18,17 +18,17 @@
   const createNeuron = async () => {
     startBusy("stake-neuron");
     creating = true;
-    const neuronId = await stakeAndLoadNeuron({
+    const neuron = await stakeNeuron({
       amount,
       account,
     });
-    if (neuronId !== undefined) {
+    if (neuron !== undefined) {
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       syncAccounts();
 
-      dispatcher("nnsNeuronCreated", { neuronId });
+      dispatcher("nnsNeuronCreated", { neuron });
     }
     creating = false;
     stopBusy("stake-neuron");

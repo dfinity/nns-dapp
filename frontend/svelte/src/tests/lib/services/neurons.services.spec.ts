@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
@@ -27,6 +28,7 @@ import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
   addHotkey,
+  addHotkeyFromHW,
   addFollowee,
   routePathNeuronId,
   joinCommunityFund,
@@ -34,7 +36,7 @@ const {
   loadNeuron,
   removeFollowee,
   removeHotkey,
-  stakeAndLoadNeuron,
+  stakeNeuron,
   startDissolving,
   stopDissolving,
   updateDelay,
@@ -50,12 +52,36 @@ jest.mock("../../../lib/stores/toasts.store", () => {
   };
 });
 
+let testIdentity: Identity | undefined = mockIdentity;
+const setNoAccountIdentity = () => (testIdentity = undefined);
+const resetAccountIdentity = () => (testIdentity = mockIdentity);
+
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    getAccountIdentityByPrincipal: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(testIdentity)),
     getAccountIdentity: jest
       .fn()
-      .mockImplementation(() => Promise.resolve(mockIdentity)),
+      .mockImplementation(() => Promise.resolve(testIdentity)),
+  };
+});
+
+const mockLedgerIdentity = () => Promise.resolve(mockIdentity);
+let getLedgerIdentityImplementation = mockLedgerIdentity;
+const setLedgerThrow = () =>
+  (getLedgerIdentityImplementation = () => {
+    throw new Error("Test");
+  });
+const resetLedger = () =>
+  (getLedgerIdentityImplementation = mockLedgerIdentity);
+
+jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+  return {
+    getLedgerIdentityProxy: jest
+      .fn()
+      .mockImplementation(() => getLedgerIdentityImplementation()),
   };
 });
 
@@ -161,34 +187,36 @@ describe("neurons-services", () => {
   });
 
   describe("stake new neuron", () => {
-    it("should stake and load a neuron from main account", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockMainAccount });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it("should stake a neuron from main account", async () => {
+      const newNeuron = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
+      });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
-
-      const neuron = get(definedNeuronsStore)[0];
-      expect(neuron).toEqual(mockNeuron);
+      expect(newNeuron).toEqual(mockNeuron);
     });
 
     it("should stake and load a neuron from subaccount", async () => {
-      await stakeAndLoadNeuron({ amount: 10, account: mockSubAccount });
+      const newNeuron = await stakeNeuron({
+        amount: 10,
+        account: mockSubAccount,
+      });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
-
-      const neuron = get(definedNeuronsStore)[0];
-      expect(neuron).toEqual(mockNeuron);
+      expect(newNeuron).toEqual(mockNeuron);
     });
 
     it("should stake neuron from hardware wallet", async () => {
-      await stakeAndLoadNeuron({
+      await stakeNeuron({
         amount: 10,
         account: mockHardwareWalletAccount,
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
-
-      const neuron = get(definedNeuronsStore)[0];
-      expect(neuron).toEqual(mockNeuron);
     });
 
     it(`stakeNeuron return undefined if amount less than ${
@@ -198,7 +226,7 @@ describe("neurons-services", () => {
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: 0.1,
         account: mockMainAccount,
       });
@@ -212,7 +240,7 @@ describe("neurons-services", () => {
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: NaN,
         account: mockMainAccount,
       });
@@ -222,9 +250,9 @@ describe("neurons-services", () => {
     });
 
     it("should not stake neuron if no identity", async () => {
-      setNoIdentity();
+      setNoAccountIdentity();
 
-      const response = await stakeAndLoadNeuron({
+      const response = await stakeNeuron({
         amount: 10,
         account: mockMainAccount,
       });
@@ -232,7 +260,7 @@ describe("neurons-services", () => {
       expect(response).toBeUndefined();
       expect(toastsStore.error).toBeCalled();
 
-      resetIdentity();
+      resetAccountIdentity();
     });
   });
 
@@ -646,6 +674,30 @@ describe("neurons-services", () => {
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyAddHotkey).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("addHotkeyFromHW", () => {
+    it("should update neuron", async () => {
+      await addHotkeyFromHW({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+        accountIdentifier: mockMainAccount.identifier,
+      });
+
+      expect(spyAddHotkey).toHaveBeenCalled();
+    });
+
+    it("should not update if ledger connection throws", async () => {
+      setLedgerThrow();
+      await addHotkeyFromHW({
+        neuronId: controlledNeuron.neuronId,
+        principal: Principal.fromText("aaaaa-aa"),
+        accountIdentifier: mockMainAccount.identifier,
+      });
+
+      expect(spyAddHotkey).not.toHaveBeenCalled();
+      resetLedger();
     });
   });
 

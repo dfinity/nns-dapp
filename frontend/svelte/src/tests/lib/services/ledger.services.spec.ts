@@ -3,6 +3,7 @@ import { principalToAccountIdentifier } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
+import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
 import { LedgerIdentity } from "../../../lib/identities/ledger.identity";
 import * as accountsServices from "../../../lib/services/accounts.services";
 import * as authServices from "../../../lib/services/auth.services";
@@ -10,6 +11,7 @@ import {
   connectToHardwareWallet,
   getLedgerIdentity,
   registerHardwareWallet,
+  showAddressAndPubKeyOnHardwareWallet,
 } from "../../../lib/services/ledger.services";
 import { authStore } from "../../../lib/stores/auth.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
@@ -212,6 +214,54 @@ describe("ledger-services", () => {
           $ledgerIdentifier: mockLedgerIdentifier,
         })
       );
+    });
+  });
+
+  describe("show info on ledger", () => {
+    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+
+    let spy;
+
+    beforeAll(() => {
+      jest
+        .spyOn(LedgerIdentity, "create")
+        .mockImplementation(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        );
+
+      spy = jest.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
+    });
+
+    afterAll(() => {
+      jest.clearAllMocks();
+      jest.restoreAllMocks();
+    });
+
+    describe("success", () => {
+      it("should show info on device through identity", async () => {
+        await showAddressAndPubKeyOnHardwareWallet();
+
+        expect(spy).toHaveBeenCalled();
+      });
+    });
+
+    describe("error", () => {
+      it("should not display info if ledger throw an error", async () => {
+        spy.mockImplementation(() => {
+          throw new LedgerErrorKey("error__ledger.unexpected_wallet");
+        });
+
+        const spyToastError = jest.spyOn(toastsStore, "error");
+
+        await showAddressAndPubKeyOnHardwareWallet();
+
+        expect(spyToastError).toBeCalled();
+        expect(spyToastError).toBeCalledWith({
+          labelKey: "error__ledger.unexpected_wallet",
+        });
+
+        spyToastError.mockRestore();
+      });
     });
   });
 });
