@@ -9,7 +9,7 @@
 </script>
 
 <button
-  class="primary"
+  class="primary small"
   type="button"
   on:click={() => (modalOpen = true)}
   data-tid="open-rename-subaccount-button"

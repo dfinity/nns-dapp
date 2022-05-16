@@ -4,12 +4,12 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import HardwareWalletShowAction from "../../../../lib/components/accounts/HardwareWalletShowAction.svelte";
+import HardwareWalletShowAction from "../../../../lib/components/accounts/HardwareWalletShowActionButton.svelte";
 import { showAddressAndPubKeyOnHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 
 jest.mock("../../../../lib/proxy/ledger.services.proxy");
 
-describe("HardwareWalletShowAction", () => {
+describe("HardwareWalletShowActionButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
