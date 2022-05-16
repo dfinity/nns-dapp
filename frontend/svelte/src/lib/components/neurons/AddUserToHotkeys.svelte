@@ -23,7 +23,8 @@
   // Add the auth identity principal as hotkey
   const addCurrentUserToHotkey = async () => {
     loading = true;
-    startBusy("add-hotkey-neuron");
+    // This screen is only for hardware wallet.
+    startBusy("stake-neuron", $i18n.wallet.pending_approval);
     const identity = await getIdentity();
     const neuronId = await addHotkeyFromHW({
       neuronId: neuron.neuronId,

@@ -16,7 +16,7 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
-    startBusy("stake-neuron");
+    startBusy("stake-neuron", $i18n.wallet.pending_approval);
     creating = true;
     const neuron = await stakeNeuron({
       amount,

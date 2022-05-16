@@ -3,7 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "../../utils/format.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { mergeMaturity } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
@@ -11,6 +11,7 @@
   import WizardModal from "../WizardModal.svelte";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let neuron: NeuronInfo;
 
@@ -36,7 +37,7 @@
   const dispatcher = createEventDispatcher();
   const mergeNeuronMaturity = async () => {
     loading = true;
-    startBusy("merge-maturity");
+    startBusyNeuron({ initiator: "merge-maturity", neuronId: neuron.neuronId });
     const { success } = await mergeMaturity({
       neuronId: neuron.neuronId,
       percentageToMerge,
