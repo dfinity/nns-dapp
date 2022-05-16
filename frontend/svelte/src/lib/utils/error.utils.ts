@@ -46,7 +46,11 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   ];
   const pair = collection.find(([classType]) => error instanceof classType);
   if (pair === undefined) {
-    return { labelKey: "error.unknown", level: "error" };
+    return {
+      labelKey: "error.unknown",
+      level: "error",
+      detail: errorToString(error),
+    };
   }
   return { labelKey: pair[1], detail: errorToString(error), level: "error" };
 };
