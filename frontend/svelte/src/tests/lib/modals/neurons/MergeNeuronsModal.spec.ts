@@ -25,6 +25,7 @@ import {
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     mergeNeurons: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

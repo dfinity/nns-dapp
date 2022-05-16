@@ -16,6 +16,7 @@ import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     removeHotkey: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

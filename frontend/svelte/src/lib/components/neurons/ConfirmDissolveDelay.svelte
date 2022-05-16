@@ -12,7 +12,8 @@
     neuronStake,
     votingPower,
   } from "../../utils/neuron.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -23,7 +24,7 @@
   $: neuronICP = neuronStake(neuron);
 
   const updateNeuron = async () => {
-    startBusy("update-delay");
+    startBusyNeuron({ initiator: "update-delay", neuronId: neuron.neuronId });
     loading = true;
     const neuronId = await updateDelay({
       neuronId: neuron.neuronId,

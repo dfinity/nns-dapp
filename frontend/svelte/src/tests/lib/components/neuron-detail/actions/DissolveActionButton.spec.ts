@@ -15,6 +15,7 @@ jest.mock("../../../../../lib/services/neurons.services", () => {
   return {
     startDissolving: jest.fn().mockResolvedValue(undefined),
     stopDissolving: jest.fn().mockResolvedValue(undefined),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

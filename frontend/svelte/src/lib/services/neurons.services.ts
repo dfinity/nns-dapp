@@ -115,7 +115,9 @@ const getNeuronHW = async ({
   return neurons.find((currentNeuron) => currentNeuron.neuronId === neuronId);
 };
 
-const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
+export const getNeuronFromStore = (
+  neuronId: NeuronId
+): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
 const getIdentityOfControllerByNeuronId = async (
@@ -140,36 +142,6 @@ const getIdentityOfControllerByNeuronId = async (
   }
 
   throw new NotAuthorizedError();
-};
-
-export const getIdentityOfNeuronControllerOrHotkey = async (
-  neuronId: NeuronId
-): Promise<Identity> => {
-  try {
-    // No `await` no `catch`
-    return await getIdentityOfControllerByNeuronId(neuronId);
-  } catch (_) {
-    // Check if hotkey
-    const { identity, neuron } = await getIdentityAndNeuronHelper(neuronId);
-
-    // Check if current identity is in the hotkeys
-    const isAuthIdentityHotkey = (neuron.fullNeuron?.hotKeys ?? []).reduce(
-      (isHotkey, principal) => {
-        if (isHotkey) {
-          return isHotkey;
-        }
-        return principal === identity.getPrincipal().toText();
-      },
-      false
-    );
-
-    if (isAuthIdentityHotkey) {
-      return identity;
-    }
-
-    // TODO: Check linked hwardware wallets
-    throw new NotAuthorizedError();
-  }
 };
 
 const getStakeNeuronPropsByAccount = ({
