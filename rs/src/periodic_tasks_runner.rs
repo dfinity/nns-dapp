@@ -1,18 +1,17 @@
-use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
-use crate::canisters::{cmc, governance};
 use crate::canisters::ledger;
+use crate::canisters::{cmc, governance};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::{Cycles, ledger_sync};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
+use crate::{ledger_sync, Cycles};
+use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
 use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use ledger_canister::{
-    AccountBalanceArgs, AccountIdentifier, BlockHeight, Memo, SendArgs, Subaccount,
-    Tokens, DEFAULT_TRANSFER_FEE,
+    AccountBalanceArgs, AccountIdentifier, BlockHeight, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
@@ -87,9 +86,11 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.to_string(), was_refunded)
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    error.to_string(),
+                    was_refunded,
+                )
             });
             if was_refunded {
                 let subaccount = (&args.controller).into();
@@ -100,7 +101,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
                     args.refund_address,
                     error.to_string(),
                 )
-                    .await;
+                .await;
             }
         }
         Err(error) => {
@@ -124,15 +125,15 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
 
 async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
-        Ok(Ok(_)) => {
-            STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height))
-        }
+        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.to_string(), was_refunded)
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    error.to_string(),
+                    was_refunded,
+                )
             });
             if was_refunded {
                 let subaccount = (&args.principal).into();
@@ -143,7 +144,7 @@ async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterAr
                     args.refund_address,
                     error.to_string(),
                 )
-                    .await;
+                .await;
             }
         }
         Err(error) => {
@@ -231,7 +232,7 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
 
     let notify_request = NotifyCreateCanister {
         block_index,
-        controller: principal
+        controller: principal,
     };
 
     cmc::notify_create_canister(notify_request).await

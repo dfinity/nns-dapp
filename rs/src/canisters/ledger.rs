@@ -3,8 +3,7 @@ use dfn_protobuf::{protobuf, ToProto};
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest};
 use ledger_canister::{
-    AccountBalanceArgs, BlockHeight, EncodedBlock, GetBlocksArgs, GetBlocksRes,
-    SendArgs, TipOfChainRes, Tokens,
+    AccountBalanceArgs, BlockHeight, EncodedBlock, GetBlocksArgs, GetBlocksRes, SendArgs, TipOfChainRes, Tokens,
 };
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
