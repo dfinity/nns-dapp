@@ -39,8 +39,11 @@ const initBusyStore = () => {
     /**
      * Show the busy-screen if not visible
      */
-    startBusy(initiator: BusyStateInitiatorType, message?: string) {
-      update((state) => [...state, { initiator, message }]);
+    startBusy(newInitiator: BusyStateInitiatorType, message?: string) {
+      update((state) => [
+        ...state.filter(({ initiator }) => newInitiator !== initiator),
+        { initiator: newInitiator, message },
+      ]);
     },
 
     /**
@@ -63,7 +66,9 @@ export const busy: Readable<boolean> = derived(
   ($busyStore) => $busyStore.length > 0
 );
 
-export const firstBusyItem: Readable<BusyItem> = derived(
+// Returns the newest message that was added to the store
+export const busyMessage: Readable<string | undefined> = derived(
   busyStore,
-  ($busyStore) => $busyStore[0]
+  ($busyStore) =>
+    $busyStore.reverse().find(({ message }) => message !== undefined)?.message
 );
