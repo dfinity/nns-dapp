@@ -13,6 +13,7 @@ import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 
