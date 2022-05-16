@@ -1,31 +1,14 @@
-import { writable } from "svelte/store";
+import type { Writable } from "svelte/store";
 import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "../types/account";
 
+/**
+ * A store that contains selected account and it's transactions.
+ */
 export interface SelectedAccountStore {
   account: Account | undefined;
   transactions: Transaction[] | undefined;
 }
 
-/**
- * A store that contains selected account and it's transactions.
- */
-const initSelectedAccountStore = () => {
-  const initialState: SelectedAccountStore = {
-    account: undefined,
-    transactions: undefined,
-  };
-  const { subscribe, set } = writable<SelectedAccountStore>(initialState);
-
-  return {
-    subscribe,
-    set,
-    selectAccount: (account: Account | undefined) =>
-      set({
-        ...initialState,
-        account,
-      }),
-  };
-};
-
-export const selectedAccountStore = initSelectedAccountStore();
+export type SelectedAccountContext = Writable<SelectedAccountStore>;
+export const SELECTED_ACCOUNT_CONTEXT_KEY = Symbol("selected-account");

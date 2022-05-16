@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
@@ -14,7 +14,10 @@
     getAccountTransactions,
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
-  import { accountsStore } from "../lib/stores/accounts.store";
+  import {
+    accountsStore,
+    type AccountsStore,
+  } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import Identifier from "../lib/components/ic/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
@@ -25,8 +28,13 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
-  import { selectedAccountStore } from "../lib/stores/selectedAccount.store";
+  import {
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    type SelectedAccountContext,
+    type SelectedAccountStore,
+  } from "../lib/stores/selectedAccount.store";
   import type { Account } from "../lib/types/account";
+  import { writable } from "svelte/store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -51,6 +59,15 @@
       },
     });
 
+  const selectedAccountStore = writable<SelectedAccountStore>({
+    account: undefined,
+    transactions: undefined,
+  });
+  setContext<SelectedAccountContext>(
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    selectedAccountStore
+  );
+
   let routeAccountIdentifier: string | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
@@ -64,7 +81,10 @@
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
-        selectedAccountStore.selectAccount(selectedAccount);
+        selectedAccountStore.set({
+          account: selectedAccount,
+          transactions: undefined,
+        });
 
         if (selectedAccount !== undefined) {
           updateTransactions(selectedAccount.identifier);
