@@ -1,7 +1,5 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
-use crate::canisters::governance::{
-    self, claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount,
-};
+use crate::canisters::governance;
 use crate::canisters::ledger;
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::ledger_sync;
@@ -10,9 +8,10 @@ use crate::state::STATE;
 use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
+use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use ledger_canister::{
-    AccountBalanceArgs, AccountIdentifier, BlockHeight, CyclesResponse, ICPTs, Memo, NotifyCanisterArgs, SendArgs,
-    Subaccount, TRANSACTION_FEE,
+    AccountBalanceArgs, AccountIdentifier, BlockHeight, CyclesResponse, Memo, NotifyCanisterArgs, SendArgs, Subaccount,
+    Tokens, DEFAULT_TRANSFER_FEE,
 };
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
@@ -181,7 +180,7 @@ async fn handle_refund(args: RefundTransactionArgs) {
     let send_request = SendArgs {
         memo: Memo(0),
         amount: args.amount,
-        fee: TRANSACTION_FEE,
+        fee: DEFAULT_TRANSFER_FEE,
         from_subaccount: Some(args.from_sub_account),
         to: args.refund_address,
         created_at_time: None,
@@ -225,15 +224,15 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
     }
 }
 
-async fn create_canister(principal: PrincipalId, amount: ICPTs) -> Result<CyclesResponse, String> {
+async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<CyclesResponse, String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
-    let send_amount = ICPTs::from_e8s(amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
+    let send_amount = Tokens::from_e8s(amount.get_e8s() - (2 * DEFAULT_TRANSFER_FEE.get_e8s()));
     let subaccount: Subaccount = (&principal).into();
 
     let send_request = SendArgs {
         memo: MEMO_CREATE_CANISTER,
         amount: send_amount,
-        fee: TRANSACTION_FEE,
+        fee: DEFAULT_TRANSFER_FEE,
         from_subaccount: Some(subaccount),
         to: AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount)),
         created_at_time: None,
@@ -251,15 +250,15 @@ async fn create_canister(principal: PrincipalId, amount: ICPTs) -> Result<Cycles
     Ok(ledger::notify(notify_request).await?)
 }
 
-async fn top_up_canister(canister_id: CanisterId, amount: ICPTs) -> Result<CyclesResponse, String> {
+async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<CyclesResponse, String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
-    let send_amount = ICPTs::from_e8s(amount.get_e8s() - (2 * TRANSACTION_FEE.get_e8s()));
+    let send_amount = Tokens::from_e8s(amount.get_e8s() - (2 * DEFAULT_TRANSFER_FEE.get_e8s()));
     let subaccount: Subaccount = (&canister_id).into();
 
     let send_request = SendArgs {
         memo: MEMO_TOP_UP_CANISTER,
         amount: send_amount,
-        fee: TRANSACTION_FEE,
+        fee: DEFAULT_TRANSFER_FEE,
         from_subaccount: Some(subaccount),
         to: AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount)),
         created_at_time: None,
@@ -289,12 +288,12 @@ async fn enqueue_create_or_top_up_canister_refund(
 
     match ledger::account_balance(balance_request).await {
         Ok(balance) => {
-            let refund_amount_e8s = balance.get_e8s().saturating_sub(TRANSACTION_FEE.get_e8s());
+            let refund_amount_e8s = balance.get_e8s().saturating_sub(DEFAULT_TRANSFER_FEE.get_e8s());
             if refund_amount_e8s > 0 {
                 let refund_args = RefundTransactionArgs {
                     recipient_principal: principal,
                     from_sub_account: subaccount,
-                    amount: ICPTs::from_e8s(refund_amount_e8s),
+                    amount: Tokens::from_e8s(refund_amount_e8s),
                     original_transaction_block_height: block_height,
                     refund_address,
                     error_message,

@@ -4,6 +4,7 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
+import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
@@ -40,13 +41,55 @@ function serve() {
   };
 }
 
-export default {
+const replaceMap = [
+  "ROLLUP_WATCH",
+  "IDENTITY_SERVICE_URL",
+  "DEPLOY_ENV",
+  "REDIRECT_TO_LEGACY",
+  "FETCH_ROOT_KEY",
+  "HOST",
+  "OWN_CANISTER_ID",
+  "LEDGER_CANISTER_ID",
+  "GOVERNANCE_CANISTER_ID",
+].reduce(
+  (ans, key) => {
+    // Each key is transferred from envConfig as a string.
+    // Theoretically it is possible to pass other types, such as a bool, however
+    // the linter assumes that process.env.X is a string so it is best to comply.
+    let value = envConfig[key];
+    if (undefined === value) {
+      throw new Error(`In rollup, envConfig[${key}] is undefined.`);
+    }
+    ans[`process.env.${key}`] = JSON.stringify(String(envConfig[key]));
+    return ans;
+  },
+  {
+    // This is a rollup configuration, it is not inserted into the compiled code.
+    // Quote: @rollup/plugin-replace: 'preventAssignment' currently defaults to false.
+    //        It is recommended to set this option to true, as the next major version
+    //        will default this option to true.
+    preventAssignment: true,
+  }
+);
+
+const configApp = {
   input: "src/main.ts",
   output: {
     sourcemap: !prodBuild,
     format: "es",
     name: "app",
-    file: "public/build/bundle.js",
+    dir: "public/build/",
+    manualChunks: {
+      nns: ["@dfinity/nns"],
+      agent: [
+        "@dfinity/agent",
+        "@dfinity/auth-client",
+        "@dfinity/authentication",
+        "@dfinity/candid",
+        "@dfinity/identity",
+        "@dfinity/principal",
+      ],
+    },
   },
   plugins: [
     svelte({
@@ -97,20 +140,7 @@ export default {
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
     json(),
-    replace({
-      preventAssignment: true,
-      "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-        envConfig.IDENTITY_SERVICE_URL
-      ),
-      "process.env.DEPLOY_ENV": JSON.stringify(envConfig.DEPLOY_ENV),
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        envConfig.REDIRECT_TO_LEGACY
-      ),
-      "process.env.FETCH_ROOT_KEY": JSON.stringify(envConfig.FETCH_ROOT_KEY),
-      "process.env.HOST": JSON.stringify(envConfig.HOST),
-      "process.env.OWN_CANISTER_ID": JSON.stringify(envConfig.OWN_CANISTER_ID),
-    }),
+    replace(replaceMap),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
@@ -128,3 +158,28 @@ export default {
     clearScreen: false,
   },
 };
+
+const configWorker = {
+  input: "src/worker.ts",
+  output: {
+    sourcemap: false,
+    format: "amd",
+    file: "public/build/worker.js",
+  },
+  plugins: [
+    resolve({
+      preferBuiltins: false,
+      browser: true,
+    }),
+    commonjs(),
+    typescript({
+      sourceMap: !prodBuild,
+      inlineSources: !prodBuild,
+    }),
+    json(),
+    replace(replaceMap),
+    OMT(),
+  ],
+};
+
+export default [configApp, configWorker];

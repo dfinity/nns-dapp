@@ -1,17 +1,25 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
+import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
+  HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "./nns-dapp.errors";
-import { idlFactory, NNSDappService } from "./nns-dapp.idl";
+import type { NNSDappService } from "./nns-dapp.idl";
+import { idlFactory } from "./nns-dapp.idl";
 import type {
+  AccountDetails,
+  CanisterDetails,
   CreateSubAccountResponse,
+  RegisterHardwareWalletRequest,
+  RegisterHardwareWalletResponse,
+  RenameSubAccountRequest,
+  RenameSubAccountResponse,
   SubAccountDetails,
 } from "./nns-dapp.types";
-import type { NNSDappCanisterOptions } from "./types";
 
 export class NNSDappCanister {
   private constructor(
@@ -45,28 +53,48 @@ export class NNSDappCanister {
   }
 
   /**
-   * Used to be able to create subAccounts
-   *
-   * TODO: Understand why we need this?
-   * TODO: Remove if not needed?
+   * Add account to NNSDapp Canister if it doesn't exist.
    *
    * @returns Promise<void>
    */
-  public addAccount = async (): Promise<AccountIdentifier> => {
+  public async addAccount(): Promise<AccountIdentifier> {
     const identifierText = await this.certifiedService.add_account();
     return AccountIdentifier.fromHex(identifierText);
-  };
+  }
+
+  /**
+   * Get Account Details
+   *
+   * @returns Promise<void>
+   */
+  public async getAccount({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<AccountDetails> {
+    const { AccountNotFound, Ok } = await this.getNNSDappService(
+      certified
+    ).get_account();
+    if (AccountNotFound === null) {
+      throw new AccountNotFoundError("Account not found");
+    }
+
+    if (Ok) {
+      return Ok;
+    }
+
+    // We should never reach here. Some of the previous properties should be present.
+    throw new Error("Error getting account details");
+  }
 
   /**
    * Creates a subaccount with the name and returns the Subaccount details
-   *
-   * TODO: Why is calling to `add_account` needed?
    */
-  public createSubAccount = async ({
+  public async createSubAccount({
     subAccountName,
   }: {
     subAccountName: string;
-  }): Promise<SubAccountDetails> => {
+  }): Promise<SubAccountDetails> {
     const {
       AccountNotFound,
       NameTooLong,
@@ -82,7 +110,7 @@ export class NNSDappCanister {
 
     if (NameTooLong === null) {
       // Which is the character?
-      throw new NameTooLongError(`Error, name ${subAccountName} is too long`);
+      throw new NameTooLongError(`Error, name "${subAccountName}" is too long`);
     }
 
     if (SubAccountLimitExceeded === null) {
@@ -98,5 +126,82 @@ export class NNSDappCanister {
 
     // We should never reach here. Some of the previous properties should be present.
     throw new Error("Error creating subaccount");
+  }
+
+  public async registerHardwareWallet(
+    request: RegisterHardwareWalletRequest
+  ): Promise<void> {
+    const response: RegisterHardwareWalletResponse =
+      await this.certifiedService.register_hardware_wallet(request);
+
+    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+      throw new AccountNotFoundError("Error registering hardware wallet");
+    }
+
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new NameTooLongError(`Error, name "${request.name}" is too long`);
+    }
+
+    if (
+      "HardwareWalletAlreadyRegistered" in response &&
+      response.HardwareWalletAlreadyRegistered === null
+    ) {
+      throw new HardwareWalletAttachError(
+        "error__attach_wallet.already_registered"
+      );
+    }
+
+    if (
+      "HardwareWalletLimitExceeded" in response &&
+      response.HardwareWalletLimitExceeded === null
+    ) {
+      throw new HardwareWalletAttachError(
+        "error__attach_wallet.limit_exceeded"
+      );
+    }
+  }
+
+  public renameSubAccount = async (
+    request: RenameSubAccountRequest
+  ): Promise<void> => {
+    const response: RenameSubAccountResponse =
+      await this.certifiedService.rename_sub_account(request);
+
+    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+      throw new AccountNotFoundError(
+        `Error renaming subAccount, account (${request.account_identifier}) not found`
+      );
+    }
+
+    if (
+      "SubAccountNotFound" in response &&
+      response.SubAccountNotFound === null
+    ) {
+      throw new AccountNotFoundError(
+        `Error renaming subAccount, subAccount (${request.account_identifier}) not found`
+      );
+    }
+
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new NameTooLongError(
+        `Error, name "${request.new_name}" is too long`
+      );
+    }
   };
+
+  public getCanisters = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<CanisterDetails[]> => {
+    return this.getNNSDappService(certified).get_canisters();
+  };
+
+  private getNNSDappService(certified = true): NNSDappService {
+    if (certified) {
+      return this.certifiedService;
+    }
+
+    return this.service;
+  }
 }

@@ -2,13 +2,14 @@
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
+  export let noWrap: boolean = false;
 </script>
 
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
   </div>
-  <div class="tooltip" role="tooltip" {id}>{text}</div>
+  <div class="tooltip" role="tooltip" {id} class:noWrap>{text}</div>
 </div>
 
 <style lang="scss">
@@ -17,11 +18,13 @@
   }
 
   .tooltip {
+    z-index: var(--z-index);
+
     position: absolute;
     display: inline-block;
 
     left: 50%;
-    bottom: calc(var(--padding) / 2);
+    bottom: var(--padding-0_5x);
     transform: translate(-50%, 100%);
 
     opacity: 0;
@@ -35,7 +38,15 @@
     background: var(--gray-600);
 
     color: var(--gray-600-contrast);
-    white-space: nowrap;
+
+    // limit width
+    white-space: pre-wrap;
+    max-width: 240px;
+    width: max-content;
+
+    &.noWrap {
+      white-space: nowrap;
+    }
 
     pointer-events: none;
   }

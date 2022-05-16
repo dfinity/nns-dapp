@@ -1,7 +1,6 @@
 use candid::CandidType;
 use ic_base_types::{CanisterId, NodeId, PrincipalId, SubnetId};
 use ic_registry_subnet_type::SubnetType;
-use prost::Message;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -145,34 +144,28 @@ pub struct RecoverSubnetPayload {
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L38
-#[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq, Eq)]
 pub struct SetFirewallConfigPayload {
     /// The firewall configuration content
-    #[prost(string, tag = "1")]
-    pub firewall_config: ::prost::alloc::string::String,
+    pub firewall_config: String,
     /// List of allowed IPv4 prefixes
-    #[prost(string, repeated, tag = "2")]
-    pub ipv4_prefixes: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    pub ipv4_prefixes: Vec<String>,
     /// List of allowed IPv6 prefixes
-    #[prost(string, repeated, tag = "3")]
-    pub ipv6_prefixes: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    pub ipv6_prefixes: Vec<String>,
 }
 
 // https://github.com/dfinity-lab/dfinity/blob/bd842628a462dfa30604a2e2352fe50e9066d637/rs/registry/canister/src/mutations/do_add_node_operator.rs#L38
-#[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq, Eq)]
 pub struct AddNodeOperatorPayload {
     /// The principal id of the node operator. This principal is the entity that
     /// is able to add and remove nodes.
     ///
     /// This must be unique across NodeOperatorRecords.
-    #[prost(message, optional, tag = "1")]
     pub node_operator_principal_id: Option<PrincipalId>,
 
-    #[prost(message, optional, tag = "2")]
     pub node_provider_principal_id: Option<PrincipalId>,
 
     /// The remaining number of nodes that could be added by this Node Operator.
-    #[prost(uint64, tag = "3")]
     pub node_allowance: u64,
 }
 
@@ -219,78 +212,66 @@ pub struct SetAuthorizedSubnetworkListArgs {
     pub subnets: Vec<SubnetId>,
 }
 
-// https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L79
-#[derive(CandidType, Deserialize, Clone, PartialEq, Eq, Message)]
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/7061a8357f5a2d196d19654bc540f7aab56418b6/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L89
+#[derive(CandidType, Deserialize, Clone, PartialEq, Eq)]
 pub struct UpdateNodeOperatorConfigPayload {
     /// The principal id of the node operator. This principal is the entity that
     /// is able to add and remove nodes.
-    #[prost(message, optional, tag = "1")]
     pub node_operator_id: Option<PrincipalId>,
 
     /// The remaining number of nodes that could be added by this Node Operator.
-    #[prost(message, optional, tag = "2")]
     pub node_allowance: Option<u64>,
 
     /// The ID of the data center where this Node Operator hosts nodes.
-    #[prost(message, optional, tag = "3")]
     pub dc_id: Option<String>,
 
     /// A map from node type to the number of nodes for which the associated
     /// Node Provider should be rewarded.
-    #[prost(btree_map = "string, uint32", tag = "4")]
     pub rewardable_nodes: BTreeMap<String, u32>,
+
+    /// The principal id of this node's provider.
+    pub node_provider_id: Option<PrincipalId>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct UpdateNodeRewardsTableProposalPayload {
     /// Maps regions to the node reward rates in that region
-    #[prost(btree_map = "string, message", tag = "1")]
-    pub new_entries: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRates>,
+    pub new_entries: BTreeMap<String, NodeRewardRates>,
 }
 
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct NodeRewardRate {
     /// The number of 10,000ths of IMF SDR (currency code XDR) to be rewarded per
     /// node per month.
-    #[prost(uint64, tag = "1")]
     pub xdr_permyriad_per_node_per_month: u64,
 }
 
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct NodeRewardRates {
     /// Maps node types to the reward rate for that node type
-    #[prost(btree_map = "string, message", tag = "1")]
-    pub rates: ::prost::alloc::collections::BTreeMap<::prost::alloc::string::String, NodeRewardRate>,
+    pub rates: BTreeMap<String, NodeRewardRate>,
 }
 
 // https://gitlab.com/dfinity-lab/core/ic/-/blob/1e167e754b674f612e989cdee02acb79cfe40be8/rs/protobuf/def/registry/dc/v1/dc.proto#L27
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct AddOrRemoveDataCentersProposalPayload {
-    #[prost(message, repeated, tag = "1")]
-    pub data_centers_to_add: ::prost::alloc::vec::Vec<DataCenterRecord>,
+    pub data_centers_to_add: Vec<DataCenterRecord>,
     /// The IDs of data centers to remove
-    #[prost(string, repeated, tag = "2")]
-    pub data_centers_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    pub data_centers_to_remove: Vec<String>,
 }
 
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct DataCenterRecord {
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub region: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
-    pub owner: ::prost::alloc::string::String,
-    #[prost(message, optional, tag = "4")]
-    pub gps: ::core::option::Option<Gps>,
+    pub id: String,
+    pub region: String,
+    pub owner: String,
+    pub gps: Option<Gps>,
 }
 
-#[derive(CandidType, Deserialize, Clone, PartialEq, Message)]
+#[derive(CandidType, Deserialize, Clone, PartialEq)]
 pub struct Gps {
-    #[prost(float, tag = "1")]
     pub latitude: f32,
-    #[prost(float, tag = "2")]
     pub longitude: f32,
 }
 
@@ -303,10 +284,9 @@ pub struct UpdateUnassignedNodesConfigPayload {
 
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L32
 //// The payload of a request to remove Node Operator records from the Registry
-#[derive(candid::CandidType, serde::Serialize, candid::Deserialize, Clone, PartialEq, ::prost::Message)]
+#[derive(candid::CandidType, serde::Serialize, candid::Deserialize, Clone, PartialEq)]
 pub struct RemoveNodeOperatorsPayload {
-    #[prost(bytes = "vec", repeated, tag = "1")]
-    pub node_operators_to_remove: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
+    pub node_operators_to_remove: Vec<Vec<u8>>,
 }
 
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/9527797958c2e02c8d975190e10c72efbb164646/rs/registry/canister/src/mutations/reroute_canister_range.rs#L46

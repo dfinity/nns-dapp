@@ -7,11 +7,12 @@
    */
   export let totalFilters: number;
   export let activeFilters: number;
+  export let testId: string | undefined = undefined;
   const dispatch = createEventDispatcher();
   const filter = () => dispatch("nnsFilter");
 </script>
 
-<button on:click={filter} class="dark small"
+<button data-tid={testId} on:click={filter} class="dark small"
   ><IconFilter /><slot />
   <small>{`(${activeFilters}/${totalFilters})`}</small></button
 >
@@ -23,11 +24,11 @@
     align-items: center;
 
     :global(svg) {
-      margin-right: calc(var(--padding) / 2);
+      margin-right: var(--padding-0_5x);
     }
   }
 
   small {
-    margin: 0 calc(var(--padding) / 2);
+    margin: 0 var(--padding-0_5x);
   }
 </style>

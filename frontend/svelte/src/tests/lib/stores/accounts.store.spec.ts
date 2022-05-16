@@ -1,40 +1,33 @@
 import { get } from "svelte/store";
-import {
-  AccountsStore,
-  initAccountsStore,
-} from "../../../lib/stores/accounts.store";
-import type { Account } from "../../../lib/types/account";
+import type { AccountsStore } from "../../../lib/stores/accounts.store";
+import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 
 describe("accountsStore", () => {
-  it("initializes to undefined", () => {
-    const store = initAccountsStore();
-
-    const initState: AccountsStore = get(store);
+  const expectStoreInitialValues = () => {
+    const initState: AccountsStore = get(accountsStore);
 
     expect(initState.main).toBeUndefined();
     expect(initState.subAccounts).toBeUndefined();
+    expect(initState.hardwareWallets).toBeUndefined();
+  };
+
+  it("initializes to undefined", () => {
+    expectStoreInitialValues();
   });
 
-  it("adds subaccounts", () => {
-    const store = initAccountsStore();
+  it("should set main account", () => {
+    accountsStore.set({ main: mockMainAccount, subAccounts: [] });
 
-    const initState: AccountsStore = get(store);
+    const { main } = get(accountsStore);
+    expect(main).toEqual(mockMainAccount);
+  });
 
-    expect(initState.main).toBeUndefined();
-    expect(initState.subAccounts).toBeUndefined();
+  it("should reset account store", () => {
+    accountsStore.set({ main: mockMainAccount, subAccounts: [] });
 
-    const subAccount: Account = {
-      ...mockMainAccount,
-      name: "Test SubAccount",
-    };
+    accountsStore.reset();
 
-    store.addSubAccount(subAccount);
-
-    const state: AccountsStore = get(store);
-
-    expect(state.subAccounts).not.toBeUndefined();
-    expect(state.subAccounts.length).toBe(1);
-    expect(state.subAccounts[0]).toEqual(subAccount);
+    expectStoreInitialValues();
   });
 });

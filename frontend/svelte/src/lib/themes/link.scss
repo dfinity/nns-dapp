@@ -1,0 +1,10 @@
+/** Similar behavior as button.text */
+
+a {
+  text-decoration: none;
+
+  &:active,
+  &:hover {
+    text-decoration: underline;
+  }
+}

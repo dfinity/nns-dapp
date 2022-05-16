@@ -10,7 +10,7 @@ export const routePath = (): string => {
 };
 
 // e.g. #/accounts => accounts
-// e.g. #/wallet/123 => wallet/123
+// e.g. #/wallet/123?a=b => wallet/123
 export const routeContext = (): string => {
   const path: string = routePath();
 
@@ -46,14 +46,17 @@ export const pushHistory = (params: { path: string; query?: string }) => {
 
 // Note: baseHref() always ends with a /. The "path" parameter may also start with a "/", therefore we replace `//` with `/`.
 const fullPath = ({ path, query }: { path: string; query?: string }): string =>
-  `${baseHref()}${path}${query ? `?${query}` : ""}`.replace(/\/\//g, "/");
+  `${baseHref()}${path}${query !== undefined ? `?${query}` : ""}`.replace(
+    /\/\//g,
+    "/"
+  );
 
 /**
  * Test if the History API is supported by the devices. On old phones it might not be the case.
  * Source: https://stackoverflow.com/a/6825002/5404186
  */
 const supportsHistory = (): boolean =>
-  window.history &&
+  window.history !== undefined &&
   "pushState" in window.history &&
   typeof window.history.pushState != "undefined";
 
@@ -61,7 +64,7 @@ const supportsHistory = (): boolean =>
  * Returns the value of the base href (the root of the svelte app). Always ends with '/'.
  */
 export const baseHref = (): string => {
-  const base: HTMLBaseElement | undefined = document.querySelector("base");
+  const base: HTMLBaseElement | null = document.querySelector("base");
   const { origin }: URL = new URL(document.baseURI);
-  return base?.href.replace(origin, "") || "/";
+  return base?.href.replace(origin, "") ?? "/";
 };

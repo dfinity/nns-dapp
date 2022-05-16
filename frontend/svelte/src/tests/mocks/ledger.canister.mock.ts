@@ -1,6 +1,8 @@
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import type { AccountIdentifier, BlockHeight } from "@dfinity/nns";
+import { ICP, LedgerCanister } from "@dfinity/nns";
 
-// @ts-ignore
+// eslint-disable-next-line
+// @ts-ignore: test file
 export class MockLedgerCanister extends LedgerCanister {
   constructor() {
     super();
@@ -10,11 +12,22 @@ export class MockLedgerCanister extends LedgerCanister {
     return this;
   }
 
-  accountBalance = async ({
-    accountIdentifier,
-    certified = true,
-  }: {
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public accountBalance = async (_: {
     accountIdentifier: AccountIdentifier;
-    certified?: boolean;
-  }): Promise<ICP> => Promise.resolve(ICP.fromString("1") as ICP);
+    certified?: boolean | undefined;
+  }): Promise<ICP> => {
+    return ICP.fromE8s(BigInt(1));
+  };
+
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  public transfer = async (_: {
+    to: AccountIdentifier;
+    amount: ICP;
+    memo?: bigint | undefined;
+    fee?: bigint | undefined;
+    fromSubAccountId?: number | undefined;
+  }): Promise<BlockHeight> => {
+    return BigInt(0);
+  };
 }

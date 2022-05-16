@@ -89,7 +89,7 @@ export const idlFactory = ({ IDL }) => {
   const TransactionType = IDL.Variant({
     Burn: IDL.Null,
     Mint: IDL.Null,
-    Send: IDL.Null,
+    Transfer: IDL.Null,
     StakeNeuronNotification: IDL.Null,
     TopUpCanister: CanisterId,
     CreateCanister: IDL.Null,
@@ -203,6 +203,7 @@ export const idlFactory = ({ IDL }) => {
     ),
   });
 };
-export const init = ({ IDL }) => {
+// Remove param `{ IDL }` because TS was complaining of unused variable
+export const init = () => {
   return [];
 };

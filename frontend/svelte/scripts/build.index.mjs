@@ -42,8 +42,8 @@ const updateBaseHref = (content) =>
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
 const updateCSP = (content) => {
-  // In development mode, no CSP rule
-  if (!envConfig.PRODUCTION) {
+  // In local development mode, no CSP rule
+  if (envConfig.ENVIRONMENT === "local") {
     return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
   }
 
@@ -51,8 +51,10 @@ const updateCSP = (content) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self';
-        script-src 'unsafe-eval' 'strict-dynamic' 'nonce-bundle-369ac6c9-8078-4625-82f7-f37a9ca8fb16';
+        img-src 'self' https://nns.raw.ic0.app/;
+        child-src 'self';
+        manifest-src 'self';
+        script-src 'unsafe-eval' 'strict-dynamic' 'nonce-main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25';
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';
@@ -66,7 +68,7 @@ const updateCSP = (content) => {
 const cspConnectSrc = () => {
   const {
     IDENTITY_SERVICE_URL,
-    OWN_CANISTER_ID,
+    OWN_CANISTER_URL,
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,
@@ -75,7 +77,7 @@ const cspConnectSrc = () => {
 
   const src = [
     IDENTITY_SERVICE_URL,
-    OWN_CANISTER_ID,
+    OWN_CANISTER_URL,
     HOST,
     GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_URL,

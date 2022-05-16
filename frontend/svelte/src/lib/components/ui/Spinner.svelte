@@ -1,17 +1,29 @@
 <!-- adapted source: https://github.com/angular/components/tree/master/src/material/progress-spinner -->
+<script lang="ts">
+  export let inline: boolean = false;
+  export let size: "small" | "medium" = "medium";
+</script>
+
 <svg
+  class:inline
+  class={size}
   preserveAspectRatio="xMidYMid meet"
   focusable="false"
   aria-hidden="true"
+  data-tid="spinner"
   viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="45" /></svg
 >
 
 <style lang="scss">
   @use "sass:math";
-
-  svg {
+  .medium {
     --spinner-size: 30px;
+  }
 
+  .small {
+    --spinner-size: calc(var(--line-height-standard) * 1rem);
+  }
+  svg {
     width: var(--spinner-size);
     height: var(--spinner-size);
 
@@ -28,6 +40,11 @@
     // start the animation at 5%
     --start: calc((1 - 0.05) * var(--circumference));
     --end: calc((1 - 0.8) * var(--circumference));
+
+    &.inline {
+      display: inline-block;
+      position: relative;
+    }
   }
 
   circle {

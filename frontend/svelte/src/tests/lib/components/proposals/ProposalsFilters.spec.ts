@@ -7,8 +7,7 @@ import { render } from "@testing-library/svelte";
 import ProposalsFilters from "../../../../lib/components/proposals/ProposalsFilters.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { enumSize } from "../../../../lib/utils/enum.utils";
-
-const en = require("../../../../lib/i18n/en.json");
+import en from "../../../mocks/i18n.mock";
 
 describe("ProposalsFilters", () => {
   const shouldRenderFilter = ({
@@ -37,7 +36,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
-      totalFilters: enumSize(Topic),
+      totalFilters: enumSize(Topic) - 1,
       text: en.voting.topics,
     });
   });
@@ -48,7 +47,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
-      totalFilters: enumSize(ProposalRewardStatus),
+      totalFilters: enumSize(ProposalRewardStatus) - 1,
       text: en.voting.rewards,
     });
   });
@@ -59,7 +58,7 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
-      totalFilters: enumSize(ProposalStatus),
+      totalFilters: enumSize(ProposalStatus) - 1,
       text: en.voting.status,
     });
   });
@@ -69,9 +68,8 @@ describe("ProposalsFilters", () => {
 
     const input: HTMLInputElement | null = container.querySelector("input");
 
-    expect(input).not.toBeNull();
-    expect(input.getAttribute("type")).toEqual("checkbox");
-    expect(input.getAttribute("id")).toEqual("hide-unavailable-proposals");
+    expect(input?.getAttribute("type")).toEqual("checkbox");
+    expect(input?.getAttribute("id")).toEqual("hide-unavailable-proposals");
   });
 
   it("should set a ref to the checkbox", () => {

@@ -6,6 +6,8 @@
       "@wdio/mocha-framework",
       "expect-webdriverio"
     ],
+    "esModuleInterop": true,
+    "strictNullChecks": true,
     "target": "ES5"
   }
 }

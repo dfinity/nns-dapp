@@ -1,11 +1,14 @@
+import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
-  account_identifier: AccountIdentifier;
+  account_identifier: AccountIdentifierString;
   hardware_wallet_accounts: Array<HardwareWalletAccountDetails>;
   sub_accounts: Array<SubAccountDetails>;
 }
-export type AccountIdentifier = string;
+// ledger and account canisters in nns-js define a AccountIdentifier as an object that contains the bytes array as a variable
+// nns-dapp canister returns a string
+export type AccountIdentifierString = string;
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;
@@ -16,7 +19,6 @@ export type AttachCanisterResponse =
   | { NameAlreadyTaken: null }
   | { NameTooLong: null }
   | { CanisterLimitExceeded: null };
-export type BlockHeight = bigint;
 export interface CanisterDetails {
   name: string;
   canister_id: Principal;
@@ -32,13 +34,14 @@ export interface DetachCanisterRequest {
   canister_id: Principal;
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
-export type GetAccountResponse =
-  | { Ok: AccountDetails }
-  | { AccountNotFound: null };
+export type GetAccountResponse = {
+  Ok?: AccountDetails;
+  AccountNotFound?: null;
+};
 export interface GetTransactionsRequest {
   page_size: number;
   offset: number;
-  account_identifier: AccountIdentifier;
+  account_identifier: AccountIdentifierString;
 }
 export interface GetTransactionsResponse {
   total: number;
@@ -47,7 +50,7 @@ export interface GetTransactionsResponse {
 export interface HardwareWalletAccountDetails {
   principal: Principal;
   name: string;
-  account_identifier: AccountIdentifier;
+  account_identifier: AccountIdentifierString;
 }
 export type HeaderField = [string, string];
 export interface HttpRequest {
@@ -62,9 +65,8 @@ export interface HttpResponse {
   status_code: number;
 }
 export interface ICPTs {
-  e8s: bigint;
+  e8s: E8s;
 }
-export type Memo = bigint;
 export interface MultiPartTransactionError {
   error_message: string;
   block_height: BlockHeight;
@@ -79,10 +81,9 @@ export type MultiPartTransactionStatus =
   | { NeuronCreated: NeuronId }
   | { PendingSync: null }
   | { ErrorWithRefundPending: string };
-export type NeuronId = bigint;
 export interface Receive {
   fee: ICPTs;
-  from: AccountIdentifier;
+  from: AccountIdentifierString;
   amount: ICPTs;
 }
 export interface RegisterHardwareWalletRequest {
@@ -97,7 +98,7 @@ export type RegisterHardwareWalletResponse =
   | { NameTooLong: null };
 export interface RenameSubAccountRequest {
   new_name: string;
-  account_identifier: AccountIdentifier;
+  account_identifier: AccountIdentifierString;
 }
 export type RenameSubAccountResponse =
   | { Ok: null }
@@ -105,7 +106,7 @@ export type RenameSubAccountResponse =
   | { SubAccountNotFound: null }
   | { NameTooLong: null };
 export interface Send {
-  to: AccountIdentifier;
+  to: AccountIdentifierString;
   fee: ICPTs;
   amount: ICPTs;
 }
@@ -124,11 +125,13 @@ export interface Stats {
   latest_transaction_timestamp_nanos: bigint;
   earliest_transaction_timestamp_nanos: bigint;
 }
-export type SubAccount = Array<number>;
+// ledger and account canisters in nns-js define a SubAccount as an object that contains the bytes array as a variable
+// nns-dapp canister returns a string
+export type SubAccountArray = Array<number>;
 export interface SubAccountDetails {
   name: string;
-  sub_account: SubAccount;
-  account_identifier: AccountIdentifier;
+  sub_account: SubAccountArray;
+  account_identifier: AccountIdentifierString;
 }
 export interface Timestamp {
   timestamp_nanos: bigint;
@@ -143,7 +146,7 @@ export interface Transaction {
 export type TransactionType =
   | { Burn: null }
   | { Mint: null }
-  | { Send: null }
+  | { Transfer: null }
   | { StakeNeuronNotification: null }
   | { TopUpCanister: CanisterId }
   | { CreateCanister: null }
@@ -155,7 +158,7 @@ export type Transfer =
   | { Send: Send }
   | { Receive: Receive };
 export default interface _SERVICE {
-  add_account: () => Promise<AccountIdentifier>;
+  add_account: () => Promise<AccountIdentifierString>;
   add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
   attach_canister: (
     arg_0: AttachCanisterRequest

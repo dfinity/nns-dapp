@@ -17,6 +17,7 @@ import {
   DisburseResponse,
   DisburseToNeuronResponse,
   DissolveState,
+  EmptyResponse,
   Followees,
   KnownNeuron,
   ListProposalsResponse,
@@ -254,6 +255,16 @@ export default class ResponseConverters {
       };
     }
     throw this.throwUnrecognisedTypeError("response", response);
+  };
+
+  public toEmptyManageNeuronResponse = (
+    response: PbManageNeuronResponse
+  ): EmptyResponse => {
+    const error = response.getError();
+    if (error) {
+      throw error.getErrorMessage();
+    }
+    return { Ok: null };
   };
 
   private toNeuron = (neuron: RawNeuron, principalString: string): Neuron => {
@@ -502,6 +513,9 @@ export default class ResponseConverters {
       const spawn = command.Spawn;
       return {
         Spawn: {
+          percentageToSpawn: spawn.percentage_to_spawn.length
+            ? spawn.percentage_to_spawn[0]
+            : null,
           newController: spawn.new_controller.length
             ? spawn.new_controller[0].toString()
             : null,

@@ -1,107 +1,70 @@
-_Psst — looking for a more complete solution? Check out [SvelteKit](https://kit.svelte.dev), the official framework for building web applications of all sizes, with a beautiful development experience and flexible filesystem-based routing._
+# NNS Dapp Frontend (Svelte)
 
-_Looking for a shareable component template instead? You can [use SvelteKit for that as well](https://kit.svelte.dev/docs#packaging) or the older [sveltejs/component-template](https://github.com/sveltejs/component-template)_
+This project will substitute the current frontend dapp. It has the same features and UI, but it's built with a different technology stack.
 
----
+- **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
+- **Status**: This project is still under development.
 
-# svelte app
+We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [nns-js](https://github.com/dfinity/nns-js).
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+All the Internet computer interactions are done through nns-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+## Status
+
+The plan is to deploy the pages of this project one by one as soon they are ready.
+
+- Log in page: Deployed.
+- Proposals: Deployed.
+- Neurons: In development.
+- Accounts: In development.
+- Canisters: In development.
+
+Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the routes in this project.
+
+## Installation and local development
+
+Clone the project on your computer and install the libraries:
 
 ```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+npm ci
 ```
 
-_Note that you will need to have [Node.js](https://nodejs.org) installed._
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
-```
-
-...then start [Rollup](https://rollupjs.org):
+Run the local development server:
 
 ```bash
 npm run dev
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+Visit `localhost:8080`.
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+### Dependencies
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+At the moment, pure local development is not supported. A testnet deployed, and working is needed.
 
-## Building and running in production mode
+The environment variables in `env.config.mjs` need to point to the working testnet.
 
-To create an optimised version of the app:
+There is usually no need to review the variables, but there are a few that might need to be checked if the deployment to testnet is done with new configuration parameters:
 
-```bash
-npm run build
+- `IDENTITY_SERVICE_URL`: This is the Internet Identity URL to register and log in.
+- `OWN_CANISTER_ID`: The canister id of the NNS Dapp.
+
+## Testing
+
+Every Pull Request needs unit tests.
+
+After installing the project, you can run the test suite:
+
+```
+npm test
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+There is also a project to run e2e tests [here](../../e2e-tests/README.md).
 
-## Single-page app mode
+## Style
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+This project uses [Prettier](https://prettier.io/) and [Eslint](https://eslint.org/) to ensure a consistent style.
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for _any_ path. You can make it so by editing the `"start"` command in package.json:
+There are a few helpful commands:
 
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+- `npm run format` automatically formats the code according to prettier. This command also runs in the Github pipeline.
+- `npm run check` runs Typescript and Eslint checks.

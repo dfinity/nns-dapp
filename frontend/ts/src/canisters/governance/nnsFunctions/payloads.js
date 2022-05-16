@@ -110,6 +110,7 @@ export const UpdateIcpXdrConversionRatePayload = IDL.Record({
 });
 export const UpdateNodeOperatorConfigPayload = IDL.Record({
   node_operator_id: IDL.Opt(IDL.Principal),
+  node_provider_id: IDL.Opt(IDL.Principal),
   node_allowance: IDL.Opt(IDL.Nat64),
   rewardable_nodes: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
   dc_id: IDL.Opt(IDL.Text),

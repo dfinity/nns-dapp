@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+
+DEPLOY_ENV="${DEPLOY_ENV:-local}"
+NETWORK_URL="localhost:8080"
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    cat <<-EOF
+
+	Deploys nns-dapp and required canisters to localhost.
+
+	Usage: "$0 [--nobuild] [--help]"
+
+	Flags:
+	  --help == print this help
+	  --nobuild == set DEPLOY_ENV=nobuild so that the existing wasm is used.
+
+	EOF
+    exit 0
+    ;;
+  --nobuild) DEPLOY_ENV=nobuild ;;
+  esac
+done
+
+wait_for_url() {
+  local url="$1"
+  local seconds="${2:-10}"
+  local options="${3:-}"
+  : "Waiting up to ${seconds} seconds for: ${url}"
+  for ((i = 0; i < seconds; i++)); do
+    if curl ${options:+${options}} -so /dev/null "$url"; then
+      return 0
+    else
+      sleep 1
+    fi
+  done
+  echo "URL not ready after ${seconds}s: curl ${options:+${options}} -so /dev/null $url" >&2
+  return 1
+}
+
+: "Waiting for the network to be present at: ${NETWORK_URL}"
+: "Note: The network is expected to complain, with a non-200 response, that we haven't specified the canister ID."
+wait_for_url "$NETWORK_URL"
+
+: "Creating and deploying canisters..."
+dfx canister create --all || echo Canisters may have been created already. Proceeding...
+REDIRECT_TO_LEGACY=svelte DEPLOY_ENV="$DEPLOY_ENV" IDENTITY_SERVICE_URL=http://localhost:8087 dfx deploy --network local --argument '(null)'
+
+: "Waiting for the canister to return with HTTP code 200..."
+NNS_DAPP_CANISTER_ID="$(dfx canister --network local id nns-dapp)"
+NNS_DAPP_CANISTER_URL="${NNS_DAPP_CANISTER_ID}.${NETWORK_URL}"
+wait_for_url "$NNS_DAPP_CANISTER_URL" 10 --fail
+
+echo OK

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Prints the history of shasums in the current branch.
+set -eu
+# Fetch if possible:
+git fetch origin refs/notes/*:refs/notes/* 2>/dev/null || true
+# DEPLOY_ENV - typical values are 'testnet' and 'mainnet'
+NOTES_REF=refs/notes/${DEPLOY_ENV:-testnet}/sha
+stdbuf --output=L git log --pretty=format:"%H %N" --show-notes="$NOTES_REF" "${@}" | stdbuf --output=L awk '(NF>1)'

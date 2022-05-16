@@ -24,7 +24,7 @@ describe("route-utils", () => {
 
       expect(baseHref()).toEqual("/test/");
 
-      base.parentElement.removeChild(base);
+      base.parentElement && base.parentElement.removeChild(base);
     });
   });
 
@@ -34,68 +34,68 @@ describe("route-utils", () => {
   const testRoutePath = () => {
     expect(routePath()).toEqual("/");
 
-    window.history.replaceState({}, undefined, "/?redirect=accounts");
+    window.history.replaceState({}, "", "/?redirect=accounts");
     expect(routePath()).toEqual("/");
 
-    window.history.replaceState({}, undefined, "/#/accounts");
+    window.history.replaceState({}, "", "/#/accounts");
     expect(routePath()).toEqual("/#/accounts");
 
-    window.history.replaceState({}, undefined, "/accounts");
+    window.history.replaceState({}, "", "/accounts");
     expect(routePath()).toEqual("/accounts");
 
-    window.history.replaceState({}, undefined, "/#/accounts?param=test");
+    window.history.replaceState({}, "", "/#/accounts?param=test");
     expect(routePath()).toEqual("/#/accounts");
 
-    window.history.replaceState({}, undefined, "/accounts?param=test");
+    window.history.replaceState({}, "", "/accounts?param=test");
     expect(routePath()).toEqual("/accounts");
 
-    window.history.replaceState({}, undefined, "/?redirect=proposal/123");
+    window.history.replaceState({}, "", "/?redirect=proposal/123");
     expect(routePath()).toEqual("/");
 
-    window.history.replaceState({}, undefined, "/proposal/123");
+    window.history.replaceState({}, "", "/proposal/123");
     expect(routePath()).toEqual("/proposal/123");
 
-    window.history.replaceState({}, undefined, "/#/proposal/123");
+    window.history.replaceState({}, "", "/#/proposal/123");
     expect(routePath()).toEqual("/#/proposal/123");
 
-    window.history.replaceState({}, undefined, "/#/proposal/123?param=test");
+    window.history.replaceState({}, "", "/#/proposal/123?param=test");
     expect(routePath()).toEqual("/#/proposal/123");
 
-    window.history.replaceState({}, undefined, "/proposal/123?param=test");
+    window.history.replaceState({}, "", "/proposal/123?param=test");
     expect(routePath()).toEqual("/proposal/123");
   };
 
   const testRouteContext = () => {
     expect(routeContext()).toEqual("");
 
-    window.history.replaceState({}, undefined, "/?redirect=accounts");
+    window.history.replaceState({}, "", "/?redirect=accounts");
     expect(routeContext()).toEqual("");
 
-    window.history.replaceState({}, undefined, "/#/accounts");
+    window.history.replaceState({}, "", "/#/accounts");
     expect(routeContext()).toEqual("accounts");
 
-    window.history.replaceState({}, undefined, "/accounts");
+    window.history.replaceState({}, "", "/accounts");
     expect(routeContext()).toEqual("accounts");
 
-    window.history.replaceState({}, undefined, "/#/accounts?param=test");
+    window.history.replaceState({}, "", "/#/accounts?param=test");
     expect(routeContext()).toEqual("accounts");
 
-    window.history.replaceState({}, undefined, "/accounts?param=test");
+    window.history.replaceState({}, "", "/accounts?param=test");
     expect(routeContext()).toEqual("accounts");
 
-    window.history.replaceState({}, undefined, "/?redirect=proposal/123");
+    window.history.replaceState({}, "", "/?redirect=proposal/123");
     expect(routeContext()).toEqual("");
 
-    window.history.replaceState({}, undefined, "/#/proposal/123");
+    window.history.replaceState({}, "", "/#/proposal/123");
     expect(routeContext()).toEqual("proposal/123");
 
-    window.history.replaceState({}, undefined, "/proposal/123");
+    window.history.replaceState({}, "", "/proposal/123");
     expect(routeContext()).toEqual("proposal/123");
 
-    window.history.replaceState({}, undefined, "/#/proposal/123?param=test");
+    window.history.replaceState({}, "", "/#/proposal/123?param=test");
     expect(routeContext()).toEqual("proposal/123");
 
-    window.history.replaceState({}, undefined, "/proposal/123?param=test");
+    window.history.replaceState({}, "", "/proposal/123?param=test");
     expect(routeContext()).toEqual("proposal/123");
   };
 

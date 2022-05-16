@@ -32,9 +32,10 @@ class _ConfigureFollowersPageState extends State<ConfigureFollowersPage> {
         stream: context.boxes.neurons.changes,
         builder: (context, snapshot) {
           final refreshed = context.boxes.neurons[widget.neuron.id];
-          // NeuronManagement proposals are not public so we hide these from the follow options
+          // NeuronManagement proposals are not public so we hide this topic
+          // (unless the neuron already has followees on this topic)
           final followees = refreshed.followees
-              .whereNot((e) => e.topic == Topic.NeuronManagement);
+              .where((e) => (e.topic != Topic.NeuronManagement) || e.followees.isNotEmpty);
           rowKeys = followees.map((element) => GlobalKey()).toList();
           return Column(
             children: [

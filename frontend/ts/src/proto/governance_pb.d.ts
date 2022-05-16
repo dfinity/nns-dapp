@@ -53,6 +53,11 @@ export class ManageNeuron extends jspb.Message {
   getMergeMaturity(): ManageNeuron.MergeMaturity | undefined;
   setMergeMaturity(value?: ManageNeuron.MergeMaturity): void;
 
+  hasMerge(): boolean;
+  clearMerge(): void;
+  getMerge(): ManageNeuron.Merge | undefined;
+  setMerge(value?: ManageNeuron.Merge): void;
+
   getNeuronIdOrSubaccountCase(): ManageNeuron.NeuronIdOrSubaccountCase;
   getCommandCase(): ManageNeuron.CommandCase;
   serializeBinary(): Uint8Array;
@@ -76,6 +81,7 @@ export namespace ManageNeuron {
     follow?: ManageNeuron.Follow.AsObject,
     registerVote?: ManageNeuron.RegisterVote.AsObject,
     mergeMaturity?: ManageNeuron.MergeMaturity.AsObject,
+    merge?: ManageNeuron.Merge.AsObject,
   }
 
   export class IncreaseDissolveDelay extends jspb.Message {
@@ -243,6 +249,16 @@ export namespace ManageNeuron {
     getNewController(): base_types_pb.PrincipalId | undefined;
     setNewController(value?: base_types_pb.PrincipalId): void;
 
+    hasNonce(): boolean;
+    clearNonce(): void;
+    getNonce(): number;
+    setNonce(value: number): void;
+
+    hasPercentageToSpawn(): boolean;
+    clearPercentageToSpawn(): void;
+    getPercentageToSpawn(): number;
+    setPercentageToSpawn(value: number): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Spawn.AsObject;
     static toObject(includeInstance: boolean, msg: Spawn): Spawn.AsObject;
@@ -256,6 +272,8 @@ export namespace ManageNeuron {
   export namespace Spawn {
     export type AsObject = {
       newController?: base_types_pb.PrincipalId.AsObject,
+      nonce: number,
+      percentageToSpawn: number,
     }
   }
 
@@ -359,6 +377,28 @@ export namespace ManageNeuron {
     }
   }
 
+  export class Merge extends jspb.Message {
+    hasSourceNeuronId(): boolean;
+    clearSourceNeuronId(): void;
+    getSourceNeuronId(): base_types_pb.NeuronId | undefined;
+    setSourceNeuronId(value?: base_types_pb.NeuronId): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Merge.AsObject;
+    static toObject(includeInstance: boolean, msg: Merge): Merge.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Merge, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Merge;
+    static deserializeBinaryFromReader(message: Merge, reader: jspb.BinaryReader): Merge;
+  }
+
+  export namespace Merge {
+    export type AsObject = {
+      sourceNeuronId?: base_types_pb.NeuronId.AsObject,
+    }
+  }
+
   export class MergeMaturity extends jspb.Message {
     getPercentageToMerge(): number;
     setPercentageToMerge(value: number): void;
@@ -409,6 +449,7 @@ export namespace ManageNeuron {
     FOLLOW = 5,
     REGISTER_VOTE = 7,
     MERGE_MATURITY = 13,
+    MERGE = 14,
   }
 }
 
@@ -448,6 +489,11 @@ export class ManageNeuronResponse extends jspb.Message {
   getMergeMaturity(): ManageNeuronResponse.MergeMaturityResponse | undefined;
   setMergeMaturity(value?: ManageNeuronResponse.MergeMaturityResponse): void;
 
+  hasMerge(): boolean;
+  clearMerge(): void;
+  getMerge(): ManageNeuronResponse.MergeResponse | undefined;
+  setMerge(value?: ManageNeuronResponse.MergeResponse): void;
+
   getCommandCase(): ManageNeuronResponse.CommandCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ManageNeuronResponse.AsObject;
@@ -468,6 +514,7 @@ export namespace ManageNeuronResponse {
     follow?: ManageNeuronResponse.FollowResponse.AsObject,
     registerVote?: ManageNeuronResponse.RegisterVoteResponse.AsObject,
     mergeMaturity?: ManageNeuronResponse.MergeMaturityResponse.AsObject,
+    merge?: ManageNeuronResponse.MergeResponse.AsObject,
   }
 
   export class ConfigureResponse extends jspb.Message {
@@ -584,6 +631,22 @@ export namespace ManageNeuronResponse {
     }
   }
 
+  export class MergeResponse extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MergeResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: MergeResponse): MergeResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MergeResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MergeResponse;
+    static deserializeBinaryFromReader(message: MergeResponse, reader: jspb.BinaryReader): MergeResponse;
+  }
+
+  export namespace MergeResponse {
+    export type AsObject = {
+    }
+  }
+
   export enum CommandCase {
     COMMAND_NOT_SET = 0,
     ERROR = 1,
@@ -593,6 +656,7 @@ export namespace ManageNeuronResponse {
     FOLLOW = 5,
     REGISTER_VOTE = 7,
     MERGE_MATURITY = 11,
+    MERGE = 12,
   }
 }
 
@@ -637,6 +701,7 @@ export namespace GovernanceError {
     ERROR_TYPE_INSUFFICIENT_FUNDS: 14;
     ERROR_TYPE_INVALID_PRINCIPAL: 15;
     ERROR_TYPE_INVALID_PROPOSAL: 16;
+    ERROR_TYPE_ALREADY_JOINED_COMMUNITY_FUND: 17;
   }
 
   export const ErrorType: ErrorTypeMap;

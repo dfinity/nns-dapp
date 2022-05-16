@@ -4,40 +4,74 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_ACCOUNTS_ROUTE,
+  } from "../lib/constants/routes.constants";
+  import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
+  import {
+    getAccountFromStore,
+    routePathAccountIdentifier,
+  } from "../lib/services/accounts.services";
+  import type { Account } from "../lib/types/account";
+  import { accountsStore } from "../lib/stores/accounts.store";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import WalletActions from "../lib/components/accounts/WalletActions.svelte";
 
-  // TODO: To be removed once this page has been implemented
   onMount(() => {
-    if (process.env.REDIRECT_TO_LEGACY) {
+    if (!SHOW_ACCOUNTS_ROUTE) {
       window.location.replace(`/${window.location.hash}`);
     }
   });
 
-  const goBack = () => {
+  const goBack = () =>
     routeStore.navigate({
       path: AppPath.Accounts,
     });
-  };
 
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-225
-  const createNewTransaction = () => alert("New Transaction");
+  let showNewTransactionModal = false;
+
+  let accountIdentifier: string | undefined;
+  $: accountIdentifier = routePathAccountIdentifier($routeStore.path);
+
+  // TODO(L2-429): context and store for selectedAccount?
+  let selectedAccount: Account | undefined;
+  $: accountIdentifier,
+    $accountsStore,
+    (() => (selectedAccount = getAccountFromStore(accountIdentifier)))();
 </script>
 
-{#if !process.env.REDIRECT_TO_LEGACY}
+{#if SHOW_ACCOUNTS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
-    <section>TBD</section>
+    {#if selectedAccount !== undefined}
+      <section>
+        <h1>TBD - TODO(L2-429) - {selectedAccount?.name}</h1>
+
+        <WalletActions {selectedAccount} />
+      </section>
+    {:else}
+      <Spinner />
+    {/if}
 
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={createNewTransaction}
+        <button
+          class="primary"
+          on:click={() => (showNewTransactionModal = true)}
+          disabled={selectedAccount === undefined ||
+            selectedAccount === undefined}
           >{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>
     </svelte:fragment>
   </HeadlessLayout>
-{/if}
 
-<style lang="scss">
-</style>
+  {#if showNewTransactionModal}
+    <NewTransactionModal
+      on:nnsClose={() => (showNewTransactionModal = false)}
+      {selectedAccount}
+    />
+  {/if}
+{/if}

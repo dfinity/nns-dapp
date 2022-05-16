@@ -1,0 +1,55 @@
+name: Nightly Publication
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      # Commit to the nightly branch and push to test.
+      - nightly
+
+jobs:
+  update-ii:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update II
+        run: ./scripts/update-ii
+      - name: Commit updated Internet Identity
+        uses: EndBug/add-and-commit@v7.2.0
+        with:
+          add: .
+          author_name: Nightly GitHub Action
+          author_email: "<nobody@dfinity.org>"
+          message: "Update Internet Identity"
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull_strategy: "NO-PULL"
+  update-chromedriver:
+    needs: update-ii # Forces git updates to run sequentially so that they don't conflict.
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
+      - name: Update chromedriver
+        run: |
+          node --version
+          npm --version
+          npm update chromedriver
+          git diff package-lock.json
+        working-directory: e2e-tests
+      - name: Commit updated chromedriver
+        uses: EndBug/add-and-commit@v7.2.0
+        with:
+          add: .
+          author_name: Nightly GitHub Action
+          author_email: "<nobody@dfinity.org>"
+          message: "Update chromedriver"
+          # do not pull: if this branch is behind, then we might as well let
+          # the pushing fail
+          pull_strategy: "NO-PULL"

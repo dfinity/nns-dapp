@@ -41,7 +41,10 @@ fn pre_upgrade() {
 fn post_upgrade() {
     STATE.with(|s| {
         let bytes = stable::get();
-        let new_state = State::decode(bytes).expect("Decoding stable memory failed");
+        let new_state = State::decode(bytes).unwrap_or_else(|e| {
+            trap_with(&format!("Decoding stable memory failed. Error: {:?}", e));
+            unreachable!();
+        });
 
         s.replace(new_state)
     });

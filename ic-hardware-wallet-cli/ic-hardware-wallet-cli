@@ -7,7 +7,7 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # This isn't needed by the CLI, but is done to keep the TS compiler happy.
-DEPLOY_ENV=mainnet ../../update_config.sh
+DEPLOY_ENV=mainnet ../../config.sh >/dev/null
 
 npm run ic-hardware-wallet-cli --silent -- "${@}"
 popd || exit >/dev/null

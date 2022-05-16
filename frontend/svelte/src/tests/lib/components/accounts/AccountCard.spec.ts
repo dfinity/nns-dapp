@@ -28,8 +28,18 @@ describe("AccountCard", () => {
 
     const balance = container.querySelector("article > div span:first-of-type");
 
-    expect(balance.textContent).toEqual(
+    expect(balance?.textContent).toEqual(
       `${formatICP(mockMainAccount.balance.toE8s())}`
     );
+  });
+
+  it("should add the role passed", () => {
+    const { container } = render(AccountCard, {
+      props: { ...props, role: "link" },
+    });
+
+    const article = container.querySelector("article");
+
+    expect(article?.getAttribute("role")).toEqual("link");
   });
 });

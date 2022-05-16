@@ -10,7 +10,7 @@
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
-ARG rust_version=1.54.0
+ARG rust_version=1.58.1
 ENV NODE_VERSION=16.13.2
 
 ENV TZ=UTC
@@ -82,6 +82,7 @@ RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
 COPY . /build
 WORKDIR /build
 RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
+RUN git config --global --add safe.directory /flutter
 RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm

@@ -19,7 +19,7 @@
 
 <div
   on:click|preventDefault={onClick}
-  class={`checkbox ${theme} ${selector || ""}`}
+  class={`checkbox ${theme} ${selector ?? ""}`}
 >
   <label for={inputId} class={text}><slot /></label>
   <input

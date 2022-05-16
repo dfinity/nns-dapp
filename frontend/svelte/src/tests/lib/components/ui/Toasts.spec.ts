@@ -3,12 +3,16 @@
  */
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import Toasts from "../../../../lib/components/ui/Toasts.svelte";
 import { toastsStore } from "../../../../lib/stores/toasts.store";
+import ToastsTest from "./ToastsTest.svelte";
 
 describe("Toasts", () => {
+  afterEach(() => {
+    toastsStore.reset();
+  });
+
   it("should not display any toast per default", () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     expect(container.querySelector("div.toast")).toBeNull();
   });
@@ -19,9 +23,9 @@ describe("Toasts", () => {
     );
 
   it("should display a toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
@@ -29,72 +33,71 @@ describe("Toasts", () => {
   });
 
   it("should display an informative toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(!dialog.classList.contains("error")).toBeTruthy();
-
+    expect(dialog?.classList.contains("error")).toBeFalsy();
     toastsStore.hide();
   });
 
   it("should display an error toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitForDialog(container);
 
     const dialog: HTMLDivElement | null = container.querySelector("div.toast");
-    expect(dialog.classList.contains("error")).toBeTruthy();
-
+    expect(dialog?.classList.contains("error")).toBeTruthy();
     toastsStore.hide();
   });
 
-  it("should display multiple toasts once at a time", async () => {
-    const { container } = render(Toasts);
+  it("should display multiple toasts", async () => {
+    const { container } = render(ToastsTest);
 
     toastsStore.show({ labelKey: "test.test", level: "error" });
     toastsStore.show({ labelKey: "test.test", level: "error" });
     toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+      expect(container.querySelectorAll("div.toast").length).toEqual(3)
     );
+  });
 
-    toastsStore.hide();
+  it("should display multiple toasts and user is able to close one", async () => {
+    const { container } = render(ToastsTest);
+
+    toastsStore.show({ labelKey: "test.test", level: "error" });
+    toastsStore.show({ labelKey: "test.test", level: "error" });
+    toastsStore.show({ labelKey: "test.test", level: "error" });
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
+      expect(container.querySelectorAll("div.toast").length).toEqual(3)
     );
 
-    toastsStore.hide();
+    const button: HTMLButtonElement | null =
+      container.querySelector("button.close");
+    button && (await fireEvent.click(button));
 
     await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(1)
-    );
-
-    toastsStore.hide();
-
-    await waitFor(() =>
-      expect(container.querySelectorAll("div.toast").length).toEqual(0)
+      expect(container.querySelectorAll("div.toast").length).toEqual(2)
     );
   });
 
   it("should close toast", async () => {
-    const { container } = render(Toasts);
+    const { container } = render(ToastsTest);
 
-    toastsStore.show({ labelKey: "test.test", level: "info" });
+    toastsStore.show({ labelKey: "test.test", level: "success" });
 
     await waitForDialog(container);
 
-    const button: HTMLButtonElement | null = container.querySelector(
-      'button[aria-label="Close"]'
-    );
-    fireEvent.click(button);
+    const button: HTMLButtonElement | null =
+      container.querySelector("button.close");
+    button && (await fireEvent.click(button));
 
     await waitFor(() =>
       expect(container.querySelector("div.toast")).toBeNull()

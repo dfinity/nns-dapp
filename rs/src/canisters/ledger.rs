@@ -3,8 +3,8 @@ use dfn_protobuf::{protobuf, ToProto};
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest};
 use ledger_canister::{
-    AccountBalanceArgs, BlockHeight, CyclesResponse, EncodedBlock, GetBlocksArgs, GetBlocksRes, ICPTs,
-    NotifyCanisterArgs, SendArgs, TipOfChainRes,
+    AccountBalanceArgs, BlockHeight, CyclesResponse, EncodedBlock, GetBlocksArgs, GetBlocksRes, NotifyCanisterArgs,
+    SendArgs, TipOfChainRes, Tokens,
 };
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
@@ -19,7 +19,7 @@ pub async fn notify(request: NotifyCanisterArgs) -> Result<CyclesResponse, Strin
         .map_err(|e| e.1)
 }
 
-pub async fn account_balance(request: AccountBalanceArgs) -> Result<ICPTs, String> {
+pub async fn account_balance(request: AccountBalanceArgs) -> Result<Tokens, String> {
     dfn_core::call(LEDGER_CANISTER_ID, "account_balance_pb", protobuf, request.into_proto())
         .await
         .map_err(|e| e.1)
@@ -44,7 +44,10 @@ pub async fn get_blocks(canister_id: CanisterId, from: BlockHeight, length: u32)
         canister_id,
         "get_blocks_pb",
         protobuf,
-        GetBlocksArgs::new(from, length as usize),
+        GetBlocksArgs {
+            start: from,
+            length: length as usize,
+        },
     )
     .await
     .map_err(|e| e.1)?;

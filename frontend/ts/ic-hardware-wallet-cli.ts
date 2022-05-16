@@ -181,10 +181,9 @@ async function removeHotkey(neuronId: string, principal: string) {
 async function disburseNeuron(
   neuronId: string,
   to?: AccountIdentifier,
-  amount?: string,
-  subaccount?: string
+  amount?: string
 ) {
-  const identity = await getLedgerIdentity(subaccount);
+  const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
   const response = await governance.disburse({
@@ -195,11 +194,16 @@ async function disburseNeuron(
   ok(`Disburse completed at block height ${response.transferBlockHeight}`);
 }
 
-async function spawnNeuron(neuronId: string, controller?: PrincipalString) {
+async function spawnNeuron(
+  neuronId: string,
+  percentageToSpawn?: number,
+  controller?: PrincipalString
+) {
   const identity = await getLedgerIdentity();
   const governance = await getGovernanceService(identity);
 
   const response = await governance.spawn({
+    percentageToSpawn: percentageToSpawn != null ? percentageToSpawn : null,
     neuronId: BigInt(neuronId),
     newController: controller ? controller : null,
   });
@@ -249,8 +253,13 @@ async function stopDissolving(neuronId: string) {
   log(response);
 }
 
-async function getLedgerIdentity(subaccount?: string): Promise<LedgerIdentity> {
-  const subaccountId = subaccount ? Number.parseInt(subaccount) : 0;
+async function getLedgerIdentity(): Promise<LedgerIdentity> {
+  const subaccountId = tryParseInt(program.opts().subaccount);
+  if (subaccountId < 0 || subaccountId > 255) {
+    throw new InvalidArgumentError(
+      "Subaccount must be between 0 and 255 inclusive."
+    );
+  }
   return await LedgerIdentity.create(`m/44'/223'/0'/0/${subaccountId}`);
 }
 
@@ -354,9 +363,12 @@ async function main() {
     .addCommand(
       new Command("spawn")
         .requiredOption("--neuron-id <neuron-id>")
+        .option("--percentage-to-spawn <percentage-to-spawn>")
         .option("--controller <new-controller>")
         .action((args) => {
-          run(() => spawnNeuron(args.neuronId, args.controller));
+          run(() =>
+            spawnNeuron(args.neuronId, args.percentageToSpawn, args.controller)
+          );
         })
     )
     .addCommand(
@@ -417,6 +429,11 @@ async function main() {
       new Option("--network <network>", "The IC network to talk to.")
         .default("https://ic0.app")
         .env("IC_NETWORK")
+    )
+    .addOption(
+      new Option("--subaccount <subaccount>", "The subaccount to use.").default(
+        0
+      )
     )
     .addCommand(
       new Command("info")

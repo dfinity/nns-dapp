@@ -8,8 +8,11 @@ import TooltipTest from "./TooltipTest.svelte";
 describe("Tooltip", () => {
   it("should render target content", () => {
     const { container } = render(TooltipTest);
-    expect(container.querySelector("p")).toBeInTheDocument();
-    expect(container.querySelector("p").innerHTML).toBe("content");
+
+    const element: HTMLParagraphElement | null = container.querySelector("p");
+
+    expect(element).toBeInTheDocument();
+    expect(element?.innerHTML).toBe("content");
   });
 
   it("should render aria-describedby and relevant id", () => {

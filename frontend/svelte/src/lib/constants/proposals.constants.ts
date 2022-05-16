@@ -1,5 +1,6 @@
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 
+// TODO: suggest to move into the store and add typing
 export const DEFAULT_PROPOSALS_FILTERS = {
   topics: [
     Topic.NetworkEconomics,
@@ -18,4 +19,15 @@ export const DEFAULT_PROPOSALS_FILTERS = {
   ],
   status: [ProposalStatus.PROPOSAL_STATUS_OPEN],
   excludeVotedProposals: false,
+  lastAppliedFilter: undefined,
+};
+
+export type ProposalColor = "warning" | "success" | undefined;
+export const PROPOSAL_COLOR: Record<ProposalStatus, ProposalColor> = {
+  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
+  [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
+  [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
+  [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
 };

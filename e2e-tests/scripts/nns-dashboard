@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+
+# This is the command to be executed on the URL.
+# Shellcheck is concerned that we may want the output of echo here.
+# shellcheck disable=SC2209
+command=echo
+testnet=""
+ic_repo="$HOME/dfn/ic"
+
+print_help() {
+  cat <<-EOF
+		Prints the NNS URL of a testnet or local dfx.
+
+		This is useful for:
+		- Examining the dashboard.
+		- Installing NNS canisters.
+
+		Flags:
+
+		--help
+		  Prints this help text.
+
+		--ic-repo <IC_REPO_DIR>
+		  The location at which the IC repo is installed.
+		  Default: '$ic_repo'
+
+		--open
+		  Open the dashoard in a browser.
+
+		--testnet
+		  The name of the ic testnet.
+		  Default: dfx running locally.
+
+		--dfx-network
+		  The name of a network in dfx.json
+	EOF
+}
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    print_help
+    exit 0
+    ;;
+  --ic-repo)
+    ic_repo="$1"
+    shift 1
+    ;;
+  --open)
+    command=xdg-open                      # Uses Linux default browser
+    command -v "$command" || command=open # Uses mac default browser
+    command -v "$command" || command=firefox
+    command -v "$command" || command=google-chrome
+    command -v "$command" || {
+      printf "ERROR: %s\n" "Unable to detect how to open your browser."
+      exit 1
+    } >&2
+    ;;
+  --testnet)
+    testnet="$1"
+    shift 1
+    ;;
+  --dfx-network)
+    DFX_NETWORK="$1"
+    shift 1
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      print_help
+    } >&2
+    exit 1
+    ;;
+  esac
+done
+
+if test -n "${DFX_NETWORK:-}" && [[ "$DFX_NETWORK" != "local" ]]; then
+  DFX_NETWORK="$DFX_NETWORK" jq -er '.networks[env.DFX_NETWORK].providers[0]' dfx.json
+elif test -n "${testnet:-}"; then
+  testnet_config_dir="${ic_repo}/testnet/env/$testnet/"
+  test -d "$ic_repo" || {
+    printf "ERROR: %s '%s'\n" "IC repo directory does not exist:" "$ic_repo"
+    exit 1
+  } >&2
+  test -d "$testnet_config_dir" || {
+    printf "ERROR: %s '%s'\n" "Testnet config directory does not exist:" "$testnet_config_dir"
+    exit 1
+  } >&2
+  "$command" "http://[$(cd "$testnet_config_dir" && ./hosts --nns-nodes | awk '{print $2 ; exit 0}')]:8080"
+else
+  local_dfx_port_file="$PWD/.dfx/replica-configuration/replica-1.port"
+  port="$(cat "$local_dfx_port_file" || true)"
+  url="http://localhost:${port}"
+  # Yes, shell does not bind logical operators like some other languages.  That is fine.
+  # Thank you, shellcheck, for making sure that we are aware.
+  # shellcheck disable=SC2015
+  test -e "$local_dfx_port_file" && curl -s "$url" >/dev/null || {
+    printf "ERROR: %s\n" "dfx does not appear to be running in this repo"
+    exit 1
+  } >&2
+  "$command" "$url"
+fi

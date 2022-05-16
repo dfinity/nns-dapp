@@ -2,9 +2,7 @@ module.exports = {
   preset: "ts-jest",
   globals: {
     "ts-jest": {
-      tsconfig: {
-        allowJs: true,
-      },
+      tsconfig: "tsconfig.spec.json",
     },
   },
   transform: {
@@ -19,5 +17,7 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
   testPathIgnorePatterns: ["nns-js"],
-  testURL: "https://nns.ic0.app/",
+  testEnvironmentOptions: {
+    url: "https://nns.ic0.app/",
+  },
 };

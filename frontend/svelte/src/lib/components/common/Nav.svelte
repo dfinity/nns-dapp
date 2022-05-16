@@ -19,6 +19,7 @@
     <a
       href={`${baseUrl}#/${context}`}
       class:selected={currentContext === context}
+      data-tid={`tab-to-${context}`}
       aria-label={label}><span>{$i18n.navigation[label]}</span></a
     >
   {/each}
@@ -29,11 +30,11 @@
 
   nav {
     position: absolute;
-    top: var(--header-height);
+    top: calc(var(--header-offset, 0px) + var(--header-height));
     left: 0;
     right: 0;
 
-    margin: var(--padding) calc(2 * var(--padding));
+    margin: var(--padding) var(--padding-2x);
 
     height: var(--nav-height);
 

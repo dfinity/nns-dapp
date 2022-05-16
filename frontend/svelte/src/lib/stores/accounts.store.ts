@@ -4,28 +4,26 @@ import type { Account } from "../types/account";
 export interface AccountsStore {
   main?: Account;
   subAccounts?: Account[];
+  hardwareWallets?: Account[];
 }
 
 /**
  * A store that contains the account information.
  */
-
 export const initAccountsStore = () => {
-  const { subscribe, set, update } = writable<AccountsStore>({
+  const initialAccounts: AccountsStore = {
     main: undefined,
     subAccounts: undefined,
-  });
+    hardwareWallets: undefined,
+  };
+
+  const { subscribe, set } = writable<AccountsStore>(initialAccounts);
 
   return {
     subscribe,
     set,
-    // TODO: Remove in L2-301
-    addSubAccount(newAccount) {
-      update((state) => ({
-        ...state,
-        subAccounts: [newAccount, ...(state?.subAccounts || [])],
-      }));
-    },
+
+    reset: () => set(initialAccounts),
   };
 };
 

@@ -22,7 +22,7 @@ dfx start
 
 # in another shell, deploy the canister
 # in the repo root
-DEPLOY_ENV=nobuild dfx deploy --no-wallet --network local
+DEPLOY_ENV=nobuild dfx deploy --network local
 ```
 
 Install all the dependencies for the test suite, and run the tests:
@@ -38,3 +38,11 @@ npm run test
 ```
 
 Finally, shut down the replica by killing the `dfx start` process.
+
+## Run the tests against a testnet
+
+Use the environment variables `NNS_DAPP_URL` and direct wdio command:
+
+```
+NNS_DAPP_URL=... npm run wdio
+```
