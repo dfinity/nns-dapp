@@ -8,7 +8,7 @@
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
-  import { isHardwareWallet } from "../../utils/accounts.utils";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -28,7 +28,7 @@
 
     // We close the modal in case of success or error if the selected source is not a hardware wallet.
     // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isHardwareWallet($store.selectedAccount)) {
+    if (success || !isAccountHardwareWallet($store.selectedAccount)) {
       dispatcher("nnsClose");
     }
   };

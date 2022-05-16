@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import type {
   ConnectToHardwareWalletParams,
@@ -33,4 +34,11 @@ export const getLedgerIdentityProxy = async (
 export const showAddressAndPubKeyOnHardwareWalletProxy = async () => {
   const { showAddressAndPubKeyOnHardwareWallet } = await importLedgerServices();
   return showAddressAndPubKeyOnHardwareWallet();
+};
+
+export const isLedgerIdentityProxy = async (
+  identity: Identity
+): Promise<boolean> => {
+  const { LedgerIdentity } = await import("../identities/ledger.identity");
+  return identity instanceof LedgerIdentity;
 };
