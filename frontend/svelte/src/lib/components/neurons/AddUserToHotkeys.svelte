@@ -1,23 +1,26 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { getIdentity } from "../../services/auth.services";
-  import { addHotkeyFromHW } from "../../services/neurons.services";
+  import {
+    addHotkeyFromHW,
+    getAndLoadNeuron,
+  } from "../../services/neurons.services";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "../../stores/auth.store";
 
   export let account: Account;
-  export let neuron: NeuronInfo;
+  export let neuronId: NeuronId;
 
   let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
-  const dispatchNext = () => {
-    dispatcher("nnsNext");
+  const skip = () => {
+    dispatcher("nnsSkip");
   };
 
   // Add the auth identity principal as hotkey
@@ -29,18 +32,22 @@
       labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getIdentity();
-    const neuronId = await addHotkeyFromHW({
-      neuronId: neuron.neuronId,
+    const success = await addHotkeyFromHW({
+      neuronId,
       principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
+    if (success !== undefined) {
+      // Now we can fetch and load neuron to neurons store.
+      await getAndLoadNeuron(neuronId);
+    }
     loading = false;
     stopBusy("add-hotkey-neuron");
-    if (neuronId !== undefined) {
+    if (success !== undefined) {
       toastsStore.success({
         labelKey: "neurons.add_user_as_hotkey_success",
       });
-      dispatchNext();
+      dispatcher("nnsHotkeyAdded");
     }
   };
 </script>
@@ -55,7 +62,7 @@
   </div>
   <div class="buttons">
     <button
-      on:click={dispatchNext}
+      on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
       class="secondary full-width">{$i18n.neurons.skip}</button
     >

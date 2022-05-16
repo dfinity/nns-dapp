@@ -2,7 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { syncAccounts } from "../../services/accounts.services";
-  import { stakeNeuron } from "../../services/neurons.services";
+  import {
+    getAndLoadNeuron,
+    stakeNeuron,
+  } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { startBusy, stopBusy } from "../../stores/busy.store";
@@ -11,6 +14,7 @@
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
 
   export let account: Account;
+  export let loadNeuron: boolean;
   let amount: number;
   let creating: boolean = false;
   const dispatcher = createEventDispatcher();
@@ -21,17 +25,20 @@
       labelKey: "busy_screen.pending_approval_hw",
     });
     creating = true;
-    const neuron = await stakeNeuron({
+    const neuronId = await stakeNeuron({
       amount,
       account,
     });
-    if (neuron !== undefined) {
+    if (neuronId !== undefined) {
+      if (loadNeuron) {
+        await getAndLoadNeuron(neuronId);
+      }
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       syncAccounts();
 
-      dispatcher("nnsNeuronCreated", { neuron });
+      dispatcher("nnsNeuronCreated", { neuronId });
     }
     creating = false;
     stopBusy("stake-neuron");

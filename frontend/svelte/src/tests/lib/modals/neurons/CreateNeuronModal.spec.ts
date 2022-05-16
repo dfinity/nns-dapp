@@ -15,6 +15,7 @@ import {
 } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
+import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
@@ -37,11 +38,14 @@ const newNeuron: NeuronInfo = {
 };
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockImplementation(() => Promise.resolve(newNeuron)),
+    stakeNeuron: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
     addHotkeyFromHW: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),
+    getAndLoadNeuron: jest.fn(),
   };
 });
 
@@ -70,6 +74,7 @@ jest.mock("../../../../lib/stores/toasts.store", () => {
 describe("CreateNeuronModal", () => {
   describe("main account selection", () => {
     beforeEach(() => {
+      neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
@@ -82,6 +87,10 @@ describe("CreateNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
+    });
+
+    afterEach(() => {
+      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
