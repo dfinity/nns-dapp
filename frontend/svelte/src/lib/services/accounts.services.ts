@@ -14,7 +14,6 @@ import {
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountIdentifierString,
-  GetTransactionsResponse,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
@@ -188,18 +187,17 @@ export const getAccountTransactions = async ({
     transactions: Transaction[];
   }) => void;
 }): Promise<void> =>
-  queryAndUpdate<GetTransactionsResponse, unknown>({
+  queryAndUpdate<Transaction[], unknown>({
     request: ({ certified, identity }) =>
       getTransactions({
         identity,
         certified,
         accountIdentifier,
-        // TODO: think about infinite scroll
         pageSize: TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
-    onLoad: ({ response }) =>
-      onLoad({ accountIdentifier, transactions: response.transactions }),
+    onLoad: ({ response: transactions }) =>
+      onLoad({ accountIdentifier, transactions }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
