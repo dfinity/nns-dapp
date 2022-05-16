@@ -133,6 +133,8 @@ const getIdentityOfControllerByNeuronId = async (
   const neuronIdentity = await getAccountIdentityByPrincipal(
     neuron.fullNeuron.controller
   );
+  // `getAccountIdentityByPrincipal` returns the current user identity (because of `getIdentity`) if the account is not a hardware wallet.
+  // If we enable visiting neurons which are not ours, we will need this service to throw `NotAuthorizedError`.
   if (isIdentityController({ neuron, identity: neuronIdentity })) {
     return neuronIdentity;
   }
