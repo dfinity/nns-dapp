@@ -30,7 +30,7 @@
 
   --modal-small-width: calc(100% - var(--padding-8x));
   --modal-big-width: calc(100% - var(--padding-2x));
-  --modal-max-height: 610px;
+  --modal-max-height: 630px;
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;

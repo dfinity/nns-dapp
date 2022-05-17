@@ -155,6 +155,5 @@
 
   .delay {
     flex-grow: 1;
-    margin: var(--padding-0_5x) 0 var(--padding-2x);
   }
 </style>
