@@ -10,9 +10,9 @@ import {
   connectToHardwareWalletProxy,
   registerHardwareWalletProxy,
 } from "../../../../lib/proxy/ledger.services.proxy";
+import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
-import {addAccountStoreMock} from '../../../mocks/add-account.store.mock';
 
 jest.mock("../../../../lib/proxy/ledger.services.proxy");
 
