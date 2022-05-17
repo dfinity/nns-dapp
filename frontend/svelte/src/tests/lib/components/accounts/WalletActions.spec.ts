@@ -8,7 +8,7 @@ import WalletActions from "../../../../lib/components/accounts/WalletActions.sve
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountStore,
-} from "../../../../lib/stores/selectedAccount.store";
+} from "../../../../lib/types/selected-account.context";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,

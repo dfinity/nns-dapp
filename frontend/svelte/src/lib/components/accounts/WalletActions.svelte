@@ -4,7 +4,7 @@
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../stores/selectedAccount.store";
+  } from "../../types/selected-account.context";
   import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
   import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
   import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";

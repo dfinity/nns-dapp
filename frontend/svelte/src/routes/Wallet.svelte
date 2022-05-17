@@ -19,21 +19,19 @@
   import Identifier from "../lib/components/ic/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
-  import TransactionCard from "../lib/components/accounts/TransactionCard.svelte";
-  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
-  import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-    type SelectedAccountStore,
-  } from "../lib/stores/selectedAccount.store";
   import type { Account } from "../lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "../lib/components/accounts/WalletActions.svelte";
   import { accountName as getAccountName } from "../lib/utils/transactions.utils";
   import { busy } from "../lib/stores/busy.store";
   import TransactionList from "../lib/components/accounts/TransactionList.svelte";
+  import {
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    type SelectedAccountContext,
+    type SelectedAccountStore,
+  } from "../lib/types/selected-account.context";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
