@@ -168,9 +168,11 @@ const getStakeNeuronPropsByAccount = ({
 export const stakeNeuron = async ({
   amount,
   account,
+  loadNeuron = false,
 }: {
   amount: number;
   account: Account;
+  loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
@@ -192,13 +194,19 @@ export const stakeNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
-    return await stakeNeuronApi({
+    const newNeuronId = await stakeNeuronApi({
       stake,
       identity,
       ledgerCanisterIdentity,
       controller,
       fromSubAccount,
     });
+
+    if (loadNeuron) {
+      await getAndLoadNeuron(newNeuronId);
+    }
+
+    return newNeuronId;
   } catch (err) {
     toastsStore.error({
       labelKey: "error.stake_neuron",
@@ -364,7 +372,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
 };
 
 // We always want to call this with the user identity
-export const getAndLoadNeuron = async (neuronId: NeuronId) => {
+const getAndLoadNeuron = async (neuronId: NeuronId) => {
   const identity = await getIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
@@ -480,6 +488,8 @@ export const addHotkeyFromHW = async ({
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
     await addHotkeyApi({ neuronId, identity: ledgerIdentity, principal });
+
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {

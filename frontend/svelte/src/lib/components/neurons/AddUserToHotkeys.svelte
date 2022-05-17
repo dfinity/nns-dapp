@@ -1,10 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { getIdentity } from "../../services/auth.services";
-  import {
-    addHotkeyFromHW,
-    getAndLoadNeuron,
-  } from "../../services/neurons.services";
+  import { addHotkeyFromHW } from "../../services/neurons.services";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
@@ -28,7 +25,7 @@
     loading = true;
     // This screen is only for hardware wallet.
     startBusy({
-      initiator: "stake-neuron",
+      initiator: "add-hotkey-neuron",
       labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getIdentity();
@@ -37,10 +34,6 @@
       principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
-    if (success !== undefined) {
-      // Now we can fetch and load neuron to neurons store.
-      await getAndLoadNeuron(neuronId);
-    }
     loading = false;
     stopBusy("add-hotkey-neuron");
     if (success !== undefined) {

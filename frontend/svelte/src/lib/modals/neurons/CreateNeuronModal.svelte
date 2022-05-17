@@ -162,7 +162,6 @@
     <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
     {#if selectedAccount !== undefined}
       <StakeNeuron
-        loadNeuron={!isAccountHardwareWallet(selectedAccount)}
         account={selectedAccount}
         on:nnsNeuronCreated={onNeuronCreated}
       />
