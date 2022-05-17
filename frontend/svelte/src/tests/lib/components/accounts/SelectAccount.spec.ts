@@ -13,10 +13,12 @@ import {
 import en from "../../../mocks/i18n.mock";
 
 describe("SelectAccount", () => {
-  it("should render a spinner until accounts loaded", () => {
+  it("should render a skeleton-card until accounts loaded", () => {
     const { container } = render(SelectAccount);
 
-    expect(container.querySelector('[data-tid="spinner"]')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-tid="skeleton-card"]')
+    ).toBeInTheDocument();
   });
 
   it("should render list of accounts once loaded", () => {
