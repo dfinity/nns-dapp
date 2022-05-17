@@ -33,6 +33,7 @@
   import WalletActions from "../lib/components/accounts/WalletActions.svelte";
   import { accountName as getAccountName } from "../lib/utils/transactions.utils";
   import { busy } from "../lib/stores/busy.store";
+  import TransactionList from "../lib/components/accounts/TransactionList.svelte";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -129,19 +130,10 @@
         <div class="actions">
           <WalletActions />
         </div>
-
-        {#if $selectedAccountStore.transactions === undefined}
-          <SkeletonCard />
-        {:else if $selectedAccountStore.transactions.length === 0}
-          {$i18n.wallet.no_transactions}
-        {:else}
-          {#each $selectedAccountStore.transactions as transaction}
-            <TransactionCard
-              account={$selectedAccountStore.account}
-              {transaction}
-            />
-          {/each}
-        {/if}
+        <TransactionList
+          account={$selectedAccountStore.account}
+          transactions={$selectedAccountStore.transactions}
+        />
       {:else}
         <Spinner />
       {/if}

@@ -154,40 +154,6 @@ describe("Wallet", () => {
       expect(getByTestId("skeleton-card")).toBeInTheDocument();
     });
 
-    describe("no transactions", () => {
-      beforeAll(() => {
-        (
-          getAccountTransactions as jest.MockedFn<typeof getAccountTransactions>
-        ).mockImplementation(({ onLoad }) => {
-          onLoad({
-            accountIdentifier: mockMainAccount.identifier,
-            transactions: [],
-          });
-          return Promise.resolve();
-        });
-      });
-
-      afterAll(() => jest.clearAllMocks());
-
-      it("should not render skeleton", async () => {
-        const { queryByTestId } = render(Wallet);
-
-        await waitFor(() =>
-          expect(queryByTestId("skeleton-card")).not.toBeInTheDocument()
-        );
-      });
-
-      it("should display no-transactions message", async () => {
-        const { queryByText } = render(Wallet);
-
-        await waitFor(() =>
-          expect(
-            queryByText(en.wallet.no_transactions, { exact: false })
-          ).toBeInTheDocument()
-        );
-      });
-    });
-
     describe("transactions loaded", () => {
       beforeAll(() => {
         (
@@ -208,7 +174,7 @@ describe("Wallet", () => {
 
       it("should render transactions", async () => {
         const { queryAllByTestId } = render(Wallet);
-        expect(queryAllByTestId("card").length).toBe(2);
+        expect(queryAllByTestId("transaction-card").length).toBe(2);
       });
     });
   });

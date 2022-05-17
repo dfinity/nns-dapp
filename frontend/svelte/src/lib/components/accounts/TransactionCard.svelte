@@ -51,7 +51,7 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<Card on:click>
+<Card testId="transaction-card">
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
