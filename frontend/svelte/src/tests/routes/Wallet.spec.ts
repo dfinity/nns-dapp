@@ -100,8 +100,11 @@ describe("Wallet", () => {
     it("should hide spinner when accounts are loaded", async () => {
       const { container } = render(Wallet);
 
-      await waitFor(() =>
-        expect(container.querySelector('[data-tid="spinner"]')).toBeNull()
+      await waitFor(
+        () => {
+          expect(container.querySelector('[data-tid="spinner"]')).toBeNull();
+        },
+        { timeout: 10000 }
       );
     });
 
