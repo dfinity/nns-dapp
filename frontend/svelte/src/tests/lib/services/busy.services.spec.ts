@@ -17,7 +17,7 @@ describe("busy-services", () => {
     jest.clearAllMocks();
   });
 
-  it("call start busy without message if neuron not controlled by hardware wallet", async () => {
+  it("call start busy without message if neuron is not controlled by hardware wallet", async () => {
     accountsStore.set({
       main: mockMainAccount,
     });
