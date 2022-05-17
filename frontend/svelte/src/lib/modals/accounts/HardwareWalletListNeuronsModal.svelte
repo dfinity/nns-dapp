@@ -7,7 +7,7 @@
   export let neurons: NeuronInfo[];
 </script>
 
-<Modal on:nnsClose theme="dark" size="medium">
+<Modal on:nnsClose theme="dark" size="big">
   <span slot="title">{$i18n.neurons.title}</span>
 
   <div>
