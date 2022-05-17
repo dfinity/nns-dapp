@@ -6,13 +6,13 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import NewTransactionDestination from "../../../../lib/components/accounts/NewTransactionDestination.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { transactionStore } from "../../../../lib/stores/transaction.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { mockTransactionStore } from "../../../mocks/transaction.store.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
 
 describe("NewTransactionDestination", () => {
@@ -30,7 +30,7 @@ describe("NewTransactionDestination", () => {
     );
 
   beforeAll(() =>
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: undefined,
       amount: undefined,
@@ -38,7 +38,7 @@ describe("NewTransactionDestination", () => {
   );
 
   afterAll(() =>
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: undefined,
       destinationAddress: undefined,
       amount: undefined,
