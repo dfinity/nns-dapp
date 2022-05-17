@@ -408,6 +408,7 @@
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device.",
+    "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {
