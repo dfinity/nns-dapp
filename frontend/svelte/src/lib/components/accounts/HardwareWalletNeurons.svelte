@@ -1,18 +1,23 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { formatICP } from "../../utils/icp.utils";
-  import { isHotKeyControllable } from "../../utils/neuron.utils";
-  import { authStore } from "../../stores/auth.store";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
-  import type {Account} from '../../types/account';
+  import { getContext } from "svelte";
+  import type {
+    HardwareWalletNeuronInfo,
+    HardwareWalletNeuronsContext
+  } from "../../types/hardware-wallet-neurons.context";
+  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "../../types/hardware-wallet-neurons.context";
 
-  export let selectedAccount: Account | undefined;
-  export let neurons: NeuronInfo[] = [];
+  const context: HardwareWalletNeuronsContext =
+    getContext<HardwareWalletNeuronsContext>(
+      HARDWARE_WALLET_NEURONS_CONTEXT_KEY
+    );
+  const { store }: HardwareWalletNeuronsContext = context;
 
-  // TODO(L2-436):
-  //  - display which neurons is attached to nns-dapp and which not
-  //  - integrate with "attach hotkey for neuron" feature
+  let neurons: HardwareWalletNeuronInfo[] = [];
+
+  $: ({ neurons } = $store);
 </script>
 
 <p>{$i18n.accounts.attach_hardware_neurons_text}</p>
@@ -21,26 +26,20 @@
   <p>{$i18n.neurons.neuron_id}</p>
   <p class="stake_amount">{$i18n.neurons.stake_amount}</p>
 
-  {#each neurons as neuron (neuron.neuronId)}
-    {@const neuronId = neuron.neuronId}
-    {@const controlled = isHotKeyControllable({
-      identity: $authStore.identity,
-      neuron,
-    })}
-
+  {#each neurons as {neuronId, controlledByNNSDapp, fullNeuron} (neuronId)}
     <p>
       {neuronId}
     </p>
 
     <p>
-      {formatICP(neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0))}
+      {formatICP(fullNeuron?.cachedNeuronStake ?? BigInt(0))}
     </p>
 
     <p class="hotkey">
-      {#if controlled}
+      {#if controlledByNNSDapp}
         {$i18n.accounts.attach_hardware_neurons_added}
-      {:else if selectedAccount !== undefined}
-        <HardwareWalletNeuronAddHotkeyButton {neuronId} {selectedAccount} />
+      {:else}
+        <HardwareWalletNeuronAddHotkeyButton {neuronId} />
       {/if}
     </p>
   {/each}
