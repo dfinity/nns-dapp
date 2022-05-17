@@ -1,23 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { getIdentity } from "../../services/auth.services";
   import { addHotkeyForHardwareWalletNeuron } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "../../stores/auth.store";
 
   export let account: Account;
-  export let neuron: NeuronInfo;
+  export let neuronId: NeuronId;
 
   let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
-  const dispatchNext = () => {
-    dispatcher("nnsNext");
+  const skip = () => {
+    dispatcher("nnsSkip");
   };
 
   // Add the auth identity principal as hotkey
@@ -25,12 +22,12 @@
     loading = true;
     // This screen is only for hardware wallet.
     const {success} = await addHotkeyForHardwareWalletNeuron({
-      neuronId: neuron.neuronId,
+      neuronId,
       accountIdentifier: account.identifier,
     });
     loading = false;
     if (success) {
-      dispatchNext();
+      dispatcher("nnsHotkeyAdded")
     }
   };
 </script>
@@ -45,7 +42,7 @@
   </div>
   <div class="buttons">
     <button
-      on:click={dispatchNext}
+      on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
       class="secondary full-width">{$i18n.neurons.skip}</button
     >

@@ -191,32 +191,33 @@ describe("neurons-services", () => {
       jest.clearAllMocks();
     });
     it("should stake a neuron from main account", async () => {
-      const newNeuron = await stakeNeuron({
+      const newNeuronId = await stakeNeuron({
         amount: 10,
         account: mockMainAccount,
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
-      expect(newNeuron).toEqual(mockNeuron);
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
     });
 
     it("should stake and load a neuron from subaccount", async () => {
-      const newNeuron = await stakeNeuron({
+      const newNeuronId = await stakeNeuron({
         amount: 10,
         account: mockSubAccount,
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
-      expect(newNeuron).toEqual(mockNeuron);
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
     });
 
     it("should stake neuron from hardware wallet", async () => {
-      await stakeNeuron({
+      const newNeuronId = await stakeNeuron({
         amount: 10,
         account: mockHardwareWalletAccount,
       });
 
       expect(spyStakeNeuron).toHaveBeenCalled();
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
     });
 
     it(`stakeNeuron return undefined if amount less than ${
