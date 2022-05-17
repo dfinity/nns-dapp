@@ -13,20 +13,8 @@
   import {
     AccountTransactionType,
     mapTransaction,
+    transactionName,
   } from "../../utils/transactions.utils";
-
-  const getHeadline = ({
-    type,
-    isReceive,
-  }: {
-    type: AccountTransactionType;
-    isReceive: boolean;
-  }): string =>
-    type === AccountTransactionType.Send
-      ? isReceive
-        ? $i18n.transaction_names.receive
-        : $i18n.transaction_names.send
-      : $i18n.transaction_names[type] ?? type;
 
   export let account: Account;
   export let transaction: Transaction;
@@ -45,7 +33,11 @@
     }));
 
   let headline: string;
-  $: headline = getHeadline({ type, isReceive });
+  $: headline = transactionName({
+    type,
+    isReceive,
+    labels: $i18n.transaction_names,
+  });
 
   let label: string | undefined;
   $: label = isReceive

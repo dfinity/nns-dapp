@@ -70,7 +70,6 @@ export const transactionType = (
     return AccountTransactionType.Mint;
   }
 
-  // TODO: test should throw
   throw new Error(
     "Unknown TransactionType: " + JSON.stringify(transactionType)
   );
@@ -169,3 +168,18 @@ export const mapTransaction = ({
     date,
   };
 };
+
+export const transactionName = ({
+  type,
+  isReceive,
+  labels,
+}: {
+  type: AccountTransactionType;
+  isReceive: boolean;
+  labels: I18nTransaction_names;
+}): string =>
+  type === AccountTransactionType.Send
+    ? isReceive
+      ? labels.receive
+      : labels.send
+    : labels[type] ?? type;
