@@ -1,9 +1,9 @@
 import { get } from "svelte/store";
-import { transactionStore } from "../../../lib/stores/transaction.store";
 import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import { mockTransactionStore } from "../../mocks/transaction.store.mock";
 
 describe("transaction-store", () => {
   const mock = {
@@ -13,14 +13,14 @@ describe("transaction-store", () => {
   };
 
   it("should set transaction", () => {
-    transactionStore.set(mock);
+    mockTransactionStore.set(mock);
 
-    const transaction = get(transactionStore);
+    const transaction = get(mockTransactionStore);
     expect(transaction).toEqual(mock);
   });
 
   it("should clear transaction", () => {
-    transactionStore.set(mock);
+    mockTransactionStore.set(mock);
 
     const clearMock = {
       selectedAccount: undefined,
@@ -28,9 +28,9 @@ describe("transaction-store", () => {
       amount: undefined,
     };
 
-    transactionStore.set(clearMock);
+    mockTransactionStore.set(clearMock);
 
-    const transaction = get(transactionStore);
+    const transaction = get(mockTransactionStore);
     expect(transaction).toEqual(clearMock);
   });
 });

@@ -56,6 +56,11 @@
     },
   ];
 
+  /**
+   * A store that contains transaction information - i.e. information that are used to issue a new transaction between accounts.
+   * For example: transferring ICP from main- to a subaccount
+   *
+   */
   const newTransactionStore = writable<TransactionStore>({
     selectedAccount,
     destinationAddress,
