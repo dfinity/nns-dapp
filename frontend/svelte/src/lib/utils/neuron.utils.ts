@@ -553,5 +553,5 @@ export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
-export const userNotAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
-  neuron.fullNeuron === undefined;
+export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined;

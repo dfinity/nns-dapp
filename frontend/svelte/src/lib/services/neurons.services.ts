@@ -57,7 +57,7 @@ import {
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
-  userNotAuthorizedNeuron,
+  userAuthorizedNeuron,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
 import {
@@ -388,7 +388,7 @@ const getAndLoadNeuron = async (neuronId: NeuronId) => {
     certified: true,
     forceFetch: true,
   });
-  if (!neuron || userNotAuthorizedNeuron(neuron)) {
+  if (!neuron || !userAuthorizedNeuron(neuron)) {
     throw new NotFoundError();
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
@@ -586,11 +586,11 @@ export const removeHotkey = async ({
   } catch (err) {
     // It happens when the current user is removed from hotkey
     if (err instanceof NotFoundError && hotkeyRemoved) {
-      routeStore.replace({ path: AppPath.Neurons });
       toastsStore.show({
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
+      routeStore.replace({ path: AppPath.Neurons });
     } else {
       toastsStore.show(mapNeuronErrorToToastMessage(err));
     }
@@ -889,7 +889,7 @@ export const loadNeuron = ({
       }),
     onLoad: ({ response: neuron, certified }) => {
       // Handle not authorized neurons as if not found.
-      if (neuron === undefined || userNotAuthorizedNeuron(neuron)) {
+      if (neuron === undefined || !userAuthorizedNeuron(neuron)) {
         catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }

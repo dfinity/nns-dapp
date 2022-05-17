@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import type { Identity } from "@dfinity/agent";
 import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -13,7 +16,9 @@ import {
   definedNeuronsStore,
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
+import { routeStore } from "../../../lib/stores/route.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
+import { NotFoundError } from "../../../lib/types/errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -111,6 +116,10 @@ describe("neurons-services", () => {
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
+
+  const spyRouteReplace = jest
+    .spyOn(routeStore, "replace")
+    .mockImplementation(jest.fn());
 
   const spyStakeNeuron = jest
     .spyOn(api, "stakeNeuron")
@@ -740,6 +749,38 @@ describe("neurons-services", () => {
       });
 
       expect(spyRemoveHotkey).toHaveBeenCalled();
+    });
+
+    it("should update neuron and redirect to Neurons page if query neuron throws Not Found", async () => {
+      spyGetNeuron.mockImplementation(
+        jest.fn().mockRejectedValue(new NotFoundError())
+      );
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principalString: "aaaaa-aa",
+      });
+
+      expect(spyRemoveHotkey).toHaveBeenCalled();
+      expect(spyRouteReplace).toHaveBeenCalled();
+    });
+
+    it("should update neuron and redirect to Neurons page if query neuron returns neuron without fullNeuron", async () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      spyGetNeuron.mockImplementation(jest.fn().mockResolvedValue(neuron));
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principalString: "aaaaa-aa",
+      });
+
+      expect(spyRemoveHotkey).toHaveBeenCalled();
+      expect(spyRouteReplace).toHaveBeenCalled();
     });
 
     it("should not update neuron if invalid principal", async () => {
