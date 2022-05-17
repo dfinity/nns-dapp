@@ -15,4 +15,6 @@ export interface HardwareWalletNeuronsContext {
   store: Writable<HardwareWalletNeuronsStore>;
 }
 
-export const HARDWARE_WALLET_NEURONS_CONTEXT_KEY = Symbol("hardware-wallet-neurons");
+export const HARDWARE_WALLET_NEURONS_CONTEXT_KEY = Symbol(
+  "hardware-wallet-neurons"
+);

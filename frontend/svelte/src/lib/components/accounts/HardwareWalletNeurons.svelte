@@ -5,7 +5,7 @@
   import { getContext } from "svelte";
   import type {
     HardwareWalletNeuronInfo,
-    HardwareWalletNeuronsContext
+    HardwareWalletNeuronsContext,
   } from "../../types/hardware-wallet-neurons.context";
   import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "../../types/hardware-wallet-neurons.context";
 
@@ -26,7 +26,7 @@
   <p>{$i18n.neurons.neuron_id}</p>
   <p class="stake_amount">{$i18n.neurons.stake_amount}</p>
 
-  {#each neurons as {neuronId, controlledByNNSDapp, fullNeuron} (neuronId)}
+  {#each neurons as { neuronId, controlledByNNSDapp, fullNeuron } (neuronId)}
     <p>
       {neuronId}
     </p>

@@ -21,13 +21,13 @@
   const addCurrentUserToHotkey = async () => {
     loading = true;
     // This screen is only for hardware wallet.
-    const {success} = await addHotkeyForHardwareWalletNeuron({
+    const { success } = await addHotkeyForHardwareWalletNeuron({
       neuronId,
       accountIdentifier: account.identifier,
     });
     loading = false;
     if (success) {
-      dispatcher("nnsHotkeyAdded")
+      dispatcher("nnsHotkeyAdded");
     }
   };
 </script>

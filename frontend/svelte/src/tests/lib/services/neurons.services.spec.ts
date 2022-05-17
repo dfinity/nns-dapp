@@ -682,7 +682,6 @@ describe("neurons-services", () => {
     it("should update neuron", async () => {
       await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
-        principal: Principal.fromText("aaaaa-aa"),
         accountIdentifier: mockMainAccount.identifier,
       });
 
@@ -693,7 +692,6 @@ describe("neurons-services", () => {
       setLedgerThrow();
       await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
-        principal: Principal.fromText("aaaaa-aa"),
         accountIdentifier: mockMainAccount.identifier,
       });
 

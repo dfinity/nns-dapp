@@ -34,6 +34,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -63,7 +64,6 @@ import {
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
-import {startBusy, stopBusy} from '../stores/busy.store';
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -165,11 +165,15 @@ const getStakeNeuronPropsByAccount = ({
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
+ * @param {Object} params
+ * @param {amount} params.amount the new neuron value. a number that will be converted to ICP.
+ * @param {amount} params.amount the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
+ * @param {amount} [params.amount=true] load the neuron and update the neurons store once created - i.e. certified=true query to load neuron and push to store.
  */
 export const stakeNeuron = async ({
   amount,
   account,
-  loadNeuron = false,
+  loadNeuron = true,
 }: {
   amount: number;
   account: Account;
@@ -476,6 +480,8 @@ export const mergeNeurons = async ({
 
 // This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the hardware wallet.
 // It uses the auth identity - i.e. the identity of the current user - as principal of the new hotkey.
+// Once the neuron delegated, it adds it to the neuron store so that user can find this neuron in the "Neurons" tab as well
+// Note: it does not reload the all neurons store but "only" query (updated call) and push the newly attached neuron to the store
 export const addHotkeyForHardwareWalletNeuron = async ({
   neuronId,
   accountIdentifier,
