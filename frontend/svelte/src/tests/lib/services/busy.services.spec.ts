@@ -34,7 +34,7 @@ describe("busy-services", () => {
       initiator,
       neuronId: neuron.neuronId,
     });
-    expect(startBusySpy).toBeCalledWith(initiator, undefined);
+    expect(startBusySpy).toBeCalledWith({initiator});
   });
 
   it("call start busy with message if neuron controlled by hardware wallet", async () => {
@@ -55,9 +55,9 @@ describe("busy-services", () => {
       initiator,
       neuronId: neuron.neuronId,
     });
-    expect(startBusySpy).toBeCalledWith(
+    expect(startBusySpy).toBeCalledWith({
       initiator,
-      "busy_screen.pending_approval_hw"
-    );
+      labelKey: "busy_screen.pending_approval_hw",
+    });
   });
 });

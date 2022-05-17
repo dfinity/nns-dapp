@@ -9,7 +9,7 @@
   let neurons: NeuronInfo[];
 
   const listNeurons = async () => {
-    startBusy("accounts", "busy_screen.pending_approval_hw");
+    startBusy({initiator: "accounts", labelKey: "busy_screen.pending_approval_hw"});
 
     const { neurons: fetchedNeurons, err } =
       await listNeuronsHardwareWalletProxy();

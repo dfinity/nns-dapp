@@ -24,7 +24,7 @@
   const addCurrentUserToHotkey = async () => {
     loading = true;
     // This screen is only for hardware wallet.
-    startBusy("stake-neuron", "busy_screen.pending_approval_hw");
+    startBusy({initiator: "stake-neuron", labelKey: "busy_screen.pending_approval_hw"});
     const identity = await getIdentity();
     const neuronId = await addHotkeyFromHW({
       neuronId: neuron.neuronId,
