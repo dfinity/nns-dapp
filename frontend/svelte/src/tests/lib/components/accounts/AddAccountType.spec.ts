@@ -6,10 +6,8 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import AddAccountType from "../../../../lib/components/accounts/AddAccountType.svelte";
-import {
-  addAccountStore,
-  type AccountType,
-} from "../../../../lib/stores/add-account.store";
+import type { AccountType } from "../../../../lib/types/add-account.context";
+import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
@@ -17,7 +15,7 @@ describe("AddAccountType", () => {
   const props = { testComponent: AddAccountType };
 
   afterEach(() =>
-    addAccountStore.set({
+    addAccountStoreMock.set({
       type: undefined,
       hardwareWalletName: undefined,
     })
@@ -47,7 +45,7 @@ describe("AddAccountType", () => {
     const div = container.querySelector(selector) as HTMLButtonElement;
     fireEvent.click(div);
 
-    await waitFor(() => expect(get(addAccountStore).type).toEqual(type));
+    await waitFor(() => expect(get(addAccountStoreMock).type).toEqual(type));
   };
 
   it("should select add account type subaccount", async () =>

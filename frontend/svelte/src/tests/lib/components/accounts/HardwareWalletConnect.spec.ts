@@ -10,9 +10,9 @@ import {
   connectToHardwareWalletProxy,
   registerHardwareWalletProxy,
 } from "../../../../lib/proxy/ledger.services.proxy";
-import { addAccountStore } from "../../../../lib/stores/add-account.store";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
+import {addAccountStoreMock} from '../../../mocks/add-account.store.mock';
 
 jest.mock("../../../../lib/proxy/ledger.services.proxy");
 
@@ -20,7 +20,7 @@ describe("HardwareWalletConnect", () => {
   const props = { testComponent: HardwareWalletConnect };
 
   beforeAll(() => {
-    addAccountStore.set({
+    addAccountStoreMock.set({
       type: "hardwareWallet",
       hardwareWalletName: undefined,
     });
@@ -39,7 +39,7 @@ describe("HardwareWalletConnect", () => {
   });
 
   afterAll(() => {
-    addAccountStore.set({
+    addAccountStoreMock.set({
       type: undefined,
       hardwareWalletName: undefined,
     });

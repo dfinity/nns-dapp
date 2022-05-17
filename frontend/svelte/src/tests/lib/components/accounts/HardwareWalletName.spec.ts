@@ -6,22 +6,22 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
-import { addAccountStore } from "../../../../lib/stores/add-account.store";
 import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
+import {addAccountStoreMock} from '../../../mocks/add-account.store.mock';
 
 describe("HardwareWalletName", () => {
   const props = { testComponent: HardwareWalletName };
 
   beforeAll(() =>
-    addAccountStore.set({
+    addAccountStoreMock.set({
       type: "hardwareWallet",
       hardwareWalletName: undefined,
     })
   );
 
   afterAll(() =>
-    addAccountStore.set({
+    addAccountStoreMock.set({
       type: undefined,
       hardwareWalletName: undefined,
     })
