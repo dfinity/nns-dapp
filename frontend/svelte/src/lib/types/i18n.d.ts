@@ -415,6 +415,7 @@ interface I18nError__ledger {
   connect_not_supported: string;
   unexpected_wallet: string;
   user_cancel: string;
+  user_rejected_transaction: string;
   incorrect_identifier: string;
 }
 

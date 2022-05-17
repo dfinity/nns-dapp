@@ -85,13 +85,25 @@ describe("ledger-utils", () => {
       const call = () =>
         decodeSignature({
           signatureRS: undefined,
-          returnCode: LedgerError.TransactionRejected,
+          returnCode: LedgerError.UnknownError,
         } as unknown as ResponseSign);
 
       expect(call).toThrow(
         new LedgerErrorKey(
-          `A ledger error happened during signature. undefined (code ${LedgerError.TransactionRejected}).`
+          `A ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`
         )
+      );
+    });
+
+    it("should throw an error if transaction is rejected", () => {
+      const call = () =>
+        decodeSignature({
+          signatureRS: Uint8Array.from("test", (x) => x.charCodeAt(0)),
+          returnCode: LedgerError.TransactionRejected,
+        } as unknown as ResponseSign);
+
+      expect(call).toThrow(
+        new LedgerErrorKey("error__ledger.user_rejected_transaction")
       );
     });
 
@@ -101,7 +113,7 @@ describe("ledger-utils", () => {
       const call = () =>
         decodeSignature({
           signatureRS: Uint8Array.from(test, (x) => x.charCodeAt(0)),
-          returnCode: LedgerError.TransactionRejected,
+          returnCode: LedgerError.WrongLength,
         } as unknown as ResponseSign);
 
       expect(call).toThrow(
@@ -117,7 +129,7 @@ describe("ledger-utils", () => {
           "0410d34980a51af89d3331ad5fa80fe30d8868ad87526460b3b3e15596ee58e8",
           (x) => x.charCodeAt(0)
         ),
-        returnCode: LedgerError.TransactionRejected,
+        returnCode: LedgerError.NoErrors,
       } as unknown as ResponseSign);
 
       expect(signature).not.toBeNull();
