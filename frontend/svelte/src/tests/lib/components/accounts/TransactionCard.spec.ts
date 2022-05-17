@@ -85,22 +85,22 @@ describe("Address", () => {
   });
 
   it("displays identifier for reseived", () => {
-    const { container } = renderTransactionCard(
+    const { getByTestId } = renderTransactionCard(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction
     );
-    const identifier = container.querySelector("small")?.textContent;
+    const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockMainAccount.identifier);
     expect(identifier).toContain(en.wallet.direction_from);
   });
 
   it("displays identifier for sent", () => {
-    const { container } = renderTransactionCard(
+    const { getByTestId } = renderTransactionCard(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
-    const identifier = container.querySelector("small")?.textContent;
+    const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockSubAccount.identifier);
     expect(identifier).toContain(en.wallet.direction_to);

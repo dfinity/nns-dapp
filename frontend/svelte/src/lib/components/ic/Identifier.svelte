@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
 
   export let identifier: string;
-  export let label: string | undefined;
+  export let label: string | undefined = undefined;
   export let showCopy: boolean = false;
   export let size: "small" | "medium" = "small";
 
@@ -15,7 +15,9 @@
 </script>
 
 <p>
-  <span class:text_small={size === "small"}>{labelText}{identifier}</span>
+  <span data-tid="identifier" class:text_small={size === "small"}
+    >{labelText}{identifier}</span
+  >
   {#if showCopy}
     <button
       on:click|stopPropagation={copyToClipboard}
