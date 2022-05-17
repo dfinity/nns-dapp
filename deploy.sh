@@ -145,21 +145,20 @@ echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
+  echo
+  read -rp "Did I guess right? (y/N)  " guessed_right
+  [[ "$guessed_right" == "y" ]] || {
     echo
-    read -rp "Did I guess right? (y/N)  " guessed_right
-    [[ "$guessed_right" == "y" ]] || {
-      echo
-      echo "Suggestions:"
-      echo "Wanted DEPLOY_II=true but got false?"
-      echo "- Check whether you have an old canister_ids.json that needs to be deleted."
-      echo
-      echo "Want to specify what you want exactly using flags?"
-      echo "- Use --help to see the supported flags."
-      echo
-      exit 1
-    }
+    echo "Suggestions:"
+    echo "Wanted DEPLOY_II=true but got false?"
+    echo "- Check whether you have an old canister_ids.json that needs to be deleted."
+    echo
+    echo "Want to specify what you want exactly using flags?"
+    echo "- Use --help to see the supported flags."
+    echo
+    exit 1
+  }
 }
-
 
 if [[ "$START_DFX" == "true" ]]; then
   echo
