@@ -112,6 +112,8 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_show_neurons: string;
+  attach_hardware_neurons_text: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -132,7 +134,6 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
-  authorize_on_hardware_wallet: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
@@ -195,6 +196,7 @@ interface I18nNeurons {
   cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
   irreversible_action: string;
+  stake_amount: string;
 }
 
 interface I18nNew_followee {
@@ -305,6 +307,10 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
+}
+
+interface I18nBusy_screen {
+  pending_approval_hw: string;
 }
 
 interface I18nProposal_detail {
@@ -458,6 +464,7 @@ interface I18n {
   status: I18nStatus;
   transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
+  busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;

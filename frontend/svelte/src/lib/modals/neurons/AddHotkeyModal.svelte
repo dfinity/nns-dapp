@@ -3,12 +3,13 @@
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/neurons.services";
   import Spinner from "../../components/ui/Spinner.svelte";
   import { createEventDispatcher } from "svelte";
   import { getPrincipalFromString } from "../../utils/accounts.utils";
   import InputWithError from "../../components/ui/InputWithError.svelte";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let neuronId: NeuronId;
 
@@ -27,7 +28,7 @@
   const dispatcher = createEventDispatcher();
   const add = async () => {
     if (validPrincipal !== undefined) {
-      startBusy("add-hotkey-neuron");
+      startBusyNeuron({ initiator: "add-hotkey-neuron", neuronId });
       loading = true;
       await addHotkey({ neuronId, principal: validPrincipal });
       loading = false;
@@ -40,7 +41,7 @@
   };
 </script>
 
-<Modal on:nnsClose theme="dark" size="medium">
+<Modal on:nnsClose theme="dark" size="big">
   <span slot="title">{$i18n.neuron_detail.add_hotkey_modal_title}</span>
   <form on:submit|preventDefault={add} data-tid="add-hotkey-neuron-modal">
     <div class="input-wrapper">

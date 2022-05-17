@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { Account, AccountType } from "../../types/account";
-  import RenameSubAccount from "./RenameSubAccount.svelte";
-  import HardwareWalletShowAction from "./HardwareWalletShowAction.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "../../stores/selectedAccount.store";
+  import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
+  import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
+  import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";
 
   const selectedAccountStore = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -20,11 +21,12 @@
 
 <div role="menubar">
   {#if type === "subAccount"}
-    <RenameSubAccount {selectedAccount} />
+    <RenameSubAccountButton {selectedAccount} />
   {/if}
 
   {#if type === "hardwareWallet"}
-    <HardwareWalletShowAction />
+    <HardwareWalletListNeuronsButton />
+    <HardwareWalletShowActionButton />
   {/if}
 </div>
 
@@ -32,5 +34,9 @@
   div {
     display: flex;
     justify-content: flex-end;
+
+    :global(& > *:not(:last-of-type)) {
+      margin-right: var(--padding);
+    }
   }
 </style>

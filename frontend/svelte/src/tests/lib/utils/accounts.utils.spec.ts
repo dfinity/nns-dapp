@@ -5,7 +5,7 @@ import {
   getAccountByPrincipal,
   getPrincipalFromString,
   invalidAddress,
-  isHardwareWallet,
+  isAccountHardwareWallet,
 } from "../../../lib/utils/accounts.utils";
 import {
   mockAddressInput,
@@ -92,16 +92,16 @@ describe("accounts-utils", () => {
 
   describe("isHardwareWallet", () => {
     it("returns true if type hardware wallet", () => {
-      expect(isHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
+      expect(isAccountHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
     });
 
     it("returns false if type no hardware wallet", () => {
-      expect(isHardwareWallet(mockMainAccount)).toBeFalsy();
-      expect(isHardwareWallet(mockSubAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockMainAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockSubAccount)).toBeFalsy();
     });
 
     it("returns false if no account", () => {
-      expect(isHardwareWallet(undefined)).toBeFalsy();
+      expect(isAccountHardwareWallet(undefined)).toBeFalsy();
     });
   });
 });

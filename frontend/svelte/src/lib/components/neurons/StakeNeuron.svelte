@@ -16,7 +16,10 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
-    startBusy("stake-neuron");
+    startBusy({
+      initiator: "stake-neuron",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
     creating = true;
     const neuron = await stakeNeuron({
       amount,

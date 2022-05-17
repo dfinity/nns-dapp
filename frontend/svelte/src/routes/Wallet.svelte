@@ -32,6 +32,7 @@
   import { writable } from "svelte/store";
   import WalletActions from "../lib/components/accounts/WalletActions.svelte";
   import { accountName as getAccountName } from "../lib/utils/transactions.utils";
+  import { busy } from "../lib/stores/busy.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -151,7 +152,7 @@
         <button
           class="primary"
           on:click={() => (showNewTransactionModal = true)}
-          disabled={$selectedAccountStore.account === undefined}
+          disabled={$selectedAccountStore.account === undefined || $busy}
           >{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>

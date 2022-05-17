@@ -17,7 +17,7 @@
 
   const toggleKnownNeuronFollowee = async () => {
     loading = true;
-    startBusy("add-followee");
+    startBusy({ initiator: "add-followee" });
     dispatcher("nnsLoading", { loading: true });
     const toggleFollowee = isFollowed ? removeFollowee : addFollowee;
     await toggleFollowee({

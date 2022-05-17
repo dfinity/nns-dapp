@@ -4,10 +4,10 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import RenameSubAccount from "../../../../lib/components/accounts/RenameSubAccount.svelte";
+import RenameSubAccount from "../../../../lib/components/accounts/RenameSubAccountButton.svelte";
 import en from "../../../mocks/i18n.mock";
 
-describe("RenameSubAccount", () => {
+describe("RenameSubAccountButton", () => {
   it("should contain a closed modal per default", () => {
     const { getByText } = render(RenameSubAccount, {
       props: { selectedAccount: undefined },

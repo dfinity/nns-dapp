@@ -59,6 +59,9 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    getAccountIdentityByPrincipal: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(testIdentity)),
     getAccountIdentity: jest
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
