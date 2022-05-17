@@ -12,7 +12,6 @@
     type HardwareWalletNeuronInfo,
     type HardwareWalletNeuronsContext,
   } from "../../types/hardware-wallet-neurons.context";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { toastsStore } from "../../stores/toasts.store";
 
   export let neuronId: NeuronId;
@@ -24,9 +23,8 @@
   const { store }: HardwareWalletNeuronsContext = context;
 
   let selectedAccount: Account | undefined = undefined;
-  let neurons: NeuronInfo[] = [];
 
-  $: ({ neurons, selectedAccount } = $store);
+  $: ({ selectedAccount } = $store);
 
   const dispatch = createEventDispatcher();
 
