@@ -45,7 +45,7 @@
       });
       return;
     }
-    startBusy("split-neuron");
+    startBusy({ initiator: "split-neuron" });
     const id = await splitNeuron({ neuronId: neuron.neuronId, amount });
     if (id !== undefined) {
       toastsStore.success({
@@ -57,7 +57,7 @@
   };
 </script>
 
-<Modal on:nnsClose theme="dark" size="medium">
+<Modal on:nnsClose theme="dark" size="big">
   <span slot="title">{$i18n.neuron_detail.split_neuron}</span>
   <section data-tid="split-neuron-modal">
     <CurrentBalance {balance} />

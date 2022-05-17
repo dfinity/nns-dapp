@@ -10,7 +10,7 @@
   let dispatcher = createEventDispatcher();
 
   const createNewSubAccount = async () => {
-    startBusy("accounts");
+    startBusy({ initiator: "accounts" });
 
     await addSubAccount({
       name: newAccountName,

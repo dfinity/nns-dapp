@@ -1,11 +1,11 @@
-const { register } = require("../common/register");
-const { waitForLoad } = require("../common/waitForLoad");
-const {
+import { register } from "../common/register";
+import { waitForLoad } from "../common/waitForLoad";
+import {
   RouteHash,
   FrontendPath,
   RedirectToLegacy,
   REDIRECT_TO_LEGACY,
-} = require("../common/constants");
+} from "../common/constants";
 
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
@@ -121,8 +121,7 @@ const waitForHash = async (
     throw new Error(
       `Expected hash '${hash}' but have: '${currentHash}' with ${JSON.stringify(
         options
-      )}`,
-      { cause: err }
+      )} (caused by ${err})`
     );
   }
 };
@@ -137,7 +136,7 @@ const waitForPath = async (
   path: string,
   options?: { timeout?: number }
 ) => {
-  const { timeout } = options;
+  const timeout = options?.timeout;
   const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   return browser.waitUntil(
     async () =>

@@ -25,9 +25,12 @@
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
-    "create_subaccount": "Sorry, there was an expected error when creating your subaccount, please try again",
-    "create_subaccount_too_long": "The name of the subaccount is too long. Please, choose a shorter name.",
-    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of subaccounts in this account.",
+    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
+    "rename_subaccount": "An error occurred while renaming your linked account.",
+    "rename_subaccount_no_account": "No linked account provided.",
+    "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
+    "create_subaccount_too_long": "The name of the linked account is too long. Please, choose a shorter name.",
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
@@ -98,6 +101,8 @@
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "attach_hardware_name_placeholder": "Hardware Wallet Name",
     "attach_hardware_enter_name": "Enter Wallet Name",
+    "attach_hardware_show_neurons": "Show Neurons",
+    "attach_hardware_neurons_text": "The following are neurons controlled by the hardware wallet. You can optionally add the NNS dapp as a hotkey to these neurons, which allows you to manage the neurons directly from the Neurons tab.",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
@@ -118,11 +123,14 @@
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
-    "authorize_on_hardware_wallet": "Authorize on Hardware Wallet",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
-    "transaction_success": "Transaction completed."
+    "transaction_success": "Transaction completed.",
+    "rename": "Rename",
+    "rename_linked_account": "Rename Linked Account",
+    "rename_new_name_placeholder": "New Name",
+    "rename_account_enter_new_name": "Enter New Account Name"
   },
   "neurons": {
     "title": "Neurons",
@@ -136,6 +144,11 @@
     "merge_neurons_modal_title_2": "Merge neuron",
     "merge_neurons_modal_with": "with",
     "set_dissolve_delay": "Set Dissolve Delay",
+    "add_user_as_hotkey": "Add Principal to Hotkeys",
+    "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
+    "add_user_as_hotkey_success": "Your pincipal was added to the neuron successfully",
+    "neuron_create_success": "Neuron created successfully",
+    "your_principal": "Your NNS Principal",
     "confirm_dissolve_delay": "Confirm Dissolve Delay",
     "follow_neurons_screen": "Follow neurons",
     "stake_neuron": "Stake Neuron",
@@ -166,11 +179,12 @@
     "update_delay": "Update Delay",
     "confirm_delay": "Confirm and Update Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully splitted.",
+    "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
     "only_merge_two": "You can only merge two neurons at a time.",
-    "irreversible_action": "This action is irreversible."
+    "irreversible_action": "This action is irreversible.",
+    "stake_amount": "Stake Amount"
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -257,6 +271,9 @@
   },
   "wallet": {
     "title": "Account"
+  },
+  "busy_screen": {
+    "pending_approval_hw": "Please use your hardware wallet to approve."
   },
   "proposal_detail": {
     "title": "Proposal",

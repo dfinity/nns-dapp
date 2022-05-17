@@ -30,6 +30,9 @@ interface I18nError {
   list_canisters: string;
   missing_identity: string;
   create_subaccount: string;
+  rename_subaccount: string;
+  rename_subaccount_no_account: string;
+  rename_subaccount_type: string;
   create_subaccount_too_long: string;
   create_subaccount_limit_exceeded: string;
   get_neurons: string;
@@ -107,6 +110,8 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_show_neurons: string;
+  attach_hardware_neurons_text: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -127,11 +132,14 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
-  authorize_on_hardware_wallet: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
   transaction_success: string;
+  rename: string;
+  rename_linked_account: string;
+  rename_new_name_placeholder: string;
+  rename_account_enter_new_name: string;
 }
 
 interface I18nNeurons {
@@ -146,6 +154,11 @@ interface I18nNeurons {
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_with: string;
   set_dissolve_delay: string;
+  add_user_as_hotkey: string;
+  add_user_as_hotkey_message: string;
+  add_user_as_hotkey_success: string;
+  neuron_create_success: string;
+  your_principal: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_neuron: string;
@@ -181,6 +194,7 @@ interface I18nNeurons {
   cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
   irreversible_action: string;
+  stake_amount: string;
 }
 
 interface I18nNew_followee {
@@ -275,6 +289,10 @@ interface I18nStatus {
 
 interface I18nWallet {
   title: string;
+}
+
+interface I18nBusy_screen {
+  pending_approval_hw: string;
 }
 
 interface I18nProposal_detail {
@@ -427,6 +445,7 @@ interface I18n {
   rewards: I18nRewards;
   status: I18nStatus;
   wallet: I18nWallet;
+  busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;

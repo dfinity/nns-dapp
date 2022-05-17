@@ -2,13 +2,14 @@
   import { createEventDispatcher } from "svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { syncAccounts } from "../../services/accounts.services";
-  import { stakeAndLoadNeuron } from "../../services/neurons.services";
+  import { stakeNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { formattedTransactionFeeICP, maxICP } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   export let account: Account;
   let amount: number;
@@ -16,11 +17,18 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
-    startBusy("stake-neuron");
+    const isHardwareWallet = isAccountHardwareWallet(account);
+    startBusy({
+      initiator: "stake-neuron",
+      labelKey: isHardwareWallet
+        ? "busy_screen.pending_approval_hw"
+        : undefined,
+    });
     creating = true;
-    const neuronId = await stakeAndLoadNeuron({
+    const neuronId = await stakeNeuron({
       amount,
       account,
+      loadNeuron: !isHardwareWallet,
     });
     if (neuronId !== undefined) {
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.

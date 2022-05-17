@@ -76,7 +76,7 @@
 
     loading = true;
     loadingAddress = true;
-    startBusy("add-followee");
+    startBusy({ initiator: "add-followee" });
 
     await addFollowee({
       neuronId: neuron.neuronId,
@@ -92,7 +92,7 @@
   };
 </script>
 
-<Modal theme="dark" size="medium" on:nnsClose>
+<Modal theme="dark" size="big" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>

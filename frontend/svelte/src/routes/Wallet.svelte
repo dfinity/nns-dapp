@@ -16,7 +16,8 @@
   import type { Account } from "../lib/types/account";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import HardwareWalletShowAction from "../lib/components/accounts/HardwareWalletShowAction.svelte";
+  import WalletActions from "../lib/components/accounts/WalletActions.svelte";
+  import { busy } from "../lib/stores/busy.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -34,10 +35,7 @@
   let accountIdentifier: string | undefined;
   $: accountIdentifier = routePathAccountIdentifier($routeStore.path);
 
-  let mainAccount: Account | undefined;
-  $: mainAccount = $accountsStore?.main;
-
-  // TODO(L2-429): context and store for selectedAccount
+  // TODO(L2-429): context and store for selectedAccount?
   let selectedAccount: Account | undefined;
   $: accountIdentifier,
     $accountsStore,
@@ -48,11 +46,11 @@
   <HeadlessLayout on:nnsBack={goBack}>
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
-    {#if mainAccount}
+    {#if selectedAccount !== undefined}
       <section>
-        <h1>TBD - TODO(L2-429)</h1>
+        <h1>TBD - TODO(L2-429) - {selectedAccount?.name}</h1>
 
-        <HardwareWalletShowAction />
+        <WalletActions {selectedAccount} />
       </section>
     {:else}
       <Spinner />
@@ -63,8 +61,9 @@
         <button
           class="primary"
           on:click={() => (showNewTransactionModal = true)}
-          disabled={selectedAccount === undefined || !mainAccount}
-          >{$i18n.accounts.new_transaction}</button
+          disabled={selectedAccount === undefined ||
+            selectedAccount === undefined ||
+            $busy}>{$i18n.accounts.new_transaction}</button
         >
       </Toolbar>
     </svelte:fragment>
