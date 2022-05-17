@@ -172,7 +172,7 @@
     display: block;
     width: 100%;
 
-    margin-bottom: var(--padding-2x);
+    margin: var(--padding-2x) 0;
 
     --icp-font-size: var(--font-size-h1);
 
