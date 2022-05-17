@@ -18,8 +18,8 @@ export enum RedirectToLegacy {
   both = "both",
 }
 
-export const REDIRECT_TO_LEGACY: RedirectToLegacy = (getRequiredEnvEnum(
+export const REDIRECT_TO_LEGACY: RedirectToLegacy = getRequiredEnvEnum(
   "REDIRECT_TO_LEGACY",
   RedirectToLegacy
-)) as RedirectToLegacy;
+);
 export const NNS_DAPP_URL: string = getRequiredEnvVar("OWN_CANISTER_URL");

@@ -7,7 +7,6 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import fs from "fs";
 import * as configFromFile from "./frontend/ts/src/config.json";
 
 /**
@@ -27,10 +26,10 @@ export function getRequiredEnvVar(key) {
 /**
  * Returns the given environment variable as an enum variant, else throws an error.
  */
-export function getRequiredEnvEnum(key, enumType) {
+export function getRequiredEnvEnum<Type>(key: string, enumType): Type {
   let value = getRequiredEnvVar(key);
   if (value in enumType) {
-    return value;
+    return value as unknown as Type;
   } else {
     throw new Error(`Environment variable ${key}='${value}' is not a valid ${enumType}.  Valid values are: ${Object.keys(enumType).join(" ")}`);
   }
