@@ -63,7 +63,8 @@
       display: inline-flex;
       align-items: center;
 
-      min-height: 20px;
+      /** minimal height of the button displayed in the grid - determined by observation */
+      min-height: calc(var(--button-min-height) / 3);
     }
 
     @include media.min-width(medium) {
