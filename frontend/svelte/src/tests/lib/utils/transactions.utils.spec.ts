@@ -1,11 +1,13 @@
 import { ICP } from "@dfinity/nns";
 import type { Transaction } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
+import { enumKeys } from "../../../lib/utils/enum.utils";
 import {
   accountName,
   AccountTransactionType,
   mapTransaction,
   showTransactionFee,
   transactionDisplayAmount,
+  transactionName,
   transactionType,
 } from "../../../lib/utils/transactions.utils";
 import {
@@ -13,6 +15,7 @@ import {
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
@@ -280,6 +283,40 @@ describe("transactions-utils", () => {
           fee: undefined,
         })
       ).toThrow();
+    });
+  });
+
+  describe("transactionName", () => {
+    it("returns all known types name", () => {
+      for (const key of enumKeys(AccountTransactionType)) {
+        expect(
+          transactionName({
+            type: key as AccountTransactionType,
+            isReceive: false,
+            labels: en.transaction_names,
+          })
+        ).toBe(en.transaction_names[key as AccountTransactionType]);
+      }
+    });
+
+    it("returns received name", () => {
+      expect(
+        transactionName({
+          type: AccountTransactionType.Send,
+          isReceive: true,
+          labels: en.transaction_names,
+        })
+      ).toBe(en.transaction_names.receive);
+    });
+
+    it("returns raw type if not label", () => {
+      expect(
+        transactionName({
+          type: "test" as AccountTransactionType,
+          isReceive: true,
+          labels: en.transaction_names,
+        })
+      ).toBe("test");
     });
   });
 });

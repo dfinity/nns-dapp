@@ -4,7 +4,7 @@ import { mockMainAccount, mockSubAccount } from "./accounts.store.mock";
 export const mockSentToSubAccountTransaction = {
   transaction_type: [{ Transfer: null }],
   memo: BigInt(0),
-  timestamp: { timestamp_nanos: BigInt("1652121288218078256") },
+  timestamp: { timestamp_nanos: BigInt("0") },
   block_height: BigInt(208),
   transfer: {
     Send: {
