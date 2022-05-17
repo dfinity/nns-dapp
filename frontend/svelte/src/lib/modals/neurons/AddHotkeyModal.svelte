@@ -41,7 +41,7 @@
   };
 </script>
 
-<Modal on:nnsClose theme="dark" size="medium">
+<Modal on:nnsClose theme="dark" size="big">
   <span slot="title">{$i18n.neuron_detail.add_hotkey_modal_title}</span>
   <form on:submit|preventDefault={add} data-tid="add-hotkey-neuron-modal">
     <div class="input-wrapper">
