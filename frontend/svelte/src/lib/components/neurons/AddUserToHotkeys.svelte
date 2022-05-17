@@ -7,17 +7,17 @@
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "../../stores/auth.store";
 
   export let account: Account;
-  export let neuron: NeuronInfo;
+  export let neuronId: NeuronId;
 
   let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
-  const dispatchNext = () => {
-    dispatcher("nnsNext");
+  const skip = () => {
+    dispatcher("nnsSkip");
   };
 
   // Add the auth identity principal as hotkey
@@ -25,22 +25,22 @@
     loading = true;
     // This screen is only for hardware wallet.
     startBusy({
-      initiator: "stake-neuron",
+      initiator: "add-hotkey-neuron",
       labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getIdentity();
-    const neuronId = await addHotkeyFromHW({
-      neuronId: neuron.neuronId,
+    const maybeNeuronId = await addHotkeyFromHW({
+      neuronId,
       principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
     loading = false;
     stopBusy("add-hotkey-neuron");
-    if (neuronId !== undefined) {
+    if (maybeNeuronId !== undefined) {
       toastsStore.success({
         labelKey: "neurons.add_user_as_hotkey_success",
       });
-      dispatchNext();
+      dispatcher("nnsHotkeyAdded");
     }
   };
 </script>
@@ -55,7 +55,7 @@
   </div>
   <div class="buttons">
     <button
-      on:click={dispatchNext}
+      on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
       class="secondary full-width">{$i18n.neurons.skip}</button
     >

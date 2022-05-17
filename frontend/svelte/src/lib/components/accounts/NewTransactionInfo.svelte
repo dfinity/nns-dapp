@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
-  import type { TransactionContext } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { TransactionContext } from "../../types/transaction.context";
   import { getContext } from "svelte";
   import TransactionInfo from "./TransactionInfo.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";

@@ -2,8 +2,8 @@
   import { i18n } from "../../stores/i18n";
   import { getContext } from "svelte";
   import type { Account } from "../../types/account";
-  import type { TransactionContext } from "../../stores/transaction.store";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
+  import type { TransactionContext } from "../../types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import DestinationAddress from "./DestinationAddress.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(

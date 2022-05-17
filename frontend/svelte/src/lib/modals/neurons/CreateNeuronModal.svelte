@@ -5,7 +5,7 @@
   import SelectAccount from "../../components/accounts/SelectAccount.svelte";
   import StakeNeuron from "../../components/neurons/StakeNeuron.svelte";
   import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
@@ -15,6 +15,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import AddUserToHotkeys from "../../components/neurons/AddUserToHotkeys.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
 
   const lastSteps: Steps = [
     {
@@ -58,10 +59,20 @@
 
   let selectedAccount: Account | undefined;
 
+  let newNeuronId: NeuronId | undefined;
   let newNeuron: NeuronInfo | undefined;
+  $: newNeuron = $definedNeuronsStore.find(
+    ({ neuronId }) => neuronId === newNeuronId
+  );
+
   const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
+  };
+
   type InvalidState = {
     stepName: string;
+    isNeuronIdInvalid?: (n?: NeuronId) => boolean;
     isNeuronInvalid?: (n?: NeuronInfo) => boolean;
     isAccountInvalid?: (a?: Account) => boolean;
   };
@@ -73,7 +84,7 @@
     {
       stepName: "AddUserToHotkeys",
       isAccountInvalid: (account?: Account) => account === undefined,
-      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
+      isNeuronIdInvalid: (neuronId?: NeuronId) => neuronId === undefined,
     },
     {
       stepName: "SetDissolveDelay",
@@ -90,11 +101,12 @@
   ];
   $: {
     const invalidState = invalidStates.find(
-      ({ stepName, isNeuronInvalid, isAccountInvalid }) => {
+      ({ stepName, isNeuronInvalid, isAccountInvalid, isNeuronIdInvalid }) => {
         return (
           stepName === currentStep?.name &&
           ((isNeuronInvalid?.(newNeuron) ?? false) ||
-            (isAccountInvalid?.(selectedAccount) ?? false))
+            (isAccountInvalid?.(selectedAccount) ?? false) ||
+            (isNeuronIdInvalid?.(newNeuronId) ?? false))
         );
       }
     );
@@ -102,7 +114,7 @@
       toastsStore.error({
         labelKey: "error.unknown",
       });
-      dispatcher("nnsClose");
+      close();
     }
   }
   let delayInSeconds: number = 0;
@@ -122,8 +134,10 @@
   const goNext = () => {
     modal.next();
   };
-  const addNeuron = ({ detail }: CustomEvent<{ neuron: NeuronInfo }>) => {
-    newNeuron = detail.neuron;
+  const onNeuronCreated = async ({
+    detail,
+  }: CustomEvent<{ neuronId: NeuronId }>) => {
+    newNeuronId = detail.neuronId;
     if (isAccountHardwareWallet(selectedAccount)) {
       toastsStore.show({
         labelKey: "neurons.neuron_create_success",
@@ -147,16 +161,20 @@
   {#if currentStep?.name === "StakeNeuron"}
     <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
     {#if selectedAccount !== undefined}
-      <StakeNeuron account={selectedAccount} on:nnsNeuronCreated={addNeuron} />
+      <StakeNeuron
+        account={selectedAccount}
+        on:nnsNeuronCreated={onNeuronCreated}
+      />
     {/if}
   {/if}
   {#if currentStep?.name === "AddUserToHotkeys"}
     <!-- we spare a spinner for the selectedAccount and newNeuron within AddUserToHotkeys -->
-    {#if selectedAccount !== undefined && newNeuron !== undefined}
+    {#if selectedAccount !== undefined && newNeuronId !== undefined}
       <AddUserToHotkeys
-        on:nnsNext={goNext}
+        on:nnsHotkeyAdded={goNext}
+        on:nnsSkip={close}
         account={selectedAccount}
-        neuron={newNeuron}
+        neuronId={newNeuronId}
       />
     {/if}
   {/if}

@@ -16,7 +16,7 @@ import {
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { TransactionStore } from "../../../lib/stores/transaction.store";
+import type { TransactionStore } from "../../../lib/types/transaction.context";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
