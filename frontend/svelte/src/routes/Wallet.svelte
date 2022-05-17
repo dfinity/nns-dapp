@@ -32,6 +32,7 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "../lib/types/selected-account.context";
+  import { isAccountHardwareWallet } from "../lib/utils/accounts.utils";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -125,10 +126,11 @@
             showCopy
             size="medium"
           />
-          {#if $selectedAccountStore.account.principal !== undefined}
+          {#if isAccountHardwareWallet($selectedAccountStore.account)}
             <Identifier
               label={$i18n.wallet.principal}
-              identifier={$selectedAccountStore.account.principal.toString()}
+              identifier={$selectedAccountStore.account.principal?.toString() ??
+                ""}
               showCopy
             />
           {/if}
