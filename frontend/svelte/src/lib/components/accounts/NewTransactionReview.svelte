@@ -2,8 +2,8 @@
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import ICP from "../ic/ICP.svelte";
   import { ICP as ICPType } from "@dfinity/nns";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
-  import type { TransactionContext } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { TransactionContext } from "../../types/transaction.context";
   import { createEventDispatcher, getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";

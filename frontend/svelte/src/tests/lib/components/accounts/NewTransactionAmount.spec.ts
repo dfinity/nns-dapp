@@ -10,20 +10,20 @@ import {
   E8S_PER_ICP,
   TRANSACTION_FEE_E8S,
 } from "../../../../lib/constants/icp.constants";
-import { transactionStore } from "../../../../lib/stores/transaction.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import {
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { mockTransactionStore } from "../../../mocks/transaction.store.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
 
 describe("NewTransactionAmount", () => {
   const props = { testComponent: NewTransactionAmount };
 
   beforeAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
       amount: undefined,
@@ -31,7 +31,7 @@ describe("NewTransactionAmount", () => {
   });
 
   afterAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: undefined,
       destinationAddress: undefined,
       amount: undefined,
@@ -138,7 +138,7 @@ describe("NewTransactionAmount", () => {
 
     fireEvent.click(button);
 
-    const { amount } = get(transactionStore);
+    const { amount } = get(mockTransactionStore);
     expect(amount).toEqual(ICP.fromString(testValue));
   });
 });
