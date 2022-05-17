@@ -8,7 +8,11 @@
   let modalOpen = false;
 </script>
 
-<button class="primary small" type="button" on:click={() => (modalOpen = true)}
+<button
+  class="primary small"
+  type="button"
+  on:click={() => (modalOpen = true)}
+  data-tid="open-hardware-wallet-add-hotkey-button"
   >{$i18n.accounts.attach_hardware_neurons_add}</button
 >
 
