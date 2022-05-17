@@ -103,6 +103,8 @@
     "attach_hardware_enter_name": "Enter Wallet Name",
     "attach_hardware_show_neurons": "Show Neurons",
     "attach_hardware_neurons_text": "The following are neurons controlled by the hardware wallet. You can optionally add the NNS dapp as a hotkey to these neurons, which allows you to manage the neurons directly from the Neurons tab.",
+    "attach_hardware_neurons_add": "Add to NNS dapp",
+    "attach_hardware_neurons_added": "Added to NNS dapp",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
