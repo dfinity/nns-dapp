@@ -29,14 +29,14 @@
       labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getIdentity();
-    const success = await addHotkeyFromHW({
+    const maybeNeuronId = await addHotkeyFromHW({
       neuronId,
       principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
     loading = false;
     stopBusy("add-hotkey-neuron");
-    if (success !== undefined) {
+    if (maybeNeuronId !== undefined) {
       toastsStore.success({
         labelKey: "neurons.add_user_as_hotkey_success",
       });
