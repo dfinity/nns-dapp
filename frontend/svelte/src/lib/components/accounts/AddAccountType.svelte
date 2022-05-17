@@ -5,7 +5,7 @@
     type AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../stores/add-account.store";
+  } from "../../types/add-account.context";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
