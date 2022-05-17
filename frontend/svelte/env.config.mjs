@@ -7,7 +7,37 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import { getRequiredEnvVar } from "../../config";
+import fs from "fs";
+
+/**
+ * Configuration is provided in a JSON file.  The JSON file SHOULD exist, if it doesn't it
+ * will be created with the mainnet values.  The values in the file MAY then be overridden
+ * using environment variables.
+ */
+const CONFIG_FILE = "../ts/src/config.json";
+// Edge case: we run the script to create the config file earlier than this file is executed.
+if (!fs.existsSync(CONFIG_FILE)) {
+  throw new Error(
+    "Config file missing. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
+  );
+}
+const configFromFile = JSON.parse(
+  fs.readFileSync(CONFIG_FILE, { encoding: "utf8" })
+);
+
+/**
+ * Returns the given environment variable, if defined and non-empty, else throws an error.
+ */
+function getRequiredEnvVar(key) {
+  var value = process.env[key];
+  if (undefined === value || value === "") {
+    value = configFromFile[key];
+  }
+  if (undefined === value || value === "") {
+    throw new Error(`Environment variable '${key}' is undefined.`);
+  }
+  return value;
+}
 
 const IDENTITY_SERVICE_URL = getRequiredEnvVar("IDENTITY_SERVICE_URL");
 
