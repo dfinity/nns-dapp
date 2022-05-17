@@ -8,7 +8,6 @@
     hardwareWalletNeuronsStore,
     mockNeuronStake,
   } from "../../../mocks/hardware-wallet-neurons.store.mock";
-  import { NeuronId } from "../../../../../../../../nns-js";
 
   export let testComponent: typeof SvelteComponent;
 
