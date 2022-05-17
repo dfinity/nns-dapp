@@ -1,4 +1,4 @@
-import { getRequiredEnvVar, getRequiredEnvEnum } from "../../config.mjs";
+import { getRequiredEnvVar, getRequiredEnvEnum } from "../../config";
 
 export enum RouteHash {
   Accounts = "#/accounts",
