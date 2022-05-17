@@ -142,6 +142,10 @@ interface I18nAccounts {
   rename_linked_account: string;
   rename_new_name_placeholder: string;
   rename_account_enter_new_name: string;
+  hardware_wallet_add_hotkey_title: string;
+  hardware_wallet_add_hotkey_text_neuron: string;
+  hardware_wallet_add_hotkey_text_principal: string;
+  hardware_wallet_add_hotkey_text_confirm: string;
 }
 
 interface I18nNeurons {

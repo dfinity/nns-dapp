@@ -4,6 +4,7 @@
   import { formatICP } from "../../utils/icp.utils";
   import { isHotKeyControllable } from "../../utils/neuron.utils";
   import { authStore } from "../../stores/auth.store";
+  import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
 
   export let neurons: NeuronInfo[] = [];
 
@@ -19,13 +20,14 @@
   <p class="stake_amount">{$i18n.neurons.stake_amount}</p>
 
   {#each neurons as neuron (neuron.neuronId)}
+    {@const neuronId = neuron.neuronId}
     {@const controlled = isHotKeyControllable({
       identity: $authStore.identity,
       neuron,
     })}
 
     <p>
-      {neuron.neuronId}
+      {neuronId}
     </p>
 
     <p>
@@ -36,9 +38,7 @@
       {#if controlled}
         {$i18n.accounts.attach_hardware_neurons_added}
       {:else}
-        <button class="primary small" type="button"
-          >{$i18n.accounts.attach_hardware_neurons_add}</button
-        >
+        <HardwareWalletNeuronAddHotkeyButton {neuronId} />
       {/if}
     </p>
   {/each}
