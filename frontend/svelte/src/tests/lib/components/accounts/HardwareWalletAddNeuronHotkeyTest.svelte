@@ -4,8 +4,11 @@
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
   } from "../../../../lib/types/hardware-wallet-neurons.context";
-  import {hardwareWalletNeuronsStore, mockNeuronStake} from "../../../mocks/hardware-wallet-neurons.store.mock";
-  import {NeuronId} from '../../../../../../../../nns-js';
+  import {
+    hardwareWalletNeuronsStore,
+    mockNeuronStake,
+  } from "../../../mocks/hardware-wallet-neurons.store.mock";
+  import { NeuronId } from "../../../../../../../../nns-js";
 
   export let testComponent: typeof SvelteComponent;
 

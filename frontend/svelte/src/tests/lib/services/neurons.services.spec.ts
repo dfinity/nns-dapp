@@ -712,7 +712,7 @@ describe("neurons-services", () => {
       });
 
       const neurons = get(neuronsStore);
-      expect(neurons).toEqual({certified: true, neurons: [mockNeuron]});
+      expect(neurons).toEqual({ certified: true, neurons: [mockNeuron] });
     });
 
     it("should not update if ledger connection throws an error", async () => {

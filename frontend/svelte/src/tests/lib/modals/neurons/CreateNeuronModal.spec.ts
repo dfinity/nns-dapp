@@ -48,7 +48,9 @@ jest.mock("../../../../lib/services/neurons.services", () => {
       .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
-    addHotkeyForHardwareWalletNeuron: jest.fn().mockResolvedValue({success: true}),
+    addHotkeyForHardwareWalletNeuron: jest
+      .fn()
+      .mockResolvedValue({ success: true }),
     getNeuronFromStore: jest.fn(),
   };
 });
