@@ -5,6 +5,7 @@
   export let identifier: string;
   export let label: string | undefined;
   export let showCopy: boolean = false;
+  export let size: "small" | "medium" = "small";
 
   let labelText: string;
   $: labelText = label === undefined ? "" : `${label} `;
@@ -14,7 +15,7 @@
 </script>
 
 <p>
-  <small>{labelText}{identifier}</small>
+  <span class:text_small={size === "small"}>{labelText}{identifier}</span>
   {#if showCopy}
     <button
       on:click|stopPropagation={copyToClipboard}
@@ -27,7 +28,7 @@
 </p>
 
 <style lang="scss">
-  small {
+  span {
     word-break: break-all;
   }
 

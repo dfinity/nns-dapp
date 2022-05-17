@@ -304,6 +304,7 @@ interface I18nTransaction_names {
 interface I18nWallet {
   title: string;
   address: string;
+  principal: string;
   direction_from: string;
   direction_to: string;
   no_transactions: string;

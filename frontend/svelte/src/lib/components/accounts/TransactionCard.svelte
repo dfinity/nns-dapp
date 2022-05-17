@@ -59,7 +59,7 @@
   <p>{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
 
   {#if identifier !== undefined}
-    <Identifier {label} {identifier} />
+    <Identifier size="medium" {label} {identifier} />
   {/if}
 </Card>
 

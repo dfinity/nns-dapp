@@ -123,7 +123,15 @@
             label={$i18n.wallet.address}
             identifier={$selectedAccountStore.account.identifier}
             showCopy
+            size="medium"
           />
+          {#if $selectedAccountStore.account.principal !== undefined}
+            <Identifier
+              label={$i18n.wallet.principal}
+              identifier={$selectedAccountStore.account.principal.toString()}
+              showCopy
+            />
+          {/if}
         </div>
         <div class="actions">
           <WalletActions />
@@ -176,12 +184,16 @@
     @include media.min-width(medium) {
       display: inline-flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
     }
   }
 
   .address {
     margin-bottom: var(--padding-4x);
+    :global(p:first-of-type) {
+      color: var(--gray-50);
+      margin-bottom: var(--padding);
+    }
   }
   .actions {
     margin-bottom: var(--padding-3x);

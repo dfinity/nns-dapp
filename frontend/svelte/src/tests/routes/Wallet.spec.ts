@@ -11,6 +11,7 @@ import { routeStore } from "../../lib/stores/route.store";
 import Wallet from "../../routes/Wallet.svelte";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
@@ -176,6 +177,38 @@ describe("Wallet", () => {
         const { queryAllByTestId } = render(Wallet);
         expect(queryAllByTestId("transaction-card").length).toBe(2);
       });
+    });
+  });
+
+  describe("accounts loaded (Hardware Wallet)", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        );
+
+      jest
+        .spyOn(routeStore, "subscribe")
+        .mockImplementation(
+          mockRouteStoreSubscribe(
+            `/#/wallet/${mockHardwareWalletAccount.identifier}`
+          )
+        );
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should display principal", async () => {
+      const { queryByText } = render(Wallet);
+      const principal = mockHardwareWalletAccount?.principal?.toString();
+
+      expect(principal?.length).toBeGreaterThan(0);
+      expect(
+        queryByText(`${en.wallet.principal} ${principal}`, {
+          exact: false,
+        })
+      ).toBeInTheDocument();
     });
   });
 });
