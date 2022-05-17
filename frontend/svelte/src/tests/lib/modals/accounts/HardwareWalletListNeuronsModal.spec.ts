@@ -5,7 +5,6 @@
 import { render } from "@testing-library/svelte";
 import HardwareWalletListNeuronsModal from "../../../../lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
 import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
 import HardwareWalletNeuronsTest from '../../components/accounts/HardwareWalletNeuronsTest.svelte';
 
 describe("HardwareWalletListNeuronsModal", () => {
