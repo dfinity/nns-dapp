@@ -34,7 +34,7 @@ describe("busy-services", () => {
       initiator,
       neuronId: neuron.neuronId,
     });
-    expect(startBusySpy).toBeCalledWith({initiator});
+    expect(startBusySpy).toBeCalledWith({ initiator });
   });
 
   it("call start busy with message if neuron controlled by hardware wallet", async () => {

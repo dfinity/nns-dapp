@@ -33,7 +33,7 @@
       return;
     }
 
-    startBusy({initiator: "accounts"});
+    startBusy({ initiator: "accounts" });
 
     await registerHardwareWalletProxy({
       name: $store.hardwareWalletName,

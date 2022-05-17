@@ -255,7 +255,7 @@ export const registerVotes = async ({
   proposalId: ProposalId;
   vote: Vote;
 }): Promise<void> => {
-  startBusy({initiator: "vote"});
+  startBusy({ initiator: "vote" });
 
   const identity: Identity = await getIdentity();
 
@@ -294,7 +294,7 @@ export const registerVotes = async ({
   };
 
   const reloadListNeurons = async () => {
-    startBusy({initiator: "reload-neurons"});
+    startBusy({ initiator: "reload-neurons" });
 
     try {
       await listNeurons({
@@ -313,7 +313,7 @@ export const registerVotes = async ({
   };
 
   const reloadProposal = async () => {
-    startBusy({initiator: "reload-proposal"});
+    startBusy({ initiator: "reload-proposal" });
 
     await loadProposal({
       proposalId,

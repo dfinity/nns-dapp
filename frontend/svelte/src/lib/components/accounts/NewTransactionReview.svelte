@@ -20,7 +20,7 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    startBusy({initiator: "accounts"});
+    startBusy({ initiator: "accounts" });
 
     const { success } = await transferICP($store);
 
