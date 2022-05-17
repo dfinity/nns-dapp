@@ -32,10 +32,12 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
+import { routeStore } from "../stores/route.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import {
@@ -55,6 +57,7 @@ import {
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
+  userNotAuthorizedNeuron,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
 import {
@@ -385,7 +388,7 @@ const getAndLoadNeuron = async (neuronId: NeuronId) => {
     certified: true,
     forceFetch: true,
   });
-  if (!neuron) {
+  if (!neuron || userNotAuthorizedNeuron(neuron)) {
     throw new NotFoundError();
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
@@ -568,18 +571,29 @@ export const removeHotkey = async ({
     });
     return;
   }
+  let hotkeyRemoved = false;
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
     await removeHotkeyApi({ neuronId, identity, principal });
+    hotkeyRemoved = true;
 
     await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    // It happens when the current user is removed from hotkey
+    if (err instanceof NotFoundError && hotkeyRemoved) {
+      routeStore.replace({ path: AppPath.Neurons });
+      toastsStore.show({
+        level: "success",
+        labelKey: "neurons.remove_hotkey_success",
+      });
+    } else {
+      toastsStore.show(mapNeuronErrorToToastMessage(err));
+    }
 
     // To inform there was an error
     return undefined;
@@ -851,10 +865,17 @@ export const loadNeuron = ({
   handleError?: () => void;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
-    toastsStore.error({
-      labelKey: "error.neuron_not_found",
-      err,
-    });
+    if (err instanceof NotFoundError) {
+      toastsStore.error({
+        labelKey: "error.neuron_not_found",
+        err,
+      });
+    } else {
+      toastsStore.error({
+        labelKey: "error.neuron_load",
+        err,
+      });
+    }
 
     handleError?.();
   };
@@ -867,8 +888,9 @@ export const loadNeuron = ({
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
-      if (neuron === undefined) {
-        catchError(new Error("Neuron not found"));
+      // Handle not authorized neurons as if not found.
+      if (neuron === undefined || userNotAuthorizedNeuron(neuron)) {
+        catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
 
