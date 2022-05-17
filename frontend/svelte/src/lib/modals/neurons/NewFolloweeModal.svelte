@@ -76,7 +76,7 @@
 
     loading = true;
     loadingAddress = true;
-    startBusy("add-followee");
+    startBusy({ initiator: "add-followee" });
 
     await addFollowee({
       neuronId: neuron.neuronId,

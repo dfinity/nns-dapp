@@ -10,7 +10,7 @@
   <div data-tid="busy" transition:fade>
     <div class="content">
       {#if $busyMessageKey !== undefined}
-        <h4>{translate({ labelKey: $busyMessageKey })}</h4>
+        <p>{translate({ labelKey: $busyMessageKey })}</p>
       {/if}
       <span>
         <Spinner inline />
@@ -34,5 +34,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  p {
+    padding-bottom: var(--padding);
+    max-width: calc(var(--section-max-width) / 2);
   }
 </style>

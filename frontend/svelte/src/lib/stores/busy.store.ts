@@ -17,20 +17,19 @@ export type BusyStateInitiatorType =
   | "merge-neurons"
   | "merge-maturity"
   | "spawn-neuron"
-  | "disburse-neuron"
-  | "remove-followee";
+  | "disburse-neuron";
 
-type BusyItem = {
+export interface BusyState {
   initiator: BusyStateInitiatorType;
   labelKey?: string;
-};
+}
 
 /**
  * Store that reflects the app busy state.
- * Is used to show the busy-screen that locks the UI
+ * Is used to show the busy-screen that locks the UI.
  */
 const initBusyStore = () => {
-  const { subscribe, update } = writable<Array<BusyItem>>([]);
+  const { subscribe, update } = writable<Array<BusyState>>([]);
 
   return {
     subscribe,
@@ -38,7 +37,7 @@ const initBusyStore = () => {
     /**
      * Show the busy-screen if not visible
      */
-    startBusy(newInitiator: BusyStateInitiatorType, labelKey?: string) {
+    startBusy({ initiator: newInitiator, labelKey }: BusyState) {
       update((state) => [
         ...state.filter(({ initiator }) => newInitiator !== initiator),
         { initiator: newInitiator, labelKey },
