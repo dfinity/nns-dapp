@@ -14,15 +14,17 @@ export const startBusyNeuron = ({
 }) => {
   const neuron = getNeuronFromStore(neuronId);
   if (neuron?.fullNeuron?.controller === undefined) {
-    startBusy(initiator);
+    startBusy({ initiator });
     return;
   }
   const hardwareWalletNeuron = isNeuronControlledByHardwareWallet({
     neuron,
     accounts: get(accountsStore),
   });
-  startBusy(
+  startBusy({
     initiator,
-    hardwareWalletNeuron ? "busy_screen.pending_approval_hw" : undefined
-  );
+    ...(hardwareWalletNeuron && {
+      labelKey: "busy_screen.pending_approval_hw",
+    }),
+  });
 };

@@ -200,7 +200,7 @@ describe("proposals-services", () => {
           proposalId,
           vote: Vote.YES,
         });
-        expect(spyBusyStart).toBeCalledWith("vote");
+        expect(spyBusyStart).toBeCalledWith({ initiator: "vote" });
         expect(spyBusyStop).toBeCalledWith("vote");
       });
 
