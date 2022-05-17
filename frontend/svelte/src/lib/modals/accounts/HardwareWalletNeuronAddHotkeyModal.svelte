@@ -9,6 +9,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
+    type HardwareWalletNeuronInfo,
     type HardwareWalletNeuronsContext,
   } from "../../types/hardware-wallet-neurons.context";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -31,21 +32,18 @@
 
   // We do not fetch again all the neurons on the ledger and solely update the UI to replicate the UI/UX that was developed in Flutter and is already in production.
   // i.e. the neuron that has just been added to the hotkey control will be displayed as "Added to NNS dapp"
-  const updateStoreNeuron = () => {
+  const updateContextStoreNeuron = () =>
     store.update(({ selectedAccount, neurons }) => ({
       selectedAccount,
-      neurons: neurons.map((neuron) => {
-        if (neuron.neuronId !== neuronId) {
-          return neuron;
-        }
-
-        return {
-          ...neuron,
-          controlledByNNSDapp: true,
-        };
-      }),
+      neurons: neurons.map((neuron: HardwareWalletNeuronInfo) =>
+        neuron.neuronId !== neuronId
+          ? neuron
+          : {
+              ...neuron,
+              controlledByNNSDapp: true,
+            }
+      ),
     }));
-  };
 
   const addCurrentUserToHotkey = async () => {
     if (selectedAccount === undefined) {
@@ -62,7 +60,7 @@
     });
 
     if (success) {
-      updateStoreNeuron();
+      updateContextStoreNeuron();
     }
 
     dispatch("nnsClose");
