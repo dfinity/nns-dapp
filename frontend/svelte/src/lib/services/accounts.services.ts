@@ -16,7 +16,7 @@ import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
-import type { TransactionStore } from "../stores/transaction.store";
+import type { TransactionStore } from "../types/transaction.context";
 import type { Account } from "../types/account";
 import { getAccountByPrincipal } from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";

@@ -1,6 +1,6 @@
 import type { ICP } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
-import type { Account } from "../types/account";
+import type { Account } from "./account";
 
 export interface TransactionStore {
   selectedAccount: Account | undefined;

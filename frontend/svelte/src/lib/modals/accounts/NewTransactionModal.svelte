@@ -9,9 +9,9 @@
   import type {
     TransactionContext,
     TransactionStore,
-  } from "../../stores/transaction.store";
+  } from "../../types/transaction.context";
   import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
   import type { Account } from "../../types/account";
 
