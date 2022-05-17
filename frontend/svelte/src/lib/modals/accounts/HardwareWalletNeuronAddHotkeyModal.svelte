@@ -4,11 +4,31 @@
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { authStore } from "../../stores/auth.store";
+  import {addHotkeyForHardwareWalletNeuron} from '../../services/neurons.services';
+  import type {Account} from '../../types/account';
+  import {createEventDispatcher} from 'svelte';
 
+  export let selectedAccount: Account;
   export let neuronId: NeuronId;
+
+  const dispatch = createEventDispatcher();
+
+  const addCurrentUserToHotkey = async () => {
+    const {success} = await addHotkeyForHardwareWalletNeuron({
+      neuronId,
+      accountIdentifier: selectedAccount.identifier,
+    });
+
+    if (success) {
+      dispatch('nnsHotkeyAdded');
+      return;
+    }
+
+    dispatch('nnsClose');
+  };
 </script>
 
-<ConfirmationModal on:nnsClose on:nnsConfirm>
+<ConfirmationModal on:nnsClose on:nnsConfirm={addCurrentUserToHotkey}>
   <h4>{$i18n.accounts.hardware_wallet_add_hotkey_title}</h4>
 
   <p>

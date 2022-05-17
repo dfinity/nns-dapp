@@ -5,7 +5,9 @@
   import { isHotKeyControllable } from "../../utils/neuron.utils";
   import { authStore } from "../../stores/auth.store";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
+  import type {Account} from '../../types/account';
 
+  export let selectedAccount: Account | undefined;
   export let neurons: NeuronInfo[] = [];
 
   // TODO(L2-436):
@@ -37,8 +39,8 @@
     <p class="hotkey">
       {#if controlled}
         {$i18n.accounts.attach_hardware_neurons_added}
-      {:else}
-        <HardwareWalletNeuronAddHotkeyButton {neuronId} />
+      {:else if selectedAccount !== undefined}
+        <HardwareWalletNeuronAddHotkeyButton {neuronId} {selectedAccount} />
       {/if}
     </p>
   {/each}

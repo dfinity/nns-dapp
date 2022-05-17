@@ -4,6 +4,9 @@
   import { listNeuronsHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import type { NeuronInfo } from "@dfinity/nns";
+  import type {Account} from '../../types/account';
+
+  export let selectedAccount: Account | undefined;
 
   let modalOpen = false;
   let neurons: NeuronInfo[];
@@ -45,5 +48,5 @@
 </button>
 
 {#if modalOpen}
-  <HardwareWalletListNeuronsModal {neurons} on:nnsClose={close} />
+  <HardwareWalletListNeuronsModal {neurons} {selectedAccount} on:nnsClose={close} on:nnsHotkeyAdded />
 {/if}

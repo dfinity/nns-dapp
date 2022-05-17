@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { getIdentity } from "../../services/auth.services";
-  import { addHotkeyFromHW } from "../../services/neurons.services";
+  import { addHotkeyForHardwareWalletNeuron } from "../../services/neurons.services";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import Spinner from "../ui/Spinner.svelte";
@@ -24,22 +24,12 @@
   const addCurrentUserToHotkey = async () => {
     loading = true;
     // This screen is only for hardware wallet.
-    startBusy({
-      initiator: "stake-neuron",
-      labelKey: "busy_screen.pending_approval_hw",
-    });
-    const identity = await getIdentity();
-    const neuronId = await addHotkeyFromHW({
+    const {success} = await addHotkeyForHardwareWalletNeuron({
       neuronId: neuron.neuronId,
-      principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
     loading = false;
-    stopBusy("add-hotkey-neuron");
-    if (neuronId !== undefined) {
-      toastsStore.success({
-        labelKey: "neurons.add_user_as_hotkey_success",
-      });
+    if (success) {
       dispatchNext();
     }
   };

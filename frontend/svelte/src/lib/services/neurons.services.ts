@@ -63,6 +63,7 @@ import {
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+import {startBusy, stopBusy} from '../stores/busy.store';
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -491,29 +492,48 @@ export const mergeNeurons = async ({
   }
 };
 
-// This service is used when creating a new neuron from a Hardware Wallet.
-// The new neuron is not yet in the neuronsStore because the user should add first a hotkey to make nns-dapp control the neuron on the hardware wallet.
-export const addHotkeyFromHW = async ({
+// This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the hardware wallet.
+// It uses the auth identity - i.e. the identity of the current user - as principal of the new hotkey.
+export const addHotkeyForHardwareWalletNeuron = async ({
   neuronId,
-  principal,
   accountIdentifier,
 }: {
   neuronId: NeuronId;
-  principal: Principal;
   accountIdentifier: string;
-}): Promise<NeuronId | undefined> => {
+}): Promise<{ success: boolean; err?: string }> => {
   try {
+    startBusy({
+      initiator: "add-hotkey-neuron",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
+
+    const identity: Identity = await getIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
-    await addHotkeyApi({ neuronId, identity: ledgerIdentity, principal });
+    await addHotkeyApi({
+      neuronId,
+      identity: ledgerIdentity,
+      principal: identity.getPrincipal(),
+    });
 
-    return neuronId;
+    stopBusy("add-hotkey-neuron");
+
+    toastsStore.success({
+      labelKey: "neurons.add_user_as_hotkey_success",
+    });
+
+    return { success: true };
   } catch (err) {
     // TODO: Manage edge cases https://dfinity.atlassian.net/browse/L2-526
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    stopBusy("add-hotkey-neuron");
+
+    const toastMsg = mapNeuronErrorToToastMessage(err);
+
+    toastsStore.show(toastMsg);
 
     // To inform there was an error
-    return undefined;
+    return { success: false, err: toastMsg.labelKey };
   }
 };
 

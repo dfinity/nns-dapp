@@ -3,7 +3,9 @@
   import { i18n } from "../../stores/i18n";
   import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
+  import type {Account} from '../../types/account';
 
+  export let selectedAccount: Account | undefined;
   export let neurons: NeuronInfo[];
 </script>
 
@@ -11,7 +13,7 @@
   <span slot="title">{$i18n.neurons.title}</span>
 
   <div>
-    <HardwareWalletNeurons {neurons} />
+    <HardwareWalletNeurons {neurons} {selectedAccount} />
   </div>
 </Modal>
 

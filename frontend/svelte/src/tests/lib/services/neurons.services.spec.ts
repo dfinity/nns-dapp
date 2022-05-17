@@ -28,7 +28,7 @@ import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
   addHotkey,
-  addHotkeyFromHW,
+  addHotkeyForHardwareWalletNeuron,
   addFollowee,
   routePathNeuronId,
   joinCommunityFund,
@@ -679,7 +679,7 @@ describe("neurons-services", () => {
 
   describe("addHotkeyFromHW", () => {
     it("should update neuron", async () => {
-      await addHotkeyFromHW({
+      await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
         principal: Principal.fromText("aaaaa-aa"),
         accountIdentifier: mockMainAccount.identifier,
@@ -690,7 +690,7 @@ describe("neurons-services", () => {
 
     it("should not update if ledger connection throws", async () => {
       setLedgerThrow();
-      await addHotkeyFromHW({
+      await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
         principal: Principal.fromText("aaaaa-aa"),
         accountIdentifier: mockMainAccount.identifier,

@@ -9,7 +9,7 @@ import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  addHotkeyFromHW,
+  addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
   updateDelay,
 } from "../../../../lib/services/neurons.services";
@@ -436,7 +436,7 @@ describe("CreateNeuronModal", () => {
 
       skipButton && (await fireEvent.click(skipButton));
 
-      expect(addHotkeyFromHW).toBeCalled();
+      expect(addHotkeyForHardwareWalletNeuron).toBeCalled();
 
       // TODO: Continue flow https://dfinity.atlassian.net/browse/L2-524
     });

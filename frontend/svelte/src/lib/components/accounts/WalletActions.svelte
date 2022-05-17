@@ -16,7 +16,7 @@
   {/if}
 
   {#if type === "hardwareWallet"}
-    <HardwareWalletListNeuronsButton />
+    <HardwareWalletListNeuronsButton {selectedAccount} />
     <HardwareWalletShowActionButton />
   {/if}
 </div>
