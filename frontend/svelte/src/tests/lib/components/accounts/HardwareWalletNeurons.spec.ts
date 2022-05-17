@@ -7,23 +7,16 @@ import { render } from "@testing-library/svelte";
 import HardwareWalletNeurons from "../../../../lib/components/accounts/HardwareWalletNeurons.svelte";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
+import HardwareWalletNeuronsTest from './HardwareWalletNeuronsTest.svelte';
+import {mockNeuronStake} from '../../../mocks/hardware-wallet-neurons.store.mock';
 
 describe("HardwareWalletNeurons", () => {
-  const neuron2 = {
-    ...mockNeuron,
-    neuronId: "123",
-    fullNeuron: {
-      ...mockFullNeuron,
-      cachedNeuronStake: BigInt(2_000_000_000),
-    },
-  };
-
-  const mockNeurons = [mockNeuron, neuron2];
+  const props = { testComponent: HardwareWalletNeurons };
 
   it("should render text", () => {
-    const { getByText } = render(HardwareWalletNeurons, {
-      props: { neurons: mockNeurons },
+    const { getByText } = render(HardwareWalletNeuronsTest, {
+      props,
     });
 
     expect(
@@ -32,8 +25,8 @@ describe("HardwareWalletNeurons", () => {
   });
 
   it("should render columns labels", () => {
-    const { getByText } = render(HardwareWalletNeurons, {
-      props: { neurons: mockNeurons },
+    const { getByText } = render(HardwareWalletNeuronsTest, {
+      props,
     });
 
     expect(getByText(en.neurons.neuron_id)).toBeInTheDocument();
@@ -41,18 +34,18 @@ describe("HardwareWalletNeurons", () => {
   });
 
   it("should render neurons", () => {
-    const { getByText } = render(HardwareWalletNeurons, {
-      props: { neurons: mockNeurons },
+    const { getByText } = render(HardwareWalletNeuronsTest, {
+      props,
     });
 
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
-    expect(getByText(neuron2.neuronId.toString())).toBeInTheDocument();
+    expect(getByText(mockNeuronStake.neuronId.toString())).toBeInTheDocument();
 
     expect(
       getByText(formatICP((mockNeuron.fullNeuron as Neuron).cachedNeuronStake))
     ).toBeInTheDocument();
     expect(
-      getByText(formatICP((neuron2.fullNeuron as Neuron).cachedNeuronStake))
+      getByText(formatICP((mockNeuronStake.fullNeuron as Neuron).cachedNeuronStake))
     ).toBeInTheDocument();
   });
 });
