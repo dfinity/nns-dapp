@@ -34,6 +34,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -54,6 +55,7 @@ import {
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
+  userAuthorizedNeuron,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
 import {
@@ -103,19 +105,9 @@ const getNeuron = async ({
   return neuron || queryNeuron({ neuronId, identity, certified });
 };
 
-const getNeuronHW = async ({
-  neuronId,
-  identity,
-}: {
-  neuronId: NeuronId;
-  identity: LedgerIdentity;
-}): Promise<NeuronInfo | undefined> => {
-  const neurons = await queryNeurons({ certified: true, identity });
-
-  return neurons.find((currentNeuron) => currentNeuron.neuronId === neuronId);
-};
-
-const getNeuronFromStore = (neuronId: NeuronId): NeuronInfo | undefined =>
+export const getNeuronFromStore = (
+  neuronId: NeuronId
+): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
 const getIdentityOfControllerByNeuronId = async (
@@ -174,14 +166,20 @@ const getStakeNeuronPropsByAccount = ({
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
+ * @param {Object} params
+ * @param {amount} params.amount the new neuron value. a number that will be converted to ICP.
+ * @param {amount} params.amount the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
+ * @param {amount} [params.amount=true] load the neuron and update the neurons store once created - i.e. certified=true query to load neuron and push to store.
  */
 export const stakeNeuron = async ({
   amount,
   account,
+  loadNeuron = true,
 }: {
   amount: number;
   account: Account;
-}): Promise<NeuronInfo | undefined> => {
+  loadNeuron?: boolean;
+}): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
 
@@ -202,7 +200,7 @@ export const stakeNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
-    const neuronId: NeuronId = await stakeNeuronApi({
+    const newNeuronId = await stakeNeuronApi({
       stake,
       identity,
       ledgerCanisterIdentity,
@@ -210,19 +208,11 @@ export const stakeNeuron = async ({
       fromSubAccount,
     });
 
-    if (isAccountHardwareWallet(account)) {
-      return getNeuronHW({
-        neuronId,
-        identity: accountIdentity as LedgerIdentity,
-      });
+    if (loadNeuron) {
+      await getAndLoadNeuron(newNeuronId);
     }
 
-    return await getNeuron({
-      neuronId,
-      identity: accountIdentity,
-      certified: true,
-      forceFetch: true,
-    });
+    return newNeuronId;
   } catch (err) {
     toastsStore.error({
       labelKey: "error.stake_neuron",
@@ -388,7 +378,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
 };
 
 // We always want to call this with the user identity
-const getAndLoadNeuronHelper = async (neuronId: NeuronId) => {
+const getAndLoadNeuron = async (neuronId: NeuronId) => {
   const identity = await getIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
@@ -398,6 +388,11 @@ const getAndLoadNeuronHelper = async (neuronId: NeuronId) => {
   });
   if (!neuron) {
     throw new NotFoundError();
+  }
+  if (!userAuthorizedNeuron(neuron)) {
+    throw new NotAuthorizedError(
+      `User not authorized to access neuron ${neuronId}`
+    );
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
@@ -419,7 +414,7 @@ export const updateDelay = async ({
       identity: neuronIdentity,
     });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -439,7 +434,7 @@ export const joinCommunityFund = async (
 
     await joinCommunityFundApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -489,29 +484,52 @@ export const mergeNeurons = async ({
   }
 };
 
-// This service is used when creating a new neuron from a Hardware Wallet.
-// The new neuron is not yet in the neuronsStore because the user should add first a hotkey to make nns-dapp control the neuron on the hardware wallet.
-export const addHotkeyFromHW = async ({
+// This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the hardware wallet.
+// It uses the auth identity - i.e. the identity of the current user - as principal of the new hotkey.
+// Once the neuron delegated, it adds it to the neuron store so that user can find this neuron in the "Neurons" tab as well
+// Note: it does not reload the all neurons store but "only" query (updated call) and push the newly attached neuron to the store
+export const addHotkeyForHardwareWalletNeuron = async ({
   neuronId,
-  principal,
   accountIdentifier,
 }: {
   neuronId: NeuronId;
-  principal: Principal;
   accountIdentifier: string;
-}): Promise<NeuronId | undefined> => {
+}): Promise<{ success: boolean; err?: string }> => {
   try {
+    startBusy({
+      initiator: "add-hotkey-neuron",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
+
+    const identity: Identity = await getIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
-    await addHotkeyApi({ neuronId, identity: ledgerIdentity, principal });
+    await addHotkeyApi({
+      neuronId,
+      identity: ledgerIdentity,
+      principal: identity.getPrincipal(),
+    });
 
-    return neuronId;
+    await getAndLoadNeuron(neuronId);
+
+    stopBusy("add-hotkey-neuron");
+
+    toastsStore.success({
+      labelKey: "neurons.add_user_as_hotkey_success",
+    });
+
+    return { success: true };
   } catch (err) {
     // TODO: Manage edge cases https://dfinity.atlassian.net/browse/L2-526
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    stopBusy("add-hotkey-neuron");
+
+    const toastMsg = mapNeuronErrorToToastMessage(err);
+
+    toastsStore.show(toastMsg);
 
     // To inform there was an error
-    return undefined;
+    return { success: false, err: toastMsg.labelKey };
   }
 };
 
@@ -529,7 +547,7 @@ export const addHotkey = async ({
 
     await addHotkeyApi({ neuronId, identity, principal });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -556,17 +574,31 @@ export const removeHotkey = async ({
     });
     return;
   }
+  let removed = false;
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
     await removeHotkeyApi({ neuronId, identity, principal });
+    removed = true;
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
+    if (removed && err instanceof NotAuthorizedError) {
+      // There is no need to get the identity unless removing the hotkey succeeded
+      // and it was `getAndLoadNeuron` that threw the error.
+      const currentIdentityPrincipal = (await getIdentity())
+        .getPrincipal()
+        .toText();
+      // This happens when a user removes itself from the hotkeys.
+      return principalString === currentIdentityPrincipal
+        ? neuronId
+        : undefined;
+    }
+
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
@@ -597,7 +629,7 @@ export const splitNeuron = async ({
       labelKey: "neuron_detail.split_neuron_success",
     });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -644,7 +676,7 @@ export const mergeMaturity = async ({
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return { success: true };
   } catch (err) {
@@ -668,7 +700,7 @@ export const spawnNeuron = async ({
 
     await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return { success: true };
   } catch (err) {
@@ -688,7 +720,7 @@ export const startDissolving = async (
 
     await startDissolvingApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -708,7 +740,7 @@ export const stopDissolving = async (
 
     await stopDissolvingApi({ neuronId, identity });
 
-    await getAndLoadNeuronHelper(neuronId);
+    await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
@@ -748,7 +780,7 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    await getAndLoadNeuronHelper(neuron.neuronId);
+    await getAndLoadNeuron(neuron.neuronId);
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
   }
@@ -839,10 +871,17 @@ export const loadNeuron = ({
   handleError?: () => void;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
-    toastsStore.error({
-      labelKey: "error.neuron_not_found",
-      err,
-    });
+    if (err instanceof NotFoundError) {
+      toastsStore.error({
+        labelKey: "error.neuron_not_found",
+        err,
+      });
+    } else {
+      toastsStore.error({
+        labelKey: "error.neuron_load",
+        err,
+      });
+    }
 
     handleError?.();
   };
@@ -855,8 +894,9 @@ export const loadNeuron = ({
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
-      if (neuron === undefined) {
-        catchError(new Error("Neuron not found"));
+      // Handle not authorized neurons as if not found.
+      if (neuron === undefined || !userAuthorizedNeuron(neuron)) {
+        catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
 

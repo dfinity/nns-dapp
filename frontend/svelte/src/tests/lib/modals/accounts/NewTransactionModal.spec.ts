@@ -179,13 +179,13 @@ describe("NewTransactionModal", () => {
 
     await goToStep4({ container, getByText, enterAmount: true });
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
     const button = container.querySelector(
       "button[type='submit']"
     ) as HTMLButtonElement;
     await fireEvent.click(button);
 
-    const onClose = jest.fn();
-    component.$on("nnsClose", onClose);
     await waitFor(() => expect(onClose).toBeCalled());
   });
 });

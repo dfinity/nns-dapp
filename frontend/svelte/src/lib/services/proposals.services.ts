@@ -9,7 +9,7 @@ import {
 import {
   startBusy,
   stopBusy,
-  type BusyStateInitiator,
+  type BusyStateInitiatorType,
 } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
@@ -255,7 +255,7 @@ export const registerVotes = async ({
   proposalId: ProposalId;
   vote: Vote;
 }): Promise<void> => {
-  startBusy("vote");
+  startBusy({ initiator: "vote" });
 
   const identity: Identity = await getIdentity();
 
@@ -284,7 +284,7 @@ export const registerVotes = async ({
     initiator,
   }: {
     certified: boolean;
-    initiator: BusyStateInitiator;
+    initiator: BusyStateInitiatorType;
   }) => {
     if (!certified) {
       return;
@@ -294,7 +294,7 @@ export const registerVotes = async ({
   };
 
   const reloadListNeurons = async () => {
-    startBusy("reload-neurons");
+    startBusy({ initiator: "reload-neurons" });
 
     try {
       await listNeurons({
@@ -313,7 +313,7 @@ export const registerVotes = async ({
   };
 
   const reloadProposal = async () => {
-    startBusy("reload-proposal");
+    startBusy({ initiator: "reload-proposal" });
 
     await loadProposal({
       proposalId,

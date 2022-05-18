@@ -1,8 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import Spinner from "./Spinner.svelte";
-
-  export let loading: boolean = false;
+  import { busy } from "../../stores/busy.store";
 
   const dispatcher = createEventDispatcher();
   const confirm = async () => {
@@ -21,14 +19,10 @@
     <button
       class="primary full-width"
       data-tid="confirm-action-button"
-      disabled={loading}
+      disabled={$busy}
       on:click={confirm}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        <slot name="button-content" />
-      {/if}
+      <slot name="button-content" />
     </button>
   </div>
 </div>

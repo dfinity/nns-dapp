@@ -1,42 +1,30 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { getIdentity } from "../../services/auth.services";
-  import { addHotkeyFromHW } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { addHotkeyForHardwareWalletNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "../../stores/auth.store";
+  import { busy } from "../../stores/busy.store";
 
   export let account: Account;
-  export let neuron: NeuronInfo;
-
-  let loading: boolean = false;
+  export let neuronId: NeuronId;
 
   const dispatcher = createEventDispatcher();
-  const dispatchNext = () => {
-    dispatcher("nnsNext");
+  const skip = () => {
+    dispatcher("nnsSkip");
   };
 
   // Add the auth identity principal as hotkey
   const addCurrentUserToHotkey = async () => {
-    loading = true;
-    startBusy("add-hotkey-neuron");
-    const identity = await getIdentity();
-    const neuronId = await addHotkeyFromHW({
-      neuronId: neuron.neuronId,
-      principal: identity.getPrincipal(),
+    // This screen is only for hardware wallet.
+    const { success } = await addHotkeyForHardwareWalletNeuron({
+      neuronId,
       accountIdentifier: account.identifier,
     });
-    loading = false;
-    stopBusy("add-hotkey-neuron");
-    if (neuronId !== undefined) {
-      toastsStore.success({
-        labelKey: "neurons.add_user_as_hotkey_success",
-      });
-      dispatchNext();
+
+    if (success) {
+      dispatcher("nnsHotkeyAdded");
     }
   };
 </script>
@@ -51,7 +39,7 @@
   </div>
   <div class="buttons">
     <button
-      on:click={dispatchNext}
+      on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
       class="secondary full-width">{$i18n.neurons.skip}</button
     >
@@ -59,13 +47,9 @@
       class="primary full-width"
       on:click={addCurrentUserToHotkey}
       data-tid="confirm-add-principal-to-hotkey-modal"
-      disabled={$authStore.identity?.getPrincipal() === undefined}
+      disabled={$authStore.identity?.getPrincipal() === undefined || $busy}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.neuron_detail.add_hotkey}
-      {/if}
+      {$i18n.neuron_detail.add_hotkey}
     </button>
   </div>
 </div>

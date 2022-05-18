@@ -6,12 +6,13 @@
   import WizardModal from "../WizardModal.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -43,7 +44,6 @@
   let modal: WizardModal;
 
   let percentageToSpawn: number = 0;
-  let loading: boolean;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
@@ -61,8 +61,8 @@
 
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
-    loading = true;
-    startBusy("spawn-neuron");
+    startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
+
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
       percentageToSpawn: controlledByHarwareWallet
@@ -75,7 +75,7 @@
       });
       dispatcher("nnsClose");
     }
-    loading = false;
+
     stopBusy("spawn-neuron");
   };
   const goToConfirm = () => {
@@ -102,7 +102,7 @@
       </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
-    <ConfirmActionScreen {loading} on:nnsConfirm={spawnNeuronFromMaturity}>
+    <ConfirmActionScreen on:nnsConfirm={spawnNeuronFromMaturity}>
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
         <p class="confirm-answer">

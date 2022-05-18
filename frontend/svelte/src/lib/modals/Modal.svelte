@@ -9,7 +9,7 @@
 
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
-  export let size: "small" | "medium" = "small";
+  export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
   // There is no way to know whether a parent is listening to the "nnsBack" event
@@ -142,13 +142,12 @@
 
     width: var(--modal-small-width);
 
-    &.medium {
-      width: var(--modal-medium-width);
+    &.big {
+      width: var(--modal-big-width);
     }
 
-    height: fit-content;
+    height: min(calc(100% - var(--padding-6x)), var(--modal-max-height));
     max-width: calc(100vw - var(--padding-4x));
-    max-height: calc(100% - var(--padding-6x));
 
     --modal-toolbar-height: 35px;
 
@@ -157,10 +156,6 @@
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
-
-    &.medium {
-      width: var(--modal-medium-width);
-    }
   }
 
   .light > div.wrapper {
@@ -225,7 +220,7 @@
     display: flex;
     flex-direction: column;
 
-    height: calc(100vh - 100px - var(--modal-toolbar-height));
+    height: calc(100% - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
 

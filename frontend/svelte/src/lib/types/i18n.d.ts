@@ -26,6 +26,7 @@ interface I18nError {
   sign_in: string;
   proposal_not_found: string;
   neuron_not_found: string;
+  neuron_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -72,6 +73,7 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  hardware_wallet_no_account: string;
 }
 
 interface I18nWarning {
@@ -110,6 +112,10 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_show_neurons: string;
+  attach_hardware_neurons_text: string;
+  attach_hardware_neurons_add: string;
+  attach_hardware_neurons_added: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -130,7 +136,6 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
-  authorize_on_hardware_wallet: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
@@ -139,6 +144,10 @@ interface I18nAccounts {
   rename_linked_account: string;
   rename_new_name_placeholder: string;
   rename_account_enter_new_name: string;
+  hardware_wallet_add_hotkey_title: string;
+  hardware_wallet_add_hotkey_text_neuron: string;
+  hardware_wallet_add_hotkey_text_principal: string;
+  hardware_wallet_add_hotkey_text_confirm: string;
 }
 
 interface I18nNeurons {
@@ -156,6 +165,7 @@ interface I18nNeurons {
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
   add_user_as_hotkey_success: string;
+  remove_hotkey_success: string;
   neuron_create_success: string;
   your_principal: string;
   confirm_dissolve_delay: string;
@@ -193,6 +203,7 @@ interface I18nNeurons {
   cannot_merge_neuron_hotkey: string;
   only_merge_two: string;
   irreversible_action: string;
+  stake_amount: string;
 }
 
 interface I18nNew_followee {
@@ -287,6 +298,10 @@ interface I18nStatus {
 
 interface I18nWallet {
   title: string;
+}
+
+interface I18nBusy_screen {
+  pending_approval_hw: string;
 }
 
 interface I18nProposal_detail {
@@ -409,6 +424,7 @@ interface I18nError__ledger {
   connect_not_supported: string;
   unexpected_wallet: string;
   user_cancel: string;
+  user_rejected_transaction: string;
   incorrect_identifier: string;
 }
 
@@ -439,6 +455,7 @@ interface I18n {
   rewards: I18nRewards;
   status: I18nStatus;
   wallet: I18nWallet;
+  busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;

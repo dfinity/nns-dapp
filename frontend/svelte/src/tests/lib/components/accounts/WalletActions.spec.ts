@@ -39,6 +39,7 @@ describe("WalletActions", () => {
       props: { selectedAccount: mockHardwareWalletAccount },
     });
 
+    expect(getByTestId("ledger-list-button")).not.toBeNull();
     expect(getByTestId("ledger-show-button")).not.toBeNull();
   });
 });

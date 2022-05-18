@@ -13,8 +13,8 @@
     AddAccountContext,
     AddAccountStore,
     AccountType,
-  } from "../../stores/add-account.store";
-  import { ADD_ACCOUNT_CONTEXT_KEY } from "../../stores/add-account.store";
+  } from "../../types/add-account.context";
+  import { ADD_ACCOUNT_CONTEXT_KEY } from "../../types/add-account.context";
 
   const subAccountSteps: Steps = [
     {
@@ -45,6 +45,9 @@
 
   let steps: Steps = [startStep, ...subAccountSteps];
 
+  /**
+   * A store that contains the type of account that will be added (subaccount or hardware wallet) and addition data that can be used across multiple steps of the wizard.
+   */
   const addAccountStore = writable<AddAccountStore>({
     type: undefined,
     hardwareWalletName: undefined,

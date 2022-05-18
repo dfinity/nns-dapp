@@ -24,7 +24,7 @@
 
 <Modal
   theme="dark"
-  size="medium"
+  size="big"
   on:nnsClose
   on:introend={() => (presented = true)}
   showBackButton={currentStep?.showBackButton ?? false}

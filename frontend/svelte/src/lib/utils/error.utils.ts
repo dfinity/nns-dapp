@@ -28,6 +28,21 @@ export const errorToString = (err?: unknown): string | undefined =>
     : undefined;
 
 export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
+  // Check toToastError first
+  const fallbackKey = "fallback";
+  const toastError = toToastError({
+    err: error,
+    fallbackErrorLabelKey: fallbackKey,
+  });
+  // Return if error found is not fallback
+  if (toastError.labelKey !== fallbackKey) {
+    return {
+      level: "error",
+      ...toastError,
+    };
+  }
+
+  // Check GovernanceErrors
   /* eslint-disable-next-line @typescript-eslint/ban-types */
   const collection: Array<[Function, string]> = [
     [NotFoundError, "error.neuron_not_found"],
@@ -41,6 +56,7 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     [InvalidAccountIDError, "error.invalid_account_id"],
     [InvalidPercentageError, "error.invalid_percentage"],
     [GovernanceError, "error.governance_error"],
+    [NotFoundError, "error.neuron_not_found"],
     [TransferError, "error.transfer_error"],
     [CannotBeMerged, "error.cannot_merge"],
   ];
