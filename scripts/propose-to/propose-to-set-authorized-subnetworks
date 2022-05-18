@@ -1,0 +1,8 @@
+# Note: This needs to be used before "create canister" works in the nns-dapp UI.
+set ic-admin --nns-url "$NNS_URL" \
+  "$PROPOSAL_TYPE" \
+  --test-neuron-proposer \
+  --proposal-title "Set authorized subnets" \
+  --proposal-url https://blah.blah \
+  --summary "Some summary" \
+  --subnets $(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | join(" --subnets ")')
