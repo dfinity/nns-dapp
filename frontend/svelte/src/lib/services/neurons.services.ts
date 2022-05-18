@@ -588,8 +588,8 @@ export const removeHotkey = async ({
     return neuronId;
   } catch (err) {
     if (removed && err instanceof NotAuthorizedError) {
-      // Checking the identity can be one of the reasons we got the error.
-      // If we got here, it's because `getIdentity` didn't throw.
+      // There is no need to get the identity unless removing the hotkey succeeded
+      // and it was `getAndLoadNeuron` that threw the error.
       const currentIdentityPrincipal = (await getIdentity())
         .getPrincipal()
         .toText();

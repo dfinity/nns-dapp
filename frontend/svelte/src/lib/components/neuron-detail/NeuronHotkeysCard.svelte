@@ -30,13 +30,14 @@
       initiator: "remove-hotkey-neuron",
       neuronId: neuron.neuronId,
     });
-    const currentIdentityPrincipal = (await getIdentity())
-      .getPrincipal()
-      .toText();
     const maybeNeuronId = await removeHotkey({
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
+    const currentIdentityPrincipal = (await getIdentity())
+      .getPrincipal()
+      .toText();
+    // If the user removes itself from the hotkeys, it has no more access to the detail page.
     if (currentIdentityPrincipal === hotkey && maybeNeuronId !== undefined) {
       toastsStore.show({
         level: "success",
