@@ -141,10 +141,7 @@
         <div class="actions">
           <WalletActions />
         </div>
-        <TransactionList
-          account={$selectedAccountStore.account}
-          transactions={$selectedAccountStore.transactions}
-        />
+        <TransactionList />
       {:else}
         <Spinner />
       {/if}
