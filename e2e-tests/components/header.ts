@@ -16,15 +16,21 @@ export class Header extends Navigator {
     super(browser);
   }
 
-  getIcp(howMuch: number) {
+  async getIcp(howMuch: number) {
+    // WARNING: If we start before the accounts have loaded this fails.  Why?  No idea.
+    // Waiting later does not help, it seems as if the wait has to be before we open the getIcp modal.
+    // TODO: The getICP button should not be clickable until it works.
+    await this.browser.pause(6000);
+    // Ok, now the accounts should have loaded.
+
+    // The rest is straightforward:
     await this.click(Header.GET_ICP_BUTTON, "Click the 'Get Icp' button");
-    await await navigator.getElement(
-    Header.GET_ICP_FORM_FIELD,
-    "Get the field to enter how much ICP we want",
-    { timeout: 30_000 }
-    ).then(field => field.setValue(new String(howMuch)));
-    await this.click(Header.GET_ICP_FORM_BUTTON, "Submit the request for ICP");
-    await this.waitForGone( header.GET_ICP_FORM, "Wait for ICP" );
-    await browser["screenshot"]("getIcpFinished");
+    await this.getElement(
+      Header.GET_ICP_FORM_FIELD,
+      "Get the field to enter how much ICP we want",
+      { timeout: 30_000 }
+    ).then(element => element.setValue(howMuch.toString()));
+    await this.click(Header.GET_ICP_FORM_BUTTON, "Click 'submit'");
+    await this.waitForGone( Header.GET_ICP_FORM, "Wait for ICP", {timeout: 10000});
   }
 }
