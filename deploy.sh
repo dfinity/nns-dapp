@@ -206,7 +206,8 @@ fi
 if [[ "$CREATE_USERS" == "true" ]]; then
   pushd e2e-tests
   npm ci
-  SCREENSHOT=1 npm run wdio -- --spec ./specs/useradd.e2e.ts
+  printf '%s\n' user-N01-neuron-created.e2e.ts |
+    SCREENSHOT=1 xargs -I {} npm run wdio -- --spec "./specs/{}"
   popd
 fi
 
