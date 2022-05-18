@@ -29,7 +29,7 @@ const configFromFile = JSON.parse(
  * Returns the given environment variable, if defined and non-empty, else throws an error.
  */
 function getRequiredEnvVar(key) {
-  var value = process.env[key];
+  let value = process.env[key];
   if (undefined === value || value === "") {
     value = configFromFile[key];
   }
