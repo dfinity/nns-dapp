@@ -16,7 +16,7 @@
   {/if}
 
   {#if type === "hardwareWallet"}
-    <HardwareWalletListNeuronsButton />
+    <HardwareWalletListNeuronsButton {selectedAccount} />
     <HardwareWalletShowActionButton />
   {/if}
 </div>
@@ -26,7 +26,7 @@
     display: flex;
     justify-content: flex-end;
 
-    :global(& > *:not(:last-of-type)) {
+    > :global(*:not(:last-of-type)) {
       margin-right: var(--padding);
     }
   }

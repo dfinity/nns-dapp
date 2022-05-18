@@ -160,6 +160,7 @@ export const listNeuronsHardwareWallet = async (): Promise<{
       identity: ledgerIdentity,
       certified: true,
     });
+
     return { neurons };
   } catch (err: unknown) {
     const fallbackErrorLabelKey = "error__ledger.unexpected";

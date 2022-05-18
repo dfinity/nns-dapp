@@ -14,7 +14,7 @@ import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  addHotkeyFromHW,
+  addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
   updateDelay,
 } from "../../../../lib/services/neurons.services";
@@ -48,7 +48,9 @@ jest.mock("../../../../lib/services/neurons.services", () => {
       .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
-    addHotkeyFromHW: jest.fn().mockResolvedValue(BigInt(10)),
+    addHotkeyForHardwareWalletNeuron: jest
+      .fn()
+      .mockResolvedValue({ success: true }),
     getNeuronFromStore: jest.fn(),
   };
 });
@@ -485,7 +487,7 @@ describe("CreateNeuronModal", () => {
 
       addHotkeyButton && (await fireEvent.click(addHotkeyButton));
 
-      expect(addHotkeyFromHW).toBeCalled();
+      expect(addHotkeyForHardwareWalletNeuron).toBeCalled();
 
       await waitFor(() =>
         expect(container.querySelector('input[type="range"]')).not.toBeNull()
