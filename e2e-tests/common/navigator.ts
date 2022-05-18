@@ -1,7 +1,7 @@
 /**
  * Additional functionality for the wdio "browser".
  */
-export class Navigator {
+export class MyNavigator {
   browser: WebdriverIO.Browser;
 
   constructor(browser: WebdriverIO.Browser) {
@@ -76,5 +76,27 @@ export class Navigator {
       .getWindowHandles()
       .then((handles) => handles[handles.length - 1]);
     await this.browser.switchToWindow(newWindowHandle);
+  }
+
+  /**
+   * Waits for an element to be removed from the DOM.
+   */
+  async waitForGone(
+    selector: string,
+    description: string,
+    options?: { timeout?: number }
+  ) {
+    if (undefined === selector) {
+      throw new Error(
+        `Cannot wait for undefined selector to be removed for "${description}".`
+      );
+    }
+    const element = await this.browser.$(selector);
+    const timeout = options?.timeout;
+    const timeoutMsg = `Timed out waiting for element to disappear: "${selector}" (${description}).`;
+    await this.browser.waitUntil(async () => !(await element.isExisting()), {
+      timeout,
+      timeoutMsg,
+    });
   }
 }

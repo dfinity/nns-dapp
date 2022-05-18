@@ -2,7 +2,7 @@ import { register } from "../common/register";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 import { Header } from "../components/header";
-import { Navigator } from "../common/navigator";
+import { MyNavigator } from "../common/navigator";
 import { AuthPage } from "../components/auth";
 
 /**
@@ -13,7 +13,7 @@ describe("multi-tab-auth", () => {
   let navigator;
 
   before(() => {
-    navigator = new Navigator(browser);
+    navigator = new MyNavigator(browser);
   });
 
   it("openTwoTabs", async () => {

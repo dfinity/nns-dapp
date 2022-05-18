@@ -7,7 +7,7 @@ import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
 import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning";
 import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
-import { Navigator } from "./navigator";
+import { MyNavigator } from "./navigator";
 import { Header } from "../components/header";
 
 /**
@@ -19,7 +19,7 @@ export const register = async (
   if (undefined === browser) {
     throw new Error("Browser is undefined in 'register(..)'");
   }
-  const navigator = new Navigator(browser);
+  const navigator = new MyNavigator(browser);
 
   // Record the ID of the tab we started on.
   const originalTabId = await browser.getWindowHandle();
