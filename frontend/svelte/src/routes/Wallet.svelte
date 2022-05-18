@@ -83,9 +83,11 @@
         //
         // On the contrary, if we reload the transactions of the same account, we keep the current list to avoid a flickering of the screen.
         // This can happen when user transfer ICP to another account - i.e. a new transaction will be added to the list at the top so we don't want the list to flicker while updating.
-        const sameAccount: boolean = selectedAccount !== undefined && storeAccount?.identifier === selectedAccount.identifier;
+        const sameAccount: boolean =
+          selectedAccount !== undefined &&
+          storeAccount?.identifier === selectedAccount.identifier;
 
-        selectedAccountStore.update(({transactions}) => ({
+        selectedAccountStore.update(({ transactions }) => ({
           account: selectedAccount,
           transactions: sameAccount ? transactions : undefined,
         }));
