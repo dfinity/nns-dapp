@@ -19,11 +19,11 @@
 
 <div role="menubar">
   {#if type === "subAccount"}
-    <RenameSubAccountButton selectedAccount={$store.account} />
+    <RenameSubAccountButton />
   {/if}
 
   {#if type === "hardwareWallet"}
-    <HardwareWalletListNeuronsButton selectedAccount={$store.account} />
+    <HardwareWalletListNeuronsButton />
     <HardwareWalletShowActionButton />
   {/if}
 </div>

@@ -4,14 +4,14 @@
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
   } from "../../../../lib/types/hardware-wallet-neurons.context";
-  import { hardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
+  import { mockHardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
 
   export let testComponent: typeof SvelteComponent;
 
   setContext<HardwareWalletNeuronsContext>(
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     {
-      store: hardwareWalletNeuronsStore,
+      store: mockHardwareWalletNeuronsStore,
     }
   );
 </script>

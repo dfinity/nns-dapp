@@ -1,13 +1,11 @@
 import type { NeuronInfo } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
-import type { Account } from "./account";
 
 export interface HardwareWalletNeuronInfo extends NeuronInfo {
   controlledByNNSDapp: boolean;
 }
 
 export interface HardwareWalletNeuronsStore {
-  selectedAccount: Account | undefined;
   neurons: HardwareWalletNeuronInfo[];
 }
 
