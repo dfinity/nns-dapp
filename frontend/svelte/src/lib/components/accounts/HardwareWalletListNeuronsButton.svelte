@@ -3,7 +3,6 @@
   import HardwareWalletListNeuronsModal from "../../modals/accounts/HardwareWalletListNeuronsModal.svelte";
   import { listNeuronsHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import type { Account } from "../../types/account";
   import { writable } from "svelte/store";
   import { getContext, setContext } from "svelte";
   import type {
@@ -14,16 +13,6 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "../../utils/hardware-wallet-neurons.utils";
   import { authStore } from "../../stores/auth.store";
-  import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
-  let selectedAccount: Account | undefined;
-  $: selectedAccount = $store.account;
 
   let modalOpen = false;
 
@@ -32,7 +21,6 @@
    * We notably need a store because the user can add hotkeys to the neurons that are not yet controlled by NNS-dapp and need to update dynamically the UI accordingly.
    */
   const hardwareWalletNeuronsStore = writable<HardwareWalletNeuronsStore>({
-    selectedAccount,
     neurons: [],
   });
 
