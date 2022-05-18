@@ -4,7 +4,7 @@
   import { listNeuronsHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { writable } from "svelte/store";
-  import { getContext, setContext } from "svelte";
+  import { setContext } from "svelte";
   import type {
     HardwareWalletNeuronsContext,
     HardwareWalletNeuronsStore,
