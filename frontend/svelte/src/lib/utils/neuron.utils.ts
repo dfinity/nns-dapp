@@ -550,3 +550,8 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
 export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined &&
   neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
+
+// NeuronInfo is public info.
+// fullNeuron is only for users with access.
+export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined;

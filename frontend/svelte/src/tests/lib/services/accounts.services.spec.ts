@@ -8,6 +8,7 @@ import {
   getAccountFromStore,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
+  getAccountTransactions,
   renameSubAccount,
   routePathAccountIdentifier,
   syncAccounts,
@@ -28,6 +29,7 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
+import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
 
 jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
   return {
@@ -281,6 +283,67 @@ describe("accounts-services", () => {
       expect(getAccountFromStore(mockSubAccount.identifier)).toEqual(
         mockSubAccount
       );
+    });
+  });
+
+  describe("getAccountTransactions", () => {
+    const onLoad = jest.fn();
+    const mockResponse = [mockSentToSubAccountTransaction];
+    let spyGetTransactions;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      spyGetTransactions = jest
+        .spyOn(accountsApi, "getTransactions")
+        .mockImplementation(() => Promise.resolve(mockResponse));
+    });
+
+    it("should call getTransactions", async () => {
+      await getAccountTransactions({
+        accountIdentifier: "",
+        onLoad,
+      });
+      expect(spyGetTransactions).toBeCalled();
+      expect(spyGetTransactions).toBeCalledTimes(2);
+    });
+
+    it("should call onLoad", async () => {
+      await getAccountTransactions({
+        accountIdentifier: "",
+        onLoad,
+      });
+      expect(onLoad).toBeCalled();
+      expect(onLoad).toBeCalledTimes(2);
+      expect(onLoad).toBeCalledWith({
+        accountIdentifier: "",
+        transactions: mockResponse,
+      });
+    });
+
+    describe("getAccountTransactions errors", () => {
+      beforeEach(() => {
+        spyGetTransactions = jest
+          .spyOn(accountsApi, "getTransactions")
+          .mockImplementation(async () => {
+            throw new Error("test");
+          });
+      });
+
+      it("should display toast error", async () => {
+        const spyToastError = jest.spyOn(toastsStore, "error");
+
+        await getAccountTransactions({
+          accountIdentifier: "",
+          onLoad,
+        });
+
+        expect(spyToastError).toBeCalledTimes(1);
+        expect(spyToastError).toBeCalledWith({
+          labelKey: "error.transactions_not_found",
+          err: new Error("test"),
+        });
+        expect(onLoad).not.toBeCalled();
+      });
     });
   });
 
