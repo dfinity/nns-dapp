@@ -14,6 +14,7 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     updateDelay: jest.fn().mockResolvedValue(undefined),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

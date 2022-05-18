@@ -2,11 +2,15 @@ import { ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
   createSubAccount,
+  getTransactions,
   loadAccounts,
   renameSubAccount,
 } from "../../../lib/api/accounts.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import type { AccountDetails } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
+import type {
+  AccountDetails,
+  GetTransactionsResponse,
+} from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import {
   mockAccountDetails,
   mockHardwareWalletAccountDetails,
@@ -14,6 +18,7 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
 
 describe("accounts-api", () => {
   afterAll(() => jest.clearAllMocks());
@@ -103,5 +108,28 @@ describe("accounts-api", () => {
     });
 
     expect(nnsDappMock.renameSubAccount).toBeCalled();
+  });
+
+  it("should call ledger and nnsdapp to get account and balance", async () => {
+    // NNSDapp mock
+    const mockResponse: GetTransactionsResponse = {
+      total: 1,
+      transactions: [mockSentToSubAccountTransaction],
+    };
+    const nnsDappMock = mock<NNSDappCanister>();
+    nnsDappMock.getTransactions.mockResolvedValue(mockResponse);
+    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+    const response = await getTransactions({
+      identity: mockIdentity,
+      certified: true,
+      accountIdentifier: "",
+      pageSize: 1,
+      offset: 0,
+    });
+
+    expect(nnsDappMock.getTransactions).toBeCalled();
+    expect(nnsDappMock.getTransactions).toBeCalledTimes(1);
+    expect(response).toEqual([mockSentToSubAccountTransaction]);
   });
 });

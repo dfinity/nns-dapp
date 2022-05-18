@@ -4,16 +4,16 @@
     AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
     AddAccountContext,
-    addAccountStore,
-  } from "../../../../lib/stores/add-account.store";
+  } from "../../../../lib/types/add-account.context";
+  import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 
   export let testComponent: typeof SvelteComponent;
   export let nextCallback: () => void | undefined = undefined;
 
   setContext<AddAccountContext>(ADD_ACCOUNT_CONTEXT_KEY, {
-    store: addAccountStore,
+    store: addAccountStoreMock,
     selectType: async (type: AccountType) =>
-      addAccountStore.update((data) => ({ ...data, type })),
+      addAccountStoreMock.update((data) => ({ ...data, type })),
     next: () => nextCallback?.(),
   });
 </script>

@@ -20,15 +20,6 @@ describe("ConfirmActionScreen", () => {
     expect(element).toBeInTheDocument();
   });
 
-  it("should render spinner when loading", () => {
-    const { queryByTestId } = render(ConfirmActionScreenTest, {
-      props: { loading: true },
-    });
-
-    const element = queryByTestId("spinner");
-    expect(element).toBeInTheDocument();
-  });
-
   it("should trigger nnsConfirm event on click button", async () => {
     const spy = jest.fn();
     const { queryByTestId } = render(ConfirmActionScreenTest, {

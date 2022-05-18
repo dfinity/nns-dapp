@@ -234,10 +234,11 @@ describe("AddAccountModal", () => {
 
     const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
 
-    fireEvent.click(attach);
-
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
+
+    fireEvent.click(attach);
+
     await waitFor(() => expect(onClose).toBeCalled());
   };
 

@@ -6,11 +6,12 @@
   export let icp: ICP;
   export let label: string = $i18n.core.icp;
   export let inline: boolean = false;
+  export let sign: "+" | "-" | "" = "";
 </script>
 
 {#if icp}
-  <div class:inline>
-    <span data-tid="icp-value">{`${formatICP(icp.toE8s())}`}</span>
+  <div class:inline class:plus-sign={sign === "+"}>
+    <span data-tid="icp-value">{`${sign}${formatICP(icp.toE8s())}`}</span>
     <span>{label}</span>
   </div>
 {/if}
@@ -37,6 +38,14 @@
         align-items: flex-end;
         justify-content: flex-end;
         grid-gap: 0;
+      }
+    }
+
+    &.plus-sign {
+      color: var(--green-600);
+
+      span:first-of-type {
+        color: var(--green-500);
       }
     }
   }
