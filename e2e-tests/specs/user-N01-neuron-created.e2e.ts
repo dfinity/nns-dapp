@@ -13,7 +13,6 @@ describe("Makes Standard Users", () => {
    * - A neuron
    */
   it("adds_user1", async () => {
-    const navigator = new MyNavigator(browser);
     await browser.url("/");
     const userId = await register(browser);
     console.log(`Created user: ${JSON.stringify(userId)}`);
