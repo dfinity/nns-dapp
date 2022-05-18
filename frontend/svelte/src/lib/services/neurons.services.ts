@@ -32,12 +32,10 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
-import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-import { routeStore } from "../stores/route.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import {
@@ -388,8 +386,13 @@ const getAndLoadNeuron = async (neuronId: NeuronId) => {
     certified: true,
     forceFetch: true,
   });
-  if (!neuron || !userAuthorizedNeuron(neuron)) {
+  if (!neuron) {
     throw new NotFoundError();
+  }
+  if (!userAuthorizedNeuron(neuron)) {
+    throw new NotAuthorizedError(
+      `User not authorized to access neuron ${neuronId}`
+    );
   }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
@@ -571,29 +574,32 @@ export const removeHotkey = async ({
     });
     return;
   }
-  let hotkeyRemoved = false;
+  let removed = false;
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
     await removeHotkeyApi({ neuronId, identity, principal });
-    hotkeyRemoved = true;
+    removed = true;
 
     await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
-    // It happens when the current user is removed from hotkey
-    if (err instanceof NotFoundError && hotkeyRemoved) {
-      toastsStore.show({
-        level: "success",
-        labelKey: "neurons.remove_hotkey_success",
-      });
-      routeStore.replace({ path: AppPath.Neurons });
-    } else {
-      toastsStore.show(mapNeuronErrorToToastMessage(err));
+    if (removed && err instanceof NotAuthorizedError) {
+      // Checking the identity can be one of the reasons we got the error.
+      // If we got here, it's because `getIdentity` didn't throw.
+      const currentIdentityPrincipal = (await getIdentity())
+        .getPrincipal()
+        .toText();
+      // This happens when a user removes itself from the hotkeys.
+      return principalString === currentIdentityPrincipal
+        ? neuronId
+        : undefined;
     }
+
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return undefined;

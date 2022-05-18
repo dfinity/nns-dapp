@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
