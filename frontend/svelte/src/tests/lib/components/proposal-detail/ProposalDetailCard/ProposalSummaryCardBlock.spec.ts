@@ -5,7 +5,7 @@
 import { render, waitFor } from "@testing-library/svelte";
 import ProposalSummaryCardBlock from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalSummaryCardBlock.svelte";
 import en from "../../../../mocks/i18n.mock";
-import { silentConsoleErrors } from "../../../../mocks/mock.utils";
+import { silentConsoleErrors } from "../../../../mocks/utils.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("ProposalSummaryCardBlock", () => {

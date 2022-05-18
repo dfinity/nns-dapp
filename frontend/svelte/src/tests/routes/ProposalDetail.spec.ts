@@ -13,7 +13,7 @@ import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
 import { MockLedgerCanister } from "../mocks/ledger.canister.mock";
-import { silentConsoleErrors } from "../mocks/mock.utils";
+import { silentConsoleErrors } from "../mocks/utils.mock";
 import { buildMockNeuronsStoreSubscribe } from "../mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
