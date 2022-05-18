@@ -69,7 +69,8 @@
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal.",
-    "input_length": "Input must be longer than $length characters."
+    "input_length": "Input must be longer than $length characters.",
+    "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -105,6 +106,8 @@
     "attach_hardware_enter_name": "Enter Wallet Name",
     "attach_hardware_show_neurons": "Show Neurons",
     "attach_hardware_neurons_text": "The following are neurons controlled by the hardware wallet. You can optionally add the NNS dapp as a hotkey to these neurons, which allows you to manage the neurons directly from the Neurons tab.",
+    "attach_hardware_neurons_add": "Add to NNS dapp",
+    "attach_hardware_neurons_added": "Added to NNS dapp",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
@@ -132,7 +135,11 @@
     "rename": "Rename",
     "rename_linked_account": "Rename Linked Account",
     "rename_new_name_placeholder": "New Name",
-    "rename_account_enter_new_name": "Enter New Account Name"
+    "rename_account_enter_new_name": "Enter New Account Name",
+    "hardware_wallet_add_hotkey_title": "Confirm Addition of Hotkey",
+    "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
+    "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
+    "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?"
   },
   "neurons": {
     "title": "Neurons",

@@ -53,7 +53,12 @@ import {
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+import {
+  mockFullNeuron,
+  mockNeuron,
+  mockNeuronControlled,
+  mockNeuronNotControlled,
+} from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -828,37 +833,21 @@ describe("neuron-utils", () => {
   });
 
   describe("isHotKeyControllable", () => {
-    it("returns true if neuron is controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: [mockIdentity.getPrincipal().toText()],
-        },
-      };
+    it("returns true if neuron is controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronControlled,
           identity: mockIdentity,
         })
-      ).toBe(true);
-    });
+      ).toBe(true));
 
-    it("returns false if neuron is not controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: ["not-current-principal"],
-        },
-      };
+    it("returns false if neuron is not controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronNotControlled,
           identity: mockIdentity,
         })
-      ).toBe(false);
-    });
+      ).toBe(false));
   });
 
   describe("isIdentityController", () => {

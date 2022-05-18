@@ -2,6 +2,7 @@ import type { KnownNeuron, Neuron, NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { NeuronsStore } from "../../lib/stores/neurons.store";
+import { mockIdentity } from "./auth.store.mock";
 
 export const mockFullNeuron: Neuron = {
   id: BigInt(1),
@@ -46,3 +47,19 @@ export const buildMockNeuronsStoreSubscribe =
     run({ neurons, certified });
     return () => undefined;
   };
+
+export const mockNeuronControlled = {
+  ...mockNeuron,
+  fullNeuron: {
+    ...mockFullNeuron,
+    hotKeys: [mockIdentity.getPrincipal().toText()],
+  },
+};
+
+export const mockNeuronNotControlled = {
+  ...mockNeuron,
+  fullNeuron: {
+    ...mockFullNeuron,
+    hotKeys: ["not-current-principal"],
+  },
+};
