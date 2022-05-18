@@ -72,6 +72,7 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  hardware_wallet_no_account: string;
 }
 
 interface I18nWarning {
@@ -112,6 +113,8 @@ interface I18nAccounts {
   attach_hardware_enter_name: string;
   attach_hardware_show_neurons: string;
   attach_hardware_neurons_text: string;
+  attach_hardware_neurons_add: string;
+  attach_hardware_neurons_added: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -140,6 +143,10 @@ interface I18nAccounts {
   rename_linked_account: string;
   rename_new_name_placeholder: string;
   rename_account_enter_new_name: string;
+  hardware_wallet_add_hotkey_title: string;
+  hardware_wallet_add_hotkey_text_neuron: string;
+  hardware_wallet_add_hotkey_text_principal: string;
+  hardware_wallet_add_hotkey_text_confirm: string;
 }
 
 interface I18nNeurons {
