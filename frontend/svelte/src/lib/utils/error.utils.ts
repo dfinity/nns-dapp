@@ -56,6 +56,7 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     [InvalidAccountIDError, "error.invalid_account_id"],
     [InvalidPercentageError, "error.invalid_percentage"],
     [GovernanceError, "error.governance_error"],
+    [NotFoundError, "error.neuron_not_found"],
     [TransferError, "error.transfer_error"],
     [CannotBeMerged, "error.cannot_merge"],
   ];

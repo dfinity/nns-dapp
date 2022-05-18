@@ -55,6 +55,7 @@ import {
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
+  userAuthorizedNeuron,
 } from "../utils/neuron.utils";
 import { createChunks, isDefined } from "../utils/utils";
 import {
@@ -388,6 +389,11 @@ const getAndLoadNeuron = async (neuronId: NeuronId) => {
   if (!neuron) {
     throw new NotFoundError();
   }
+  if (!userAuthorizedNeuron(neuron)) {
+    throw new NotAuthorizedError(
+      `User not authorized to access neuron ${neuronId}`
+    );
+  }
   neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 };
 
@@ -568,17 +574,31 @@ export const removeHotkey = async ({
     });
     return;
   }
+  let removed = false;
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
     await removeHotkeyApi({ neuronId, identity, principal });
+    removed = true;
 
     await getAndLoadNeuron(neuronId);
 
     return neuronId;
   } catch (err) {
+    if (removed && err instanceof NotAuthorizedError) {
+      // There is no need to get the identity unless removing the hotkey succeeded
+      // and it was `getAndLoadNeuron` that threw the error.
+      const currentIdentityPrincipal = (await getIdentity())
+        .getPrincipal()
+        .toText();
+      // This happens when a user removes itself from the hotkeys.
+      return principalString === currentIdentityPrincipal
+        ? neuronId
+        : undefined;
+    }
+
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
@@ -851,10 +871,17 @@ export const loadNeuron = ({
   handleError?: () => void;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
-    toastsStore.error({
-      labelKey: "error.neuron_not_found",
-      err,
-    });
+    if (err instanceof NotFoundError) {
+      toastsStore.error({
+        labelKey: "error.neuron_not_found",
+        err,
+      });
+    } else {
+      toastsStore.error({
+        labelKey: "error.neuron_load",
+        err,
+      });
+    }
 
     handleError?.();
   };
@@ -867,8 +894,9 @@ export const loadNeuron = ({
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
-      if (neuron === undefined) {
-        catchError(new Error("Neuron not found"));
+      // Handle not authorized neurons as if not found.
+      if (neuron === undefined || !userAuthorizedNeuron(neuron)) {
+        catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
 
