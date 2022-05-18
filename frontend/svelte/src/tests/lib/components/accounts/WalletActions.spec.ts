@@ -14,11 +14,11 @@ import {
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
-import ContextWrapper from "../ContextWrapper.svelte";
+import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("WalletActions", () => {
   const renderWalletActions = (account) =>
-    render(ContextWrapper, {
+    render(ContextWrapperTest, {
       props: {
         contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
         contextValue: {

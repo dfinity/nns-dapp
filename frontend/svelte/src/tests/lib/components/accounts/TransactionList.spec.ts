@@ -13,11 +13,11 @@ import {
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockReceivedFromMainAccountTransaction } from "../../../mocks/transaction.mock";
-import ContextWrapper from "../ContextWrapper.svelte";
+import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("TransactionList", () => {
   const renderTransactionList = (account, transactions) =>
-    render(ContextWrapper, {
+    render(ContextWrapperTest, {
       props: {
         contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
         contextValue: {
