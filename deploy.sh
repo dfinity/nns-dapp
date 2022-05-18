@@ -205,6 +205,7 @@ fi
 
 if [[ "$CREATE_USERS" == "true" ]]; then
   pushd e2e-tests
+  npm ci
   SCREENSHOT=1 npm run wdio -- --spec ./specs/useradd.e2e.ts
   popd
 fi
