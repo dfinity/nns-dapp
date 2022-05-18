@@ -10,7 +10,7 @@
   } from "../../constants/icp.constants";
   import { i18n } from "../../stores/i18n";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
@@ -74,7 +74,7 @@
       data-tid="split-neuron-button"
       class="primary full-width"
       on:click={split}
-      disabled={!validForm}
+      disabled={!validForm || $busy}
     >
       {$i18n.neuron_detail.split_neuron_confirm}
     </button>
