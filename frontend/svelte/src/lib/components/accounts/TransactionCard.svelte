@@ -15,6 +15,7 @@
     mapTransaction,
     transactionName,
   } from "../../utils/transactions.utils";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let account: Account;
   export let transaction: Transaction;
@@ -26,11 +27,23 @@
   let to: AccountIdentifierString | undefined;
   let displayAmount: ICPType;
   let date: Date;
-  $: ({ type, isReceive, isSend, from, to, displayAmount, date } =
-    mapTransaction({
-      transaction,
-      account,
-    }));
+  $: account,
+    transaction,
+    (() => {
+      try {
+        ({ type, isReceive, isSend, from, to, displayAmount, date } =
+          mapTransaction({
+            transaction,
+            account,
+          }));
+      } catch (err: unknown) {
+        toastsStore.error(
+          err instanceof Error
+            ? { labelKey: err.message }
+            : { labelKey: "error.unknown", err }
+        );
+      }
+    })();
 
   let headline: string;
   $: headline = transactionName({
