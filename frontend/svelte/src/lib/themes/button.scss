@@ -2,7 +2,8 @@
 @use "mixins/media";
 
 button {
-  &[disabled] {
+  &[disabled],
+  &[disabled]:hover {
     pointer-events: none;
   }
 
@@ -65,7 +66,8 @@ button {
 
   &.primary,
   &.input-button {
-    &[disabled] {
+    &[disabled],
+    &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
     }
@@ -90,7 +92,8 @@ button {
   }
 
   &.secondary {
-    &[disabled] {
+    &[disabled],
+    &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
     }
@@ -135,7 +138,8 @@ button {
     background: var(--gray-600);
     color: var(--gray-50);
 
-    &[disabled] {
+    &[disabled],
+    &[disabled]:hover {
       background: rgba(var(--gray-600-rgb), 0.8);
       color: var(--gray-800);
     }
@@ -176,7 +180,8 @@ button {
       font-size: var(--font-size-h3);
     }
 
-    &[disabled] {
+    &[disabled],
+    &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
     }
