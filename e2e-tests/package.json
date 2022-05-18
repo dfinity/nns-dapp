@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "wdio": "wdio run ./wdio.conf.ts",
+    "wdio": "rm -fr screenshots && wdio run ./wdio.conf.ts",
     "test": "tsc test.ts && node test.js",
     "lint": "npx tsc --noEmit true --project . && eslint --max-warnings 0 './**/*.{js,ts}'",
     "format": "prettier --write --plugin-search-dir=. ."

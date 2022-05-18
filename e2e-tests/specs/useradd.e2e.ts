@@ -6,7 +6,6 @@ import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
 
-
 describe("", () => {
   /**
    * Creates a user with:
@@ -17,21 +16,20 @@ describe("", () => {
     const navigator = new MyNavigator(browser);
     await browser.url("/");
     const userId = await register(browser);
-    console.log(`Created user: ${userId}`);
-    // Get ICP
+    console.log(`Created user: ${JSON.stringify(userId)}`);
+  });
 
-// For debugging; remove before merging.
-await browser.execute(() => {
-  window.onerror = function (errorMsg, url, lineNumber) {
-    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
-  }
-});
-
-    // Get ICP
+  it("gives_user1_icp", async () => {
     await new Header(browser).getIcp(100);
-    // Create a neuron
-    await navigator.click(Header.TAB_TO_NEURONS_SELECTOR, "Go to the neurons tab");
+  });
+
+  it("gives_user1_a_neuron", async () => {
+    const navigator = new MyNavigator(browser);
+    await navigator.click(
+      Header.TAB_TO_NEURONS_SELECTOR,
+      "Go to the neurons tab"
+    );
     const neuronsTab = new NeuronsTab(browser);
-    neuronsTab.stakeNeuron({icp: 1});
+    await neuronsTab.stakeNeuron({ icp: 1 });
   });
 });

@@ -87,14 +87,16 @@ export class MyNavigator {
     options?: { timeout?: number }
   ) {
     if (undefined === selector) {
-      throw new Error(`Cannot wait for undefined selector to be removed for "${description}".`);
+      throw new Error(
+        `Cannot wait for undefined selector to be removed for "${description}".`
+      );
     }
     const element = await this.browser.$(selector);
     const timeout = options?.timeout;
     const timeoutMsg = `Timed out waiting for element to disappear: "${selector}" (${description}).`;
-    await this.browser.waitUntil(
-      async () => !await element.isExisting(),
-      { timeout, timeoutMsg }
-    );
+    await this.browser.waitUntil(async () => !(await element.isExisting()), {
+      timeout,
+      timeoutMsg,
+    });
   }
 }
