@@ -10,5 +10,8 @@ export interface SelectedAccountStore {
   transactions: Transaction[] | undefined;
 }
 
-export type SelectedAccountContext = Writable<SelectedAccountStore>;
+export interface SelectedAccountContext {
+  store: Writable<SelectedAccountStore>;
+}
+
 export const SELECTED_ACCOUNT_CONTEXT_KEY = Symbol("selected-account");

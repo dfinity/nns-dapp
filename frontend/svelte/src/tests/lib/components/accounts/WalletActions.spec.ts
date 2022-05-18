@@ -7,6 +7,7 @@ import { writable } from "svelte/store";
 import WalletActions from "../../../../lib/components/accounts/WalletActions.svelte";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
+  type SelectedAccountContext,
   type SelectedAccountStore,
 } from "../../../../lib/types/selected-account.context";
 import {
@@ -20,10 +21,12 @@ describe("WalletActions", () => {
     render(ContextWrapper, {
       props: {
         contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
-        contextValue: writable<SelectedAccountStore>({
-          account,
-          transactions: undefined,
-        }),
+        contextValue: {
+          store: writable<SelectedAccountStore>({
+            account,
+            transactions: undefined,
+          }),
+        } as SelectedAccountContext,
         Component: WalletActions,
       },
     });

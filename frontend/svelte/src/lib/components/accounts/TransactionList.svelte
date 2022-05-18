@@ -4,9 +4,19 @@
   import { i18n } from "../../stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import TransactionCard from "./TransactionCard.svelte";
+  import { getContext } from "svelte";
+  import {
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    type SelectedAccountContext,
+  } from "../../types/selected-account.context";
 
-  export let account: Account | undefined;
-  export let transactions: Transaction[] | undefined;
+  const { store } = getContext<SelectedAccountContext>(
+    SELECTED_ACCOUNT_CONTEXT_KEY
+  );
+
+  let account: Account | undefined;
+  let transactions: Transaction[] | undefined;
+  $: ({ account, transactions } = $store);
 </script>
 
 {#if account === undefined || transactions === undefined}

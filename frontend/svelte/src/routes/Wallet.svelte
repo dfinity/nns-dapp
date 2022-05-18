@@ -61,10 +61,9 @@
     account: undefined,
     transactions: undefined,
   });
-  setContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    selectedAccountStore
-  );
+  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
+    store: selectedAccountStore,
+  });
 
   let routeAccountIdentifier: string | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
