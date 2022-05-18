@@ -26,6 +26,7 @@ interface I18nError {
   sign_in: string;
   proposal_not_found: string;
   neuron_not_found: string;
+  neuron_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -44,6 +45,8 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  account_not_found: string;
+  transactions_not_found: string;
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
@@ -72,6 +75,7 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  hardware_wallet_no_account: string;
 }
 
 interface I18nWarning {
@@ -112,6 +116,8 @@ interface I18nAccounts {
   attach_hardware_enter_name: string;
   attach_hardware_show_neurons: string;
   attach_hardware_neurons_text: string;
+  attach_hardware_neurons_add: string;
+  attach_hardware_neurons_added: string;
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
@@ -140,6 +146,10 @@ interface I18nAccounts {
   rename_linked_account: string;
   rename_new_name_placeholder: string;
   rename_account_enter_new_name: string;
+  hardware_wallet_add_hotkey_title: string;
+  hardware_wallet_add_hotkey_text_neuron: string;
+  hardware_wallet_add_hotkey_text_principal: string;
+  hardware_wallet_add_hotkey_text_confirm: string;
 }
 
 interface I18nNeurons {
@@ -157,6 +167,7 @@ interface I18nNeurons {
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
   add_user_as_hotkey_success: string;
+  remove_hotkey_success: string;
   neuron_create_success: string;
   your_principal: string;
   confirm_dissolve_delay: string;
@@ -287,8 +298,25 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nTransaction_names {
+  receive: string;
+  send: string;
+  mint: string;
+  burn: string;
+  stakeNeuron: string;
+  stakeNeuronNotification: string;
+  topUpNeuron: string;
+  createCanister: string;
+  topUpCanister: string;
+}
+
 interface I18nWallet {
   title: string;
+  address: string;
+  principal: string;
+  direction_from: string;
+  direction_to: string;
+  no_transactions: string;
 }
 
 interface I18nBusy_screen {
@@ -445,6 +473,7 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;
+  transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;

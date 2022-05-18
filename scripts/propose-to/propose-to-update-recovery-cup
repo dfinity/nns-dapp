@@ -1,0 +1,14 @@
+set ic-admin --nns-url "$NNS_URL" \
+  propose-to-update-recovery-cup \
+  --test-neuron-proposer \
+  --height 123 \
+  --proposal-title Title \
+  --proposal-url https://blah.blob \
+  --registry-store-hash b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c \
+  --registry-store-uri https://registry.store.uri \
+  --registry-version 911 \
+  --replacement-nodes 2oiej-q2hjb-yig3c-e4lew-qagpu-4bkti-blslo-6sa3z-c6pws-nwigc-bae \
+  --state-hash b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c \
+  --subnet 2oiej-q2hjb-yig3c-e4lew-qagpu-4bkti-blslo-6sa3z-c6pws-nwigc-bae \
+  --summary "# Some summary text\ndo do do" \
+  --time-ns 1234

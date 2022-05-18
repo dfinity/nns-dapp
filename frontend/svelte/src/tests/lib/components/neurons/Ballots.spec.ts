@@ -10,9 +10,9 @@ import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
-import { silentConsoleErrors } from "../../../mocks/mock.utils";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
+import { silentConsoleErrors } from "../../../mocks/utils.mock";
 
 describe("Ballots", () => {
   const mockBallot: BallotInfo = {

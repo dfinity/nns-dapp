@@ -45,6 +45,7 @@ import {
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
+  userAuthorizedNeuron,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -53,7 +54,12 @@ import {
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+import {
+  mockFullNeuron,
+  mockNeuron,
+  mockNeuronControlled,
+  mockNeuronNotControlled,
+} from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -828,37 +834,21 @@ describe("neuron-utils", () => {
   });
 
   describe("isHotKeyControllable", () => {
-    it("returns true if neuron is controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: [mockIdentity.getPrincipal().toText()],
-        },
-      };
+    it("returns true if neuron is controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronControlled,
           identity: mockIdentity,
         })
-      ).toBe(true);
-    });
+      ).toBe(true));
 
-    it("returns false if neuron is not controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: ["not-current-principal"],
-        },
-      };
+    it("returns false if neuron is not controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronNotControlled,
           identity: mockIdentity,
         })
-      ).toBe(false);
-    });
+      ).toBe(false));
   });
 
   describe("isIdentityController", () => {
@@ -1408,6 +1398,19 @@ describe("neuron-utils", () => {
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+    });
+  });
+
+  describe("userAuthorizedNeuron", () => {
+    it("should return false if no fullNeuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(userAuthorizedNeuron(neuron)).toBe(false);
+    });
+    it("should return true if no fullNeuron", () => {
+      expect(userAuthorizedNeuron(mockNeuron)).toBe(true);
     });
   });
 });
