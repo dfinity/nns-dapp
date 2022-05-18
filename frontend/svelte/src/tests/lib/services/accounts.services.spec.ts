@@ -2,26 +2,40 @@ import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as accountsApi from "../../../lib/api/accounts.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
+import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
   getAccountFromStore,
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  renameSubAccount,
   routePathAccountIdentifier,
   syncAccounts,
   transferICP,
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { TransactionStore } from "../../../lib/stores/transaction.store";
+import type { TransactionStore } from "../../../lib/types/transaction.context";
 import {
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
 import {
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
+
+jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+  return {
+    getLedgerIdentityProxy: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockIdentity)),
+  };
+});
 
 describe("accounts-services", () => {
   describe("services", () => {
@@ -77,7 +91,7 @@ describe("accounts-services", () => {
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
-        labelKey: "create_subaccount",
+        labelKey: "accounts.create_subaccount",
         err: new Error(en.error.missing_identity),
       });
 
@@ -136,6 +150,93 @@ describe("accounts-services", () => {
     });
   });
 
+  describe("rename", () => {
+    const mockAccounts = { main: mockMainAccount, subAccounts: [] };
+
+    const spyLoadAccounts = jest
+      .spyOn(accountsApi, "loadAccounts")
+      .mockImplementation(() => Promise.resolve(mockAccounts));
+
+    const spyRenameSubAccount = jest
+      .spyOn(accountsApi, "renameSubAccount")
+      .mockImplementation(() => Promise.resolve());
+
+    beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should rename a subaccount", async () => {
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyRenameSubAccount).toHaveBeenCalled();
+    });
+
+    it("should sync accounts after rename", async () => {
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyLoadAccounts).toHaveBeenCalled();
+    });
+
+    it("should not rename subaccount if no identity", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      setNoIdentity();
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockSubAccount,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount",
+        err: new Error(en.error.missing_identity),
+      });
+
+      resetIdentity();
+
+      spyToastError.mockClear();
+    });
+
+    it("should not rename subaccount if no selected account", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: undefined,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount_no_account",
+      });
+
+      spyToastError.mockClear();
+    });
+
+    it("should not rename subaccount if type is not subaccount", async () => {
+      const spyToastError = jest.spyOn(toastsStore, "error");
+
+      await renameSubAccount({
+        newName: "test subaccount",
+        selectedAccount: mockMainAccount,
+      });
+
+      expect(spyToastError).toBeCalled();
+      expect(spyToastError).toBeCalledWith({
+        labelKey: "error.rename_subaccount_type",
+      });
+
+      spyToastError.mockClear();
+    });
+  });
+
   describe("details", () => {
     beforeAll(() => {
       // Avoid to print errors during test
@@ -180,6 +281,72 @@ describe("accounts-services", () => {
       expect(getAccountFromStore(mockSubAccount.identifier)).toEqual(
         mockSubAccount
       );
+    });
+  });
+
+  describe("getAccountIdentity", () => {
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockMainAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockMainAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockHardwareWalletAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      expect(getLedgerIdentityProxy).toBeCalled();
+      accountsStore.reset();
+    });
+  });
+
+  describe("getAccountIdentityByPrincipal", () => {
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        mockMainAccount.principal?.toText() as string
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        mockHardwareWalletAccount.principal?.toText() as string
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      expect(getLedgerIdentityProxy).toBeCalled();
+      accountsStore.reset();
     });
   });
 });

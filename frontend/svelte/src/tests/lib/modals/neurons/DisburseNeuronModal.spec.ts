@@ -19,6 +19,7 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     disburse: jest.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: jest.fn(),
   };
 });
 

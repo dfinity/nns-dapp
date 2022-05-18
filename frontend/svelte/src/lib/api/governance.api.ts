@@ -14,7 +14,7 @@ import {
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
-import { LedgerIdentity } from "../identities/ledger.identity";
+import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
@@ -125,7 +125,8 @@ export const spawnNeuron = async ({
   identity,
 }: {
   neuronId: NeuronId;
-  percentageToSpawn: number;
+  // percentageToSpawn is not yet supported by the ledger IC app
+  percentageToSpawn?: number;
   identity: Identity;
 }): Promise<void> => {
   logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
@@ -384,7 +385,7 @@ export const governanceCanister = async ({
   const canister = GovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
-    hardwareWallet: identity instanceof LedgerIdentity,
+    hardwareWallet: await isLedgerIdentityProxy(identity),
   });
 
   return {

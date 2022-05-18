@@ -5,7 +5,7 @@
     type AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../stores/add-account.store";
+  } from "../../types/add-account.context";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -29,14 +29,19 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/media";
 
   .wizard-wrapper {
     justify-content: center;
   }
 
   .card-item {
-    padding: var(--padding-4x);
+    padding: var(--padding-2x) var(--padding);
     border-radius: var(--border-radius);
+
+    @include media.min-width(medium) {
+      padding: var(--padding-4x);
+    }
 
     @include interaction.tappable;
 

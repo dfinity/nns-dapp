@@ -9,6 +9,7 @@
   import { formattedTransactionFeeICP, maxICP } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   export let account: Account;
   let amount: number;
@@ -16,19 +17,26 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
-    startBusy("stake-neuron");
+    const isHardwareWallet = isAccountHardwareWallet(account);
+    startBusy({
+      initiator: "stake-neuron",
+      labelKey: isHardwareWallet
+        ? "busy_screen.pending_approval_hw"
+        : undefined,
+    });
     creating = true;
-    const neuron = await stakeNeuron({
+    const neuronId = await stakeNeuron({
       amount,
       account,
+      loadNeuron: !isHardwareWallet,
     });
-    if (neuron !== undefined) {
+    if (neuronId !== undefined) {
       // We don't wait for `syncAccounts` to finish to give a better UX to the user.
       // `syncAccounts` might be slow since it loads all accounts and balances.
       // in the neurons page there are no balances nor accounts
       syncAccounts();
 
-      dispatcher("nnsNeuronCreated", { neuron });
+      dispatcher("nnsNeuronCreated", { neuronId });
     }
     creating = false;
     stopBusy("stake-neuron");

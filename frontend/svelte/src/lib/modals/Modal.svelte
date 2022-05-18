@@ -9,7 +9,7 @@
 
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
-  export let size: "small" | "medium" = "small";
+  export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
   // There is no way to know whether a parent is listening to the "nnsBack" event
@@ -66,7 +66,7 @@
         </div>
       {/if}
 
-      <div class="content" id="modalContent">
+      <div class="content" id="modalContent" class:small={size === "small"}>
         <slot />
       </div>
 
@@ -141,23 +141,21 @@
     flex-direction: column;
 
     width: var(--modal-small-width);
-    height: fit-content;
-    max-width: calc(100vw - var(--padding-4x));
-    max-height: calc(100vh - var(--padding-2x));
 
-    --modal-min-height: 100px;
+    &.big {
+      width: var(--modal-big-width);
+    }
+
+    height: min(calc(100% - var(--padding-6x)), var(--modal-max-height));
+    max-width: calc(100vw - var(--padding-4x));
+
     --modal-toolbar-height: 35px;
-    min-height: var(--modal-min-height);
 
     background: white;
 
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
-
-    &.medium {
-      width: var(--modal-medium-width);
-    }
   }
 
   .light > div.wrapper {
@@ -222,11 +220,14 @@
     display: flex;
     flex-direction: column;
 
-    min-height: calc(var(--modal-min-height) - var(--modal-toolbar-height));
-    max-height: calc(100vh - 156px);
+    height: calc(100% - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
 
     color: var(--gray-800);
+  }
+
+  .small {
+    height: fit-content;
   }
 </style>

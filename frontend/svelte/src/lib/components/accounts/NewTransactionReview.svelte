@@ -2,13 +2,13 @@
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import ICP from "../ic/ICP.svelte";
   import { ICP as ICPType } from "@dfinity/nns";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
-  import type { TransactionContext } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { TransactionContext } from "../../types/transaction.context";
   import { createEventDispatcher, getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
-  import { isHardwareWallet } from "../../utils/accounts.utils";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -20,7 +20,7 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    startBusy("accounts");
+    startBusy({ initiator: "accounts" });
 
     const { success } = await transferICP($store);
 
@@ -28,7 +28,7 @@
 
     // We close the modal in case of success or error if the selected source is not a hardware wallet.
     // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isHardwareWallet($store.selectedAccount)) {
+    if (success || !isAccountHardwareWallet($store.selectedAccount)) {
       dispatcher("nnsClose");
     }
   };
@@ -48,6 +48,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/modal";
+  @use "../../themes/mixins/media";
 
   .amount {
     display: flex;
@@ -57,9 +58,12 @@
 
     flex-grow: 1;
 
-    --icp-font-size: var(--font-size-huge);
+    padding: var(--padding) 0;
 
-    @include modal.header;
+    @include media.min-width(medium) {
+      --icp-font-size: var(--font-size-huge);
+      @include modal.header;
+    }
   }
 
   button {

@@ -6,8 +6,9 @@
     startDissolving,
     stopDissolving,
   } from "../../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../../stores/busy.store";
+  import { stopBusy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
+  import { startBusyNeuron } from "../../../services/busy.services";
 
   export let neuronId: NeuronId;
   export let neuronState: NeuronState;
@@ -30,7 +31,7 @@
 
   const dissolveAction = async () => {
     const action = isDissolving ? stopDissolving : startDissolving;
-    startBusy("dissolve-action");
+    startBusyNeuron({ initiator: "dissolve-action", neuronId });
     await action(neuronId);
     closeModal();
     stopBusy("dissolve-action");
