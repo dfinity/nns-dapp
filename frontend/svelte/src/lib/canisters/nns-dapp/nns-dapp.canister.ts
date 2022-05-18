@@ -207,7 +207,7 @@ export class NNSDappCanister {
     return this.service;
   }
 
-  public getTransactions = async ({
+  public async getTransactions({
     accountIdentifier,
     pageSize,
     offset,
@@ -217,13 +217,11 @@ export class NNSDappCanister {
     pageSize: number;
     offset: number;
     certified: boolean;
-  }): Promise<GetTransactionsResponse> => {
-    const response = await this.getNNSDappService(certified).get_transactions({
+  }): Promise<GetTransactionsResponse> {
+    return this.getNNSDappService(certified).get_transactions({
       page_size: pageSize,
       offset,
       account_identifier: accountIdentifier,
     });
-
-    return response;
-  };
+  }
 }

@@ -14,7 +14,7 @@
 {:else if transactions.length === 0}
   {$i18n.wallet.no_transactions}
 {:else}
-  {#each transactions as transaction}
+  {#each transactions as transaction (transaction.timestamp.timestamp_nanos)}
     <TransactionCard {account} {transaction} />
   {/each}
 {/if}

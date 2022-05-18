@@ -105,6 +105,10 @@ export const getTransactions = async ({
   offset: number;
   certified: boolean;
 }): Promise<Transaction[]> => {
+  logWithTimestamp(
+    `Loading Transactions ${hashCode(accountIdentifier)} call...`
+  );
+
   const { canister } = await nnsDappCanister({ identity });
 
   const { transactions } = await canister.getTransactions({
@@ -113,6 +117,10 @@ export const getTransactions = async ({
     offset,
     certified,
   });
+
+  logWithTimestamp(
+    `Loading Transactions ${hashCode(accountIdentifier)} complete.`
+  );
 
   return transactions;
 };

@@ -45,7 +45,7 @@
       path: AppPath.Accounts,
     });
 
-  const updateTransactions = async (accountIdentifier: AccountIdentifier) =>
+  const reloadTransactions = async (accountIdentifier: AccountIdentifier) =>
     await getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions }) => {
@@ -85,7 +85,7 @@
         });
 
         if (selectedAccount !== undefined) {
-          updateTransactions(selectedAccount.identifier);
+          reloadTransactions(selectedAccount.identifier);
         }
       }
 
@@ -121,16 +121,16 @@
         </div>
         <div class="address">
           <Identifier
-            label={$i18n.wallet.address}
             identifier={$selectedAccountStore.account.identifier}
+            label={$i18n.wallet.address}
             showCopy
             size="medium"
           />
           {#if isAccountHardwareWallet($selectedAccountStore.account)}
             <Identifier
-              label={$i18n.wallet.principal}
               identifier={$selectedAccountStore.account.principal?.toString() ??
                 ""}
+              label={$i18n.wallet.principal}
               showCopy
             />
           {/if}

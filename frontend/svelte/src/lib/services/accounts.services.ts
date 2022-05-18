@@ -16,7 +16,7 @@ import type {
   AccountIdentifierString,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
-import { TRANSACTION_PAGE_LIMIT } from "../constants/constants";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -194,7 +194,7 @@ export const getAccountTransactions = async ({
         identity,
         certified,
         accountIdentifier,
-        pageSize: TRANSACTION_PAGE_LIMIT,
+        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
     onLoad: ({ response: transactions }) =>
