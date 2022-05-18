@@ -14,6 +14,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
+import { NotAuthorizedError } from "../../../lib/types/errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -750,6 +751,21 @@ describe("neurons-services", () => {
       });
 
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
+    });
+
+    it("should update neuron and return success when user removes itself", async () => {
+      spyGetNeuron.mockImplementation(
+        jest.fn().mockRejectedValue(new NotAuthorizedError())
+      );
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      const expectedId = await removeHotkey({
+        neuronId: controlledNeuron.neuronId,
+        principalString: mockIdentity.getPrincipal().toText() as string,
+      });
+
+      expect(spyRemoveHotkey).toHaveBeenCalled();
+      expect(expectedId).toBeDefined();
     });
 
     it("should not update neuron if no identity", async () => {

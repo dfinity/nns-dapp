@@ -45,6 +45,7 @@ import {
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
+  userAuthorizedNeuron,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -1397,6 +1398,19 @@ describe("neuron-utils", () => {
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+    });
+  });
+
+  describe("userAuthorizedNeuron", () => {
+    it("should return false if no fullNeuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(userAuthorizedNeuron(neuron)).toBe(false);
+    });
+    it("should return true if no fullNeuron", () => {
+      expect(userAuthorizedNeuron(mockNeuron)).toBe(true);
     });
   });
 });

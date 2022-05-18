@@ -30,4 +30,33 @@ describe("ICP", () => {
 
     expect(getByText("ICP")).toBeInTheDocument();
   });
+
+  it("should render + sign", () => {
+    const { container } = render(ICP, {
+      props: {
+        ...props,
+        sign: "+",
+      },
+    });
+    const value = container.querySelector("span:first-of-type");
+
+    expect(value?.textContent).toEqual(
+      `+${formatICP(mockMainAccount.balance.toE8s())}`
+    );
+    expect(container.querySelector(".plus-sign")).toBeInTheDocument();
+  });
+
+  it("should render - sign", () => {
+    const { container } = render(ICP, {
+      props: {
+        ...props,
+        sign: "-",
+      },
+    });
+    const value = container.querySelector("span:first-of-type");
+
+    expect(value?.textContent).toEqual(
+      `-${formatICP(mockMainAccount.balance.toE8s())}`
+    );
+  });
 });

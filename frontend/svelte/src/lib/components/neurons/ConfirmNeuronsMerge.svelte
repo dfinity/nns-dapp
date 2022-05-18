@@ -4,13 +4,12 @@
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
   import { startBusyNeuron } from "../../services/busy.services";
   import { mergeNeurons } from "../../services/neurons.services";
-  import { stopBusy } from "../../stores/busy.store";
+  import { busy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { neuronStake } from "../../utils/neuron.utils";
-  import Spinner from "../ui/Spinner.svelte";
 
   export let neurons: NeuronInfo[];
 
@@ -25,10 +24,7 @@
     }
   }
 
-  let loading: boolean = false;
-
   const merge = async () => {
-    loading = true;
     startBusyNeuron({
       initiator: "merge-neurons",
       neuronId: neurons[0].neuronId,
@@ -39,12 +35,13 @@
       targetNeuronId: neurons[0].neuronId,
       sourceNeuronId: neurons[1].neuronId,
     });
+
     if (id !== undefined) {
       toastsStore.success({
         labelKey: "neuron_detail.merge_neurons_success",
       });
     }
-    loading = false;
+
     dispatcher("nnsClose");
     stopBusy("merge-neurons");
   };
@@ -79,13 +76,10 @@
     <button
       class="primary full-width"
       data-tid="confirm-merge-neurons-button"
+      disabled={$busy}
       on:click={merge}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.neurons.merge_neurons_modal_confirm}
-      {/if}
+      {$i18n.neurons.merge_neurons_modal_confirm}
     </button>
   </div>
   <div class="disclaimer">

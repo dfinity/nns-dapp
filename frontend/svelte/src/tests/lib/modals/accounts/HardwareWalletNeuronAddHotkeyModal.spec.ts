@@ -13,7 +13,7 @@ import {
   mockIdentity,
 } from "../../../mocks/auth.store.mock";
 import {
-  hardwareWalletNeuronsStore,
+  mockHardwareWalletNeuronsStore,
   mockNeuronStake,
 } from "../../../mocks/hardware-wallet-neurons.store.mock";
 import en from "../../../mocks/i18n.mock";
@@ -111,7 +111,7 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
     await waitFor(() => expect(spyAddHotkey).toBeCalled());
     await waitFor(() => expect(spyGetNeuron).toBeCalled());
 
-    const store = get(hardwareWalletNeuronsStore);
+    const store = get(mockHardwareWalletNeuronsStore);
     expect(
       store.neurons.find(({ controlledByNNSDapp }) => !controlledByNNSDapp)
     ).toBeUndefined();

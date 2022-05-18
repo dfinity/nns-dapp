@@ -10,9 +10,9 @@ describe("Identifier", () => {
   const props: { identifier: string } = { identifier };
 
   it("should render an identifier", () => {
-    const { container, queryByRole } = render(Identifier, { props });
+    const { getByTestId, queryByRole } = render(Identifier, { props });
 
-    const small = container.querySelector("small");
+    const small = getByTestId("identifier");
 
     expect(small?.textContent).toEqual(identifier);
 

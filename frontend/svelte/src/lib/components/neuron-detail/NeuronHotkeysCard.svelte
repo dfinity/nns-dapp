@@ -1,11 +1,15 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { AppPath } from "../../constants/routes.constants";
+  import { getIdentity } from "../../services/auth.services";
   import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";
   import { authStore } from "../../stores/auth.store";
   import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
+  import { toastsStore } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import Card from "../ui/Card.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
@@ -26,10 +30,21 @@
       initiator: "remove-hotkey-neuron",
       neuronId: neuron.neuronId,
     });
-    await removeHotkey({
+    const maybeNeuronId = await removeHotkey({
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
+    const currentIdentityPrincipal = (await getIdentity())
+      .getPrincipal()
+      .toText();
+    // If the user removes itself from the hotkeys, it has no more access to the detail page.
+    if (currentIdentityPrincipal === hotkey && maybeNeuronId !== undefined) {
+      toastsStore.show({
+        level: "success",
+        labelKey: "neurons.remove_hotkey_success",
+      });
+      routeStore.replace({ path: AppPath.Neurons });
+    }
     stopBusy("remove-hotkey-neuron");
   };
 </script>
