@@ -1,7 +1,7 @@
 /**
  * Additional functionality for the wdio "browser".
  */
-export class Navigator {
+export class MyNavigator {
   browser: WebdriverIO.Browser;
 
   constructor(browser: WebdriverIO.Browser) {

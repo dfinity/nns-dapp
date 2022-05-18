@@ -1,6 +1,6 @@
-import { Navigator } from "../common/navigator";
+import { MyNavigator } from "../common/navigator";
 
-export class Header extends Navigator {
+export class Header extends MyNavigator {
   static readonly SELECTOR: string = "header";
   static readonly LOGOUT_BUTTON_SELECTOR: string = `${Header.SELECTOR} [data-tid="logout"]`;
   static readonly TAB_TO_ACCOUNTS_SELECTOR: string = `${Header.SELECTOR} [data-tid="tab-to-accounts"]`;
