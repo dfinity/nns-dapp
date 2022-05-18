@@ -34,6 +34,7 @@ import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -164,11 +165,15 @@ const getStakeNeuronPropsByAccount = ({
 /**
  * Uses governance api to create a neuron and adds it to the store
  *
+ * @param {Object} params
+ * @param {amount} params.amount the new neuron value. a number that will be converted to ICP.
+ * @param {amount} params.amount the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
+ * @param {amount} [params.amount=true] load the neuron and update the neurons store once created - i.e. certified=true query to load neuron and push to store.
  */
 export const stakeNeuron = async ({
   amount,
   account,
-  loadNeuron = false,
+  loadNeuron = true,
 }: {
   amount: number;
   account: Account;
@@ -473,31 +478,52 @@ export const mergeNeurons = async ({
   }
 };
 
-// This service is used when creating a new neuron from a Hardware Wallet.
-// The new neuron is not yet in the neuronsStore because the user should add first a hotkey to make nns-dapp control the neuron on the hardware wallet.
-export const addHotkeyFromHW = async ({
+// This service is used to add a "hotkey" - i.e. delegate the control of a neuron to NNS-dapp - to a neuron created with the hardware wallet.
+// It uses the auth identity - i.e. the identity of the current user - as principal of the new hotkey.
+// Once the neuron delegated, it adds it to the neuron store so that user can find this neuron in the "Neurons" tab as well
+// Note: it does not reload the all neurons store but "only" query (updated call) and push the newly attached neuron to the store
+export const addHotkeyForHardwareWalletNeuron = async ({
   neuronId,
-  principal,
   accountIdentifier,
 }: {
   neuronId: NeuronId;
-  principal: Principal;
   accountIdentifier: string;
-}): Promise<NeuronId | undefined> => {
+}): Promise<{ success: boolean; err?: string }> => {
   try {
+    startBusy({
+      initiator: "add-hotkey-neuron",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
+
+    const identity: Identity = await getIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
-    await addHotkeyApi({ neuronId, identity: ledgerIdentity, principal });
+    await addHotkeyApi({
+      neuronId,
+      identity: ledgerIdentity,
+      principal: identity.getPrincipal(),
+    });
 
     await getAndLoadNeuron(neuronId);
 
-    return neuronId;
+    stopBusy("add-hotkey-neuron");
+
+    toastsStore.success({
+      labelKey: "neurons.add_user_as_hotkey_success",
+    });
+
+    return { success: true };
   } catch (err) {
     // TODO: Manage edge cases https://dfinity.atlassian.net/browse/L2-526
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+
+    stopBusy("add-hotkey-neuron");
+
+    const toastMsg = mapNeuronErrorToToastMessage(err);
+
+    toastsStore.show(toastMsg);
 
     // To inform there was an error
-    return undefined;
+    return { success: false, err: toastMsg.labelKey };
   }
 };
 
