@@ -41,6 +41,8 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "account_not_found": "Sorry, the account \"account_identifier\" was not found",
+    "transactions_not_found": "An error occurred while loading the transactions.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
@@ -278,8 +280,24 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "transaction_names": {
+    "receive": "Received ICP",
+    "send": "Sent ICP",
+    "mint": "Received ICP",
+    "burn": "Sent ICP",
+    "stakeNeuron": "Stake Neuron",
+    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up Neuron",
+    "createCanister": "Create Canister",
+    "topUpCanister": "Top-up Canister"
+  },
   "wallet": {
-    "title": "Account"
+    "title": "Account",
+    "address": "Address:",
+    "principal": "Principal:",
+    "direction_from": "Source:",
+    "direction_to": "To:",
+    "no_transactions": "No transactions"
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve."

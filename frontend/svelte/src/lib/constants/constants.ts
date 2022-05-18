@@ -1,4 +1,5 @@
 export const DEFAULT_LIST_PAGINATION_LIMIT = 100;
+export const DEFAULT_TRANSACTION_PAGE_LIMIT = 100;
 
 /**
  * The infinite scroll observe an element that finds place after x % of last page.
