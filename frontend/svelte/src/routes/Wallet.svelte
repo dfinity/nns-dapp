@@ -77,13 +77,19 @@
     (() => {
       const storeAccount = $selectedAccountStore.account;
 
+      // TODO: Maksims is this correct? isn't object !== object? tried to use ?.identifier for comparison but then there was no reload after new transactio
       if (storeAccount !== selectedAccount) {
-        // Account and transactions are set separately to update the UI with the account and
+        // If we select another account, then the transactions are set separately to update the UI with the account and
         // display the loader - skeleton - while we load the transactions.
-        selectedAccountStore.set({
+        //
+        // On the contrary, if we reload the transactions of the same account, we keep the current list to avoid a flickering of the screen.
+        // This can happen when user transfer ICP to another account - i.e. a new transaction will be added to the list at the top so we don't want the list to flicker while updating.
+        const sameAccount: boolean = selectedAccount !== undefined && storeAccount?.identifier === selectedAccount.identifier;
+
+        selectedAccountStore.update(({transactions}) => ({
           account: selectedAccount,
-          transactions: undefined,
-        });
+          transactions: sameAccount ? transactions : undefined,
+        }));
 
         if (selectedAccount !== undefined) {
           reloadTransactions(selectedAccount.identifier);
