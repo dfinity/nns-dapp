@@ -44,7 +44,6 @@
   let modal: WizardModal;
 
   let percentageToSpawn: number = 0;
-  let loading: boolean;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
@@ -62,8 +61,8 @@
 
   const dispatcher = createEventDispatcher();
   const spawnNeuronFromMaturity = async () => {
-    loading = true;
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
+
     const { success } = await spawnNeuron({
       neuronId: neuron.neuronId,
       percentageToSpawn: controlledByHarwareWallet
@@ -76,7 +75,7 @@
       });
       dispatcher("nnsClose");
     }
-    loading = false;
+
     stopBusy("spawn-neuron");
   };
   const goToConfirm = () => {
@@ -103,7 +102,7 @@
       </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
-    <ConfirmActionScreen {loading} on:nnsConfirm={spawnNeuronFromMaturity}>
+    <ConfirmActionScreen on:nnsConfirm={spawnNeuronFromMaturity}>
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
         <p class="confirm-answer">
