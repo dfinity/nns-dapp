@@ -78,6 +78,8 @@
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
+        // Account and transactions are set separately to update the UI with the account and
+        // display the loader - skeleton - while we load the transactions.
         selectedAccountStore.set({
           account: selectedAccount,
           transactions: undefined,
@@ -106,6 +108,8 @@
   });
 
   let showNewTransactionModal = false;
+
+  // TODO(L2-581): Create WalletInfo component
 </script>
 
 {#if SHOW_ACCOUNTS_ROUTE}
