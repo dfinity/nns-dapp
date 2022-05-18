@@ -161,9 +161,9 @@ export class NNSDappCanister {
     }
   }
 
-  public renameSubAccount = async (
+  public async renameSubAccount(
     request: RenameSubAccountRequest
-  ): Promise<void> => {
+  ): Promise<void> {
     const response: RenameSubAccountResponse =
       await this.certifiedService.rename_sub_account(request);
 
@@ -187,15 +187,15 @@ export class NNSDappCanister {
         `Error, name "${request.new_name}" is too long`
       );
     }
-  };
+  }
 
-  public getCanisters = async ({
+  public async getCanisters({
     certified,
   }: {
     certified: boolean;
-  }): Promise<CanisterDetails[]> => {
+  }): Promise<CanisterDetails[]> {
     return this.getNNSDappService(certified).get_canisters();
-  };
+  }
 
   private getNNSDappService(certified = true): NNSDappService {
     if (certified) {
