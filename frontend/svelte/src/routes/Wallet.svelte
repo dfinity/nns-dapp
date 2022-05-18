@@ -77,7 +77,6 @@
     (() => {
       const storeAccount = $selectedAccountStore.account;
 
-      // TODO: Maksims is this correct? isn't object !== object? tried to use ?.identifier for comparison but then there was no reload after new transactio
       if (storeAccount !== selectedAccount) {
         // If we select another account, then the transactions are set separately to update the UI with the account and
         // display the loader - skeleton - while we load the transactions.
