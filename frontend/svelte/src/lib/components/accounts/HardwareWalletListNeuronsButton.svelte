@@ -5,7 +5,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import type { Account } from "../../types/account";
   import { writable } from "svelte/store";
-  import { setContext } from "svelte";
+  import { getContext, setContext } from "svelte";
   import type {
     HardwareWalletNeuronsContext,
     HardwareWalletNeuronsStore,
@@ -14,8 +14,16 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "../../utils/hardware-wallet-neurons.utils";
   import { authStore } from "../../stores/auth.store";
+  import {
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    type SelectedAccountContext,
+  } from "../../types/selected-account.context";
 
-  export let selectedAccount: Account | undefined;
+  const { store } = getContext<SelectedAccountContext>(
+    SELECTED_ACCOUNT_CONTEXT_KEY
+  );
+  let selectedAccount: Account | undefined;
+  $: selectedAccount = $store.account;
 
   let modalOpen = false;
 
