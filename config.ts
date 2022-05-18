@@ -27,7 +27,7 @@ export function getRequiredEnvVar(key) {
  * Returns the given environment variable as an enum variant, else throws an error.
  */
 export function getRequiredEnvEnum<Type>(key: string, enumType): Type {
-  let value = getRequiredEnvVar(key);
+  const value = getRequiredEnvVar(key);
   if (value in enumType) {
     return value as unknown as Type;
   } else {
