@@ -2,6 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
 import {
   createSubAccount,
+  getTransactions,
   loadAccounts,
   renameSubAccount as renameSubAccountApi,
 } from "../api/accounts.api";
@@ -11,6 +12,11 @@ import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import type {
+  AccountIdentifierString,
+  Transaction,
+} from "../canisters/nns-dapp/nns-dapp.types";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -168,6 +174,45 @@ export const getAccountFromStore = (
     (account: Account) => account.identifier === identifier
   );
 };
+
+export const getAccountTransactions = async ({
+  accountIdentifier,
+  onLoad,
+}: {
+  accountIdentifier: AccountIdentifierString;
+  onLoad: ({
+    accountIdentifier,
+    transactions,
+  }: {
+    accountIdentifier: AccountIdentifierString;
+    transactions: Transaction[];
+  }) => void;
+}): Promise<void> =>
+  queryAndUpdate<Transaction[], unknown>({
+    request: ({ certified, identity }) =>
+      getTransactions({
+        identity,
+        certified,
+        accountIdentifier,
+        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
+        offset: 0,
+      }),
+    onLoad: ({ response: transactions }) =>
+      onLoad({ accountIdentifier, transactions }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      toastsStore.error({
+        labelKey: "error.transactions_not_found",
+        err,
+      });
+    },
+    logMessage: "Syncing Transactions",
+  });
 
 export const getAccountIdentity = async (
   identifier: string

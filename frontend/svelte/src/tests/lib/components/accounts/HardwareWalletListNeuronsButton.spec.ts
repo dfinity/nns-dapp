@@ -3,9 +3,11 @@
  */
 
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
 import { listNeuronsHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
+import { mockMainAccount } from "../../../mocks/accounts.store.mock";
+import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -25,20 +27,26 @@ describe("HardwareWalletListNeuronsButton", () => {
     );
   });
 
+  const renderTestCmp = () =>
+    renderSelectedAccountContext({
+      Component: HardwareWalletListNeurons,
+      account: mockMainAccount,
+    });
+
   it("should contain a closed modal per default", () => {
-    const { getByText } = render(HardwareWalletListNeurons);
+    const { getByText } = renderTestCmp();
     expect(() => getByText(en.neurons.title)).toThrow();
   });
 
   it("should contain an action named list neurons", async () => {
-    const { getByText } = render(HardwareWalletListNeurons);
+    const { getByText } = renderTestCmp();
     expect(
       getByText(en.accounts.attach_hardware_show_neurons)
     ).toBeInTheDocument();
   });
 
   it("should list neurons and open modal", async () => {
-    const { getByText, getByTestId } = render(HardwareWalletListNeurons);
+    const { getByText, getByTestId } = renderTestCmp();
     await fireEvent.click(
       getByTestId("ledger-list-button") as HTMLButtonElement
     );
