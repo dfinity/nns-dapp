@@ -26,6 +26,7 @@ interface I18nError {
   sign_in: string;
   proposal_not_found: string;
   neuron_not_found: string;
+  neuron_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -166,6 +167,7 @@ interface I18nNeurons {
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
   add_user_as_hotkey_success: string;
+  remove_hotkey_success: string;
   neuron_create_success: string;
   your_principal: string;
   confirm_dissolve_delay: string;

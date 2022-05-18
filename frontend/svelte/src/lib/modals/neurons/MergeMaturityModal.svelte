@@ -32,23 +32,23 @@
   let modal: WizardModal;
 
   let percentageToMerge: number = 0;
-  let loading: boolean;
 
   const dispatcher = createEventDispatcher();
   const mergeNeuronMaturity = async () => {
-    loading = true;
     startBusyNeuron({ initiator: "merge-maturity", neuronId: neuron.neuronId });
+
     const { success } = await mergeMaturity({
       neuronId: neuron.neuronId,
       percentageToMerge,
     });
+
     if (success) {
       toastsStore.success({
         labelKey: "neuron_detail.merge_maturity_success",
       });
       dispatcher("nnsClose");
     }
-    loading = false;
+
     stopBusy("merge-maturity");
   };
   const goToConfirm = () => {
@@ -75,7 +75,7 @@
       </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmMerge"}
-    <ConfirmActionScreen {loading} on:nnsConfirm={mergeNeuronMaturity}>
+    <ConfirmActionScreen on:nnsConfirm={mergeNeuronMaturity}>
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
         <p class="confirm-answer">
