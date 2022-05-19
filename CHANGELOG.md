@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal XXX
+
 ## Proposal 59149
 * Remove slider option for spawning maturity on wallets that don't support it.
 * Confirmation screen in Merge Maturity
