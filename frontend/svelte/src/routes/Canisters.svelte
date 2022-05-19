@@ -9,6 +9,7 @@
   import { canistersStore } from "../lib/stores/canisters.store";
   import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { testCMC } from "../lib/api/canisters.api";
 
   let loading: boolean = false;
 
@@ -39,6 +40,10 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
   const createOrLink = () => alert("Create or Link");
+
+  const test = () => {
+    testCMC();
+  };
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -54,6 +59,7 @@
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
+      <button on:click={test}>Test</button>
 
       <!-- TODO(L2-335): display cards -->
       {#each $canistersStore as canister}
