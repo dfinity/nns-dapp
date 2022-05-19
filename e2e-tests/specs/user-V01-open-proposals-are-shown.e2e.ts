@@ -17,17 +17,18 @@ describe("Makes a proposal and verifies that it is shown", () => {
   });
 
   it("Setup: Create proposal", async () => {
+    console.error("Creating proposal...");
     proposalId = await new Promise((yay, nay) =>
       execFile(
         "../scripts/propose",
         ["--to", "set-firewall-config", "--jfdi"],
         {},
         (error, stdout, stderr) => {
+          console.error("stdout:", stdout);
+          console.error("stderr:", stderr);
           if (null !== error) {
             nay(stderr);
           } else {
-            console.error("stdout:", stdout);
-            console.error("stderr:", stderr);
             const proposalId = Number(
               stdout
                 .split(/[\n\r]/)
