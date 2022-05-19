@@ -26,3 +26,16 @@ export const hashCode = (value: string | bigint | number): string =>
   )
     .toString(36)
     .toUpperCase();
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+export const digestText = async (text: string): Promise<string> => {
+  const msgUint8 = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  // convert buffer to byte array
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  // convert bytes to hex string
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
+};
