@@ -1,4 +1,5 @@
 import { Actor } from "@dfinity/agent";
+import type { Principal } from "@dfinity/principal";
 import type { CMCCanisterOptions } from "./cmc.canister.types";
 import { throwNotifyError } from "./cmc.errors";
 import { idlFactory } from "./cmc.idl";
@@ -40,11 +41,20 @@ export class CMCCanister {
 
   public notifyCreateCanister = async (
     request: NotifyCreateCanisterArg
-  ): Promise<void> => {
+  ): Promise<Principal> => {
     const response = await this.service.notify_create_canister(request);
     if ("Err" in response) {
       throwNotifyError(response);
     }
+    if ("Ok" in response) {
+      return response.Ok;
+    }
+    // Edge case
+    throw new Error(
+      `Unsupported response type in notifyCreateCanister ${JSON.stringify(
+        response
+      )}`
+    );
   };
 
   public notifyTopUp = async (request: NotifyTopUpArg): Promise<void> => {

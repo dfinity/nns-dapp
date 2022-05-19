@@ -50,6 +50,7 @@ export const idlFactory = ({ IDL }) => {
     notify_top_up: IDL.Func([NotifyTopUpArg], [NotifyTopUpResult], []),
   });
 };
-export const init = ({ IDL }) => {
+// Remove param `{ IDL }` because TS was complaining of unused variable
+export const init = () => {
   return [];
 };
