@@ -57,7 +57,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
 
   it("Can see the new proposal", async () => {
     const navigator = new MyNavigator(browser);
-console.error({proposalId});
+    console.error({ proposalId });
     const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
       proposalId as number
     );
