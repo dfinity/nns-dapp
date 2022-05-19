@@ -13,7 +13,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
   it("Setup: Register user", async () => {
     await browser.url("/");
     const userId = await register(browser);
-    console.log(`Created user: ${JSON.stringify(userId)}`);
+    console.error(`Created user: ${JSON.stringify(userId)}`);
   });
 
   it("Setup: Create proposal", async () => {
@@ -44,7 +44,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
         }
       )
     );
-    console.log(`Proposed proposalId ${proposalId}`);
+    console.error(`Proposed proposalId ${proposalId}`);
   });
 
   it("Go to voting tab", async () => {
@@ -57,6 +57,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
 
   it("Can see the new proposal", async () => {
     const navigator = new MyNavigator(browser);
+console.error({proposalId});
     const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
       proposalId as number
     );
