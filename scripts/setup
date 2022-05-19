@@ -190,6 +190,24 @@ install_cmake_linux() {
   sudo apt-get install cmake
 }
 
+# Note: There is an open ticket to factor out all definitions of IC_ADMIN.
+IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+install_ic_admin_linux() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  chmod +x "$USER_BIN/ic-admin"
+}
+install_ic_admin_darwin() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  chmod +x "$USER_BIN/ic-admin"
+  # shellcheck disable=SC2016
+  which ic-admin ||
+    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -211,6 +229,7 @@ command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v flutter || "install_flutter"
 command -v cmake || "install_cmake_$OS"
 command -v ic-cdk-optimizer || install_ic_cdk_optimizer
+command -v ic-admin || "install_ic_admin_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
