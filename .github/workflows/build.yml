@@ -138,21 +138,8 @@ jobs:
         run: |
           dfx start --background --clean
 
-      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
-      # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
-      - name: Deploy NNS canisters
-        run: |
-          ./e2e-tests/scripts/nns-canister-install
-
-      - name: Deploy
-        run: |
-          ./e2e-tests/scripts/deploy-local-canisters
-
-      - name: Build proxy
-        working-directory: proxy
-        run: |
-          npm ci
-          npm run build
+      - name: Deploy canisters and state
+        run: ./deploy.sh --nns-backend --ii --nns-dapp --users
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
