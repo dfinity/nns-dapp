@@ -17,13 +17,40 @@
   // Please do not use `showBackButton` without listening on `nnsBack`
   export let showBackButton: boolean = false;
 
+  let contentContainer: HTMLDivElement | undefined;
   let showToolbar: boolean;
   $: showToolbar = $$slots.title ?? showBackButton;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
   const back = () => dispatch("nnsBack");
+  const keydown = (ev: KeyboardEvent) => {
+    if (visible && ev.key === "Escape") {
+      ev.stopPropagation();
+      close();
+    }
+  };
+
+  // TODO: do we need a visible feedback
+  $: visible &&
+    (() => {
+      if (contentContainer === undefined) {
+        return;
+      }
+
+      const firstFocus: HTMLElement | null = contentContainer.querySelector(
+        `[tabindex="0"],button,a,input`
+      );
+
+      if (firstFocus === null) {
+        return;
+      }
+
+      firstFocus.focus();
+    })();
 </script>
+
+<svelte:window on:keydown={keydown} />
 
 {#if visible}
   <div
@@ -66,7 +93,12 @@
         </div>
       {/if}
 
-      <div class="content" id="modalContent" class:small={size === "small"}>
+      <div
+        class="content"
+        id="modalContent"
+        class:small={size === "small"}
+        bind:this={contentContainer}
+      >
         <slot />
       </div>
 
