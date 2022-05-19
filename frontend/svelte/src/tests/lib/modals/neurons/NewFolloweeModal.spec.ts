@@ -4,7 +4,7 @@
 
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import NewFolloweeModal from "../../../../lib/modals/neurons/NewFolloweeModal.svelte";
 import {
   addFollowee,
@@ -69,7 +69,7 @@ describe("NewFolloweeModal", () => {
   });
 
   it("adds a followee from a valid address", async () => {
-    const { container } = render(NewFolloweeModal, {
+    const { container, component } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
     });
 
@@ -84,9 +84,13 @@ describe("NewFolloweeModal", () => {
     const formElement = container.querySelector("form");
     expect(formElement).toBeInTheDocument();
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+
     formElement && (await fireEvent.submit(formElement));
 
     expect(addFollowee).toBeCalled();
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 
   it("renders known neurons", async () => {
@@ -120,7 +124,7 @@ describe("NewFolloweeModal", () => {
 
   it("follow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-    const { queryAllByTestId } = render(NewFolloweeModal, {
+    const { queryAllByTestId, component } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
     });
 
@@ -133,16 +137,20 @@ describe("NewFolloweeModal", () => {
 
     expect(followButton).toBeInTheDocument();
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+
     followButton && (await fireEvent.click(followButton));
 
     expect(addFollowee).toBeCalled();
     expect(removeFollowee).not.toBeCalled();
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 
   it("unfollow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
 
-    const { queryByTestId } = render(NewFolloweeModal, {
+    const { queryByTestId, component } = render(NewFolloweeModal, {
       props: { neuron: followingNeuron, topic: Topic.Unspecified },
     });
 
@@ -152,6 +160,9 @@ describe("NewFolloweeModal", () => {
 
     expect(knownNeuronElement).toBeInTheDocument();
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+
     const knownNeuronButton = knownNeuronElement?.querySelector("button");
     expect(knownNeuronButton).toBeInTheDocument();
 
@@ -159,5 +170,6 @@ describe("NewFolloweeModal", () => {
 
     expect(removeFollowee).toBeCalled();
     expect(addFollowee).not.toBeCalled();
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 });

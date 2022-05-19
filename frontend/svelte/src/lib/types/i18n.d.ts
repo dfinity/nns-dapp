@@ -45,6 +45,8 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  account_not_found: string;
+  transactions_not_found: string;
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
@@ -296,8 +298,25 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nTransaction_names {
+  receive: string;
+  send: string;
+  mint: string;
+  burn: string;
+  stakeNeuron: string;
+  stakeNeuronNotification: string;
+  topUpNeuron: string;
+  createCanister: string;
+  topUpCanister: string;
+}
+
 interface I18nWallet {
   title: string;
+  address: string;
+  principal: string;
+  direction_from: string;
+  direction_to: string;
+  no_transactions: string;
 }
 
 interface I18nBusy_screen {
@@ -454,6 +473,7 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;
+  transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;

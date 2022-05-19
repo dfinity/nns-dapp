@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+PROPOSALS_DIR="scripts/propose-to"
+
+help_text() {
+  cat <<-EOF
+
+	Makes sample proposals on testnets, for testing.
+
+	Usage:
+	  propose --to <PROPOSAL_NAME>
+	e.g.
+	  propose --to set-authorized-subnetworks
+
+	Flags:
+	--help
+	  prints this help text.
+
+	--list
+	  prints a list of sample proposals.
+
+	--all
+	  create all proposals.
+
+	--to <PROPOSAL_NAME>
+	  run the named proposal.
+
+	--dfx-network <NETWORK_NAME>
+	  the name of the network in dfx.json to send the proposal to.
+
+	--testnet <TESTNET>
+	  the name of the IC testnet to send the proposal to.
+
+	--dry-run
+	  show the proposal but do not send it.
+
+	--jfdi
+	  send the proposal without a prompt.
+
+	EOF
+}
+
+on_exit() {
+  set +x
+  exit_code=$?
+  ((exit_code == 0)) || {
+    printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+    print_help | sed 's/^/USAGE: /g'
+    exit $exit_code
+  } >&2
+}
+trap on_exit EXIT
+
+list_proposals() {
+  ls "$PROPOSALS_DIR"
+}
+
+PROPOSAL_TYPE=""
+DRY_RUN=""
+IC_TESTNET=""
+DFX_NETWORK=""
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --to)
+    PROPOSAL_TYPE="propose-to-${1#propose-to-}"
+    test -e "$PROPOSALS_DIR/$PROPOSAL_TYPE" || {
+      cat <<-EOF >&2
+	ERROR: Unknown proposal type: '$PROPOSAL_TYPE'
+	Use --list to see a list of supported proposals.
+	EOF
+      exit 1
+    }
+    shift 1
+    ;;
+  --list)
+    list_proposals | sed -n 's/^propose-to-//g;ta;b;:a;p'
+    exit 0
+    ;;
+  --all)
+    PROPOSAL_TYPE=all
+    ;;
+  --testnet)
+    IC_TESTNET="$1"
+    shift 1
+    ;;
+  --dfx-network)
+    DFX_NETWORK="$1"
+    DFX_NETWORK="$DFX_NETWORK" jq -e '.networks[env.DFX_NETWORK]' dfx.json >/dev/null || {
+      cat <<-EOF
+
+	ERROR: No such network in dfx.json.
+	       Available networks are:
+	       $(jq -er '.networks | keys | join(" ")' dfx.json)
+
+	EOF
+      exit 1
+    }
+    shift 1
+    ;;
+  --dry-run)
+    DRY_RUN=true
+    ;;
+  --jfdi)
+    DRY_RUN=jfdi
+    ;;
+  *)
+    cat <<-EOF >&2
+	ERROR: Unrecognised argument: '$arg'
+	Please use --help for usage.
+	EOF
+    exit 1
+    ;;
+  esac
+done
+
+if test -n "${IC_TESTNET:-}"; then
+  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --testnet "$IC_TESTNET")"
+else
+  DFX_NETWORK="${DFX_NETWORK:-local}"
+  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "${DFX_NETWORK}")"
+fi
+export NNS_URL
+
+# Executes the current arguments as a proposal.
+# shellcheck disable=SC2120
+propose() {
+  # Check thet ic-admin is installed.
+  command -v ic-admin >/dev/null || {
+    cat <<-EOF
+	ERROR: ic-admin not found
+	Please install ic-admin before use and add it to your path.
+	EOF
+    exit 1
+  }
+
+  . "${PROPOSALS_DIR}/propose-to-${PROPOSAL_TYPE#propose-to-}"
+
+  echo
+  echo "Command:"
+  # shellcheck disable=SC2059 # Please expand the \n.
+  printf "${*//--/ \\\\\\n   --}\n"
+  echo
+
+  [[ "$DRY_RUN" == "true" ]] || {
+    SEND_PROPOSAL=y
+    [[ "$DRY_RUN" == "jfdi" ]] || read -rp "Send the proposal? (y/N)  " SEND_PROPOSAL
+    if [[ "$SEND_PROPOSAL" == [yY] ]]; then
+      "${@}"
+    fi
+  }
+}
+
+if test -z "${PROPOSAL_TYPE:-}"; then
+  cat <<-EOF >&2
+	
+	ERROR: PROPOSAL_TYPE is not defined.
+	Please specify a proposal with: --to XXX
+	A list of proposal types can be found with --list
+
+	EOF
+
+  exit 1
+elif [[ "$PROPOSAL_TYPE" == "all" ]]; then
+  for PROPOSAL_TYPE in $(list_proposals); do
+    propose
+  done
+else
+  propose
+fi

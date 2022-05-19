@@ -60,6 +60,9 @@ help_text() {
 	--nns-dapp
 	  Depoy the NNS dapp.
 
+	--users
+	  Create sample users with ICP, neurons and follow relationships.
+
 	--open
 	  Open the NNS dapp in a browser.
 
@@ -76,6 +79,7 @@ START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
+CREATE_USERS="false"
 OPEN_NNS_DAPP="false"
 
 while (($# > 0)); do
@@ -102,6 +106,10 @@ while (($# > 0)); do
     GUESS="false"
     DEPLOY_NNS_DAPP="true"
     ;;
+  --users)
+    GUESS="false"
+    CREATE_USERS="true"
+    ;;
   --open)
     OPEN_NNS_DAPP="true"
     ;;
@@ -123,6 +131,7 @@ if [[ "$GUESS" == "true" ]]; then
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
     DEPLOY_NNS_DAPP=true
+    CREATE_USERS=true
     ;;
   *)
     { # Can we find an existing II?
@@ -133,6 +142,7 @@ if [[ "$GUESS" == "true" ]]; then
       DEPLOY_II=true
     }
     DEPLOY_NNS_DAPP=true
+    CREATE_USERS=true
     ;;
   esac
 fi
@@ -142,6 +152,7 @@ echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
 echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
+echo CREATE_USERS=$CREATE_USERS
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
@@ -190,6 +201,14 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   dfx deploy --network "$DFX_NETWORK" nns-dapp
   OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL ./frontend/ts/src/config.json)"
   echo "Deployed to: $OWN_CANISTER_URL"
+fi
+
+if [[ "$CREATE_USERS" == "true" ]]; then
+  pushd e2e-tests
+  npm ci
+  printf '%s\n' user-N01-neuron-created.e2e.ts |
+    SCREENSHOT=1 xargs -I {} npm run wdio -- --spec "./specs/{}"
+  popd
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
