@@ -91,15 +91,9 @@ jobs:
 
       - name: Install Software
         run: |
-          set -x
-          bash -x ./scripts/setup --profile ~/.bashrc
-          . ~/.bashrc
-          tail ~/.bashrc
-          ls -l /home/runner/.cache/flutter/2.2.3
-          ls -l /home/runner/.cache/flutter/2.2.3/bin
-          echo $PATH
-          echo "$PATH" | tr : "\n" | tee /dev/stderr >> $GITHUB_PATH
+          ./scripts/setup --profile ~/.bashrc
           echo "$HOME/.cache/flutter/2.2.3/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # Helps with debugging
       - name: Versions
@@ -111,7 +105,6 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
-          tail ~/.bashrc
           command -v flutter
 
       - name: Start replica
