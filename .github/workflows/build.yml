@@ -90,7 +90,10 @@ jobs:
           key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
 
       - name: Install Software
-        run: bash -x ./scripts/setup
+        run: |
+          bash -x ./scripts/setup --profile ~/.bashrc
+          . ~/.bashrc
+          echo "$PATH" | tr : "\n" >> $GITHUB_PATH
 
       # Helps with debugging
       - name: Versions
