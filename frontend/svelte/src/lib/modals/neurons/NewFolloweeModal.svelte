@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
@@ -53,6 +53,10 @@
     knownNeuronId: NeuronId;
   }): boolean => followees.find((id) => id === knownNeuronId) !== undefined;
 
+  const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
+  };
   const addFolloweeByAddress = async () => {
     let followee: bigint;
     if (followeeAddress.length === 0) {
@@ -76,6 +80,7 @@
     });
 
     stopBusy("add-followee");
+    close();
 
     followeeAddress = "";
   };
@@ -112,6 +117,7 @@
           {#each $sortedknownNeuronsStore as knownNeuron}
             <li data-tid="known-neuron-item">
               <KnownNeuronFollowItem
+                on:nnsUpdated={close}
                 {knownNeuron}
                 neuronId={neuron.neuronId}
                 {topic}
