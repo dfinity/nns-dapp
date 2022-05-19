@@ -27,6 +27,7 @@ export const getAccountByPrincipal = ({
 /**
  * Is the address a valid entry to proceed with any action such as transferring ICP?
  */
+// TODO: Use checkAccountId from nns-js
 export const invalidAddress = (address: string | undefined): boolean =>
   address === undefined || address.length < ACCOUNT_ADDRESS_MIN_LENGTH;
 

@@ -43,7 +43,7 @@
   </Input>
 
   {#if errorMessage !== undefined}
-    <p class={`error-message ${theme}`}>
+    <p class={`error-message ${theme}`} data-tid="input-error-message">
       <IconInfo />
       <span>
         {errorMessage}

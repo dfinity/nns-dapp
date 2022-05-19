@@ -32,6 +32,16 @@ describe("Address", () => {
     );
   });
 
+  it("should show error message on blur when invalid address", async () => {
+    const { container, queryByTestId } = render(Address, props);
+
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    await fireEvent.input(input, { target: { value: "invalid-address" } });
+    await fireEvent.blur(input);
+    expect(queryByTestId("input-error-message")).toBeInTheDocument();
+  });
+
   it("should enable and disable action according input", async () => {
     const { container } = render(Address, props);
 
