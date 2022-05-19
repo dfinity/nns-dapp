@@ -3,6 +3,7 @@
   padding: var(--padding-2x);
   max-width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 
 @mixin header {
