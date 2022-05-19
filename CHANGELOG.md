@@ -1,6 +1,8 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 60694
+- Update mechanics for creating canisters
+- Prepare to release the neuron and accounts tabs in svelte
 
 ## Proposal 59149
 * Remove slider option for spawning maturity on wallets that don't support it.
