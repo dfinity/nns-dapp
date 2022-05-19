@@ -100,7 +100,6 @@ jobs:
           echo $PATH
           echo "$PATH" | tr : "\n" | tee /dev/stderr >> $GITHUB_PATH
           echo "$HOME/.cache/flutter/2.2.3/bin" >> $GITHUB_PATH
-          command -v flutter
 
       # Helps with debugging
       - name: Versions
