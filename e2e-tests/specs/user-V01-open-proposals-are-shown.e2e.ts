@@ -1,5 +1,5 @@
 /**
- * Creates a standard set of users.
+ * Creates a proposal and verifies that a user can see it, without chnaging filters.
  */
 import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";

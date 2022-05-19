@@ -144,13 +144,13 @@ jobs:
         run: |
           ./e2e-tests/scripts/nns-canister-install
 
-      - name: Create initial state
-        run: |
-          ./deploy.sh --users
-
       - name: Deploy
         run: |
           ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Create initial state
+        run: |
+          ./deploy.sh --users
 
       - name: Build proxy
         working-directory: proxy
