@@ -95,6 +95,8 @@ jobs:
           bash -x ./scripts/setup --profile ~/.bashrc
           . ~/.bashrc
           tail ~/.bashrc
+          ls -l /home/runner/.cache/flutter/2.2.3
+          ls -l /home/runner/.cache/flutter/2.2.3/bin
           command -v flutter
           echo "$PATH" | tr : "\n" | tee /dev/stderr >> $GITHUB_PATH
 
