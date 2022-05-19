@@ -33,6 +33,7 @@ USER_PROFILE=""
 
 while (($# > 0)); do
   arg="$1"
+  shift 1
   case "$arg" in
   --help)
     help_text
