@@ -90,7 +90,7 @@ jobs:
           key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
 
       - name: Install Software
-        run: ./scripts/setup
+        run: bash -x ./scripts/setup
 
       # Helps with debugging
       - name: Versions
