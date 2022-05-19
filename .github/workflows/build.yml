@@ -91,9 +91,12 @@ jobs:
 
       - name: Install Software
         run: |
+          set -x
           bash -x ./scripts/setup --profile ~/.bashrc
           . ~/.bashrc
-          echo "$PATH" | tr : "\n" >> $GITHUB_PATH
+          tail ~/.bashrc
+          command -v flutter
+          echo "$PATH" | tr : "\n" | tee /dev/stderr >> $GITHUB_PATH
 
       # Helps with debugging
       - name: Versions
@@ -105,6 +108,8 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
+          tail ~/.bashrc
+          command -v flutter
 
       - name: Start replica
         run: |
