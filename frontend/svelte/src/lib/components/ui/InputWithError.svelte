@@ -12,6 +12,8 @@
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
+  let error: boolean;
+  $: error = errorMessage !== undefined;
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
@@ -19,7 +21,7 @@
   export let theme: "dark" | "light" = "light";
 </script>
 
-<div class="wrapper" class:error={errorMessage !== undefined}>
+<div class="wrapper" class:error>
   <Input
     {theme}
     {inputType}
@@ -32,6 +34,7 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
+    withErrorMessage={error}
     bind:value
     on:blur
     on:input
@@ -55,9 +58,6 @@
   .wrapper {
     position: relative;
     width: 100%;
-
-    // Leave enough space for the error message
-    margin-bottom: var(--padding-6x);
   }
 
   .error {
@@ -67,12 +67,6 @@
   .error-message {
     font-size: var(--font-size-ultra-smal);
 
-    margin: 0;
-
-    // Avoid layout shift
-    position: absolute;
-    // Error message within the margin-bottom of the wrapper
-    bottom: calc(-1 * var(--padding-2x));
     // To have the same spacing as the input
     border: 1px solid transparent;
 
