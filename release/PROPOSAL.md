@@ -4,7 +4,7 @@ Wasm sha256 hash: `c6b16dc9fa2f330899c20f44d0477d38498688bd0c56b56273b753a64cf74
 ## Change Log:
 
 - Update mechanics for creating canisters
-- Prepare to release the neuron and accounts tabs in flutter
+- Prepare to release the neuron and accounts tabs in svelte
 
 ## Commit log:
 
