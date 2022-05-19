@@ -150,14 +150,18 @@ install_flutter() {
   Darwin)
     FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
     FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}"
+    wget -c "$FLUTTER_URL"
+    rm -fr flutter
+    unzip "$FLUTTER_ZIP"
     ;;
   Linux)
     FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
     FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP"
+    wget -c "$FLUTTER_URL"
+    rm -fr flutter
+    tar xJf "$FLUTTER_ZIP"
     ;;
   esac
-  wget -c "$FLUTTER_URL"
-  unzip "$FLUTTER_ZIP"
   mkdir -p "${HOME}/.cache/flutter"
   rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
   mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
