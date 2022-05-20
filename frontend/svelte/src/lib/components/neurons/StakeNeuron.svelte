@@ -1,11 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import Spinner from "../ui/Spinner.svelte";
   import { syncAccounts } from "../../services/accounts.services";
   import { stakeNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { formattedTransactionFeeICP, maxICP } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
@@ -13,7 +12,7 @@
 
   export let account: Account;
   let amount: number;
-  let creating: boolean = false;
+
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
@@ -24,7 +23,7 @@
         ? "busy_screen.pending_approval_hw"
         : undefined,
     });
-    creating = true;
+
     const neuronId = await stakeNeuron({
       amount,
       account,
@@ -38,7 +37,7 @@
 
       dispatcher("nnsNeuronCreated", { neuronId });
     }
-    creating = false;
+
     stopBusy("stake-neuron");
   };
 
@@ -68,18 +67,14 @@
   </div>
 
   <small>{$i18n.neurons.may_take_while}</small>
-  <!-- TODO: L2-252 -->
+
   <button
     class="primary full-width"
     type="submit"
     data-tid="create-neuron-button"
-    disabled={amount === undefined || amount <= 0 || creating}
+    disabled={amount === undefined || amount <= 0 || $busy}
   >
-    {#if creating}
-      <Spinner />
-    {:else}
-      {$i18n.neurons.create}
-    {/if}
+    {$i18n.neurons.create}
   </button>
 </form>
 

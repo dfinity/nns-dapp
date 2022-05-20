@@ -1,19 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { getIdentity } from "../../services/auth.services";
-  import { addHotkeyFromHW } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { addHotkeyForHardwareWalletNeuron } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
   import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "../../stores/auth.store";
+  import { busy } from "../../stores/busy.store";
 
   export let account: Account;
   export let neuronId: NeuronId;
-
-  let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
   const skip = () => {
@@ -22,24 +17,13 @@
 
   // Add the auth identity principal as hotkey
   const addCurrentUserToHotkey = async () => {
-    loading = true;
     // This screen is only for hardware wallet.
-    startBusy({
-      initiator: "add-hotkey-neuron",
-      labelKey: "busy_screen.pending_approval_hw",
-    });
-    const identity = await getIdentity();
-    const maybeNeuronId = await addHotkeyFromHW({
+    const { success } = await addHotkeyForHardwareWalletNeuron({
       neuronId,
-      principal: identity.getPrincipal(),
       accountIdentifier: account.identifier,
     });
-    loading = false;
-    stopBusy("add-hotkey-neuron");
-    if (maybeNeuronId !== undefined) {
-      toastsStore.success({
-        labelKey: "neurons.add_user_as_hotkey_success",
-      });
+
+    if (success) {
       dispatcher("nnsHotkeyAdded");
     }
   };
@@ -63,13 +47,9 @@
       class="primary full-width"
       on:click={addCurrentUserToHotkey}
       data-tid="confirm-add-principal-to-hotkey-modal"
-      disabled={$authStore.identity?.getPrincipal() === undefined}
+      disabled={$authStore.identity?.getPrincipal() === undefined || $busy}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.neuron_detail.add_hotkey}
-      {/if}
+      {$i18n.neuron_detail.add_hotkey}
     </button>
   </div>
 </div>
