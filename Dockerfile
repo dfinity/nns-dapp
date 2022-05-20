@@ -63,7 +63,8 @@ RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknow
 
 # Install dfx
 COPY dfx.json dfx.json
-RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+RUN curl -fsSL https://sdk.dfinity.org/install.sh > install-dfx.sh
+RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci install-dfx.sh
 
 # Start the second container
 FROM builder AS build
