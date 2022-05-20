@@ -91,7 +91,7 @@ export class NeuronsTab extends MyNavigator {
     );
 
     console.log("Following neurons - skip");
-    await this.waitForModalWithTitle("Follow neurons", {timeout: 30_000});
+    await this.waitForModalWithTitle("Follow neurons", { timeout: 30_000 });
     await this.click(NeuronsTab.MODAL_CLOSE_SELECTOR, "Close modal");
     await this.waitForGone(
       NeuronsTab.MODAL_SELECTOR,
