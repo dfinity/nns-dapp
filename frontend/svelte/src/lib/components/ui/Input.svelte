@@ -16,6 +16,7 @@
   export let placeholderLabelKey: string;
 
   export let theme: "dark" | "light" = "light";
+  export let withErrorMessage: boolean = false;
 
   const handleInput = ({ currentTarget }: InputEventHandler) =>
     (value =
@@ -28,7 +29,7 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme}`} class:disabled>
+<div class={`input-block ${theme} `} class:disabled class:withErrorMessage>
   <input
     data-tid="input-ui-element"
     type={inputType}
@@ -72,6 +73,10 @@
     }
 
     --disabled-color: var(--gray-100);
+
+    &.withErrorMessage {
+      margin-bottom: 0;
+    }
 
     &.disabled {
       color: var(--disabled-color);
