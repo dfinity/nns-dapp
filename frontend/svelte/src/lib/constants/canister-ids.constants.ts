@@ -9,8 +9,8 @@ export const LEDGER_CANISTER_ID = Principal.fromText(
 export const GOVERNANCE_CANISTER_ID = Principal.fromText(
   process.env.GOVERNANCE_CANISTER_ID as string
 );
-export const CMC_CANISTER_ID = Principal.fromText(
-  process.env.CMC_CANISTER_ID as string
+export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
+  process.env.CYCLES_MINTING_CANISTER_ID as string
 );
 // From: https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
 // The IC management canister is just a facade; it does not actually exist as a canister

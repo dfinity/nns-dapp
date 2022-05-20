@@ -12,7 +12,7 @@ import { ICManagementCanister } from "../canisters/ic-management/ic-management.c
 import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import {
-  CMC_CANISTER_ID,
+  CYCLES_MINTING_CANISTER_ID,
   IC_MANAGEMENT_CANISTER_ID,
   LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
@@ -77,7 +77,7 @@ export const createCanister = async ({
   const principal = identity.getPrincipal();
   const toSubAccount = principalToSubAccount(principal);
   const recipient = AccountIdentifier.fromPrincipal({
-    principal: CMC_CANISTER_ID,
+    principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
@@ -127,7 +127,7 @@ export const topUpCanister = async ({
   });
   const toSubAccount = principalToSubAccount(canisterPrincipal);
   const recipient = AccountIdentifier.fromPrincipal({
-    principal: CMC_CANISTER_ID,
+    principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
@@ -192,7 +192,7 @@ export const cmcCanister = async (
 
   const canister = CMCCanister.create({
     agent,
-    canisterId: CMC_CANISTER_ID,
+    canisterId: CYCLES_MINTING_CANISTER_ID,
   });
 
   return { canister, agent };
