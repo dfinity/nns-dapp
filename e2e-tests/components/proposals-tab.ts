@@ -14,15 +14,13 @@ export class ProposalsTab extends MyNavigator {
    * Creates a proposal via the command line tool.
    */
   public static async propose(proposalName: string): Promise<number> {
-    console.error("Creating proposal...");
+    console.warn("Creating proposal...");
     const proposalId: number = await new Promise((yay, nay) =>
       execFile(
         "../scripts/propose",
         ["--to", proposalName, "--jfdi"],
         {},
         (error, stdout, stderr) => {
-          console.error("stdout:", stdout);
-          console.error("stderr:", stderr);
           if (error) {
             nay(new Error(`${error}\nstdout: ${stdout}\nstderr: ${stderr}`));
           } else {
@@ -48,7 +46,7 @@ export class ProposalsTab extends MyNavigator {
         }
       )
     );
-    console.error(`Proposed proposalId ${proposalId}`);
+    console.warn(`Proposed proposalId ${proposalId}`);
     return proposalId;
   }
 

@@ -134,13 +134,12 @@ jobs:
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
-          set -x
           npm ci
+
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          SCREENSHOT=true npm run test | tee -a wdio.log
-          ls screenshots
+          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop
