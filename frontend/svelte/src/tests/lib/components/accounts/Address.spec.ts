@@ -5,7 +5,7 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import Address from "../../../../lib/components/accounts/Address.svelte";
 import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../../lib/constants/accounts.constants";
-import { mockAddressInput } from "../../../mocks/accounts.store.mock";
+import { mockAddressInputValid } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 describe("Address", () => {
@@ -55,7 +55,7 @@ describe("Address", () => {
 
     await fireEvent.input(input, {
       target: {
-        value: mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH),
+        value: mockAddressInputValid,
       },
     });
 
@@ -63,7 +63,7 @@ describe("Address", () => {
 
     await fireEvent.input(input, {
       target: {
-        value: mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1),
+        value: mockAddressInputValid,
       },
     });
     expect(button?.getAttribute("disabled")).toBeNull();
