@@ -26,8 +26,8 @@ describe("Makes a proposal and verifies that it is shown", () => {
         (error, stdout, stderr) => {
           console.error("stdout:", stdout);
           console.error("stderr:", stderr);
-          if (null !== error) {
-            nay(stderr);
+          if (error) {
+            nay(new Error(`${error}\nstdout: ${stdout}\nstderr: ${stderr}`));
           } else {
             const proposalId = Number(
               stdout
@@ -41,7 +41,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
             if (Number.isSafeInteger(proposalId)) {
               yay(proposalId);
             } else {
-              nay(new Error(`No proposal was made.\nstdout:\n${stdout}`));
+              nay(new Error(`No proposal was made.\nstdout:\n${stdout}\nstderr: ${stderr}`));
             }
           }
         }
