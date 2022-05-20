@@ -26,6 +26,7 @@ export enum CanisterStatus {
 }
 
 export interface CanisterDetails {
+  id: Principal;
   status: CanisterStatus;
   memorySize: bigint;
   cycles: bigint;

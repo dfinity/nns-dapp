@@ -17,6 +17,7 @@ process.env.IDENTITY_SERVICE_URL = "http://localhost:8000/";
 process.env.OWN_CANISTER_ID = "qhbym-qaaaa-aaaaa-aaafq-cai";
 process.env.GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
 process.env.LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+process.env.CMC_CANISTER_ID = "rkp4c-7iaaa-aaaaa-aaaca-cai";
 process.env.IDENTITY_SERVICE_URL =
   "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
 

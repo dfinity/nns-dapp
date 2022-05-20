@@ -9,6 +9,9 @@ import { toHttpError, UserNotTheControllerError } from "./ic-management.errors";
 import { idlFactory } from "./ic-management.idl";
 import type { CanisterStatusResponse, _SERVICE } from "./ic-management.types";
 
+// This is needed when creating the actor.
+// IC Management is a special canister
+// https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
 function transform(
   _methodName: string,
   args: unknown[],
@@ -54,17 +57,19 @@ export class ICManagementCanister {
   /**
    * Returns canister data
    *
-   * @param canisterIdString: string
-   * @returns CanisterDetails
+   * @param {string} canisterIdString
+   * @returns Promise<CanisterDetails>
    * @throws UserNotTheController, Error
    */
   public getCanisterDetails = async (
     canisterIdString: string
   ): Promise<CanisterDetails> => {
     let rawResponse: CanisterStatusResponse;
+    let principal: Principal;
     try {
+      principal = Principal.fromText(canisterIdString);
       rawResponse = await this.service.canister_status({
-        canister_id: Principal.fromText(canisterIdString),
+        canister_id: principal,
       });
     } catch (e) {
       const httpError = toHttpError(e);
@@ -75,6 +80,9 @@ export class ICManagementCanister {
       }
     }
 
-    return toCanisterDetails(rawResponse);
+    return toCanisterDetails({
+      response: rawResponse,
+      canisterId: principal,
+    });
   };
 }

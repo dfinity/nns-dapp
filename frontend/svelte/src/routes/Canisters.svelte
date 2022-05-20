@@ -40,10 +40,6 @@
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
   const createOrLink = () => alert("Create or Link");
-
-  const test = () => {
-    testCMC();
-  };
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -59,6 +55,7 @@
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
+      <button on:click={testCMC}>Test</button>
 
       <!-- TODO(L2-335): display cards -->
       {#each $canistersStore as canister}

@@ -9,6 +9,7 @@ import type {
 } from "../../../lib/canisters/ic-management/ic-management.types";
 import { createAgent } from "../../../lib/utils/agent.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockCanisterDetails } from "../../mocks/canisters.mock";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ICManagementService) => {
@@ -46,9 +47,13 @@ describe("ICManagementCanister", () => {
 
       const icManagement = await createICManagement(service);
 
-      const res = await icManagement.getCanisterDetails("aaaaa-aa");
+      const res = await icManagement.getCanisterDetails(
+        mockCanisterDetails.id.toText()
+      );
 
-      expect(res).toEqual(toCanisterDetails(response));
+      expect(res).toEqual(
+        toCanisterDetails({ response, canisterId: mockCanisterDetails.id })
+      );
     });
 
     it("throws UserNotTheControllerError", async () => {

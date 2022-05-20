@@ -5,23 +5,23 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
 import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
 import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
+import {
+  CMC_CANISTER_ID,
+  IC_MANAGEMENT_CANISTER_ID,
+  LEDGER_CANISTER_ID,
+} from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { getIdentity } from "../services/auth.services";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
 import { nnsDappCanister } from "./nns-dapp.api";
-
-const CREATE_CANISTER_MEMO = BigInt(0x41455243); // CREA,
-const TOP_UP_CANISTER_MEMO = BigInt(0x50555054); // TPUP
-const CMC_CANISTER_ID = Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai");
-const IC_MANAGEMENT_CANISTER_ID = Principal.from("aaaaa-aa");
 
 export const queryCanisters = async ({
   identity,
@@ -40,7 +40,7 @@ export const queryCanisters = async ({
   return response;
 };
 
-export const getCanisterDetails = async ({
+export const queryCanisterDetails = async ({
   identity,
   canisterId,
 }: {
@@ -91,7 +91,6 @@ export const createCanister = async ({
   // If this fails or the client loses connection
   // nns dapp backend polls the transactions
   // and will also notify to CMC the transaction if it's pending
-  // TODO: Notify canister for transactions with "CMC_CANISTER_ID" instead of "OWN_CANISTER_ID"
   const canisterPrincipal = await cmc.notifyCreateCanister({
     controller: principal,
     block_index: blockHeight,
@@ -148,6 +147,7 @@ export const topUpCanister = async ({
   );
 };
 
+// TODO: Remove before merging
 export const testCMC = async (): Promise<void> => {
   try {
     const identity = await getIdentity();
@@ -156,7 +156,10 @@ export const testCMC = async (): Promise<void> => {
       amount: ICP.fromString("3") as ICP,
     });
 
-    const canisterDetails = await getCanisterDetails({ identity, canisterId });
+    const canisterDetails = await queryCanisterDetails({
+      identity,
+      canisterId,
+    });
     console.log(canisterDetails);
 
     await topUpCanister({
@@ -165,7 +168,10 @@ export const testCMC = async (): Promise<void> => {
       canisterPrincipal: canisterId,
     });
 
-    const canisterDetails2 = await getCanisterDetails({ identity, canisterId });
+    const canisterDetails2 = await queryCanisterDetails({
+      identity,
+      canisterId,
+    });
     console.log(canisterDetails2);
   } catch (error) {
     console.log("in da error");

@@ -33,8 +33,7 @@ export class CMCCanister {
   /**
    * Returns conversion rate of ICP to Cycles
    *
-   * @param None
-   * @returns BigInt
+   * @returns Promise<BigInt>
    */
   public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
     const response = await this.service.get_icp_xdr_conversion_rate();
@@ -49,9 +48,10 @@ export class CMCCanister {
    * Notifies Cycles Minting Canister of the creation of a new canister.
    * It returns the new canister principal.
    *
-   * @param controller: Principal
-   * @param block_index: BigInt
-   * @returns Principal
+   * @param {Object} request
+   * @param {Principal} request.controller
+   * @param {BlockIndex} request.block_index
+   * @returns Promise<Principal>
    * @throws RefundedError, InvalidaTransactionError, ProcessingError, TransactionTooOldError, CMCError
    */
   public notifyCreateCanister = async (
@@ -76,9 +76,10 @@ export class CMCCanister {
    * Notifies Cycles Minting Canister of new cycles being added to canister.
    * It returns the new Cycles of the canister.
    *
-   * @param canister_id: Principal
-   * @param block_index: BigInt
-   * @returns BigInt
+   * @param {Object} request
+   * @param {Principal} request.canister_id
+   * @param {BlockIndex} request.block_index
+   * @returns Promise<Cycles>
    * @throws RefundedError, InvalidaTransactionError, ProcessingError, TransactionTooOldError, CMCError
    */
   public notifyTopUp = async (request: NotifyTopUpArg): Promise<Cycles> => {
