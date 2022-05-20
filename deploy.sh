@@ -111,6 +111,7 @@ while (($# > 0)); do
     CREATE_USERS="true"
     ;;
   --open)
+    GUESS="false"
     OPEN_NNS_DAPP="true"
     ;;
   --dry-run)
