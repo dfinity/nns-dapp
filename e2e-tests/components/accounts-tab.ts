@@ -12,7 +12,7 @@ export class AccountsTab extends MyNavigator {
     options?: { timeout?: number }
   ) {
     const element = await this.browser
-      .$(`${AccountsTab.SELECTOR} [data-tid="accountCard"]`)
+      .$(`${AccountsTab.SELECTOR} [data-tid="account-card"]`)
       .$(`.title=${name}`);
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with account "${name}"i.`;

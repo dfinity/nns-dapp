@@ -9,7 +9,7 @@
   export let account: Account;
   export let showCopy: boolean = false;
   export let role: "button" | "link" | undefined = undefined;
-  export let testId: string = "accountCard";
+  export let testId: string = "account-card";
 
   let identifier: string;
   let balance: ICPType;
