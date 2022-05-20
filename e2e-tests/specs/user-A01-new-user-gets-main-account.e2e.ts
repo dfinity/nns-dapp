@@ -5,12 +5,10 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
 
-describe("Makes Standard Users", () => {
-  /**
-   * Creates a user with:
-   * - ICP in the main account
-   * - A neuron
-   */
+/**
+ * Veifies that new users get a main account.
+ */
+describe("Users get a main account", () => {
   it("Setup: Create a new user", async () => {
     await browser.url("/");
     const userId = await register(browser);
