@@ -27,6 +27,9 @@ describe("Makes Standard Users", () => {
   });
 
   it("User should have a main account", async () => {
-    await new AccountsTab(browser).getAccountByName("Main", "Checking that the main account exists");
+    await new AccountsTab(browser).getAccountByName(
+      "Main",
+      "Checking that the main account exists"
+    );
   });
 });

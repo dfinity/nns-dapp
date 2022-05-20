@@ -11,7 +11,9 @@ export class AccountsTab extends MyNavigator {
     description: string,
     options?: { timeout?: number }
   ) {
-    const element = await this.browser.$(`${AccountsTab.SELECTOR} [data-tid="accountCard"]`).$(`.title=${name}`);
+    const element = await this.browser
+      .$(`${AccountsTab.SELECTOR} [data-tid="accountCard"]`)
+      .$(`.title=${name}`);
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with account "${name}"i.`;
     await element.waitForExist({ timeout, timeoutMsg });
