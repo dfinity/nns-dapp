@@ -37,6 +37,17 @@ import { toastsStore } from "./toasts.store";
 const isSet = (value: unknown): boolean =>
   value === undefined || value === null;
 
+const applyMap = async (
+  items: Array<unknown> | undefined,
+  fun: (args: unknown) => Promise<unknown>
+): Promise<unknown> => {
+  if (items === undefined) {
+    return undefined;
+  }
+
+  return Promise.all(items.map(async (item) => await fun(item)));
+};
+
 const anonymize = async (value: unknown): Promise<string | undefined> =>
   value === undefined ? undefined : digestText(`${value}`);
 
@@ -45,7 +56,7 @@ const anonymizeAmount = async (
 ): Promise<bigint | undefined> =>
   amount === undefined
     ? undefined
-    : BigInt(parseInt((await anonymize(amount)) as string, 36));
+    : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
 
 const anonymizeICP = async (icp: ICP | undefined): Promise<ICP | undefined> =>
   icp === undefined
@@ -84,7 +95,7 @@ const anonymizeFollowees = async (
 
   return {
     topic,
-    followees: originalFollowees?.map(async (id) => await anonymize(id)),
+    followees: await applyMap(originalFollowees, anonymize),
   };
 };
 
@@ -100,12 +111,12 @@ const anonymizeAccount = async (
   const { identifier, principal, balance, name, type, subAccount } = account;
 
   return {
-    identifier: anonymize(identifier),
+    identifier: await anonymize(identifier),
     principal: isSet(principal) ? "yes" : "no",
-    balance: anonymizeICP(balance),
+    balance: await anonymizeICP(balance),
     name: name,
     type: type,
-    subAccount: subAccount?.map(async (id) => await anonymize(id)),
+    subAccount: await anonymize(subAccount?.join("")),
   };
 };
 
@@ -132,16 +143,14 @@ const anonymizeNeuronInfo = async (
   return {
     neuronId: await anonymize(neuronId),
     dissolveDelaySeconds,
-    recentBallots: recentBallots?.map(
-      async (ballot) => await anonymizeBallot(ballot)
-    ),
+    recentBallots: await applyMap(recentBallots, anonymizeBallot),
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
     retrievedAtTimestampSeconds,
-    votingPower: anonymizeAmount(votingPower),
+    votingPower: await anonymizeAmount(votingPower),
     ageSeconds,
-    fullNeuron: anonymizeFullNeuron(fullNeuron),
+    fullNeuron: await anonymizeFullNeuron(fullNeuron),
   };
 };
 
@@ -174,12 +183,10 @@ const anonymizeFullNeuron = async (
     id: await anonymize(id),
     // principal string
     controller: isSet(controller) ? "yes" : "no",
-    recentBallots: recentBallots?.map(
-      async (ballot) => await anonymizeBallot(ballot)
-    ),
+    recentBallots: await applyMap(recentBallots, anonymizeBallot),
     kycVerified: kycVerified,
     notForProfit,
-    cachedNeuronStake: anonymizeAmount(cachedNeuronStake),
+    cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
     createdTimestampSeconds,
     maturityE8sEquivalent,
     agingSinceTimestampSeconds,
@@ -189,7 +196,7 @@ const anonymizeFullNeuron = async (
     accountIdentifier: await anonymize(accountIdentifier),
     joinedCommunityFundTimestampSeconds,
     dissolveState,
-    followees: followees?.map(async (item) => await anonymizeFollowees(item)),
+    followees: await applyMap(followees, anonymizeFollowees),
   };
 };
 
@@ -330,6 +337,9 @@ export const debugSelectedAccountStore = (
   store: Writable<SelectedAccountStore>
 ) => (selectedAccountStore = createDerivedStore(store));
 
+/**
+ * Collects state of all available stores (also from context)
+ */
 const initDebugStore = () =>
   derived(
     [
@@ -384,7 +394,12 @@ const initDebugStore = () =>
     })
   );
 
-globalThis._log = async () => {
+/**
+ * 1. generates anonymized version of stores state
+ * 2. log it in the dev console
+ * 3. generates a json file with logged context
+ */
+const logStoreState = async () => {
   const debugStore = initDebugStore();
   const {
     route,
@@ -408,38 +423,25 @@ globalThis._log = async () => {
     route: route,
     accounts: {
       main: await anonymizeAccount(accounts?.main),
-      subAccounts: accounts?.subAccounts?.map(
-        async (account) => await anonymizeAccount(account)
-      ),
-      hardwareWallets: accounts?.hardwareWallets?.map(
-        async (account) => await anonymizeAccount(account)
+      subAccounts: await applyMap(accounts?.subAccounts, anonymizeAccount),
+      hardwareWallets: await applyMap(
+        accounts?.hardwareWallets,
+        anonymizeAccount
       ),
     },
-    sortedNeuron: sortedNeuron?.map(
-      async (neuron) => await anonymizeNeuronInfo(neuron)
-    ),
-    knownNeurons: knownNeurons?.map(
-      async (neuron) => await anonymizeKnownNeuron(neuron)
-    ),
-    canisters: canisters?.map(
-      async (canister) => await anonymizeCanister(canister)
-    ),
+    sortedNeuron: await applyMap(sortedNeuron, anonymizeNeuronInfo),
+    knownNeurons: await applyMap(knownNeurons, anonymizeKnownNeuron),
+    canisters: await applyMap(canisters, anonymizeCanister),
     proposals: {
-      proposals: proposals?.proposals?.map(
-        async (proposal) => await anonymizeProposal(proposal)
-      ),
+      proposals: await applyMap(proposals?.proposals, anonymizeProposal),
       certified: proposals?.certified,
     },
     proposalsFilters: proposalsFilters,
     proposalId: proposalId,
     proposalInfo: proposalInfo,
     votingNeuronSelect: {
-      neurons: votingNeuronSelect?.neurons?.map(
-        async (neuron) => await anonymizeNeuronInfo(neuron)
-      ),
-      selectedIds: votingNeuronSelect?.selectedIds?.map(
-        async (id) => await anonymize(id)
-      ),
+      neurons: await applyMap(votingNeuronSelect?.neurons, anonymizeNeuronInfo),
+      selectedIds: await applyMap(votingNeuronSelect?.selectedIds, anonymize),
     },
     toasts: toasts,
     addAccount: {
@@ -454,9 +456,10 @@ globalThis._log = async () => {
     },
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
-      transactions: selectedAccount?.transactions?.map(
-        async (transaction) =>
-          await anonymizeTransaction({
+      transactions: await applyMap(
+        selectedAccount?.transactions,
+        (transaction: Transaction) =>
+          anonymizeTransaction({
             transaction,
             account: selectedAccount?.account,
           })
@@ -464,17 +467,41 @@ globalThis._log = async () => {
     },
   };
 
+  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
   const anonymizedStateAsText = stringifyJson(anonymizedState, {
     indentation: 2,
   });
-  console.log(anonymizedStateAsText);
-  saveToFile(anonymizedStateAsText);
+  console.log(date, anonymizedStateAsText);
+  saveToFile(anonymizedStateAsText, `${date}_nns-local-state.json`);
 };
 
-const saveToFile = (content: string): void => {
+const saveToFile = (content: string, fileName: string): void => {
   const a = document.createElement("a");
   const file = new Blob([content], { type: "text/plain" });
   a.href = URL.createObjectURL(file);
-  a.download = "nns-local-state.json";
+  a.download = fileName;
   a.click();
 };
+
+/**
+ * To not have it in the string form in the code
+ * @returns "nns-state"
+ */
+const TRIGGER_PHRASE = [101, 116, 97, 116, 115, 45, 115, 110, 110]
+  .reverse()
+  .map((c) => String.fromCharCode(c))
+  .join("");
+
+/**
+ * Add console.log with a version that logs the stores on TRIGGER_PHRASE
+ */
+(() => {
+  const originalLog = console.log;
+  console.log = function (...args) {
+    if (args.length === 1 && args[0] === TRIGGER_PHRASE) {
+      logStoreState();
+    } else {
+      originalLog.apply(this, args);
+    }
+  };
+})();

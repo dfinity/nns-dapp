@@ -47,6 +47,11 @@ export const stringifyJson = (
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
           }
+
+          if (value instanceof Promise) {
+            return "Promise(...)";
+          }
+
           break;
         }
         case "bigint": {
