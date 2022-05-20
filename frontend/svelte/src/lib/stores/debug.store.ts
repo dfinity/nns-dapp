@@ -1,5 +1,6 @@
 import {
   ICP,
+  type Ballot,
   type BallotInfo,
   type Followees,
   type KnownNeuron,
@@ -65,7 +66,7 @@ const anonymizeICP = async (icp: ICP | undefined): Promise<ICP | undefined> =>
     ? ICP.fromE8s(BigInt(0))
     : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
 
-const anonymizeBallot = async (
+const anonymizeRecentBallot = async (
   ballot: BallotInfo | undefined | null
 ): Promise<
   { [key in keyof Required<BallotInfo>]: unknown } | undefined | null
@@ -79,6 +80,21 @@ const anonymizeBallot = async (
   return {
     vote,
     proposalId,
+  };
+};
+const anonymizeBallot = async (
+  ballot: Ballot | undefined | null
+): Promise<{ [key in keyof Required<Ballot>]: unknown } | undefined | null> => {
+  if (ballot === undefined || ballot === null) {
+    return ballot;
+  }
+
+  const { neuronId, vote, votingPower } = ballot;
+
+  return {
+    neuronId: await anonymize(neuronId),
+    vote,
+    votingPower: await anonymizeAmount(votingPower),
   };
 };
 
@@ -143,7 +159,7 @@ const anonymizeNeuronInfo = async (
   return {
     neuronId: await anonymize(neuronId),
     dissolveDelaySeconds,
-    recentBallots: await applyMap(recentBallots, anonymizeBallot),
+    recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -183,7 +199,7 @@ const anonymizeFullNeuron = async (
     id: await anonymize(id),
     // principal string
     controller: isSet(controller) ? "yes" : "no",
-    recentBallots: await applyMap(recentBallots, anonymizeBallot),
+    recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
     kycVerified: kycVerified,
     notForProfit,
     cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
@@ -300,7 +316,7 @@ const anonymizeProposal = async (
 
   return {
     id,
-    ballots,
+    ballots: await applyMap(ballots, anonymizeBallot),
     rejectCost,
     proposalTimestampSeconds,
     rewardEventRound,
