@@ -5,7 +5,6 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { ProposalsTab } from "../components/proposals-tab";
-import { execFile } from "node:child_process";
 
 describe("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
@@ -17,41 +16,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
   });
 
   it("Setup: Create proposal", async () => {
-    console.error("Creating proposal...");
-    proposalId = await new Promise((yay, nay) =>
-      execFile(
-        "../scripts/propose",
-        ["--to", "set-firewall-config", "--jfdi"],
-        {},
-        (error, stdout, stderr) => {
-          console.error("stdout:", stdout);
-          console.error("stderr:", stderr);
-          if (error) {
-            nay(new Error(`${error}\nstdout: ${stdout}\nstderr: ${stderr}`));
-          } else {
-            const proposalId = Number(
-              stdout
-                .split(/[\n\r]/)
-                .map((line) => line.split(/[ \t]+/))
-                .filter(
-                  (fields) => fields.length === 2 && fields[0] === "proposal"
-                )
-                .map((fields) => fields[1])[0]
-            );
-            if (Number.isSafeInteger(proposalId)) {
-              yay(proposalId);
-            } else {
-              nay(
-                new Error(
-                  `No proposal was made.\nstdout:\n${stdout}\nstderr: ${stderr}`
-                )
-              );
-            }
-          }
-        }
-      )
-    );
-    console.error(`Proposed proposalId ${proposalId}`);
+    proposalId = await ProposalsTab.propose("set-firewall-config");
   });
 
   it("Go to voting tab", async () => {
