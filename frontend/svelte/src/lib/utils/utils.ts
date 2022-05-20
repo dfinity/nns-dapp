@@ -125,3 +125,17 @@ export const bytesToHexString = (bytes: number[]): string =>
     (str, byte) => `${str}${byte.toString(16).padStart(2, "0")}`,
     ""
   );
+
+export const isNullOrUndefined = (value: unknown): boolean =>
+  value === undefined || value === null;
+
+export const mapPromises = async <T, R>(
+  items: Array<T> | undefined,
+  fun: (args: T) => Promise<R>
+): Promise<Array<R> | undefined> => {
+  if (items === undefined) {
+    return undefined;
+  }
+
+  return Promise.all(items.map(async (item) => await fun(item)));
+};

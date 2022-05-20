@@ -1,26 +1,20 @@
-import {
-  ICP,
-  type Ballot,
-  type BallotInfo,
-  type Followees,
-  type KnownNeuron,
-  type Neuron,
-  type NeuronInfo,
-  type ProposalInfo,
-} from "@dfinity/nns";
 import { derived, get, type Readable, type Writable } from "svelte/store";
-import type {
-  CanisterDetails,
-  Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "../types/account";
+import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import type { AddAccountStore } from "../types/add-account.context";
 import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neurons.context";
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
-import { digestText } from "../utils/dev.utils";
-import { mapTransaction } from "../utils/transactions.utils";
-import { stringifyJson } from "../utils/utils";
+import {
+  anonymizeAccount,
+  anonymizeCanister,
+  anonymizeICP,
+  anonymizeKnownNeuron,
+  anonymizeNeuronInfo,
+  anonymizeProposal,
+  anonymizeTransaction,
+  cutAndAnonymize,
+} from "../utils/anonymize.utils";
+import { mapPromises, stringifyJson } from "../utils/utils";
 import { accountsStore } from "./accounts.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
@@ -34,315 +28,6 @@ import {
 } from "./proposals.store";
 import { routeStore } from "./route.store";
 import { toastsStore } from "./toasts.store";
-
-const isSet = (value: unknown): boolean =>
-  value === undefined || value === null;
-
-const applyMap = async (
-  items: Array<unknown> | undefined,
-  fun: (args: unknown) => Promise<unknown>
-): Promise<unknown> => {
-  if (items === undefined) {
-    return undefined;
-  }
-
-  return Promise.all(items.map(async (item) => await fun(item)));
-};
-
-const anonymize = async (value: unknown): Promise<string | undefined> =>
-  value === undefined ? undefined : digestText(`${value}`);
-
-/**
- * Use only part of the value to make it not restorable
- */
-const cutAndAnonymize = async (
-  value: string | bigint | undefined
-): Promise<string | undefined> =>
-  value === undefined
-    ? undefined
-    : await anonymize(
-        `${value}`.substring(0, Math.ceil(`${value}`.length * 0.7))
-      );
-
-const anonymizeAmount = async (
-  amount: bigint | undefined
-): Promise<bigint | undefined> =>
-  amount === undefined
-    ? undefined
-    : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
-
-const anonymizeICP = async (icp: ICP | undefined): Promise<ICP | undefined> =>
-  icp === undefined
-    ? undefined
-    : icp.toE8s() === BigInt(0)
-    ? ICP.fromE8s(BigInt(0))
-    : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
-
-const anonymizeRecentBallot = async (
-  ballot: BallotInfo | undefined | null
-): Promise<
-  { [key in keyof Required<BallotInfo>]: unknown } | undefined | null
-> => {
-  if (ballot === undefined || ballot === null) {
-    return ballot;
-  }
-
-  const { vote, proposalId } = ballot;
-
-  return {
-    vote,
-    proposalId,
-  };
-};
-const anonymizeBallot = async (
-  ballot: Ballot | undefined | null
-): Promise<{ [key in keyof Required<Ballot>]: unknown } | undefined | null> => {
-  if (ballot === undefined || ballot === null) {
-    return ballot;
-  }
-
-  const { neuronId, vote, votingPower } = ballot;
-
-  return {
-    neuronId: await cutAndAnonymize(neuronId),
-    vote,
-    votingPower: await anonymizeAmount(votingPower),
-  };
-};
-
-const anonymizeFollowees = async (
-  followees: Followees | undefined | null
-): Promise<
-  { [key in keyof Required<Followees>]: unknown } | undefined | null
-> => {
-  if (followees === undefined || followees === null) {
-    return followees;
-  }
-
-  const { topic, followees: originalFollowees } = followees;
-
-  return {
-    topic,
-    followees: await applyMap(originalFollowees, anonymize),
-  };
-};
-
-const anonymizeAccount = async (
-  account: Account | undefined | null
-): Promise<
-  { [key in keyof Required<Account>]: unknown } | undefined | null
-> => {
-  if (account === undefined || account === null) {
-    return account;
-  }
-
-  const { identifier, principal, balance, name, type, subAccount } = account;
-
-  return {
-    identifier: await cutAndAnonymize(identifier),
-    principal: isSet(principal) ? "yes" : "no",
-    balance: await anonymizeICP(balance),
-    name: name,
-    type: type,
-    subAccount: await cutAndAnonymize(subAccount?.join("")),
-  };
-};
-
-const anonymizeNeuronInfo = async (
-  neuron: NeuronInfo | undefined
-): Promise<undefined | { [key in keyof Required<NeuronInfo>]: unknown }> => {
-  if (neuron === undefined || neuron === null) {
-    return neuron;
-  }
-
-  const {
-    neuronId,
-    dissolveDelaySeconds,
-    recentBallots,
-    createdTimestampSeconds,
-    state,
-    joinedCommunityFundTimestampSeconds,
-    retrievedAtTimestampSeconds,
-    votingPower,
-    ageSeconds,
-    fullNeuron,
-  } = neuron;
-
-  return {
-    neuronId: await cutAndAnonymize(neuronId),
-    dissolveDelaySeconds,
-    recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
-    createdTimestampSeconds,
-    state,
-    joinedCommunityFundTimestampSeconds,
-    retrievedAtTimestampSeconds,
-    votingPower: await anonymizeAmount(votingPower),
-    ageSeconds,
-    fullNeuron: await anonymizeFullNeuron(fullNeuron),
-  };
-};
-
-const anonymizeFullNeuron = async (
-  neuron: Neuron | undefined
-): Promise<undefined | { [key in keyof Required<Neuron>]: unknown }> => {
-  if (neuron === undefined || neuron === null) {
-    return neuron;
-  }
-
-  const {
-    id,
-    controller,
-    recentBallots,
-    kycVerified,
-    notForProfit,
-    cachedNeuronStake,
-    createdTimestampSeconds,
-    maturityE8sEquivalent,
-    agingSinceTimestampSeconds,
-    neuronFees,
-    hotKeys,
-    accountIdentifier,
-    joinedCommunityFundTimestampSeconds,
-    dissolveState,
-    followees,
-  } = neuron;
-
-  return {
-    id: await cutAndAnonymize(id),
-    // principal string
-    controller: isSet(controller) ? "yes" : "no",
-    recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
-    kycVerified: kycVerified,
-    notForProfit,
-    cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
-    createdTimestampSeconds,
-    maturityE8sEquivalent,
-    agingSinceTimestampSeconds,
-    neuronFees,
-    // principal string[]
-    hotKeys: hotKeys?.length,
-    accountIdentifier: await cutAndAnonymize(accountIdentifier),
-    joinedCommunityFundTimestampSeconds,
-    dissolveState,
-    followees: await applyMap(followees, anonymizeFollowees),
-  };
-};
-
-const anonymizeKnownNeuron = async (
-  neuron: KnownNeuron | undefined
-): Promise<undefined | { [key in keyof Required<KnownNeuron>]: unknown }> => {
-  if (neuron === undefined || neuron === null) {
-    return neuron;
-  }
-
-  const { id, name, description } = neuron;
-
-  return {
-    id: await cutAndAnonymize(id),
-    name,
-    description,
-  };
-};
-
-const anonymizeCanister = async (
-  canister: CanisterDetails | undefined
-): Promise<
-  undefined | { [key in keyof Required<CanisterDetails>]: unknown }
-> => {
-  if (canister === undefined || canister === null) {
-    return canister;
-  }
-
-  const { name, canister_id } = canister;
-
-  return {
-    name,
-    // TODO: what to do with principals
-    // canister_id: await anonymize(canister_id),
-    canister_id: isSet(canister_id) ? "yes" : "no",
-  };
-};
-
-const anonymizeTransaction = async ({
-  transaction,
-  account,
-}: {
-  transaction: Transaction | undefined;
-  account: Account | undefined;
-}): Promise<
-  undefined | { [key in keyof Required<Transaction>]: unknown } | "no account"
-> => {
-  if (transaction === undefined || transaction === null) {
-    return transaction;
-  }
-
-  if (account === undefined) {
-    return "no account";
-  }
-
-  const { transaction_type, memo, timestamp, block_height } = transaction;
-
-  const { isReceive, isSend, type, from, to, displayAmount, date } =
-    mapTransaction({ transaction, account });
-
-  return {
-    transaction_type,
-    memo,
-    timestamp,
-    block_height,
-    transfer: {
-      isReceive,
-      isSend,
-      type,
-      from: from !== undefined ? undefined : await cutAndAnonymize(from),
-      to: to !== undefined ? undefined : await cutAndAnonymize(to),
-      displayAmount: await anonymizeICP(displayAmount),
-      date,
-    },
-  };
-};
-
-const anonymizeProposal = async (
-  originalProposal: ProposalInfo | undefined
-): Promise<undefined | { [key in keyof Required<ProposalInfo>]: unknown }> => {
-  if (originalProposal === undefined || originalProposal === null) {
-    return originalProposal;
-  }
-
-  const {
-    id,
-    ballots,
-    rejectCost,
-    proposalTimestampSeconds,
-    rewardEventRound,
-    failedTimestampSeconds,
-    decidedTimestampSeconds,
-    latestTally,
-    proposal,
-    proposer,
-    executedTimestampSeconds,
-    topic,
-    status,
-    rewardStatus,
-  } = originalProposal;
-
-  return {
-    id,
-    ballots: await applyMap(ballots, anonymizeBallot),
-    rejectCost,
-    proposalTimestampSeconds,
-    rewardEventRound,
-    failedTimestampSeconds,
-    decidedTimestampSeconds,
-    latestTally,
-    proposal,
-    proposer,
-    executedTimestampSeconds,
-    topic,
-    status,
-    rewardStatus,
-  };
-};
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
   derived(store, (store) => store);
@@ -451,25 +136,31 @@ const logStoreState = async () => {
     route: route,
     accounts: {
       main: await anonymizeAccount(accounts?.main),
-      subAccounts: await applyMap(accounts?.subAccounts, anonymizeAccount),
-      hardwareWallets: await applyMap(
+      subAccounts: await mapPromises(accounts?.subAccounts, anonymizeAccount),
+      hardwareWallets: await mapPromises(
         accounts?.hardwareWallets,
         anonymizeAccount
       ),
     },
-    sortedNeuron: await applyMap(sortedNeuron, anonymizeNeuronInfo),
-    knownNeurons: await applyMap(knownNeurons, anonymizeKnownNeuron),
-    canisters: await applyMap(canisters, anonymizeCanister),
+    sortedNeuron: await mapPromises(sortedNeuron, anonymizeNeuronInfo),
+    knownNeurons: await mapPromises(knownNeurons, anonymizeKnownNeuron),
+    canisters: await mapPromises(canisters, anonymizeCanister),
     proposals: {
-      proposals: await applyMap(proposals?.proposals, anonymizeProposal),
+      proposals: await mapPromises(proposals?.proposals, anonymizeProposal),
       certified: proposals?.certified,
     },
     proposalsFilters: proposalsFilters,
     proposalId: proposalId,
     proposalInfo: proposalInfo,
     votingNeuronSelect: {
-      neurons: await applyMap(votingNeuronSelect?.neurons, anonymizeNeuronInfo),
-      selectedIds: await applyMap(votingNeuronSelect?.selectedIds, anonymize),
+      neurons: await mapPromises(
+        votingNeuronSelect?.neurons,
+        anonymizeNeuronInfo
+      ),
+      selectedIds: await mapPromises(
+        votingNeuronSelect?.selectedIds,
+        cutAndAnonymize
+      ),
     },
     toasts: toasts,
     addAccount: {
@@ -486,7 +177,7 @@ const logStoreState = async () => {
     },
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
-      transactions: await applyMap(
+      transactions: await mapPromises(
         selectedAccount?.transactions,
         (transaction: Transaction) =>
           anonymizeTransaction({
@@ -514,7 +205,7 @@ const saveToFile = (content: string, fileName: string): void => {
 };
 
 /**
- * To not have it in the string form in the code
+ * To not have "nns-state" in the code
  * @returns "nns-state"
  */
 const TRIGGER_PHRASE = [101, 116, 97, 116, 115, 45, 115, 110, 110]
