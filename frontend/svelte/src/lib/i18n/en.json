@@ -68,6 +68,7 @@
     "governance_error": "Sorry, there was an error. Please try again.",
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
+    "address_not_valid": "Please enter a valid address.",
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal.",
     "input_length": "Input must be longer than $length characters.",

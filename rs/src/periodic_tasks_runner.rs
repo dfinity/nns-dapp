@@ -1,17 +1,17 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
-use crate::canisters::governance;
 use crate::canisters::ledger;
+use crate::canisters::{cmc, governance};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::ledger_sync;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
+use crate::{ledger_sync, Cycles};
+use cycles_minting_canister::{NotifyCreateCanister, NotifyError, NotifyTopUp};
 use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use ledger_canister::{
-    AccountBalanceArgs, AccountIdentifier, BlockHeight, CyclesResponse, Memo, NotifyCanisterArgs, SendArgs, Subaccount,
-    Tokens, DEFAULT_TRANSFER_FEE,
+    AccountBalanceArgs, AccountIdentifier, BlockHeight, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
@@ -78,35 +78,31 @@ async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId,
 
 async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterArgs) {
     match create_canister(args.controller, args.amount).await {
-        Ok(CyclesResponse::CanisterCreated(canister_id)) => STATE.with(|s| {
+        Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
                 .attach_newly_created_canister(args.controller, block_height, canister_id)
         }),
-        Ok(CyclesResponse::Refunded(error, _)) => {
+        Ok(Err(error)) => {
+            let was_refunded = matches!(error, NotifyError::Refunded { .. });
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    error.to_string(),
+                    was_refunded,
+                )
             });
-            let subaccount = (&args.controller).into();
-            enqueue_create_or_top_up_canister_refund(
-                args.controller,
-                subaccount,
-                block_height,
-                args.refund_address,
-                error,
-            )
-            .await;
-        }
-        Ok(CyclesResponse::ToppedUp(_)) => {
-            // This should never happen
-            let error = "Unexpected response in 'create_canister': 'topped up'".to_string();
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, false)
-            })
+            if was_refunded {
+                let subaccount = (&args.controller).into();
+                enqueue_create_or_top_up_canister_refund(
+                    args.controller,
+                    subaccount,
+                    block_height,
+                    args.refund_address,
+                    error.to_string(),
+                )
+                .await;
+            }
         }
         Err(error) => {
             STATE.with(|s| {
@@ -129,33 +125,27 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
 
 async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
-        Ok(CyclesResponse::ToppedUp(_)) => {
-            STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height))
-        }
-        Ok(CyclesResponse::Refunded(error, _)) => {
+        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+        Ok(Err(error)) => {
+            let was_refunded = matches!(error, NotifyError::Refunded { .. });
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    error.to_string(),
+                    was_refunded,
+                )
             });
-            let subaccount = (&args.canister_id.get()).into();
-            enqueue_create_or_top_up_canister_refund(
-                args.principal,
-                subaccount,
-                block_height,
-                args.refund_address,
-                error,
-            )
-            .await;
-        }
-        Ok(CyclesResponse::CanisterCreated(_)) => {
-            // This should never happen
-            let error = "Unexpected response in 'top_up_canister': 'canister created'".to_string();
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, false)
-            })
+            if was_refunded {
+                let subaccount = (&args.principal).into();
+                enqueue_create_or_top_up_canister_refund(
+                    args.principal,
+                    subaccount,
+                    block_height,
+                    args.refund_address,
+                    error.to_string(),
+                )
+                .await;
+            }
         }
         Err(error) => {
             STATE.with(|s| {
@@ -224,7 +214,7 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
     }
 }
 
-async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<CyclesResponse, String> {
+async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Result<CanisterId, NotifyError>, String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.get_e8s() - (2 * DEFAULT_TRANSFER_FEE.get_e8s()));
     let subaccount: Subaccount = (&principal).into();
@@ -238,19 +228,17 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Cycle
         created_at_time: None,
     };
 
-    let block_height = ledger::send(send_request.clone()).await?;
+    let block_index = ledger::send(send_request.clone()).await?;
 
-    let notify_request = NotifyCanisterArgs::new_from_send(
-        &send_request,
-        block_height,
-        CYCLES_MINTING_CANISTER_ID,
-        Some(subaccount),
-    )?;
+    let notify_request = NotifyCreateCanister {
+        block_index,
+        controller: principal,
+    };
 
-    Ok(ledger::notify(notify_request).await?)
+    cmc::notify_create_canister(notify_request).await
 }
 
-async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<CyclesResponse, String> {
+async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<Result<Cycles, NotifyError>, String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.get_e8s() - (2 * DEFAULT_TRANSFER_FEE.get_e8s()));
     let subaccount: Subaccount = (&canister_id).into();
@@ -264,16 +252,14 @@ async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<Cycl
         created_at_time: None,
     };
 
-    let block_height = ledger::send(send_request.clone()).await?;
+    let block_index = ledger::send(send_request.clone()).await?;
 
-    let notify_request = NotifyCanisterArgs::new_from_send(
-        &send_request,
-        block_height,
-        CYCLES_MINTING_CANISTER_ID,
-        Some(subaccount),
-    )?;
+    let notify_request = NotifyTopUp {
+        block_index,
+        canister_id,
+    };
 
-    Ok(ledger::notify(notify_request).await?)
+    cmc::notify_top_up_canister(notify_request).await
 }
 
 async fn enqueue_create_or_top_up_canister_refund(
