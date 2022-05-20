@@ -52,6 +52,18 @@ const applyMap = async (
 const anonymize = async (value: unknown): Promise<string | undefined> =>
   value === undefined ? undefined : digestText(`${value}`);
 
+/**
+ * Use only part of the value to make it not restorable
+ */
+const cutAndAnonymize = async (
+  value: string | bigint | undefined
+): Promise<string | undefined> =>
+  value === undefined
+    ? undefined
+    : await anonymize(
+        `${value}`.substring(0, Math.ceil(`${value}`.length * 0.7))
+      );
+
 const anonymizeAmount = async (
   amount: bigint | undefined
 ): Promise<bigint | undefined> =>
@@ -92,7 +104,7 @@ const anonymizeBallot = async (
   const { neuronId, vote, votingPower } = ballot;
 
   return {
-    neuronId: await anonymize(neuronId),
+    neuronId: await cutAndAnonymize(neuronId),
     vote,
     votingPower: await anonymizeAmount(votingPower),
   };
@@ -127,12 +139,12 @@ const anonymizeAccount = async (
   const { identifier, principal, balance, name, type, subAccount } = account;
 
   return {
-    identifier: await anonymize(identifier),
+    identifier: await cutAndAnonymize(identifier),
     principal: isSet(principal) ? "yes" : "no",
     balance: await anonymizeICP(balance),
     name: name,
     type: type,
-    subAccount: await anonymize(subAccount?.join("")),
+    subAccount: await cutAndAnonymize(subAccount?.join("")),
   };
 };
 
@@ -157,7 +169,7 @@ const anonymizeNeuronInfo = async (
   } = neuron;
 
   return {
-    neuronId: await anonymize(neuronId),
+    neuronId: await cutAndAnonymize(neuronId),
     dissolveDelaySeconds,
     recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
     createdTimestampSeconds,
@@ -196,7 +208,7 @@ const anonymizeFullNeuron = async (
   } = neuron;
 
   return {
-    id: await anonymize(id),
+    id: await cutAndAnonymize(id),
     // principal string
     controller: isSet(controller) ? "yes" : "no",
     recentBallots: await applyMap(recentBallots, anonymizeRecentBallot),
@@ -209,7 +221,7 @@ const anonymizeFullNeuron = async (
     neuronFees,
     // principal string[]
     hotKeys: hotKeys?.length,
-    accountIdentifier: await anonymize(accountIdentifier),
+    accountIdentifier: await cutAndAnonymize(accountIdentifier),
     joinedCommunityFundTimestampSeconds,
     dissolveState,
     followees: await applyMap(followees, anonymizeFollowees),
@@ -226,7 +238,7 @@ const anonymizeKnownNeuron = async (
   const { id, name, description } = neuron;
 
   return {
-    id: await anonymize(id),
+    id: await cutAndAnonymize(id),
     name,
     description,
   };
@@ -282,8 +294,8 @@ const anonymizeTransaction = async ({
       isReceive,
       isSend,
       type,
-      from: from !== undefined ? undefined : await anonymize(from),
-      to: to !== undefined ? undefined : await anonymize(to),
+      from: from !== undefined ? undefined : await cutAndAnonymize(from),
+      to: to !== undefined ? undefined : await cutAndAnonymize(to),
       displayAmount: await anonymizeICP(displayAmount),
       date,
     },
@@ -467,7 +479,9 @@ const logStoreState = async () => {
     hardwareWalletNeurons,
     transaction: {
       selectedAccount: await anonymizeAccount(transaction?.selectedAccount),
-      destinationAddress: await anonymize(transaction?.destinationAddress),
+      destinationAddress: await cutAndAnonymize(
+        transaction?.destinationAddress
+      ),
       amount: await anonymizeICP(transaction?.amount),
     },
     selectedAccount: {
