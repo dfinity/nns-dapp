@@ -9,7 +9,6 @@
   export let account: Account;
   export let showCopy: boolean = false;
   export let role: "button" | "link" | undefined = undefined;
-  export let testId: string = "account-card";
 
   let identifier: string;
   let balance: ICPType;
@@ -17,7 +16,7 @@
   $: ({ identifier, balance } = account);
 </script>
 
-<Card on:click {role} {testId}>
+<Card on:click {role} testId="account-card">
   <div slot="start" class="title">
     <h3><slot /></h3>
     <AccountBadge {account} />
