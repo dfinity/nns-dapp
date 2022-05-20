@@ -41,7 +41,11 @@ describe("Makes a proposal and verifies that it is shown", () => {
             if (Number.isSafeInteger(proposalId)) {
               yay(proposalId);
             } else {
-              nay(new Error(`No proposal was made.\nstdout:\n${stdout}\nstderr: ${stderr}`));
+              nay(
+                new Error(
+                  `No proposal was made.\nstdout:\n${stdout}\nstderr: ${stderr}`
+                )
+              );
             }
           }
         }
