@@ -25,6 +25,10 @@ describe("Users get a main account", () => {
   });
 
   it("User should have a main account", async () => {
+    // Note: getAccountByName() returns a promise.  If the main
+    // account cannot be found within a reasaonable amount
+    // of time, the promise will fail and the await will
+    // fail the test.
     await new AccountsTab(browser).getAccountByName(
       "Main",
       "Checking that the main account exists"
