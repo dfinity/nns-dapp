@@ -14,7 +14,7 @@
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
   import type { Account } from "../../types/account";
-  import { debugNewTransactionStore } from "../../stores/debug.store";
+  import { debugTransactionStore } from "../../stores/debug.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
@@ -68,7 +68,7 @@
     amount: undefined,
   });
 
-  debugNewTransactionStore(newTransactionStore);
+  debugTransactionStore(newTransactionStore);
 
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: newTransactionStore,
