@@ -55,7 +55,7 @@
 
 {#if SHOW_ACCOUNTS_ROUTE}
   <Layout>
-    <section>
+    <section data-tid="accounts-body">
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
 
