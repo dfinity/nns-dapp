@@ -24,4 +24,11 @@ export const throwNotifyError = ({
   if ("TransactionTooOld" in error) {
     throw new TransactionTooOldError();
   }
+  if ("Other" in error) {
+    throw new CMCError(
+      `Error in CMC with code ${error.Other.error_code}: ${error.Other.error_message}`
+    );
+  }
+  // Edge case
+  throw new Error(`Unsupported error type ${JSON.stringify(error)}`);
 };

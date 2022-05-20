@@ -1,15 +1,15 @@
 import { Actor } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type { CMCCanisterOptions } from "./cmc.canister.types";
+import { CYCLES_PER_XDR } from "./cmc.constants";
 import { throwNotifyError } from "./cmc.errors";
 import { idlFactory } from "./cmc.idl";
 import type {
+  Cycles,
   NotifyCreateCanisterArg,
   NotifyTopUpArg,
   _SERVICE,
 } from "./cmc.types";
-
-const CYCLES_PER_XDR = BigInt(1_000_000_000_000); // 1 trillion
 
 export class CMCCanister {
   private constructor(private readonly service: _SERVICE) {
@@ -30,6 +30,12 @@ export class CMCCanister {
     return new CMCCanister(service);
   }
 
+  /**
+   * Returns conversion rate of ICP to Cycles
+   *
+   * @param None
+   * @returns BigInt
+   */
   public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
     const response = await this.service.get_icp_xdr_conversion_rate();
 
@@ -39,6 +45,15 @@ export class CMCCanister {
     );
   };
 
+  /**
+   * Notifies Cycles Minting Canister of the creation of a new canister.
+   * It returns the new canister principal.
+   *
+   * @param controller: Principal
+   * @param block_index: BigInt
+   * @returns Principal
+   * @throws RefundedError, InvalidaTransactionError, ProcessingError, TransactionTooOldError, CMCError
+   */
   public notifyCreateCanister = async (
     request: NotifyCreateCanisterArg
   ): Promise<Principal> => {
@@ -57,10 +72,26 @@ export class CMCCanister {
     );
   };
 
-  public notifyTopUp = async (request: NotifyTopUpArg): Promise<void> => {
+  /**
+   * Notifies Cycles Minting Canister of new cycles being added to canister.
+   * It returns the new Cycles of the canister.
+   *
+   * @param canister_id: Principal
+   * @param block_index: BigInt
+   * @returns BigInt
+   * @throws RefundedError, InvalidaTransactionError, ProcessingError, TransactionTooOldError, CMCError
+   */
+  public notifyTopUp = async (request: NotifyTopUpArg): Promise<Cycles> => {
     const response = await this.service.notify_top_up(request);
     if ("Err" in response) {
       throwNotifyError(response);
     }
+    if ("Ok" in response) {
+      return response.Ok;
+    }
+    // Edge case
+    throw new Error(
+      `Unsupported response type in notifyTopUp ${JSON.stringify(response)}`
+    );
   };
 }

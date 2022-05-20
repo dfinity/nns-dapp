@@ -34,4 +34,4 @@ export function toHttpError(error: Error): HttpError {
   };
 }
 
-export class UserNotTheController extends Error {}
+export class UserNotTheControllerError extends Error {}

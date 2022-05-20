@@ -1,13 +1,13 @@
 import { Actor, type CallConfig } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
+import { toCanisterDetails } from "./converters";
 import type {
   CanisterDetails,
   ICMgtCanisterOptions,
 } from "./ic-management.canister.types";
-import { toHttpError, UserNotTheController } from "./ic-management.errors";
+import { toHttpError, UserNotTheControllerError } from "./ic-management.errors";
 import { idlFactory } from "./ic-management.idl";
 import type { CanisterStatusResponse, _SERVICE } from "./ic-management.types";
-import { getCanisterStatus } from "./utils";
 
 function transform(
   _methodName: string,
@@ -37,21 +37,24 @@ export class ICManagementCanister {
     const agent = options.agent;
     const canisterId = options.canisterId;
 
-    const service = Actor.createActor<_SERVICE>(idlFactory, {
-      agent,
-      canisterId,
-      ...{
-        callTransform: transform,
-        queryTransform: transform,
-      },
-    });
+    const service =
+      options.serviceOverride ??
+      Actor.createActor<_SERVICE>(idlFactory, {
+        agent,
+        canisterId,
+        ...{
+          callTransform: transform,
+          queryTransform: transform,
+        },
+      });
 
     return new ICManagementCanister(service);
   }
 
   /**
+   * Returns canister data
    *
-   * @param canisterIdString
+   * @param canisterIdString: string
    * @returns CanisterDetails
    * @throws UserNotTheController, Error
    */
@@ -66,29 +69,12 @@ export class ICManagementCanister {
     } catch (e) {
       const httpError = toHttpError(e);
       if (httpError.code === 403) {
-        throw new UserNotTheController();
+        throw new UserNotTheControllerError();
       } else {
         throw e;
       }
     }
 
-    return {
-      status: getCanisterStatus(rawResponse),
-      memorySize: rawResponse.memory_size,
-      cycles: rawResponse.cycles,
-      setting: {
-        controllers: rawResponse.settings.controllers.map((principal) =>
-          principal.toText()
-        ),
-        freezingThreshold: rawResponse.settings.freezing_threshold,
-        memoryAllocation: rawResponse.settings.memory_allocation,
-        computeAllocation: rawResponse.settings.compute_allocation,
-      },
-      moduleHash:
-        rawResponse.module_hash.length > 0 &&
-        rawResponse.module_hash[0] !== undefined
-          ? new Uint8Array(rawResponse.module_hash[0]).buffer
-          : undefined,
-    };
+    return toCanisterDetails(rawResponse);
   };
 }

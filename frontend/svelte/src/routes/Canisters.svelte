@@ -59,11 +59,14 @@
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
-      <button on:click={test}>Test</button>
 
       <!-- TODO(L2-335): display cards -->
       {#each $canistersStore as canister}
-        <p>{canister.name ?? canister.canister_id}</p>
+        <p>
+          {canister.name.length > 0
+            ? canister.name
+            : canister.canister_id.toText()}
+        </p>
       {/each}
 
       <!-- TODO(L2-335): message if no canisters -->
