@@ -19,8 +19,12 @@ export class AccountsTab extends MyNavigator {
     name: string,
     description: string,
     options?: { timeout?: number }
-  ) {
-    return this.getElement(`${AccountsTab.SELECTOR} [data-tid="account-card"] [data-account-name="${name}"]`, `Getting account '${name}'`, options);
+  ): Promise<WebdriverIO.Element> {
+    return this.getElement(
+      `${AccountsTab.SELECTOR} [data-tid="account-card"] [data-account-name="${name}"]`,
+      `Getting account '${name}'`,
+      options
+    );
   }
 
   /**
@@ -52,7 +56,10 @@ export class AccountsTab extends MyNavigator {
     ).then((element) => element.setValue(linkedAccountName));
     await this.browser.pause(1_000);
     console.warn("click");
-    await this.click(AccountsTab.CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR, "Submit request to create new account");
+    await this.click(
+      AccountsTab.CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR,
+      "Submit request to create new account"
+    );
     console.warn("Submitted...");
     await this.getAccountByName(
       linkedAccountName,

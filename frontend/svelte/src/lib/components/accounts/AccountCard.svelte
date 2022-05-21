@@ -17,7 +17,12 @@
 </script>
 
 <Card on:click {role} testId="account-card">
-  <div slot="start" class="title" data-account-identifier={identifier} data-account-name={name ?? "Main"}>
+  <div
+    slot="start"
+    class="title"
+    data-account-identifier={identifier}
+    data-account-name={name ?? "Main"}
+  >
     <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
   </div>
