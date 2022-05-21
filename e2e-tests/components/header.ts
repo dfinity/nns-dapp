@@ -17,7 +17,7 @@ export class Header extends MyNavigator {
     super(browser);
   }
 
-  async getIcp(howMuch: number) {
+  async getIcp(howMuch: number): Promise<void> {
     // WARNING: If we start before the accounts have loaded this fails.  Why?  No idea.
     // Waiting later does not help, it seems as if the wait has to be before we open the getIcp modal.
     // TODO: The getICP button should not be clickable until it works.
