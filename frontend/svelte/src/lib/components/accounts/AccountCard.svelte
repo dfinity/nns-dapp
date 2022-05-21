@@ -13,12 +13,12 @@
   let identifier: string;
   let balance: ICPType;
 
-  $: ({ identifier, balance } = account);
+  $: ({ identifier, balance, name } = account);
 </script>
 
 <Card on:click {role} testId="account-card">
-  <div slot="start" class="title">
-    <h3><slot /></h3>
+  <div slot="start" class="title" data-account-identifier={identifier} data-account-name={name ?? "Main"}>
+    <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
   </div>
   <ICP slot="end" icp={balance} />
