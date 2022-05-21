@@ -36,36 +36,29 @@ export class AccountsTab extends MyNavigator {
       AccountsTab.SELECTOR,
       "Prerequisite: Verify that we are on the acconts tab"
     );
-    console.warn("We are indeed on the accounts tab");
     await this.click(
       AccountsTab.ADD_ACCOUNT_SELECTOR,
       "Start flow for adding an account"
     );
-    console.warn("On Add Account..");
-    // TODO: Verify that we get the "Add Account" modal.
     await this.click(
       AccountsTab.MAKE_ACCOUNT_LINKED_SELECTOR,
       "Choose the linked account flow"
     );
-    // TODO: Verify that we get the "New Linked Account" modal.
-    console.warn("On New Linked Account..");
     await this.browser.pause(1_000);
     await this.getElement(
       AccountsTab.LINKED_ACCOUNT_NAME_SELECTOR,
       "Get account name field"
     ).then((element) => element.setValue(linkedAccountName));
     await this.browser.pause(1_000);
-    console.warn("click");
     await this.click(
       AccountsTab.CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR,
       "Submit request to create new account"
     );
-    console.warn("Submitted...");
     await this.getAccountByName(
       linkedAccountName,
       "Linked account appears in the account list",
       { timeout: 30_000 }
     );
-    console.warn("Done");
+    console.warn(`Created account '${linkedAccountName}'`);
   }
 }
