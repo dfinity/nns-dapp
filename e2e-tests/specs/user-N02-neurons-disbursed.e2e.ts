@@ -38,6 +38,9 @@ describe("Verifies that neurons can be disbursed", () => {
     neuronId = (
       await neuronsTab.stakeNeuron({ icp: neuronIcp, dissolveDelay: 0 })
     ).neuronId;
+    // TODO: Sometimes an incorrect account balance is shown later.  This should be fixed in svelte.
+    await browser.pause(1000);
+    browser.refresh();
   });
 
   it("dissolves the neuron", async () => {
@@ -78,7 +81,6 @@ describe("Verifies that neurons can be disbursed", () => {
   });
 
   it("Goes to the accounts tab", async () => {
-    await this.browser.pause(6000);
     const navigator = new MyNavigator(browser);
     await navigator.click(
       Header.TAB_TO_ACCOUNTS_SELECTOR,
