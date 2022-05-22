@@ -1,7 +1,14 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
+
+  const isValidICP = (text: string) => /^[\d]*(\.[\d]{0,8})?$/.test(text);
+
+  // To show undefined as "" (because of the type="text")
+  const fixUndefinedValue = (value: string | number | undefined): string =>
+    value === undefined ? "" : `${value}`;
+
   export let name: string;
-  export let inputType: "number" | "text" = "number";
+  export let inputType: "icp" | "number" | "text" = "number";
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
@@ -18,12 +25,78 @@
   export let theme: "dark" | "light" = "light";
   export let withErrorMessage: boolean = false;
 
-  const handleInput = ({ currentTarget }: InputEventHandler) =>
-    (value =
-      inputType === "number" ? +currentTarget.value : currentTarget.value);
+  let inputElement: HTMLInputElement | undefined;
+
+  let selectionStart: number | null = 0;
+  let selectionEnd: number | null = 0;
+
+  let icpValue: string = fixUndefinedValue(value);
+  let lastValidICPValue: string | number | undefined = value;
+
+  /**
+   *
+   * @param noValue to ignore lastValidICPValue
+   */
+  const restoreFromValidValue = (noValue: boolean = false) => {
+    if (inputElement === undefined || inputType !== "icp") {
+      return;
+    }
+
+    if (noValue) {
+      lastValidICPValue = undefined;
+    }
+
+    value = lastValidICPValue;
+    icpValue = fixUndefinedValue(lastValidICPValue);
+
+    inputElement.value = icpValue;
+
+    // restore cursor position
+    inputElement.setSelectionRange(selectionStart, selectionEnd);
+  };
+
+  const handleInput = ({ currentTarget }: InputEventHandler) => {
+    if (inputType === "icp") {
+      const currentValue = currentTarget.value;
+
+      // handle invalid input
+      if (!isValidICP(currentValue)) {
+        // restore value (e.g. to fix invalid paste)
+        restoreFromValidValue();
+        return;
+      }
+
+      // reset to undefined ("" => undefined)
+      if (currentValue.length === 0) {
+        restoreFromValidValue(true);
+        return;
+      }
+
+      lastValidICPValue = currentValue;
+      icpValue = fixUndefinedValue(currentValue);
+      // for inputType="icp" value is a number
+      // TODO: do we need to fix lost precision for too big for number inputs?
+      value = +currentValue;
+      return;
+    }
+
+    value = inputType === "number" ? +currentTarget.value : currentTarget.value;
+  };
+
+  const handleKeyDown = () => {
+    if (inputElement === undefined) {
+      return;
+    }
+
+    // preserve selection
+    ({ selectionStart, selectionEnd } = inputElement);
+  };
 
   $: step = inputType === "number" ? step ?? "any" : undefined;
-  $: autocomplete = inputType !== "number" ? autocomplete ?? "off" : undefined;
+  $: autocomplete =
+    inputType !== "number" && inputType !== "icp"
+      ? autocomplete ?? "off"
+      : undefined;
 
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });
@@ -32,19 +105,21 @@
 <div class={`input-block ${theme} `} class:disabled class:withErrorMessage>
   <input
     data-tid="input-ui-element"
-    type={inputType}
+    type={inputType === "icp" ? "text" : inputType}
+    bind:this={inputElement}
     {required}
     {spellcheck}
     {name}
     {step}
     {disabled}
-    {value}
+    value={inputType === "icp" ? icpValue : value}
     {minLength}
     {placeholder}
     {max}
     {autocomplete}
     on:blur
     on:input={handleInput}
+    on:keydown={handleKeyDown}
   />
 
   <span class="placeholder">
