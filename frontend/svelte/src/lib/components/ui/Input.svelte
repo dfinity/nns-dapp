@@ -32,11 +32,18 @@
 
   let icpValue: string = fixUndefinedValue(value);
   let lastValidICPValue: string | number | undefined = value;
+  let internalValueChange: boolean = true;
 
-  /**
-   *
-   * @param noValue to ignore lastValidICPValue
-   */
+  $: value,
+    (() => {
+      if (!internalValueChange && inputType === "icp") {
+        icpValue = fixUndefinedValue(value);
+        lastValidICPValue = icpValue;
+      }
+
+      internalValueChange = false;
+    })();
+
   const restoreFromValidValue = (noValue: boolean = false) => {
     if (inputElement === undefined || inputType !== "icp") {
       return;
@@ -46,9 +53,11 @@
       lastValidICPValue = undefined;
     }
 
+    internalValueChange = true;
     value = lastValidICPValue;
     icpValue = fixUndefinedValue(lastValidICPValue);
 
+    // force dom update (because no active triggers)
     inputElement.value = icpValue;
 
     // restore cursor position
@@ -74,12 +83,15 @@
 
       lastValidICPValue = currentValue;
       icpValue = fixUndefinedValue(currentValue);
+
+      internalValueChange = true;
       // for inputType="icp" value is a number
       // TODO: do we need to fix lost precision for too big for number inputs?
       value = +currentValue;
       return;
     }
 
+    internalValueChange = true;
     value = inputType === "number" ? +currentTarget.value : currentTarget.value;
   };
 
