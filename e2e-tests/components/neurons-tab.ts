@@ -11,9 +11,28 @@ export class NeuronsTab extends MyNavigator {
   static readonly STAKE_NEURON_SUBMIT_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="create-neuron-button"]`;
   static readonly SET_DISSOLVE_DELAY_SLIDER_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-range"]`;
   static readonly SET_DISSOLVE_DELAY_SUBMIT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="go-confirm-delay-button"]`;
+  static readonly SKIP_DISSOLVE_DELAY_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="cancel-neuron-delay"]`;
   static readonly SET_DISSOLVE_DELAY_CONFIRM_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="confirm-delay-button"]`;
-  static readonly NEURON_DETAIL_NEURON_ID_SELECTOR: string = `[data-tid="neuron-card-title"]`;
+  static readonly NEURON_DETAIL_SELECTOR: string = `[data-tid="neuron-detail"]`;
+  static readonly NEURON_CARD_TITLE_SELECTOR: string = `[data-tid="neuron-card-title"]`;
   static readonly MERGE_NEURONS_BUTTON_SELECTOR: string = `[data-tid="merge-neurons-button"]`;
+  static readonly DISBURSE_BUTTON_SELECTOR: string = `[data-tid="disburse-button"]`;
+  static readonly DISBURSE_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`;
+  static readonly DISBURSE_CONFIRM_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="disburse-neuron-button"]`;
+
+  /**
+   * The CSS selector for a neuron card.
+   */
+  static neuronCardSelector(neuronId: string): string {
+    return `${NeuronsTab.NEURON_CARD_TITLE_SELECTOR}[data-neuron-id="${neuronId}"]`;
+  }
+
+  /**
+   * The CSS selector for the details of a particular neuron.
+   */
+  static neuronDetailSelector(neuronId: string): string {
+    return `${NeuronsTab.NEURON_DETAIL_SELECTOR}[data-neuron-id="${neuronId}"]`;
+  }
 
   constructor(browser: WebdriverIO.Browser) {
     super(browser);
@@ -74,21 +93,28 @@ export class NeuronsTab extends MyNavigator {
 
     console.log("Setting dissolve delay...");
     await this.waitForModalWithTitle("Set Dissolve Delay", { timeout: 70_000 });
-    await this.getElement(
-      NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
-      "Get dissolve delay slider"
-    ).then(async (element) => element.setValue(dissolveDelay));
-    await this.click(
-      NeuronsTab.SET_DISSOLVE_DELAY_SUBMIT_SELECTOR,
-      "Submit dissolve delay"
-    );
+    if (dissolveDelay > 0) {
+      await this.getElement(
+        NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
+        "Get dissolve delay slider"
+      ).then(async (element) => element.setValue(dissolveDelay));
+      await this.click(
+        NeuronsTab.SET_DISSOLVE_DELAY_SUBMIT_SELECTOR,
+        "Submit dissolve delay"
+      );
 
-    console.log("Confirming dissolve delay...");
-    await this.waitForModalWithTitle("Confirm Dissolve Delay");
-    await this.click(
-      NeuronsTab.SET_DISSOLVE_DELAY_CONFIRM_SELECTOR,
-      "Confirm dissolve delay"
-    );
+      console.log("Confirming dissolve delay...");
+      await this.waitForModalWithTitle("Confirm Dissolve Delay");
+      await this.click(
+        NeuronsTab.SET_DISSOLVE_DELAY_CONFIRM_SELECTOR,
+        "Confirm dissolve delay"
+      );
+    } else {
+      this.click(
+        NeuronsTab.SKIP_DISSOLVE_DELAY_SELECTOR,
+        "Skip dissolve delay"
+      );
+    }
 
     console.log("Following neurons - skip");
     await this.waitForModalWithTitle("Follow neurons", { timeout: 30_000 });
@@ -100,7 +126,7 @@ export class NeuronsTab extends MyNavigator {
     );
 
     const neuronId = await this.getElement(
-      NeuronsTab.NEURON_DETAIL_NEURON_ID_SELECTOR,
+      NeuronsTab.NEURON_CARD_TITLE_SELECTOR,
       "Wait for neuron details"
     ).then((element) => element.getText());
     console.log(`Created neuronId ${neuronId}`);

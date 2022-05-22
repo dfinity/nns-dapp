@@ -6,7 +6,7 @@ import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
 
-describe("Makes Standard Users", () => {
+describe("Verifies that neurons can be created", () => {
   /**
    * Creates a user with:
    * - ICP in the main account
