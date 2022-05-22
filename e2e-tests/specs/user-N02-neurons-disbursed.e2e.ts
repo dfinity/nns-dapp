@@ -35,7 +35,9 @@ describe("Verifies that neurons can be disbursed", () => {
       "Go to the neurons tab"
     );
     const neuronsTab = new NeuronsTab(browser);
-    neuronId = (await neuronsTab.stakeNeuron({ icp: neuronIcp, dissolveDelay: 0 })).neuronId;
+    neuronId = (
+      await neuronsTab.stakeNeuron({ icp: neuronIcp, dissolveDelay: 0 })
+    ).neuronId;
   });
 
   it("dissolves the neuron", async () => {
@@ -56,12 +58,12 @@ describe("Verifies that neurons can be disbursed", () => {
       "Start disbursing flow"
     );
     await neuronsTab.waitForModalWithTitle("Disburse Neuron");
-    // TODO: Get the main account.
-    const account = await neuronsTab.getElement(
-      NeuronsTab.DISBURSE_ACCOUNT_SELECTOR,
+    // Note: We are on the neurons tab but the account listing is the same as on the accounts tab, so we can use that selector:
+    const account = await new AccountsTab(browser).getAccountByName(
+      accountName,
       "Choose an existing account as the destination"
     );
-    accountIcpBefore = Number(await (await account.$(`[data-tid="icp-value"]`)).getValue());
+    accountIcpBefore = await AccountsTab.getAccountCardIcp(account);
     console.warn(`Account holding before dissolution: ${accountIcpBefore}`);
     await account.click();
     await neuronsTab.click(
@@ -70,7 +72,8 @@ describe("Verifies that neurons can be disbursed", () => {
     );
     await neuronsTab.waitForGone(
       NeuronsTab.neuronDetailSelector(neuronId),
-      "The neuron should disappear", {timeout: 30_000}
+      "The neuron should disappear",
+      { timeout: 30_000 }
     );
   });
 
@@ -84,12 +87,25 @@ describe("Verifies that neurons can be disbursed", () => {
 
   it("The account is credited", async () => {
     const accountsTab = await new AccountsTab(browser);
-    const account = await accountsTab.getAccountByName(accountName, "Getting the credited account");
-    const accountIcpAfter: number = await AccountsTab.getAccountCardIcp(account);
-    const losses = (accountIcpBefore + neuronIcp) - accountIcpAfter;
-    const expectedMaxFees = 0.0002;
-    if (losses >= expectedMaxFees) {
-      throw new Error(`Expected to recoup most of the ICP but got: ${JSON.stringify({neuronIcp, accountIcpBefore, accountIcpAfter, losses, expectedMaxFees})}`);
+    const account = await accountsTab.getAccountByName(
+      accountName,
+      "Getting the credited account"
+    );
+    const accountIcpAfter: number = await AccountsTab.getAccountCardIcp(
+      account
+    );
+    const losses = accountIcpBefore + neuronIcp - accountIcpAfter;
+    const expectedMaxFees = 0.0001;
+    if (losses < 0 || losses > expectedMaxFees) {
+      throw new Error(
+        `Expected to recoup most of the ICP but got: ${JSON.stringify({
+          neuronIcp,
+          accountIcpBefore,
+          accountIcpAfter,
+          losses,
+          expectedMaxFees,
+        })}`
+      );
     }
   });
 });

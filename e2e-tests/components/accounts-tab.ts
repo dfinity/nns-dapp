@@ -11,8 +11,12 @@ export class AccountsTab extends MyNavigator {
     description: string,
     options?: { timeout?: number }
   ) {
-    const element = await this.browser
-      .$(`//*[@data-tid = 'account-card' and .//*[@slot = "start" and ./h3[text()] = '${name.replaceAll("'", "\\'")}']]`);
+    const element = await this.browser.$(
+      `//*[@data-tid = 'account-card' and .//*[@slot = "start" and ./h3[text()] = '${name.replace(
+        /'/g,
+        "\\'"
+      )}']]`
+    );
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with account "${name}".`;
     await element.waitForExist({ timeout, timeoutMsg });
@@ -22,10 +26,14 @@ export class AccountsTab extends MyNavigator {
   /**
    * Gets the ICP from an account card.
    */
-  static async getAccountCardIcp(element: WebdriverIO.Element): Promise<number> {
-    const timeoutMsg = `Could not get value from element: ${await element.getHTML(true)}`;
+  static async getAccountCardIcp(
+    element: WebdriverIO.Element
+  ): Promise<number> {
+    const timeoutMsg = `Could not get value from element: ${await element.getHTML(
+      true
+    )}`;
     const icpField = element.$(`[data-tid="icp-value"]`);
-    await icpField.waitForExist({timeoutMsg});
+    await icpField.waitForExist({ timeoutMsg });
     const icpValue = await icpField.getText();
     const icpNumber = Number(icpValue);
     if (Number.isFinite(icpValue)) {
