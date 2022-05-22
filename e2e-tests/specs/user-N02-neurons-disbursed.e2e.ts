@@ -78,6 +78,7 @@ describe("Verifies that neurons can be disbursed", () => {
   });
 
   it("Goes to the accounts tab", async () => {
+    await this.browser.pause(6000);
     const navigator = new MyNavigator(browser);
     await navigator.click(
       Header.TAB_TO_ACCOUNTS_SELECTOR,
