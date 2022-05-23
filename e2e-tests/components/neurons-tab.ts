@@ -21,7 +21,10 @@ export class NeuronsTab extends MyNavigator {
 
   // TODO: There is no good way to make sure that the browser has displayed the expected modal.  The text can change due to internationalisation.
   // Ideally the modal body would have a specific data-tid so that we can be sure that we have the expected modal and are sure that any further selectors are inside that expected modal.
-  async waitForModalWithTitle(title: string, options?: { timeout?: number }) {
+  async waitForModalWithTitle(
+    title: string,
+    options?: { timeout?: number }
+  ): Promise<void> {
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for modal with title "${title}".`;
     await this.browser.waitUntil(

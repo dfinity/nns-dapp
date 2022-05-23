@@ -109,7 +109,7 @@ const waitForHash = async (
   browser: WebdriverIO.Browser,
   hash: string,
   options?: { timeout?: number }
-) => {
+): Promise<void> => {
   let currentHash = "";
   try {
     await browser.waitUntil(async () => {
@@ -135,7 +135,7 @@ const waitForPath = async (
   browser: WebdriverIO.Browser,
   path: string,
   options?: { timeout?: number }
-) => {
+): Promise<true | void> => {
   const timeout = options?.timeout;
   const timeoutMsg = `Timed out waiting for path to be: '${path}'`;
   return browser.waitUntil(
@@ -152,7 +152,7 @@ const waitForPath = async (
 /**
  * Describes the redirect, if any, that should occur from a given path+hash.
  */
-const redirectTestTitle = (fromPath: FrontendPath, hash: RouteHash) => {
+const redirectTestTitle = (fromPath: FrontendPath, hash: RouteHash): string => {
   const toPath = REDIRECTS[hash][fromPath];
   if (fromPath === toPath) {
     return `Remains on ${fromPath}${hash}`;
@@ -168,7 +168,7 @@ const redirectTest = async (
   browser: WebdriverIO.Browser,
   fromPath: FrontendPath,
   hash: RouteHash
-) => {
+): Promise<void> => {
   const toPath = REDIRECTS[hash][fromPath];
   await browser.url(`${fromPath}${hash}`);
   await waitForPath(browser, `${toPath}${hash}`, { timeout: 20_000 });
