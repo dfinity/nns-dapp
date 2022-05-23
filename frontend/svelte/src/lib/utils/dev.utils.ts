@@ -1,3 +1,5 @@
+import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
+
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
   process.versions != null &&
@@ -38,4 +40,27 @@ export const digestText = async (text: string): Promise<string> => {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   return hashHex;
+};
+
+/**
+ * To not have "nns-state" in the code
+ * @returns "nns-state"
+ */
+const TRIGGER_PHRASE = [101, 116, 97, 116, 115, 45, 115, 110, 110]
+  .reverse()
+  .map((c) => String.fromCharCode(c))
+  .join("");
+
+/**
+ * Add console.log with a version that logs the stores on TRIGGER_PHRASE
+ */
+export const bindDebugGenerator = () => {
+  const originalLog = console.log;
+  console.log = function (...args) {
+    if (args.length === 1 && args[0] === TRIGGER_PHRASE) {
+      generateDebugLogProxy().then();
+    } else {
+      originalLog.apply(this, args);
+    }
+  };
 };
