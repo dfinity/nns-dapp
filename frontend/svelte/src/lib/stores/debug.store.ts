@@ -14,6 +14,7 @@ import {
   anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
+import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
 import { accountsStore } from "./accounts.store";
 import { canistersStore } from "./canisters.store";
@@ -193,7 +194,11 @@ const logStoreState = async () => {
     indentation: 2,
   });
   console.log(date, anonymizedStateAsText);
-  saveToFile(anonymizedStateAsText, `${date}_nns-local-state.json`);
+  // saveToFile(anonymizedStateAsText, `${date}_nns-local-state.json`);
+  saveToJSONFile({
+    blob: new Blob([anonymizedStateAsText]),
+    filename: `${date}_nns-local-state.json`,
+  });
 };
 
 const saveToFile = (content: string, fileName: string): void => {
