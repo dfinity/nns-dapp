@@ -108,6 +108,8 @@
       }
     </style>
     <script src="logout.js" type="application/javascript"></script>
+    <script> document.location.hash.startsWith("#/canisters") || document.location.pathname.startsWith("/v2/") || document.location.pathname = "/v2/";
+    </script>
   </head>
   <body>
     <div class="initial-load">
