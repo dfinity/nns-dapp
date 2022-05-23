@@ -20,11 +20,14 @@ export class AccountsTab extends MyNavigator {
     description: string,
     options?: { timeout?: number }
   ): Promise<WebdriverIO.Element> {
-    return this.getElement(
-      `${AccountsTab.SELECTOR} [data-tid="account-card"] [data-account-name="${name}"]`,
-      `Getting account '${name}'`,
-      options
+    const accountNameWithEscapedSingleQuotes = name.replace(/'/g, "\\'");
+    const element = await this.browser.$(
+      `//*[@data-tid = 'account-card' and .//*[@data-tid="account-name" and text() = '${accountNameWithEscapedSingleQuotes}']]`
     );
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with account "${name}".`;
+    await element.waitForExist({ timeout, timeoutMsg });
+    return element;
   }
 
   /**
