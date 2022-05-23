@@ -34,7 +34,6 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
-    withErrorMessage={error}
     bind:value
     on:blur
     on:input
@@ -42,7 +41,7 @@
     <slot name="button" slot="button" />
   </Input>
 
-  {#if errorMessage !== undefined}
+  {#if error}
     <p class={`error-message ${theme}`} data-tid="input-error-message">
       <IconInfo />
       <span>
@@ -61,6 +60,7 @@
   }
 
   .error {
+    --input-margin-bottom: 0;
     --input-error-color: var(--error);
   }
 

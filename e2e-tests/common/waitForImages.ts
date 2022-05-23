@@ -1,4 +1,6 @@
-export const waitForImages = async (browser: WebdriverIO.Browser) =>
+export const waitForImages = async (
+  browser: WebdriverIO.Browser
+): Promise<true | void> =>
   // Wait for all images to be "complete", i.e. loaded
   browser.waitUntil(
     function (): boolean {
