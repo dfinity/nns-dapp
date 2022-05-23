@@ -35,6 +35,7 @@ module.exports = {
   plugins: ["@typescript-eslint", "eslint-plugin-wdio"],
   ignorePatterns: ["node_modules", ".eslintrc.js"],
   rules: {
+    "@typescript-eslint/explicit-function-return-type": "warn",
     // https://typescript-eslint.io/rules/no-inferrable-types/
     "@typescript-eslint/no-inferrable-types": 0,
     // This allows to use `async` functions also in function types that expect `void`.
