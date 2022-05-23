@@ -17,3 +17,6 @@ export const formattedTransactionFeeICP = () =>
 
 export const maxICP = (icp: ICP | undefined): number =>
   Math.max((Number(icp?.toE8s() ?? 0) - TRANSACTION_FEE_E8S) / E8S_PER_ICP, 0);
+
+export const isValidICPFormat = (text: string) =>
+  /^[\d]*(\.[\d]{0,8})?$/.test(text);

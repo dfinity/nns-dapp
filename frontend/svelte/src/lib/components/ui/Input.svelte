@@ -1,7 +1,6 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
-
-  const isValidICP = (text: string) => /^[\d]*(\.[\d]{0,8})?$/.test(text);
+  import { isValidICPFormat } from "../../utils/icp.utils";
 
   // To show undefined as "" (because of the type="text")
   const fixUndefinedValue = (value: string | number | undefined): string =>
@@ -69,7 +68,7 @@
       const currentValue = currentTarget.value;
 
       // handle invalid input
-      if (!isValidICP(currentValue)) {
+      if (!isValidICPFormat(currentValue)) {
         // restore value (e.g. to fix invalid paste)
         restoreFromValidValue();
         return;
