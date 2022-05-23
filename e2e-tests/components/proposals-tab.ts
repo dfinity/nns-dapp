@@ -50,6 +50,43 @@ export class ProposalsTab extends MyNavigator {
     return proposalId;
   }
 
+  /**
+   * Enable (or disable) a set of values in one filter.
+   *
+   * @param {string} filterTid = the test ID of the filter.
+   * @param {bool} disable = uncheck the given elements instead of checking them.
+   */
+  async filter(
+    filterTid: string,
+    values: Set<string>,
+    disable: boolean = false
+  ): Promise<void> {
+    await this.click(
+      `[data-tid="${filterTid}"]`,
+      `Open filter modal for ${filterTid}`
+    );
+    await this.browser.execute(
+      (values: Set<string>, disable) =>
+        Array.from(document.querySelectorAll(`.modal .checkbox`)).forEach(
+          (element) => {
+            const checkbox = element.querySelector("input");
+            if (checkbox === null) {
+              throw new Error(
+                `No checkbox in filter item: ${element.outerHTML}`
+              );
+            }
+            checkbox.checked =
+              disable !==
+              values.has(element.querySelector("label")?.innerText ?? "");
+          }
+        ),
+      values,
+      disable
+    );
+    await this.click(`.modal button.primary`, "Apply filter");
+    await this.waitForGone(".modal", "Wait for the filter modal to go away");
+  }
+
   constructor(browser: WebdriverIO.Browser) {
     super(browser);
   }
