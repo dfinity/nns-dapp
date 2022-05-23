@@ -6,7 +6,7 @@ export class NeuronsTab extends MyNavigator {
   static readonly MODAL_CLOSE_SELECTOR: string = `[data-tid="close-modal"]`;
   static readonly MODAL_HEADER_SELECTOR: string = `#modalTitle`; // TODO: This should have a data-tid
   static readonly STAKE_NEURON_BUTTON_SELECTOR: string = `[data-tid="stake-neuron-button"]`; // Note the user-visible text is plural but the data-tid is singular.  One neuron gets staked.
-  static readonly STAKE_NEURON_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="card"]`; // TODO: This is very imprecise
+  static readonly STAKE_NEURON_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`; // TODO: This is very imprecise
   static readonly STAKE_NEURON_AMOUNT_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="input-ui-element"]`;
   static readonly STAKE_NEURON_SUBMIT_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="create-neuron-button"]`;
   static readonly SET_DISSOLVE_DELAY_SLIDER_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-range"]`;
@@ -21,7 +21,10 @@ export class NeuronsTab extends MyNavigator {
 
   // TODO: There is no good way to make sure that the browser has displayed the expected modal.  The text can change due to internationalisation.
   // Ideally the modal body would have a specific data-tid so that we can be sure that we have the expected modal and are sure that any further selectors are inside that expected modal.
-  async waitForModalWithTitle(title: string, options?: { timeout?: number }) {
+  async waitForModalWithTitle(
+    title: string,
+    options?: { timeout?: number }
+  ): Promise<void> {
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for modal with title "${title}".`;
     await this.browser.waitUntil(
@@ -91,7 +94,7 @@ export class NeuronsTab extends MyNavigator {
     );
 
     console.log("Following neurons - skip");
-    await this.waitForModalWithTitle("Follow neurons");
+    await this.waitForModalWithTitle("Follow neurons", { timeout: 30_000 });
     await this.click(NeuronsTab.MODAL_CLOSE_SELECTOR, "Close modal");
     await this.waitForGone(
       NeuronsTab.MODAL_SELECTOR,

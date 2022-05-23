@@ -26,7 +26,11 @@
   {$i18n.proposal_detail.topic_prefix}
   {topic}
 </p>
-<p class:text_small={size === "small"}>
+<p
+  class:text_small={size === "small"}
+  data-tid="proposal-id"
+  data-proposal-id={id}
+>
   {$i18n.proposal_detail.id_prefix}
   {id}
 </p>

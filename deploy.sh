@@ -111,6 +111,7 @@ while (($# > 0)); do
     CREATE_USERS="true"
     ;;
   --open)
+    GUESS="false"
     OPEN_NNS_DAPP="true"
     ;;
   --dry-run)
@@ -207,7 +208,7 @@ if [[ "$CREATE_USERS" == "true" ]]; then
   pushd e2e-tests
   npm ci
   printf '%s\n' user-N01-neuron-created.e2e.ts |
-    SCREENSHOT=1 xargs -I {} npm run wdio -- --spec "./specs/{}"
+    SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
   popd
 fi
 

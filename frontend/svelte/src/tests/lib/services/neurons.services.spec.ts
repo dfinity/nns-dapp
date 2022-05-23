@@ -1211,6 +1211,7 @@ describe("neurons-services", () => {
   });
 
   describe("load neuron", () => {
+    afterEach(() => jest.clearAllMocks());
     it("should get neuron from neurons store if presented and not call queryNeuron", async () => {
       neuronsStore.pushNeurons({ neurons: [mockNeuron], certified: true });
       await loadNeuron({
@@ -1230,6 +1231,23 @@ describe("neurons-services", () => {
         setNeuron: jest.fn,
       });
       expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
+      const neuronId = BigInt(333333);
+      const publicInfoNeuron = {
+        ...mockNeuron,
+        neuronId,
+        fullNeuron: undefined,
+      };
+      spyGetNeuron.mockImplementation(() => Promise.resolve(publicInfoNeuron));
+      const setNeuronSpy = jest.fn();
+      await loadNeuron({
+        neuronId,
+        setNeuron: setNeuronSpy,
+      });
+      expect(spyGetNeuron).toBeCalled();
+      expect(setNeuronSpy).toBeCalled();
     });
   });
 });
