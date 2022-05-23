@@ -275,7 +275,7 @@ export const isValidInputAmount = ({
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
 export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(String(amount));
+  const stake = ICP.fromString(amount.toFixed(8));
 
   if (!(stake instanceof ICP) || stake === undefined) {
     throw new InvalidAmountError();
