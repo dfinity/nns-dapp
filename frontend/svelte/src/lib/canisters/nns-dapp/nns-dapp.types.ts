@@ -21,7 +21,7 @@ export type AttachCanisterResponse =
   | { CanisterLimitExceeded: null };
 export interface CanisterDetails {
   name: string;
-  canister_id: Principal;
+  canister_id: CanisterId;
 }
 export type CanisterId = Principal;
 export type CreateSubAccountResponse = {
