@@ -3,6 +3,10 @@ import { MyNavigator } from "../common/navigator";
 export class AccountsTab extends MyNavigator {
   static readonly SELECTOR: string = `[data-tid="accounts-body"]`; // This should be used to verify that we are on the accounts tab.
 
+  constructor(browser: WebdriverIO.Browser) {
+    super(browser);
+  }
+
   /**
    * Gets an account by account title.
    */
@@ -11,11 +15,9 @@ export class AccountsTab extends MyNavigator {
     description: string,
     options?: { timeout?: number }
   ) {
+    const accountNameWithEscapedSingleQuotes = name.replace(/'/g, "\\'");
     const element = await this.browser.$(
-      `//*[@data-tid = 'account-card' and .//*[@slot = "start" and ./h3[text()] = '${name.replace(
-        /'/g,
-        "\\'"
-      )}']]`
+      `//*[@data-tid = 'account-card' and .//*[@data-tid="account-name" and text() = '${accountNameWithEscapedSingleQuotes}']]`
     );
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with account "${name}".`;
