@@ -15,6 +15,7 @@
     AccountType,
   } from "../../types/add-account.context";
   import { ADD_ACCOUNT_CONTEXT_KEY } from "../../types/add-account.context";
+  import { debugAddAccountStore } from "../../stores/debug.store";
 
   const subAccountSteps: Steps = [
     {
@@ -52,6 +53,8 @@
     type: undefined,
     hardwareWalletName: undefined,
   });
+
+  debugAddAccountStore(addAccountStore);
 
   const selectType = async (type: AccountType) => {
     // Set the type in store and reset other values only if the new type is not the one that was previously used - e.g. user first select hardware wallet, entered a name, clicked continue, went twice back and go to subaccount

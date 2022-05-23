@@ -36,6 +36,10 @@ export const stringifyJson = (
     value,
     (_, value) => {
       switch (typeof value) {
+        case "function":
+          return "f () { ... }";
+        case "symbol":
+          return value.toString();
         case "object": {
           // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
           if (isPrincipal(value)) {
@@ -43,6 +47,11 @@ export const stringifyJson = (
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
           }
+
+          if (value instanceof Promise) {
+            return "Promise(...)";
+          }
+
           break;
         }
         case "bigint": {
@@ -116,3 +125,17 @@ export const bytesToHexString = (bytes: number[]): string =>
     (str, byte) => `${str}${byte.toString(16).padStart(2, "0")}`,
     ""
   );
+
+export const isNullOrUndefined = (value: unknown): boolean =>
+  value === undefined || value === null;
+
+export const mapPromises = async <T, R>(
+  items: Array<T> | undefined,
+  fun: (args: T) => Promise<R>
+): Promise<Array<R> | undefined> => {
+  if (items === undefined) {
+    return undefined;
+  }
+
+  return Promise.all(items.map(async (item) => await fun(item)));
+};
