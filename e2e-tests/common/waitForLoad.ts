@@ -3,7 +3,9 @@
  * we have a service worker that can load completely before
  * the actual page loads and we don't want that.
  */
-export const waitForLoad = (browser) => {
+export const waitForLoad = (
+  browser: WebdriverIO.Browser
+): Promise<true | void> => {
   // Check that the page has completely loaded, and we are not in the intermediate service worker bootstrap page:
   return browser.waitUntil(
     () =>
