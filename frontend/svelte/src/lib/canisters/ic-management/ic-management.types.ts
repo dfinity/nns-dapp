@@ -14,8 +14,12 @@ export interface definite_canister_settings {
 }
 export type user_id = Principal;
 export type wasm_module = Array<number>;
+export type CanisterStatus =
+  | { stopped: null }
+  | { stopping: null }
+  | { running: null };
 export type CanisterStatusResponse = {
-  status: { stopped: null } | { stopping: null } | { running: null };
+  status: CanisterStatus;
   memory_size: bigint;
   cycles: bigint;
   settings: definite_canister_settings;

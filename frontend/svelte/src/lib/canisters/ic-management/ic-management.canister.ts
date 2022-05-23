@@ -1,5 +1,6 @@
 import { Actor, type CallConfig } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
+import { IC_MANAGEMENT_CANISTER_ID } from "../../constants/canister-ids.constants";
 import { toCanisterDetails } from "./converters";
 import type {
   CanisterDetails,
@@ -20,7 +21,7 @@ function transform(
 ) {
   // eslint-disable-next-line
   const first = args[0] as any;
-  let effectiveCanisterId = Principal.fromText("aaaaa-aa");
+  let effectiveCanisterId = IC_MANAGEMENT_CANISTER_ID;
   if (
     first !== undefined &&
     typeof first === "object" &&
@@ -57,19 +58,17 @@ export class ICManagementCanister {
   /**
    * Returns canister data
    *
-   * @param {string} canisterIdString
+   * @param {Principal} canisterId
    * @returns Promise<CanisterDetails>
    * @throws UserNotTheController, Error
    */
   public getCanisterDetails = async (
-    canisterIdString: string
+    canisterId: Principal
   ): Promise<CanisterDetails> => {
     let rawResponse: CanisterStatusResponse;
-    let principal: Principal;
     try {
-      principal = Principal.fromText(canisterIdString);
       rawResponse = await this.service.canister_status({
-        canister_id: principal,
+        canister_id: canisterId,
       });
     } catch (e) {
       const httpError = toHttpError(e);
@@ -82,7 +81,7 @@ export class ICManagementCanister {
 
     return toCanisterDetails({
       response: rawResponse,
-      canisterId: principal,
+      canisterId,
     });
   };
 }

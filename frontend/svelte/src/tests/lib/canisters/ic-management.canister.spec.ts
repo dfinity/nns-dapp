@@ -47,9 +47,7 @@ describe("ICManagementCanister", () => {
 
       const icManagement = await createICManagement(service);
 
-      const res = await icManagement.getCanisterDetails(
-        mockCanisterDetails.id.toText()
-      );
+      const res = await icManagement.getCanisterDetails(mockCanisterDetails.id);
 
       expect(res).toEqual(
         toCanisterDetails({ response, canisterId: mockCanisterDetails.id })
@@ -63,7 +61,8 @@ describe("ICManagementCanister", () => {
 
       const icManagement = await createICManagement(service);
 
-      const call = () => icManagement.getCanisterDetails("aaaaa-aa");
+      const call = () =>
+        icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
       expect(call).rejects.toThrowError(UserNotTheControllerError);
     });
@@ -75,7 +74,8 @@ describe("ICManagementCanister", () => {
 
       const icManagement = await createICManagement(service);
 
-      const call = () => icManagement.getCanisterDetails("aaaaa-aa");
+      const call = () =>
+        icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
       expect(call).rejects.toThrowError(Error);
     });

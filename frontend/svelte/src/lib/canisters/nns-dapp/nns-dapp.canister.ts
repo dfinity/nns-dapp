@@ -1,6 +1,6 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import type { Principal } from "@dfinity/principal";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
@@ -210,14 +210,14 @@ export class NNSDappCanister {
 
   public attachCanister = async ({
     name,
-    canisterIdString,
+    canisterId,
   }: {
     name: string;
-    canisterIdString: string;
+    canisterId: Principal;
   }): Promise<void> => {
     const response = await this.certifiedService.attach_canister({
       name,
-      canister_id: Principal.fromText(canisterIdString),
+      canister_id: canisterId,
     });
     if ("Ok" in response) {
       return;

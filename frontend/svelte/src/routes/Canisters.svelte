@@ -9,6 +9,7 @@
   import { canistersStore } from "../lib/stores/canisters.store";
   import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { testCMC } from "../lib/api/canisters.api";
 
   let loading: boolean = false;
 
@@ -54,6 +55,7 @@
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
+      <button on:click={testCMC}>Test</button>
 
       <!-- TODO(L2-335): display cards -->
       {#each $canistersStore as canister}

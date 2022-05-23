@@ -38,7 +38,7 @@ export class CMCCanister {
   public getIcpToCyclesConversionRate = async (): Promise<bigint> => {
     const response = await this.service.get_icp_xdr_conversion_rate();
 
-    // TODO validate the certificate in the response
+    // TODO: validate the certificate in the response - https://dfinity.atlassian.net/browse/FOLLOW-223
     return (
       (response.data.xdr_permyriad_per_icp * CYCLES_PER_XDR) / BigInt(10_000)
     );

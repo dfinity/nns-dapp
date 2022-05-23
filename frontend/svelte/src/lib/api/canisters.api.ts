@@ -1,10 +1,5 @@
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICP,
-  LedgerCanister,
-  SubAccount,
-} from "@dfinity/nns";
+import type { Identity } from "@dfinity/agent";
+import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
 import { principalToSubAccount } from "../canisters/cmc/utils";
@@ -14,13 +9,13 @@ import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-
 import {
   CYCLES_MINTING_CANISTER_ID,
   IC_MANAGEMENT_CANISTER_ID,
-  LEDGER_CANISTER_ID,
 } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { getIdentity } from "../services/auth.services";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
+import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryCanisters = async ({
@@ -48,9 +43,9 @@ export const queryCanisterDetails = async ({
   canisterId: Principal;
 }): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId.toText()} details call...`);
-  const { canister } = await icManagementCanister(identity);
+  const { icMgt } = await canisters(identity);
 
-  const response = await canister.getCanisterDetails(canisterId.toText());
+  const response = await icMgt.getCanisterDetails(canisterId);
 
   logWithTimestamp(`Getting canister ${canisterId.toText()} details complete.`);
 
@@ -68,29 +63,42 @@ export const createCanister = async ({
 }): Promise<Principal> => {
   logWithTimestamp("Create canister call...");
 
-  const { canister: cmc, agent } = await cmcCanister(identity);
+  // const agent = await createAgent({
+  //   identity,
+  //   host: HOST,
+  // });
+  const { cmc } = await canisters(identity);
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
-  const ledger = LedgerCanister.create({
-    agent,
-    canisterId: LEDGER_CANISTER_ID,
-  });
+  // const ledger = LedgerCanister.create({
+  //   agent,
+  //   canisterId: LEDGER_CANISTER_ID,
+  // });
   const principal = identity.getPrincipal();
   const toSubAccount = principalToSubAccount(principal);
+  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
+  // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
   const recipient = AccountIdentifier.fromPrincipal({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
   // Transfer the funds
-  const blockHeight = await ledger.transfer({
+  // const blockHeight = await ledger.transfer({
+  //   memo: CREATE_CANISTER_MEMO,
+  //   amount,
+  //   to: recipient,
+  // });
+  const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
+    identity,
+    to: recipient.toHex(),
     amount,
-    to: recipient,
   });
 
   // If this fails or the client loses connection
   // nns dapp backend polls the transactions
   // and will also notify to CMC the transaction if it's pending
+  // TODO: https://dfinity.atlassian.net/browse/L2-591
   const canisterPrincipal = await cmc.notifyCreateCanister({
     controller: principal,
     block_index: blockHeight,
@@ -101,7 +109,7 @@ export const createCanister = async ({
   // but it can be an empty string
   await nnsDapp.attachCanister({
     name: name ?? "",
-    canisterIdString: canisterPrincipal.toText(),
+    canisterId: canisterPrincipal,
   });
 
   logWithTimestamp("Create canister complete.");
@@ -120,23 +128,33 @@ export const topUpCanister = async ({
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterPrincipal.toText()} call...`);
 
-  const { canister: cmc, agent } = await cmcCanister(identity);
-  const ledger = LedgerCanister.create({
-    agent,
-    canisterId: LEDGER_CANISTER_ID,
-  });
+  const { cmc } = await canisters(identity);
+  // const ledger = LedgerCanister.create({
+  //   agent,
+  //   canisterId: LEDGER_CANISTER_ID,
+  // });
   const toSubAccount = principalToSubAccount(canisterPrincipal);
   const recipient = AccountIdentifier.fromPrincipal({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
-  const blockHeight = await ledger.transfer({
+  // const blockHeight = await ledger.transfer({
+  //   memo: TOP_UP_CANISTER_MEMO,
+  //   amount,
+  //   to: recipient,
+  // });
+  const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
+    identity,
     amount,
-    to: recipient,
+    to: recipient.toHex(),
   });
 
+  // If this fails or the client loses connection
+  // nns dapp backend polls the transactions
+  // and will also notify to CMC the transaction if it's pending
+  // TODO: https://dfinity.atlassian.net/browse/L2-591
   await cmc.notifyTopUp({
     canister_id: canisterPrincipal,
     block_index: blockHeight,
@@ -151,6 +169,17 @@ export const topUpCanister = async ({
 export const testCMC = async (): Promise<void> => {
   try {
     const identity = await getIdentity();
+    const agent = await createAgent({
+      identity,
+      host: HOST,
+    });
+
+    const cmc = CMCCanister.create({
+      agent,
+      canisterId: CYCLES_MINTING_CANISTER_ID,
+    });
+    const a = await cmc.getIcpToCyclesConversionRate();
+    console.log("da conversion rate: ", a);
     const canisterId = await createCanister({
       identity,
       amount: ICP.fromString("3") as ICP,
@@ -179,40 +208,26 @@ export const testCMC = async (): Promise<void> => {
   }
 };
 
-export const cmcCanister = async (
+const canisters = async (
   identity: Identity
 ): Promise<{
-  agent: HttpAgent;
-  canister: CMCCanister;
+  cmc: CMCCanister;
+  icMgt: ICManagementCanister;
 }> => {
   const agent = await createAgent({
     identity,
     host: HOST,
   });
 
-  const canister = CMCCanister.create({
+  const cmc = CMCCanister.create({
     agent,
     canisterId: CYCLES_MINTING_CANISTER_ID,
   });
 
-  return { canister, agent };
-};
-
-export const icManagementCanister = async (
-  identity: Identity
-): Promise<{
-  agent: HttpAgent;
-  canister: ICManagementCanister;
-}> => {
-  const agent = await createAgent({
-    identity,
-    host: HOST,
-  });
-
-  const canister = ICManagementCanister.create({
+  const icMgt = ICManagementCanister.create({
     agent,
     canisterId: IC_MANAGEMENT_CANISTER_ID,
   });
 
-  return { canister, agent };
+  return { cmc, icMgt };
 };

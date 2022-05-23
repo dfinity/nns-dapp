@@ -59,7 +59,7 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
       });
       expect(mockICManagementCanister.getCanisterDetails).toBeCalledWith(
-        mockCanisterDetails.id.toText()
+        mockCanisterDetails.id
       );
       expect(response).toEqual(mockCanisterDetails);
     });
@@ -81,7 +81,7 @@ describe("canisters-api", () => {
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
-        canisterIdString: mockCanisterDetails.id.toText(),
+        canisterId: mockCanisterDetails.id,
       });
       expect(response).toEqual(mockCanisterDetails.id);
     });
