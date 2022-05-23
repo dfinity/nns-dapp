@@ -8,10 +8,6 @@ export class AccountsTab extends MyNavigator {
   static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `#modalContent [data-tid="input-ui-element"]`;
   static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `#modalContent [type="submit"]`;
 
-  constructor(browser: WebdriverIO.Browser) {
-    super(browser);
-  }
-
   /**
    * Creates a browser controller for the accounts tab.
    */
