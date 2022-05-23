@@ -87,6 +87,17 @@ describe("Input", () => {
     testGetAttribute({ container, attribute: "type", expected: "text" });
   });
 
+  it("should render an input of type icp as text", () => {
+    const { container } = render(Input, {
+      props: {
+        ...props,
+        inputType: "icp",
+      },
+    });
+
+    testGetAttribute({ container, attribute: "type", expected: "text" });
+  });
+
   it("should render a required input", () => {
     const { container } = render(Input, {
       props,
