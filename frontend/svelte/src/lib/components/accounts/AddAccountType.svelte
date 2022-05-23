@@ -17,11 +17,21 @@
 </script>
 
 <div class="wizard-wrapper">
-  <div class="card-item" role="button" on:click={selectNewSubAccount}>
+  <div
+    class="card-item"
+    role="button"
+    on:click={selectNewSubAccount}
+    data-tid="choose-linked-as-account-type"
+  >
     <h4>{$i18n.accounts.new_linked_title}</h4>
     <span>{$i18n.accounts.new_linked_subtitle}</span>
   </div>
-  <div class="card-item" role="button" on:click={selectNewHardwareWallet}>
+  <div
+    class="card-item"
+    role="button"
+    on:click={selectNewHardwareWallet}
+    data-tid="choose-hardware-wallet-as-account-type"
+  >
     <h4>{$i18n.accounts.attach_hardware_title}</h4>
     <span>{$i18n.accounts.attach_hardware_subtitle}</span>
   </div>

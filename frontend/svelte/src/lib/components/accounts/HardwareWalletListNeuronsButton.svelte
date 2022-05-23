@@ -13,6 +13,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "../../utils/hardware-wallet-neurons.utils";
   import { authStore } from "../../stores/auth.store";
+  import { debugHardwareWalletNeuronsStore } from "../../stores/debug.store";
 
   let modalOpen = false;
 
@@ -23,6 +24,7 @@
   const hardwareWalletNeuronsStore = writable<HardwareWalletNeuronsStore>({
     neurons: [],
   });
+  debugHardwareWalletNeuronsStore(hardwareWalletNeuronsStore);
 
   setContext<HardwareWalletNeuronsContext>(
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
