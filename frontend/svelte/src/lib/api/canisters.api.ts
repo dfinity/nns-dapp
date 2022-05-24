@@ -8,7 +8,6 @@ import type { CanisterDetails } from "../canisters/ic-management/ic-management.c
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
-import { getIdentity } from "../services/auth.services";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
@@ -136,49 +135,6 @@ export const topUpCanister = async ({
   });
 
   logWithTimestamp(`Topping up canister ${canisterId.toText()} complete.`);
-};
-
-// TODO: Remove before merging
-export const testCMC = async (): Promise<void> => {
-  try {
-    const identity = await getIdentity();
-    const agent = await createAgent({
-      identity,
-      host: HOST,
-    });
-
-    const cmc = CMCCanister.create({
-      agent,
-      canisterId: CYCLES_MINTING_CANISTER_ID,
-    });
-    const a = await cmc.getIcpToCyclesConversionRate();
-    console.log("da conversion rate: ", a);
-    const canisterId = await createCanister({
-      identity,
-      amount: ICP.fromString("3") as ICP,
-    });
-
-    const canisterDetails = await queryCanisterDetails({
-      identity,
-      canisterId,
-    });
-    console.log(canisterDetails);
-
-    await topUpCanister({
-      identity,
-      amount: ICP.fromString("1") as ICP,
-      canisterId: canisterId,
-    });
-
-    const canisterDetails2 = await queryCanisterDetails({
-      identity,
-      canisterId,
-    });
-    console.log(canisterDetails2);
-  } catch (error) {
-    console.log("in da error");
-    console.log(error);
-  }
 };
 
 const canisters = async (
