@@ -11,13 +11,10 @@
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { toastsStore } from "../../stores/toasts.store";
 
-  export let onTransactionComplete: (() => Promise<void>) | undefined =
-    undefined;
-
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store }: TransactionContext = context;
+  const { store, onTransactionComplete }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
 

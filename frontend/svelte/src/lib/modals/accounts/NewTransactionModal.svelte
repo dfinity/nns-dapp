@@ -75,6 +75,7 @@
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: newTransactionStore,
     next: () => modal?.next(),
+    onTransactionComplete,
   });
 
   // Update store with selectedAccount in case the property would be set after the component is initialized
@@ -109,7 +110,7 @@
       <NewTransactionAmount />
     {/if}
     {#if currentStep?.name === "Review"}
-      <NewTransactionReview {onTransactionComplete} on:nnsClose />
+      <NewTransactionReview on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>
