@@ -33,6 +33,7 @@
     type SelectedAccountStore,
   } from "../lib/types/selected-account.context";
   import { isAccountHardwareWallet } from "../lib/utils/accounts.utils";
+  import { debugSelectedAccountStore } from "../lib/stores/debug.store";
 
   onMount(() => {
     if (!SHOW_ACCOUNTS_ROUTE) {
@@ -61,6 +62,9 @@
     account: undefined,
     transactions: undefined,
   });
+
+  debugSelectedAccountStore(selectedAccountStore);
+
   setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
