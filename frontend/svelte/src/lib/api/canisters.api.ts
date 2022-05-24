@@ -60,16 +60,8 @@ export const createCanister = async ({
 }): Promise<Principal> => {
   logWithTimestamp("Create canister call...");
 
-  // const agent = await createAgent({
-  //   identity,
-  //   host: HOST,
-  // });
   const { cmc } = await canisters(identity);
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
-  // const ledger = LedgerCanister.create({
-  //   agent,
-  //   canisterId: LEDGER_CANISTER_ID,
-  // });
   const principal = identity.getPrincipal();
   const toSubAccount = principalToSubAccount(principal);
   // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
@@ -80,11 +72,6 @@ export const createCanister = async ({
   });
 
   // Transfer the funds
-  // const blockHeight = await ledger.transfer({
-  //   memo: CREATE_CANISTER_MEMO,
-  //   amount,
-  //   to: recipient,
-  // });
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
     identity,
@@ -127,21 +114,11 @@ export const topUpCanister = async ({
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
 
   const { cmc } = await canisters(identity);
-  // const ledger = LedgerCanister.create({
-  //   agent,
-  //   canisterId: LEDGER_CANISTER_ID,
-  // });
   const toSubAccount = principalToSubAccount(canisterId);
   const recipient = AccountIdentifier.fromPrincipal({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-
-  // const blockHeight = await ledger.transfer({
-  //   memo: TOP_UP_CANISTER_MEMO,
-  //   amount,
-  //   to: recipient,
-  // });
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
