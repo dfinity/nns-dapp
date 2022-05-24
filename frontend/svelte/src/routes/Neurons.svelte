@@ -9,7 +9,7 @@
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import {neuronsStore, sortedNeuronStore} from "../lib/stores/neurons.store";
+  import { neuronsStore, sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
