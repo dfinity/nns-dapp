@@ -1228,9 +1228,29 @@ describe("neurons-services", () => {
     it("should call the api to get neuron if not in store", async () => {
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        setNeuron: jest.fn,
+        setNeuron: jest.fn(),
       });
       expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should call the api to get neuron and check the balance on update", async () => {
+      const neuronId = BigInt(333333);
+      const controlledNeuron = {
+        ...mockNeuron,
+        neuronId,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      spyGetNeuron.mockImplementation(() => Promise.resolve(controlledNeuron));
+      await loadNeuron({
+        neuronId,
+        setNeuron: jest.fn(),
+      });
+      await tick();
+      expect(spyGetNeuron).toBeCalled();
+      expect(spyGetNeuronBalance).toBeCalled();
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
