@@ -21,6 +21,7 @@
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { bindDebugGenerator } from "./lib/utils/dev.utils";
+  import { listNeurons } from "./lib/services/neurons.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -35,7 +36,7 @@
         return;
       }
 
-      await syncAccounts();
+      await Promise.all([syncAccounts(), listNeurons()]);
     }
   );
 
