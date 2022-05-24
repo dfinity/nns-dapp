@@ -42,56 +42,41 @@ export const digestText = async (text: string): Promise<string> => {
   return hashHex;
 };
 
+/**
+ * Bind debug logger tigger to the node (6 clicks in 2 seconds)
+ */
 export function triggerDebugReport(node: HTMLElement) {
-  const FIVE_SECONDS = 5 * 1000;
-  const startEvent = "ontouchstart" in document ? "touchstart" : "mousedown";
-  const stopEvent = "ontouchend" in document ? "touchend" : "mouseup";
-  const moveEvent = "ontouchmove" in document ? "touchmove" : "mousemove";
+  const TWO_SECONDS = 2 * 1000;
+  const originalUserSelectValue: string = node.style.userSelect;
 
-  let originalUserSelectValue: string = node.style.userSelect;
-  let stopTimeout: number | undefined;
+  let startTime: number = 0;
+  let count = 0;
 
-  const start = () => {
-    stop();
+  const click = () => {
+    const now = Date.now();
 
-    stopTimeout = Date.now() + FIVE_SECONDS;
+    if (now - startTime <= TWO_SECONDS) {
+      count++;
 
-    node.addEventListener(stopEvent, onPressUp);
-    node.addEventListener(moveEvent, onMove);
-  };
-  const stop = () => {
-    node.removeEventListener(stopEvent, onPressUp);
-    node.removeEventListener(moveEvent, onMove);
-  };
-  const onPressDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    start();
-  };
-  const onPressUp = () => {
-    if (stopTimeout !== undefined && Date.now() >= stopTimeout) {
-      generateDebugLogProxy().then();
+      if (count === 5) {
+        generateDebugLogProxy(confirm("Save the app state to the file")).then();
+      }
+    } else {
+      startTime = now;
+      count = 0;
     }
-
-    stop();
   };
-  const onMove = () => stop();
 
-  node.addEventListener(startEvent, onPressDown, true);
+  node.addEventListener("click", click, true);
+
+  // disable text selection
   node.style.userSelect = "none";
-
-  node.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
-    event.stopPropagation(); // not necessary in my case, could leave in case stopImmediateProp isn't available?
-    event.stopImmediatePropagation();
-    return false;
-  });
 
   return {
     destroy() {
       stop();
-      node.removeEventListener(startEvent, onPressDown, true);
+      node.removeEventListener("click", click, true);
+      // restore user selection
       node.style.userSelect = originalUserSelectValue;
     },
   };
