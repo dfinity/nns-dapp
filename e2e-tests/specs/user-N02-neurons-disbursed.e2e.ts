@@ -48,12 +48,13 @@ describe("Verifies that neurons can be disbursed", () => {
       throw new Error("neuronId is undefined");
     }
     const neuronsTab = new NeuronsTab(browser);
-    await neuronsTab.click(
-      NeuronsTab.neuronCardSelector(neuronId),
-      "Go to neuron details"
+    const neuronCard = await neuronsTab.getNeuronById(
+      neuronId,
+      "Get the neuron to disburse"
     );
+    await neuronCard.click();
     await neuronsTab.getElement(
-      NeuronsTab.neuronDetailSelector(neuronId),
+      NeuronsTab.NEURON_DETAIL_SELECTOR,
       "Verify that the neuron detail page has loaded"
     );
     await neuronsTab.click(
@@ -74,9 +75,13 @@ describe("Verifies that neurons can be disbursed", () => {
       "Confirm disbursal"
     );
     await neuronsTab.waitForGone(
-      NeuronsTab.neuronDetailSelector(neuronId),
+      NeuronsTab.NEURON_DETAIL_SELECTOR,
       "The neuron should disappear",
       { timeout: 30_000 }
+    );
+    await neuronsTab.getElement(
+      NeuronsTab.SELECTOR,
+      "Wait for the neurons tab main page"
     );
   });
 

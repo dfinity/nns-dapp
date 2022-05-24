@@ -40,14 +40,13 @@
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
-<Card {role} {selected} {disabled} on:click {ariaLabel}>
+<Card {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
   <div
     slot="start"
     class="lock"
     data-tid="neuron-card-title"
-    data-neuron-id={neuron.neuronId}
   >
-    <h3>{neuron.neuronId}</h3>
+    <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
       <span class="neuron-control">{$i18n.neurons.community_fund}</span>

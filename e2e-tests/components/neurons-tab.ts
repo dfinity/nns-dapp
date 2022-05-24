@@ -20,22 +20,22 @@ export class NeuronsTab extends MyNavigator {
   static readonly DISBURSE_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`;
   static readonly DISBURSE_CONFIRM_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="disburse-neuron-button"]`;
 
-  /**
-   * The CSS selector for a neuron card.
-   */
-  static neuronCardSelector(neuronId: string): string {
-    return `${NeuronsTab.NEURON_CARD_TITLE_SELECTOR}[data-neuron-id="${neuronId}"]`;
-  }
-
-  /**
-   * The CSS selector for the details of a particular neuron.
-   */
-  static neuronDetailSelector(neuronId: string): string {
-    return `${NeuronsTab.NEURON_DETAIL_SELECTOR}[data-neuron-id="${neuronId}"]`;
-  }
-
   constructor(browser: WebdriverIO.Browser) {
     super(browser);
+  }
+
+  async getNeuronById(
+    neuronId: string,
+    description: string,
+    options?: { timeout?: number }
+  ): Promise<WebdriverIO.Element> {
+    const element = await this.browser.$(
+      `//*[@data-tid = 'neuron-card' and .//*[@data-tid="neuron-id" and text() = '${neuronId}']]`
+    );
+    const timeout = options?.timeout ?? 5_000;
+    const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with neuron "${neuronId}".`;
+    await element.waitForExist({ timeout, timeoutMsg });
+    return element;
   }
 
   // TODO: There is no good way to make sure that the browser has displayed the expected modal.  The text can change due to internationalisation.
