@@ -9,6 +9,10 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  import { toastsStore } from "../../stores/toasts.store";
+
+  export let onTransactionComplete: (() => Promise<void>) | undefined =
+    undefined;
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -23,6 +27,11 @@
     startBusy({ initiator: "accounts" });
 
     const { success } = await transferICP($store);
+
+    if (success) {
+      await onTransactionComplete?.();
+      toastsStore.success({ labelKey: "accounts.transaction_success" });
+    }
 
     stopBusy("accounts");
 

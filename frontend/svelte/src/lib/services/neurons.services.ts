@@ -64,7 +64,7 @@ import {
   syncAccounts,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -248,7 +248,10 @@ export const listNeurons = async ({
       // Query the ledger for each neuron
       // refresh those whose stake does not match their ledger balance.
       try {
-        await checkNeuronBalances(neurons);
+        const refetch = await checkNeuronBalances(neurons);
+        if (refetch) {
+          listNeurons({ skipCheck: true });
+        }
       } catch (error) {
         // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
         console.error(error);
@@ -347,7 +350,7 @@ const claimNeurons =
       neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
     );
 
-const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
+const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
   const identity = await getIdentity();
 
   const fullNeurons: Neuron[] = neurons
@@ -355,7 +358,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
     .filter(isDefined);
 
   if (fullNeurons.length === 0) {
-    return;
+    return false;
   }
 
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
@@ -364,7 +367,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   });
 
   if (neuronIdsToRefresh.length === 0) {
-    return;
+    return false;
   }
 
   // We found neurons that need to be refreshed.
@@ -374,7 +377,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   );
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
 
-  return listNeurons({ skipCheck: true });
+  return true;
 };
 
 // We always want to call this with the user identity
@@ -862,13 +865,19 @@ export const removeFollowee = async ({
 export const loadNeuron = ({
   neuronId,
   forceFetch = false,
+  // Check also the Neuro stake when loading only one.
+  // Same we do when loading the list of neurons.
+  skipCheck = false,
   setNeuron,
   handleError,
+  strategy,
 }: {
   neuronId: NeuronId;
   forceFetch?: boolean;
+  skipCheck?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
     if (err instanceof NotFoundError) {
@@ -887,19 +896,37 @@ export const loadNeuron = ({
   };
 
   return queryAndUpdate<NeuronInfo | undefined, unknown>({
+    strategy,
     request: (options) =>
       getNeuron({
         neuronId,
         forceFetch,
         ...options,
       }),
-    onLoad: ({ response: neuron, certified }) => {
+    onLoad: async ({ response: neuron, certified }) => {
       if (neuron === undefined) {
         catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
-
-      setNeuron({ neuron, certified });
+      if (!certified || skipCheck) {
+        setNeuron({ neuron, certified });
+        return;
+      }
+      // If the check is required, we don't want to call `setNeuron` until it has finished.
+      // For example: to avoid closing the "IncreaseStakeNeuronModal" before we finish this check.
+      const refetch = await checkNeuronBalances([neuron]);
+      if (refetch) {
+        await loadNeuron({
+          neuronId,
+          forceFetch,
+          setNeuron,
+          handleError,
+          skipCheck: true,
+          strategy: "query",
+        });
+      } else {
+        setNeuron({ neuron, certified });
+      }
     },
     onError: ({ error, certified }) => {
       console.error(error);

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { loadNeuron } from "../../services/neurons.services";
   import { neuronsStore } from "../../stores/neurons.store";
@@ -7,20 +6,27 @@
 
   export let neuron: NeuronInfo;
 
-  const dispatcher = createEventDispatcher();
-  const fetchUpdatedNeuron = async () => {
-    await loadNeuron({
-      neuronId: neuron.neuronId,
-      forceFetch: true,
-      setNeuron: ({ neuron, certified }) => {
-        neuronsStore.pushNeurons({ neurons: [neuron], certified });
-      },
+  // Not resolve until the neuron has been loaded
+  const fetchUpdatedNeuron = () =>
+    new Promise<void>((resolve) => {
+      loadNeuron({
+        neuronId: neuron.neuronId,
+        forceFetch: true,
+        strategy: "update",
+        setNeuron: ({ neuron, certified }) => {
+          neuronsStore.pushNeurons({ neurons: [neuron], certified });
+          resolve();
+        },
+        handleError: () => {
+          console.log("in da error");
+          resolve();
+        },
+      });
     });
-    dispatcher("nnsClose");
-  };
 </script>
 
 <NewTransactionModal
-  on:nnsClose={fetchUpdatedNeuron}
+  on:nnsClose
+  onTransactionComplete={fetchUpdatedNeuron}
   destinationAddress={neuron.fullNeuron?.accountIdentifier}
 />

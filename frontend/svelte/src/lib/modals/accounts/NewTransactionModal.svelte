@@ -18,6 +18,8 @@
 
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
+  export let onTransactionComplete: (() => Promise<void>) | undefined =
+    undefined;
 
   let canSelectAccount: boolean;
   $: canSelectAccount = selectedAccount === undefined;
@@ -107,7 +109,7 @@
       <NewTransactionAmount />
     {/if}
     {#if currentStep?.name === "Review"}
-      <NewTransactionReview on:nnsClose />
+      <NewTransactionReview {onTransactionComplete} on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>
