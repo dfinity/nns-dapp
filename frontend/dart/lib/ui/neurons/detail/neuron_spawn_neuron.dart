@@ -1,3 +1,4 @@
+import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
@@ -76,6 +77,7 @@ class _SpawnNeuronState extends State<SpawnNeuron> {
                     child: Column(
                       children: [
                         SpawnNeuronStake(
+                          neuronMaturityICPEquivalent : widget.neuron.maturityICPEquivalent,
                           sliderValue: sliderValue.currentValue,
                           onUpdate: (value) {
                             setState(() {
@@ -161,10 +163,11 @@ class _SpawnNeuronState extends State<SpawnNeuron> {
 }
 
 class SpawnNeuronStake extends StatelessWidget {
+  final ICP neuronMaturityICPEquivalent;
   final int sliderValue;
   final Function(int) onUpdate;
 
-  const SpawnNeuronStake({Key? key, required this.sliderValue, required this.onUpdate}) : super(key: key);
+  const SpawnNeuronStake({Key? key, required this.neuronMaturityICPEquivalent,required this.sliderValue, required this.onUpdate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -190,12 +193,13 @@ class SpawnNeuronStake extends StatelessWidget {
           height: 10,
         ),
         Slider(
+          label: (((neuronMaturityICPEquivalent.asE8s()) * BigInt.from(sliderValue))/(BigInt.from(100)* BigInt.from(E8S_PER_ICP))).toString() + ' ICP',
           activeColor: AppColors.white,
           inactiveColor: AppColors.gray600,
           value: sliderValue.toDouble(),
           min: 0,
           max: 100,
-          label: sliderValue.toString(),
+          divisions: 100,
           onChanged: (double value) {
             onUpdate(value.toInt());
           },

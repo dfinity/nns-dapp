@@ -274,6 +274,7 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
                     child: Column(
                       children: [
                         StakeRewardsWidget(
+                          neuronMaturityICPEquivalent: widget.neuron.maturityICPEquivalent,
                           sliderValue: sliderValue.currentValue,
                           onUpdate: (value) {
                             setState(() {
@@ -359,11 +360,12 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
 }
 
 class StakeRewardsWidget extends StatelessWidget {
+  final ICP neuronMaturityICPEquivalent;
   final int sliderValue;
   final Function(int) onUpdate;
 
   const StakeRewardsWidget(
-      {Key? key, required this.sliderValue, required this.onUpdate})
+      {Key? key, required this.neuronMaturityICPEquivalent , required this.sliderValue, required this.onUpdate})
       : super(key: key);
 
   @override
@@ -393,12 +395,13 @@ class StakeRewardsWidget extends StatelessWidget {
           height: 10,
         ),
         Slider(
+          label: (((neuronMaturityICPEquivalent.asE8s()) * BigInt.from(sliderValue))/(BigInt.from(100)* BigInt.from(E8S_PER_ICP))).toString() + ' ICP',
           activeColor: AppColors.white,
           inactiveColor: AppColors.gray600,
           value: sliderValue.toDouble(),
           min: 0,
           max: 100,
-          label: sliderValue.toString(),
+          divisions: 100,
           onChanged: (double value) {
             onUpdate(value.toInt());
           },
