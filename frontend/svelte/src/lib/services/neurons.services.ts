@@ -865,7 +865,7 @@ export const removeFollowee = async ({
 export const loadNeuron = ({
   neuronId,
   forceFetch = false,
-  // Check also the Neuro stake when loading only one.
+  // Check also the Neuron's stake when loading only one.
   // Same we do when loading the list of neurons.
   skipCheck = false,
   setNeuron,
@@ -921,6 +921,7 @@ export const loadNeuron = ({
           forceFetch,
           setNeuron,
           handleError,
+          // Avoid an infinite loop skipping check
           skipCheck: true,
           strategy: "query",
         });

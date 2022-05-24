@@ -18,7 +18,6 @@
           resolve();
         },
         handleError: () => {
-          console.log("in da error");
           resolve();
         },
       });
