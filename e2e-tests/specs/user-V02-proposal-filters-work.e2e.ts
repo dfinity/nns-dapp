@@ -53,7 +53,8 @@ describe("Makes a proposal and verifies that the filters work", () => {
     );
     await proposalsTab.waitForGone(
       proposalMetadataSelector,
-      "Proposal should disappear", {timeout: 10_000}
+      "Proposal should disappear",
+      { timeout: 10_000 }
     );
     const appears = await proposalsTab
       .getElement(proposalMetadataSelector, "Seeing if it appears", {
@@ -63,6 +64,4 @@ describe("Makes a proposal and verifies that the filters work", () => {
       .catch(() => false);
     expect(disappears).toBe(false);
   });
-
-
 });

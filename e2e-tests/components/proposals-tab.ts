@@ -88,14 +88,31 @@ export class ProposalsTab extends MyNavigator {
       enable
     );
     await browser.pause(2_000);
-    console.warn("Applying filter", ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR);
-    await this.click(ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR, "Apply filter");
+    console.warn(
+      "Applying filter",
+      ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR
+    );
+    await this.click(
+      ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR,
+      "Apply filter"
+    );
     await this.waitForGone(".modal", "Wait for the filter modal to go away");
-    await this.browser.waitUntil(async () => {
-      let filterCountElement = await this.getElement(`[data-tid="${filterTid}"] small`);
-      let filterCountText = await filterCountElement.getText();
-      return Number(filterCountText.replace(/.*\(([0-9]+)\/.*/, "$1")) === values.length;
-    }, {timeoutMsg: `Waiting for the number of filter elements to be correct.`, timeout: 5_000});
+    await this.browser.waitUntil(
+      async () => {
+        let filterCountElement = await this.getElement(
+          `[data-tid="${filterTid}"] small`
+        );
+        let filterCountText = await filterCountElement.getText();
+        return (
+          Number(filterCountText.replace(/.*\(([0-9]+)\/.*/, "$1")) ===
+          values.length
+        );
+      },
+      {
+        timeoutMsg: `Waiting for the number of filter elements to be correct.`,
+        timeout: 5_000,
+      }
+    );
     await browser.pause(1_000);
   }
 
