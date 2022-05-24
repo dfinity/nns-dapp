@@ -6,6 +6,7 @@ import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
+import { parse } from "path";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
@@ -79,16 +80,23 @@ const configApp = {
     format: "es",
     name: "app",
     dir: "public/build/",
-    manualChunks: {
-      nns: ["@dfinity/nns"],
-      agent: [
-        "@dfinity/agent",
-        "@dfinity/auth-client",
-        "@dfinity/authentication",
-        "@dfinity/candid",
-        "@dfinity/identity",
-        "@dfinity/principal",
-      ],
+    manualChunks(id) {
+      if (id.indexOf("@dfinity/nns") > -1) {
+        // Because we don't use nns-js with `await import` rollup would re-group all the chunks of the dependency in a single chunk. It would add all the code into "main.js".
+        // If we would manually chunk the lib and return a static single value 'nns', rollup would re-group all the chunks of nns-js as well. It would add all the code in "nns.js".
+        // That's why we preserve the original filename of the chunks of the library to chunk it - see node_modules/@dfinity/nns/dist/esm/
+        // In other words: we want protobuf and ledger dedicated code to remain chunked
+        const { name: fileName } = parse(id);
+        return `nns-${fileName}`;
+      } else if (id.indexOf("@dfinity") > -1) {
+        // All other DFINITY dependencies are currently agent-js related code
+        // We create a dedicated chunk that will be fetched by the browser in parallel of the loading of the "main.js" bundle. This improves a bit the performance.
+        return "agent";
+      }
+
+      // We don't provide any information for other dependencies and the code itself. Rollup will apply default rules
+      // Note that manual chunking does not disable chunking dynamic imports, Rollup still does it too :)
+      return undefined;
     },
   },
   plugins: [
