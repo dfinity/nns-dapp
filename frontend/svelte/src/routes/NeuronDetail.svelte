@@ -73,7 +73,7 @@
 {#if SHOW_NEURONS_ROUTE}
   <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
-    <section data-tid="neuron-detail" data-neuron-id={neuronId}>
+    <section data-tid="neuron-detail">
       {#if $neuronSelectStore}
         <NeuronMetaInfoCard neuron={$neuronSelectStore} />
         <NeuronMaturityCard neuron={$neuronSelectStore} />
