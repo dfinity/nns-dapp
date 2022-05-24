@@ -5,6 +5,7 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
   import Banner from "./Banner.svelte";
+  import { triggerDebugReport } from "../../utils/dev.utils";
 
   export let showFooter = true;
 
@@ -21,7 +22,7 @@
       aria-label={$i18n.core.back}><IconBackIosNew /></button
     >
   </Tooltip>
-  <h2><slot name="header" /></h2>
+  <h2 use:triggerDebugReport><slot name="header" /></h2>
 </header>
 <main>
   <slot />
