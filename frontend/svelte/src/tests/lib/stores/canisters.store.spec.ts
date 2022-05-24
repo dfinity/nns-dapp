@@ -4,17 +4,17 @@ import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("canisters-store", () => {
   it("should set canisters", () => {
-    canistersStore.setCanisters(mockCanisters);
+    canistersStore.setCanisters({ canisters: mockCanisters, certified: true });
 
-    const canisters = get(canistersStore);
-    expect(canisters).toEqual(mockCanisters);
+    const store = get(canistersStore);
+    expect(store.canisters).toEqual(mockCanisters);
   });
 
   it("should reset canisters", () => {
-    canistersStore.setCanisters(mockCanisters);
-    canistersStore.setCanisters([]);
+    canistersStore.setCanisters({ canisters: mockCanisters, certified: true });
+    canistersStore.setCanisters({ canisters: [], certified: true });
 
-    const canisters = get(canistersStore);
-    expect(canisters).toEqual([]);
+    const store = get(canistersStore);
+    expect(store.canisters).toEqual([]);
   });
 });
