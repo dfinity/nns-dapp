@@ -6,9 +6,11 @@ import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
 
 /**
- * Verifies that new users get a main account.
+ * Verifies that users can create a linked account
  */
 describe("Users get a main account", () => {
+  const linkedAccountName = "Koala";
+
   it("Setup: Create a new user", async () => {
     await browser.url("/");
     const userId = await register(browser);
@@ -24,14 +26,32 @@ describe("Users get a main account", () => {
     );
   });
 
-  it("User should have a main account", async () => {
+  it(`User should be able to create a linked account '${linkedAccountName}'`, async () => {
+    await browser.setWindowSize(800, 1000);
+    await new AccountsTab(browser).createLinkedAccount(linkedAccountName);
+  });
+
+  it(`User should have the linked account '${linkedAccountName}'`, async () => {
     // Note: getAccountByName() returns a promise.  If the main
     // account cannot be found within a reasaonable amount
     // of time, the promise will fail and the await will
     // fail the test.
     await new AccountsTab(browser).getAccountByName(
-      "Main",
-      "Checking that the main account exists"
+      linkedAccountName,
+      "Checking that the linked account exists"
+    );
+  });
+
+  it(`The linked account '${linkedAccountName}' should still be present after refresh`, async () => {
+    await browser.refresh();
+
+    // Note: getAccountByName() returns a promise.  If the main
+    // account cannot be found within a reasaonable amount
+    // of time, the promise will fail and the await will
+    // fail the test.
+    await new AccountsTab(browser).getAccountByName(
+      linkedAccountName,
+      "Checking that the linked account exists after refresh"
     );
   });
 });
