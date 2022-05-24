@@ -42,25 +42,57 @@ export const digestText = async (text: string): Promise<string> => {
   return hashHex;
 };
 
-/**
- * To not have "nns-state" in the code
- * @returns "nns-state"
- */
-const TRIGGER_PHRASE = [101, 116, 97, 116, 115, 45, 115, 110, 110]
-  .reverse()
-  .map((c) => String.fromCharCode(c))
-  .join("");
+export function triggerDebugReport(node: HTMLElement) {
+  const FIVE_SECONDS = 5 * 1000;
+  const startEvent = "ontouchstart" in document ? "touchstart" : "mousedown";
+  const stopEvent = "ontouchend" in document ? "touchend" : "mouseup";
+  const moveEvent = "ontouchmove" in document ? "touchmove" : "mousemove";
 
-/**
- * Add console.log with a version that logs the stores on TRIGGER_PHRASE
- */
-export const bindDebugGenerator = () => {
-  const originalLog = console.log;
-  console.log = function (...args) {
-    if (args.length === 1 && args[0] === TRIGGER_PHRASE) {
-      generateDebugLogProxy().then();
-    } else {
-      originalLog.apply(this, args);
-    }
+  let originalUserSelectValue: string = node.style.userSelect;
+  let stopTimeout: number | undefined;
+
+  const start = () => {
+    stop();
+
+    stopTimeout = Date.now() + FIVE_SECONDS;
+
+    node.addEventListener(stopEvent, onPressUp);
+    node.addEventListener(moveEvent, onMove);
   };
-};
+  const stop = () => {
+    node.removeEventListener(stopEvent, onPressUp);
+    node.removeEventListener(moveEvent, onMove);
+  };
+  const onPressDown = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    start();
+  };
+  const onPressUp = () => {
+    if (stopTimeout !== undefined && Date.now() >= stopTimeout) {
+      generateDebugLogProxy().then();
+    }
+
+    stop();
+  };
+  const onMove = () => stop();
+
+  node.addEventListener(startEvent, onPressDown, true);
+  node.style.userSelect = "none";
+
+  node.addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    event.stopPropagation(); // not necessary in my case, could leave in case stopImmediateProp isn't available?
+    event.stopImmediatePropagation();
+    return false;
+  });
+
+  return {
+    destroy() {
+      stop();
+      node.removeEventListener(startEvent, onPressDown, true);
+      node.style.userSelect = originalUserSelectValue;
+    },
+  };
+}
