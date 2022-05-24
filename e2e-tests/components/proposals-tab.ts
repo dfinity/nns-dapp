@@ -4,6 +4,7 @@ import { execFile } from "node:child_process";
 export class ProposalsTab extends MyNavigator {
   static readonly SELECTOR: string = `[data-tid="proposals-tab"]`;
   static readonly PROPOSAL_TALLY_SELECTOR: string = ".latest-tally";
+  static readonly PROPOSAL_FILTER_APPLY_SELECTOR: string = `[data-tid="apply-proposals-filter"]`;
   static readonly BACK_TO_PROPOSAL_LIST_SELECTOR: string = "button.back";
 
   public static proposalIdSelector(proposalId: number): string {
@@ -58,15 +59,18 @@ export class ProposalsTab extends MyNavigator {
    */
   async filter(
     filterTid: string,
-    values: Set<string>,
+    values: Array<string>,
     enable: boolean = true
   ): Promise<void> {
+    await browser.pause(2_000);
     await this.click(
       `[data-tid="${filterTid}"]`,
       `Open filter modal for ${filterTid}`
     );
+    await browser.pause(1_000);
+    console.warn("Setting filter");
     await this.browser.execute(
-      (values: Set<string>, enable) =>
+      (values: Array<string>, enable) =>
         Array.from(document.querySelectorAll(`.modal .checkbox`)).forEach(
           (element) => {
             const checkbox = element.querySelector("input");
@@ -77,14 +81,22 @@ export class ProposalsTab extends MyNavigator {
             }
             checkbox.checked =
               enable ===
-              values.has(element.querySelector("label")?.innerText ?? "");
+              values.includes(element.querySelector("label")?.innerText ?? "");
           }
         ),
       values,
       enable
     );
-    await this.click(`.modal button.primary`, "Apply filter");
+    await browser.pause(2_000);
+    console.warn("Applying filter", ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR);
+    await this.click(ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR, "Apply filter");
     await this.waitForGone(".modal", "Wait for the filter modal to go away");
+    await this.browser.waitUntil(async () => {
+      let filterCountElement = await this.getElement(`[data-tid="${filterTid}"] small`);
+      let filterCountText = await filterCountElement.getText();
+      return Number(filterCountText.replace(/.*\(([0-9]+)\/.*/, "$1")) === values.length;
+    }, {timeoutMsg: `Waiting for the number of filter elements to be correct.`, timeout: 5_000});
+    await browser.pause(1_000);
   }
 
   constructor(browser: WebdriverIO.Browser) {

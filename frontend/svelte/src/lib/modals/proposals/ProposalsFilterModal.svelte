@@ -93,7 +93,7 @@
   {/if}
 
   <svelte:fragment slot="footer">
-    <button class="primary" type="button" on:click={filter}>
+    <button class="primary" type="button" on:click={filter} data-tid="apply-proposals-filter">
       {$i18n.core.filter}
     </button>
   </svelte:fragment>

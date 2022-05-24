@@ -29,7 +29,7 @@ describe("Makes a proposal and verifies that the filters work", () => {
 
   it("Can see the new proposal if open proposals are selected", async () => {
     const proposalsTab = new ProposalsTab(browser);
-    await proposalsTab.filter("filters-by-status", new Set(["Open"]));
+    await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
     const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
       proposalId as number
     );
@@ -45,4 +45,24 @@ describe("Makes a proposal and verifies that the filters work", () => {
       .catch(() => false);
     expect(disappears).toBe(false);
   });
+  it("Can not see the new proposal if open proposals are deselected", async () => {
+    const proposalsTab = new ProposalsTab(browser);
+    await proposalsTab.filter("filters-by-status", ["Open", "Failed"], false);
+    const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
+      proposalId as number
+    );
+    await proposalsTab.waitForGone(
+      proposalMetadataSelector,
+      "Proposal should disappear", {timeout: 10_000}
+    );
+    const appears = await proposalsTab
+      .getElement(proposalMetadataSelector, "Seeing if it appears", {
+        timeout: 1_000,
+      })
+      .then(() => true)
+      .catch(() => false);
+    expect(disappears).toBe(false);
+  });
+
+
 });
