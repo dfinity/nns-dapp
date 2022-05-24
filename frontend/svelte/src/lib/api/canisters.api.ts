@@ -6,10 +6,7 @@ import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
 import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-import {
-  CYCLES_MINTING_CANISTER_ID,
-  IC_MANAGEMENT_CANISTER_ID,
-} from "../constants/canister-ids.constants";
+import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { getIdentity } from "../services/auth.services";
 import { createAgent } from "../utils/agent.utils";
@@ -226,7 +223,6 @@ const canisters = async (
 
   const icMgt = ICManagementCanister.create({
     agent,
-    canisterId: IC_MANAGEMENT_CANISTER_ID,
   });
 
   return { cmc, icMgt };

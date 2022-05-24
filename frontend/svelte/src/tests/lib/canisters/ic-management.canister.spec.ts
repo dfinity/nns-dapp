@@ -1,25 +1,21 @@
+import type { ManagementCanisterRecord } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { toCanisterDetails } from "../../../lib/canisters/ic-management/converters";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
-import type {
-  CanisterStatusResponse,
-  _SERVICE as ICManagementService,
-} from "../../../lib/canisters/ic-management/ic-management.types";
+import type { CanisterStatusResponse } from "../../../lib/canisters/ic-management/ic-management.types";
 import { createAgent } from "../../../lib/utils/agent.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails } from "../../mocks/canisters.mock";
 
 describe("ICManagementCanister", () => {
-  const createICManagement = async (service: ICManagementService) => {
+  const createICManagement = async (service: ManagementCanisterRecord) => {
     const defaultAgent = await createAgent({ identity: mockIdentity });
-    const canisterId = Principal.fromText("aaaaa-aa");
 
     return ICManagementCanister.create({
       agent: defaultAgent,
       serviceOverride: service,
-      canisterId,
     });
   };
 
@@ -42,7 +38,7 @@ describe("ICManagementCanister", () => {
         settings,
         module_hash: [],
       };
-      const service = mock<ICManagementService>();
+      const service = mock<ManagementCanisterRecord>();
       service.canister_status.mockResolvedValue(response);
 
       const icManagement = await createICManagement(service);
@@ -56,7 +52,7 @@ describe("ICManagementCanister", () => {
 
     it("throws UserNotTheControllerError", async () => {
       const error = new Error("code: 403");
-      const service = mock<ICManagementService>();
+      const service = mock<ManagementCanisterRecord>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -69,7 +65,7 @@ describe("ICManagementCanister", () => {
 
     it("throws Error", async () => {
       const error = new Error("Test");
-      const service = mock<ICManagementService>();
+      const service = mock<ManagementCanisterRecord>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);

@@ -12,7 +12,3 @@ export const GOVERNANCE_CANISTER_ID = Principal.fromText(
 export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
   process.env.CYCLES_MINTING_CANISTER_ID as string
 );
-// From: https://smartcontracts.org/docs/current/references/ic-interface-spec/#ic-management-canister
-// The IC management canister is just a facade; it does not actually exist as a canister
-// The IC management canister address is "aaaaa-aa" (i.e. the empty blob).
-export const IC_MANAGEMENT_CANISTER_ID = Principal.from("aaaaa-aa");
