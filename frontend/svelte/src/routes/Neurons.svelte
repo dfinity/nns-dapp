@@ -9,8 +9,7 @@
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { listNeurons } from "../lib/services/neurons.services";
-  import { sortedNeuronStore } from "../lib/stores/neurons.store";
+  import {neuronsStore, sortedNeuronStore} from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -20,14 +19,13 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
 
   let isLoading: boolean = false;
+  $: isLoading = $neuronsStore.neurons === undefined;
+
   onMount(async () => {
     // TODO: To be removed once this page has been implemented
     if (!SHOW_NEURONS_ROUTE) {
       window.location.replace("/#/neurons");
     }
-    isLoading = true;
-    await listNeurons();
-    isLoading = false;
   });
 
   let principalText: string = "";
