@@ -52,11 +52,11 @@ describe("CyclesMintingCanister", () => {
 
   describe("CMCCanister.notifyCreateCanister", () => {
     it("returns principal of the new canister", async () => {
-      const canisterPrincipal = Principal.fromText(
+      const canisterId = Principal.fromText(
         "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
       );
       const response: NotifyCreateCanisterResult = {
-        Ok: canisterPrincipal,
+        Ok: canisterId,
       };
       const service = mock<CMCService>();
       service.notify_create_canister.mockResolvedValue(response);
@@ -68,7 +68,7 @@ describe("CyclesMintingCanister", () => {
         block_index: BigInt(10),
       });
 
-      expect(res).toEqual(canisterPrincipal);
+      expect(res).toEqual(canisterId);
     });
 
     it("throws Refunded error", async () => {

@@ -82,7 +82,7 @@ export const createCanister = async ({
   // nns dapp backend polls the transactions
   // and will also notify to CMC the transaction if it's pending
   // TODO: https://dfinity.atlassian.net/browse/L2-591
-  const canisterPrincipal = await cmc.notifyCreateCanister({
+  const canisterId = await cmc.notifyCreateCanister({
     controller: principal,
     block_index: blockHeight,
   });
@@ -93,12 +93,12 @@ export const createCanister = async ({
   // but it can be an empty string
   await nnsDapp.attachCanister({
     name: name ?? "",
-    canisterId: canisterPrincipal,
+    canisterId,
   });
 
   logWithTimestamp("Create canister complete.");
 
-  return canisterPrincipal;
+  return canisterId;
 };
 
 export const topUpCanister = async ({

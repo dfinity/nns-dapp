@@ -111,7 +111,7 @@ describe("canisters-api", () => {
       await topUpCanister({
         identity: mockIdentity,
         amount: ICP.fromString("3") as ICP,
-        canisterPrincipal: mockCanisterDetails.id,
+        canisterId: mockCanisterDetails.id,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();
@@ -124,7 +124,7 @@ describe("canisters-api", () => {
         topUpCanister({
           identity: mockIdentity,
           amount: ICP.fromString("3") as ICP,
-          canisterPrincipal: mockCanisterDetails.id,
+          canisterId: mockCanisterDetails.id,
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
