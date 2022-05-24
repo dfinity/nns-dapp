@@ -51,7 +51,7 @@ export const generateDebugLog = async () => {
     },
     sortedNeuron: await mapPromises(sortedNeuron, anonymizeNeuronInfo),
     knownNeurons: await mapPromises(knownNeurons, anonymizeKnownNeuron),
-    canisters: await mapPromises(canisters, anonymizeCanister),
+    canisters: await mapPromises(canisters.canisters, anonymizeCanister),
     proposals: {
       proposals: await mapPromises(proposals?.proposals, anonymizeProposal),
       certified: proposals?.certified,
