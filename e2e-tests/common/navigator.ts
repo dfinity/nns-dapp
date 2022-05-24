@@ -16,7 +16,7 @@ export class MyNavigator {
     selector: string,
     description: string,
     options?: { timeout?: number }
-  ) {
+  ): Promise<WebdriverIO.Element> {
     // Sadly typescript does not prevent undefined from being provided as a selector.
     if (undefined === selector) {
       throw new Error(`Cannot get undefined selector for "${description}".`);
@@ -36,7 +36,7 @@ export class MyNavigator {
     selector: string,
     description: string,
     options?: { timeout?: number; screenshot?: boolean }
-  ) {
+  ): Promise<void> {
     // Sadly typescript does not prevent undefined from being provided as a selector.
     if (undefined === selector) {
       throw new Error(`Cannot click undefined selector for "${description}".`);
@@ -59,7 +59,7 @@ export class MyNavigator {
     selector: string,
     description: string,
     options?: { timeout?: number }
-  ) {
+  ): Promise<void> {
     if (undefined === selector) {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
@@ -85,7 +85,7 @@ export class MyNavigator {
     selector: string,
     description: string,
     options?: { timeout?: number }
-  ) {
+  ): Promise<void> {
     if (undefined === selector) {
       throw new Error(
         `Cannot wait for undefined selector to be removed for "${description}".`

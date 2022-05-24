@@ -29,6 +29,6 @@ describe("Makes Standard Users", () => {
       "Go to the neurons tab"
     );
     const neuronsTab = new NeuronsTab(browser);
-    await neuronsTab.stakeNeuron({ icp: 1 });
+    await neuronsTab.stakeNeuron({ icp: 90 });
   });
 });

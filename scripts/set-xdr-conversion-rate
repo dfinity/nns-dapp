@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+print_help() {
+  cat <<-EOF
+
+	Sets the exchange rate by directly calling the CMC canister.
+
+	Note: Normally only the governance canister is allowed to call
+	      this method, however on testnets the CMC canister can be
+	      patched to allow any user to set the rate directly.
+
+	Usage:
+
+	Flags:
+	--help
+	  prints this help text.
+
+	--dfx-network <DFX_NETWORK>
+	  the name of the network in dfx.json that should have the exchange rate set.
+
+	--rate <RATE>
+	  the new exchange rate.
+
+	EOF
+}
+
+DFX_NETWORK=""
+RATE=10000
+while (($# > 0)); do
+  env="$1"
+  shift 1
+  case "${env:-}" in
+  --help)
+    print_help
+    exit 0
+    ;;
+  --dfx-network)
+    DFX_NETWORK="${1:-}"
+    shift 1
+    ;;
+  --rate)
+    RATE="${1:-}"
+    shift 1
+    ;;
+  *)
+    echo "ERROR: Unknown argument: ${env:-}" >&2
+    exit 1
+    ;;
+  esac
+done
+
+set -x
+dfx canister --network "$DFX_NETWORK" call rkp4c-7iaaa-aaaaa-aaaca-cai set_icp_xdr_conversion_rate '(record { data_source= "max"; xdr_permyriad_per_icp = '"${RATE}"' : nat64 ; timestamp_seconds= '"$(date +%s)"' : nat64 })'

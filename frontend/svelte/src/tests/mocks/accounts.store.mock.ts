@@ -70,7 +70,6 @@ export const mockAccountsStoreSubscribe =
     return () => undefined;
   };
 
-export const mockAddressInput = (length: number): string =>
-  Array.from(Array(length))
-    .map(() => "a")
-    .join("");
+export const mockAddressInputValid =
+  "cd70bfa0f092c38a0ff8643d4617219761eb61d199b15418c0b1114d59e30f8e";
+export const mockAddressInputInvalid = "not-valid";

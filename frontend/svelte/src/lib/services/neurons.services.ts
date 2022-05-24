@@ -894,8 +894,7 @@ export const loadNeuron = ({
         ...options,
       }),
     onLoad: ({ response: neuron, certified }) => {
-      // Handle not authorized neurons as if not found.
-      if (neuron === undefined || !userAuthorizedNeuron(neuron)) {
+      if (neuron === undefined) {
         catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }

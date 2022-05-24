@@ -82,46 +82,18 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install Flutter
-        run: |
-          cd $(mktemp -d)
-          curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
-          mkdir -p ~/flutter
-          tar xJf flutter.tar.xz -C "$HOME"
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
-
-      - name: Install Rust
-        run: |
-          # make sure we're installing the right version
-          grep "$RUSTC_VERSION" rust-toolchain.toml
-
-          rustup update "$RUSTC_VERSION" --no-self-update
-          rustup default "$RUSTC_VERSION"
-          rustup target add wasm32-unknown-unknown
-
       # Cache the ic-cdk-optimizer
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.local/bin/ic-cdk-optimizer
-            target
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
+            ~/.cargo/bin/ic-cdk-optimizer
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
 
-      - name: Install ic-cdk-optimizer
+      - name: Install Software
         run: |
-          install_dir="$HOME/.local/bin/"
-          mkdir -p "$install_dir"
-          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
-          then
-            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
-            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
-            echo "$install_dir" >> $GITHUB_PATH
-          fi
-
-      - name: Install DFX
-        run: |
-          echo Install DFX Version: "$DFX_VERSION"
-          yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.cache/flutter/2.2.3/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # Helps with debugging
       - name: Versions
@@ -133,6 +105,7 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
+          command -v flutter
 
       - name: Start replica
         run: |
@@ -147,6 +120,10 @@ jobs:
       - name: Deploy
         run: |
           ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Create initial state
+        run: |
+          ./deploy.sh --users
 
       - name: Build proxy
         working-directory: proxy

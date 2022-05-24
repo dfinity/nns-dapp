@@ -28,7 +28,7 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme}`} class:disabled>
+<div class={`input-block ${theme} `} class:disabled>
   <input
     data-tid="input-ui-element"
     type={inputType}
@@ -59,7 +59,10 @@
   .input-block {
     position: relative;
 
-    margin: var(--padding-2x) 0;
+    margin-top: var(--padding-2x);
+    margin-bottom: var(--input-margin-bottom, var(--padding-2x));
+    margin-left: 0;
+    margin-right: 0;
 
     display: flex;
     align-items: center;

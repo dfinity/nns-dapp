@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/principal";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../lib/constants/accounts.constants";
 import {
   emptyAddress,
   getAccountByPrincipal,
@@ -8,7 +7,8 @@ import {
   isAccountHardwareWallet,
 } from "../../../lib/utils/accounts.utils";
 import {
-  mockAddressInput,
+  mockAddressInputInvalid,
+  mockAddressInputValid,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
@@ -47,19 +47,11 @@ describe("accounts-utils", () => {
     it("should be a invalid address", () => {
       expect(invalidAddress(undefined)).toBeTruthy();
       expect(invalidAddress("test")).toBeTruthy();
-
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH - 1))
-      ).toBeTruthy();
+      expect(invalidAddress(mockAddressInputInvalid)).toBeTruthy();
     });
 
     it("should be a valid address", () => {
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH))
-      ).toBeFalsy();
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1))
-      ).toBeFalsy();
+      expect(invalidAddress(mockAddressInputValid)).toBeFalsy();
     });
   });
 

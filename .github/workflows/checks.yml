@@ -208,6 +208,32 @@ jobs:
       - name: Run linter
         run: npm run check
 
+  e2e-lint:
+    needs: formatting
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+    env:
+      DEPLOY_ENV: mainnet
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Provide a config
+        run: ./config.sh
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./e2e-tests
+
+      - name: Run e2e linter
+        run: npm run lint
+        working-directory: ./e2e-tests
+
+
+
   shell-checks:
     needs: formatting
     name: ShellCheck
