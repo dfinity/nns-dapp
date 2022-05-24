@@ -11,7 +11,7 @@ describe("Verifies that neurons can be disbursed", () => {
   let neuronId: string | undefined = undefined;
   const accountName = "Main";
   const neuronIcp = 3;
-  let accountIcpBefore: number = Infinity; // Dream on, dude!
+  let accountIcpBefore: number = Infinity; // This will be set to the account holding before it receives the disbursal.
 
   /**
    * Creates a user with:
