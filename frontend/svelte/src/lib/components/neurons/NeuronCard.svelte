@@ -41,11 +41,7 @@
 </script>
 
 <Card {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
-  <div
-    slot="start"
-    class="lock"
-    data-tid="neuron-card-title"
-  >
+  <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
