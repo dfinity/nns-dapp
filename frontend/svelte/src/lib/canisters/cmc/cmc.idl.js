@@ -1,3 +1,4 @@
+// Converted from `.did` file using https://k7gat-daaaa-aaaae-qaahq-cai.ic0.app/docs/
 export const idlFactory = ({ IDL }) => {
   const IcpXdrConversionRate = IDL.Record({
     xdr_permyriad_per_icp: IDL.Nat64,

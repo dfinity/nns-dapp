@@ -1,3 +1,4 @@
+// Source: https://github.com/dfinity/ic/blob/4457e7d73505f1dc110effccc2a3c62c58d2d9e6/rs/nns/cmc/cmc.did
 type Cycles = nat;
 type BlockIndex = nat64;
 

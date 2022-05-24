@@ -102,6 +102,7 @@ export const createCanister = async ({
   });
 
   // Attach the canister to the user in the nns-dapp.
+  // The same background tasks that notifies the CMC also attaches the canister.
   // `name` is mandatory and unique per user,
   // but it can be an empty string
   await nnsDapp.attachCanister({
@@ -116,21 +117,21 @@ export const createCanister = async ({
 
 export const topUpCanister = async ({
   identity,
-  canisterPrincipal,
+  canisterId,
   amount,
 }: {
   identity: Identity;
-  canisterPrincipal: Principal;
+  canisterId: Principal;
   amount: ICP;
 }): Promise<void> => {
-  logWithTimestamp(`Topping up canister ${canisterPrincipal.toText()} call...`);
+  logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
 
   const { cmc } = await canisters(identity);
   // const ledger = LedgerCanister.create({
   //   agent,
   //   canisterId: LEDGER_CANISTER_ID,
   // });
-  const toSubAccount = principalToSubAccount(canisterPrincipal);
+  const toSubAccount = principalToSubAccount(canisterId);
   const recipient = AccountIdentifier.fromPrincipal({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
@@ -153,13 +154,11 @@ export const topUpCanister = async ({
   // and will also notify to CMC the transaction if it's pending
   // TODO: https://dfinity.atlassian.net/browse/L2-591
   await cmc.notifyTopUp({
-    canister_id: canisterPrincipal,
+    canister_id: canisterId,
     block_index: blockHeight,
   });
 
-  logWithTimestamp(
-    `Topping up canister ${canisterPrincipal.toText()} complete.`
-  );
+  logWithTimestamp(`Topping up canister ${canisterId.toText()} complete.`);
 };
 
 // TODO: Remove before merging
@@ -191,7 +190,7 @@ export const testCMC = async (): Promise<void> => {
     await topUpCanister({
       identity,
       amount: ICP.fromString("1") as ICP,
-      canisterPrincipal: canisterId,
+      canisterId: canisterId,
     });
 
     const canisterDetails2 = await queryCanisterDetails({
