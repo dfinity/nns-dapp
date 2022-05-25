@@ -32,7 +32,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0002"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( e2e-tests/scripts/nns-canister.* )}}-dv-0002"
 
       - name: Download prebuilt nns canisters
         if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
@@ -67,7 +67,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0002"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( e2e-tests/scripts/nns-canister.* )}}-dv-0002"
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
