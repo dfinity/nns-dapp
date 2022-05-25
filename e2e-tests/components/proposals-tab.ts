@@ -63,7 +63,7 @@ export class ProposalsTab extends MyNavigator {
     enable: boolean = true
   ): Promise<void> {
     // The default window is too small, so some checkboxes and buttons are not shown in screenshots.
-    const {width, height} = await browser.getWindowSize();
+    const { width, height } = await browser.getWindowSize();
     await browser.setWindowSize(800, 1000);
 
     // Open filter modal:
@@ -73,7 +73,11 @@ export class ProposalsTab extends MyNavigator {
     );
 
     // Set filter:
-    console.warn(`Setting filter ${filterTid} to ${enable?"enable":"disable"} ${JSON.stringify(values)}`);
+    console.warn(
+      `Setting filter ${filterTid} to ${
+        enable ? "enable" : "disable"
+      } ${JSON.stringify(values)}`
+    );
     await this.browser.execute(
       (values: Array<string>, enable) =>
         Array.from(document.querySelectorAll(`.modal .checkbox`)).forEach(
