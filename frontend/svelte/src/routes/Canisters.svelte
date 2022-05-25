@@ -16,11 +16,7 @@
   import type { CanisterId } from "../lib/canisters/nns-dapp/nns-dapp.types";
   import { routeStore } from "../lib/stores/route.store";
 
-  let loading: boolean = false;
-
   const loadCanisters = async () => {
-    loading = true;
-
     try {
       await listCanisters({
         clearBeforeQuery: true,
@@ -31,8 +27,6 @@
         err,
       });
     }
-
-    loading = false;
   };
 
   onMount(async () => {
@@ -49,10 +43,10 @@
     });
   };
 
+  let loading: boolean;
+  $: loading = $canistersStore.canisters === undefined;
   let noCanisters: boolean;
-  $: loading,
-    $canistersStore,
-    (noCanisters = !loading && $canistersStore.canisters.length === 0);
+  $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
 
   // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
   const createOrLink = () => alert("Create or Link");
@@ -72,7 +66,7 @@
         {$authStore.identity?.getPrincipal().toText()}
       </p>
 
-      {#each $canistersStore.canisters as canister}
+      {#each $canistersStore.canisters ?? [] as canister}
         <CanisterCard
           role="link"
           ariaLabel={$i18n.neurons.aria_label_neuron_card}

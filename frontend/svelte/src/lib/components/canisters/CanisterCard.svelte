@@ -8,11 +8,13 @@
 
   let canisterId: string;
   $: canisterId = canister.canister_id.toText();
-  let title: string;
-  $: title = canister.name.length > 0 ? canister.name : canisterId;
+  let validName: boolean;
+  $: validName = canister.name.length > 0;
 </script>
 
 <Card {role} {ariaLabel} on:click testId="canister-card">
-  <h3 slot="start">{title}</h3>
-  <p>{canisterId}</p>
+  <h3 slot="start">{validName ? canister.name : canisterId}</h3>
+  {#if validName}
+    <p>{canisterId}</p>
+  {/if}
 </Card>
