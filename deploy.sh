@@ -205,8 +205,12 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
+  # Set the cycles exchange rate - needs a patched cycles minting canister.
+  ./scripts/set-xdr-conversion-rate
+
   pushd e2e-tests
   npm ci
+  
   printf '%s\n' user-N01-neuron-created.e2e.ts |
     SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
   popd
