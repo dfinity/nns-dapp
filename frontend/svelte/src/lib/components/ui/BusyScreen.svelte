@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { busy, busyMessageKey } from "../../stores/busy.store";
+  import { triggerDebugReport } from "../../utils/dev.utils";
   import { translate } from "../../utils/i18n.utils";
   import Spinner from "./Spinner.svelte";
 </script>
@@ -12,7 +13,7 @@
       {#if $busyMessageKey !== undefined}
         <p>{translate({ labelKey: $busyMessageKey })}</p>
       {/if}
-      <span>
+      <span use:triggerDebugReport>
         <Spinner inline />
       </span>
     </div>

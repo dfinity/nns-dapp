@@ -15,7 +15,8 @@
     "amount": "Amount",
     "max": "Max",
     "principal": "Principal",
-    "toggle": "toggle"
+    "toggle": "toggle",
+    "save_log_file": "Save the app state to the file"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -194,6 +195,7 @@
     "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
+    "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
     "irreversible_action": "This action is irreversible.",
     "stake_amount": "Stake Amount"
@@ -251,7 +253,11 @@
     "step2": "Link canisters to your account",
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
-    "create_or_link": "Create or Link Canister"
+    "create_or_link": "Create or Link Canister",
+    "empty": "No canisters yet."
+  },
+  "canister_detail": {
+    "title": "Canister"
   },
   "topics": {
     "Unspecified": "Unspecified",

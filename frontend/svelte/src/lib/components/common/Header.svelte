@@ -3,6 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import GetICPs from "../ic/GetICPs.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
+  import { triggerDebugReport } from "../../utils/dev.utils";
 </script>
 
 <header>
@@ -10,7 +11,7 @@
     <GetICPs />
   {/if}
 
-  <h4>{$i18n.header.title}</h4>
+  <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
   <Logout />
 </header>
 

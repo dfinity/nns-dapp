@@ -8,7 +8,7 @@
   import Canisters from "./routes/Canisters.svelte";
   import Auth from "./routes/Auth.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import { authStore } from "./lib/stores/auth.store";
   import type { AuthStore } from "./lib/stores/auth.store";
   import Wallet from "./routes/Wallet.svelte";
@@ -20,7 +20,8 @@
   import NeuronDetail from "./routes/NeuronDetail.svelte";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
-  import { bindDebugGenerator } from "./lib/utils/dev.utils";
+  import { listNeurons } from "./lib/services/neurons.services";
+  import CanisterDetail from "./routes/CanisterDetail.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -35,7 +36,7 @@
         return;
       }
 
-      await syncAccounts();
+      await Promise.all([syncAccounts(), listNeurons()]);
     }
   );
 
@@ -48,9 +49,6 @@
       routeStore.replace({ path: AppPath.Accounts });
     }
   );
-
-  // bind the debug trigger after app initialization
-  onMount(bindDebugGenerator);
 
   onDestroy(() => {
     unsubscribeAuth();
@@ -67,6 +65,7 @@
   <PrivateRoute path={AppPath.Wallet} component={Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
   <PrivateRoute path={AppPath.NeuronDetail} component={NeuronDetail} />
+  <PrivateRoute path={AppPath.CanisterDetail} component={CanisterDetail} />
 </Guard>
 
 <Toasts />
