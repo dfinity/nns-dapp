@@ -216,11 +216,16 @@ if [[ "$POPULATE" == "true" ]]; then
   }
 
   # Create users and neurons
-  pushd e2e-tests
-  npm ci
-  printf '%s\n' user-N01-neuron-created.e2e.ts |
-    SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
-  popd
+  # Note: Cannot be used with flutter.
+  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY frontend/ts/src/config.json)"
+  [[ "$REDIRECT_TO_LEGACY" == "prod" ]] ||
+    [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
+    pushd e2e-tests
+    npm ci
+    printf '%s\n' user-N01-neuron-created.e2e.ts |
+      SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
+    popd
+  }
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
