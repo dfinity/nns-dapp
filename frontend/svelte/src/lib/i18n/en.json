@@ -251,7 +251,11 @@
     "step2": "Link canisters to your account",
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
-    "create_or_link": "Create or Link Canister"
+    "create_or_link": "Create or Link Canister",
+    "empty": "No canisters yet."
+  },
+  "canister_detail": {
+    "title": "Canister"
   },
   "topics": {
     "Unspecified": "Unspecified",

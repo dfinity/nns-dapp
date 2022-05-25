@@ -19,8 +19,8 @@ describe("canisters-services", () => {
 
     expect(spyQueryCanisters).toHaveBeenCalled();
 
-    const canisters = get(canistersStore);
-    expect(canisters).toEqual(mockCanisters);
+    const store = get(canistersStore);
+    expect(store.canisters).toEqual(mockCanisters);
   });
 
   it("should not list canisters if no identity", async () => {
