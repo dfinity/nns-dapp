@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXX
+... to fill with details from the proposal
+
 ## Proposal 60694
 - Update mechanics for creating canisters
 - Prepare to release the neuron and accounts tabs in svelte
