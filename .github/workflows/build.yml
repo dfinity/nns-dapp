@@ -65,16 +65,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
-      - name: Show canister versions
-        run: sha256sum target/ic/*.wasm
-
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
       # "restore-keys"-style matching). Because (in case of an exact match)
@@ -117,6 +107,15 @@ jobs:
         run: |
           dfx start --background --clean
 
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy NNS canisters
