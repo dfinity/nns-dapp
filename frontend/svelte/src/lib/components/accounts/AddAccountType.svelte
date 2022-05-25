@@ -6,6 +6,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "../../types/add-account.context";
+  import CardItem from "../ui/CardItem.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -17,55 +18,23 @@
 </script>
 
 <div class="wizard-wrapper">
-  <div
-    class="card-item"
-    role="button"
+  <CardItem
     on:click={selectNewSubAccount}
-    data-tid="choose-linked-as-account-type"
-  >
-    <h4>{$i18n.accounts.new_linked_title}</h4>
-    <span>{$i18n.accounts.new_linked_subtitle}</span>
-  </div>
-  <div
-    class="card-item"
-    role="button"
+    title={$i18n.accounts.new_linked_title}
+    subtitle={$i18n.accounts.new_linked_subtitle}
+    testId="choose-linked-as-account-type"
+  />
+  <CardItem
     on:click={selectNewHardwareWallet}
-    data-tid="choose-hardware-wallet-as-account-type"
-  >
-    <h4>{$i18n.accounts.attach_hardware_title}</h4>
-    <span>{$i18n.accounts.attach_hardware_subtitle}</span>
-  </div>
+    title={$i18n.accounts.attach_hardware_title}
+    subtitle={$i18n.accounts.attach_hardware_subtitle}
+    testId="choose-hardware-wallet-as-account-type"
+  />
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media";
-
   .wizard-wrapper {
-    justify-content: center;
-  }
-
-  .card-item {
-    padding: var(--padding-2x) var(--padding);
-    border-radius: var(--border-radius);
-
-    @include media.min-width(medium) {
-      padding: var(--padding-4x);
-    }
-
-    @include interaction.tappable;
-
-    &:hover {
-      background: var(--background-hover);
-    }
-
-    h4 {
-      line-height: 1;
-      margin-bottom: var(--padding);
-    }
-
-    span {
-      color: var(--gray-200);
-    }
+    // Need to overwrite the default of wizrd-wrapper
+    justify-content: center !important;
   }
 </style>
