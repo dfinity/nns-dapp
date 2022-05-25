@@ -39,6 +39,10 @@
         margin: 0 var(--padding-2x);
         max-width: 406px;
       }
+
+      @media (max-width: 450px) {
+        height: 70px;
+      }
     }
   }
 </style>
