@@ -47,7 +47,7 @@ export const digestText = async (text: string): Promise<string> => {
  */
 export function triggerDebugReport(node: HTMLElement) {
   const TWO_SECONDS = 2 * 1000;
-  const originalUserSelectValue: string = node.style.userSelect;
+  const originalTouchActionValue: string = node.style.touchAction;
 
   let startTime: number = 0;
   let count = 0;
@@ -59,7 +59,7 @@ export function triggerDebugReport(node: HTMLElement) {
       count++;
 
       if (count === 5) {
-        generateDebugLogProxy(confirm("Save the app state to the file")).then();
+        generateDebugLogProxy(confirm("Save the app state to the file"));
       }
     } else {
       startTime = now;
@@ -67,17 +67,14 @@ export function triggerDebugReport(node: HTMLElement) {
     }
   };
 
-  node.addEventListener("click", click, true);
-
-  // disable text selection
-  node.style.userSelect = "none";
+  node.style.touchAction = "manipulation";
+  node.addEventListener("click", click, { passive: true });
 
   return {
     destroy() {
       stop();
-      node.removeEventListener("click", click, true);
-      // restore user selection
-      node.style.userSelect = originalUserSelectValue;
+      node.style.touchAction = originalTouchActionValue;
+      node.removeEventListener("click", click, false);
     },
   };
 }
