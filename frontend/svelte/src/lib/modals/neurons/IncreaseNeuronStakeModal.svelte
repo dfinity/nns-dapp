@@ -1,27 +1,11 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { loadNeuron } from "../../services/neurons.services";
-  import { neuronsStore } from "../../stores/neurons.store";
+  import { reloadNeuron } from "../../services/neurons.services";
   import NewTransactionModal from "../accounts/NewTransactionModal.svelte";
 
   export let neuron: NeuronInfo;
 
-  // Not resolve until the neuron has been loaded
-  const fetchUpdatedNeuron = () =>
-    new Promise<void>((resolve) => {
-      loadNeuron({
-        neuronId: neuron.neuronId,
-        forceFetch: true,
-        strategy: "update",
-        setNeuron: ({ neuron, certified }) => {
-          neuronsStore.pushNeurons({ neurons: [neuron], certified });
-          resolve();
-        },
-        handleError: () => {
-          resolve();
-        },
-      });
-    });
+  const fetchUpdatedNeuron = () => reloadNeuron(neuron);
 </script>
 
 <NewTransactionModal

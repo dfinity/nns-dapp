@@ -43,6 +43,7 @@ const {
   stopDissolving,
   updateDelay,
   mergeNeurons,
+  reloadNeuron,
 } = services;
 
 jest.mock("../../../lib/stores/toasts.store", () => {
@@ -1268,6 +1269,27 @@ describe("neurons-services", () => {
       });
       expect(spyGetNeuron).toBeCalled();
       expect(setNeuronSpy).toBeCalled();
+      // Reset spy implementation
+      spyGetNeuron.mockImplementation(() => Promise.resolve(mockNeuron));
+    });
+  });
+
+  describe("reloadNeuron", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should call the api", async () => {
+      await reloadNeuron(mockNeuron);
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should add neuron to the store", async () => {
+      await reloadNeuron(mockNeuron);
+      const store = get(neuronsStore);
+      expect(
+        store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
+      ).toBeDefined();
     });
   });
 });

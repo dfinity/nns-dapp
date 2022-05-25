@@ -940,6 +940,23 @@ export const loadNeuron = ({
   });
 };
 
+// Not resolve until the neuron has been loaded
+export const reloadNeuron = (neuron) =>
+  new Promise<void>((resolve) => {
+    loadNeuron({
+      neuronId: neuron.neuronId,
+      forceFetch: true,
+      strategy: "update",
+      setNeuron: ({ neuron, certified }) => {
+        neuronsStore.pushNeurons({ neurons: [neuron], certified });
+        resolve();
+      },
+      handleError: () => {
+        resolve();
+      },
+    });
+  });
+
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet
   if (!IS_TESTNET) {
