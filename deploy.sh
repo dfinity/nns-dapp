@@ -60,7 +60,7 @@ help_text() {
 	--nns-dapp
 	  Depoy the NNS dapp.
 
-	--users
+	--populate
 	  Create sample users with ICP, neurons and follow relationships.
 
 	--open
@@ -79,7 +79,7 @@ START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
-CREATE_USERS="false"
+POPULATE="false"
 OPEN_NNS_DAPP="false"
 
 while (($# > 0)); do
@@ -106,9 +106,9 @@ while (($# > 0)); do
     GUESS="false"
     DEPLOY_NNS_DAPP="true"
     ;;
-  --users)
+  --populate)
     GUESS="false"
-    CREATE_USERS="true"
+    POPULATE="true"
     ;;
   --open)
     GUESS="false"
@@ -132,7 +132,7 @@ if [[ "$GUESS" == "true" ]]; then
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
     DEPLOY_NNS_DAPP=true
-    CREATE_USERS=true
+    POPULATE=true
     ;;
   *)
     { # Can we find an existing II?
@@ -143,7 +143,7 @@ if [[ "$GUESS" == "true" ]]; then
       DEPLOY_II=true
     }
     DEPLOY_NNS_DAPP=true
-    CREATE_USERS=true
+    POPULATE=true
     ;;
   esac
 fi
@@ -153,7 +153,7 @@ echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
 echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
-echo CREATE_USERS=$CREATE_USERS
+echo POPULATE=$POPULATE
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
@@ -204,7 +204,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
-if [[ "$CREATE_USERS" == "true" ]]; then
+if [[ "$POPULATE" == "true" ]]; then
   pushd e2e-tests
   npm ci
   printf '%s\n' user-N01-neuron-created.e2e.ts |
