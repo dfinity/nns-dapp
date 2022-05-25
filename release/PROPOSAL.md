@@ -1,18 +1,21 @@
-# Upgrade frontend NNS Dapp canister to commit `8bd718fa18c9b242b26aa401f9cc087f6b7fef96`
-Wasm sha256 hash: `6304502f8df13b54ef8ca567eb816da0d5868e433643f08994806b8503c0f7f8` (`https://github.com/dfinity/nns-dapp/actions/runs/2384505227`)
+# Upgrade frontend NNS Dapp canister to commit `1492c218c778ebe44639e9b00712395913dfd0e0`
+Wasm sha256 hash: `b20e53f893875f58adfb526b3959f984b471738d74e41effb64582a0f6a7911e` (`https://github.com/dfinity/nns-dapp/actions/runs/2385262864`)
 
 ## Change Log:
-
 * Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
 * Add the ability to dump debug info.
 * Prepare for more tabs to be released as svelte.
 * Improve the infrastructure for third party contributions.
 * More tests.
 
+
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' 4a63f25d..8bd718fa"
++ bash -xc "git log --format='%C(auto) %h %s' 4a63f25d..1492c218"
+ 1492c218 Upgrade nns-js (#906)
+ e5345cb1 Fix: Change wordings (#905)
+ e05abe0c feat: input type icp (#890)
  8bd718fa L2-616: Disable HW Neurons when merging (#903)
  3b591cd6 Display error message if user tries to merge hardware wallet neurons (#902)
  bf1142d3 Debug store trigger (#900)
@@ -45,6 +48,6 @@ Wasm sha256 hash: `6304502f8df13b54ef8ca567eb816da0d5868e433643f08994806b8503c0f
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `8bd718fa18c9b242b26aa401f9cc087f6b7fef96`
+git checkout `1492c218c778ebe44639e9b00712395913dfd0e0`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
