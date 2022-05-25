@@ -210,7 +210,10 @@ if [[ "$POPULATE" == "true" ]]; then
 
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
-  ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK"
+  # Note: Local dfx has no subnets.
+  [[ "$DFX_NETWORK" == "local" ]] || {
+    ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK" --jfdi
+  }
 
   # Create users and neurons
   pushd e2e-tests
