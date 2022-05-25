@@ -79,6 +79,9 @@ if { curl -sL "$(./e2e-tests/scripts/nns-dashboard)" | grep -q "$FIRST_POSSIBLE_
   }
 fi
 
+echo "Canister hashes:"
+sha256sum "${DOWNLOAD_DIR}"/*.wasm
+
 NNS_URL="$(./e2e-tests/scripts/nns-dashboard)"
 
 "${DOWNLOAD_DIR}/ic-nns-init" \
