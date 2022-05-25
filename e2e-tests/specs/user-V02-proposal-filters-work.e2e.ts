@@ -27,41 +27,54 @@ describe("Makes a proposal and verifies that the filters work", () => {
     );
   });
 
-  it("Can see the new proposal if open proposals are selected", async () => {
-    const proposalsTab = new ProposalsTab(browser);
-    await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
-    const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
-      proposalId as number
-    );
-    await proposalsTab.getElement(
-      proposalMetadataSelector,
-      "Proposal should appear, it it was not already displayed"
-    );
-    const disappears = await proposalsTab
-      .waitForGone(proposalMetadataSelector, "Seeing if it disappears", {
-        timeout: 1_000,
-      })
-      .then(() => true)
-      .catch(() => false);
-    expect(disappears).toBe(false);
-  });
-  it("Can not see the new proposal if open proposals are deselected", async () => {
-    const proposalsTab = new ProposalsTab(browser);
-    await proposalsTab.filter("filters-by-status", ["Open", "Failed"], false);
-    const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
-      proposalId as number
-    );
-    await proposalsTab.waitForGone(
-      proposalMetadataSelector,
-      "Proposal should disappear",
-      { timeout: 10_000 }
-    );
-    const appears = await proposalsTab
-      .getElement(proposalMetadataSelector, "Seeing if it appears", {
-        timeout: 1_000,
-      })
-      .then(() => true)
-      .catch(() => false);
-    expect(appears).toBe(false);
-  });
+  // The next steps all follow the same pattern:
+  // - Refresh, to reset the filters.
+  // - Check some fields, verify that the proposal is shown,
+  // - Refresh, to reset the filters.
+  // - Invert the selection, verify that the proposal is not shown.
+  const testFilter = (filterSelector: string, selection: Array<string>): void => {
+    it(`Can see the new proposal if ${selection.join(" ")} proposals are selected`, async () => {
+      await browser.refresh();
+      const proposalsTab = new ProposalsTab(browser);
+      await proposalsTab.filter(filterSelector, selection);
+      const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
+        proposalId as number
+      );
+      await proposalsTab.getElement(
+        proposalMetadataSelector,
+        "Proposal should appear, if it was not already displayed"
+      );
+      const disappears = await proposalsTab
+        .waitForGone(proposalMetadataSelector, "Seeing if it disappears", {
+          timeout: 1_000,
+        })
+        .then(() => true)
+        .catch(() => false);
+      expect(disappears).toBe(false);
+    });
+    it(`Can not see the new proposal if ${selection.join(" ")} proposals are deselected`, async () => {
+      await browser.refresh();
+      const proposalsTab = new ProposalsTab(browser);
+      await proposalsTab.filter(filterSelector, selection, false);
+      const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
+        proposalId as number
+      );
+      await proposalsTab.waitForGone(
+        proposalMetadataSelector,
+        "Proposal should disappear",
+        { timeout: 10_000 }
+      );
+      const appears = await proposalsTab
+        .getElement(proposalMetadataSelector, "Seeing if it appears", {
+          timeout: 1_000,
+        })
+        .then(() => true)
+        .catch(() => false);
+      expect(appears).toBe(false);
+    });
+  };
+
+  testFilter("filters-by-topics", ["Subnet Management"]);
+  testFilter("filters-by-rewards", ["Accepting Votes"]);
+  testFilter("filters-by-status", ["Open", "Failed"]);
 });

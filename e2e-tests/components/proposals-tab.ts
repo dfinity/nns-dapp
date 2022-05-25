@@ -62,6 +62,8 @@ export class ProposalsTab extends MyNavigator {
     values: Array<string>,
     enable: boolean = true
   ): Promise<void> {
+    // The default window is too small, so most buttons are not visible, which is hard for wdio to cope with.
+    await browser.setWindowSize(800, 1000);
     await browser.pause(2_000);
     await this.click(
       `[data-tid="${filterTid}"]`,
