@@ -225,7 +225,7 @@ export const stakeNeuron = async ({
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
+ * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
@@ -245,15 +245,14 @@ export const listNeurons = async ({
       if (!certified || skipCheck) {
         return;
       }
-      // Query the ledger for each neuron
-      // refresh those whose stake does not match their ledger balance.
       try {
-        const refetch = await checkNeuronBalances(neurons);
+        // Query the ledger for each neuron
+        // refresh those whose stake does not match their ledger balance.
+        const refetch = await shouldRefetchNeurons(neurons);
         if (refetch) {
           listNeurons({ skipCheck: true });
         }
       } catch (error) {
-        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
         console.error(error);
       }
     },
@@ -350,7 +349,9 @@ const claimNeurons =
       neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
     );
 
-const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<boolean> => {
+const shouldRefetchNeurons = async (
+  neurons: NeuronInfo[]
+): Promise<boolean> => {
   const identity = await getIdentity();
 
   const fullNeurons: Neuron[] = neurons
@@ -914,7 +915,7 @@ export const loadNeuron = ({
       }
       // If the check is required, we don't want to call `setNeuron` until it has finished.
       // For example: to avoid closing the "IncreaseStakeNeuronModal" before we finish this check.
-      const refetch = await checkNeuronBalances([neuron]);
+      const refetch = await shouldRefetchNeurons([neuron]);
       if (refetch) {
         await loadNeuron({
           neuronId,
