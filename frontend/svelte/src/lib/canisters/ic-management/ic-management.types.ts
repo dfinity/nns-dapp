@@ -1,4 +1,4 @@
-import type { definite_canister_settings } from "@dfinity/agent/lib/cjs/canisters/management_service";
+import type { definite_canister_settings } from "@dfinity/agent/lib/esm/canisters/management_service";
 export type CanisterStatus =
   | { stopped: null }
   | { stopping: null }

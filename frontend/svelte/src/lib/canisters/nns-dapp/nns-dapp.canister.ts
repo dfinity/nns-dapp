@@ -222,7 +222,7 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    // TODO: Throw proper errors
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
     throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
   };
 
