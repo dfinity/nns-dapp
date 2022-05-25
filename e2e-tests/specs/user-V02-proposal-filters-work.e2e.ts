@@ -62,6 +62,6 @@ describe("Makes a proposal and verifies that the filters work", () => {
       })
       .then(() => true)
       .catch(() => false);
-    expect(disappears).toBe(false);
+    expect(appears).toBe(false);
   });
 });

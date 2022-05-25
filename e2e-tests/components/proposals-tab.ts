@@ -79,9 +79,12 @@ export class ProposalsTab extends MyNavigator {
                 `No checkbox in filter item: ${element.outerHTML}`
               );
             }
-            checkbox.checked =
-              enable ===
-              values.includes(element.querySelector("label")?.innerText ?? "");
+            if (
+              (checkbox.checked === enable) !==
+              values.includes(element.querySelector("label")?.innerText ?? "")
+            ) {
+              checkbox.click();
+            }
           }
         ),
       values,
@@ -99,13 +102,18 @@ export class ProposalsTab extends MyNavigator {
     await this.waitForGone(".modal", "Wait for the filter modal to go away");
     await this.browser.waitUntil(
       async () => {
-        let filterCountElement = await this.getElement(
-          `[data-tid="${filterTid}"] small`
+        const filterCountElement = await this.getElement(
+          `[data-tid="${filterTid}"] small`,
+          "Getting the element with the number of selected filter options"
         );
-        let filterCountText = await filterCountElement.getText();
+        const filterCountText = await filterCountElement.getText();
+        const [num_selected, of_available] = filterCountText
+          .replace(/.*\(([0-9]+)\/([0-9]+).*/, "$1 $2")
+          .split(" ")
+          .map((field) => Number(field));
         return (
-          Number(filterCountText.replace(/.*\(([0-9]+)\/.*/, "$1")) ===
-          values.length
+          values.length ===
+          (enable ? num_selected : of_available - num_selected)
         );
       },
       {
