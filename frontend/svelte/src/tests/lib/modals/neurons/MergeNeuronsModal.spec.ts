@@ -31,7 +31,7 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 
 describe("MergeNeuronsModal", () => {
   const selectAndTestTwoNeurons = async ({ queryAllByTestId, neurons }) => {
-    const neuronCardElements = queryAllByTestId("card");
+    const neuronCardElements = queryAllByTestId("neuron-card");
     expect(neuronCardElements.length).toBe(neurons.length);
 
     let [neuronElement1, neuronElement2] = neuronCardElements;
@@ -41,13 +41,13 @@ describe("MergeNeuronsModal", () => {
 
     await fireEvent.click(neuronElement1);
     // Elements might change after every click
-    [neuronElement1, neuronElement2] = queryAllByTestId("card");
+    [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
 
     expect(neuronElement1.classList.contains("selected")).toBe(true);
 
     await fireEvent.click(neuronElement2);
     // Elements might change after every click
-    [neuronElement1, neuronElement2] = queryAllByTestId("card");
+    [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
 
     expect(neuronElement2.classList.contains("selected")).toBe(true);
   };
@@ -119,7 +119,7 @@ describe("MergeNeuronsModal", () => {
     it("allows user to unselect after selecting a neuron", async () => {
       const { queryAllByTestId } = await renderMergeModal(mergeableNeurons);
 
-      const neuronCardElements = queryAllByTestId("card");
+      const neuronCardElements = queryAllByTestId("neuron-card");
       expect(neuronCardElements.length).toBe(mergeableNeurons.length);
 
       const [neuronElement1] = neuronCardElements;
@@ -244,7 +244,7 @@ describe("MergeNeuronsModal", () => {
         mockHardwareWalletAccount,
       ]);
 
-      const neuronCardElements = queryAllByTestId("card");
+      const neuronCardElements = queryAllByTestId("neuron-card");
       expect(neuronCardElements.length).toBe(neurons.length);
 
       const [neuronElement1] = neuronCardElements;
@@ -255,7 +255,7 @@ describe("MergeNeuronsModal", () => {
       expect(neuronElement1.classList.contains("selected")).toBe(true);
 
       // We need to query again because the elements have changed because of the Tooltip.
-      const neuronCardElementsAfterSelection = queryAllByTestId("card");
+      const neuronCardElementsAfterSelection = queryAllByTestId("neuron-card");
       const [, neuronElement2] = neuronCardElementsAfterSelection;
 
       expect(neuronElement2.classList.contains("disabled")).toBe(true);
