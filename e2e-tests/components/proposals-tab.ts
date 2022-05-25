@@ -64,13 +64,11 @@ export class ProposalsTab extends MyNavigator {
   ): Promise<void> {
     // The default window is too small, so most buttons are not visible, which is hard for wdio to cope with.
     await browser.setWindowSize(800, 1000);
-    await browser.pause(2_000);
     await this.click(
       `[data-tid="${filterTid}"]`,
       `Open filter modal for ${filterTid}`
     );
-    await browser.pause(1_000);
-    console.warn("Setting filter");
+    console.warn(`Setting filter ${filterTid} to ${enable?"enable":"disable"} ${JSON.stringify(values)}`);
     await this.browser.execute(
       (values: Array<string>, enable) =>
         Array.from(document.querySelectorAll(`.modal .checkbox`)).forEach(
@@ -91,11 +89,6 @@ export class ProposalsTab extends MyNavigator {
         ),
       values,
       enable
-    );
-    await browser.pause(2_000);
-    console.warn(
-      "Applying filter",
-      ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR
     );
     await this.click(
       ProposalsTab.PROPOSAL_FILTER_APPLY_SELECTOR,
@@ -123,7 +116,6 @@ export class ProposalsTab extends MyNavigator {
         timeout: 5_000,
       }
     );
-    await browser.pause(1_000);
   }
 
   constructor(browser: WebdriverIO.Browser) {
