@@ -32,7 +32,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-dv-0002"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-dv-0003"
 
       - name: Download prebuilt nns canisters
         if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
@@ -54,6 +54,9 @@ jobs:
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: target/ic
 
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
+
   build:
     needs: [nns_canisters]
     runs-on: ubuntu-20.04
@@ -67,7 +70,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-dv-0002"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-dv-0003"
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no

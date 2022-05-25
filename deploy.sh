@@ -205,13 +205,15 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  # Set the cycles exchange rate - needs a patched cycles minting canister.
+  echo Setting the cycles exchange rate...
+  echo Note: This needs a patched cycles minting canister.
   ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
 
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
   # Note: Local dfx has no subnets.
   [[ "$DFX_NETWORK" == "local" ]] || {
+    echo Setting the list of subnets CMC is authorized to create canisters in...
     ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK" --jfdi
   }
 
@@ -220,6 +222,7 @@ if [[ "$POPULATE" == "true" ]]; then
   REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY frontend/ts/src/config.json)"
   [[ "$REDIRECT_TO_LEGACY" == "prod" ]] ||
     [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
+    echo Creating users and neurons...
     pushd e2e-tests
     npm ci
     printf '%s\n' user-N01-neuron-created.e2e.ts |
