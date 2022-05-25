@@ -12,9 +12,9 @@ describe("canisters-store", () => {
 
   it("should reset canisters", () => {
     canistersStore.setCanisters({ canisters: mockCanisters, certified: true });
-    canistersStore.setCanisters({ canisters: [], certified: true });
+    canistersStore.setCanisters({ canisters: undefined, certified: true });
 
     const store = get(canistersStore);
-    expect(store.canisters).toEqual([]);
+    expect(store.canisters).toBeUndefined();
   });
 });

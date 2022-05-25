@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
-import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 
 export interface CanistersStore {
-  canisters: CanisterDetails[] | undefined;
+  canisters: CanisterInfo[] | undefined;
   certified: boolean | undefined;
 }
 
@@ -21,7 +21,7 @@ const initCanistersStore = () => {
     subscribe,
 
     setCanisters({ canisters, certified }: CanistersStore) {
-      set({ canisters: [...(canisters || [])], certified });
+      set({ canisters, certified });
     },
   };
 };

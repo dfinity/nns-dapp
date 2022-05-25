@@ -10,7 +10,7 @@ export const listCanisters = async ({
   clearBeforeQuery?: boolean;
 }) => {
   if (clearBeforeQuery === true) {
-    canistersStore.setCanisters({ canisters: [], certified: true });
+    canistersStore.setCanisters({ canisters: undefined, certified: true });
   }
 
   return queryAndUpdate<CanisterDetails[], unknown>({
