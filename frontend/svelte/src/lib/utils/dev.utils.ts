@@ -1,4 +1,6 @@
+import { get } from "svelte/store";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
+import { i18n } from "../stores/i18n";
 
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
@@ -59,7 +61,7 @@ export function triggerDebugReport(node: HTMLElement) {
       count++;
 
       if (count === 5) {
-        generateDebugLogProxy(confirm("Save the app state to the file"));
+        generateDebugLogProxy(confirm(get(i18n).core.save_log_file));
       }
     } else {
       startTime = now;
