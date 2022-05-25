@@ -235,6 +235,12 @@ class PlatformICApi extends AbstractPlatformICApi {
         return Result.err(Exception("The neurons being merged must both have the same controller"));
       }
 
+      // TODO remove this check once hardware wallets are supported
+      final currentUserPrincipal = this.getPrincipal();
+      if (neuron1.controller != currentUserPrincipal || neuron2.controller != currentUserPrincipal) {
+        return Result.err(Exception("Unable to merge neurons. Merging of neurons controlled via hardware wallet is not yet supported"));
+      }
+
       // To ensure any built up age bonus is always preserved, if one neuron is
       // locked and the other is not, then we merge the neuron which is not
       // locked into the locked neuron.
