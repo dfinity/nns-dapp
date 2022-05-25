@@ -52,7 +52,12 @@
     }
 
     internalValueChange = true;
-    value = lastValidICPValue;
+    value =
+      lastValidICPValue === undefined
+        ? undefined
+        : typeof lastValidICPValue === "number"
+        ? lastValidICPValue.toFixed(8)
+        : +lastValidICPValue;
     icpValue = fixUndefinedValue(lastValidICPValue);
 
     // force dom update (because no active triggers)
@@ -67,7 +72,7 @@
       const currentValue = currentTarget.value;
 
       // handle invalid input
-      if (!isValidICPFormat(currentValue)) {
+      if (isValidICPFormat(currentValue) === false) {
         // restore value (e.g. to fix invalid paste)
         restoreFromValidValue();
         return;
