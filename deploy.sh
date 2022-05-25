@@ -206,7 +206,7 @@ fi
 
 if [[ "$POPULATE" == "true" ]]; then
   # Set the cycles exchange rate - needs a patched cycles minting canister.
-  ./scripts/set-xdr-conversion-rate
+  ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
 
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
