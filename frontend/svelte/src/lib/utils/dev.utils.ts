@@ -72,7 +72,6 @@ export function triggerDebugReport(node: HTMLElement) {
 
   return {
     destroy() {
-      stop();
       node.style.touchAction = originalTouchActionValue;
       node.removeEventListener("click", click, false);
     },
