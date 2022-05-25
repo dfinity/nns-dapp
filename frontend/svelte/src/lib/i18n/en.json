@@ -15,7 +15,8 @@
     "amount": "Amount",
     "max": "Max",
     "principal": "Principal",
-    "toggle": "toggle"
+    "toggle": "toggle",
+    "save_log_file": "Save the app state to the file"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -251,7 +252,11 @@
     "step2": "Link canisters to your account",
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
-    "create_or_link": "Create or Link Canister"
+    "create_or_link": "Create or Link Canister",
+    "empty": "No canisters yet."
+  },
+  "canister_detail": {
+    "title": "Canister"
   },
   "topics": {
     "Unspecified": "Unspecified",

@@ -6,6 +6,7 @@
   import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
+  import { triggerDebugReport } from "../utils/dev.utils";
 
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
@@ -56,7 +57,7 @@
               disabled={$busy}><IconBackIosNew /></button
             >
           {/if}
-          <h3 id="modalTitle"><slot name="title" /></h3>
+          <h3 id="modalTitle" use:triggerDebugReport><slot name="title" /></h3>
           <button
             data-tid="close-modal"
             on:click|stopPropagation={close}

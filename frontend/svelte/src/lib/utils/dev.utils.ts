@@ -1,4 +1,6 @@
+import { get } from "svelte/store";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
+import { i18n } from "../stores/i18n";
 
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
@@ -43,24 +45,37 @@ export const digestText = async (text: string): Promise<string> => {
 };
 
 /**
- * To not have "nns-state" in the code
- * @returns "nns-state"
+ * Bind debug logger tigger to the node (6 clicks in 2 seconds)
  */
-const TRIGGER_PHRASE = [101, 116, 97, 116, 115, 45, 115, 110, 110]
-  .reverse()
-  .map((c) => String.fromCharCode(c))
-  .join("");
+export function triggerDebugReport(node: HTMLElement) {
+  const TWO_SECONDS = 2 * 1000;
+  const originalTouchActionValue: string = node.style.touchAction;
 
-/**
- * Add console.log with a version that logs the stores on TRIGGER_PHRASE
- */
-export const bindDebugGenerator = () => {
-  const originalLog = console.log;
-  console.log = function (...args) {
-    if (args.length === 1 && args[0] === TRIGGER_PHRASE) {
-      generateDebugLogProxy().then();
+  let startTime: number = 0;
+  let count = 0;
+
+  const click = () => {
+    const now = Date.now();
+
+    if (now - startTime <= TWO_SECONDS) {
+      count++;
+
+      if (count === 5) {
+        generateDebugLogProxy(confirm(get(i18n).core.save_log_file));
+      }
     } else {
-      originalLog.apply(this, args);
+      startTime = now;
+      count = 0;
     }
   };
-};
+
+  node.style.touchAction = "manipulation";
+  node.addEventListener("click", click, { passive: true });
+
+  return {
+    destroy() {
+      node.style.touchAction = originalTouchActionValue;
+      node.removeEventListener("click", click, false);
+    },
+  };
+}

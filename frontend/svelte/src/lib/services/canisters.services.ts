@@ -10,12 +10,13 @@ export const listCanisters = async ({
   clearBeforeQuery?: boolean;
 }) => {
   if (clearBeforeQuery === true) {
-    canistersStore.setCanisters([]);
+    canistersStore.setCanisters({ canisters: undefined, certified: true });
   }
 
   return queryAndUpdate<CanisterDetails[], unknown>({
     request: (options) => queryCanisters(options),
-    onLoad: ({ response: canisters }) => canistersStore.setCanisters(canisters),
+    onLoad: ({ response: canisters, certified }) =>
+      canistersStore.setCanisters({ canisters, certified }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -24,7 +25,7 @@ export const listCanisters = async ({
       }
 
       // Explicitly handle only UPDATE errors
-      canistersStore.setCanisters([]);
+      canistersStore.setCanisters({ canisters: [], certified: true });
 
       toastsStore.error({
         labelKey: "error.list_canisters",
