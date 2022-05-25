@@ -16,7 +16,7 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
-    "update:nns": "npm update @dfinity/nns@nightly"
+    "update:nns": "npm update @dfinity/nns"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
