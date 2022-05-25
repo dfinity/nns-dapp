@@ -200,7 +200,9 @@ interface I18nNeurons {
   voting_power: string;
   skip: string;
   update_delay: string;
-  confirm_delay: string;
+  set_delay: string;
+  confirm_update_delay: string;
+  confirm_set_delay: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
   cannot_merge_neuron_community: string;

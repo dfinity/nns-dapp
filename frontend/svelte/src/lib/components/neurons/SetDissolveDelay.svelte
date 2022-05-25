@@ -21,6 +21,7 @@
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
   export let cancelButtonText: string | undefined = undefined;
+  export let confirmButtonText: string;
   export let minDelayInSeconds: number = 0;
 
   const checkMinimum = () => {
@@ -119,7 +120,7 @@
       on:click={goToConfirmation}
       data-tid="go-confirm-delay-button"
     >
-      {$i18n.neurons.update_delay}
+      {confirmButtonText}
     </button>
   </div>
 </div>
