@@ -8,7 +8,7 @@ import type {
   CanisterDetails,
   ICMgtCanisterOptions,
 } from "./ic-management.canister.types";
-import { toHttpError, UserNotTheControllerError } from "./ic-management.errors";
+import { mapError } from "./ic-management.errors";
 import type { CanisterStatusResponse } from "./ic-management.types";
 
 export class ICManagementCanister {
@@ -44,12 +44,7 @@ export class ICManagementCanister {
         canisterId,
       });
     } catch (e) {
-      const httpError = toHttpError(e);
-      if (httpError.code === 403) {
-        throw new UserNotTheControllerError();
-      } else {
-        throw e;
-      }
+      throw mapError(e);
     }
   };
 }

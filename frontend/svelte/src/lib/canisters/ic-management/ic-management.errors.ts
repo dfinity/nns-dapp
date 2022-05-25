@@ -1,10 +1,9 @@
-export type HttpError = {
-  kind: "httpError";
-  code: number;
-  message: string;
-};
-
-export function toHttpError(error: Error): HttpError {
+/**
+ * Parses and throws convenient error class.
+ *
+ * @throws UserNotTheControllerError and Error.
+ */
+export function mapError(error: Error): Error {
   let code = 500;
 
   const statusLine = error.message
@@ -27,11 +26,10 @@ export function toHttpError(error: Error): HttpError {
     }
   }
 
-  return {
-    kind: "httpError",
-    code: code,
-    message: error.message,
-  };
+  if (code === 403) {
+    return new UserNotTheControllerError();
+  }
+  return error;
 }
 
 export class UserNotTheControllerError extends Error {}

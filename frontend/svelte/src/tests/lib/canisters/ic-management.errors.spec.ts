@@ -1,24 +1,29 @@
-import { toHttpError } from "../../../lib/canisters/ic-management/ic-management.errors";
+import {
+  mapError,
+  UserNotTheControllerError,
+} from "../../../lib/canisters/ic-management/ic-management.errors";
 
 describe("IC Management Error utils", () => {
-  describe("toHttpError", () => {
-    it("extracts status code from the error after break line", () => {
-      expect(toHttpError(new Error("code: 501")).code).toBe(501);
+  describe("mapError", () => {
+    it("returns error based on code", () => {
+      expect(mapError(new Error("code: 403"))).toBeInstanceOf(
+        UserNotTheControllerError
+      );
       expect(
-        toHttpError(new Error("This is an error message with\ncode: 514")).code
-      ).toBe(514);
+        mapError(new Error("This is an error message with\ncode: 514"))
+      ).toBeInstanceOf(Error);
       expect(
-        toHttpError(new Error("And this is yet another one with\ncode: 509"))
-          .code
-      ).toBe(509);
+        mapError(new Error("And this is yet another one with\ncode: 509"))
+      ).toBeInstanceOf(Error);
     });
 
-    it("returns 500 if no code is found", () => {
-      expect(toHttpError(new Error("no code is found here")).code).toBe(500);
+    it("returns Error if no code is found", () => {
+      expect(mapError(new Error("no code is found here"))).toBeInstanceOf(
+        Error
+      );
       expect(
-        toHttpError(new Error("erro message with code: 509 in the same line"))
-          .code
-      ).toBe(500);
+        mapError(new Error("erro message with code: 509 in the same line"))
+      ).toBeInstanceOf(Error);
     });
   });
 });
