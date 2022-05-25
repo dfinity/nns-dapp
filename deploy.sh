@@ -208,9 +208,13 @@ if [[ "$POPULATE" == "true" ]]; then
   # Set the cycles exchange rate - needs a patched cycles minting canister.
   ./scripts/set-xdr-conversion-rate
 
+  # Allow the cmc canister to create canisters anywhere.
+  # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
+  ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK"
+
+  # Create users and neurons
   pushd e2e-tests
   npm ci
-  
   printf '%s\n' user-N01-neuron-created.e2e.ts |
     SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
   popd
