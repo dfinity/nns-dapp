@@ -152,13 +152,13 @@ export const sortNeuronsByCreatedTimestamp = (
  */
 export const isNeuronControllableByUser = ({
   neuron: { fullNeuron },
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
-  fullNeuron.controller === identity?.getPrincipal().toText();
+  fullNeuron.controller === accounts.main?.principal?.toText();
 
 /*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
@@ -320,7 +320,9 @@ const isMergeableNeuron = ({
   neuron: NeuronInfo;
   accounts: AccountsStore;
 }): boolean =>
-  !hasJoinedCommunityFund(neuron) && isNeuronControllable({ neuron, accounts });
+  !hasJoinedCommunityFund(neuron) &&
+  // Merging hardware wallet neurons is not yet supported
+  isNeuronControllableByUser({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
@@ -331,6 +333,9 @@ const getMergeableNeuronMessageKey = ({
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
+  }
+  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
+    return "neurons.cannot_merge_hardware_wallet";
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";

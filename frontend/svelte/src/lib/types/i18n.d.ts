@@ -205,6 +205,7 @@ interface I18nNeurons {
   split_neuron_success: string;
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_hotkey: string;
+  cannot_merge_hardware_wallet: string;
   only_merge_two: string;
   irreversible_action: string;
   stake_amount: string;
