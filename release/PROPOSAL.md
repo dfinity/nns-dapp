@@ -3,7 +3,7 @@ Wasm sha256 hash: `6304502f8df13b54ef8ca567eb816da0d5868e433643f08994806b8503c0f
 
 ## Change Log:
 
-* Do not offer merging hardware wallets in the UI, as it is unsupported.
+* Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
 * Add the ability to dump debug info.
 * Prepare for more tabs to be released as svelte.
 * Improve the infrastructure for third party contributions.
