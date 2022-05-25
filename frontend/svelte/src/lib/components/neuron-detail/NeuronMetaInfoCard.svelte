@@ -33,7 +33,7 @@
   let isControlledByUser: boolean;
   $: isControlledByUser = isNeuronControllableByUser({
     neuron,
-    accounts: $accountsStore,
+    mainAccount: $accountsStore.main,
   });
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({

@@ -457,10 +457,6 @@ describe("neuron-utils", () => {
   });
 
   describe("isNeuronControllableByUser", () => {
-    const accounts = {
-      main: mockMainAccount,
-      hardwareWallets: [mockHardwareWalletAccount],
-    };
     it("should return true if neuron controller is the current identity principal", () => {
       const neuron = {
         ...mockNeuron,
@@ -470,7 +466,9 @@ describe("neuron-utils", () => {
         },
       };
 
-      expect(isNeuronControllableByUser({ neuron, accounts })).toBe(true);
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(true);
     });
 
     it("should return false if fullNeuron not defined", () => {
@@ -479,7 +477,9 @@ describe("neuron-utils", () => {
         fullNeuron: undefined,
       };
 
-      expect(isNeuronControllableByUser({ neuron, accounts })).toBe(false);
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(false);
     });
 
     it("should return false if neuron controller is a hardware wallet", () => {
@@ -491,7 +491,9 @@ describe("neuron-utils", () => {
         },
       };
 
-      expect(isNeuronControllableByUser({ neuron, accounts })).toBe(false);
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(false);
     });
   });
 

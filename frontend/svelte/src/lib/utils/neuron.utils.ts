@@ -27,6 +27,7 @@ import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
+import type { Account } from "../types/account";
 import { InvalidAmountError } from "../types/errors";
 import {
   getAccountByPrincipal,
@@ -152,13 +153,14 @@ export const sortNeuronsByCreatedTimestamp = (
  */
 export const isNeuronControllableByUser = ({
   neuron: { fullNeuron },
-  accounts,
+  mainAccount,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  mainAccount?: Account;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
-  fullNeuron.controller === accounts.main?.principal?.toText();
+  mainAccount?.type === "main" &&
+  fullNeuron.controller === mainAccount.principal?.toText();
 
 /*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
@@ -322,7 +324,7 @@ const isMergeableNeuron = ({
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   // Merging hardware wallet neurons is not yet supported
-  isNeuronControllableByUser({ neuron, accounts });
+  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
