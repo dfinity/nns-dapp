@@ -91,6 +91,7 @@ export const createCanister = async ({
   // The same background tasks that notifies the CMC also attaches the canister.
   // `name` is mandatory and unique per user,
   // but it can be an empty string
+  // TODO: https://dfinity.atlassian.net/browse/L2-591
   await nnsDapp.attachCanister({
     name: name ?? "",
     canisterId,

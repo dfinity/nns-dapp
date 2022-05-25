@@ -34,10 +34,14 @@ export class ICManagementCanister {
   public getCanisterDetails = async (
     canisterId: Principal
   ): Promise<CanisterDetails> => {
-    let rawResponse: CanisterStatusResponse;
     try {
-      rawResponse = await this.service.canister_status({
-        canister_id: canisterId,
+      const rawResponse: CanisterStatusResponse =
+        await this.service.canister_status({
+          canister_id: canisterId,
+        });
+      return toCanisterDetails({
+        response: rawResponse,
+        canisterId,
       });
     } catch (e) {
       const httpError = toHttpError(e);
@@ -47,10 +51,5 @@ export class ICManagementCanister {
         throw e;
       }
     }
-
-    return toCanisterDetails({
-      response: rawResponse,
-      canisterId,
-    });
   };
 }
