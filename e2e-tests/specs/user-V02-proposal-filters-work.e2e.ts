@@ -32,8 +32,13 @@ describe("Makes a proposal and verifies that the filters work", () => {
   // - Check some fields, verify that the proposal is shown,
   // - Refresh, to reset the filters.
   // - Invert the selection, verify that the proposal is not shown.
-  const testFilter = (filterSelector: string, selection: Array<string>): void => {
-    it(`Can see the new proposal if ${selection.join(" ")} proposals are selected`, async () => {
+  const testFilter = (
+    filterSelector: string,
+    selection: Array<string>
+  ): void => {
+    it(`Can see the new proposal if ${selection.join(
+      " & "
+    )} proposals are selected`, async () => {
       await browser.refresh();
       const proposalsTab = new ProposalsTab(browser);
       await proposalsTab.filter(filterSelector, selection);
@@ -52,7 +57,9 @@ describe("Makes a proposal and verifies that the filters work", () => {
         .catch(() => false);
       expect(disappears).toBe(false);
     });
-    it(`Can not see the new proposal if ${selection.join(" ")} proposals are deselected`, async () => {
+    it(`Can not see the new proposal if ${selection.join(
+      " "
+    )} proposals are deselected`, async () => {
       await browser.refresh();
       const proposalsTab = new ProposalsTab(browser);
       await proposalsTab.filter(filterSelector, selection, false);
