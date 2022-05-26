@@ -15,7 +15,7 @@
   };
 </script>
 
-<div class="wizard-wrapper">
+<div class="wizard-wrapper wrapper">
   <CardItem testId="choose-create-as-new-canister" on:click={selectCreate}>
     <svelte:fragment slot="title"
       >{$i18n.canisters.create_canister_title}</svelte:fragment
@@ -35,8 +35,8 @@
 </div>
 
 <style lang="scss">
-  .wizard-wrapper {
-    // Need to overwrite the default of wizrd-wrapper
+  // Need to overwrite the default of wizrd-wrapper
+  .wizard-wrapper.wrapper {
     justify-content: center !important;
   }
 </style>

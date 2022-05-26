@@ -6,14 +6,14 @@
 
   export let placeholderLabelKey: string;
   export let name: string;
-  export let validPrincipal: Principal | undefined = undefined;
+  export let principal: Principal | undefined = undefined;
 
   let address: string = "";
-  $: validPrincipal = getPrincipalFromString(address);
+  $: principal = getPrincipalFromString(address);
   let showError: boolean = false;
 
   const showErrorIfAny = () => {
-    showError = address.length > 0 && validPrincipal === undefined;
+    showError = address.length > 0 && principal === undefined;
   };
   // Hide error on change
   $: address, (showError = false);

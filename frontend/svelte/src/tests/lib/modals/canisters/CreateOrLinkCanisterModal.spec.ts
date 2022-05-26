@@ -26,7 +26,7 @@ describe("CreateOrLinkCanisterModal", () => {
       component: CreateOrLinkCanisterModal,
     });
 
-    const buttons = container.querySelectorAll('div[role="button"]');
+    const buttons = container.querySelectorAll('article[role="button"]');
     expect(buttons.length).toEqual(2);
   });
 

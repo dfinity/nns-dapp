@@ -1,31 +1,25 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { Principal } from "@dfinity/principal";
-  import { getPrincipalFromString } from "../../utils/accounts.utils";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { attachCanister } from "../../services/canisters.services";
   import { createEventDispatcher } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import PrincipalInput from "../ui/PrincipalInput.svelte";
 
-  let address: string = "";
-  let validPrincipal: Principal | undefined;
-  $: validPrincipal = getPrincipalFromString(address);
-  let showError: boolean = false;
-  // Hide error on change
-  $: address, (showError = false);
+  let principal: Principal | undefined;
 
   const dispatcher = createEventDispatcher();
   const attach = async () => {
-    // Edge case: button is only enabled when validPrincipal is defined
-    if (validPrincipal === undefined) {
+    // Edge case: button is only enabled when principal is defined
+    if (principal === undefined) {
       toastsStore.error({
         labelKey: "error.principal_not_valid",
       });
       return;
     }
     startBusy({ initiator: "attach-canister" });
-    const { success } = await attachCanister(validPrincipal);
+    const { success } = await attachCanister(principal);
     if (success) {
       toastsStore.success({
         labelKey: "canisters.link_canister_success",
@@ -40,7 +34,7 @@
   <div class="input-wrapper">
     <h5>{$i18n.canisters.enter_canister_id}</h5>
     <PrincipalInput
-      bind:validPrincipal
+      bind:principal
       placeholderLabelKey="canisters.canister_id"
       name="canister-principal"
     />
@@ -50,7 +44,7 @@
     data-tid="attach-canister-button"
     class="primary full-width"
     type="submit"
-    disabled={validPrincipal === undefined || $busy}
+    disabled={principal === undefined || $busy}
   >
     {$i18n.core.confirm}
   </button>

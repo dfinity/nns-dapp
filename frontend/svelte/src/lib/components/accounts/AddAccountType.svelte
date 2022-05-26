@@ -17,7 +17,7 @@
   const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
-<div class="wizard-wrapper">
+<div class="wizard-wrapper wrapper">
   <CardItem
     on:click={selectNewSubAccount}
     testId="choose-linked-as-account-type"
@@ -43,8 +43,8 @@
 </div>
 
 <style lang="scss">
-  .wizard-wrapper {
-    // Need to overwrite the default of wizrd-wrapper
-    justify-content: center !important;
+  // Need to overwrite the default of wizrd-wrapper
+  .wizard-wrapper.wrapper {
+    justify-content: center;
   }
 </style>

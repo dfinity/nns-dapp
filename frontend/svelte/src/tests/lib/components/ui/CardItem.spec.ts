@@ -15,7 +15,9 @@ describe("CardItem", () => {
   it("should render a div with role button", () => {
     const { container } = render(CardItem, { props });
 
-    expect(container.querySelector("div[role='button']")).toBeInTheDocument();
+    expect(
+      container.querySelector("article[role='button']")
+    ).toBeInTheDocument();
   });
 
   it("should forward the click event", (done) => {
@@ -25,7 +27,7 @@ describe("CardItem", () => {
       done();
     });
 
-    const element = container.querySelector("div[role='button']");
+    const element = container.querySelector("article[role='button']");
     expect(element).not.toBeNull();
     element && fireEvent.click(element);
   });

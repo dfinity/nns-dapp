@@ -12,19 +12,19 @@
 
   export let neuronId: NeuronId;
 
-  let validPrincipal: Principal | undefined = undefined;
+  let principal: Principal | undefined = undefined;
   const dispatcher = createEventDispatcher();
 
   const add = async () => {
-    // Edge case: button is only enabled when validPrincipal is defined
-    if (validPrincipal === undefined) {
+    // Edge case: button is only enabled when principal is defined
+    if (principal === undefined) {
       toastsStore.error({
         labelKey: "error.principal_not_valid",
       });
       return;
     }
     startBusyNeuron({ initiator: "add-hotkey-neuron", neuronId });
-    await addHotkey({ neuronId, principal: validPrincipal });
+    await addHotkey({ neuronId, principal: principal });
     stopBusy("add-hotkey-neuron");
     dispatcher("nnsClose");
   };
@@ -36,7 +36,7 @@
     <div class="input-wrapper">
       <h5>{$i18n.neuron_detail.enter_hotkey}</h5>
       <PrincipalInput
-        bind:validPrincipal
+        bind:principal
         placeholderLabelKey="neuron_detail.add_hotkey_placeholder"
         name="hotkey-principal"
       />
@@ -46,7 +46,7 @@
       data-tid="add-hotkey-neuron-button"
       class="primary full-width"
       type="submit"
-      disabled={validPrincipal === undefined || $busy}
+      disabled={principal === undefined || $busy}
     >
       {$i18n.core.confirm}
     </button>

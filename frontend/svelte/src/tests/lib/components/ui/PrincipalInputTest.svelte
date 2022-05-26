@@ -5,7 +5,7 @@
   export let placeholderLabelKey: string;
   export let name: string;
 
-  let validPrincipal: Principal | undefined = undefined;
+  let principal: Principal | undefined = undefined;
 </script>
 
-<PrincipalInput {name} {placeholderLabelKey} {validPrincipal} />
+<PrincipalInput {name} {placeholderLabelKey} {principal} />
