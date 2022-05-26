@@ -1,12 +1,10 @@
 <script lang="ts">
-  export let title: string;
-  export let subtitle: string;
   export let testId: string | undefined = undefined;
 </script>
 
 <div class="card-item" role="button" on:click data-tid={testId}>
-  <h4>{title}</h4>
-  <span>{subtitle}</span>
+  <h4><slot name="title" /></h4>
+  <span><slot name="subtitle" /></span>
 </div>
 
 <style lang="scss">

@@ -3,41 +3,30 @@
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { stopBusy } from "../../stores/busy.store";
+  import { busy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/neurons.services";
-  import Spinner from "../../components/ui/Spinner.svelte";
   import { createEventDispatcher } from "svelte";
-  import { getPrincipalFromString } from "../../utils/accounts.utils";
-  import InputWithError from "../../components/ui/InputWithError.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
+  import PrincipalInput from "../../components/ui/PrincipalInput.svelte";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let neuronId: NeuronId;
 
-  let address: string = "";
-  let validPrincipal: Principal | undefined;
-  $: validPrincipal = getPrincipalFromString(address);
-  let showError: boolean = false;
-  let loading: boolean = false;
-
-  const showErrorIfAny = () => {
-    showError = address.length > 0 && validPrincipal === undefined;
-  };
-  // Hide error on change
-  $: address, (showError = false);
-
+  let validPrincipal: Principal | undefined = undefined;
   const dispatcher = createEventDispatcher();
+
   const add = async () => {
-    if (validPrincipal !== undefined) {
-      startBusyNeuron({ initiator: "add-hotkey-neuron", neuronId });
-      loading = true;
-      await addHotkey({ neuronId, principal: validPrincipal });
-      loading = false;
-      stopBusy("add-hotkey-neuron");
-      dispatcher("nnsClose");
-    } else {
-      // Edge case, button is not enabled without `validPrincipal`.
-      showError = true;
+    // Edge case: button is only enabled when validPrincipal is defined
+    if (validPrincipal === undefined) {
+      toastsStore.error({
+        labelKey: "error.principal_not_valid",
+      });
+      return;
     }
+    startBusyNeuron({ initiator: "add-hotkey-neuron", neuronId });
+    await addHotkey({ neuronId, principal: validPrincipal });
+    stopBusy("add-hotkey-neuron");
+    dispatcher("nnsClose");
   };
 </script>
 
@@ -46,14 +35,10 @@
   <form on:submit|preventDefault={add} data-tid="add-hotkey-neuron-modal">
     <div class="input-wrapper">
       <h5>{$i18n.neuron_detail.enter_hotkey}</h5>
-      <InputWithError
-        inputType="text"
+      <PrincipalInput
+        bind:validPrincipal
         placeholderLabelKey="neuron_detail.add_hotkey_placeholder"
         name="hotkey-principal"
-        bind:value={address}
-        theme="dark"
-        errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
-        on:blur={showErrorIfAny}
       />
     </div>
 
@@ -61,19 +46,19 @@
       data-tid="add-hotkey-neuron-button"
       class="primary full-width"
       type="submit"
-      disabled={validPrincipal === undefined}
+      disabled={validPrincipal === undefined || $busy}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.core.confirm}
-      {/if}
+      {$i18n.core.confirm}
     </button>
   </form>
 </Modal>
 
 <style lang="scss">
   @use "../../themes/mixins/modal.scss";
+
+  h5 {
+    text-align: center;
+  }
 
   form {
     @include modal.section;

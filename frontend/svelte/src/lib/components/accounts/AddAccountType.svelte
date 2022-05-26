@@ -20,16 +20,26 @@
 <div class="wizard-wrapper">
   <CardItem
     on:click={selectNewSubAccount}
-    title={$i18n.accounts.new_linked_title}
-    subtitle={$i18n.accounts.new_linked_subtitle}
     testId="choose-linked-as-account-type"
-  />
+  >
+    <svelte:fragment slot="title"
+      >{$i18n.accounts.new_linked_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.accounts.new_linked_subtitle}</svelte:fragment
+    >
+  </CardItem>
   <CardItem
     on:click={selectNewHardwareWallet}
-    title={$i18n.accounts.attach_hardware_title}
-    subtitle={$i18n.accounts.attach_hardware_subtitle}
     testId="choose-hardware-wallet-as-account-type"
-  />
+  >
+    <svelte:fragment slot="title"
+      >{$i18n.accounts.attach_hardware_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.accounts.attach_hardware_subtitle}</svelte:fragment
+    >
+  </CardItem>
 </div>
 
 <style lang="scss">

@@ -1,30 +1,37 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
   import CardItem from "../ui/CardItem.svelte";
 
   const dispatcher = createEventDispatcher();
+  const dispatchSelect = (type: "newCanisterCreate" | "newCanisterAttach") => {
+    dispatcher("nnsSelect", { type });
+  };
   const selectCreate = () => {
-    dispatcher("nnsSelect", { type: "newCanisterCreate" });
+    dispatchSelect("newCanisterCreate");
   };
   const selectLink = () => {
-    dispatcher("nnsSelect", { type: "newCanisterAttach" });
+    dispatchSelect("newCanisterAttach");
   };
 </script>
 
 <div class="wizard-wrapper">
-  <CardItem
-    title={$i18n.canisters.create_canister_title}
-    subtitle={$i18n.canisters.create_canister_subtitle}
-    testId="choose-create-as-new-canister"
-    on:click={selectCreate}
-  />
-  <CardItem
-    title={$i18n.canisters.link_canister_title}
-    subtitle={$i18n.canisters.link_canister_subtitle}
-    testId="choose-link-as-new-canister"
-    on:click={selectLink}
-  />
+  <CardItem testId="choose-create-as-new-canister" on:click={selectCreate}>
+    <svelte:fragment slot="title"
+      >{$i18n.canisters.create_canister_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.canisters.create_canister_subtitle}</svelte:fragment
+    >
+  </CardItem>
+  <CardItem testId="choose-link-as-new-canister" on:click={selectLink}>
+    <svelte:fragment slot="title"
+      >{$i18n.canisters.link_canister_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.canisters.link_canister_subtitle}</svelte:fragment
+    >
+  </CardItem>
 </div>
 
 <style lang="scss">

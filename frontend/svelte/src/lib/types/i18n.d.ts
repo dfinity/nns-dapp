@@ -278,6 +278,7 @@ interface I18nCanisters {
   link_canister_subtitle: string;
   link_canister_success: string;
   attach_canister: string;
+  enter_canister_id: string;
   canister_id: string;
 }
 
