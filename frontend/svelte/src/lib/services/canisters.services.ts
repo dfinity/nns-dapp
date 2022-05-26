@@ -53,8 +53,7 @@ export const attachCanister = async (
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };
   } catch (error) {
-    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
-    console.error(error);
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
     return { success: false };
   }
 };

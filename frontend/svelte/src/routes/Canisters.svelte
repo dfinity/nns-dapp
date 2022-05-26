@@ -89,8 +89,10 @@
 
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={openModal}
-          >{$i18n.canisters.create_or_link}</button
+        <button
+          data-tid="create-link-canister-button"
+          class="primary"
+          on:click={openModal}>{$i18n.canisters.create_or_link}</button
         >
       </Toolbar>
     </svelte:fragment>

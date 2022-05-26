@@ -31,7 +31,9 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
-    >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
+    ><span data-tid="create-link-canister-modal-title"
+      >{currentStep?.title ?? $i18n.accounts.add_account}</span
+    ></svelte:fragment
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectNewCanisterType"}
