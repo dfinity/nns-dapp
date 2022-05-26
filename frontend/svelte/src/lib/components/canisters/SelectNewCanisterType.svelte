@@ -35,8 +35,8 @@
 </div>
 
 <style lang="scss">
-  // Need to overwrite the default of wizrd-wrapper
+  // Need to overwrite the default of wizard-wrapper
   .wizard-wrapper.wrapper {
-    justify-content: center !important;
+    justify-content: center;
   }
 </style>
