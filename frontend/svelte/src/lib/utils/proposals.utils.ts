@@ -103,7 +103,7 @@ const isExcludedVotedProposal = ({
   const { status, ballots } = proposalInfo;
   const containsUnspecifiedBallot = (): boolean =>
     // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
-    // something ballots is empty (inconsistent backend behaviour)
+    // sometime ballots list is empty (inconsistent backend behaviour/testnet)
     ballots?.length === 0
       ? true
       : ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) !== undefined;

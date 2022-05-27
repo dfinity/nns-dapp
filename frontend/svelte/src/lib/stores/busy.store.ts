@@ -56,7 +56,7 @@ const initBusyStore = () => {
   };
 };
 
-const busyStore = initBusyStore();
+export const busyStore = initBusyStore();
 
 export const { startBusy, stopBusy } = busyStore;
 

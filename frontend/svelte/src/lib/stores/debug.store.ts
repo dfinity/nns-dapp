@@ -4,9 +4,10 @@ import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neuron
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
 import { accountsStore } from "./accounts.store";
+import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
-import { sortedNeuronStore } from "./neurons.store";
+import { neuronsStore } from "./neurons.store";
 import {
   proposalIdStore,
   proposalInfoStore,
@@ -46,8 +47,9 @@ export const initDebugStore = () =>
     [
       // TODO (L2-611): anonymise wallet id and neuron ids
       routeStore,
+      busyStore,
       accountsStore,
-      sortedNeuronStore,
+      neuronsStore,
       knownNeuronsStore,
       canistersStore,
       proposalsStore,
@@ -63,8 +65,9 @@ export const initDebugStore = () =>
     ],
     ([
       $routeStore,
+      $busyStore,
       $accountsStore,
-      $sortedNeuronStore,
+      $neuronsStore,
       $knownNeuronsStore,
       $canistersStore,
       $proposalsStore,
@@ -79,8 +82,9 @@ export const initDebugStore = () =>
       $selectedAccountStore,
     ]) => ({
       route: $routeStore,
+      busy: $busyStore,
       accounts: $accountsStore,
-      sortedNeuron: $sortedNeuronStore,
+      neurons: $neuronsStore,
       knownNeurons: $knownNeuronsStore,
       canisters: $canistersStore,
       proposals: $proposalsStore,

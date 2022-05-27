@@ -61,7 +61,9 @@ export function triggerDebugReport(node: HTMLElement) {
       count++;
 
       if (count === 5) {
-        generateDebugLogProxy(confirm(get(i18n).core.save_log_file));
+        const saveToFile = confirm(get(i18n).core.save_log_file);
+        const anonymise = confirm(get(i18n).core.anonymise_log);
+        generateDebugLogProxy({ saveToFile, anonymise });
       }
     } else {
       startTime = now;

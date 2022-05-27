@@ -20,6 +20,7 @@ interface I18nCore {
   principal: string;
   toggle: string;
   save_log_file: string;
+  anonymise_log: string;
 }
 
 interface I18nError {

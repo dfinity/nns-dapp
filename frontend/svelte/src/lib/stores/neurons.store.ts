@@ -7,6 +7,8 @@ import {
 
 export interface NeuronsStore {
   neurons?: NeuronInfo[];
+  // fetched neurons w/o applied hasValidStake filter
+  originalNeurons?: NeuronInfo[];
   // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
 }
@@ -19,6 +21,7 @@ export interface NeuronsStore {
  */
 const initNeuronsStore = () => {
   const { subscribe, update, set } = writable<NeuronsStore>({
+    originalNeurons: undefined,
     neurons: undefined,
     certified: undefined,
   });
@@ -26,20 +29,33 @@ const initNeuronsStore = () => {
   return {
     subscribe,
 
-    setNeurons({ neurons, certified }: Required<NeuronsStore>) {
+    setNeurons({
+      neurons,
+      certified,
+    }: Required<Omit<NeuronsStore, "originalNeurons">>) {
       set({
+        originalNeurons: [...neurons],
         neurons: [...neurons.filter(hasValidStake)],
         certified,
       });
     },
 
-    pushNeurons({ neurons, certified }: Required<NeuronsStore>) {
-      update(({ neurons: oldNeurons }: NeuronsStore) => {
+    pushNeurons({
+      neurons,
+      certified,
+    }: Required<Omit<NeuronsStore, "originalNeurons">>) {
+      update(({ neurons: oldNeurons, originalNeurons }: NeuronsStore) => {
         const filteredNewNeurons = neurons.filter(hasValidStake);
         const newIds = new Set(
           filteredNewNeurons.map(({ neuronId }) => neuronId)
         );
         return {
+          originalNeurons: [
+            ...(originalNeurons || []).filter(
+              ({ neuronId }) => !newIds.has(neuronId)
+            ),
+            ...filteredNewNeurons,
+          ],
           neurons: [
             ...(oldNeurons || []).filter(
               ({ neuronId }) => !newIds.has(neuronId)

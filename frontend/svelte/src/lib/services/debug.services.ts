@@ -14,17 +14,13 @@ import {
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
 
-/**
- * 1. generates anonymized version of stores state
- * 2. log it in the dev console
- * 3. generates a json file with logged context
- */
-export const generateDebugLog = async (safeToFile: boolean) => {
+const anonymiseStoreState = async () => {
   const debugStore = initDebugStore();
   const {
     route,
+    busy,
     accounts,
-    sortedNeuron,
+    neurons,
     knownNeurons,
     canisters,
     proposals,
@@ -39,8 +35,9 @@ export const generateDebugLog = async (safeToFile: boolean) => {
     selectedAccount,
   } = get(debugStore);
 
-  const anonymizedState = {
-    route: route,
+  return {
+    route,
+    busy,
     accounts: {
       main: await anonymizeAccount(accounts?.main),
       subAccounts: await mapPromises(accounts?.subAccounts, anonymizeAccount),
@@ -49,7 +46,14 @@ export const generateDebugLog = async (safeToFile: boolean) => {
         anonymizeAccount
       ),
     },
-    sortedNeuron: await mapPromises(sortedNeuron, anonymizeNeuronInfo),
+    neurons: {
+      originalNeurons: await mapPromises(
+        neurons.originalNeurons ?? [],
+        anonymizeNeuronInfo
+      ),
+      neurons: await mapPromises(neurons.neurons ?? [], anonymizeNeuronInfo),
+      certified: neurons.certified,
+    },
     knownNeurons: await mapPromises(knownNeurons, anonymizeKnownNeuron),
     canisters: await mapPromises(canisters.canisters, anonymizeCanister),
     proposals: {
@@ -69,7 +73,7 @@ export const generateDebugLog = async (safeToFile: boolean) => {
         cutAndAnonymize
       ),
     },
-    toasts: toasts,
+    toasts,
     addAccount: {
       type: addAccount?.type,
       hardwareWalletName: addAccount?.hardwareWalletName,
@@ -94,17 +98,32 @@ export const generateDebugLog = async (safeToFile: boolean) => {
       ),
     },
   };
+};
 
-  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
-  const anonymizedStateAsText = stringifyJson(anonymizedState, {
+/**
+ * 1. generates anonymized version of stores state
+ * 2. log it in the dev console
+ * 3. generates a json file with logged context
+ */
+export const generateDebugLog = async ({
+  saveToFile,
+  anonymise,
+}: {
+  saveToFile: boolean;
+  anonymise: boolean;
+}) => {
+  const debugStore = initDebugStore();
+  const state = anonymise ? await anonymiseStoreState() : get(debugStore);
+  const stringifiedState = stringifyJson(state, {
     indentation: 2,
   });
+  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
 
-  console.log(date, anonymizedStateAsText);
+  console.log(date, state);
 
-  if (safeToFile) {
+  if (saveToFile) {
     saveToJSONFile({
-      blob: new Blob([anonymizedStateAsText]),
+      blob: new Blob([stringifiedState]),
       filename: `${date}_nns-local-state.json`,
     });
   }
