@@ -942,12 +942,13 @@ export const loadNeuron = ({
 };
 
 // Not resolve until the neuron has been loaded
-export const reloadNeuron = (neuron) =>
+export const reloadNeuron = (neuronId: NeuronId) =>
   new Promise<void>((resolve) => {
     loadNeuron({
-      neuronId: neuron.neuronId,
+      neuronId,
       forceFetch: true,
       strategy: "update",
+      skipCheck: false,
       setNeuron: ({ neuron, certified }) => {
         neuronsStore.pushNeurons({ neurons: [neuron], certified });
         resolve();

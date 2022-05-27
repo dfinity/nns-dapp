@@ -1280,12 +1280,12 @@ describe("neurons-services", () => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
     });
     it("should call the api", async () => {
-      await reloadNeuron(mockNeuron);
+      await reloadNeuron(mockNeuron.neuronId);
       expect(spyGetNeuron).toBeCalled();
     });
 
     it("should add neuron to the store", async () => {
-      await reloadNeuron(mockNeuron);
+      await reloadNeuron(mockNeuron.neuronId);
       const store = get(neuronsStore);
       expect(
         store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)

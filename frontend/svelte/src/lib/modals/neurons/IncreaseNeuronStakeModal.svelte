@@ -5,7 +5,7 @@
 
   export let neuron: NeuronInfo;
 
-  const fetchUpdatedNeuron = () => reloadNeuron(neuron);
+  const fetchUpdatedNeuron = () => reloadNeuron(neuron.neuronId);
 </script>
 
 <NewTransactionModal
