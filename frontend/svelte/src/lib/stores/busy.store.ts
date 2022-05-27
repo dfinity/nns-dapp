@@ -4,6 +4,7 @@ export type BusyStateInitiatorType =
   | "stake-neuron"
   | "update-delay"
   | "vote"
+  | "attach-canister"
   | "accounts"
   | "join-community-fund"
   | "split-neuron"

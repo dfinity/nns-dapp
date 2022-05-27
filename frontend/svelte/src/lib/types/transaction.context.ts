@@ -11,6 +11,7 @@ export interface TransactionStore {
 export interface TransactionContext {
   store: Writable<TransactionStore>;
   next: () => void;
+  onTransactionComplete?: () => Promise<void>;
 }
 
 export const NEW_TRANSACTION_CONTEXT_KEY = Symbol("new-transaction");

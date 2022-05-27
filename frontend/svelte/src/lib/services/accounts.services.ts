@@ -114,8 +114,6 @@ export const transferICP = async ({
 
     await syncAccounts();
 
-    toastsStore.success({ labelKey: "accounts.transaction_success" });
-
     return { success: true };
   } catch (err) {
     return transferError({ labelKey: "error.transaction_error", err });

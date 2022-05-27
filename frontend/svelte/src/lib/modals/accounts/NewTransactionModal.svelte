@@ -18,6 +18,8 @@
 
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
+  export let onTransactionComplete: (() => Promise<void>) | undefined =
+    undefined;
 
   let canSelectAccount: boolean;
   $: canSelectAccount = selectedAccount === undefined;
@@ -73,6 +75,7 @@
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: newTransactionStore,
     next: () => modal?.next(),
+    onTransactionComplete,
   });
 
   // Update store with selectedAccount in case the property would be set after the component is initialized

@@ -1,6 +1,7 @@
 import { ICP, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
+  attachCanister,
   createCanister,
   queryCanisterDetails,
   queryCanisters,
@@ -17,7 +18,6 @@ describe("canisters-api", () => {
   const mockCMCCanister = mock<CMCCanister>();
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
-  let spyGetCanisters;
 
   beforeEach(() => {
     jest
@@ -33,18 +33,41 @@ describe("canisters-api", () => {
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => mockLedgerCanister);
-
-    spyGetCanisters = jest
-      .spyOn(mockNNSDappCanister, "getCanisters")
-      .mockResolvedValue([]);
   });
 
   describe("queryCanisters", () => {
     afterEach(() => jest.clearAllMocks());
+
     it("should call the canister to list the canisters 🤪", async () => {
       await queryCanisters({ identity: mockIdentity, certified: true });
 
-      expect(spyGetCanisters).toHaveReturnedTimes(1);
+      expect(mockNNSDappCanister.getCanisters).toHaveReturnedTimes(1);
+    });
+  });
+
+  describe("attachCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to attach the canister id", async () => {
+      await attachCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        name: "test name",
+      });
+
+      expect(mockNNSDappCanister.attachCanister).toBeCalled();
+    });
+
+    it("should call the nns dapp canister to attach the canister id with empty string as name when not present", async () => {
+      await attachCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+      });
+
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        canisterId: mockCanisterDetails.id,
+        name: "",
+      });
     });
   });
 
