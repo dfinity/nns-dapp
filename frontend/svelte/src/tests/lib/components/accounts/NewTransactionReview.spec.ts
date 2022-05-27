@@ -94,6 +94,24 @@ describe("NewTransactionReview", () => {
     await waitFor(() => expect(spyTransferICP).toHaveBeenCalled());
   });
 
+  it("should call complete callback", async () => {
+    const spyTransferICP = jest.spyOn(mockLedgerCanister, "transfer");
+
+    const completeTransactionSpy = jest.fn().mockResolvedValue(undefined);
+    const { container } = render(NewTransactionTest, {
+      props: { ...props, onTransactionComplete: completeTransactionSpy },
+    });
+
+    const button = container.querySelector(
+      "button[type='submit']"
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBeTruthy());
+    await waitFor(() => expect(spyTransferICP).toHaveBeenCalled());
+    await waitFor(() => expect(completeTransactionSpy).toHaveBeenCalled());
+  });
+
   it("should sync accounts after transaction executed", async () => {
     const spyGetAccount = jest.spyOn(mockNNSDappCanister, "getAccount");
 
