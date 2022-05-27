@@ -29,8 +29,8 @@
     const height = offsetHeight === undefined ? 0 : offsetHeight;
     return height < CONTENT_MIN_HEIGHT ? CONTENT_MIN_HEIGHT : height;
   };
-  const maxHeightStyle = (value: number | undefined): string =>
-    value === undefined ? "" : `max-height: ${value}px;`;
+  const maxHeightStyle = (height: number | undefined): string =>
+    height === undefined ? "" : `max-height: ${height}px;`;
   // In case of `initiallyExpanded=true` we should avoid calculating `max-height` from the content-height
   // because the content in the slot can be initialized w/ some delay.
   const updateMaxHeight = () => {
@@ -40,6 +40,13 @@
       maxHeight = initiallyExpanded ? maxContentHeight : 0;
     }
   };
+  // Avoid to show scroll if not necessary
+  const overflyYStyle = (height: number | undefined): string =>
+    height === undefined || maxContentHeight === undefined
+      ? "overflow-y: hidden;"
+      : height < maxContentHeight
+      ? "overflow-y: hidden;"
+      : "overflow-y: auto;";
 
   // recalculate max-height after DOM update
   afterUpdate(updateMaxHeight);
@@ -72,7 +79,7 @@
   role="definition"
   class="wrapper"
   class:expanded
-  style={maxHeightStyle(maxHeight)}
+  style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
 >
   <div
     {id}
@@ -164,8 +171,6 @@
       margin-top: var(--padding);
       opacity: 1;
       visibility: initial;
-
-      overflow-y: auto;
     }
   }
 
