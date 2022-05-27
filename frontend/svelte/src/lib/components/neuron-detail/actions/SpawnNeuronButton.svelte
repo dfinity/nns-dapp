@@ -40,6 +40,7 @@
       $amount: formatICP(BigInt(MIN_NEURON_STAKE)),
     }
   )}
+  rightEdge={true}
 >
   <button
     disabled={!isEnoughMaturity}

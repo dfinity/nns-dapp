@@ -3,13 +3,14 @@
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
+  export let rightEdge: boolean = false;
 </script>
 
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
   </div>
-  <div class="tooltip" role="tooltip" {id} class:noWrap>{text}</div>
+  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge>{text}</div>
 </div>
 
 <style lang="scss">
@@ -47,7 +48,9 @@
     &.noWrap {
       white-space: nowrap;
     }
-
+    &.rightEdge {
+      left: auto;
+    }
     pointer-events: none;
   }
 
