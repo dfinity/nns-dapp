@@ -77,6 +77,8 @@ describe("canisters-services", () => {
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
+
+      resetIdentity();
     });
   });
 
@@ -101,7 +103,7 @@ describe("canisters-services", () => {
   });
 
   describe("getCanisterDetails", () => {
-    it("should fetch canister deetails and load them in the store", async () => {
+    it("should fetch canister details", async () => {
       const canister = await getCanisterDetails(mockCanisterDetails.id);
 
       expect(spyQueryCanisterDetails).toBeCalled();
