@@ -52,6 +52,10 @@ export const stringifyJson = (
             return "Promise(...)";
           }
 
+          if (value instanceof ArrayBuffer) {
+            return new Uint8Array(value).toString();
+          }
+
           break;
         }
         case "bigint": {
