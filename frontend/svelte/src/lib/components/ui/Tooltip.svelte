@@ -10,7 +10,9 @@
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
   </div>
-  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge>{text}</div>
+  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge>
+    {text}
+  </div>
 </div>
 
 <style lang="scss">
