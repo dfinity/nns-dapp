@@ -15,6 +15,7 @@
   import CanisterCard from "../lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "../lib/canisters/nns-dapp/nns-dapp.types";
   import { routeStore } from "../lib/stores/route.store";
+  import CreateOrLinkCanisterModal from "../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
 
   const loadCanisters = async () => {
     try {
@@ -48,8 +49,9 @@
   let noCanisters: boolean;
   $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
 
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
-  const createOrLink = () => alert("Create or Link");
+  let modal: "CreateOrLinkCanister" | undefined = undefined;
+  const openModal = () => (modal = "CreateOrLinkCanister");
+  const closeModal = () => (modal = undefined);
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -87,11 +89,16 @@
 
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={createOrLink}
-          >{$i18n.canisters.create_or_link}</button
+        <button
+          data-tid="create-link-canister-button"
+          class="primary"
+          on:click={openModal}>{$i18n.canisters.create_or_link}</button
         >
       </Toolbar>
     </svelte:fragment>
+    {#if modal === "CreateOrLinkCanister"}
+      <CreateOrLinkCanisterModal on:nnsClose={closeModal} />
+    {/if}
   </Layout>
 {/if}
 

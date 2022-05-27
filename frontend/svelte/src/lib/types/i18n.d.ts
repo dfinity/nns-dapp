@@ -271,6 +271,15 @@ interface I18nCanisters {
   principal_is: string;
   create_or_link: string;
   empty: string;
+  add_canister: string;
+  create_canister_title: string;
+  create_canister_subtitle: string;
+  link_canister_title: string;
+  link_canister_subtitle: string;
+  link_canister_success: string;
+  attach_canister: string;
+  enter_canister_id: string;
+  canister_id: string;
 }
 
 interface I18nCanister_detail {

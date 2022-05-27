@@ -256,7 +256,16 @@
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
     "create_or_link": "Create or Link Canister",
-    "empty": "No canisters yet."
+    "empty": "No canisters yet.",
+    "add_canister": "Add Canister",
+    "create_canister_title": "Create New Canister",
+    "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "link_canister_title": "Link Canister To Account",
+    "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
+    "link_canister_success": "The canister was linked successfully",
+    "attach_canister": "Attach Canister",
+    "enter_canister_id": "Enter Canister ID:",
+    "canister_id": "Canister ID"
   },
   "canister_detail": {
     "title": "Canister"
