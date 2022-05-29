@@ -1,5 +1,10 @@
 import { ICP } from "@dfinity/nns";
-import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import {
+  E8S_PER_ICP,
+  ONE_TRILLION,
+  TRANSACTION_FEE_E8S,
+} from "../constants/icp.constants";
+import { InvalidAmountError } from "../types/errors";
 
 export const formatICP = (value: bigint): string =>
   new Intl.NumberFormat("fr-FR", {
@@ -20,3 +25,21 @@ export const maxICP = (icp: ICP | undefined): number =>
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);
+
+export const convertNumberToICP = (amount: number): ICP => {
+  const stake = ICP.fromString(amount.toFixed(8));
+
+  if (!(stake instanceof ICP) || stake === undefined) {
+    throw new InvalidAmountError();
+  }
+
+  return stake;
+};
+
+export const convertIcpToTCycles = (
+  icpNumber: number,
+  ratio: bigint
+): bigint => {
+  const icp = convertNumberToICP(icpNumber);
+  return (icp.toE8s() * ratio) / ONE_TRILLION;
+};

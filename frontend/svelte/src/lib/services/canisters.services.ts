@@ -1,11 +1,15 @@
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
+  getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
   queryCanisterDetails,
   queryCanisters,
 } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+import type {
+  CanisterDetails,
+  CanisterDetails as CanisterInfo,
+} from "../canisters/nns-dapp/nns-dapp.types";
+import { E8S_PER_ICP } from "../constants/icp.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getPrincipalFromString } from "../utils/accounts.utils";
@@ -80,5 +84,19 @@ export const getCanisterDetails = async (
     });
   } catch (error) {
     // TODO: manage errors https://dfinity.atlassian.net/browse/L2-615
+  }
+};
+
+export const getIcpToCyclesExchangeRate = async (): Promise<
+  bigint | undefined
+> => {
+  try {
+    const identity = await getIdentity();
+    const trillionRatio = await getIcpToCyclesExchangeRateApi(identity);
+    // This transforms to ratio to E8s to T Cycles.
+    return trillionRatio / BigInt(E8S_PER_ICP);
+  } catch (error) {
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    return;
   }
 };

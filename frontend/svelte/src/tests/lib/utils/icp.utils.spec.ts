@@ -1,5 +1,7 @@
 import { ICP } from "@dfinity/nns";
+import { InvalidAmountError } from "../../../lib/types/errors";
 import {
+  convertNumberToICP,
   formatICP,
   formattedTransactionFeeICP,
   maxICP,
@@ -47,5 +49,19 @@ describe("icp-utils", () => {
     expect(maxICP(ICP.fromString("0.0001") as ICP)).toEqual(0);
     expect(maxICP(ICP.fromString("0.00011") as ICP)).toEqual(0.00001);
     expect(maxICP(ICP.fromString("1") as ICP)).toEqual(0.9999);
+  });
+
+  describe("convertNumberToICP", () => {
+    it("returns ICP from number", () => {
+      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
+      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
+      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
+      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
+    });
+
+    it("raises error on negative numbers", () => {
+      const call = () => convertNumberToICP(-10);
+      expect(call).toThrow(InvalidAmountError);
+    });
   });
 });
