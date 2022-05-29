@@ -1,0 +1,6 @@
+@mixin space-between {
+  display: inline-flex;
+  justify-content: space-between;
+
+  width: 100%;
+}

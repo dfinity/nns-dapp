@@ -1,0 +1,240 @@
+// TODO: Synchronize with `rs/nns-dapp.did`. Check how scripts/nns-dapp.update.sh works.
+type AccountIdentifier = text;
+type BlockHeight = nat64;
+type CanisterId = principal;
+type ICPTs = record { e8s: nat64; };
+type Memo = nat64;
+type NeuronId = nat64;
+type SubAccount = vec nat8;
+
+type AccountDetails =
+    record {
+        "principal": principal;
+        account_identifier: AccountIdentifier;
+        sub_accounts: vec SubAccountDetails;
+        hardware_wallet_accounts: vec HardwareWalletAccountDetails;
+    };
+
+type SubAccountDetails =
+    record {
+        name: text;
+        sub_account: SubAccount;
+        account_identifier: AccountIdentifier;
+    };
+
+type HardwareWalletAccountDetails =
+    record {
+        name: text;
+        "principal": principal;
+        account_identifier: AccountIdentifier;
+    };
+
+type GetAccountResponse =
+    variant {
+        Ok: AccountDetails;
+        AccountNotFound;
+    };
+
+type Timestamp =
+    record {
+        timestamp_nanos: nat64;
+    };
+
+type GetTransactionsRequest =
+    record {
+        account_identifier: AccountIdentifier;
+        offset: nat32;
+        page_size: nat8;
+    };
+
+type GetTransactionsResponse =
+    record {
+        transactions: vec Transaction;
+        total: nat32;
+    };
+
+type Send =
+    record {
+        to: AccountIdentifier;
+        amount: ICPTs;
+        fee: ICPTs;
+    };
+
+type Receive =
+    record {
+        from: AccountIdentifier;
+        amount: ICPTs;
+        fee: ICPTs;
+    };
+
+type Transfer =
+    variant {
+        Burn: record { amount: ICPTs; };
+        Mint: record { amount: ICPTs; };
+        Send: Send;
+        Receive: Receive;
+    };
+
+type Transaction =
+    record {
+        block_height: BlockHeight;
+        timestamp: Timestamp;
+        memo: nat64;
+        transfer: Transfer;
+        transaction_type: opt TransactionType;
+    };
+
+type TransactionType =
+    variant {
+        Burn;
+        Mint;
+        Transfer;
+        StakeNeuron;
+        StakeNeuronNotification;
+        TopUpNeuron;
+        CreateCanister;
+        TopUpCanister: CanisterId;
+    };
+
+type CreateSubAccountResponse =
+    variant {
+        Ok: SubAccountDetails;
+        AccountNotFound;
+        SubAccountLimitExceeded;
+        NameTooLong;
+    };
+
+type RenameSubAccountRequest =
+    record {
+        account_identifier: AccountIdentifier;
+        new_name: text;
+    };
+
+type RenameSubAccountResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        SubAccountNotFound;
+        NameTooLong;
+    };
+
+type RegisterHardwareWalletRequest =
+    record {
+        name: text;
+        "principal": principal;
+    };
+
+type RegisterHardwareWalletResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        HardwareWalletAlreadyRegistered;
+        HardwareWalletLimitExceeded;
+        NameTooLong;
+    };
+
+type CanisterDetails =
+    record {
+        name: text;
+        canister_id: principal;
+    };
+
+type AttachCanisterRequest =
+    record {
+        name: text;
+        canister_id: principal;
+    };
+
+type AttachCanisterResponse =
+    variant {
+        Ok;
+        CanisterLimitExceeded;
+        CanisterAlreadyAttached;
+        NameAlreadyTaken;
+        NameTooLong;
+    };
+
+type DetachCanisterRequest =
+    record {
+        canister_id: principal;
+    };
+
+type DetachCanisterResponse =
+    variant {
+        Ok;
+        CanisterNotFound;
+    };
+
+type MultiPartTransactionStatus =
+    variant {
+        NeuronCreated: NeuronId;
+        CanisterCreated: CanisterId;
+        Complete;
+        Refunded: record { BlockHeight; text; };
+        Error: text;
+        ErrorWithRefundPending: text;
+        NotFound;
+        PendingSync;
+        Queued;
+    };
+
+type MultiPartTransactionError =
+    record {
+        block_height: BlockHeight;
+        error_message: text;
+    };
+
+type Stats =
+    record {
+        accounts_count: nat64;
+        sub_accounts_count: nat64;
+        hardware_wallet_accounts_count: nat64;
+        transactions_count: nat64;
+        block_height_synced_up_to: opt nat64;
+        earliest_transaction_timestamp_nanos: nat64;
+        earliest_transaction_block_height: BlockHeight;
+        latest_transaction_timestamp_nanos: nat64;
+        latest_transaction_block_height: BlockHeight;
+        seconds_since_last_ledger_sync: nat64;
+        neurons_created_count: nat64;
+        neurons_topped_up_count: nat64;
+        transactions_to_process_queue_length: nat32;
+    };
+
+type HeaderField =
+    record {
+        text; text;
+    };
+
+type HttpRequest =
+    record {
+        method: text;
+        url: text;
+        headers: vec HeaderField;
+        body: blob;
+    };
+
+type HttpResponse =
+    record {
+        status_code: nat16;
+        headers: vec HeaderField;
+        body: blob;
+    };
+
+service : {
+    get_account: () -> (GetAccountResponse) query;
+    add_account: () -> (AccountIdentifier);
+    get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
+    create_sub_account: (text) -> (CreateSubAccountResponse);
+    rename_sub_account: (RenameSubAccountRequest) -> (RenameSubAccountResponse);
+    register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
+    get_canisters: () -> (vec CanisterDetails) query;
+    attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
+    detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
+    get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
+    get_stats: () -> (Stats) query;
+
+    http_request: (request: HttpRequest) -> (HttpResponse) query;
+    add_stable_asset: (asset: blob) -> ();
+}

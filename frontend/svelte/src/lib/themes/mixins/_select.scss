@@ -4,8 +4,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: var(--select-flex-direction);
 
-  padding: calc(2 * var(--padding));
+  padding: var(--padding-2x);
 
   color: var(--select-color);
 
@@ -21,7 +22,7 @@
 
   --select-input-size: 20px;
   --select-input-border: 2px;
-  --select-input-margin: calc(var(--padding) / 2);
+  --select-input-margin: var(--padding-0_5x);
 }
 
 @mixin label {
@@ -47,9 +48,10 @@
 
   border: var(--select-input-border) solid currentColor;
 
-  border-radius: 50%;
+  border-radius: 2px;
 
-  transition: background 0.2s, border 0.2s;
+  transition: background var(--animation-time-normal),
+    border var(--animation-time-normal);
 
   cursor: pointer;
 

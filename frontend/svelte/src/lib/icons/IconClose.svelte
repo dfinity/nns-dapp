@@ -1,4 +1,4 @@
-<!-- source: https://material.io/icons/ -->
+<!-- source: https://fonts.google.com/icons?selected=Material%20Icons%20Outlined%3Aclose%3A -->
 <svg
   xmlns="http://www.w3.org/2000/svg"
   height="24px"

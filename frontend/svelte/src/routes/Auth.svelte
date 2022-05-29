@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { AuthStore, authStore } from "../lib/stores/auth.store";
+  import { authStore } from "../lib/stores/auth.store";
+  import type { AuthStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
-  import Toasts from "../lib/components/ui/Toasts.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { errorToString } from "../lib/utils/error.utils";
+  import Banner from "../lib/components/common/Banner.svelte";
+  import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
 
@@ -15,19 +16,17 @@
   const signIn = async () => {
     try {
       await authStore.signIn();
-    } catch (err: any) {
-      toastsStore.show({
+    } catch (err: unknown) {
+      toastsStore.error({
         labelKey: "error.sign_in",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
-      console.error(err);
     }
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ principal }: AuthStore) => {
-      signedIn = isSignedIn(principal);
+    async ({ identity }: AuthStore) => {
+      signedIn = isSignedIn(identity);
 
       if (!signedIn) {
         return;
@@ -38,13 +37,15 @@
         window.location.search
       );
       const redirectPath: string = `/#/${
-        urlParams.get("redirect") || "accounts"
+        urlParams.get("redirect") ?? "accounts"
       }`;
 
       // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack
       routeStore.replace({ path: redirectPath });
     }
   );
+
+  onMount(() => displayAndCleanLogoutMsg());
 
   onDestroy(unsubscribe);
 </script>
@@ -59,22 +60,23 @@
     class="background"
   />
 
-  <main>
+  <Banner />
+
+  <main data-tid="auth-page">
     <h1>{$i18n.auth.nns}</h1>
     <h2>{$i18n.auth.ic}</h2>
     <p>{$i18n.auth.icp_governance}</p>
-    <button on:click={signIn}>{$i18n.auth.login}</button>
+    <button on:click={signIn} data-tid="login-button">{$i18n.auth.login}</button
+    >
   </main>
 
   <img
-    src="/assets/assets/ic-badge-powered-by_label-stripe-white-text.svg"
+    src="/assets/assets/100_on_chain-small-centered-white_text.svg"
     role="presentation"
-    alt={$i18n.auth.powered_by}
+    alt={$i18n.auth.on_chain}
     class="bottom-banner"
     loading="lazy"
   />
-
-  <Toasts />
 {/if}
 
 <style lang="scss">
@@ -166,7 +168,7 @@
     color: white;
     text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 
-    transition: background 0.2s;
+    transition: background var(--animation-time-normal);
 
     justify-self: center;
 

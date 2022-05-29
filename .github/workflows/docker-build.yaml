@@ -34,12 +34,10 @@ jobs:
     strategy:
       matrix:
        include:
-         - DEPLOY_ENV: "testnet"
-           OWN_CANISTER_ID: "qhbym-qaaaa-aaaaa-aaafq-cai"
-           REDIRECT_TO_LEGACY: "false"
-         - DEPLOY_ENV: "mainnet"
+         - BUILD_NAME: "mainnet"
+           DEPLOY_ENV: "mainnet"
            OWN_CANISTER_ID: ""
-           REDIRECT_TO_LEGACY: "true"
+           REDIRECT_TO_LEGACY: "prod"
     steps:
       - uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -56,20 +54,33 @@ jobs:
             REDIRECT_TO_LEGACY=${{ matrix.REDIRECT_TO_LEGACY }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
-          outputs: ./${{ matrix.DEPLOY_ENV }}-out
-      - name: 'Upload ${{ matrix.DEPLOY_ENV }} wasm module'
+          outputs: ./${{ matrix.BUILD_NAME }}-out
+      - name: 'Upload ${{ matrix.BUILD_NAME }} wasm module'
         uses: actions/upload-artifact@v2
         with:
-          name: NNS ${{ matrix.DEPLOY_ENV }} backend wasm module
-          path: ${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm
-      - name: 'Upload ${{ matrix.DEPLOY_ENV }} frontend assets'
+          name: NNS ${{ matrix.BUILD_NAME }} backend wasm module
+          path: ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
+      - name: 'Upload ${{ matrix.BUILD_NAME }} frontend assets'
         uses: actions/upload-artifact@v2
         with:
-          name: NNS ${{ matrix.DEPLOY_ENV }} frontend assets
-          path: ${{ matrix.DEPLOY_ENV }}-out/assets.tar.xz
-      - name: "Verify that the WASm module is small enough to deploy"
+          name: NNS ${{ matrix.BUILD_NAME }} frontend assets
+          path: ${{ matrix.BUILD_NAME }}-out/assets.tar.xz
+      - name: "Link the build sha to this commit"
         run: |
-         wasm_size="$(wc -c < "${{ matrix.DEPLOY_ENV }}-out/nns-dapp.wasm")"
+         : Set up git
+         git config user.name "GitHub Actions Bot"
+         git config user.email "<>"
+         : Make a note of the WASM shasum.
+         NOTE="refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha"
+         SHA="$(sha256sum < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
+         git fetch origin "+${NOTE}:${NOTE}"
+         if git notes --ref="${{ matrix.BUILD_NAME }}/wasm-sha" add -m "$SHA"
+         then git push origin "${NOTE}:${NOTE}" || true
+         else echo SHA already set
+         fi
+      - name: "Verify that the WASM module is small enough to deploy"
+        run: |
+         wasm_size="$(wc -c < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
          max_size=3670016
          echo "WASM size:          $wasm_size"
          echo "Max supported size: $max_size"

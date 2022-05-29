@@ -225,11 +225,80 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> mergeMaturity(
-      {required BigInt neuronId, required int percentageToMerge}) async {
-    await promiseToFuture(serviceApi!.mergeMaturity(MergeMaturityRequest(
-        neuronId: neuronId.toJS, percentageToMerge: percentageToMerge)));
-    await fetchNeuron(neuronId: neuronId);
+  Future<Result<Unit, Exception>> merge(
+      {required Neuron neuron1, required Neuron neuron2}) async {
+    try {
+      final identity1 = (await getIdentityByNeuron(neuron1)).unwrap();
+      final identity2 = (await getIdentityByNeuron(neuron2)).unwrap();
+
+      if (identity1.getPrincipal().toString() != identity2.getPrincipal().toString()) {
+        return Result.err(Exception("The neurons being merged must both have the same controller"));
+      }
+
+      // TODO remove this check once hardware wallets are supported
+      final currentUserPrincipal = this.getPrincipal();
+      if (neuron1.controller != currentUserPrincipal || neuron2.controller != currentUserPrincipal) {
+        return Result.err(Exception("Unable to merge neurons. Merging of neurons controlled via hardware wallet is not yet supported"));
+      }
+
+      // To ensure any built up age bonus is always preserved, if one neuron is
+      // locked and the other is not, then we merge the neuron which is not
+      // locked into the locked neuron.
+      // In all other cases we merge the smaller neuron into the
+      // larger one.
+
+      final neuron1Locked = neuron1.state == NeuronState.LOCKED;
+      final neuron2Locked = neuron2.state == NeuronState.LOCKED;
+
+      Neuron targetNeuron;
+      Neuron sourceNeuron;
+      if (neuron1Locked != neuron2Locked) {
+        if (neuron1Locked) {
+          targetNeuron = neuron1;
+          sourceNeuron = neuron2;
+        } else {
+          targetNeuron = neuron2;
+          sourceNeuron = neuron1;
+        }
+      } else {
+        if (neuron1.cachedNeuronStake.asE8s() >= neuron2.cachedNeuronStake.asE8s()) {
+          targetNeuron = neuron1;
+          sourceNeuron = neuron2;
+        } else {
+          targetNeuron = neuron2;
+          sourceNeuron = neuron1;
+        }
+      }
+
+      await promiseToFuture(serviceApi!.merge(
+          identity1,
+          MergeRequest(
+              neuronId: targetNeuron.id.toBigInt.toJS,
+              sourceNeuronId: sourceNeuron.id.toBigInt.toJS)));
+      await fetchNeuron(neuronId: targetNeuron.id.toBigInt);
+      neuronSyncService!.removeNeuron(sourceNeuron.id.toString());
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
+  }
+
+  @override
+  Future<Result<Unit, Exception>> mergeMaturity(
+      {required Neuron neuron, required int percentageToMerge}) async {
+    try {
+      final identity = (await getIdentityByNeuron(neuron)).unwrap();
+
+      await promiseToFuture(serviceApi!.mergeMaturity(
+          identity,
+          MergeMaturityRequest(
+              neuronId: neuron.id.toBigInt.toJS,
+              percentageToMerge: percentageToMerge)));
+      await fetchNeuron(neuronId: neuron.id.toBigInt);
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -462,15 +531,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Neuron> spawnNeuron({required Neuron neuron}) async {
+  Future<Neuron> spawnNeuron({required Neuron neuron, required int? percentageToSpawn}) async {
     final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
     final spawnResponse = await promiseToFuture(serviceApi!.spawn(identity,
-        SpawnRequest(neuronId: neuron.id.toString(), newController: null)));
+        SpawnRequest(neuronId: neuron.id.toString(), percentageToSpawn: percentageToSpawn, newController: null)));
     dynamic response = jsonDecode(stringify(spawnResponse));
     final createdNeuronId = response['createdNeuronId'].toString();
     await neuronSyncService!.sync();
-    return hiveBoxes.neurons.values
-        .firstWhere((element) => element.identifier == createdNeuronId);
+    return hiveBoxes.neurons.values.firstWhere((element) => element.identifier == createdNeuronId);
   }
 
   @override
@@ -564,7 +632,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   Future<List<FolloweeSuggestion>> _followeeSuggestions(
       [bool certified = true]) async {
-    final res = await promiseToFuture(serviceApi!.followeeSuggestions(certified));
+    final res =
+        await promiseToFuture(serviceApi!.followeeSuggestions(certified));
     final response = jsonDecode(stringify(res)) as List<dynamic>;
     return response
         .map((e) => FolloweeSuggestion(e["name"], e["description"], e["id"]))

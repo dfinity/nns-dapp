@@ -12,15 +12,56 @@ name: Native build
 on:
   push:
 
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
-    env:
-      DFX_VERSION: 0.8.3
+
+env:
+      DFX_VERSION: 0.9.2
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
+      IC_COMMIT: 6dc5e2dcb50569e20891af02b846a7d9a58e3489
+      NNS_CACHING_KEY: dv-0004
+
+jobs:
+  nns_canisters:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+
+      - name: Download prebuilt nns canisters
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        run: ./e2e-tests/scripts/nns-canister-download
+
+      - name: Set up docker buildx
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build nns canisters
+        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v2
+        with:
+          context: e2e-tests/scripts
+          file: e2e-tests/scripts/nns-canister.Dockerfile
+          build-args: |
+            "IC_COMMIT=${{ env.IC_COMMIT }}"
+          cache-from: type=gha,scope=cached-stage
+          cache-to: type=gha,scope=cached-stage,mode=max
+          outputs: target/ic
+
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
+
+  build:
+    needs: [nns_canisters]
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
 
@@ -37,46 +78,18 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install Flutter
-        run: |
-          cd $(mktemp -d)
-          curl "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
-          mkdir -p ~/flutter
-          tar xJf flutter.tar.xz -C "$HOME"
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
-
-      - name: Install Rust
-        run: |
-          # make sure we're installing the right version
-          grep "$RUSTC_VERSION" rust-toolchain.toml
-
-          rustup update "$RUSTC_VERSION" --no-self-update
-          rustup default "$RUSTC_VERSION"
-          rustup target add wasm32-unknown-unknown
-
       # Cache the ic-cdk-optimizer
       - uses: actions/cache@v2
         with:
           path: |
-            ~/.local/bin/ic-cdk-optimizer
-            target
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}
+            ~/.cargo/bin/ic-cdk-optimizer
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
 
-      - name: Install ic-cdk-optimizer
+      - name: Install Software
         run: |
-          install_dir="$HOME/.local/bin/"
-          mkdir -p "$install_dir"
-          if [ ! -x "$install_dir/ic-cdk-optimizer" ]
-          then
-            cargo install --version "$IC_CDK_OPTIMIZER_VERSION" ic-cdk-optimizer
-            cp $HOME/.cargo/bin/ic-cdk-optimizer "$install_dir"
-            echo "$install_dir" >> $GITHUB_PATH
-          fi
-
-      - name: Install DFX
-        run: |
-          echo Install DFX Version: "$DFX_VERSION"
-          yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.cache/flutter/2.2.3/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # Helps with debugging
       - name: Versions
@@ -88,15 +101,34 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
+          command -v flutter
 
       - name: Start replica
         run: |
-          dfx start --background
-          dfx canister --no-wallet create --all
+          dfx start --background --clean
+
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
+      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
+      # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
+      - name: Deploy NNS canisters
+        run: |
+          ./e2e-tests/scripts/nns-canister-install
 
       - name: Deploy
         run: |
-          DEPLOY_ENV=local dfx deploy --no-wallet --network local
+          ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Create initial state
+        run: |
+          ./deploy.sh --populate
 
       - name: Build proxy
         working-directory: proxy
@@ -111,7 +143,8 @@ jobs:
 
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
-          npm run test | tee -a wdio.log
+          set -o pipefail
+          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop
@@ -123,21 +156,27 @@ jobs:
           name: wdio-logs
           path: e2e-tests/wdio.log
 
-      - name: Commit screenshots
-        if: ${{ github.ref != 'refs/heads/main' }}
-        uses: EndBug/add-and-commit@v7.4.0
-        with:
-          add: e2e-tests/screenshots
-          author_name: Screenshot Committer
-          author_email: "<nobody@example.com>"
-          message: "Update screenshots"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull: "NO-PULL"
-
+# Disable screenshot saving until screenshots are stable.
+#      - name: Commit screenshots
+#        if: ${{ github.ref != 'refs/heads/main' }}
+#        uses: EndBug/add-and-commit@v7.4.0
+#        with:
+#          add: e2e-tests/screenshots
+#          author_name: Screenshot Committer
+#          author_email: "<nobody@example.com>"
+#          message: "Update screenshots"
+#          # do not pull: if this branch is behind, then we might as well let
+#          # the pushing fail
+#          pull: "NO-PULL"
+#
       - name: Archive screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: e2e-screenshots
           path: screenshots/**/*.png
+
+      - name: Remove screenshots until they are stable
+        working-directory: e2e-tests
+        run: |
+          rm -rf screenshots

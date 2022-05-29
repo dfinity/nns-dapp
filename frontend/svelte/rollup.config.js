@@ -4,14 +4,17 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
+import OMT from "@surma/rollup-plugin-off-main-thread";
 import * as fs from "fs";
 import css from "rollup-plugin-css-only";
 import livereload from "rollup-plugin-livereload";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
+import { envConfig } from "./env.config.mjs";
 
-const production = !process.env.ROLLUP_WATCH;
+const { ENVIRONMENT } = envConfig;
+const prodBuild = ENVIRONMENT !== "local";
 
 function serve() {
   let server;
@@ -38,25 +41,68 @@ function serve() {
   };
 }
 
-export default {
+const replaceMap = [
+  "ROLLUP_WATCH",
+  "IDENTITY_SERVICE_URL",
+  "DEPLOY_ENV",
+  "REDIRECT_TO_LEGACY",
+  "FETCH_ROOT_KEY",
+  "HOST",
+  "OWN_CANISTER_ID",
+  "LEDGER_CANISTER_ID",
+  "GOVERNANCE_CANISTER_ID",
+  "CYCLES_MINTING_CANISTER_ID",
+].reduce(
+  (ans, key) => {
+    // Each key is transferred from envConfig as a string.
+    // Theoretically it is possible to pass other types, such as a bool, however
+    // the linter assumes that process.env.X is a string so it is best to comply.
+    let value = envConfig[key];
+    if (undefined === value) {
+      throw new Error(`In rollup, envConfig[${key}] is undefined.`);
+    }
+    ans[`process.env.${key}`] = JSON.stringify(String(envConfig[key]));
+    return ans;
+  },
+  {
+    // This is a rollup configuration, it is not inserted into the compiled code.
+    // Quote: @rollup/plugin-replace: 'preventAssignment' currently defaults to false.
+    //        It is recommended to set this option to true, as the next major version
+    //        will default this option to true.
+    preventAssignment: true,
+  }
+);
+
+const configApp = {
   input: "src/main.ts",
   output: {
-    sourcemap: true,
+    sourcemap: !prodBuild,
     format: "es",
     name: "app",
-    file: "public/build/bundle.js",
+    dir: "public/build/",
+    manualChunks: {
+      nns: ["@dfinity/nns"],
+      agent: [
+        "@dfinity/agent",
+        "@dfinity/auth-client",
+        "@dfinity/authentication",
+        "@dfinity/candid",
+        "@dfinity/identity",
+        "@dfinity/principal",
+      ],
+    },
   },
   plugins: [
     svelte({
       preprocess: sveltePreprocess({
-        sourceMap: !production,
+        sourceMap: !prodBuild,
         postcss: {
           plugins: [require("autoprefixer")()],
         },
       }),
       compilerOptions: {
         // enable run-time checks when not in production
-        dev: !production,
+        dev: !prodBuild,
       },
     }),
     // we'll extract any component CSS out into
@@ -90,49 +136,51 @@ export default {
     }),
     commonjs(),
     typescript({
-      sourceMap: !production,
-      inlineSources: !production,
+      sourceMap: !prodBuild,
+      inlineSources: !prodBuild,
     }),
     inject({ Buffer: ["buffer", "Buffer"] }),
     json(),
-    replace({
-      preventAssignment: true,
-      "process.env.ROLLUP_WATCH": !!process.env.ROLLUP_WATCH,
-      "process.env.IDENTITY_SERVICE_URL": JSON.stringify(
-        process.env.IDENTITY_SERVICE_URL ||
-          (process.env.DEPLOY_ENV === "testnet"
-            ? "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/"
-            : "https://identity.ic0.app/")
-      ),
-      "process.env.DEPLOY_ENV": JSON.stringify(process.env.DEPLOY_ENV),
-      // When developing with live reload in svelte, redirecting to flutter is
-      // not desirable.  The default should match production:
-      // - false while svelte is inactive
-      // - true while flutter is being replaced by svelte
-      // - false after flutter has been replaced, but before all scaffolding has been removed
-      // - the flag may then be removed.
-      "process.env.REDIRECT_TO_LEGACY": JSON.stringify(
-        ["true", "1"].includes(process.env.REDIRECT_TO_LEGACY)
-          ? true
-          : ["false", "0"].includes(process.env.REDIRECT_TO_LEGACY)
-          ? false
-          : true // default
-      ),
-    }),
+    replace(replaceMap),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated
-    !production && serve(),
+    !prodBuild && serve(),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
-    !production && livereload("public"),
+    !prodBuild && livereload("public"),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
-    production && terser(),
+    prodBuild && terser(),
   ],
   watch: {
     clearScreen: false,
   },
 };
+
+const configWorker = {
+  input: "src/worker.ts",
+  output: {
+    sourcemap: false,
+    format: "amd",
+    file: "public/build/worker.js",
+  },
+  plugins: [
+    resolve({
+      preferBuiltins: false,
+      browser: true,
+    }),
+    commonjs(),
+    typescript({
+      sourceMap: !prodBuild,
+      inlineSources: !prodBuild,
+    }),
+    json(),
+    replace(replaceMap),
+    OMT(),
+  ],
+};
+
+export default [configApp, configWorker];

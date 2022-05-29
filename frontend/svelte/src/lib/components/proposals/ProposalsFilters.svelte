@@ -1,12 +1,12 @@
 <script lang="ts">
-  import FiltersCard from "../ui/FiltersCard.svelte";
   import type { ProposalsFilterModalProps } from "../../types/proposals";
-  import ProposalsFilterModal from "../../modals/ProposalsFilterModal.svelte";
+  import ProposalsFilterModal from "../../modals/proposals/ProposalsFilterModal.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { enumsKeys } from "../../utils/enum.utils";
+  import { enumsExclude } from "../../utils/enum.utils";
+  import FiltersButton from "../ui/FiltersButton.svelte";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -14,63 +14,75 @@
   const openModal = (filters: ProposalsFilterModalProps) =>
     (modalFilters = filters);
 
-  // TODO(L2-206): Happy to get help here to type the enum.
-  // If set to "T" TypeScript throw following error: Type 'typeof Topic' is not assignable to type 'Topic'
-  const allTopics: Topic = Topic as unknown as Topic;
-  const allRewards: ProposalRewardStatus =
-    ProposalRewardStatus as unknown as ProposalRewardStatus;
-  const allStatus: ProposalStatus = ProposalStatus as unknown as ProposalStatus;
-
   let topics: Topic[];
   let rewards: ProposalRewardStatus[];
   let status: ProposalStatus[];
+  let excludeVotedProposals: boolean;
 
-  $: ({ topics, rewards, status } = $proposalsFiltersStore);
+  $: ({ topics, rewards, status, excludeVotedProposals } =
+    $proposalsFiltersStore);
+
+  let totalFiltersTopic = enumsExclude({
+    obj: Topic as unknown as Topic,
+    values: [Topic.Unspecified],
+  }).length;
+  let totalFiltersProposalRewardStatus = enumsExclude({
+    obj: ProposalRewardStatus as unknown as ProposalRewardStatus,
+    values: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNKNOWN],
+  }).length;
+  let totalFiltersProposalStatus = enumsExclude({
+    obj: ProposalStatus as unknown as ProposalStatus,
+    values: [ProposalStatus.PROPOSAL_STATUS_UNKNOWN],
+  }).length;
 </script>
 
-<FiltersCard
-  filters={enumsKeys({ obj: allTopics, values: topics })}
-  labelKey="topics"
-  on:nnsFilter={() =>
-    openModal({
-      category: "topics",
-      filters: Topic,
-      selectedFilters: topics,
-    })}>{$i18n.voting.topics}</FiltersCard
->
+<div class="filters">
+  <FiltersButton
+    testId="filters-by-topics"
+    totalFilters={totalFiltersTopic}
+    activeFilters={topics.length}
+    on:nnsFilter={() =>
+      openModal({
+        category: "topics",
+        filters: Topic,
+        selectedFilters: topics,
+      })}>{$i18n.voting.topics}</FiltersButton
+  >
 
-<div class="status">
-  <FiltersCard
-    filters={enumsKeys({ obj: allRewards, values: rewards })}
-    labelKey="rewards"
+  <FiltersButton
+    testId="filters-by-rewards"
+    totalFilters={totalFiltersProposalRewardStatus}
+    activeFilters={rewards.length}
     on:nnsFilter={() =>
       openModal({
         category: "rewards",
         filters: ProposalRewardStatus,
         selectedFilters: rewards,
-      })}>{$i18n.voting.rewards}</FiltersCard
+      })}>{$i18n.voting.rewards}</FiltersButton
   >
 
-  <FiltersCard
-    filters={enumsKeys({ obj: allStatus, values: status })}
-    labelKey="status"
+  <FiltersButton
+    testId="filters-by-status"
+    totalFilters={totalFiltersProposalStatus}
+    activeFilters={status.length}
     on:nnsFilter={() =>
       openModal({
         category: "status",
         filters: ProposalStatus,
         selectedFilters: status,
-      })}>{$i18n.voting.proposals}</FiltersCard
+      })}>{$i18n.voting.status}</FiltersButton
+  >
+
+  <Checkbox
+    inputId="hide-unavailable-proposals"
+    checked={excludeVotedProposals}
+    on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
+    theme="dark"
+    text="block"
+    selector="hide-unavailable-proposals"
+    >{$i18n.voting.hide_unavailable_proposals}</Checkbox
   >
 </div>
-
-<Checkbox
-  inputId="hide-unavailable-proposals"
-  checked={false}
-  theme="dark"
-  text="block"
-  selector="hide-unavailable-proposals"
-  >{$i18n.voting.hide_unavailable_proposals}</Checkbox
->
 
 <ProposalsFilterModal
   props={modalFilters}
@@ -78,19 +90,37 @@
 />
 
 <style lang="scss">
-  .status {
-    display: grid;
-    width: calc(100% - var(--padding));
-    grid-template-columns: repeat(2, 50%);
-    grid-column-gap: var(--padding);
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--padding-2x) 0 var(--padding);
 
-    @media (max-width: 768px) {
-      display: block;
+    --select-flex-direction: row-reverse;
+
+    :global(button) {
+      margin: var(--padding) var(--padding) 0 0;
+    }
+
+    > :global(div.checkbox) {
+      width: fit-content;
+      padding: var(--padding) calc(0.75 * var(--padding));
+      margin: var(--padding) 0 0;
+    }
+
+    > :global(div.checkbox label) {
       width: 100%;
+    }
+
+    > :global(div.checkbox input) {
+      margin-right: var(--padding);
     }
   }
 
   :global(div.hide-unavailable-proposals) {
     --select-font-size: var(--font-size-small);
+  }
+
+  :global(section > div.checkbox) {
+    margin: 0 0 var(--padding);
   }
 </style>

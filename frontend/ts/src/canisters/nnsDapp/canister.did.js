@@ -277,7 +277,7 @@ export const idlFactory = ({ IDL }) => {
   const TransactionType = IDL.Variant({
     'Burn' : IDL.Null,
     'Mint' : IDL.Null,
-    'Send' : IDL.Null,
+    'Transfer' : IDL.Null,
     'StakeNeuronNotification' : IDL.Null,
     'TopUpCanister' : CanisterId,
     'CreateCanister' : IDL.Null,

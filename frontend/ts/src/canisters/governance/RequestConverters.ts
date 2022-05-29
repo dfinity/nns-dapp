@@ -20,6 +20,7 @@ import {
   MakeProposalRequest,
   ManageNeuron,
   MergeMaturityRequest,
+  MergeRequest,
   NeuronIdOrSubaccount,
   NodeProvider,
   Operation,
@@ -145,6 +146,19 @@ export default class RequestConverters {
     return manageNeuron;
   };
 
+  public fromMergeRequest = (request: MergeRequest): PbManageNeuron => {
+    const merge = new PbManageNeuron.Merge();
+    const sourceNeuronId = new PbNeuronId();
+    sourceNeuronId.setId(request.sourceNeuronId.toString());
+    merge.setSourceNeuronId(sourceNeuronId);
+    const manageNeuron = new PbManageNeuron();
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    manageNeuron.setNeuronId(neuronId);
+    manageNeuron.setMerge(merge);
+    return manageNeuron;
+  };
+
   public fromRemoveHotKeyRequest = (
     request: RemoveHotKeyRequest
   ): PbManageNeuron => {
@@ -265,6 +279,10 @@ export default class RequestConverters {
         Principal.fromText(request.newController).toUint8Array().slice(4)
       );
       spawn.setNewController(newController);
+    }
+
+    if (request.percentageToSpawn != null) {
+      spawn.setPercentageToSpawn(request.percentageToSpawn);
     }
 
     const manageNeuron = new PbManageNeuron();
@@ -610,6 +628,8 @@ export default class RequestConverters {
       const spawn = command.Spawn;
       return {
         Spawn: {
+          percentage_to_spawn:
+            spawn.percentageToSpawn != null ? [spawn.percentageToSpawn] : [],
           new_controller: spawn.newController
             ? [Principal.fromText(spawn.newController)]
             : [],

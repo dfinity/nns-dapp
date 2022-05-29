@@ -11,7 +11,7 @@ describe("Guard", () => {
     // Promise that never resolves to test if a spinner is rendered while loading
     jest
       .spyOn(authStore, "sync")
-      .mockImplementation(() => new Promise((resolve) => {}));
+      .mockImplementation(() => new Promise(() => undefined));
 
     const { container } = render(Guard);
 

@@ -1,10 +1,32 @@
+import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 import type { AuthStore } from "../../lib/stores/auth.store";
+import en from "./i18n.mock";
 
-export const mockPrincipal = Principal.fromText(
-  "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
-);
+export const mockPrincipalText =
+  "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe";
+
+export const mockPrincipal = Principal.fromText(mockPrincipalText);
+
+export const mockIdentity = {
+  getPrincipal: () => mockPrincipal,
+} as unknown as Identity;
+
+export const mockIdentityErrorMsg = en.error.missing_identity;
+
+let testIdentity: Identity | null = mockIdentity;
+
+export const setNoIdentity = () => (testIdentity = null);
+export const resetIdentity = () => (testIdentity = mockIdentity);
+
+export const mockGetIdentity = () => {
+  if (!testIdentity) {
+    throw new Error(mockIdentityErrorMsg);
+  }
+
+  return mockIdentity;
+};
 
 /**
  * A static mock of the auth store. The component that uses it will be rendered for test with a value that is already defined on mount.
@@ -12,9 +34,9 @@ export const mockPrincipal = Principal.fromText(
 export const mockAuthStoreSubscribe = (
   run: Subscriber<AuthStore>
 ): (() => void) => {
-  run({ principal: mockPrincipal });
+  run({ identity: mockIdentity });
 
-  return () => {};
+  return () => undefined;
 };
 
 /**
@@ -23,7 +45,7 @@ export const mockAuthStoreSubscribe = (
  */
 
 export class AuthStoreMock {
-  private _store: AuthStore = { principal: undefined };
+  private _store: AuthStore = { identity: undefined };
 
   private _callback: (store: AuthStore) => void;
 
@@ -49,5 +71,5 @@ export const mutableMockAuthStoreSubscribe = (
 ): (() => void) => {
   authStoreMock.subscribe((store: AuthStore) => run(store));
 
-  return () => {};
+  return () => undefined;
 };

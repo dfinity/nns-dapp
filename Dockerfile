@@ -81,6 +81,7 @@ RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
 COPY . /build
 WORKDIR /build
 RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
+RUN git config --global --add safe.directory /flutter
 RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm

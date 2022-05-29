@@ -2,6 +2,7 @@ import 'package:nns_dapp/data/icp.dart';
 import 'package:nns_dapp/ui/_components/confirm_dialog.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
+import 'package:nns_dapp/ui/neurons/detail/neuron_spawn_neuron.dart';
 import 'package:nns_dapp/ui/wallet/percentage_display_widget.dart';
 import 'package:universal_html/js.dart' as js;
 import '../../../nns_dapp.dart';
@@ -20,11 +21,6 @@ class NeuronRewardsCard extends StatelessWidget {
     var buttonGroup = [
       ElevatedButton(
           onPressed: () {
-            if (!neuron.isCurrentUserController) {
-              js.context.callMethod("alert",
-                  ["Merge Maturity is not yet supported by hardware wallets."]);
-              return;
-            }
             OverlayBaseWidget.show(
                 context,
                 NeuronMergeMaturity(
@@ -49,7 +45,29 @@ class NeuronRewardsCard extends StatelessWidget {
         SizedBox(height: 8)
       else
         SizedBox(width: 8),
-      ElevatedButton(
+      neuron.isCurrentUserController
+          ? ElevatedButton(
+          onPressed: () {
+            OverlayBaseWidget.show(
+              context,
+              SpawnNeuron(
+                  neuron: neuron,
+                  cancelTitle: "Cancel",
+                  onCompleteAction: (context) {
+                    OverlayBaseWidget.of(context)?.dismiss();
+                  }),
+            );
+          }.takeIf((e) =>
+          neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
+              context.icApi.isNeuronControllable(neuron)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Spawn Neuron",
+              style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+            ),
+          ))
+          : ElevatedButton(
           onPressed: () {
             OverlayBaseWidget.show(
                 context,
@@ -59,10 +77,8 @@ class NeuronRewardsCard extends StatelessWidget {
                   onConfirm: () async {
                     context.callUpdate(() async {
                       try {
-                        final newNeuron =
-                            await context.icApi.spawnNeuron(neuron: neuron);
-                        context.nav
-                            .push(neuronPageDef.createPageConfig(newNeuron));
+                        final newNeuron = await context.icApi.spawnNeuron(neuron: neuron, percentageToSpawn: null);
+                        context.nav.push(neuronPageDef.createPageConfig(newNeuron));
                       } catch (err) {
                         js.context.callMethod("alert", ["$err"]);
                       }
@@ -70,14 +86,13 @@ class NeuronRewardsCard extends StatelessWidget {
                   },
                 ));
           }.takeIf((e) =>
-              neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
+          neuron.maturityICPEquivalent.asE8s() > BigInt.from(E8S_PER_ICP) &&
               context.icApi.isNeuronControllable(neuron)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
               "Spawn Neuron",
-              style:
-                  TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
+              style: TextStyle(fontSize: Responsive.isMobile(context) ? 14 : 16),
             ),
           )),
     ];
@@ -201,14 +216,16 @@ class _NeuronMergeMaturityState extends State<NeuronMergeMaturity> {
   }
 
   Future performUpdate(BuildContext context) async {
-    try {
-      await context.callUpdate(() => context.icApi.mergeMaturity(
-          neuronId: widget.neuron.id.toBigInt,
-          percentageToMerge: sliderValue.currentValue));
+    final res = await context.callUpdate(() => context.icApi.mergeMaturity(
+        neuron: widget.neuron, percentageToMerge: sliderValue.currentValue));
+
+    res.when(ok: (unit) {
+      // Merge maturity succeeded.
       widget.onCompleteAction(context);
-    } catch (err) {
+    }, err: (err) {
+      // Merge maturity failed. Display the error.
       js.context.callMethod("alert", ["$err"]);
-    }
+    });
   }
 
   @override

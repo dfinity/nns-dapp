@@ -12,7 +12,7 @@
     // enable scrolling
     pointer-events: none;
 
-    margin: 0 auto calc(2 * var(--padding));
+    margin: 0 auto var(--padding-2x);
 
     display: flex;
     justify-content: center;
@@ -24,7 +24,7 @@
     }
 
     @include media.min-width(medium) {
-      margin-bottom: calc(3 * var(--padding));
+      margin-bottom: var(--padding-3x);
     }
 
     // buttons
@@ -32,11 +32,11 @@
       pointer-events: all;
 
       flex: 1 1;
-      margin: 0 calc(0.5 * var(--padding));
+      margin: 0 var(--padding-0_5x);
       max-width: 60%;
 
       @include media.min-width(medium) {
-        margin: 0 calc(2 * var(--padding));
+        margin: 0 var(--padding-2x);
         max-width: 406px;
       }
     }

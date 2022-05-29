@@ -445,13 +445,13 @@ export interface Transaction {
   'transfer' : Transfer,
 }
 export type TransactionType = { 'Burn' : null } |
-    { 'Mint' : null } |
-    { 'Send' : null } |
-    { 'StakeNeuronNotification' : null } |
-    { 'TopUpCanister' : CanisterId } |
-    { 'CreateCanister' : null } |
-    { 'TopUpNeuron' : null } |
-    { 'StakeNeuron' : null };
+  { 'Mint' : null } |
+  { 'Transfer' : null } |
+  { 'StakeNeuronNotification' : null } |
+  { 'TopUpCanister' : CanisterId } |
+  { 'CreateCanister' : null } |
+  { 'TopUpNeuron' : null } |
+  { 'StakeNeuron' : null };
 export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
     { 'Mint' : { 'amount' : ICPTs } } |
     { 'Send' : Send } |

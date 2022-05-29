@@ -89,7 +89,7 @@ type TransactionType =
     variant {
         Burn;
         Mint;
-        Send;
+        Transfer;
         StakeNeuron;
         StakeNeuronNotification;
         TopUpNeuron;

@@ -2,32 +2,37 @@
   import { createEventDispatcher } from "svelte";
   import IconBackIosNew from "../../icons/IconBackIosNew.svelte";
   import { i18n } from "../../stores/i18n";
-  import Toasts from "../ui/Toasts.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import Footer from "./Footer.svelte";
+  import Banner from "./Banner.svelte";
+  import { triggerDebugReport } from "../../utils/dev.utils";
+
+  export let showFooter = true;
 
   const dispatch = createEventDispatcher();
 </script>
 
+<Banner headless={true} />
+
 <header>
-  <Tooltip id="back" text={$i18n.modals.back}>
+  <Tooltip id="back" text={$i18n.core.back}>
     <button
       class="back"
       on:click|stopPropagation={() => dispatch("nnsBack")}
-      aria-label={$i18n.modals.back}><IconBackIosNew /></button
+      aria-label={$i18n.core.back}><IconBackIosNew /></button
     >
   </Tooltip>
-  <h2><slot name="header" /></h2>
+  <h2 use:triggerDebugReport><slot name="header" /></h2>
 </header>
 <main>
   <slot />
 </main>
 
-<Footer>
-  <slot name="footer" />
-</Footer>
-
-<Toasts />
+{#if showFooter}
+  <Footer>
+    <slot name="footer" />
+  </Footer>
+{/if}
 
 <style lang="scss">
   header {
@@ -66,9 +71,8 @@
 
   main {
     position: absolute;
-    inset: calc(var(--headless-layout-header-height)) 0 0;
-    padding-top: calc(5 * var(--padding));
 
+    inset: calc(var(--headless-layout-header-height)) 0 0;
     overflow: auto;
 
     background-color: var(--gray-50-background);

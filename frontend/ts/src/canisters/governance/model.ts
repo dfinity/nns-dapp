@@ -163,6 +163,10 @@ export interface ManageNeuron {
 export interface Merge {
   sourceNeuronId: Option<NeuronId>;
 }
+export interface MergeRequest {
+  neuronId: NeuronId;
+  sourceNeuronId: NeuronId;
+}
 export interface MergeMaturity {
   percentageToMerge: number;
 }
@@ -363,6 +367,7 @@ export interface SetDefaultFollowees {
   defaultFollowees: Array<Followees>;
 }
 export interface Spawn {
+  percentageToSpawn: Option<number>;
   newController: Option<PrincipalString>;
 }
 export interface SpawnResponse {
@@ -428,6 +433,7 @@ export interface RegisterVoteRequest {
 }
 
 export interface SpawnRequest {
+  percentageToSpawn: Option<number>;
   neuronId: NeuronId;
   newController: Option<PrincipalString>;
 }
@@ -537,6 +543,7 @@ export default interface ServiceInterface {
     request: JoinCommunityFundRequest
   ) => Promise<EmptyResponse>;
   follow: (request: FollowRequest) => Promise<EmptyResponse>;
+  merge: (request: MergeRequest) => Promise<EmptyResponse>;
   mergeMaturity: (
     request: MergeMaturityRequest
   ) => Promise<MergeMaturityResponse>;

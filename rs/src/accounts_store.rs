@@ -18,7 +18,7 @@ use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, TimeStam
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
@@ -433,9 +433,10 @@ impl AccountsStore {
                 account
                     .hardware_wallet_accounts
                     .sort_unstable_by_key(|hw| hw.name.clone());
+
+                self.hardware_wallet_accounts_count += 1;
+                self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
             }
-            self.hardware_wallet_accounts_count += 1;
-            self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
 
             response
         } else {
@@ -1232,8 +1233,8 @@ impl StableState for AccountsStore {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         #[allow(clippy::type_complexity)]
         let (
-            accounts,
-            hardware_wallets_and_sub_accounts,
+            mut accounts,
+            mut hardware_wallets_and_sub_accounts,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1250,6 +1251,20 @@ impl StableState for AccountsStore {
             u64,
             u64,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
+
+        // Remove duplicate transactions from hardware wallet accounts
+        for hw_account in accounts.values_mut().flat_map(|a| &mut a.hardware_wallet_accounts) {
+            let mut unique = HashSet::new();
+            hw_account.transactions.retain(|t| unique.insert(*t));
+        }
+
+        // Remove duplicate links between hardware wallets and user accounts
+        for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
+            if let AccountWrapper::HardwareWallet(ids) = hw_or_sub {
+                let mut unique = HashSet::new();
+                ids.retain(|id| unique.insert(*id));
+            }
+        }
 
         let mut sub_accounts_count: u64 = 0;
         let mut hardware_wallet_accounts_count: u64 = 0;

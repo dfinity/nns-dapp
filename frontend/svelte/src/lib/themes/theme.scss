@@ -22,6 +22,22 @@ body {
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  background: var(--gray-600);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-50-background);
+  height: 200px;
+  border: solid 2.5px var(--gray-600);
+  border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--gray-600);
+}
+
 a,
 input,
 button,
@@ -41,7 +57,7 @@ button {
   cursor: pointer;
   user-select: none;
 
-  padding: 0 calc(var(--padding) / 2);
+  padding: 0 var(--padding-0_5x);
 }
 
 main {
@@ -50,8 +66,7 @@ main {
 }
 
 section {
-  padding: calc(2 * var(--padding)) calc(2.5 * var(--padding))
-    var(--footer-height);
+  padding: var(--padding-2x) var(--padding-2_5x) var(--footer-height);
   max-width: var(--section-max-width);
   margin: 0 auto;
 }
@@ -65,6 +80,11 @@ h5 {
 }
 
 p {
+  margin: var(--padding) 0;
+}
+
+ul {
+  padding-inline-start: var(--padding-2x);
   margin: 0;
 }
 

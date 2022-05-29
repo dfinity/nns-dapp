@@ -2,6 +2,11 @@
 @use "mixins/media";
 
 button {
+  &[disabled],
+  &[disabled]:hover {
+    pointer-events: none;
+  }
+
   &.text {
     z-index: var(--z-index);
 
@@ -28,7 +33,7 @@ button {
 
     vertical-align: bottom;
 
-    padding: calc(var(--padding) / 2);
+    padding: var(--padding-0_5x);
 
     border-radius: 50%;
 
@@ -36,15 +41,36 @@ button {
   }
 
   &.primary,
+  &.dark,
+  &.danger,
+  &.secondary,
+  &.warning,
   &.input-button {
     border-radius: var(--border-radius);
 
     position: relative;
-    min-height: 60px;
+    min-height: var(--button-min-height);
 
-    &[disabled] {
+    font-size: var(--font-size-small);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+
+    &.small {
+      min-height: inherit;
+      font-size: inherit;
+      padding: var(--padding-0_5x) var(--padding);
+    }
+  }
+
+  &.primary,
+  &.input-button {
+    &[disabled],
+    &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
+      pointer-events: none;
     }
 
     background: var(--blue-500);
@@ -53,37 +79,127 @@ button {
     @include effect.ripple-effect(--blue-500-tint);
 
     &:focus {
-      background: var(--blue-600);
-      @include effect.ripple-effect(--blue-600-tint);
+      background: var(--blue-400);
+      @include effect.ripple-effect(--blue-400-tint);
     }
   }
 
   &.primary {
-    padding: var(--padding);
+    padding: var(--padding) var(--padding-2x);
 
-    font-size: var(--font-size-small);
+    &:hover {
+      background: var(--blue-400);
+    }
+  }
+
+  &.secondary {
+    &[disabled],
+    &[disabled]:hover {
+      background: var(--gray-400);
+      color: var(--gray-600);
+      pointer-events: none;
+    }
+
+    background: var(--gray-500);
+    color: var(--background-contrast);
+
+    @include effect.ripple-effect(--gray-500-tint);
+
+    &:focus {
+      background: var(--gray-600);
+      @include effect.ripple-effect(--gray-600-tint);
+    }
+
+    // TODO: combine common parts
     @include media.min-width(medium) {
       font-size: var(--font-size-h3);
     }
   }
 
   &.input-button {
-    padding: calc(0.5 * var(--padding)) calc(1.5 * var(--padding));
+    padding: var(--padding-0_5x) var(--padding-1_5x);
 
     font-size: var(--font-size-ultra-small);
 
     @include media.min-width(medium) {
-      padding: calc(0.5 * var(--padding)) calc(2 * var(--padding));
+      padding: var(--padding-0_5x) var(--padding-2x);
 
       font-size: var(--font-size-small);
       font-weight: bold;
     }
 
     // shadow animation
-    transition: box-shadow 0.1s;
+    transition: box-shadow var(--animation-time-normal);
     box-shadow: 1px 2px 2px 0 rgba(var(--background-rgb), 0.75);
     &:hover {
       box-shadow: 2px 3px 3px 0 rgba(var(--background-rgb), 0.65);
+    }
+  }
+
+  &.dark {
+    background: var(--gray-600);
+    color: var(--gray-50);
+
+    &[disabled],
+    &[disabled]:hover {
+      background: rgba(var(--gray-600-rgb), 0.8);
+      color: var(--gray-800);
+      pointer-events: none;
+    }
+
+    @include effect.ripple-effect(--gray-600-tint);
+
+    &:focus {
+      @include effect.ripple-effect(--gray-500-tint);
+      color: var(--gray-500-contrast);
+    }
+
+    &:hover,
+    &:focus {
+      background: var(--gray-500);
+    }
+  }
+
+  &.danger {
+    --background-color-button: var(--pink);
+    --background-color-button-tint: var(--pink-tint);
+    --color-button: var(--pink-contrast);
+  }
+
+  &.warning {
+    --background-color-button: var(--yellow-500);
+    --background-color-button-tint: var(--yellow-500-tint);
+    --color-button: var(--background-contrast);
+  }
+
+  &.danger,
+  &.warning {
+    background: var(--background-color-button);
+    color: var(--color-button);
+
+    font-size: var(--font-size-small);
+
+    @include media.min-width(medium) {
+      font-size: var(--font-size-h3);
+    }
+
+    &[disabled],
+    &[disabled]:hover {
+      background: var(--gray-400);
+      color: var(--gray-600);
+      pointer-events: none;
+    }
+
+    @include effect.ripple-effect(--background-color-button-tint);
+
+    &:focus {
+      @include effect.ripple-effect(--background-color-button-tint);
+      color: var(--color-button);
+    }
+
+    &:hover,
+    &:focus {
+      background: var(--background-color-button-tint);
     }
   }
 }

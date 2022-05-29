@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")"
+
+DOWNLOAD_DIR="$(realpath ../..)/target/ic"
+# Note: This is the default commit of the IC repo to use; it can be overridden on the command line.
+#       The commit should come from the master branch and should be updated regularly.
+#       The default commit is used in CI, so should be a known, tested value.
+IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+
+help_text() {
+  cat <<-EOF
+	Builds some NNS canisters locally:
+	- ledger
+
+	Flags:
+	--download-dir
+	  The directory in which to place the build artifacts.
+	  Default: '$DOWNLOAD_DIR'
+
+	--ic-commit)
+	  The commit in the IC repo to build.
+	  default: '$IC_COMMIT'
+	  Note: Not all commits are available as prebuilt assets.
+	        You may have to search around to find a suitable commit.
+	EOF
+}
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --download-dir)
+    DOWNLOAD_DIR="$(realpath "$1")"
+    test -d "$DOWNLOAD_DIR" || {
+      printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+      exit 1
+    } >&2
+    shift 1
+    ;;
+  --ic-commit)
+    IC_COMMIT="$1"
+    shift 1
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      help_text
+    } >&2
+    exit 1
+    ;;
+  esac
+done
+
+mkdir -p "${DOWNLOAD_DIR}"
+
+DOCKER_BUILDKIT=1 docker build \
+  --target scratch \
+  -t "ledger" \
+  -f nns-canister.Dockerfile \
+  --build-arg=IC_COMMIT="$IC_COMMIT" \
+  -o "$DOWNLOAD_DIR" .

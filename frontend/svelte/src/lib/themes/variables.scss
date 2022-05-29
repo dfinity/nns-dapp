@@ -5,6 +5,16 @@
   --icon-width: 24px;
 
   --padding: 10px;
+
+  --padding-0_5x: calc(var(--padding) / 2);
+  --padding-1_5x: calc(1.5 * var(--padding));
+  --padding-2x: calc(2 * var(--padding));
+  --padding-2_5x: calc(2.5 * var(--padding));
+  --padding-3x: calc(3 * var(--padding));
+  --padding-4x: calc(4 * var(--padding));
+  --padding-6x: calc(4 * var(--padding));
+  --padding-8x: calc(8 * var(--padding));
+
   --border-radius: 10px;
 
   --z-index: 1;
@@ -14,13 +24,44 @@
   --section-max-width: 800px;
   --footer-height: 20vh;
 
-  --modal-small-width: 300px;
-  --modal-medium-width: 300px;
+  --animation-time-normal: 0.2s;
+
+  --button-min-height: 60px;
+
+  --modal-small-width: calc(100% - var(--padding-8x));
+  --modal-big-width: calc(100% - var(--padding-2x));
+  --modal-max-height: 630px;
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
-    --modal-medium-width: 600px;
+    --modal-big-width: 600px;
   }
+
+  // Json colors
+  --json-bracket-color: var(--gray-400);
+  --json-value-color: var(--gray-100);
+  --json-string-color: var(--brand-sea-buckthorn);
+  --json-number-color: var(--brand-picton-blue);
+  --json-null-color: var(--gray-400);
+  --json-principal-color: var(--yellow-400);
+  --json-hash-color: var(--yellow-400);
+  --json-bigint-color: var(--brand-picton-blue);
+  --json-boolean-color: var(--brand-picton-blue);
+
+  // BRAND COLORS
+  --brand-picton-blue: #29abe2;
+  --brand-black: #000000;
+  --brand-flamingo: #f15a24;
+  --brand-sea-buckthorn: #fbb03b;
+  --brand-razzmatazz: #ed1e79;
+  --brand-meteorite: #522785;
+
+  --error: #ed254e;
+  --error-rgb: 237, 37, 78;
+  --error-contrast: #ffffff;
+  --error-contrast-rgb: 255, 255, 255;
+  --error-shade: #d12145;
+  --error-tint: #ef3b60;
 
   --background: #272929;
   --background-rgb: 39, 41, 41;
@@ -282,10 +323,10 @@
   --green-400-shade: #758a3c;
   --green-400-tint: #91a757;
 
-  --pink: #d81c6f;
-  --pink-rgb: 216, 28, 111;
+  --pink: #ed1e79;
+  --pink-rgb: 237, 30, 121;
   --pink-contrast: #ffffff;
   --pink-contrast-rgb: 255, 255, 255;
-  --pink-shade: #be1962;
-  --pink-tint: #dc337d;
+  --pink-shade: #d11a6a;
+  --pink-tint: #ef3586;
 }

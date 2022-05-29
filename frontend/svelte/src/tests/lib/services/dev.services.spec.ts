@@ -6,7 +6,7 @@ describe("dev-services", () => {
   beforeEach(() => {
     jest
       .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe);
+      .mockImplementation(mockAccountsStoreSubscribe());
   });
 
   it("should throw an error if the environment is not testnet", async () => {

@@ -33,11 +33,11 @@ h4,
 h5 {
   font-weight: 700;
   line-height: var(--line-height-title);
-  margin: 0 0 calc(var(--padding) / 2);
+  margin: 0 0 var(--padding-0_5x);
 }
 
 p {
-  margin: 0 0 calc(3 * var(--padding));
+  margin: 0 0 var(--padding-3x);
 }
 
 input,
@@ -49,6 +49,7 @@ textarea {
 }
 
 :root {
+  --font-size-huge: 3.052rem;
   --font-size-h1: 1.802rem;
   --font-size-h2: 1.602rem;
   --font-size-h3: 1.424rem;
@@ -90,8 +91,4 @@ a,
 button {
   font-size: var(--font-size-h4);
   line-height: var(--line-height-title);
-}
-
-p {
-  font-size: var(--font-size-h3);
 }

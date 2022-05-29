@@ -5,6 +5,7 @@ import 'package:nns_dapp/ui/_components/constants.dart';
 import 'package:nns_dapp/ui/_components/form_utils.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/neuron_info/neuron_info_widget.dart';
+import 'package:nns_dapp/ui/widgets/flutter_json_viewer.dart';
 
 import '../../nns_dapp.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -98,6 +99,10 @@ class ProposalStateCard extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: Markdown(
                               data: proposal.summary,
+                              onTapLink: (text, url, title){
+                                if(url!=null)
+                                launch(url);
+                              },
                               styleSheet: MarkdownStyleSheet.fromTheme(
                                   ThemeData(
                                       cardColor: AppColors.black,
@@ -187,10 +192,11 @@ class ActionDetailsWidget extends StatelessWidget {
                     style: context.textTheme.bodyText1
                         ?.copyWith(fontSize: 14, color: AppColors.gray50),
                   ),
-                  SelectableText(
+                  entry.key != 'payload'
+                      ? SelectableText(
                     entry.value.toString().toString(),
                     style: context.textTheme.bodyText2,
-                  )
+                  ): JsonViewer(entry.value)
                 ],
               ),
             );

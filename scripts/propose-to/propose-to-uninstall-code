@@ -1,0 +1,6 @@
+set ic-admin --nns-url "$NNS_URL" \
+  propose-to-uninstall-code \
+  --test-neuron-proposer \
+  --canister-id qsgjb-riaaa-aaaaa-aaaga-cai \
+  --proposal-title "Silly code removal would break nns" \
+  --proposal-url "https://developer.mozilla.org"

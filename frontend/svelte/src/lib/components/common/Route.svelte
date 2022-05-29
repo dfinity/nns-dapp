@@ -2,7 +2,8 @@
   import type { SvelteComponent } from "svelte";
   import { routePath } from "../../utils/route.utils";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { RouteStore, routeStore } from "../../stores/route.store";
+  import { routeStore } from "../../stores/route.store";
+  import type { RouteStore } from "../../stores/route.store";
   import { onDestroy } from "svelte";
   import type { AppPath } from "../../constants/routes.constants";
   import { isRoutePath } from "../../utils/app-path.utils";

@@ -67,7 +67,7 @@ export default class TransactionsConverter {
   private static toTransactionType = (
     transactionType: RawTransactionType
   ): TransactionType => {
-    if ("Send" in transactionType) {
+    if ("Transfer" in transactionType) {
       return TransactionType.Send;
     } else if ("StakeNeuron" in transactionType) {
       return TransactionType.StakeNeuron;

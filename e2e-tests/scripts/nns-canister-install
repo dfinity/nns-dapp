@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+
+DOWNLOAD_DIR="target/ic"
+UNCLEAN="no"
+
+help_text() {
+  cat <<-EOF
+	Installs NNS canisters locally.
+
+	Note: This should be done immediately after a "dfx start --clean"
+
+	Flags:
+	--help
+	  Prints this help text
+
+	--download-dir <DIR>
+	  Specifies where the ic artifacts are located.
+
+	--unclean
+	  Run even if there are already canisters installed.
+	  (USUALLY GOES HORRIBLY WRONG)
+	EOF
+}
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --download-dir)
+    DOWNLOAD_DIR="$(realpath "$1")"
+    test -d "$DOWNLOAD_DIR" || {
+      printf "ERROR: %s '%s'\n" "Download dir does not exist:" "$1"
+      exit 1
+    } >&2
+    shift 1
+    ;;
+  --unclean)
+    UNCLEAN=yes
+    ;;
+  *)
+    {
+      printf "ERROR: %s '%s'\n" "Unknown argument:" "$arg"
+      printf "Usage:"
+      help_text
+    } >&2
+    exit 1
+    ;;
+  esac
+done
+
+test -x "${DOWNLOAD_DIR}/ic-nns-init" || {
+  printf "ERROR: %s\n" "ic-nns-init is missing from the download directory"
+  exit 1
+}
+
+FIRST_POSSIBLE_CANISTER_ID=rwlgt-iiaaa-aaaaa-aaaaa-cai
+if { curl -sL "$(./e2e-tests/scripts/nns-dashboard)" | grep -q "$FIRST_POSSIBLE_CANISTER_ID"; } && [[ "$UNCLEAN" != "yes" ]]; then
+  printf "WARNING: %s\n" \
+    "Installing governance canisters is only known to work reliably" \
+    "in a clean environment." \
+    "" \
+    "Please consider running:" \
+    "  dfx stop && dfx start --clean" \
+    ""
+  # If running in a non-interactive terminal, fail, else ask the user whether to proceed.
+  if test -t 1; then
+    # Timeout with -t:  Make sure this does not hang indefinitely.  It is better to fail.
+    read -t60 -rp "Continue anyway? (yes/NO) " UNCLEAN
+  fi
+  [[ "$UNCLEAN" == "yes" ]] || {
+    printf "ERROR: %s\n" "Refusing to continue into an unknown state."
+    exit 1
+  }
+fi
+
+echo "Canister hashes:"
+sha256sum "${DOWNLOAD_DIR}"/*.wasm
+
+NNS_URL="$(./e2e-tests/scripts/nns-dashboard)"
+
+"${DOWNLOAD_DIR}/ic-nns-init" \
+  --url "$NNS_URL" \
+  --initialize-ledger-with-test-accounts 5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087 \
+  --wasm-dir "$DOWNLOAD_DIR"

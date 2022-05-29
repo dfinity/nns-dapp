@@ -1,4 +1,10 @@
-import { formatICP } from "../../../lib/utils/icp.utils";
+import { ICP } from "@dfinity/nns";
+import {
+  formatICP,
+  formattedTransactionFeeICP,
+  maxICP,
+  sumICPs,
+} from "../../../lib/utils/icp.utils";
 
 describe("icp-utils", () => {
   it("should format icp", () => {
@@ -15,5 +21,31 @@ describe("icp-utils", () => {
     expect(formatICP(BigInt(200000000000000))).toEqual(
       `2${"\u202F"}000${"\u202F"}000.00000000`
     );
+  });
+
+  it("should add ICPs", () => {
+    const icp0 = ICP.fromString("0") as ICP;
+    const icp1 = ICP.fromString("1") as ICP;
+    const icp15 = ICP.fromString("1.5") as ICP;
+    const icp2 = ICP.fromString("2") as ICP;
+    const icp3 = ICP.fromString("3") as ICP;
+    const icp35 = ICP.fromString("3.5") as ICP;
+    const icp6 = ICP.fromString("6") as ICP;
+
+    expect(sumICPs(icp0, icp1)).toEqual(icp1);
+    expect(sumICPs(icp1, icp2)).toEqual(icp3);
+    expect(sumICPs(icp1, icp2, icp3)).toEqual(icp6);
+    expect(sumICPs(icp15, icp2)).toEqual(icp35);
+  });
+
+  it("should format a specific transaction fee", () =>
+    expect(formattedTransactionFeeICP()).toEqual("0.00010000"));
+
+  it("should max ICP value", () => {
+    expect(maxICP(undefined)).toEqual(0);
+    expect(maxICP(ICP.fromString("0") as ICP)).toEqual(0);
+    expect(maxICP(ICP.fromString("0.0001") as ICP)).toEqual(0);
+    expect(maxICP(ICP.fromString("0.00011") as ICP)).toEqual(0.00001);
+    expect(maxICP(ICP.fromString("1") as ICP)).toEqual(0.9999);
   });
 });

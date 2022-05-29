@@ -1,36 +1,9 @@
-import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
+import { mock } from "jest-mock-extended";
 import { authStore } from "../../../lib/stores/auth.store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-
-class MockAuthClient extends AuthClient {
-  constructor() {
-    super(null, null, null, null);
-  }
-
-  create(): Promise<AuthClient> {
-    return Promise.resolve(this);
-  }
-
-  async isAuthenticated(): Promise<boolean> {
-    return true;
-  }
-
-  getIdentity(): Identity {
-    return { getPrincipal: () => mockPrincipal } as unknown as Identity;
-  }
-
-  async login({ onSuccess }: { onSuccess?: () => void }) {
-    onSuccess?.();
-  }
-
-  logout(): Promise<void> {
-    return Promise.resolve();
-  }
-}
 
 describe("auth-store", () => {
-  const mockAuthClient: MockAuthClient = new MockAuthClient();
+  const mockAuthClient = mock<AuthClient>();
 
   beforeAll(() => {
     jest
@@ -47,11 +20,13 @@ describe("auth-store", () => {
   });
 
   it("should call auth-client login on sign-in", async () => {
-    const spy = jest.spyOn(mockAuthClient, "login");
+    // @ts-ignore: test file
+    mockAuthClient.login = async ({ onSuccess }: { onSuccess: () => void }) => {
+      expect(true).toBeTruthy();
+      onSuccess();
+    };
 
     await authStore.signIn();
-
-    expect(spy).toHaveBeenCalled();
   });
 
   it("should call auth-client logout on sign-out", async () => {

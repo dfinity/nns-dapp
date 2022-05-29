@@ -4,11 +4,12 @@
 
 import { render } from "@testing-library/svelte";
 import Toast from "../../../../lib/components/ui/Toast.svelte";
-import type { ToastMsg } from "../../../../lib/stores/toasts.store";
+import type { ToastMsg } from "../../../../lib/types/toast";
+import en from "../../../mocks/i18n.mock";
 
 describe("Toast", () => {
   const props: { msg: ToastMsg } = {
-    msg: { labelKey: "core.close", level: "info", detail: "more details" },
+    msg: { labelKey: "core.close", level: "success", detail: "more details" },
   };
 
   it("should render a text", async () => {
@@ -18,19 +19,17 @@ describe("Toast", () => {
 
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
-    expect(p).not.toBeNull();
-    expect(p.textContent).toContain("Close");
+    expect(p?.textContent).toContain("Close");
   });
 
   it("should render a close button", async () => {
-    const { getByRole } = render(Toast, {
+    const { getByText } = render(Toast, {
       props,
     });
 
-    const button = getByRole("button");
+    const button = getByText(en.core.close);
 
-    expect(button).not.toBeNull();
-    expect(button.getAttribute("aria-label")).toEqual("Close");
+    expect(button).toBeInTheDocument();
   });
 
   it("should render details", async () => {
@@ -40,7 +39,6 @@ describe("Toast", () => {
 
     const p: HTMLParagraphElement | null = container.querySelector("p");
 
-    expect(p).not.toBeNull();
-    expect(p.textContent).toContain("more details");
+    expect(p?.textContent).toContain("more details");
   });
 });

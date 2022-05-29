@@ -48,7 +48,7 @@ abstract class AbstractPlatformICApi {
 
   Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron});
 
-  Future<Neuron> spawnNeuron({required Neuron neuron});
+  Future<Neuron> spawnNeuron({required Neuron neuron, required int? percentageToSpawn});
 
   Future<Result<Unit, Exception>> splitNeuron(
       {required Neuron neuron, required ICP amount});
@@ -68,8 +68,11 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       required String? toAccountId});
 
-  Future<void> mergeMaturity(
-      {required BigInt neuronId, required int percentageToMerge});
+  Future<Result<Unit, Exception>> merge(
+      {required Neuron neuron1, required Neuron neuron2});
+
+  Future<Result<Unit, Exception>> mergeMaturity(
+      {required Neuron neuron, required int percentageToMerge});
 
   Future<Result<Unit, Exception>> addHotkey(
       {required BigInt neuronId, required String principal});

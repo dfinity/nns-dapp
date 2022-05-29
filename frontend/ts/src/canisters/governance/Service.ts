@@ -24,6 +24,7 @@ import ServiceInterface, {
   MakeSetDefaultFolloweesProposalRequest,
   MergeMaturityRequest,
   MergeMaturityResponse,
+  MergeRequest,
   NeuronInfo,
   NeuronInfoForHw,
   ProposalInfo,
@@ -367,6 +368,19 @@ export default class Service implements ServiceInterface {
     const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
 
     return this.responseConverters.toMergeMaturityResponse(response);
+  };
+
+  public merge = async (request: MergeRequest): Promise<EmptyResponse> => {
+    const rawRequest = this.requestConverters.fromMergeRequest(request);
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      rawRequest.serializeBinary()
+    );
+    const response = PbManageNeuronResponse.deserializeBinary(rawResponse);
+
+    return this.responseConverters.toEmptyManageNeuronResponse(response);
   };
 
   public makeMotionProposal = async (

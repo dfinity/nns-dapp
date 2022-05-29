@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_help() {
+  cat <<-EOF
+	Checks adherence to conventions and eslint
+
+	Flags:
+	--help
+	  Prints this help text.
+	EOF
+}
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    print_help
+    exit 0
+    ;;
+  *)
+    {
+      printf "ERROR: %s\n" "Unsupported argument: '$arg'" "See --help for usage."
+      exit 1
+    } >&2
+    ;;
+  esac
+done
+
+: Configuration from env vars should be accessed ONLY via constants files
+ENVIRONMENT_CONSTANTS_DIR="src/lib/constants/"
+if git grep -w process.env src/ | grep -vE "^${ENVIRONMENT_CONSTANTS_DIR}"; then
+  {
+    echo "ERROR: process.env used outside the environment constants in '${ENVIRONMENT_CONSTANTS_DIR}'."
+    exit 1
+  } >&2
+fi
+
+: Eslint should pass
+eslint --max-warnings 0 './src/**/*.{js,ts,svelte}'

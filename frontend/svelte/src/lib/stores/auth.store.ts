@@ -1,17 +1,17 @@
+import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
-import type { Principal } from "@dfinity/principal";
 import { writable } from "svelte/store";
-import { serviceURL } from "../constants/utils.constants";
+import { identityServiceURL } from "../constants/identity.constants";
 
 export interface AuthStore {
-  principal: Principal | undefined | null;
+  identity: Identity | undefined | null;
 }
 
 /**
- * A store to handle authentication and the principal of the user.
+ * A store to handle authentication and the identity of the user.
  *
  * - sync: query auth-client to get the status of the authentication
- * a. if authenticated only, set principal in the global state
+ * a. if authenticated only, set identity in the global state
  * b. if not authenticated, set null in store
  *
  * the sync function is performed when the app boots and on any change in the local storage (see <Guard/>)
@@ -27,7 +27,7 @@ export interface AuthStore {
  */
 const initAuthStore = () => {
   const { subscribe, set, update } = writable<AuthStore>({
-    principal: undefined,
+    identity: undefined,
   });
 
   return {
@@ -38,28 +38,26 @@ const initAuthStore = () => {
       const isAuthenticated: boolean = await authClient.isAuthenticated();
 
       set({
-        principal: isAuthenticated
-          ? authClient.getIdentity().getPrincipal()
-          : null,
+        identity: isAuthenticated ? authClient.getIdentity() : null,
       });
     },
 
     signIn: () =>
-      new Promise<void>(async (resolve, reject) => {
-        const authClient: AuthClient = await AuthClient.create();
+      new Promise<void>((resolve, reject) => {
+        AuthClient.create().then((authClient: AuthClient) => {
+          authClient.login({
+            identityProvider: identityServiceURL,
+            maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
+            onSuccess: () => {
+              update((state: AuthStore) => ({
+                ...state,
+                identity: authClient.getIdentity(),
+              }));
 
-        await authClient.login({
-          identityProvider: serviceURL,
-          maxTimeToLive: BigInt(30 * 60 * 1_000_000_000), // 30 minutes
-          onSuccess: () => {
-            update((state: AuthStore) => ({
-              ...state,
-              principal: authClient.getIdentity().getPrincipal(),
-            }));
-
-            resolve();
-          },
-          onError: reject,
+              resolve();
+            },
+            onError: reject,
+          });
         });
       }),
 
@@ -70,7 +68,7 @@ const initAuthStore = () => {
 
       update((state: AuthStore) => ({
         ...state,
-        principal: null,
+        identity: null,
       }));
     },
   };

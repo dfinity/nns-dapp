@@ -142,6 +142,20 @@ export class LedgerIdentity extends SignIdentity {
     });
   }
 
+  /**
+   * @returns The verion of the `Internet Computer' app installed on the Ledger device.
+   */
+  public async getVersion(): Promise<Version> {
+    return this._executeWithApp(async (app: LedgerApp) => {
+      const res = await app.getVersion();
+      return {
+        major: res.major,
+        minor: res.minor,
+        patch: res.patch,
+      };
+    });
+  }
+
   public getPublicKey(): PublicKey {
     return this._publicKey;
   }
@@ -219,4 +233,10 @@ export class LedgerIdentity extends SignIdentity {
       transport.close();
     }
   }
+}
+
+interface Version {
+  major: number;
+  minor: number;
+  patch: number;
 }

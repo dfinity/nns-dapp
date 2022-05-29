@@ -1,69 +1,136 @@
 <script lang="ts">
-  import IconLockClock from "../../icons/IconLockClock.svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { NeuronState, ICP } from "@dfinity/nns";
+  import { i18n } from "../../stores/i18n";
+  import { secondsToDuration } from "../../utils/date.utils";
+  import {
+    getDissolvingTimeInSeconds,
+    getStateInfo,
+    hasJoinedCommunityFund,
+    isHotKeyControllable,
+    neuronStake,
+  } from "../../utils/neuron.utils";
+  import type { StateInfo } from "../../utils/neuron.utils";
+  import ICPComponent from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { authStore } from "../../stores/auth.store";
 
-  const goToDetail = () => {
-    // TODO L2-218: Go to the detail page of Neuron
-  };
+  export let neuron: NeuronInfo;
+  export let proposerNeuron: boolean = false;
+  // Setting default value avoids warning missing props during testing
+  export let role: undefined | "link" | "button" | "checkbox" = undefined;
+  export let ariaLabel: string | undefined = undefined;
+  export let selected: boolean = false;
+  export let disabled: boolean | undefined = undefined;
+
+  // TODO: https://dfinity.atlassian.net/browse/L2-366
+  let stateInfo: StateInfo;
+  $: stateInfo = getStateInfo(neuron.state);
+  let isCommunityFund: boolean;
+  $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let neuronICP: ICP;
+  $: neuronICP = ICP.fromE8s(neuronStake(neuron));
+  let isHotKeyControl: boolean;
+  $: isHotKeyControl = isHotKeyControllable({
+    neuron,
+    identity: $authStore.identity,
+  });
+  let dissolvingTime: bigint | undefined;
+  $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 </script>
 
-<!-- TODO L2-218 -->
-<Card role="link" on:click={goToDetail} ariaLabel="go to neuron details">
-  <div slot="start" class="lock">
-    <!-- TODO data from props: L2-218 -->
-    <h4>14225061177570733325</h4>
-    <h5 class="white">
-      Locked
-      <IconLockClock />
-    </h5>
+<Card {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
+  <div slot="start" class="lock" data-tid="neuron-card-title">
+    <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
+
+    {#if isCommunityFund}
+      <span class="neuron-control">{$i18n.neurons.community_fund}</span>
+    {/if}
+    {#if isHotKeyControl}
+      <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
+    {/if}
   </div>
 
   <div slot="end" class="currency">
-    <!-- TODO use ICP component and data from props: L2-218 -->
-    <h3>2.00</h3>
-    <span>ICP</span>
-    <h5>Stake</h5>
+    {#if proposerNeuron}
+      <ICPComponent
+        label={$i18n.neurons.voting_power}
+        icp={ICP.fromE8s(neuron.votingPower)}
+      />
+    {:else if neuronICP}
+      <ICPComponent icp={neuronICP} />
+    {/if}
   </div>
 
-  <!-- TODO helper and data from props: L2-218 -->
-  <p class="duration">3 Years, 64 Days Dissolve Delay</p>
+  <div class="info">
+    <p style={`color: var(${stateInfo.colorVar});`} class="status">
+      {$i18n.neurons[`status_${stateInfo.textKey}`]}
+      <svelte:component this={stateInfo.Icon} />
+    </p>
+  </div>
+
+  {#if dissolvingTime !== undefined}
+    <p class="duration">
+      {replacePlaceholders($i18n.neurons.remaining, {
+        $duration: secondsToDuration(dissolvingTime),
+      })}
+    </p>
+  {/if}
+
+  {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+    <p class="duration">
+      {secondsToDuration(neuron.dissolveDelaySeconds)}
+      - {$i18n.neurons.dissolve_delay_title}
+    </p>
+  {/if}
+
+  <slot />
 </Card>
 
 <style lang="scss">
-  h4,
-  h3 {
-    line-height: var(--line-height-standard);
+  @use "../../themes/mixins/display";
+  @use "../../themes/mixins/card";
+
+  :global(div.modal article > div) {
+    margin-bottom: 0;
   }
 
   h3 {
+    line-height: var(--line-height-standard);
     margin-bottom: 0;
   }
 
   .lock {
-    margin-bottom: 0;
-    h5 {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
+    @include card.stacked-title;
   }
 
-  .white {
-    color: var(--background-contrast);
+  .status {
+    display: inline-flex;
+
+    :global {
+      svg {
+        margin-left: var(--padding-0_5x);
+      }
+    }
   }
 
   .currency {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+  }
 
-    // TODO to be removed by: L2-218
-    & span {
-      font-size: var(--font-size-ultra-small);
+  .info {
+    @include display.space-between;
+    align-items: center;
+
+    p {
+      margin: 0;
     }
   }
 
   .duration {
-    font-size: var(--font-size-h5);
+    margin: 0;
   }
 </style>

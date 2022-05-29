@@ -1,5 +1,5 @@
-export const E8S_PER_ICP = 100000000;
-export const TRANSACTION_FEE_E8S = 10000;
+export const E8S_PER_ICP = 100_000_000;
+export const TRANSACTION_FEE_E8S = 10_000;
 
 /*
  * The format should be:

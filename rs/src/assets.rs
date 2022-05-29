@@ -156,9 +156,15 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         .map(|suffix| match suffix {
             "css" => Some("text/css"),
             "html" => Some("text/html"),
+            "xml" => Some("application/xml"),
             "js" => Some("application/javascript"),
             "json" => Some("application/json"),
             "svg" => Some("image/svg+xml"),
+            "png" => Some("image/png"),
+            "jpeg" => Some("image/jpeg"),
+            "jpg" => Some("image/jpeg"),
+            "ico" => Some("image/x-icon"),
+            "ttf" => Some("font/ttf"),
             _ => None,
         })
         .flatten()

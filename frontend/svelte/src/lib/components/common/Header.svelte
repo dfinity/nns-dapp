@@ -2,32 +2,26 @@
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import GetICPs from "../ic/GetICPs.svelte";
-
-  const deployEnv: string = process.env.DEPLOY_ENV;
+  import { IS_TESTNET } from "../../constants/environment.constants";
+  import { triggerDebugReport } from "../../utils/dev.utils";
 </script>
 
 <header>
-  <img
-    loading="lazy"
-    role="presentation"
-    alt=""
-    src="/assets/assets/gradient.jpg"
-  />
-
-  {#if deployEnv === "testnet"}
+  {#if IS_TESTNET}
     <GetICPs />
   {/if}
 
-  <h4>{$i18n.header.title}</h4>
+  <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
   <Logout />
 </header>
 
 <style lang="scss">
   @use "../../themes/mixins/img";
+  @use "../../themes/mixins/text";
 
   header {
     position: absolute;
-    top: 0;
+    top: var(--header-offset, 0);
     left: 0;
     right: 0;
 
@@ -39,10 +33,17 @@
 
     justify-content: center;
     align-items: center;
-  }
 
-  img {
-    @include img.background;
+    // Fallback
+    background: var(--brand-razzmatazz);
+    background: linear-gradient(
+      90deg,
+      var(--brand-sea-buckthorn) 0%,
+      var(--brand-flamingo) 25%,
+      var(--brand-razzmatazz) 50%,
+      var(--brand-meteorite) 75%,
+      var(--brand-picton-blue) 100%
+    );
   }
 
   h4 {
@@ -53,10 +54,7 @@
 
     grid-column-start: 2;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    @include text.clamp(2);
 
     text-align: center;
 

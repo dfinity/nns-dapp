@@ -1,6 +1,9 @@
 import 'package:core/core.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nns_dapp/ui/_components/responsive.dart';
 import 'package:nns_dapp/ui/proposals/governance_tab_widget.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:nns_dapp/data/env.dart' as env;
 import '../../nns_dapp.dart';
 
 const DEPLOY_ENV = String.fromEnvironment('DEPLOY_ENV');
@@ -32,14 +35,29 @@ class _HomePageState extends State<HomePage>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 0) {
           pageName = accountsTabPage;
+          if (!env.showAccountsRoute()) {
+              html.window.location.replace("/v2/#/accounts");
+          }
         } else if (_tabController.index == 1) {
           pageName = neuronTabsPage;
+          if (!env.showNeuronsRoute()) {
+              html.window.location.replace("/v2/#/neurons");
+          }
         } else if (_tabController.index == 2) {
           pageName = proposalsTabPage;
+          if (!env.showProposalsRoute()) {
+              html.window.location.replace("/v2/#/proposals");
+          }
         } else if (_tabController.index == 3) {
           pageName = canistersTabPage;
+          if (!env.showCanistersRoute()) {
+              html.window.location.replace("/v2/#/canisters");
+          }
         }
         context.nav.push(pageName);
+        setState(() {
+          timeDilation = 0.6;
+        });
       }
     });
   }
@@ -152,30 +170,33 @@ class _HomePageState extends State<HomePage>
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10.0, horizontal: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Color(0xff282A2D),
-                          borderRadius: BorderRadius.circular(16)),
-                      child: TabBar(
-                        controller: _tabController,
-                        indicator: BoxDecoration(
-                            color: Color(0xff0081FF),
-                            borderRadius: BorderRadius.circular(8)),
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        labelPadding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        unselectedLabelColor: AppColors.gray400,
-                        labelColor: AppColors.white,
-                        labelStyle: TextStyle(
-                            fontFamily: Fonts.circularMedium,
-                            fontSize: 20,
-                            letterSpacing: 0),
-                        tabs: [
-                          TabDesign(title: "ICP"),
-                          TabDesign(title: "NEURONS"),
-                          TabDesign(title: "VOTING"),
-                          TabDesign(title: "CANISTERS"),
-                        ],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        decoration: BoxDecoration(color: Color(0xff282A2D)),
+                        child: TabBar(
+                          onTap: (value) {
+                            timeDilation = 0.05;
+                          },
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: _tabController,
+                          indicator: BoxDecoration(color: Color(0xff0081FF)),
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                          unselectedLabelColor: AppColors.gray400,
+                          labelColor: AppColors.white,
+                          labelStyle: TextStyle(
+                              fontFamily: Fonts.circularMedium,
+                              fontSize: 20,
+                              letterSpacing: 0),
+                          tabs: [
+                            TabDesign(title: "ICP"),
+                            TabDesign(title: "NEURONS"),
+                            TabDesign(title: "VOTING"),
+                            TabDesign(title: "CANISTERS"),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -187,6 +208,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: SizedBox.expand(
         child: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: [
             AccountsTabWidget(),

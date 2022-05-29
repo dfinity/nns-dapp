@@ -1,0 +1,11 @@
+@mixin stacked-title {
+  display: grid;
+  flex-direction: column;
+
+  margin: 0 0 var(--padding);
+  max-width: 100%;
+
+  &:global(~ div) {
+    margin: 0 0 var(--padding);
+  }
+}

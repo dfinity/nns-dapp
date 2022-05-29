@@ -6,10 +6,8 @@ import '../../../nns_dapp.dart';
 class NeuronRow extends StatelessWidget {
   final Neuron neuron;
   final bool showsWarning;
-  final Function? onTap;
 
-  const NeuronRow(
-      {Key? key, required this.neuron, this.onTap, this.showsWarning = false})
+  const NeuronRow({Key? key, required this.neuron, this.showsWarning = false})
       : super(key: key);
 
   @override
@@ -89,15 +87,20 @@ class NeuronRow extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                  "${neuron.dissolveDelay.yearsDayHourMinuteSecondFormatted()}",
-                  style: context.textTheme.subtitle2),
-              Text(" Dissolve Delay", style: context.textTheme.subtitle2)
+              Expanded(
+                child: Text(
+                    "${neuron.dissolveDelay.yearsDayHourMinuteSecondFormatted()}",
+                    style: context.textTheme.subtitle2),
+              ),
+              Expanded(
+                  flex: 2,
+                  child: Text(" Dissolve Delay",
+                      style: context.textTheme.subtitle2))
             ],
           ),
           SizedBox(
             height: 5,
-          )
+          ),
         ]
       ],
     );

@@ -1,21 +1,21 @@
 {
-  "name": "Network Nervous System App",
-  "short_name": "NNS App",
+  "name": "Network Nervous System frontend dapp",
+  "short_name": "NNS",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0175C2",
-  "theme_color": "#0175C2",
-  "description": "Asset Management for the Network Nervous System",
+  "theme_color": "#383c3c",
+  "background_color": "#383c3c",
+  "description": "Asset Management and Voting for the Network Nervous System",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icons/Icon-192.png",
-      "sizes": "192x140",
+      "src": "https://nns.raw.ic0.app/assets/assets/favicons/icon-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/Icon-512.png",
+      "src": "https://nns.raw.ic0.app/assets/assets/favicons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

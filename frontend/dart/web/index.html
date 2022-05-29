@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
+  <head>
+    <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -11,49 +11,112 @@
     Fore more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
-  <base href="/">
+    <base href="/" />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Network Nervous System">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Network Nervous System">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <title>Network Nervous System frontend dapp</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      name="description"
+    />
+    <meta content="Network Nervous System frontend dapp" property="og:title" />
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      property="og:description"
+    />
+    <meta content="website" property="og:type" />
+    <meta content="https://nns.ic0.app/" property="og:url" />
+    <meta
+      content="https://nns.raw.ic0.app/assets/assets/social-image.png"
+      property="og:image"
+    />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="Network Nervous System frontend dapp" name="twitter:title" />
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      name="twitter:description"
+    />
+    <meta
+      content="https://nns.raw.ic0.app/assets/assets/social-image.png"
+      name="twitter:image"
+    />
+    <meta content="@dfinity" name="twitter:creator" />
 
-  <title>Network Nervous System</title>
-  <link rel="manifest" href="manifest.json">
+    <link href="https://nns.ic0.app/" rel="canonical" />
 
-  <style>
-    /* Very early styling before assets have loaded */
-    body {
-      background-color: #333;
-      color: #eee;
-    }
-    .initial-load {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-family: Arial;
-      font-size: 14px;
-    }
-  </style>
-  <script src="logout.js" type="application/javascript"></script>
- </head>
- <body>
-  <div class="initial-load"><span>Getting the NNS frontend dapp ready for you…</span></div>
-  <script src="/assets/assets/ic_agent.js" type="application/javascript"></script>
-  <script src="main.dart.js" type="application/javascript"></script>
-</body>
+    <link rel="manifest" href="/manifest.json" crossorigin="anonymous" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/icon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/icon-16x16.png"
+    />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#383c3c" />
+    <meta name="apple-mobile-web-app-title" content="Network Nervous System" />
+    <link
+      rel="apple-touch-icon"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="mask-icon"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/safari-pinned-tab.svg"
+      color="#e82a7b"
+    />
+
+    <!-- MS -->
+    <meta name="msapplication-TileColor" content="#383c3c" />
+    <meta
+      name="msapplication-config"
+      content="https://nns.raw.ic0.app/assets/assets/favicons/browserconfig.xml"
+    />
+
+    <meta name="theme-color" content="#383c3c" />
+
+    <style>
+      /* Very early styling before assets have loaded */
+      body {
+        background-color: #333;
+        color: #eee;
+      }
+      .initial-load {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: Arial;
+        font-size: 14px;
+      }
+    </style>
+    <script src="logout.js" type="application/javascript"></script>
+  </head>
+  <body>
+    <div class="initial-load">
+      <span>Getting the NNS frontend dapp ready for you…</span>
+    </div>
+    <script
+      src="/assets/assets/ic_agent.js"
+      type="application/javascript"
+    ></script>
+    <script src="main.dart.js" type="application/javascript"></script>
+  </body>
 </html>

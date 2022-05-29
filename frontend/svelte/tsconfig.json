@@ -3,7 +3,9 @@
   "compilerOptions": {
     "module": "es2020",
     "lib": ["es2020", "webworker", "DOM", "DOM.Iterable"],
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strictNullChecks": true
   },
   "include": ["src/**/*"],
   "exclude": [

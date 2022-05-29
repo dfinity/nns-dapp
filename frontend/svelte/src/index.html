@@ -4,18 +4,87 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <title>Network Nervous System</title>
+    <title>Network Nervous System frontend dapp</title>
 
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      name="description"
+    />
+    <meta content="Network Nervous System frontend dapp" property="og:title" />
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      property="og:description"
+    />
+    <meta content="website" property="og:type" />
+    <meta content="https://nns.ic0.app/" property="og:url" />
+    <meta
+      content="https://nns.raw.ic0.app/assets/assets/social-image.png"
+      property="og:image"
+    />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="Network Nervous System frontend dapp" name="twitter:title" />
+    <meta
+      content="Asset Management and Voting for the Network Nervous System"
+      name="twitter:description"
+    />
+    <meta
+      content="https://nns.raw.ic0.app/assets/assets/social-image.png"
+      name="twitter:image"
+    />
+    <meta content="@dfinity" name="twitter:creator" />
+
+    <link href="https://nns.ic0.app/" rel="canonical" />
+
+    <link rel="manifest" href="/manifest.json" crossorigin="anonymous" />
+
+    <!-- Favicon -->
     <link
       rel="icon"
-      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAADb0lEQVRYw+2Vz2sTQRTH8yfkH2gck2yyiVBiBdFGoSJIvWj9hU20uj2IooeIv9ps1UzbFLFQU1QQq7gFwWoSuy16EA9WPHhS4kmwhw6Jooi2a1Jpta37fJMfYtbUrGfz4DFZwszn+33zZsZiqUUtalELQxCVWcUEa/LE04PeZEbho5h8d/Bf1tBaiDW7XwhlWx1KLuhQsgFnTAs4WqpO9CTfhryJjOZJZKBCMjNCZoPOSG6foH0JOiHLM+DQ+Tjb7tJzx0T2Nbyq8hreOLotwuqHXsMyIoBXhSjM+odrSSQISmVL4GKiGMi1u2D2mAhfT6+CuUg9zF1siJVNFhNvI+vlCWhuvgk73X2wx92nHRB6BzfSZxJuwXDFaqiM/IK3EoQLrAQsOM9/U61NkHJHRQXhbI7Ww3z/avh2ZQ18V9ZGCnBcaHNgBHa4ojrC9d1idLiF0DKH4ggjCJ2oJKLgXGC5oFPnWYA7Y8YKzVMfmev3qd+uIvzWWlgYWQegriOWrZuuDXPXuzD3uvvY3/ZXTKRpuYh0KiM1sN9LrrU6pGWbM+azovPUwt31sDTm1xfUxkELwhkX0OqKQrs7ur1akxlFbLvxBN4d9AFvulzAUbVJF+KN0qLqh8UxP/wY3zDFBUDAHYVDQq9+hFBi5pgZRZwaGEL3QsjM3Hks+9L4hryAxbFG3RJE54cxTwg9eodJAZpNjpw48/iP02FmLpbdx+FLYwURliOuXnbS2aNTZ7d+wUElM/AZW1iftoWhre952Z3hxdNkQoDEnRfSn7KccdIYwmHAQeG6PcIUwwkwwqfrOvNwnlOe7pQXG9FsJUBtsi6N+1kRDiP3zykWKlLC4UP2CNyxn4cHK8+mJgxboZHj1um6sFoCz6yQ+cg+kA7iw6vbKMJ4T5T2njvOlx974PLoJeDHO//nTXt36K79vP5w5Tl4ivmCnIXJOnn0o60THYdjCNNK8KKAlIbw0uLLiABPPKN2JG7TV2qbMq1u0dJqCyRHceuSj3C70rSsPA/sXfQpgl+SLniDDt8XYDov+UxxzAuo61R4RSq/JenB5a7w8l4xwEvxgsjS5AqZvbfJBXjJMf6esclTn0m46osmxhle3xlWCSzibcpf2qpH5RPpaNKIHEI45cm///VZ5yDxXpry5K+sKXAtalGL/zJ+Aobf1VhGoFk3AAAAAElFTkSuQmCC"
+      type="image/png"
+      sizes="32x32"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/icon-32x32.png"
     />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/icon-16x16.png"
+    />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#383c3c" />
+    <meta name="apple-mobile-web-app-title" content="Network Nervous System" />
+    <link
+      rel="apple-touch-icon"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="mask-icon"
+      href="https://nns.raw.ic0.app/assets/assets/favicons/safari-pinned-tab.svg"
+      color="#e82a7b"
+    />
+
+    <!-- MS -->
+    <meta name="msapplication-TileColor" content="#383c3c" />
+    <meta
+      name="msapplication-config"
+      content="https://nns.raw.ic0.app/assets/assets/favicons/browserconfig.xml"
+    />
+
+    <meta name="theme-color" content="#383c3c" />
 
     <link rel="stylesheet" href="./build/bundle.css" />
 
-    <script type="module" src="./build/bundle.js"></script>
+    <script
+      type="module"
+      src="./build/main.js"
+      nonce="main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25"
+    ></script>
 
     <!-- BASE_HREF -->
+    <!-- CONTENT_SECURITY_POLICY -->
   </head>
 
   <body></body>

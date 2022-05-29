@@ -306,6 +306,7 @@ export interface SetDefaultFollowees {
 }
 export interface SetDissolveTimestamp { 'dissolve_timestamp_seconds' : bigint }
 export interface Spawn {
+  'percentage_to_spawn' : [] | [number],
   'new_controller' : [] | [Principal],
   'nonce' : [] | [bigint],
 }

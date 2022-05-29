@@ -7,6 +7,7 @@ if test -n "${1:-}"; then
   DOWNLOAD_PATH="$1"
   DOWNLOAD_FILENAME="$(basename "$DOWNLOAD_PATH")"
 else
+  read -rn 1 -p "Remember to use the VPN to deploy to testnet"
   # Prompts the user to download the wasm file.  Note:  This cannot be done with a simple curl.
   DOWNLOADS_DIR="$HOME/Downloads"
   echo
@@ -18,7 +19,7 @@ else
 
   # Gets the most recent 'Backend wasm module' download:
   # shellcheck disable=SC2010 # we really do want this, not globbing.
-  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '.*(T|t)estnet backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
+  DOWNLOAD_FILENAME="$(ls -t "$DOWNLOADS_DIR" | grep -E '.*backend wasm module( [(][0-9]+[)])?.zip$' | head -n1)"
   DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
   echo "Sourcing WASM from: $DOWNLOAD_PATH"
 fi
@@ -33,6 +34,6 @@ unzip "$DOWNLOAD_FILENAME"
 popd
 mv "$UNZIP_TMPDIR/$WASM_FILENAME" "$WASM_PATH"
 rm -fr "${UNZIP_TMPDIR}"
-DEPLOY_ENV=nobuild dfx deploy --no-wallet --network testnet
+DEPLOY_ENV=nobuild dfx deploy --network testnet
 
 echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"

@@ -1,5 +1,80 @@
 # Changelog
 
+## Proposal 60694
+- Update mechanics for creating canisters
+- Prepare to release the neuron and accounts tabs in svelte
+
+## Proposal 59149
+* Remove slider option for spawning maturity on wallets that don't support it.
+* Confirmation screen in Merge Maturity
+
+## Proposal 58993
+* Render 32 byte hashes in proposals as strings rather than byte arrays
+* New JSON payload renderer
+* Refactor the configuration to suport more testing scenarios
+* Prepare to render the Neurons tab using svelte
+* Fix CSP domains
+
+## Proposal 58151
+- Usability and accessibility improvements
+  - Add a question that reminds title and topic of the proposal before vote on related detail page
+  - Add titles to my votes icons (a11y improvement)
+  - Display topic and proposal ID to the proposal detail page
+  - Update colours
+  - Better loading skeletons
+  - Add button titles
+- Prevent duplicate hardware wallets from being attached to an account
+- Preparations for svelte neurons tab
+- Test with NNS canisters running in dfx
+
+## Proposal 56265
+* UI fixes:
+  * Show the ID of followed neurons again
+  * Proposal filtering
+* UI improvements
+* More tests
+
+## Proposal 55738
+* Fix rendering of large payloads.
+* Fix double-voting error message.
+* Rate limit API calls to reduce the risk of errors for users with large numbers of neurons.
+* Add log messages to help diagnose issues experienced by users.
+* Update dfx to 0.9.2
+* A filter that excludes all proposals was previously ignored, whereas now such a filter will show no results.
+* Preparation for switching more of the UI to svelte.
+* UI improvements.
+* More tests.
+
+## Proposal 54295
+- Display the proposals tab using svelte
+
+## Proposal 53536
+- Merge neuron functionality (using quill, not the GUI).
+- Updated logo
+- UI improvements
+- More tests
+
+## Proposal 47824
+* Update changelog for the last release
+* Remove upgrade code needed for the last release only
+* Show new `node_provider_id` field in `UpdateNodeOperatorConfigPayload` proposals.
+* Svelte UI development
+* Fix tests
+* Update js library dependencies
+
+## Proposal 47476
+* Update dependencies and Rust version.
+* Enable merge maturity for hardware wallets.
+* End to end test for login.
+* Update icon when installed as an Android app.
+* More svelte front end changes.
+
+## Proposal 45369
+* Upgrade agent-js to 0.10.3 (to resolve some issues with proposal rendering)
+* Add "Powered by IC" badge to the login page
+* Update the "Follow all" description as now this setting causes the neuron to follow for all proposals except governance proposals
+* More Svelte changes (WIP)
+
 ## Proposal 44009
 * Added entries to the whitelist of proposal types where the payload is small and useful enough to display.
 * Small improvements to the UI.

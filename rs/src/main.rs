@@ -25,6 +25,8 @@ mod periodic_tasks_runner;
 mod proposals;
 mod state;
 
+type Cycles = u128;
+
 #[export_name = "canister_init"]
 fn main() {
     assets::init_assets();

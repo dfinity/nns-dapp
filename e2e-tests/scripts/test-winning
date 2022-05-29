@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[[ "${1:-}" != "--help" ]] || {
+  cat <<-EOF
+
+	Runs e2e tests against one of the nns-XXX.winning.gold endpoints
+
+	Example usages:
+	  # Run all tests against nns-prod:
+	  ./test-winning
+	  # Run just the redirect tests against nns-svelte:
+	  REDIRECT_TO_LEGACY=svelte ./test-winning --spec /specs/redirect-to-legacy.e2e.ts
+	EOF
+  exit 0
+}
+
+REDIRECT_TO_LEGACY="${REDIRECT_TO_LEGACY:-svelte}"
+export REDIRECT_TO_LEGACY
+NNS_DAPP_URL="$(curl -v "https://nns-${REDIRECT_TO_LEGACY}.winning.gold" 2>&1 | awk '/location:/{print $3}' | tr -d '[:space:]')"
+echo "NNS_DAPP_URL=$NNS_DAPP_URL"
+: "Sanity checking URL..."
+unexpected_chars="$(printf "%s" "$NNS_DAPP_URL" | tr -d 'a-zA-Z0-9/:._' | tr -d -- -)"
+test -z "${unexpected_chars:-}" || {
+  printf "Refusing to use URL containing chars: '%q'\n" "${unexpected_chars}"
+  exit 1
+}
+[[ "$NNS_DAPP_URL" = https://*.nnsdapp.dfinity.network* ]] || {
+  echo "Refusing to use URL from unexpected source."
+  exit 1
+}
+export NNS_DAPP_URL
+
+npm run wdio -- "${@}"

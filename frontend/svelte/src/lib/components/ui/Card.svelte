@@ -1,17 +1,39 @@
 <script lang="ts">
-  export let role: "link" | "button" | undefined = undefined;
+  export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
+  export let selected: boolean = false;
+  export let disabled: boolean | undefined = undefined;
+  export let testId: string = "card";
 
   let clickable: boolean = false;
 
-  $: clickable = ["button", "link"].includes(role);
+  $: clickable =
+    role !== undefined ? ["button", "link", "checkbox"].includes(role) : false;
+
+  let showHeadline: boolean;
+  $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
+
+  let ariaChecked: boolean | undefined = undefined;
+  $: ariaChecked = role === "checkbox" ? selected : undefined;
 </script>
 
-<article {role} on:click class:clickable aria-label={ariaLabel}>
-  <div>
-    <slot name="start" />
-    <slot name="end" />
-  </div>
+<article
+  data-tid={testId}
+  {role}
+  on:click
+  class:clickable
+  class:selected
+  class:disabled
+  aria-disabled={disabled}
+  aria-checked={ariaChecked}
+  aria-label={ariaLabel}
+>
+  {#if showHeadline}
+    <div>
+      <slot name="start" />
+      <slot name="end" />
+    </div>
+  {/if}
 
   <slot />
 </article>
@@ -19,6 +41,7 @@
 <style lang="scss">
   @use "../../themes/mixins/interaction";
   @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/display";
 
   article {
     text-decoration: none;
@@ -26,15 +49,28 @@
     background: var(--background);
     color: var(--gray-50);
 
-    padding: calc(2.5 * var(--padding));
-    margin: calc(2 * var(--padding)) 0;
+    padding: var(--padding-2_5x);
+    margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+
+    border: 2px solid transparent;
+    &.selected {
+      border: 2px solid var(--blue-500);
+    }
+
+    &.disabled {
+      background: var(--background-hover);
+    }
   }
 
   .clickable {
     @include interaction.tappable;
+
+    &.disabled {
+      @include interaction.disabled;
+    }
 
     &:focus,
     &:hover {
@@ -43,15 +79,15 @@
   }
 
   div {
-    display: block;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
-    margin: 0 0 var(--padding);
+    @include media.min-width(small) {
+      @include display.space-between;
+      flex-direction: row;
 
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: flex-start;
+      margin: 0 0 var(--padding);
     }
   }
 </style>

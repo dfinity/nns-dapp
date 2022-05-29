@@ -30,8 +30,8 @@
   };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ principal }: AuthStore) => {
-      signedIn = isSignedIn(principal);
+    ({ identity }: AuthStore) => {
+      signedIn = isSignedIn(identity);
 
       redirectLogin();
     }

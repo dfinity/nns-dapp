@@ -7,7 +7,6 @@
   import { getICPs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import { errorToString } from "../../utils/error.utils";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -16,9 +15,8 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "Invalid ICPs input.",
-        level: "error",
       });
       return;
     }
@@ -32,12 +30,10 @@
       await getICPs(icps);
 
       reset();
-    } catch (err: any) {
-      console.error(err);
-      toastsStore.show({
+    } catch (err: unknown) {
+      toastsStore.error({
         labelKey: "ICPs could not be transferred.",
-        level: "error",
-        detail: errorToString(err),
+        err,
       });
     }
 
@@ -56,22 +52,28 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<button on:click={() => (visible = true)} class="open text">Get ICPs</button>
+<button
+  data-tid="get-icp-button"
+  on:click={() => (visible = true)}
+  class="open text">Get ICPs</button
+>
 
 <Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
-  <form on:submit|preventDefault={onSubmit}>
+  <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
     <span class="how-much">How much?</span>
 
     <Input
       placeholderLabelKey="core.icp"
       name="icp"
+      inputType="icp"
       bind:value={inputValue}
       disabled={transferring}
     />
 
     <button
+      data-tid="get-icp-submit"
       type="submit"
       class="primary"
       disabled={invalidForm || transferring}
@@ -91,17 +93,17 @@
   }
 
   .how-much {
-    margin-bottom: calc(var(--padding) / 2);
+    margin-bottom: var(--padding-0_5x);
   }
 
   form {
     display: flex;
     flex-direction: column;
 
-    padding: calc(2 * var(--padding));
+    padding: var(--padding-2x);
 
     button {
-      margin-top: calc(var(--padding) / 2);
+      margin-top: var(--padding-0_5x);
     }
   }
 </style>
