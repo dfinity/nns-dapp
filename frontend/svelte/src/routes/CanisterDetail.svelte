@@ -36,6 +36,7 @@
     if (!SHOW_CANISTERS_ROUTE) {
       window.location.replace("/#/canisters");
     }
+    // TODO L2-628
     await listCanisters({ clearBeforeQuery: false });
   });
 
