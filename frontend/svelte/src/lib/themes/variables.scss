@@ -39,7 +39,7 @@
 
   // Json colors
   --json-bracket-color: var(--gray-400);
-  --json-value-color: var(--gray-100);
+  --json-value-color: var(--gray-200);
   --json-string-color: var(--brand-sea-buckthorn);
   --json-number-color: var(--brand-picton-blue);
   --json-null-color: var(--gray-400);
@@ -133,13 +133,6 @@
   --gray-200-contrast-rgb: 0, 0, 0;
   --gray-200-shade: #99a1a1;
   --gray-200-tint: #b6bebe;
-
-  --gray-100: #cdd7d7;
-  --gray-100-rgb: 205, 215, 215;
-  --gray-100-contrast: #000000;
-  --gray-100-contrast-rgb: 0, 0, 0;
-  --gray-100-shade: #b4bdbd;
-  --gray-100-tint: #d2dbdb;
 
   --gray-50: #e4f0f0;
   --gray-50-rgb: 228, 240, 240;

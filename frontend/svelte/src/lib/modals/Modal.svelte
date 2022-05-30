@@ -176,7 +176,7 @@
   .toolbar {
     padding: var(--padding) var(--padding-2x);
 
-    background: var(--gray-100);
+    background: var(--gray-50);
     color: var(--gray-50-background);
 
     display: grid;
