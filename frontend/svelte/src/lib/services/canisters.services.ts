@@ -2,13 +2,11 @@ import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
-  queryCanisterDetails,
+  queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
 } from "../api/canisters.api";
-import type {
-  CanisterDetails,
-  CanisterDetails as CanisterInfo,
-} from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
@@ -78,7 +76,7 @@ export const getCanisterDetails = async (
 ): Promise<CanisterDetails | undefined> => {
   const identity = await getIdentity();
   try {
-    return await queryCanisterDetails({
+    return await queryCanisterDetailsApi({
       canisterId,
       identity,
     });

@@ -122,6 +122,7 @@ describe("canisters-services", () => {
       const call = () => getCanisterDetails(mockCanisterDetails.id);
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      resetIdentity();
     });
   });
 
