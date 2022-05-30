@@ -46,14 +46,18 @@ describe("SelectCyclesCanister", () => {
     expect(tCyclesInputElement).not.toBeNull();
 
     const value = 2;
+    // Inputs are synchronized when they are focused
+    icpInputElement && fireEvent.focus(icpInputElement);
     icpInputElement &&
       (await fireEvent.input(icpInputElement, {
         target: { value },
       }));
-    icpInputElement && (await fireEvent.blur(icpInputElement));
 
-    tCyclesInputElement &&
-      expect(tCyclesInputElement.value).toBe(String(value));
+    await waitFor(
+      () =>
+        tCyclesInputElement &&
+        expect(tCyclesInputElement.value).toBe(String(value))
+    );
   });
 
   it("synchronizes tCycles input to icp input", async () => {
@@ -73,13 +77,16 @@ describe("SelectCyclesCanister", () => {
     expect(tCyclesInputElement).not.toBeNull();
 
     const value = 2;
+    // Inputs are synchronized when they are focused
+    tCyclesInputElement && fireEvent.focus(tCyclesInputElement);
     tCyclesInputElement &&
       (await fireEvent.input(tCyclesInputElement, {
         target: { value },
       }));
-    tCyclesInputElement && (await fireEvent.blur(tCyclesInputElement));
 
-    icpInputElement && expect(icpInputElement.value).toBe(String(value));
+    await waitFor(
+      () => icpInputElement && expect(icpInputElement.value).toBe(String(value))
+    );
   });
 
   it("dispatches nnsSelectAmount event on click", async () => {
@@ -95,7 +102,6 @@ describe("SelectCyclesCanister", () => {
       (await fireEvent.input(icpInputElement, {
         target: { value: 2 },
       }));
-    icpInputElement && (await fireEvent.blur(icpInputElement));
 
     const fn = jest.fn();
     component.$on("nnsSelectAmount", fn);

@@ -4,7 +4,7 @@ import {
   ONE_TRILLION,
   TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
-import { InvalidAmountError } from "../types/errors";
+import { InvalidAmountError } from "../types/neurons.errors";
 
 export const formatICP = (value: bigint): string =>
   new Intl.NumberFormat("fr-FR", {
@@ -54,6 +54,4 @@ export const convertTCyclesToE8s = ({
 }: {
   tCycles: number;
   ratio: bigint;
-}): bigint => {
-  return BigInt(tCycles * ONE_TRILLION) / ratio;
-};
+}): bigint => BigInt(tCycles * ONE_TRILLION) / ratio;

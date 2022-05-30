@@ -13,7 +13,10 @@
 
   export let amount: number | undefined = undefined;
 
+  let isChanging: "icp" | "tCycles" | undefined = undefined;
   let icpToCyclesRatio: bigint | undefined;
+  let amountCycles: number | undefined;
+
   onMount(async () => {
     icpToCyclesRatio = await getIcpToCyclesExchangeRate();
     // Update cycles input if the component is mounted with some `amount`
@@ -25,31 +28,35 @@
     }
   });
 
-  const updateCycles = () => {
-    // Reset cycles
-    if (amount === undefined) {
-      amountCycles = undefined;
-      return;
-    }
+  $: {
     if (icpToCyclesRatio !== undefined) {
-      amountCycles = convertIcpToTCycles({
-        icpNumber: amount,
-        ratio: icpToCyclesRatio,
-      });
-    }
-  };
-  let amountCycles: number | undefined;
-  const updateIcp = () => {
-    if (icpToCyclesRatio !== undefined && amountCycles !== undefined) {
-      amount =
-        Number(
-          convertTCyclesToE8s({
-            tCycles: amountCycles,
+      if (isChanging === "icp") {
+        // Update cycles input
+        if (amount === undefined) {
+          amountCycles = undefined;
+        } else {
+          amountCycles = convertIcpToTCycles({
+            icpNumber: amount,
             ratio: icpToCyclesRatio,
-          })
-        ) / E8S_PER_ICP;
+          });
+        }
+      }
+      if (isChanging === "tCycles") {
+        // Update icp input
+        if (amountCycles === undefined) {
+          amount = undefined;
+        } else {
+          amount =
+            Number(
+              convertTCyclesToE8s({
+                tCycles: amountCycles,
+                ratio: icpToCyclesRatio,
+              })
+            ) / E8S_PER_ICP;
+        }
+      }
     }
-  };
+  }
 
   const dispatcher = createEventDispatcher();
   const selectAccount = () => {
@@ -69,7 +76,8 @@
         name="icp-amount"
         theme="dark"
         bind:value={amount}
-        on:blur={updateCycles}
+        on:focus={() => (isChanging = "icp")}
+        on:blur={() => (isChanging = undefined)}
         disabled={icpToCyclesRatio === undefined}
       />
       <Input
@@ -78,7 +86,8 @@
         name="t-cycles-amount"
         theme="dark"
         bind:value={amountCycles}
-        on:blur={updateIcp}
+        on:focus={() => (isChanging = "tCycles")}
+        on:blur={() => (isChanging = undefined)}
         disabled={icpToCyclesRatio === undefined}
       />
     </div>

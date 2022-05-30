@@ -1,6 +1,6 @@
 import { ICP } from "@dfinity/nns";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
-import { InvalidAmountError } from "../../../lib/types/errors";
+import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
   convertIcpToTCycles,
   convertNumberToICP,
