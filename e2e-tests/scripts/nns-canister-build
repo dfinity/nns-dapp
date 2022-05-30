@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-DOWNLOAD_DIR="$(realpath ../../target/ic)"
+DOWNLOAD_DIR="$(realpath ../..)/target/ic"
 # Note: This is the default commit of the IC repo to use; it can be overridden on the command line.
 #       The commit should come from the master branch and should be updated regularly.
 #       The default commit is used in CI, so should be a known, tested value.

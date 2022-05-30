@@ -3,7 +3,7 @@
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../stores/add-account.store";
+  } from "../../types/add-account.context";
   import { getContext } from "svelte";
   import InputWithError from "../ui/InputWithError.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";

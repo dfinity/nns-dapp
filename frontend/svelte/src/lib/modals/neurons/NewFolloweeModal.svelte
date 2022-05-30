@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
   import Spinner from "../../components/ui/Spinner.svelte";
@@ -8,7 +8,7 @@
   import { addFollowee } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";
   import { authStore } from "../../stores/auth.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
   import {
@@ -39,8 +39,7 @@
       : isControllableByUser || isControllableByHotkey;
 
   let followeeAddress: string = "";
-  let loadingAddress: boolean = false;
-  let loading: boolean = false;
+
   let topicFollowees: NeuronId[];
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
 
@@ -54,12 +53,10 @@
     knownNeuronId: NeuronId;
   }): boolean => followees.find((id) => id === knownNeuronId) !== undefined;
 
-  // We can't edit two followees at the same time.
-  // Canister edits followees by sending the new array of followees.
-  const updateLoading = ({ detail }: CustomEvent<{ loading: boolean }>) => {
-    loading = detail.loading;
+  const dispatcher = createEventDispatcher();
+  const close = () => {
+    dispatcher("nnsClose");
   };
-
   const addFolloweeByAddress = async () => {
     let followee: bigint;
     if (followeeAddress.length === 0) {
@@ -74,9 +71,7 @@
       return;
     }
 
-    loading = true;
-    loadingAddress = true;
-    startBusy("add-followee");
+    startBusy({ initiator: "add-followee" });
 
     await addFollowee({
       neuronId: neuron.neuronId,
@@ -84,15 +79,14 @@
       followee,
     });
 
-    loading = false;
-    loadingAddress = false;
     stopBusy("add-followee");
+    close();
 
     followeeAddress = "";
   };
 </script>
 
-<Modal theme="dark" size="medium" on:nnsClose>
+<Modal theme="dark" size="big" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
@@ -106,17 +100,11 @@
           theme="dark"
         />
         <button
-          class={`primary small ${loadingAddress ? "icon-only" : ""}`}
+          class="primary small"
           type="submit"
-          disabled={followeeAddress.length === 0 ||
-            loading ||
-            !isUserAuthorized}
+          disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
         >
-          {#if loadingAddress}
-            <Spinner inline size="small" />
-          {:else}
-            {$i18n.new_followee.follow_neuron}
-          {/if}
+          {$i18n.new_followee.follow_neuron}
         </button>
       </form>
     </article>
@@ -129,8 +117,7 @@
           {#each $sortedknownNeuronsStore as knownNeuron}
             <li data-tid="known-neuron-item">
               <KnownNeuronFollowItem
-                on:nnsLoading={updateLoading}
-                disabled={loading || !isUserAuthorized}
+                on:nnsUpdated={close}
                 {knownNeuron}
                 neuronId={neuron.neuronId}
                 {topic}

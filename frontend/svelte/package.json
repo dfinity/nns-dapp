@@ -8,15 +8,15 @@
     "import-assets-for-dev": "cp -R ../dart/assets public/assets && cp ../dart/web/manifest.json public/ && cp ../dart/web/favicon.ico public/",
     "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && npm run import-assets-for-dev",
     "build": "rm -fr public/assets/assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
-    "dev": "npm run import-assets && npm run i18n && CANISTER_ID=q4eej-kyaaa-aaaaa-aaaha-cai DEPLOY_ENV=nnsdapp_both npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
+    "dev": "npm run import-assets && npm run i18n && CANISTER_ID=qsgjb-riaaa-aaaaa-aaaga-cai DEPLOY_ENV=nnsdapp_both npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "build:config": "../../config.sh",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
     "lint": "./scripts/lint",
     "format": "prettier --write --plugin-search-dir=. .",
-    "test": "jest",
-    "test:watch": "npm run test -- --watchAll",
-    "update:nns": "npm i @dfinity/nns@nightly"
+    "test": "TZ=UTC jest",
+    "test:watch": "TZ=UTC npm run test -- --watchAll",
+    "update:nns": "npm update @dfinity/nns"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
@@ -31,6 +31,7 @@
     "@tsconfig/svelte": "^3.0.0",
     "@types/jest": "^27.5.0",
     "@types/marked": "^4.0.3",
+    "@types/wicg-file-system-access": "^2020.9.5",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "autoprefixer": "^10.4.7",

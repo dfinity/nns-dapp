@@ -15,13 +15,15 @@
     "amount": "Amount",
     "max": "Max",
     "principal": "Principal",
-    "toggle": "toggle"
+    "toggle": "toggle",
+    "save_log_file": "Save the app state to the file"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "proposal_not_found": "An error occurred while loading the proposal.",
-    "neuron_not_found": "An error occurred while loading the neuron.",
+    "neuron_not_found": "Neuron not found.",
+    "neuron_load": "An error occurred while loading the neuron.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -40,6 +42,8 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "account_not_found": "Sorry, the account \"account_identifier\" was not found",
+    "transactions_not_found": "An error occurred while loading the transactions.",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
@@ -65,9 +69,11 @@
     "governance_error": "Sorry, there was an error. Please try again.",
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
+    "address_not_valid": "Please enter a valid address.",
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal.",
-    "input_length": "Input must be longer than $length characters."
+    "input_length": "Input must be longer than $length characters.",
+    "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -101,6 +107,10 @@
     "attach_hardware_subtitle": "Link a hardware wallet to this account",
     "attach_hardware_name_placeholder": "Hardware Wallet Name",
     "attach_hardware_enter_name": "Enter Wallet Name",
+    "attach_hardware_show_neurons": "Show Neurons",
+    "attach_hardware_neurons_text": "The following are neurons controlled by the hardware wallet. You can optionally add the NNS dapp as a hotkey to these neurons, which allows you to manage the neurons directly from the Neurons tab.",
+    "attach_hardware_neurons_add": "Add to NNS dapp",
+    "attach_hardware_neurons_added": "Added to NNS dapp",
     "connect_hardware_wallet": "Connect to Wallet",
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
@@ -121,7 +131,6 @@
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
-    "authorize_on_hardware_wallet": "Authorize on Hardware Wallet",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
@@ -129,7 +138,11 @@
     "rename": "Rename",
     "rename_linked_account": "Rename Linked Account",
     "rename_new_name_placeholder": "New Name",
-    "rename_account_enter_new_name": "Enter New Account Name"
+    "rename_account_enter_new_name": "Enter New Account Name",
+    "hardware_wallet_add_hotkey_title": "Confirm Addition of Hotkey",
+    "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
+    "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
+    "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?"
   },
   "neurons": {
     "title": "Neurons",
@@ -145,8 +158,9 @@
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
-    "add_user_as_hotkey_success": "Your pincipal was added to the neuron successfully",
-    "neuron_create_success": "Neuron created successfully",
+    "add_user_as_hotkey_success": "Your pincipal was added to the neuron successfully.",
+    "remove_hotkey_success": "Hotkey removed successfully.",
+    "neuron_create_success": "Neuron created successfully.",
     "your_principal": "Your NNS Principal",
     "confirm_dissolve_delay": "Confirm Dissolve Delay",
     "follow_neurons_screen": "Follow neurons",
@@ -176,13 +190,17 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay",
+    "set_delay": "Set Delay",
+    "confirm_update_delay": "Confirm and Update Delay",
+    "confirm_set_delay": "Confirm and Set Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully splitted.",
+    "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
+    "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
-    "irreversible_action": "This action is irreversible."
+    "irreversible_action": "This action is irreversible.",
+    "stake_amount": "Stake Amount"
   },
   "new_followee": {
     "title": "Enter New Followee",
@@ -214,7 +232,7 @@
     "topic_7_subtitle": "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     "topic_8_title": "Network Canister Management",
     "topic_8_subtitle": "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS.",
-    "topic_9_title": "Kyc",
+    "topic_9_title": "KYC",
     "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
     "topic_10_title": "Node Provider Rewards",
     "topic_10_subtitle": "Proposals that reward node providers",
@@ -237,7 +255,20 @@
     "step2": "Link canisters to your account",
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
-    "create_or_link": "Create or Link Canister"
+    "create_or_link": "Create or Link Canister",
+    "empty": "No canisters yet.",
+    "add_canister": "Add Canister",
+    "create_canister_title": "Create New Canister",
+    "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "link_canister_title": "Link Canister To Account",
+    "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
+    "link_canister_success": "The canister was linked successfully",
+    "attach_canister": "Attach Canister",
+    "enter_canister_id": "Enter Canister ID:",
+    "canister_id": "Canister ID"
+  },
+  "canister_detail": {
+    "title": "Canister"
   },
   "topics": {
     "Unspecified": "Unspecified",
@@ -249,7 +280,7 @@
     "ParticipantManagement": "Participant Management",
     "SubnetManagement": "Subnet Management",
     "NetworkCanisterManagement": "Network Canister Management",
-    "Kyc": "Kyc",
+    "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards"
   },
   "rewards": {
@@ -267,8 +298,27 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "transaction_names": {
+    "receive": "Received ICP",
+    "send": "Sent ICP",
+    "mint": "Received ICP",
+    "burn": "Sent ICP",
+    "stakeNeuron": "Stake Neuron",
+    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up Neuron",
+    "createCanister": "Create Canister",
+    "topUpCanister": "Top-up Canister"
+  },
   "wallet": {
-    "title": "Account"
+    "title": "Account",
+    "address": "Address:",
+    "principal": "Principal:",
+    "direction_from": "Source:",
+    "direction_to": "To:",
+    "no_transactions": "No transactions"
+  },
+  "busy_screen": {
+    "pending_approval_hw": "Please use your hardware wallet to approve."
   },
   "proposal_detail": {
     "title": "Proposal",
@@ -385,6 +435,7 @@
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device.",
+    "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {

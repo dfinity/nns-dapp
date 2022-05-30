@@ -47,7 +47,7 @@
   const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
 
   const removeCurrentFollowee = async (followee: NeuronId) => {
-    startBusy("remove-followee");
+    startBusy({ initiator: "remove-followee" });
     await removeFollowee({
       neuronId: neuron.neuronId,
       topic,

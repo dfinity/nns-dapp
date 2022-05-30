@@ -1,5 +1,5 @@
-const { existsSync, mkdirSync, writeFileSync } = require("fs");
-const { NNS_DAPP_URL } = require("./common/constants");
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { NNS_DAPP_URL } from "./common/constants";
 import { Options as WebDriverOptions } from "@wdio/types";
 
 export const config: WebdriverIO.Config = {

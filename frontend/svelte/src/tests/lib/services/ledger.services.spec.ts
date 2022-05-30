@@ -1,6 +1,7 @@
 import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import * as api from "../../../lib/api/governance.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
 import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
@@ -10,6 +11,7 @@ import * as authServices from "../../../lib/services/auth.services";
 import {
   connectToHardwareWallet,
   getLedgerIdentity,
+  listNeuronsHardwareWallet,
   registerHardwareWallet,
   showAddressAndPubKeyOnHardwareWallet,
 } from "../../../lib/services/ledger.services";
@@ -29,6 +31,7 @@ import {
   mockLedgerIdentifier,
   MockLedgerIdentity,
 } from "../../mocks/ledger.identity.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 import { MockNNSDappCanister } from "../../mocks/nns-dapp.canister.mock";
 
 describe("ledger-services", () => {
@@ -259,6 +262,58 @@ describe("ledger-services", () => {
         expect(spyToastError).toBeCalledWith({
           labelKey: "error__ledger.unexpected_wallet",
         });
+
+        spyToastError.mockRestore();
+      });
+    });
+  });
+
+  describe("query neurons", () => {
+    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+    const mockNeurons = [mockNeuron];
+
+    beforeAll(() => {
+      jest
+        .spyOn(api, "queryNeurons")
+        .mockImplementation(() => Promise.resolve(mockNeurons));
+    });
+
+    describe("success", () => {
+      beforeAll(() =>
+        jest
+          .spyOn(LedgerIdentity, "create")
+          .mockImplementation(
+            async (): Promise<LedgerIdentity> => mockLedgerIdentity
+          )
+      );
+
+      it("should list neurons on hardware wallet", async () => {
+        const { neurons } = await listNeuronsHardwareWallet();
+
+        expect(neurons).toEqual(mockNeurons);
+      });
+    });
+
+    describe("error", () => {
+      beforeAll(() =>
+        jest
+          .spyOn(LedgerIdentity, "create")
+          .mockImplementation(async (): Promise<LedgerIdentity> => {
+            throw new LedgerErrorKey("error__ledger.please_open");
+          })
+      );
+
+      it("should not list neurons if ledger throw an error", async () => {
+        const spyToastError = jest.spyOn(toastsStore, "error");
+
+        const { err } = await listNeuronsHardwareWallet();
+
+        expect(spyToastError).toBeCalled();
+        expect(spyToastError).toBeCalledWith({
+          labelKey: "error__ledger.please_open",
+        });
+
+        expect(err).not.toBeUndefined();
 
         spyToastError.mockRestore();
       });

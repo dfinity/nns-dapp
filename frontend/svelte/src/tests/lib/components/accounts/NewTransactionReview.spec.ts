@@ -8,7 +8,6 @@ import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.can
 import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { transactionStore } from "../../../../lib/stores/transaction.store";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import {
   mockMainAccount,
@@ -18,6 +17,7 @@ import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { MockLedgerCanister } from "../../../mocks/ledger.canister.mock";
 import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
+import { mockTransactionStore } from "../../../mocks/transaction.store.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
 
 describe("NewTransactionReview", () => {
@@ -29,7 +29,7 @@ describe("NewTransactionReview", () => {
   const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
 
   beforeAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
       amount,
@@ -55,7 +55,7 @@ describe("NewTransactionReview", () => {
   });
 
   afterAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: undefined,
       destinationAddress: undefined,
       amount: undefined,
@@ -92,6 +92,24 @@ describe("NewTransactionReview", () => {
 
     await waitFor(() => expect(button.hasAttribute("disabled")).toBeTruthy());
     await waitFor(() => expect(spyTransferICP).toHaveBeenCalled());
+  });
+
+  it("should call complete callback", async () => {
+    const spyTransferICP = jest.spyOn(mockLedgerCanister, "transfer");
+
+    const completeTransactionSpy = jest.fn().mockResolvedValue(undefined);
+    const { container } = render(NewTransactionTest, {
+      props: { ...props, onTransactionComplete: completeTransactionSpy },
+    });
+
+    const button = container.querySelector(
+      "button[type='submit']"
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBeTruthy());
+    await waitFor(() => expect(spyTransferICP).toHaveBeenCalled());
+    await waitFor(() => expect(completeTransactionSpy).toHaveBeenCalled());
   });
 
   it("should sync accounts after transaction executed", async () => {

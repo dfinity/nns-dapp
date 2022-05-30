@@ -24,6 +24,8 @@ mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod state;
 
+type Cycles = u128;
+
 #[export_name = "canister_init"]
 fn main() {
     assets::init_assets();

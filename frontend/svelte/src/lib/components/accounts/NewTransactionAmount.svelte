@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import { i18n } from "../../stores/i18n";
-  import type { TransactionContext } from "../../stores/transaction.store";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
+  import type { TransactionContext } from "../../types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import CurrentBalance from "./CurrentBalance.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";

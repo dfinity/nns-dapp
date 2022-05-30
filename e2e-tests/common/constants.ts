@@ -1,3 +1,5 @@
+import { getRequiredEnvVar, getRequiredEnvEnum } from "../../config";
+
 export enum RouteHash {
   Accounts = "#/accounts",
   Neurons = "#/neurons",
@@ -16,9 +18,9 @@ export enum RedirectToLegacy {
   both = "both",
 }
 
-export const REDIRECT_TO_LEGACY: RedirectToLegacy = ((
-  env = RedirectToLegacy.prod
-) => env)(RedirectToLegacy[process.env.REDIRECT_TO_LEGACY as string]);
-
-export const NNS_DAPP_URL: string =
-  process.env.NNS_DAPP_URL ?? "http://localhost:8080";
+export const REDIRECT_TO_LEGACY: RedirectToLegacy = getRequiredEnvEnum(
+  "REDIRECT_TO_LEGACY",
+  RedirectToLegacy
+);
+export const NNS_DAPP_URL: string = getRequiredEnvVar("OWN_CANISTER_URL");
+export const DFX_NETWORK: string = getRequiredEnvVar("DFX_NETWORK");

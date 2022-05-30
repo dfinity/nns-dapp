@@ -7,7 +7,7 @@
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../stores/add-account.store";
+  } from "../../types/add-account.context";
   import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
@@ -33,7 +33,7 @@
       return;
     }
 
-    startBusy("accounts");
+    startBusy({ initiator: "accounts" });
 
     await registerHardwareWalletProxy({
       name: $store.hardwareWalletName,

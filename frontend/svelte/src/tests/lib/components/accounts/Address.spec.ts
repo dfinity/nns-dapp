@@ -5,7 +5,7 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import Address from "../../../../lib/components/accounts/Address.svelte";
 import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../../lib/constants/accounts.constants";
-import { mockAddressInput } from "../../../mocks/accounts.store.mock";
+import { mockAddressInputValid } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 describe("Address", () => {
@@ -32,6 +32,16 @@ describe("Address", () => {
     );
   });
 
+  it("should show error message on blur when invalid address", async () => {
+    const { container, queryByTestId } = render(Address, props);
+
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    await fireEvent.input(input, { target: { value: "invalid-address" } });
+    await fireEvent.blur(input);
+    expect(queryByTestId("input-error-message")).toBeInTheDocument();
+  });
+
   it("should enable and disable action according input", async () => {
     const { container } = render(Address, props);
 
@@ -45,7 +55,7 @@ describe("Address", () => {
 
     await fireEvent.input(input, {
       target: {
-        value: mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH),
+        value: mockAddressInputValid,
       },
     });
 
@@ -53,7 +63,7 @@ describe("Address", () => {
 
     await fireEvent.input(input, {
       target: {
-        value: mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1),
+        value: mockAddressInputValid,
       },
     });
     expect(button?.getAttribute("disabled")).toBeNull();

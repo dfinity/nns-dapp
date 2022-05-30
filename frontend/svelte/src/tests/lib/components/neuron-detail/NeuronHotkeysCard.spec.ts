@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import NeuronHotkeysCard from "../../../../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
 import { removeHotkey } from "../../../../lib/services/neurons.services";
 import { authStore } from "../../../../lib/stores/auth.store";
+import { routeStore } from "../../../../lib/stores/route.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -16,6 +17,7 @@ import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     removeHotkey: jest.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: jest.fn(),
   };
 });
 
@@ -92,5 +94,32 @@ describe("NeuronHotkeysCard", () => {
 
     await fireEvent.click(firstButton);
     expect(removeHotkey).toBeCalled();
+  });
+
+  it("user is redirected if it removes itself from hotkeys", async () => {
+    const spyReplace = jest
+      .spyOn(routeStore, "replace")
+      .mockImplementation(jest.fn());
+    const neuron = {
+      ...controlledNeuron,
+      fullNeuron: {
+        ...controlledNeuron.fullNeuron,
+        hotKeys: [mockIdentity.getPrincipal().toText()],
+      },
+    };
+    const { queryAllByTestId } = render(NeuronHotkeysCard, {
+      props: { neuron },
+    });
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    expect(removeButtons.length).toBeGreaterThan(0);
+
+    const firstButton = removeButtons[0];
+
+    await fireEvent.click(firstButton);
+    expect(removeHotkey).toBeCalled();
+    waitFor(() => {
+      expect(spyReplace).toBeCalled();
+    });
   });
 });

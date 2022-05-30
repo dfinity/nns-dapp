@@ -1,0 +1,244 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+help_text() {
+  cat <<-EOF
+
+	Installs the dependencies needed to run ./build.sh
+
+	Warning: This is a record of one installation on an M1 mac.
+	         The code is untested on Linux and on CI.
+
+	Flags:
+	--help
+	  prints this help text.
+
+	--profile
+	  sets the file that is sourced by the user shell.  The script MAY
+	  append lines to that file, if some software is not already installed.
+	  Default: $DEFAULT_USER_PROFILE
+
+	EOF
+}
+
+case "$(basename "${SHELL:-}")" in
+bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
+zsh) DEFAULT_USER_PROFILE="$HOME/.zshenv" ;;
+ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
+*) # dash, ash, tsh, tcsh
+  DEFAULT_USER_PROFILE="$HOME/.profile" ;;
+esac
+USER_PROFILE=""
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --profile)
+    USER_PROFILE="$1"
+    shift 1
+    ;;
+  *)
+    echo "Unsupported argument: $arg" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if test -z "${USER_PROFILE:-}"; then
+  USER_PROFILE="$DEFAULT_USER_PROFILE"
+  echo "Assuming user profile script: $USER_PROFILE"
+  read -rp "Is it OK to add to this profile? y/N " _USER_PROFILE_OK
+  [[ "$_USER_PROFILE_OK" = [yY] ]] || {
+    echo "Please specify the profile to use with --profile"
+    exit 1
+  }
+fi
+
+NEW_TERMINAL_NEEDED=false
+append_to_profile() {
+  printf '\n%s\n' "$1" >>"$USER_PROFILE"
+  . "$USER_PROFILE"
+  NEW_TERMINAL_NEEDED=true
+}
+
+have_correct_dfx() {
+  expected="$(jq -r .dfx dfx.json)"
+  actual="$(dfx --version | awk '{print $2}')"
+  [[ "$expected" == "$actual" ]]
+}
+install_dfx() {
+  DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+}
+
+install_rosetta_maybe() {
+  if [[ "$(uname)-$(uname -m)" == "Darwin-arm64" ]]; then
+    test -d /usr/libexec/rosetta/ || {
+      read -rp "Installing Rosetta for M1.  It lets you run x86_64 binaries.  Press enter to proceed... "
+      softwareupdate --install-rosetta
+    }
+  fi
+}
+
+install_brew_maybe() {
+  [[ "$OS" != "darwin" ]] || command -v brew || {
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Shellcheck: The text in the single quotes is not meant to be expanded here but rather when the user profile is sourced.
+    # shellcheck disable=SC2016
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>"$USER_PROFILE"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  }
+}
+
+install_coreutils_darwin() {
+  echo "Installing coreutils..."
+  brew install coreutils
+}
+install_coreutils_linux() {
+  echo "Installing coreutils..."
+  # Coreutils is included in build-essential, but you almost certainly need the other packages as well.
+  sudo apt-get install build-essential
+}
+
+install_jq_darwin() {
+  echo "Installing jq..."
+  brew install jq
+}
+install_jq_linux() {
+  echo "Installing jq..."
+  sudo apt-get install jq
+}
+
+install_npm_darwin() {
+  echo "Installing npm"
+  brew install node
+}
+install_npm_linux() {
+  echo "Installing npm"
+  sudo apt-get install nodejs
+}
+
+install_rust() {
+  echo "Installing rust"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  append_to_profile 'export CARGO_BUILD_JOBS=2'
+}
+
+install_xz_darwin() {
+  brew install xz
+}
+install_xz_linux() {
+  sudo apt-get install xz-utils
+}
+
+install_tar_darwin() {
+  brew install gnu-tar
+}
+install_tar_linux() {
+  sudo apt-get install tar
+}
+
+install_flutter() {
+  FLUTTER_VERSION=2.2.3
+  rm -fr flutter
+  case "$(uname)" in
+  Darwin)
+    FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
+    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}"
+    wget -c "$FLUTTER_URL"
+    rm -fr flutter
+    unzip "$FLUTTER_ZIP"
+    ;;
+  Linux)
+    FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
+    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP"
+    if test -t; then
+      wget -c "$FLUTTER_URL"
+    else
+      wget -c "$FLUTTER_URL" --quiet
+    fi
+    rm -fr flutter
+    tar xJf "$FLUTTER_ZIP"
+    ;;
+  esac
+  mkdir -p "${HOME}/.cache/flutter"
+  rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+  mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
+  # shellcheck disable=SC2016
+  append_to_profile "export PATH=\"\$PATH:${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin\""
+}
+
+install_ic_cdk_optimizer() {
+  # Nit: Needs rust to be in a working state.
+  cargo install --version 0.3.2 ic-cdk-optimizer
+}
+
+install_docker() {
+  while ! command -v docker; do
+    echo "Please install docker from: https://docs.docker.com/get-docker/"
+    read -rp "Press enter when docker has been installed...  "
+  done
+}
+
+install_wget_darwin() {
+  brew install wget
+}
+install_wget_linux() {
+  sudo apt-get install wget
+}
+
+install_cmake_darwin() {
+  brew install cmake
+}
+install_cmake_linux() {
+  sudo apt-get install cmake
+}
+
+# Note: There is an open ticket to factor out all definitions of IC_ADMIN.
+IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+install_ic_admin_linux() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  chmod +x "$USER_BIN/ic-admin"
+}
+install_ic_admin_darwin() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  chmod +x "$USER_BIN/ic-admin"
+  # shellcheck disable=SC2016
+  which ic-admin ||
+    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
+OS="$(uname | tr '[:upper:]' '[:lower:]')"
+
+echo "Checking that you can install software..."
+sudo echo I have superpowers || {
+  echo "Sorry, you will need admin priveleges on this machine to install software."
+  exit 1
+}
+install_rosetta_maybe
+install_brew_maybe
+command -v wget || "install_wget_$OS"
+command -v docker || install_docker
+command -v realpath || "install_coreutils_$OS"
+command -v jq || "install_jq_$OS"
+command -v npm || "install_npm_$OS"
+command -v cargo || install_rust
+command -v xz || "install_xz_$OS"
+have_correct_dfx || install_dfx
+command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
+command -v flutter || "install_flutter"
+command -v cmake || "install_cmake_$OS"
+command -v ic-cdk-optimizer || install_ic_cdk_optimizer
+command -v ic-admin || "install_ic_admin_$OS"
+
+echo "OK, all set to go!"
+[[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

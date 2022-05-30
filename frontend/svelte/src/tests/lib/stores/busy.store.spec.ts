@@ -3,19 +3,19 @@ import { busy, startBusy, stopBusy } from "../../../lib/stores/busy.store";
 
 describe("busy.store", () => {
   it("should add initiator", () => {
-    startBusy("vote");
+    startBusy({ initiator: "vote" });
     expect(get(busy)).toBe(true);
   });
 
   it("should add initiator only once", () => {
-    startBusy("vote");
-    startBusy("vote");
+    startBusy({ initiator: "vote" });
+    startBusy({ initiator: "vote" });
     expect(get(busy)).toBe(true);
   });
 
   it("should remove initiator", () => {
-    startBusy("vote");
-    startBusy("accounts");
+    startBusy({ initiator: "vote" });
+    startBusy({ initiator: "accounts" });
     stopBusy("vote");
     expect(get(busy)).toBe(true);
 
@@ -24,12 +24,12 @@ describe("busy.store", () => {
   });
 
   it("should derive a busy state", () => {
-    startBusy("vote");
+    startBusy({ initiator: "vote" });
     expect(get(busy)).toBe(true);
     stopBusy("vote");
     expect(get(busy)).toBe(false);
-    startBusy("vote");
-    startBusy("accounts");
+    startBusy({ initiator: "vote" });
+    startBusy({ initiator: "accounts" });
     expect(get(busy)).toBe(true);
     stopBusy("vote");
     expect(get(busy)).toBe(true);

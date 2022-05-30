@@ -4,17 +4,23 @@
 
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { fireEvent, waitFor } from "@testing-library/svelte";
+import {
+  fireEvent,
+  waitFor,
+  type BoundFunction,
+  type queries,
+} from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
 import {
-  addHotkeyFromHW,
+  addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
   updateDelay,
 } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
+import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
@@ -37,10 +43,15 @@ const newNeuron: NeuronInfo = {
 };
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockImplementation(() => Promise.resolve(newNeuron)),
+    stakeNeuron: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
     updateDelay: jest.fn().mockResolvedValue(undefined),
     loadNeuron: jest.fn().mockResolvedValue(undefined),
-    addHotkeyFromHW: jest.fn().mockResolvedValue(BigInt(10)),
+    addHotkeyForHardwareWalletNeuron: jest
+      .fn()
+      .mockResolvedValue({ success: true }),
+    getNeuronFromStore: jest.fn(),
   };
 });
 
@@ -69,6 +80,7 @@ jest.mock("../../../../lib/stores/toasts.store", () => {
 describe("CreateNeuronModal", () => {
   describe("main account selection", () => {
     beforeEach(() => {
+      neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
@@ -81,6 +93,10 @@ describe("CreateNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
+    });
+
+    afterEach(() => {
+      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
@@ -398,13 +414,16 @@ describe("CreateNeuronModal", () => {
 
     afterEach(() => {
       jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
-    it("should create neuron for hardwareWallet", async () => {
-      const { container, queryByTestId, queryByText } = await renderModal({
-        component: CreateNeuronModal,
-      });
-
+    const createNeuron = async ({
+      queryByText,
+      container,
+    }: {
+      queryByText: BoundFunction<queries.QueryByText>;
+      container: HTMLElement;
+    }) => {
       // SCREEN: Select Hardware Wallet Account
       const hardwareWalletAccount = queryByText(
         mockHardwareWalletAccount.name as string,
@@ -425,19 +444,83 @@ describe("CreateNeuronModal", () => {
       const createButton = container.querySelector('button[type="submit"]');
 
       createButton && (await fireEvent.click(createButton));
+    };
+
+    it("should create neuron for hardwareWallet and close modal if hotkey is not added", async () => {
+      const { container, queryByTestId, queryByText, component } =
+        await renderModal({
+          component: CreateNeuronModal,
+        });
+
+      await createNeuron({ queryByText, container });
+
+      // SCREEN: Add NNS App Principal as Hotkey
+      await waitFor(() =>
+        expect(queryByTestId("add-principal-to-hotkeys-modal")).not.toBeNull()
+      );
+      const onClose = jest.fn();
+      component.$on("nnsClose", onClose);
+
+      const skipButton = queryByTestId("skip-add-principal-to-hotkey-modal");
+
+      skipButton && (await fireEvent.click(skipButton));
+
+      await waitFor(() => expect(onClose).toBeCalled());
+    });
+
+    it("should create neuron for hardwareWallet and add dissolve delay", async () => {
+      neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
+      const { container, queryByTestId, queryByText } = await renderModal({
+        component: CreateNeuronModal,
+      });
+
+      await createNeuron({ queryByText, container });
 
       // SCREEN: Add NNS App Principal as Hotkey
       await waitFor(() =>
         expect(queryByTestId("add-principal-to-hotkeys-modal")).not.toBeNull()
       );
 
-      const skipButton = queryByTestId("confirm-add-principal-to-hotkey-modal");
+      const addHotkeyButton = queryByTestId(
+        "confirm-add-principal-to-hotkey-modal"
+      );
 
-      skipButton && (await fireEvent.click(skipButton));
+      addHotkeyButton && (await fireEvent.click(addHotkeyButton));
 
-      expect(addHotkeyFromHW).toBeCalled();
+      expect(addHotkeyForHardwareWalletNeuron).toBeCalled();
 
-      // TODO: Continue flow https://dfinity.atlassian.net/browse/L2-524
+      await waitFor(() =>
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      );
+      const inputRange = container.querySelector('input[type="range"]');
+
+      const ONE_YEAR = 60 * 60 * 24 * 365;
+      inputRange &&
+        (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
+
+      const goToConfirmDelayButton = container.querySelector(
+        '[data-tid="go-confirm-delay-button"]'
+      );
+      await waitFor(() =>
+        expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+      );
+
+      goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
+
+      await waitFor(() =>
+        expect(
+          container.querySelector(
+            '[data-tid="confirm-dissolve-delay-container"]'
+          )
+        ).not.toBeNull()
+      );
+
+      const confirmButton = container.querySelector(
+        '[data-tid="confirm-delay-button"]'
+      );
+      confirmButton && (await fireEvent.click(confirmButton));
+
+      await waitFor(() => expect(updateDelay).toBeCalled());
     });
   });
 });

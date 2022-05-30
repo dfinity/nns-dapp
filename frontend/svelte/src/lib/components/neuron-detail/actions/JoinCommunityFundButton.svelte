@@ -14,7 +14,7 @@
   const closeModal = () => (isOpen = false);
 
   const joinFund = async () => {
-    startBusy("join-community-fund");
+    startBusy({ initiator: "join-community-fund" });
     const id = await joinCommunityFund(neuronId);
     if (id !== undefined) {
       toastsStore.success({

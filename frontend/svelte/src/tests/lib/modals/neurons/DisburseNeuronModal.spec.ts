@@ -19,6 +19,7 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
     disburse: jest.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: jest.fn(),
   };
 });
 
@@ -51,7 +52,7 @@ describe("DisburseNeuronModal", () => {
   it("should render accounts", async () => {
     const { queryAllByTestId } = await renderDisburseModal(mockNeuron);
 
-    const accountCards = queryAllByTestId("card");
+    const accountCards = queryAllByTestId("account-card");
     expect(accountCards.length).toBe(2);
   });
 
@@ -60,7 +61,7 @@ describe("DisburseNeuronModal", () => {
       mockNeuron
     );
 
-    const accountCards = queryAllByTestId("card");
+    const accountCards = queryAllByTestId("account-card");
     expect(accountCards.length).toBe(2);
 
     const firstAccount = accountCards[0];

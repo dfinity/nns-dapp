@@ -1,5 +1,6 @@
 import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
@@ -12,8 +13,10 @@ import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
+  AccountIdentifierString,
   CanisterDetails,
   CreateSubAccountResponse,
+  GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -203,5 +206,41 @@ export class NNSDappCanister {
     }
 
     return this.service;
+  }
+
+  public attachCanister = async ({
+    name,
+    canisterId,
+  }: {
+    name: string;
+    canisterId: Principal;
+  }): Promise<void> => {
+    const response = await this.certifiedService.attach_canister({
+      name,
+      canister_id: canisterId,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
+    throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
+  };
+
+  public async getTransactions({
+    accountIdentifier,
+    pageSize,
+    offset,
+    certified,
+  }: {
+    accountIdentifier: AccountIdentifierString;
+    pageSize: number;
+    offset: number;
+    certified: boolean;
+  }): Promise<GetTransactionsResponse> {
+    return this.getNNSDappService(certified).get_transactions({
+      page_size: pageSize,
+      offset,
+      account_identifier: accountIdentifier,
+    });
   }
 }

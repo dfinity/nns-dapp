@@ -1,0 +1,10 @@
+TOY_FIREWALL_FILE=README.md
+set ic-admin --nns-url "$NNS_URL" \
+  propose-to-set-firewall-config \
+  --test-neuron-proposer \
+  --proposal-title "Stonewall firewall" \
+  --proposal-url https://identity.ic0.app \
+  --summary "# This is a summary\nTurgid battleaxe flummoxed" \
+  "$TOY_FIREWALL_FILE" \
+  127.0.0.1/24 \
+  [::]

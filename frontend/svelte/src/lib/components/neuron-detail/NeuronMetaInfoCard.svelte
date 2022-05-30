@@ -22,6 +22,7 @@
     hasJoinedCommunityFund,
     isHotKeyControllable,
     isNeuronControllable,
+    isNeuronControllableByUser,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
 
@@ -29,6 +30,11 @@
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let isControlledByUser: boolean;
+  $: isControlledByUser = isNeuronControllableByUser({
+    neuron,
+    mainAccount: $accountsStore.main,
+  });
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,
@@ -49,7 +55,7 @@
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      {#if !isCommunityFund && isControllable}
+      {#if !isCommunityFund && isControlledByUser}
         <JoinCommunityFundButton neuronId={neuron.neuronId} />
       {/if}
     </div>
@@ -101,7 +107,7 @@
       {#if isControllable || hotkeyControlled}
         <IncreaseStakeButton {neuron} />
       {/if}
-      {#if isControllable}
+      {#if isControlledByUser}
         <SplitNeuronButton {neuron} />
       {/if}
     </div>

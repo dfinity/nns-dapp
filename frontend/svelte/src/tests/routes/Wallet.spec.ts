@@ -4,17 +4,28 @@
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { getAccountTransactions } from "../../lib/services/accounts.services";
 import { accountsStore } from "../../lib/stores/accounts.store";
 import { authStore } from "../../lib/stores/auth.store";
 import { routeStore } from "../../lib/stores/route.store";
 import Wallet from "../../routes/Wallet.svelte";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
+import {
+  mockReceivedFromMainAccountTransaction,
+  mockSentToSubAccountTransaction,
+} from "../mocks/transaction.mock";
+
+jest.mock("../../lib/services/accounts.services", () => ({
+  ...(jest.requireActual("../../lib/services/accounts.services") as object),
+  getAccountTransactions: jest.fn(),
+}));
 
 describe("Wallet", () => {
   beforeEach(() => {
@@ -97,7 +108,7 @@ describe("Wallet", () => {
 
     afterAll(() => jest.clearAllMocks());
 
-    it("should hide spinner when accounts are loaded", async () => {
+    it("should hide spinner when selected account is loaded", async () => {
       const { container } = render(Wallet);
 
       await waitFor(() =>
@@ -135,6 +146,68 @@ describe("Wallet", () => {
 
       expect(
         getByText(en.accounts.select_destination, { exact: false })
+      ).toBeInTheDocument();
+    });
+
+    it("should display SkeletonCard while loading transactions", async () => {
+      const { getByTestId } = render(Wallet);
+
+      expect(getByTestId("skeleton-card")).toBeInTheDocument();
+    });
+
+    describe("transactions loaded", () => {
+      beforeAll(() => {
+        (
+          getAccountTransactions as jest.MockedFn<typeof getAccountTransactions>
+        ).mockImplementation(({ onLoad }) => {
+          onLoad({
+            accountIdentifier: mockMainAccount.identifier,
+            transactions: [
+              mockSentToSubAccountTransaction,
+              mockReceivedFromMainAccountTransaction,
+            ],
+          });
+          return Promise.resolve();
+        });
+      });
+
+      afterAll(() => jest.clearAllMocks());
+
+      it("should render transactions", async () => {
+        const { queryAllByTestId } = render(Wallet);
+        expect(queryAllByTestId("transaction-card").length).toBe(2);
+      });
+    });
+  });
+
+  describe("accounts loaded (Hardware Wallet)", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        );
+
+      jest
+        .spyOn(routeStore, "subscribe")
+        .mockImplementation(
+          mockRouteStoreSubscribe(
+            `/#/wallet/${mockHardwareWalletAccount.identifier}`
+          )
+        );
+    });
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should display principal", async () => {
+      const { queryByText } = render(Wallet);
+      const principal = mockHardwareWalletAccount?.principal?.toString();
+
+      expect(principal?.length).toBeGreaterThan(0);
+      expect(
+        queryByText(`${en.wallet.principal} ${principal}`, {
+          exact: false,
+        })
       ).toBeInTheDocument();
     });
   });

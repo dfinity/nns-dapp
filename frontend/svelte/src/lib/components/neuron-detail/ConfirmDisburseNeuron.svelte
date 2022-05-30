@@ -2,8 +2,9 @@
   import { ICP, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
+  import { startBusyNeuron } from "../../services/busy.services";
   import { disburse } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { toastsStore } from "../../stores/toasts.store";
@@ -19,7 +20,10 @@
 
   const dispatcher = createEventDispatcher();
   const executeTransaction = async () => {
-    startBusy("disburse-neuron");
+    startBusyNeuron({
+      initiator: "disburse-neuron",
+      neuronId: neuron.neuronId,
+    });
     loading = true;
     const { success } = await disburse({
       neuronId: neuron.neuronId,

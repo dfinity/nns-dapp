@@ -29,11 +29,12 @@
   --button-min-height: 60px;
 
   --modal-small-width: calc(100% - var(--padding-8x));
-  --modal-medium-width: calc(100% - var(--padding-2x));
+  --modal-big-width: calc(100% - var(--padding-2x));
+  --modal-max-height: 630px;
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
-    --modal-medium-width: 600px;
+    --modal-big-width: 600px;
   }
 
   // Json colors

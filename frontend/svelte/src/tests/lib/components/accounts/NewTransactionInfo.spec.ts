@@ -5,20 +5,20 @@
 import { ICP } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NewTransactionInfo from "../../../../lib/components/accounts/NewTransactionInfo.svelte";
-import { transactionStore } from "../../../../lib/stores/transaction.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { mockTransactionStore } from "../../../mocks/transaction.store.mock";
 import NewTransactionTest from "./NewTransactionTest.svelte";
 
 describe("NewTransactionInfo", () => {
   const props = { testComponent: NewTransactionInfo };
 
   beforeAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
       amount: ICP.fromString("10.25") as ICP,
@@ -26,7 +26,7 @@ describe("NewTransactionInfo", () => {
   });
 
   afterAll(() => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: undefined,
       destinationAddress: undefined,
       amount: undefined,
@@ -59,7 +59,7 @@ describe("NewTransactionInfo", () => {
   });
 
   it("should render hardware wallet information", () => {
-    transactionStore.set({
+    mockTransactionStore.set({
       selectedAccount: mockHardwareWalletAccount,
       destinationAddress: mockSubAccount.identifier,
       amount: ICP.fromString("10.25") as ICP,

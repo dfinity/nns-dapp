@@ -2,8 +2,10 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import type {
   AccountDetails,
+  AccountIdentifierString,
   HardwareWalletAccountDetails,
   SubAccountDetails,
+  Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -88,6 +90,39 @@ export const createSubAccount = async ({
   });
 
   logWithTimestamp(`Creating SubAccount ${hashCode(name)} complete.`);
+};
+
+export const getTransactions = async ({
+  identity,
+  accountIdentifier,
+  pageSize,
+  offset,
+  certified,
+}: {
+  identity: Identity;
+  accountIdentifier: AccountIdentifierString;
+  pageSize: number;
+  offset: number;
+  certified: boolean;
+}): Promise<Transaction[]> => {
+  logWithTimestamp(
+    `Loading Transactions ${hashCode(accountIdentifier)} call...`
+  );
+
+  const { canister } = await nnsDappCanister({ identity });
+
+  const { transactions } = await canister.getTransactions({
+    accountIdentifier,
+    pageSize,
+    offset,
+    certified,
+  });
+
+  logWithTimestamp(
+    `Loading Transactions ${hashCode(accountIdentifier)} complete.`
+  );
+
+  return transactions;
 };
 
 export const renameSubAccount = async ({

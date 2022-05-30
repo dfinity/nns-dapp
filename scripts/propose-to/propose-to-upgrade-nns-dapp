@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+test -n "${DFX_NETWORK:-}" || {
+  echo "Skipping ${BASH_SOURCE[0]} as DFX_NETWORK is not defined and is needed for building the wasm."
+}
+
+get_canister_id() {
+  dfx canister --network "$DFX_NETWORK" id nns-dapp
+}
+get_canister_id >/dev/null || {
+  echo "ERROR: This is supported only for your own nns-dapp canisters." >&2
+  exit 1
+}
+
+WASM_FILE=nns-dapp.wasm
+test -e "$WASM_FILE" || DEPLOY_ENV="$DFX_NETWORK" ./scripts/docker-build
+SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
+CANISTER_ID="$(get_canister_id)"
+
+set ic-admin --nns-url "$NNS_URL" propose-to-change-nns-canister --test-neuron-proposer --canister-id "$CANISTER_ID" --mode upgrade --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$SHA" --summary-file ./README.md

@@ -42,7 +42,7 @@ describe("AddAccountModal", () => {
   it("should display two button cards", async () => {
     const { container } = await renderModal({ component: AddAccountModal });
 
-    const buttons = container.querySelectorAll('div[role="button"]');
+    const buttons = container.querySelectorAll('article[role="button"]');
     expect(buttons.length).toEqual(2);
   });
 
@@ -234,10 +234,11 @@ describe("AddAccountModal", () => {
 
     const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
 
-    fireEvent.click(attach);
-
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
+
+    fireEvent.click(attach);
+
     await waitFor(() => expect(onClose).toBeCalled());
   };
 

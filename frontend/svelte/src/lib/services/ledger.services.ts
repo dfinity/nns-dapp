@@ -1,6 +1,7 @@
 import type { Identity } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
+import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { queryNeurons } from "../api/governance.api";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { LedgerConnectionState } from "../constants/ledger.constants";
 import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
@@ -148,3 +149,25 @@ const toastUnexpectedError = ({
       fallbackErrorLabelKey,
     })
   );
+
+export const listNeuronsHardwareWallet = async (): Promise<{
+  neurons: NeuronInfo[];
+  err?: string;
+}> => {
+  try {
+    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    const neurons: NeuronInfo[] = await queryNeurons({
+      identity: ledgerIdentity,
+      certified: true,
+    });
+
+    return { neurons };
+  } catch (err: unknown) {
+    const fallbackErrorLabelKey = "error__ledger.unexpected";
+    toastUnexpectedError({
+      err,
+      fallbackErrorLabelKey,
+    });
+    return { neurons: [], err: fallbackErrorLabelKey };
+  }
+};

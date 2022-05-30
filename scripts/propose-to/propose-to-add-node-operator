@@ -1,0 +1,12 @@
+# Note: The node provider must be created first.
+set ic-admin --nns-url "$NNS_URL" \
+  "$PROPOSAL_TYPE" \
+  --test-neuron-proposer \
+  --dc-id 9 \
+  --node-allowance 10000 \
+  --node-operator-principal-id xtkxu-j5wx2-uevpv-k2ygl-o7v4m-esaej-v367s-ypdux-yp24c-7kzlz-pae \
+  --proposal-title "Silly node operator add command" \
+  --proposal-url "https://google.com" \
+  --rewardable-nodes '{ "default": 10, "storage_upgrade": 24 }' \
+  --summary "Dingo battleaxe foobar" \
+  wp6qv-vnqsk-h776k-t7ink-2qpyi-sowym-sp5iu-q45pr-pa2fy-xv42g-3ae

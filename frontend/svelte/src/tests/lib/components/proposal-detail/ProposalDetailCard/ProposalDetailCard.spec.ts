@@ -5,8 +5,8 @@
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import ProposalDetailCard from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
-import { silentConsoleErrors } from "../../../../mocks/mock.utils";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import { silentConsoleErrors } from "../../../../mocks/utils.mock";
 
 describe("ProposalDetailCard", () => {
   let renderResult: RenderResult;

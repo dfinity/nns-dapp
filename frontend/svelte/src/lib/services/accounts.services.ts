@@ -2,6 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
 import {
   createSubAccount,
+  getTransactions,
   loadAccounts,
   renameSubAccount as renameSubAccountApi,
 } from "../api/accounts.api";
@@ -11,13 +12,19 @@ import {
   NameTooLongError,
   SubAccountLimitExceededError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import type {
+  AccountIdentifierString,
+  Transaction,
+} from "../canisters/nns-dapp/nns-dapp.types";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
-import type { TransactionStore } from "../stores/transaction.store";
 import type { Account } from "../types/account";
+import type { TransactionStore } from "../types/transaction.context";
+import { getAccountByPrincipal } from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
@@ -107,8 +114,6 @@ export const transferICP = async ({
 
     await syncAccounts();
 
-    toastsStore.success({ labelKey: "accounts.transaction_success" });
-
     return { success: true };
   } catch (err) {
     return transferError({ labelKey: "error.transaction_error", err });
@@ -168,6 +173,45 @@ export const getAccountFromStore = (
   );
 };
 
+export const getAccountTransactions = async ({
+  accountIdentifier,
+  onLoad,
+}: {
+  accountIdentifier: AccountIdentifierString;
+  onLoad: ({
+    accountIdentifier,
+    transactions,
+  }: {
+    accountIdentifier: AccountIdentifierString;
+    transactions: Transaction[];
+  }) => void;
+}): Promise<void> =>
+  queryAndUpdate<Transaction[], unknown>({
+    request: ({ certified, identity }) =>
+      getTransactions({
+        identity,
+        certified,
+        accountIdentifier,
+        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
+        offset: 0,
+      }),
+    onLoad: ({ response: transactions }) =>
+      onLoad({ accountIdentifier, transactions }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      toastsStore.error({
+        labelKey: "error.transactions_not_found",
+        err,
+      });
+    },
+    logMessage: "Syncing Transactions",
+  });
+
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
@@ -178,6 +222,20 @@ export const getAccountIdentity = async (
   }
 
   return getIdentity();
+};
+
+export const getAccountIdentityByPrincipal = async (
+  principalString: string
+): Promise<Identity | LedgerIdentity> => {
+  const accounts = get(accountsStore);
+  const account = getAccountByPrincipal({
+    principal: principalString,
+    accounts,
+  });
+  if (account === undefined) {
+    throw new Error(`Account with principal ${principalString} not found!`);
+  }
+  return getAccountIdentity(account.identifier);
 };
 
 export const renameSubAccount = async ({

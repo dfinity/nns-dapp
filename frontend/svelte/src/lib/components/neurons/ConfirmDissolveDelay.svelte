@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import Spinner from "../ui/Spinner.svelte";
   import { updateDelay } from "../../services/neurons.services";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
@@ -12,26 +11,28 @@
     neuronStake,
     votingPower,
   } from "../../utils/neuron.utils";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import { busy, stopBusy } from "../../stores/busy.store";
+  import { startBusyNeuron } from "../../services/busy.services";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
-  let loading: boolean = false;
+  export let confirmButtonText: string;
 
   const dispatcher = createEventDispatcher();
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);
 
   const updateNeuron = async () => {
-    startBusy("update-delay");
-    loading = true;
+    startBusyNeuron({ initiator: "update-delay", neuronId: neuron.neuronId });
+
     const neuronId = await updateDelay({
       neuronId: neuron.neuronId,
       dissolveDelayInSeconds:
         delayInSeconds - Number(neuron.dissolveDelaySeconds),
     });
+
     stopBusy("update-delay");
-    loading = false;
+
     if (neuronId !== undefined) {
       dispatcher("nnsUpdated");
     }
@@ -69,14 +70,10 @@
     <button
       class="primary full-width"
       data-tid="confirm-delay-button"
-      disabled={loading}
+      disabled={$busy}
       on:click={updateNeuron}
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.neurons.confirm_delay}
-      {/if}
+      {confirmButtonText}
     </button>
   </div>
 </div>

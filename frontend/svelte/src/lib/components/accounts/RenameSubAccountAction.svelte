@@ -1,19 +1,27 @@
 <script lang="ts">
   import Input from "../ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { renameSubAccount } from "../../services/accounts.services";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import type { Account } from "../../types/account";
+  import {
+    SELECTED_ACCOUNT_CONTEXT_KEY,
+    type SelectedAccountContext,
+  } from "../../types/selected-account.context";
 
-  export let selectedAccount: Account | undefined;
+  const { store } = getContext<SelectedAccountContext>(
+    SELECTED_ACCOUNT_CONTEXT_KEY
+  );
+  let selectedAccount: Account | undefined;
+  $: selectedAccount = $store.account;
 
   let newAccountName: string = "";
 
   let dispatcher = createEventDispatcher();
 
   const createNewSubAccount = async () => {
-    startBusy("accounts");
+    startBusy({ initiator: "accounts" });
 
     await renameSubAccount({
       newName: newAccountName,

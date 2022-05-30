@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
-  import type { TransactionContext } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { TransactionContext } from "../../types/transaction.context";
   import { getContext } from "svelte";
   import TransactionInfo from "./TransactionInfo.svelte";
-  import { isHardwareWallet } from "../../utils/accounts.utils";
+  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -13,7 +13,7 @@
   export let feeOnly: boolean = false;
 
   let hardwareWallet: boolean = false;
-  $: hardwareWallet = isHardwareWallet($store.selectedAccount);
+  $: hardwareWallet = isAccountHardwareWallet($store.selectedAccount);
 </script>
 
 <TransactionInfo

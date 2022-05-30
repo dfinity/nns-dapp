@@ -8,6 +8,7 @@ import { waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionModal from "../../../../lib/modals/accounts/NewTransactionModal.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
+import { toastsStore } from "../../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -21,6 +22,7 @@ describe("NewTransactionModal", () => {
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
   const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
 
+  let successSpy;
   beforeAll(() => {
     jest
       .spyOn(accountsStore, "subscribe")
@@ -33,6 +35,8 @@ describe("NewTransactionModal", () => {
     jest
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+
+    successSpy = jest.spyOn(toastsStore, "success");
   });
 
   afterAll(() => jest.clearAllMocks());
@@ -179,13 +183,40 @@ describe("NewTransactionModal", () => {
 
     await goToStep4({ container, getByText, enterAmount: true });
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
     const button = container.querySelector(
       "button[type='submit']"
     ) as HTMLButtonElement;
     await fireEvent.click(button);
 
+    await waitFor(() => expect(onClose).toBeCalled());
+    expect(successSpy).toBeCalled();
+  });
+
+  it("should call on complete callback if passed when transaction is executed", async () => {
+    const completeTransactionSpy = jest.fn().mockResolvedValue(undefined);
+    const { container, getByText, component } = await renderModal({
+      component: NewTransactionModal,
+      props: {
+        onTransactionComplete: completeTransactionSpy,
+      },
+    });
+
+    await goToStep2({ container, getByText });
+
+    await goToStep3({ container, getByText });
+
+    await goToStep4({ container, getByText, enterAmount: true });
+
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
+    const button = container.querySelector(
+      "button[type='submit']"
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
     await waitFor(() => expect(onClose).toBeCalled());
+    await waitFor(() => expect(completeTransactionSpy).toHaveBeenCalled());
   });
 });

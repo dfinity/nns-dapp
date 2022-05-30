@@ -67,6 +67,7 @@
     <Input
       placeholderLabelKey="core.icp"
       name="icp"
+      inputType="icp"
       bind:value={inputValue}
       disabled={transferring}
     />

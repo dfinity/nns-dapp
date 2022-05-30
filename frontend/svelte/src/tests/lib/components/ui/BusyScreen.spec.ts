@@ -9,7 +9,7 @@ import { startBusy, stopBusy } from "../../../../lib/stores/busy.store";
 describe("BusyScreen", () => {
   it("should show the spinner", async () => {
     const { container } = render(BusyScreen);
-    startBusy("vote");
+    startBusy({ initiator: "vote" });
     await waitFor(() =>
       expect(container.querySelector("svg")).toBeInTheDocument()
     );
@@ -17,7 +17,7 @@ describe("BusyScreen", () => {
 
   it("should hide the spinner", async () => {
     const { container } = render(BusyScreen);
-    startBusy("vote");
+    startBusy({ initiator: "vote" });
     await waitFor(() =>
       expect(container.querySelector("svg")).toBeInTheDocument()
     );

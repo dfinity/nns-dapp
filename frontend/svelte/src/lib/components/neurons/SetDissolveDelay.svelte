@@ -3,7 +3,6 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import Card from "../ui/Card.svelte";
-  import Spinner from "../ui/Spinner.svelte";
   import {
     SECONDS_IN_EIGHT_YEARS,
     SECONDS_IN_HALF_YEAR,
@@ -22,9 +21,8 @@
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
   export let cancelButtonText: string | undefined = undefined;
+  export let confirmButtonText: string;
   export let minDelayInSeconds: number = 0;
-
-  let loading: boolean = false;
 
   const checkMinimum = () => {
     if (delayInSeconds < minDelayInSeconds) {
@@ -113,21 +111,16 @@
       <button
         on:click={cancel}
         data-tid="cancel-neuron-delay"
-        class="secondary full-width"
-        disabled={loading}>{cancelButtonText}</button
+        class="secondary full-width">{cancelButtonText}</button
       >
     {/if}
     <button
       class="primary full-width"
-      disabled={disableUpdate || loading}
+      disabled={disableUpdate}
       on:click={goToConfirmation}
       data-tid="go-confirm-delay-button"
     >
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.neurons.update_delay}
-      {/if}
+      {confirmButtonText}
     </button>
   </div>
 </div>
@@ -155,6 +148,5 @@
 
   .delay {
     flex-grow: 1;
-    margin: var(--padding-0_5x) 0 var(--padding-2x);
   }
 </style>

@@ -1,6 +1,7 @@
 import {
   secondsToDate,
   secondsToDuration,
+  secondsToTime,
 } from "../../../lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
 
@@ -38,5 +39,24 @@ describe("secondsToDate", () => {
     expect(expectedDateText).toContain("March");
     expect(expectedDateText).toContain("2022");
     expect(expectedDateText).toContain("25");
+  });
+});
+
+describe("secondsToTime", () => {
+  it("should be UTC", () => {
+    // TZ=UTC
+    expect(new Date().getTimezoneOffset()).toBe(0);
+  });
+
+  it("should be tested using UTC", () => {
+    expect(secondsToTime(0)).toContain("12:00");
+  });
+
+  it("should returns formatted time", () => {
+    const date = new Date();
+    date.setHours(9);
+    date.setMinutes(45);
+    date.setSeconds(59);
+    expect(secondsToTime(+date / 1000)).toContain("9:45");
   });
 });

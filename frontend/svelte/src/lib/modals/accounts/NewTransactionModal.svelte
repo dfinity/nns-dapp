@@ -9,14 +9,17 @@
   import type {
     TransactionContext,
     TransactionStore,
-  } from "../../stores/transaction.store";
+  } from "../../types/transaction.context";
   import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../stores/transaction.store";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
   import type { Account } from "../../types/account";
+  import { debugTransactionStore } from "../../stores/debug.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
+  export let onTransactionComplete: (() => Promise<void>) | undefined =
+    undefined;
 
   let canSelectAccount: boolean;
   $: canSelectAccount = selectedAccount === undefined;
@@ -56,15 +59,23 @@
     },
   ];
 
+  /**
+   * A store that contains transaction information - i.e. information that are used to issue a new transaction between accounts.
+   * For example: transferring ICP from main- to a subaccount
+   *
+   */
   const newTransactionStore = writable<TransactionStore>({
     selectedAccount,
     destinationAddress,
     amount: undefined,
   });
 
+  debugTransactionStore(newTransactionStore);
+
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: newTransactionStore,
     next: () => modal?.next(),
+    onTransactionComplete,
   });
 
   // Update store with selectedAccount in case the property would be set after the component is initialized

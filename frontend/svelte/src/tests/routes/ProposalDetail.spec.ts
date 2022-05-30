@@ -13,13 +13,13 @@ import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
 import { MockLedgerCanister } from "../mocks/ledger.canister.mock";
-import { silentConsoleErrors } from "../mocks/mock.utils";
 import { buildMockNeuronsStoreSubscribe } from "../mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
 } from "../mocks/proposals.store.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
+import { silentConsoleErrors } from "../mocks/utils.mock";
 
 describe("ProposalDetail", () => {
   const mockGovernanceCanister: MockGovernanceCanister =

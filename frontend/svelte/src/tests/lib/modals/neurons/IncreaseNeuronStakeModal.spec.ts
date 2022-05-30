@@ -7,6 +7,7 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import IncreaseNeuronStakeModal from "../../../../lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
+import { reloadNeuron } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -20,7 +21,7 @@ import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    loadNeuron: jest.fn().mockResolvedValue(undefined),
+    reloadNeuron: jest.fn(),
   };
 });
 
@@ -141,7 +142,7 @@ describe("IncreaseNeuronStakeModal", () => {
     });
   });
 
-  it("should close wizard once transaction executed", async () => {
+  it("should call reloadNeuron and close wizard once transaction executed", async () => {
     const { container, getByText, component } = await renderModal({
       component: IncreaseNeuronStakeModal,
       props: {
@@ -153,13 +154,14 @@ describe("IncreaseNeuronStakeModal", () => {
 
     await goToStep3({ container, getByText, enterAmount: true });
 
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
     const button = container.querySelector(
       "button[type='submit']"
     ) as HTMLButtonElement;
     await fireEvent.click(button);
 
-    const onClose = jest.fn();
-    component.$on("nnsClose", onClose);
     await waitFor(() => expect(onClose).toBeCalled());
+    expect(reloadNeuron).toBeCalled();
   });
 });

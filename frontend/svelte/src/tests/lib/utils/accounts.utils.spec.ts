@@ -1,14 +1,14 @@
 import { Principal } from "@dfinity/principal";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../lib/constants/accounts.constants";
 import {
   emptyAddress,
   getAccountByPrincipal,
   getPrincipalFromString,
   invalidAddress,
-  isHardwareWallet,
+  isAccountHardwareWallet,
 } from "../../../lib/utils/accounts.utils";
 import {
-  mockAddressInput,
+  mockAddressInputInvalid,
+  mockAddressInputValid,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
@@ -47,19 +47,11 @@ describe("accounts-utils", () => {
     it("should be a invalid address", () => {
       expect(invalidAddress(undefined)).toBeTruthy();
       expect(invalidAddress("test")).toBeTruthy();
-
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH - 1))
-      ).toBeTruthy();
+      expect(invalidAddress(mockAddressInputInvalid)).toBeTruthy();
     });
 
     it("should be a valid address", () => {
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH))
-      ).toBeFalsy();
-      expect(
-        invalidAddress(mockAddressInput(ACCOUNT_ADDRESS_MIN_LENGTH + 1))
-      ).toBeFalsy();
+      expect(invalidAddress(mockAddressInputValid)).toBeFalsy();
     });
   });
 
@@ -92,16 +84,16 @@ describe("accounts-utils", () => {
 
   describe("isHardwareWallet", () => {
     it("returns true if type hardware wallet", () => {
-      expect(isHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
+      expect(isAccountHardwareWallet(mockHardwareWalletAccount)).toBeTruthy();
     });
 
     it("returns false if type no hardware wallet", () => {
-      expect(isHardwareWallet(mockMainAccount)).toBeFalsy();
-      expect(isHardwareWallet(mockSubAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockMainAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockSubAccount)).toBeFalsy();
     });
 
     it("returns false if no account", () => {
-      expect(isHardwareWallet(undefined)).toBeFalsy();
+      expect(isAccountHardwareWallet(undefined)).toBeFalsy();
     });
   });
 });

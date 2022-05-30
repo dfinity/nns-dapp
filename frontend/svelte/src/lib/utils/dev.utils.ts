@@ -1,3 +1,7 @@
+import { get } from "svelte/store";
+import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
+import { i18n } from "../stores/i18n";
+
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
   process.versions != null &&
@@ -26,3 +30,52 @@ export const hashCode = (value: string | bigint | number): string =>
   )
     .toString(36)
     .toUpperCase();
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+export const digestText = async (text: string): Promise<string> => {
+  const msgUint8 = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  // convert buffer to byte array
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  // convert bytes to hex string
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
+};
+
+/**
+ * Bind debug logger tigger to the node (6 clicks in 2 seconds)
+ */
+export function triggerDebugReport(node: HTMLElement) {
+  const TWO_SECONDS = 2 * 1000;
+  const originalTouchActionValue: string = node.style.touchAction;
+
+  let startTime: number = 0;
+  let count = 0;
+
+  const click = () => {
+    const now = Date.now();
+
+    if (now - startTime <= TWO_SECONDS) {
+      count++;
+
+      if (count === 5) {
+        generateDebugLogProxy(confirm(get(i18n).core.save_log_file));
+      }
+    } else {
+      startTime = now;
+      count = 0;
+    }
+  };
+
+  node.style.touchAction = "manipulation";
+  node.addEventListener("click", click, { passive: true });
+
+  return {
+    destroy() {
+      node.style.touchAction = originalTouchActionValue;
+      node.removeEventListener("click", click, false);
+    },
+  };
+}

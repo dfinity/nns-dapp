@@ -27,8 +27,12 @@ import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
+import type { Account } from "../types/account";
 import { InvalidAmountError } from "../types/errors";
-import { getAccountByPrincipal, isHardwareWallet } from "./accounts.utils";
+import {
+  getAccountByPrincipal,
+  isAccountHardwareWallet,
+} from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { isDefined } from "./utils";
@@ -145,6 +149,20 @@ export const sortNeuronsByCreatedTimestamp = (
   );
 
 /*
+ * Returns true if the neuron can be controlled by current user
+ */
+export const isNeuronControllableByUser = ({
+  neuron: { fullNeuron },
+  mainAccount,
+}: {
+  neuron: NeuronInfo;
+  mainAccount?: Account;
+}): boolean =>
+  fullNeuron?.controller !== undefined &&
+  mainAccount?.type === "main" &&
+  fullNeuron.controller === mainAccount.principal?.toText();
+
+/*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
  *
  *  1. The user is the controller
@@ -180,7 +198,7 @@ export const isNeuronControlledByHardwareWallet = ({
       principal: neuron.fullNeuron.controller,
       accounts,
     });
-    return isHardwareWallet(account);
+    return isAccountHardwareWallet(account);
   }
   return false;
 };
@@ -259,7 +277,7 @@ export const isValidInputAmount = ({
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
 export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(String(amount));
+  const stake = ICP.fromString(amount.toFixed(8));
 
   if (!(stake instanceof ICP) || stake === undefined) {
     throw new InvalidAmountError();
@@ -296,27 +314,32 @@ export const isEnoughMaturityToSpawn = ({
   });
 };
 
+// Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
   neuron,
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
-  !isHotKeyControllable({ neuron, identity });
+  // Merging hardware wallet neurons is not yet supported
+  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
-  identity,
+  accounts,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  accounts: AccountsStore;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
   }
-  if (isHotKeyControllable({ neuron, identity })) {
+  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
+    return "neurons.cannot_merge_hardware_wallet";
+  }
+  if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
   }
 };
@@ -331,17 +354,17 @@ export type MergeableNeuron = {
  * Returns neuron data wrapped with extra information about mergeability.
  *
  * @neurons NeuronInfo[]
- * @identity Identity | null
+ * @accounts AccountsStore
  * @selectedNeuronIds NeuronId[]
  * @returns MergeableNeuron[]
  */
 export const mapMergeableNeurons = ({
   neurons,
-  identity,
+  accounts,
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  identity?: Identity | null;
+  accounts: AccountsStore;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
@@ -351,8 +374,8 @@ export const mapMergeableNeurons = ({
       selected: selectedNeurons
         .map(({ neuronId }) => neuronId)
         .includes(neuron.neuronId),
-      mergeable: isMergeableNeuron({ neuron, identity }),
-      messageKey: getMergeableNeuronMessageKey({ neuron, identity }),
+      mergeable: isMergeableNeuron({ neuron, accounts }),
+      messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
     }))
     // Then we calculate the neuron with the current selection
     .map(({ mergeable, selected, messageKey, neuron }: MergeableNeuron) => {
@@ -534,3 +557,8 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
 export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined &&
   neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
+
+// NeuronInfo is public info.
+// fullNeuron is only for users with access.
+export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.fullNeuron !== undefined;

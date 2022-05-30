@@ -7,14 +7,17 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
-  import { SHOW_CANISTERS_ROUTE } from "../lib/constants/routes.constants";
+  import {
+    AppPath,
+    SHOW_CANISTERS_ROUTE,
+  } from "../lib/constants/routes.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-
-  let loading: boolean = false;
+  import CanisterCard from "../lib/components/canisters/CanisterCard.svelte";
+  import type { CanisterId } from "../lib/canisters/nns-dapp/nns-dapp.types";
+  import { routeStore } from "../lib/stores/route.store";
+  import CreateOrLinkCanisterModal from "../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
 
   const loadCanisters = async () => {
-    loading = true;
-
     try {
       await listCanisters({
         clearBeforeQuery: true,
@@ -25,8 +28,6 @@
         err,
       });
     }
-
-    loading = false;
   };
 
   onMount(async () => {
@@ -37,8 +38,20 @@
     await loadCanisters();
   });
 
-  // TODO: TBD https://dfinity.atlassian.net/browse/L2-227
-  const createOrLink = () => alert("Create or Link");
+  const goToCanisterDetails = (canisterId: CanisterId) => () => {
+    routeStore.navigate({
+      path: `${AppPath.CanisterDetail}/${canisterId.toText()}`,
+    });
+  };
+
+  let loading: boolean;
+  $: loading = $canistersStore.canisters === undefined;
+  let noCanisters: boolean;
+  $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
+
+  let modal: "CreateOrLinkCanister" | undefined = undefined;
+  const openModal = () => (modal = "CreateOrLinkCanister");
+  const closeModal = () => (modal = undefined);
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -50,17 +63,23 @@
         <li>{$i18n.canisters.step2}</li>
         <li>{$i18n.canisters.step3}</li>
       </ul>
-      <p>
+      <p class="last-info">
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
       </p>
 
-      <!-- TODO(L2-335): display cards -->
-      {#each $canistersStore as canister}
-        <p>{canister.name ?? canister.canister_id}</p>
+      {#each $canistersStore.canisters ?? [] as canister}
+        <CanisterCard
+          role="link"
+          ariaLabel={$i18n.neurons.aria_label_neuron_card}
+          on:click={goToCanisterDetails(canister.canister_id)}
+          {canister}
+        />
       {/each}
 
-      <!-- TODO(L2-335): message if no canisters -->
+      {#if noCanisters}
+        <p class="no-canisters">{$i18n.canisters.empty}</p>
+      {/if}
 
       {#if loading}
         <SkeletonCard />
@@ -70,10 +89,26 @@
 
     <svelte:fragment slot="footer">
       <Toolbar>
-        <button class="primary" on:click={createOrLink}
-          >{$i18n.canisters.create_or_link}</button
+        <button
+          data-tid="create-link-canister-button"
+          class="primary"
+          on:click={openModal}>{$i18n.canisters.create_or_link}</button
         >
       </Toolbar>
     </svelte:fragment>
+    {#if modal === "CreateOrLinkCanister"}
+      <CreateOrLinkCanisterModal on:nnsClose={closeModal} />
+    {/if}
   </Layout>
 {/if}
+
+<style lang="scss">
+  .last-info {
+    margin-bottom: var(--padding-3x);
+  }
+
+  .no-canisters {
+    text-align: center;
+    margin: var(--padding-2x) 0;
+  }
+</style>

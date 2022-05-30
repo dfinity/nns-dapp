@@ -1,5 +1,5 @@
+import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../constants/accounts.constants";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
 
@@ -27,8 +27,17 @@ export const getAccountByPrincipal = ({
 /**
  * Is the address a valid entry to proceed with any action such as transferring ICP?
  */
-export const invalidAddress = (address: string | undefined): boolean =>
-  address === undefined || address.length < ACCOUNT_ADDRESS_MIN_LENGTH;
+export const invalidAddress = (address: string | undefined): boolean => {
+  if (address === undefined) {
+    return true;
+  }
+  try {
+    checkAccountId(address);
+    return false;
+  } catch (_) {
+    return true;
+  }
+};
 
 /**
  * Is the address an empty value? Useful to detect if user is currently entering an address regardless if valid or invalid
@@ -51,5 +60,6 @@ export const getPrincipalFromString = (
   }
 };
 
-export const isHardwareWallet = (account: Account | undefined): boolean =>
-  account?.type === "hardwareWallet";
+export const isAccountHardwareWallet = (
+  account: Account | undefined
+): boolean => account?.type === "hardwareWallet";

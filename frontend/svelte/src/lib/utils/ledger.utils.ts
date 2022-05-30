@@ -54,6 +54,9 @@ export const decodeSignature = ({
 }: ResponseSign): Signature => {
   const labels = get(i18n);
 
+  if (returnCode === LedgerError.TransactionRejected) {
+    throw new LedgerErrorKey("error__ledger.user_rejected_transaction");
+  }
   if (signatureRS === null || signatureRS === undefined) {
     throw new LedgerErrorMessage(
       replacePlaceholders(labels.error__ledger.signature_unexpected, {

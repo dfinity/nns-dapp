@@ -2,9 +2,13 @@ import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as accountsApi from "../../../lib/api/accounts.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
+import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
   getAccountFromStore,
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  getAccountTransactions,
   renameSubAccount,
   routePathAccountIdentifier,
   syncAccounts,
@@ -12,17 +16,28 @@ import {
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { TransactionStore } from "../../../lib/stores/transaction.store";
+import type { TransactionStore } from "../../../lib/types/transaction.context";
 import {
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
 import {
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
+import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+
+jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+  return {
+    getLedgerIdentityProxy: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockIdentity)),
+  };
+});
 
 describe("accounts-services", () => {
   describe("services", () => {
@@ -101,14 +116,6 @@ describe("accounts-services", () => {
       await transferICP(transferICPParams);
 
       expect(spyLoadAccounts).toHaveBeenCalled();
-    });
-
-    it("should display a successful toast after transfer ICP", async () => {
-      const spyToastSuccess = jest.spyOn(toastsStore, "success");
-
-      await transferICP(transferICPParams);
-
-      expect(spyToastSuccess).toHaveBeenCalled();
     });
 
     it("should throw errors if transfer params not provided", async () => {
@@ -268,6 +275,133 @@ describe("accounts-services", () => {
       expect(getAccountFromStore(mockSubAccount.identifier)).toEqual(
         mockSubAccount
       );
+    });
+  });
+
+  describe("getAccountTransactions", () => {
+    const onLoad = jest.fn();
+    const mockResponse = [mockSentToSubAccountTransaction];
+    let spyGetTransactions;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      spyGetTransactions = jest
+        .spyOn(accountsApi, "getTransactions")
+        .mockImplementation(() => Promise.resolve(mockResponse));
+    });
+
+    it("should call getTransactions", async () => {
+      await getAccountTransactions({
+        accountIdentifier: "",
+        onLoad,
+      });
+      expect(spyGetTransactions).toBeCalled();
+      expect(spyGetTransactions).toBeCalledTimes(2);
+    });
+
+    it("should call onLoad", async () => {
+      await getAccountTransactions({
+        accountIdentifier: "",
+        onLoad,
+      });
+      expect(onLoad).toBeCalled();
+      expect(onLoad).toBeCalledTimes(2);
+      expect(onLoad).toBeCalledWith({
+        accountIdentifier: "",
+        transactions: mockResponse,
+      });
+    });
+
+    describe("getAccountTransactions errors", () => {
+      beforeEach(() => {
+        spyGetTransactions = jest
+          .spyOn(accountsApi, "getTransactions")
+          .mockImplementation(async () => {
+            throw new Error("test");
+          });
+      });
+
+      it("should display toast error", async () => {
+        const spyToastError = jest.spyOn(toastsStore, "error");
+
+        await getAccountTransactions({
+          accountIdentifier: "",
+          onLoad,
+        });
+
+        expect(spyToastError).toBeCalledTimes(1);
+        expect(spyToastError).toBeCalledWith({
+          labelKey: "error.transactions_not_found",
+          err: new Error("test"),
+        });
+        expect(onLoad).not.toBeCalled();
+      });
+    });
+  });
+
+  describe("getAccountIdentity", () => {
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockMainAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockMainAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentity(
+        mockHardwareWalletAccount.identifier
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      expect(getLedgerIdentityProxy).toBeCalled();
+      accountsStore.reset();
+    });
+  });
+
+  describe("getAccountIdentityByPrincipal", () => {
+    it("returns user identity if main account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        mockMainAccount.principal?.toText() as string
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      accountsStore.reset();
+    });
+
+    it("returns calls for hardware walleet identity if hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        mockHardwareWalletAccount.principal?.toText() as string
+      );
+      expect(expectedIdentity).toBe(mockIdentity);
+      expect(getLedgerIdentityProxy).toBeCalled();
+      accountsStore.reset();
     });
   });
 });

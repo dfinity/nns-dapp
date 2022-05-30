@@ -35,6 +35,7 @@ import {
   isHotKeyControllable,
   isIdentityController,
   isNeuronControllable,
+  isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
   isValidInputAmount,
   mapMergeableNeurons,
@@ -44,6 +45,7 @@ import {
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
+  userAuthorizedNeuron,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -52,7 +54,12 @@ import {
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+import {
+  mockFullNeuron,
+  mockNeuron,
+  mockNeuronControlled,
+  mockNeuronNotControlled,
+} from "../../mocks/neurons.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -449,6 +456,47 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("isNeuronControllableByUser", () => {
+    it("should return true if neuron controller is the current identity principal", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockMainAccount.principal?.toText(),
+        },
+      };
+
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(true);
+    });
+
+    it("should return false if fullNeuron not defined", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(false);
+    });
+
+    it("should return false if neuron controller is a hardware wallet", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+        },
+      };
+
+      expect(
+        isNeuronControllableByUser({ neuron, mainAccount: mockMainAccount })
+      ).toBe(false);
+    });
+  });
+
   describe("isNeuronControlledByHardwareWallet", () => {
     it("should return false if neuron controller is the current main account", () => {
       const accounts = {
@@ -604,6 +652,7 @@ describe("neuron-utils", () => {
       expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
       expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
       expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
+      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
     });
 
     it("raises error on negative numbers", () => {
@@ -778,37 +827,21 @@ describe("neuron-utils", () => {
   });
 
   describe("isHotKeyControllable", () => {
-    it("returns true if neuron is controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: [mockIdentity.getPrincipal().toText()],
-        },
-      };
+    it("returns true if neuron is controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronControlled,
           identity: mockIdentity,
         })
-      ).toBe(true);
-    });
+      ).toBe(true));
 
-    it("returns false if neuron is not controllable by hotkey", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          hotKeys: ["not-current-principal"],
-        },
-      };
+    it("returns false if neuron is not controllable by hotkey", () =>
       expect(
         isHotKeyControllable({
-          neuron,
+          neuron: mockNeuronNotControlled,
           identity: mockIdentity,
         })
-      ).toBe(false);
-    });
+      ).toBe(false));
   });
 
   describe("isIdentityController", () => {
@@ -872,12 +905,14 @@ describe("neuron-utils", () => {
   });
 
   describe("mapMergeableNeurons", () => {
+    const mainAccountController = mockMainAccount.principal?.toText() as string;
     it("wraps mergeable neurons with true if mergeable", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: mainAccountController,
           hotKeys: [],
         },
       };
@@ -891,6 +926,9 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2, neuron3],
+        accounts: {
+          main: mockMainAccount,
+        },
         selectedNeurons: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(true);
@@ -898,12 +936,13 @@ describe("neuron-utils", () => {
       expect(wrappedNeurons[2].mergeable).toBe(true);
     });
 
-    it("wraps mergeable neurons with false if controlled by hotkey or joined community fund", () => {
+    it("wraps mergeable neurons with false if user is not controller or joined community fund", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: "not-user",
           hotKeys: [mockIdentity.getPrincipal().toText()],
         },
       };
@@ -913,12 +952,15 @@ describe("neuron-utils", () => {
         joinedCommunityFundTimestampSeconds: BigInt(1234),
         fullNeuron: {
           ...mockFullNeuron,
+          controller: "not-user",
           hotKeys: [],
         },
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2],
-        identity: mockIdentity,
+        accounts: {
+          main: mockMainAccount,
+        },
         selectedNeurons: [],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
@@ -931,6 +973,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: mainAccountController,
           hotKeys: [],
         },
       };
@@ -948,6 +991,9 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        accounts: {
+          main: mockMainAccount,
+        },
         selectedNeurons: [neuronFollowingManageNeuron],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
@@ -961,6 +1007,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: mockHardwareWalletAccount.principal?.toText() as string,
           hotKeys: [],
         },
       };
@@ -969,7 +1016,7 @@ describe("neuron-utils", () => {
         neuronId: BigInt(444),
         fullNeuron: {
           ...neuron.fullNeuron,
-          controller: "not-same",
+          controller: mainAccountController,
         },
       };
       const neuron3 = {
@@ -978,6 +1025,10 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, notSameControllerNeuron, neuron3],
+        accounts: {
+          main: mockMainAccount,
+          hardwareWallets: [mockHardwareWalletAccount],
+        },
         selectedNeurons: [notSameControllerNeuron],
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
@@ -991,6 +1042,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: mainAccountController,
           hotKeys: [],
         },
       };
@@ -1008,6 +1060,9 @@ describe("neuron-utils", () => {
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
+        accounts: {
+          main: mockMainAccount,
+        },
         selectedNeurons: [neuron],
       });
       expect(wrappedNeurons[0].selected).toBe(true);
@@ -1021,6 +1076,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
+          controller: mainAccountController,
           hotKeys: [],
         },
       };
@@ -1052,6 +1108,9 @@ describe("neuron-utils", () => {
           neuron4,
           neuron5,
         ],
+        accounts: {
+          main: mockMainAccount,
+        },
         selectedNeurons: [neuron, neuron3],
       });
       expect(wrappedNeurons[0].selected).toBe(true);
@@ -1332,6 +1391,19 @@ describe("neuron-utils", () => {
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
       expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+    });
+  });
+
+  describe("userAuthorizedNeuron", () => {
+    it("should return false if no fullNeuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(userAuthorizedNeuron(neuron)).toBe(false);
+    });
+    it("should return true if no fullNeuron", () => {
+      expect(userAuthorizedNeuron(mockNeuron)).toBe(true);
     });
   });
 });

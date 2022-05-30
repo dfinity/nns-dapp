@@ -9,6 +9,7 @@
     selectedNeuronsVotingPower,
   } from "../../../utils/proposals.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
+  import { busy } from "../../../stores/busy.store";
 
   const dispatch = createEventDispatcher();
 
@@ -28,7 +29,7 @@
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });
-  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0;
+  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0 || $busy;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.YES;
