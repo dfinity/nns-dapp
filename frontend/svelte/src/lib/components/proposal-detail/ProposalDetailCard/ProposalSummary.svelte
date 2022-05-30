@@ -26,7 +26,7 @@
 
     :global(a) {
       font-size: var(--font-size-small);
-      color: var(--blue-400);
+      color: var(--blue-500-tint);
       line-height: var(--line-height-standard);
       text-decoration: none;
     }

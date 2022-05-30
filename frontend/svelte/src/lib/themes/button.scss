@@ -79,8 +79,8 @@ button {
     @include effect.ripple-effect(--blue-500-tint);
 
     &:focus {
-      background: var(--blue-400);
-      @include effect.ripple-effect(--blue-400-tint);
+      background: var(--blue-500-tint);
+      @include effect.ripple-effect(--blue-500-tint);
     }
   }
 
@@ -88,7 +88,7 @@ button {
     padding: var(--padding) var(--padding-2x);
 
     &:hover {
-      background: var(--blue-400);
+      background: var(--blue-500-tint);
     }
   }
 
@@ -143,7 +143,7 @@ button {
     &[disabled],
     &[disabled]:hover {
       background: rgba(var(--gray-600-rgb), 0.8);
-      color: var(--gray-800);
+      color: var(--gray-50-background);
       pointer-events: none;
     }
 
