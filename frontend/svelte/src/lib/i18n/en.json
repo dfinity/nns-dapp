@@ -278,7 +278,9 @@
     "title": "Canister",
     "id": "Id: $canisterId",
     "cycles": "Cycles",
-    "controllers": "Controllers"
+    "controllers": "Controllers",
+    "t_cycles": "T Cycles",
+    "add_controller": "Add Controller"
   },
   "topics": {
     "Unspecified": "Unspecified",

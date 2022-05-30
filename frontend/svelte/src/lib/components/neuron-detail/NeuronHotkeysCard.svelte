@@ -78,23 +78,17 @@
 </Card>
 
 <style lang="scss">
+  @use "../../themes/mixins/list.scss";
   .actions {
     display: flex;
     justify-content: flex-end;
   }
 
   ul {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: var(--padding-2x);
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-0_5x);
+    @include list.list;
   }
 
   li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include list.list-item;
   }
 </style>

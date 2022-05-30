@@ -294,6 +294,8 @@ interface I18nCanister_detail {
   id: string;
   cycles: string;
   controllers: string;
+  t_cycles: string;
+  add_controller: string;
 }
 
 interface I18nTopics {
