@@ -42,7 +42,7 @@
     }
 
     &.plus-sign {
-      color: var(--green-600);
+      color: var(--green-500-tint);
 
       span:first-of-type {
         color: var(--green-500);

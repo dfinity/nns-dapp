@@ -86,7 +86,7 @@
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-600-shade);
+    --scrollbar-thumb: var(--green-500-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
