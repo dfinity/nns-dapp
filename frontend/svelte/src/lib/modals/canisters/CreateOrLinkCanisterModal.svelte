@@ -39,7 +39,7 @@
 
   let currentStep: Step | undefined;
   let modal: WizardModal;
-  let amount: ICP | undefined;
+  let amount: number | undefined;
 
   const selectType = async ({
     detail,
@@ -56,8 +56,7 @@
     modal.next();
   };
 
-  const selectAmount = ({ detail }: CustomEvent<{ amount: ICP }>) => {
-    amount = detail.amount;
+  const selectAmount = () => {
     modal.next();
   };
 
@@ -78,7 +77,11 @@
       <AttachCanister on:nnsClose />
     {/if}
     {#if currentStep?.name === "SelectCycles"}
-      <SelectCyclesCanister on:nnsClose on:nnsSelectAmount={selectAmount} />
+      <SelectCyclesCanister
+        bind:amount
+        on:nnsClose
+        on:nnsSelectAmount={selectAmount}
+      />
     {/if}
     {#if currentStep?.name === "ConfirmCycles"}
       <ConfirmCyclesCanister on:nnsClose />

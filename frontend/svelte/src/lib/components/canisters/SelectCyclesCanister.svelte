@@ -11,24 +11,37 @@
   } from "../../utils/icp.utils";
   import Input from "../ui/Input.svelte";
 
+  export let amount: number | undefined = undefined;
+
   let icpToCyclesRatio: bigint | undefined;
   onMount(async () => {
     icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+    // Update cycles input if the component is mounted with some `amount`
+    if (icpToCyclesRatio !== undefined && amount !== undefined) {
+      amountCycles = convertIcpToTCycles({
+        icpNumber: amount,
+        ratio: icpToCyclesRatio,
+      });
+    }
   });
 
-  let amountIcp: number;
   const updateCycles = () => {
+    // Reset cycles
+    if (amount === undefined) {
+      amountCycles = undefined;
+      return;
+    }
     if (icpToCyclesRatio !== undefined) {
       amountCycles = convertIcpToTCycles({
-        icpNumber: amountIcp,
+        icpNumber: amount,
         ratio: icpToCyclesRatio,
       });
     }
   };
-  let amountCycles: number;
+  let amountCycles: number | undefined;
   const updateIcp = () => {
-    if (icpToCyclesRatio !== undefined) {
-      amountIcp =
+    if (icpToCyclesRatio !== undefined && amountCycles !== undefined) {
+      amount =
         Number(
           convertTCyclesToE8s({
             tCycles: amountCycles,
@@ -41,9 +54,10 @@
   const dispatcher = createEventDispatcher();
   const selectAccount = () => {
     dispatcher("nnsSelectAmount", {
-      amount: ICP.fromString(String(amountIcp)),
+      amount: ICP.fromString(String(amount)),
     });
   };
+  // TODO: Add validations - https://dfinity.atlassian.net/browse/L2-644
 </script>
 
 <div class="wizard-wrapper wrapper" data-tid="select-cycles-screen">
@@ -54,7 +68,7 @@
         inputType="icp"
         name="icp-amount"
         theme="dark"
-        bind:value={amountIcp}
+        bind:value={amount}
         on:blur={updateCycles}
         disabled={icpToCyclesRatio === undefined}
       />

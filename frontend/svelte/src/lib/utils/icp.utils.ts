@@ -26,8 +26,9 @@ export const maxICP = (icp: ICP | undefined): number =>
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);
 
+const ICP_DECIMAL_ACCURACY = 8;
 export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(amount.toFixed(8));
+  const stake = ICP.fromString(amount.toFixed(ICP_DECIMAL_ACCURACY));
 
   if (!(stake instanceof ICP) || stake === undefined) {
     throw new InvalidAmountError();
