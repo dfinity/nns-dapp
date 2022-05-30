@@ -1,8 +1,11 @@
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import {
   attachCanister,
+  getCanisterDetails,
   listCanisters,
+  routePathCanisterId,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
@@ -20,6 +23,10 @@ describe("canisters-services", () => {
   const spyAttachCanister = jest
     .spyOn(api, "attachCanister")
     .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyQueryCanisterDetails = jest
+    .spyOn(api, "queryCanisterDetails")
+    .mockImplementation(() => Promise.resolve(mockCanisterDetails));
 
   describe("listCanisters", () => {
     afterEach(() => {
@@ -70,6 +77,45 @@ describe("canisters-services", () => {
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("routePathCanisterId", () => {
+    it("should return principal if valid in the url", () => {
+      const path = "/#/canister/tqtu6-byaaa-aaaaa-aaana-cai";
+
+      expect(routePathCanisterId(path)).toBeInstanceOf(Principal);
+    });
+
+    it("should return undefined if not valid in the url", () => {
+      const path = "/#/canister/not-valid-principal";
+
+      expect(routePathCanisterId(path)).toBeUndefined();
+    });
+
+    it("should return undefined if no last detail in the path", () => {
+      const path = "/#/canister";
+
+      expect(routePathCanisterId(path)).toBeUndefined();
+    });
+  });
+
+  describe("getCanisterDetails", () => {
+    it("should fetch canister details", async () => {
+      const canister = await getCanisterDetails(mockCanisterDetails.id);
+
+      expect(spyQueryCanisterDetails).toBeCalled();
+      expect(canister).toEqual(mockCanisterDetails);
+    });
+
+    it("should not fetch canister details if no identity", async () => {
+      setNoIdentity();
+
+      const call = () => getCanisterDetails(mockCanisterDetails.id);
+
+      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
 
       resetIdentity();
     });

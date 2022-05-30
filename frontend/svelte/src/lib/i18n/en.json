@@ -268,7 +268,10 @@
     "canister_id": "Canister ID"
   },
   "canister_detail": {
-    "title": "Canister"
+    "title": "Canister",
+    "id": "Id: $canisterId",
+    "cycles": "Cycles",
+    "controllers": "Controllers"
   },
   "topics": {
     "Unspecified": "Unspecified",
