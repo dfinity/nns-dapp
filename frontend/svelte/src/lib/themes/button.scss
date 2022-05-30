@@ -41,7 +41,6 @@ button {
   }
 
   &.primary,
-  &.dark,
   &.danger,
   &.secondary,
   &.warning,
@@ -79,8 +78,8 @@ button {
     @include effect.ripple-effect(--blue-500-tint);
 
     &:focus {
-      background: var(--blue-400);
-      @include effect.ripple-effect(--blue-400-tint);
+      background: var(--blue-500-tint);
+      @include effect.ripple-effect(--blue-500-tint);
     }
   }
 
@@ -88,7 +87,7 @@ button {
     padding: var(--padding) var(--padding-2x);
 
     &:hover {
-      background: var(--blue-400);
+      background: var(--blue-500-tint);
     }
   }
 
@@ -100,19 +99,18 @@ button {
       pointer-events: none;
     }
 
-    background: var(--gray-500);
+    background: var(--gray-600);
     color: var(--background-contrast);
 
-    @include effect.ripple-effect(--gray-500-tint);
+    @include effect.ripple-effect(--gray-600-tint);
 
     &:focus {
-      background: var(--gray-600);
       @include effect.ripple-effect(--gray-600-tint);
     }
 
-    // TODO: combine common parts
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h3);
+    &:hover,
+    &:focus {
+      background: var(--gray-600-tint);
     }
   }
 
@@ -133,30 +131,6 @@ button {
     box-shadow: 1px 2px 2px 0 rgba(var(--background-rgb), 0.75);
     &:hover {
       box-shadow: 2px 3px 3px 0 rgba(var(--background-rgb), 0.65);
-    }
-  }
-
-  &.dark {
-    background: var(--gray-600);
-    color: var(--gray-50);
-
-    &[disabled],
-    &[disabled]:hover {
-      background: rgba(var(--gray-600-rgb), 0.8);
-      color: var(--gray-800);
-      pointer-events: none;
-    }
-
-    @include effect.ripple-effect(--gray-600-tint);
-
-    &:focus {
-      @include effect.ripple-effect(--gray-500-tint);
-      color: var(--gray-500-contrast);
-    }
-
-    &:hover,
-    &:focus {
-      background: var(--gray-500);
     }
   }
 
