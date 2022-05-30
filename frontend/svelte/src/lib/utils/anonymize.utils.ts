@@ -1,7 +1,6 @@
 import {
   ICP,
   type Ballot,
-  type BallotInfo,
   type Followees,
   type KnownNeuron,
   type Neuron,
@@ -47,23 +46,6 @@ export const anonymizeICP = async (
     : icp.toE8s() === BigInt(0)
     ? ICP.fromE8s(BigInt(0))
     : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
-
-export const anonymizeRecentBallot = async (
-  ballot: BallotInfo | undefined | null
-): Promise<
-  { [key in keyof Required<BallotInfo>]: unknown } | undefined | null
-> => {
-  if (ballot === undefined || ballot === null) {
-    return ballot;
-  }
-
-  const { vote, proposalId } = ballot;
-
-  return {
-    vote,
-    proposalId,
-  };
-};
 
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
@@ -142,7 +124,7 @@ export const anonymizeNeuronInfo = async (
   return {
     neuronId: await cutAndAnonymize(neuronId),
     dissolveDelaySeconds,
-    recentBallots: await mapPromises(recentBallots, anonymizeRecentBallot),
+    recentBallots,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -182,7 +164,7 @@ export const anonymizeFullNeuron = async (
     id: await cutAndAnonymize(id),
     // principal string
     controller: isNullOrUndefined(controller) ? "yes" : "no",
-    recentBallots: await mapPromises(recentBallots, anonymizeRecentBallot),
+    recentBallots,
     kycVerified: kycVerified,
     notForProfit,
     cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),

@@ -62,7 +62,7 @@ const anonymiseStoreState = async () => {
     },
     proposalsFilters: proposalsFilters,
     proposalId: proposalId,
-    proposalInfo: proposalInfo,
+    proposalInfo: await anonymizeProposal(proposalInfo),
     votingNeuronSelect: {
       neurons: await mapPromises(
         votingNeuronSelect?.neurons,
