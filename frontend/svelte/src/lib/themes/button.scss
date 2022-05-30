@@ -41,7 +41,6 @@ button {
   }
 
   &.primary,
-  &.dark,
   &.danger,
   &.secondary,
   &.warning,
@@ -133,30 +132,6 @@ button {
     box-shadow: 1px 2px 2px 0 rgba(var(--background-rgb), 0.75);
     &:hover {
       box-shadow: 2px 3px 3px 0 rgba(var(--background-rgb), 0.65);
-    }
-  }
-
-  &.dark {
-    background: var(--gray-600);
-    color: var(--gray-50);
-
-    &[disabled],
-    &[disabled]:hover {
-      background: rgba(var(--gray-600-rgb), 0.8);
-      color: var(--gray-50-background);
-      pointer-events: none;
-    }
-
-    @include effect.ripple-effect(--gray-600-tint);
-
-    &:focus {
-      @include effect.ripple-effect(--gray-500-tint);
-      color: var(--gray-500-contrast);
-    }
-
-    &:hover,
-    &:focus {
-      background: var(--gray-500);
     }
   }
 
