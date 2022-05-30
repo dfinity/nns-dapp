@@ -31,6 +31,25 @@ export class AccountsTab extends MyNavigator {
   }
 
   /**
+   * Gets the ICP from an account card.
+   */
+  static async getAccountCardIcp(
+    element: WebdriverIO.Element
+  ): Promise<number> {
+    const timeoutMsg = `Could not get value from element: ${await element.getHTML(
+      true
+    )}`;
+    const icpField = element.$(`[data-tid="icp-value"]`);
+    await icpField.waitForExist({ timeoutMsg });
+    const icpValue = await icpField.getText();
+    const icpNumber = Number(icpValue);
+    if (!Number.isFinite(icpNumber)) {
+      throw new Error(`${timeoutMsg} (Invalid number '${icpNumber}')`);
+    }
+    return icpNumber;
+  }
+
+  /**
    * Creates a linked account.
    */
   async createLinkedAccount(linkedAccountName: string): Promise<void> {

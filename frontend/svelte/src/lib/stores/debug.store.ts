@@ -44,6 +44,7 @@ export const debugSelectedAccountStore = (
 export const initDebugStore = () =>
   derived(
     [
+      // TODO (L2-611): anonymise wallet id and neuron ids
       routeStore,
       accountsStore,
       sortedNeuronStore,

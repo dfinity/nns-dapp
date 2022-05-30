@@ -7,6 +7,7 @@ export enum AppPath {
   Wallet = "/#/wallet",
   ProposalDetail = "/#/proposal",
   NeuronDetail = "/#/neuron",
+  CanisterDetail = "/#/canister",
 }
 
 // See the [README.md](../../../../../README.md) for when each tab should be shown in svelte.

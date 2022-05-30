@@ -4,12 +4,15 @@
 
 import { render } from "@testing-library/svelte";
 import NeuronMetaInfoCard from "../../../../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "../../../mocks/auth.store.mock";
+  mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "../../../mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -19,16 +22,22 @@ describe("NeuronMetaInfoCard", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        controller: mockIdentity.getPrincipal().toText(),
+        controller: mockMainAccount.principal?.toText() as string,
       },
     },
   };
 
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+  });
 
   it("renders neuron id", () => {
     const { queryByText } = render(NeuronMetaInfoCard, {

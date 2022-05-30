@@ -50,4 +50,20 @@ describe("ledger-api", () => {
       fromSubAccountId: 1,
     });
   });
+
+  it("should call ledger to send ICP with memo", async () => {
+    const memo = BigInt(444555);
+    await sendICP({
+      identity: mockIdentity,
+      to: accountIdentifier,
+      amount,
+      memo,
+    });
+
+    expect(spyTransfer).toHaveBeenCalledWith({
+      to: AccountIdentifier.fromHex(accountIdentifier),
+      amount,
+      memo,
+    });
+  });
 });

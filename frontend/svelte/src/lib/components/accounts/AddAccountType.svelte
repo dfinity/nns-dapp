@@ -6,6 +6,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "../../types/add-account.context";
+  import CardItem from "../ui/CardItem.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -16,56 +17,34 @@
   const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
-<div class="wizard-wrapper">
-  <div
-    class="card-item"
-    role="button"
+<div class="wizard-wrapper wrapper">
+  <CardItem
     on:click={selectNewSubAccount}
-    data-tid="choose-linked-as-account-type"
+    testId="choose-linked-as-account-type"
   >
-    <h4>{$i18n.accounts.new_linked_title}</h4>
-    <span>{$i18n.accounts.new_linked_subtitle}</span>
-  </div>
-  <div
-    class="card-item"
-    role="button"
+    <svelte:fragment slot="title"
+      >{$i18n.accounts.new_linked_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.accounts.new_linked_subtitle}</svelte:fragment
+    >
+  </CardItem>
+  <CardItem
     on:click={selectNewHardwareWallet}
-    data-tid="choose-hardware-wallet-as-account-type"
+    testId="choose-hardware-wallet-as-account-type"
   >
-    <h4>{$i18n.accounts.attach_hardware_title}</h4>
-    <span>{$i18n.accounts.attach_hardware_subtitle}</span>
-  </div>
+    <svelte:fragment slot="title"
+      >{$i18n.accounts.attach_hardware_title}</svelte:fragment
+    >
+    <svelte:fragment slot="subtitle"
+      >{$i18n.accounts.attach_hardware_subtitle}</svelte:fragment
+    >
+  </CardItem>
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media";
-
-  .wizard-wrapper {
+  // Need to overwrite the default of wizrd-wrapper
+  .wizard-wrapper.wrapper {
     justify-content: center;
-  }
-
-  .card-item {
-    padding: var(--padding-2x) var(--padding);
-    border-radius: var(--border-radius);
-
-    @include media.min-width(medium) {
-      padding: var(--padding-4x);
-    }
-
-    @include interaction.tappable;
-
-    &:hover {
-      background: var(--background-hover);
-    }
-
-    h4 {
-      line-height: 1;
-      margin-bottom: var(--padding);
-    }
-
-    span {
-      color: var(--gray-200);
-    }
   }
 </style>
