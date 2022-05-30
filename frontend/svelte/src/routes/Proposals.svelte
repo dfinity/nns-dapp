@@ -149,7 +149,7 @@
 
 {#if SHOW_PROPOSALS_ROUTE}
   <Layout>
-    <section>
+    <section data-tid="proposals-tab">
       <p>{$i18n.voting.text}</p>
 
       <ProposalsFilters />

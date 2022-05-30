@@ -1,7 +1,13 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
+  import { isValidICPFormat } from "../../utils/icp.utils";
+
+  // To show undefined as "" (because of the type="text")
+  const fixUndefinedValue = (value: string | number | undefined): string =>
+    value === undefined ? "" : `${value}`;
+
   export let name: string;
-  export let inputType: "number" | "text" = "number";
+  export let inputType: "icp" | "number" | "text" = "number";
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
@@ -17,33 +23,118 @@
 
   export let theme: "dark" | "light" = "light";
 
-  const handleInput = ({ currentTarget }: InputEventHandler) =>
-    (value =
-      inputType === "number" ? +currentTarget.value : currentTarget.value);
+  let inputElement: HTMLInputElement | undefined;
+
+  let selectionStart: number | null = 0;
+  let selectionEnd: number | null = 0;
+
+  let icpValue: string = fixUndefinedValue(value);
+  let lastValidICPValue: string | number | undefined = value;
+  let internalValueChange: boolean = true;
+
+  $: value,
+    (() => {
+      if (!internalValueChange && inputType === "icp") {
+        icpValue = fixUndefinedValue(value);
+        lastValidICPValue = icpValue;
+      }
+
+      internalValueChange = false;
+    })();
+
+  const restoreFromValidValue = (noValue: boolean = false) => {
+    if (inputElement === undefined || inputType !== "icp") {
+      return;
+    }
+
+    if (noValue) {
+      lastValidICPValue = undefined;
+    }
+
+    internalValueChange = true;
+    value =
+      lastValidICPValue === undefined
+        ? undefined
+        : typeof lastValidICPValue === "number"
+        ? lastValidICPValue.toFixed(8)
+        : +lastValidICPValue;
+    icpValue = fixUndefinedValue(lastValidICPValue);
+
+    // force dom update (because no active triggers)
+    inputElement.value = icpValue;
+
+    // restore cursor position
+    inputElement.setSelectionRange(selectionStart, selectionEnd);
+  };
+
+  const handleInput = ({ currentTarget }: InputEventHandler) => {
+    if (inputType === "icp") {
+      const currentValue = currentTarget.value;
+
+      // handle invalid input
+      if (isValidICPFormat(currentValue) === false) {
+        // restore value (e.g. to fix invalid paste)
+        restoreFromValidValue();
+        return;
+      }
+
+      // reset to undefined ("" => undefined)
+      if (currentValue.length === 0) {
+        restoreFromValidValue(true);
+        return;
+      }
+
+      lastValidICPValue = currentValue;
+      icpValue = fixUndefinedValue(currentValue);
+
+      internalValueChange = true;
+      // for inputType="icp" value is a number
+      // TODO: do we need to fix lost precision for too big for number inputs?
+      value = +currentValue;
+      return;
+    }
+
+    internalValueChange = true;
+    value = inputType === "number" ? +currentTarget.value : currentTarget.value;
+  };
+
+  const handleKeyDown = () => {
+    if (inputElement === undefined) {
+      return;
+    }
+
+    // preserve selection
+    ({ selectionStart, selectionEnd } = inputElement);
+  };
 
   $: step = inputType === "number" ? step ?? "any" : undefined;
-  $: autocomplete = inputType !== "number" ? autocomplete ?? "off" : undefined;
+  $: autocomplete =
+    inputType !== "number" && inputType !== "icp"
+      ? autocomplete ?? "off"
+      : undefined;
 
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme}`} class:disabled>
+<div class={`input-block ${theme} `} class:disabled>
   <input
     data-tid="input-ui-element"
-    type={inputType}
+    type={inputType === "icp" ? "text" : inputType}
+    bind:this={inputElement}
     {required}
     {spellcheck}
     {name}
     {step}
     {disabled}
-    {value}
+    value={inputType === "icp" ? icpValue : value}
     {minLength}
     {placeholder}
     {max}
     {autocomplete}
     on:blur
     on:input={handleInput}
+    on:keydown={handleKeyDown}
   />
 
   <span class="placeholder">
@@ -59,7 +150,10 @@
   .input-block {
     position: relative;
 
-    margin: var(--padding-2x) 0;
+    margin-top: var(--padding-2x);
+    margin-bottom: var(--input-margin-bottom, var(--padding-2x));
+    margin-left: 0;
+    margin-right: 0;
 
     display: flex;
     align-items: center;

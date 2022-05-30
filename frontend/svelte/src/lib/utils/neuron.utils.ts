@@ -27,6 +27,7 @@ import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
+import type { Account } from "../types/account";
 import { InvalidAmountError } from "../types/errors";
 import {
   getAccountByPrincipal,
@@ -152,13 +153,14 @@ export const sortNeuronsByCreatedTimestamp = (
  */
 export const isNeuronControllableByUser = ({
   neuron: { fullNeuron },
-  identity,
+  mainAccount,
 }: {
   neuron: NeuronInfo;
-  identity?: Identity | null;
+  mainAccount?: Account;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
-  fullNeuron.controller === identity?.getPrincipal().toText();
+  mainAccount?.type === "main" &&
+  fullNeuron.controller === mainAccount.principal?.toText();
 
 /*
  * Returns true if the neuron can be controlled. A neuron can be controlled if:
@@ -275,7 +277,7 @@ export const isValidInputAmount = ({
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
 export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(String(amount));
+  const stake = ICP.fromString(amount.toFixed(8));
 
   if (!(stake instanceof ICP) || stake === undefined) {
     throw new InvalidAmountError();
@@ -320,7 +322,9 @@ const isMergeableNeuron = ({
   neuron: NeuronInfo;
   accounts: AccountsStore;
 }): boolean =>
-  !hasJoinedCommunityFund(neuron) && isNeuronControllable({ neuron, accounts });
+  !hasJoinedCommunityFund(neuron) &&
+  // Merging hardware wallet neurons is not yet supported
+  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
@@ -331,6 +335,9 @@ const getMergeableNeuronMessageKey = ({
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
+  }
+  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
+    return "neurons.cannot_merge_hardware_wallet";
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";

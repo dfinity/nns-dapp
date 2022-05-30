@@ -60,7 +60,7 @@ help_text() {
 	--nns-dapp
 	  Depoy the NNS dapp.
 
-	--users
+	--populate
 	  Create sample users with ICP, neurons and follow relationships.
 
 	--open
@@ -79,7 +79,7 @@ START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
-CREATE_USERS="false"
+POPULATE="false"
 OPEN_NNS_DAPP="false"
 
 while (($# > 0)); do
@@ -106,11 +106,12 @@ while (($# > 0)); do
     GUESS="false"
     DEPLOY_NNS_DAPP="true"
     ;;
-  --users)
+  --populate)
     GUESS="false"
-    CREATE_USERS="true"
+    POPULATE="true"
     ;;
   --open)
+    GUESS="false"
     OPEN_NNS_DAPP="true"
     ;;
   --dry-run)
@@ -131,7 +132,7 @@ if [[ "$GUESS" == "true" ]]; then
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
     DEPLOY_NNS_DAPP=true
-    CREATE_USERS=true
+    POPULATE=true
     ;;
   *)
     { # Can we find an existing II?
@@ -142,7 +143,7 @@ if [[ "$GUESS" == "true" ]]; then
       DEPLOY_II=true
     }
     DEPLOY_NNS_DAPP=true
-    CREATE_USERS=true
+    POPULATE=true
     ;;
   esac
 fi
@@ -152,7 +153,7 @@ echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
 echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
-echo CREATE_USERS=$CREATE_USERS
+echo POPULATE=$POPULATE
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
@@ -203,12 +204,31 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
-if [[ "$CREATE_USERS" == "true" ]]; then
-  pushd e2e-tests
-  npm ci
-  printf '%s\n' user-N01-neuron-created.e2e.ts |
-    SCREENSHOT=1 xargs -I {} npm run wdio -- --spec "./specs/{}"
-  popd
+if [[ "$POPULATE" == "true" ]]; then
+  echo Setting the cycles exchange rate...
+  echo Note: This needs a patched cycles minting canister.
+  ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
+
+  # Allow the cmc canister to create canisters anywhere.
+  # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
+  # Note: Local dfx has no subnets.
+  [[ "$DFX_NETWORK" == "local" ]] || {
+    echo Setting the list of subnets CMC is authorized to create canisters in...
+    ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK" --jfdi
+  }
+
+  # Create users and neurons
+  # Note: Cannot be used with flutter.
+  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY frontend/ts/src/config.json)"
+  [[ "$REDIRECT_TO_LEGACY" == "prod" ]] ||
+    [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
+    echo Creating users and neurons...
+    pushd e2e-tests
+    npm ci
+    printf '%s\n' user-N01-neuron-created.e2e.ts |
+      SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
+    popd
+  }
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then

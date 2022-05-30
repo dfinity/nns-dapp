@@ -64,7 +64,7 @@ import {
   syncAccounts,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -225,7 +225,7 @@ export const stakeNeuron = async ({
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
  * @param {Object} params
- * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. Useful because the function `checkNeuronBalances` that does this check might ultimately call the current function `listNeurons` again.
+ * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
@@ -245,12 +245,14 @@ export const listNeurons = async ({
       if (!certified || skipCheck) {
         return;
       }
-      // Query the ledger for each neuron
-      // refresh those whose stake does not match their ledger balance.
       try {
-        await checkNeuronBalances(neurons);
+        // Query the ledger for each neuron
+        // refresh those whose stake does not match their ledger balance.
+        const refetch = await shouldRefetchNeurons(neurons);
+        if (refetch) {
+          listNeurons({ skipCheck: true });
+        }
       } catch (error) {
-        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-424
         console.error(error);
       }
     },
@@ -347,7 +349,9 @@ const claimNeurons =
       neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
     );
 
-const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
+const shouldRefetchNeurons = async (
+  neurons: NeuronInfo[]
+): Promise<boolean> => {
   const identity = await getIdentity();
 
   const fullNeurons: Neuron[] = neurons
@@ -355,7 +359,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
     .filter(isDefined);
 
   if (fullNeurons.length === 0) {
-    return;
+    return false;
   }
 
   const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
@@ -364,7 +368,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   });
 
   if (neuronIdsToRefresh.length === 0) {
-    return;
+    return false;
   }
 
   // We found neurons that need to be refreshed.
@@ -374,7 +378,7 @@ const checkNeuronBalances = async (neurons: NeuronInfo[]): Promise<void> => {
   );
   await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
 
-  return listNeurons({ skipCheck: true });
+  return true;
 };
 
 // We always want to call this with the user identity
@@ -862,13 +866,19 @@ export const removeFollowee = async ({
 export const loadNeuron = ({
   neuronId,
   forceFetch = false,
+  // Check also the Neuron's stake when loading only one.
+  // Same we do when loading the list of neurons.
+  skipCheck = false,
   setNeuron,
   handleError,
+  strategy,
 }: {
   neuronId: NeuronId;
   forceFetch?: boolean;
+  skipCheck?: boolean;
   setNeuron: (params: { neuron: NeuronInfo; certified: boolean }) => void;
   handleError?: () => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const catchError = (err: unknown) => {
     if (err instanceof NotFoundError) {
@@ -887,20 +897,38 @@ export const loadNeuron = ({
   };
 
   return queryAndUpdate<NeuronInfo | undefined, unknown>({
+    strategy,
     request: (options) =>
       getNeuron({
         neuronId,
         forceFetch,
         ...options,
       }),
-    onLoad: ({ response: neuron, certified }) => {
-      // Handle not authorized neurons as if not found.
-      if (neuron === undefined || !userAuthorizedNeuron(neuron)) {
+    onLoad: async ({ response: neuron, certified }) => {
+      if (neuron === undefined) {
         catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
-
-      setNeuron({ neuron, certified });
+      if (!certified || skipCheck) {
+        setNeuron({ neuron, certified });
+        return;
+      }
+      // If the check is required, we don't want to call `setNeuron` until it has finished.
+      // For example: to avoid closing the "IncreaseStakeNeuronModal" before we finish this check.
+      const refetch = await shouldRefetchNeurons([neuron]);
+      if (refetch) {
+        await loadNeuron({
+          neuronId,
+          forceFetch,
+          setNeuron,
+          handleError,
+          // Avoid an infinite loop skipping check
+          skipCheck: true,
+          strategy: "query",
+        });
+      } else {
+        setNeuron({ neuron, certified });
+      }
     },
     onError: ({ error, certified }) => {
       console.error(error);
@@ -912,6 +940,24 @@ export const loadNeuron = ({
     },
   });
 };
+
+// Not resolve until the neuron has been loaded
+export const reloadNeuron = (neuronId: NeuronId) =>
+  new Promise<void>((resolve) => {
+    loadNeuron({
+      neuronId,
+      forceFetch: true,
+      strategy: "update",
+      skipCheck: false,
+      setNeuron: ({ neuron, certified }) => {
+        neuronsStore.pushNeurons({ neurons: [neuron], certified });
+        resolve();
+      },
+      handleError: () => {
+        resolve();
+      },
+    });
+  });
 
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet

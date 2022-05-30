@@ -16,9 +16,9 @@
   $: ({ identifier, balance } = account);
 </script>
 
-<Card on:click {role}>
+<Card on:click {role} testId="account-card">
   <div slot="start" class="title">
-    <h3><slot /></h3>
+    <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
   </div>
   <ICP slot="end" icp={balance} />

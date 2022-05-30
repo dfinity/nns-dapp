@@ -1,22 +1,30 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
   import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
   import { invalidAddress } from "../../utils/accounts.utils";
+  import InputWithError from "../ui/InputWithError.svelte";
 
   export let address: string = "";
-  // TODO: Validate valid address on blur https://dfinity.atlassian.net/browse/L2-479
+
+  let showError = false;
+  const showErrorIfAny = () => {
+    showError = address.length > 0 && invalidAddress(address);
+  };
+  // Hide error on change
+  $: address, (showError = false);
 </script>
 
 <article>
   <form on:submit|preventDefault>
-    <Input
+    <InputWithError
       inputType="text"
       placeholderLabelKey="accounts.address"
       name="accounts-address"
       bind:value={address}
       minLength={ACCOUNT_ADDRESS_MIN_LENGTH}
       theme="dark"
+      errorMessage={showError ? $i18n.error.address_not_valid : undefined}
+      on:blur={showErrorIfAny}
     />
     <button
       class="primary small"

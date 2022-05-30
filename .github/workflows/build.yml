@@ -19,6 +19,7 @@ env:
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
       IC_COMMIT: 6dc5e2dcb50569e20891af02b846a7d9a58e3489
+      NNS_CACHING_KEY: dv-0004
 
 jobs:
   nns_canisters:
@@ -32,7 +33,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0001"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
 
       - name: Download prebuilt nns canisters
         if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
@@ -54,20 +55,15 @@ jobs:
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: target/ic
 
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
+
   build:
     needs: [nns_canisters]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
-
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-dv-0001"
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
@@ -111,6 +107,15 @@ jobs:
         run: |
           dfx start --background --clean
 
+      - name: Get cached nns canisters
+        id: create_nns_canister_cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            target/ic
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+      - name: Show canister versions
+        run: sha256sum target/ic/*.wasm
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy NNS canisters
@@ -120,6 +125,10 @@ jobs:
       - name: Deploy
         run: |
           ./e2e-tests/scripts/deploy-local-canisters
+
+      - name: Create initial state
+        run: |
+          ./deploy.sh --populate
 
       - name: Build proxy
         working-directory: proxy

@@ -43,6 +43,7 @@ const {
   stopDissolving,
   updateDelay,
   mergeNeurons,
+  reloadNeuron,
 } = services;
 
 jest.mock("../../../lib/stores/toasts.store", () => {
@@ -1211,6 +1212,7 @@ describe("neurons-services", () => {
   });
 
   describe("load neuron", () => {
+    afterEach(() => jest.clearAllMocks());
     it("should get neuron from neurons store if presented and not call queryNeuron", async () => {
       neuronsStore.pushNeurons({ neurons: [mockNeuron], certified: true });
       await loadNeuron({
@@ -1227,9 +1229,67 @@ describe("neurons-services", () => {
     it("should call the api to get neuron if not in store", async () => {
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        setNeuron: jest.fn,
+        setNeuron: jest.fn(),
       });
       expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should call the api to get neuron and check the balance on update", async () => {
+      const neuronId = BigInt(333333);
+      const controlledNeuron = {
+        ...mockNeuron,
+        neuronId,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      spyGetNeuron.mockImplementation(() => Promise.resolve(controlledNeuron));
+      await loadNeuron({
+        neuronId,
+        setNeuron: jest.fn(),
+      });
+      await tick();
+      expect(spyGetNeuron).toBeCalled();
+      expect(spyGetNeuronBalance).toBeCalled();
+    });
+
+    it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
+      const neuronId = BigInt(333333);
+      const publicInfoNeuron = {
+        ...mockNeuron,
+        neuronId,
+        fullNeuron: undefined,
+      };
+      spyGetNeuron.mockImplementation(() => Promise.resolve(publicInfoNeuron));
+      const setNeuronSpy = jest.fn();
+      await loadNeuron({
+        neuronId,
+        setNeuron: setNeuronSpy,
+      });
+      expect(spyGetNeuron).toBeCalled();
+      expect(setNeuronSpy).toBeCalled();
+      // Reset spy implementation
+      spyGetNeuron.mockImplementation(() => Promise.resolve(mockNeuron));
+    });
+  });
+
+  describe("reloadNeuron", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should call the api", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should add neuron to the store", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      const store = get(neuronsStore);
+      expect(
+        store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
+      ).toBeDefined();
     });
   });
 });

@@ -52,7 +52,7 @@ describe("DisburseNeuronModal", () => {
   it("should render accounts", async () => {
     const { queryAllByTestId } = await renderDisburseModal(mockNeuron);
 
-    const accountCards = queryAllByTestId("card");
+    const accountCards = queryAllByTestId("account-card");
     expect(accountCards.length).toBe(2);
   });
 
@@ -61,7 +61,7 @@ describe("DisburseNeuronModal", () => {
       mockNeuron
     );
 
-    const accountCards = queryAllByTestId("card");
+    const accountCards = queryAllByTestId("account-card");
     expect(accountCards.length).toBe(2);
 
     const firstAccount = accountCards[0];
