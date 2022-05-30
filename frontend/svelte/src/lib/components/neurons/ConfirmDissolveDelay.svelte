@@ -16,6 +16,7 @@
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
+  export let confirmButtonText: string;
 
   const dispatcher = createEventDispatcher();
   let neuronICP: bigint;
@@ -72,7 +73,7 @@
       disabled={$busy}
       on:click={updateNeuron}
     >
-      {$i18n.neurons.confirm_delay}
+      {confirmButtonText}
     </button>
   </div>
 </div>

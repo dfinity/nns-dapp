@@ -19,7 +19,7 @@ import { mapPromises, stringifyJson } from "../utils/utils";
  * 2. log it in the dev console
  * 3. generates a json file with logged context
  */
-export const generateDebugLog = async () => {
+export const generateDebugLog = async (safeToFile: boolean) => {
   const debugStore = initDebugStore();
   const {
     route,
@@ -51,7 +51,7 @@ export const generateDebugLog = async () => {
     },
     sortedNeuron: await mapPromises(sortedNeuron, anonymizeNeuronInfo),
     knownNeurons: await mapPromises(knownNeurons, anonymizeKnownNeuron),
-    canisters: await mapPromises(canisters, anonymizeCanister),
+    canisters: await mapPromises(canisters.canisters, anonymizeCanister),
     proposals: {
       proposals: await mapPromises(proposals?.proposals, anonymizeProposal),
       certified: proposals?.certified,
@@ -99,10 +99,13 @@ export const generateDebugLog = async () => {
   const anonymizedStateAsText = stringifyJson(anonymizedState, {
     indentation: 2,
   });
+
   console.log(date, anonymizedStateAsText);
-  // saveToFile(anonymizedStateAsText, `${date}_nns-local-state.json`);
-  saveToJSONFile({
-    blob: new Blob([anonymizedStateAsText]),
-    filename: `${date}_nns-local-state.json`,
-  });
+
+  if (safeToFile) {
+    saveToJSONFile({
+      blob: new Blob([anonymizedStateAsText]),
+      filename: `${date}_nns-local-state.json`,
+    });
+  }
 };

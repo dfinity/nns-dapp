@@ -23,3 +23,4 @@ export const REDIRECT_TO_LEGACY: RedirectToLegacy = getRequiredEnvEnum(
   RedirectToLegacy
 );
 export const NNS_DAPP_URL: string = getRequiredEnvVar("OWN_CANISTER_URL");
+export const DFX_NETWORK: string = getRequiredEnvVar("DFX_NETWORK");

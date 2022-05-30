@@ -4,7 +4,7 @@ import {
   type ResponseSign,
 } from "@zondax/ledger-icp";
 import { ExtendedLedgerError } from "../../../lib/constants/ledger.constants";
-import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
+import { LedgerErrorKey } from "../../../lib/types/ledger.errors";
 import {
   decodePublicKey,
   decodeSignature,

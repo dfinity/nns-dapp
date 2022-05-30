@@ -1,5 +1,6 @@
 import { MyNavigator } from "../common/navigator";
 import { execFile } from "node:child_process";
+import { DFX_NETWORK } from "../common/constants";
 
 export class ProposalsTab extends MyNavigator {
   static readonly SELECTOR: string = `[data-tid="proposals-tab"]`;
@@ -19,7 +20,7 @@ export class ProposalsTab extends MyNavigator {
     const proposalId: number = await new Promise((yay, nay) =>
       execFile(
         "../scripts/propose",
-        ["--to", proposalName, "--jfdi"],
+        ["--to", proposalName, "--dfx-network", DFX_NETWORK, "--jfdi"],
         {},
         (error, stdout, stderr) => {
           if (error) {

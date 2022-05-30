@@ -51,12 +51,12 @@ describe("AddAccountType", () => {
   it("should select add account type subaccount", async () =>
     testSelectType({
       type: "subAccount",
-      selector: 'div[role="button"]:first-of-type',
+      selector: 'article[role="button"]:first-of-type',
     }));
 
   it("should select add account type hardwareWallet", async () =>
     testSelectType({
       type: "hardwareWallet",
-      selector: 'div[role="button"]:last-of-type',
+      selector: 'article[role="button"]:last-of-type',
     }));
 });

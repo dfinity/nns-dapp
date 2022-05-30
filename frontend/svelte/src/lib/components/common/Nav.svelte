@@ -72,7 +72,7 @@
 
       &:focus,
       &:hover {
-        background: var(--blue-400);
+        background: var(--blue-500-tint);
       }
     }
 
