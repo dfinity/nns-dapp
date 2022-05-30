@@ -1,7 +1,10 @@
 import { ICP } from "@dfinity/nns";
+import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { InvalidAmountError } from "../../../lib/types/errors";
 import {
+  convertIcpToTCycles,
   convertNumberToICP,
+  convertTCyclesToE8s,
   formatICP,
   formattedTransactionFeeICP,
   maxICP,
@@ -62,6 +65,40 @@ describe("icp-utils", () => {
     it("raises error on negative numbers", () => {
       const call = () => convertNumberToICP(-10);
       expect(call).toThrow(InvalidAmountError);
+    });
+  });
+
+  describe("convertIcpToTCycles", () => {
+    it("converts ICP to TCycles", () => {
+      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(10_000) })).toBe(
+        1
+      );
+      expect(
+        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(10_000) })
+      ).toBe(2.5);
+      expect(
+        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(20_000) })
+      ).toBe(5);
+      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(15_000) })).toBe(
+        1.5
+      );
+    });
+  });
+
+  describe("convertTCyclesToE8s", () => {
+    it("converts TCycles to E8s", () => {
+      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
+        BigInt(E8S_PER_ICP)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
+        BigInt(E8S_PER_ICP * 2.5)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
+        BigInt(125_000_000)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
+        BigInt(66666666)
+      );
     });
   });
 });

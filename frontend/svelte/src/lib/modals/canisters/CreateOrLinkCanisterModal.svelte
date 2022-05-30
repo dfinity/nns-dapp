@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ICP } from "@dfinity/nns";
   import { tick } from "svelte";
   import AttachCanister from "../../components/canisters/AttachCanister.svelte";
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
@@ -38,6 +39,7 @@
 
   let currentStep: Step | undefined;
   let modal: WizardModal;
+  let amount: ICP | undefined;
 
   const selectType = async ({
     detail,
@@ -53,6 +55,13 @@
     await tick();
     modal.next();
   };
+
+  const selectAmount = ({ detail }: CustomEvent<{ amount: ICP }>) => {
+    amount = detail.amount;
+    modal.next();
+  };
+
+  // TODO: Finish flow - https://dfinity.atlassian.net/browse/L2-227
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -69,7 +78,7 @@
       <AttachCanister on:nnsClose />
     {/if}
     {#if currentStep?.name === "SelectCycles"}
-      <SelectCyclesCanister on:nnsClose />
+      <SelectCyclesCanister on:nnsClose on:nnsSelectAmount={selectAmount} />
     {/if}
     {#if currentStep?.name === "ConfirmCycles"}
       <ConfirmCyclesCanister on:nnsClose />

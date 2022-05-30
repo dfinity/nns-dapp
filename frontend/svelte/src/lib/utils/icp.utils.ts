@@ -36,10 +36,23 @@ export const convertNumberToICP = (amount: number): ICP => {
   return stake;
 };
 
-export const convertIcpToTCycles = (
-  icpNumber: number,
-  ratio: bigint
-): bigint => {
+export const convertIcpToTCycles = ({
+  icpNumber,
+  ratio,
+}: {
+  icpNumber: number;
+  ratio: bigint;
+}): number => {
   const icp = convertNumberToICP(icpNumber);
-  return (icp.toE8s() * ratio) / ONE_TRILLION;
+  return Number(icp.toE8s() * ratio) / ONE_TRILLION;
+};
+
+export const convertTCyclesToE8s = ({
+  tCycles,
+  ratio,
+}: {
+  tCycles: number;
+  ratio: bigint;
+}): bigint => {
+  return BigInt(tCycles * ONE_TRILLION) / ratio;
 };
