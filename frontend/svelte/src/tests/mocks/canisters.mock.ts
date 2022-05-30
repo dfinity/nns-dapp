@@ -8,9 +8,10 @@ import type { CanisterDetails as CanisterInfo } from "../../lib/canisters/nns-da
 import type { CanistersStore } from "../../lib/stores/canisters.store";
 import { mockIdentity } from "./auth.store.mock";
 
+const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
 export const mockCanister = {
   name: "",
-  canister_id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+  canister_id: mockCanisterId,
 };
 export const mockCanisters: CanisterInfo[] = [
   {
@@ -21,7 +22,7 @@ export const mockCanisters: CanisterInfo[] = [
 ];
 
 export const mockCanisterDetails: CanisterDetails = {
-  id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+  id: mockCanisterId,
   status: CanisterStatus.Running,
   memorySize: BigInt(10),
   cycles: BigInt(30),
