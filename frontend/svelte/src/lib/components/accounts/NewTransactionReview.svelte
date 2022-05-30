@@ -47,7 +47,12 @@
 
   <NewTransactionInfo />
 
-  <button class="primary full-width" type="submit" disabled={$busy} data-tid="confirm-and-send">
+  <button
+    class="primary full-width"
+    type="submit"
+    disabled={$busy}
+    data-tid="confirm-and-send"
+  >
     {$i18n.accounts.confirm_and_send}
   </button>
 </form>
