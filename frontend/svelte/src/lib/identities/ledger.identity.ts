@@ -13,13 +13,13 @@ import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
 import LedgerApp, { type ResponseSign } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
 import { LEDGER_DEFAULT_DERIVE_PATH } from "../constants/ledger.constants";
+import type { Secp256k1PublicKey } from "../keys/secp256k1";
+import { i18n } from "../stores/i18n";
 import {
   LedgerErrorKey,
   LedgerErrorMessage,
   type LedgerHQTransportError,
 } from "../types/ledger.errors";
-import type { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
 

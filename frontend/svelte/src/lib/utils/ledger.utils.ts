@@ -8,9 +8,9 @@ import {
   LEDGER_SIGNATURE_LENGTH,
   type AllLedgerError,
 } from "../constants/ledger.constants";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { Secp256k1PublicKey } from "../keys/secp256k1";
 import { i18n } from "../stores/i18n";
+import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { replacePlaceholders } from "./i18n.utils";
 
 export const decodePublicKey = ({
