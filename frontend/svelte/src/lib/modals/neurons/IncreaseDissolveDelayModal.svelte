@@ -41,6 +41,7 @@
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
       {neuron}
+      confirmButtonText={$i18n.neurons.update_delay}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
@@ -48,6 +49,7 @@
   {/if}
   {#if currentStep.name === "ConfirmDissolveDelay"}
     <ConfirmDissolveDelay
+      confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}
       {delayInSeconds}
       on:nnsUpdated={closeModal}

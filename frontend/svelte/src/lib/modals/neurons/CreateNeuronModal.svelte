@@ -182,6 +182,7 @@
     {#if newNeuron !== undefined}
       <SetDissolveDelay
         cancelButtonText={$i18n.neurons.skip}
+        confirmButtonText={$i18n.neurons.set_delay}
         neuron={newNeuron}
         on:nnsCancel={goEditFollowers}
         on:nnsConfirmDelay={goNext}
@@ -192,6 +193,7 @@
   {#if currentStep?.name === "ConfirmDissolveDelay"}
     {#if newNeuron !== undefined}
       <ConfirmDissolveDelay
+        confirmButtonText={$i18n.neurons.confirm_set_delay}
         neuron={newNeuron}
         {delayInSeconds}
         on:nnsUpdated={goNext}

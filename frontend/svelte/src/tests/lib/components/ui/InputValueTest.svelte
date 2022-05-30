@@ -1,11 +1,17 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte/internal";
+
   import Input from "../../../../lib/components/ui/Input.svelte";
 
-  export let inputType: "text";
-  export let name: string;
-  export let placeholderLabelKey: string;
+  const dispatch = createEventDispatcher();
 
-  let amount: string;
+  export let inputType: "text" | "icp" = "text";
+  export let name: string;
+  export let value: string | undefined = undefined;
+  export let placeholderLabelKey: string = "test.placeholder";
+
+  let amount: string | undefined = value;
+  $: amount, (() => dispatch("testAmount", { amount }))();
 
   // We want to test that we can change value programtically
   const changeValue = () => {

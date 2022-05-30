@@ -190,7 +190,9 @@
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
-    "confirm_delay": "Confirm and Update Delay",
+    "set_delay": "Set Delay",
+    "confirm_update_delay": "Confirm and Update Delay",
+    "confirm_set_delay": "Confirm and Set Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
@@ -230,7 +232,7 @@
     "topic_7_subtitle": "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     "topic_8_title": "Network Canister Management",
     "topic_8_subtitle": "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS.",
-    "topic_9_title": "Kyc",
+    "topic_9_title": "KYC",
     "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
     "topic_10_title": "Node Provider Rewards",
     "topic_10_subtitle": "Proposals that reward node providers",
@@ -254,10 +256,22 @@
     "step3": "Send cycles to canisters",
     "principal_is": "Your principal id is",
     "create_or_link": "Create or Link Canister",
-    "empty": "No canisters yet."
+    "empty": "No canisters yet.",
+    "add_canister": "Add Canister",
+    "create_canister_title": "Create New Canister",
+    "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "link_canister_title": "Link Canister To Account",
+    "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
+    "link_canister_success": "The canister was linked successfully",
+    "attach_canister": "Attach Canister",
+    "enter_canister_id": "Enter Canister ID:",
+    "canister_id": "Canister ID"
   },
   "canister_detail": {
-    "title": "Canister"
+    "title": "Canister",
+    "id": "Id: $canisterId",
+    "cycles": "Cycles",
+    "controllers": "Controllers"
   },
   "topics": {
     "Unspecified": "Unspecified",
@@ -269,7 +283,7 @@
     "ParticipantManagement": "Participant Management",
     "SubnetManagement": "Subnet Management",
     "NetworkCanisterManagement": "Network Canister Management",
-    "Kyc": "Kyc",
+    "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards"
   },
   "rewards": {
