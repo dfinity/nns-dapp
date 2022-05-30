@@ -3,6 +3,7 @@ import { mock } from "jest-mock-extended";
 import {
   attachCanister,
   createCanister,
+  getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
   topUpCanister,
@@ -85,6 +86,18 @@ describe("canisters-api", () => {
         mockCanisterDetails.id
       );
       expect(response).toEqual(mockCanisterDetails);
+    });
+  });
+
+  describe("getIcpToCyclesExchangeRate", () => {
+    it("should call CMC to get conversion rate", async () => {
+      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(
+        BigInt(10_000)
+      );
+
+      const response = await getIcpToCyclesExchangeRate(mockIdentity);
+      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
+      expect(response).toEqual(BigInt(10_000));
     });
   });
 

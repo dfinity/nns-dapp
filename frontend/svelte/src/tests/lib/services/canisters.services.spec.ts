@@ -1,9 +1,11 @@
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
+import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import {
   attachCanister,
   getCanisterDetails,
+  getIcpToCyclesExchangeRate,
   listCanisters,
   routePathCanisterId,
 } from "../../../lib/services/canisters.services";
@@ -27,6 +29,10 @@ describe("canisters-services", () => {
   const spyQueryCanisterDetails = jest
     .spyOn(api, "queryCanisterDetails")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails));
+
+  const spyGetExchangeRate = jest
+    .spyOn(api, "getIcpToCyclesExchangeRate")
+    .mockImplementation(() => Promise.resolve(BigInt(10_000 * E8S_PER_ICP)));
 
   describe("listCanisters", () => {
     afterEach(() => {
@@ -116,6 +122,24 @@ describe("canisters-services", () => {
       const call = () => getCanisterDetails(mockCanisterDetails.id);
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+    });
+  });
+
+  describe("getIcpToCyclesExchangeRate", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call api to get conversion rate", async () => {
+      const response = await getIcpToCyclesExchangeRate();
+      expect(response).toBe(BigInt(10_000));
+      expect(spyGetExchangeRate).toBeCalled();
+    });
+
+    it("should return undefined if no identity", async () => {
+      setNoIdentity();
+
+      const response = await getIcpToCyclesExchangeRate();
+      expect(response).toBeUndefined();
+      expect(spyGetExchangeRate).not.toBeCalled();
 
       resetIdentity();
     });
