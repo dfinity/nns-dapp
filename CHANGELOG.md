@@ -1,7 +1,11 @@
 # Changelog
 
-## Proposal XXX
-... to fill with details from the proposal
+## Proposal 61859
+* Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
+* Add the ability to dump debug info.
+* Prepare for more tabs to be released as svelte.
+* Improve the infrastructure for third party contributions.
+* More tests.
 
 ## Proposal 60694
 - Update mechanics for creating canisters
