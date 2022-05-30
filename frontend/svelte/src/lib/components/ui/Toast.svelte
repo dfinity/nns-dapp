@@ -110,8 +110,8 @@
     &.warn {
       background: var(--yellow-500);
       color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-400-tint);
-      --scrollbar-thumb: var(--yellow-600);
+      --scrollbar-background: var(--yellow-500-tint);
+      --scrollbar-thumb: var(--yellow-500);
 
       button.close {
         color: var(--yellow-500-contrast);
