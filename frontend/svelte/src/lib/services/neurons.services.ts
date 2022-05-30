@@ -43,7 +43,7 @@ import {
   InsufficientAmountError,
   NotAuthorizedError,
   NotFoundError,
-} from "../types/errors";
+} from "../types/neurons.errors";
 import { isAccountHardwareWallet } from "../utils/accounts.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";

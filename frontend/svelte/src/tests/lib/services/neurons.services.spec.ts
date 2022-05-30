@@ -14,7 +14,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedError } from "../../../lib/types/errors";
+import { NotAuthorizedError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,

@@ -13,7 +13,7 @@ import {
   MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
-import { InvalidAmountError } from "../../../lib/types/errors";
+import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
