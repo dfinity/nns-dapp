@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
   import { tick } from "svelte";
   import AttachCanister from "../../components/canisters/AttachCanister.svelte";
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
