@@ -4,7 +4,7 @@ import { mock } from "jest-mock-extended";
 import * as api from "../../../lib/api/governance.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
-import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
+import { LedgerErrorKey } from "../../../lib/types/ledger.errors";
 import { LedgerIdentity } from "../../../lib/identities/ledger.identity";
 import * as accountsServices from "../../../lib/services/accounts.services";
 import * as authServices from "../../../lib/services/auth.services";

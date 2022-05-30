@@ -14,7 +14,7 @@ import {
   InvalidAmountError,
   NotAuthorizedError,
   NotFoundError,
-} from "../types/errors";
+} from "../types/neurons.errors";
 import type { ToastMsg } from "../types/toast";
 import { translate } from "./i18n.utils";
 

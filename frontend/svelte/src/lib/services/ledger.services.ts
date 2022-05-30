@@ -4,7 +4,7 @@ import { get } from "svelte/store";
 import { queryNeurons } from "../api/governance.api";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { LedgerConnectionState } from "../constants/ledger.constants";
-import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
+import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";

@@ -17,7 +17,7 @@ import {
   LedgerErrorKey,
   LedgerErrorMessage,
   type LedgerHQTransportError,
-} from "../errors/ledger.errors";
+} from "../types/ledger.errors";
 import type { Secp256k1PublicKey } from "../keys/secp256k1";
 import { i18n } from "../stores/i18n";
 import { replacePlaceholders } from "../utils/i18n.utils";

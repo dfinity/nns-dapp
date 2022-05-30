@@ -28,7 +28,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import type { Account } from "../types/account";
-import { InvalidAmountError } from "../types/errors";
+import { InvalidAmountError } from "../types/neurons.errors";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
