@@ -9,7 +9,11 @@ describe("ConfirmDissolveDelay", () => {
   // Tested in CreateNeuronModal.spec.ts
   it("is not tested in isolation", () => {
     render(ConfirmDisolveDelay, {
-      props: { neuron: mockNeuron, delayInSeconds: 10_000 },
+      props: {
+        neuron: mockNeuron,
+        delayInSeconds: 10_000,
+        confirmButtonText: "confirm",
+      },
     });
     expect(true).toBeTruthy();
   });

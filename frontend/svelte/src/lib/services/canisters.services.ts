@@ -1,11 +1,15 @@
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
+  queryCanisterDetails,
   queryCanisters,
 } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
+import { getPrincipalFromString } from "../utils/accounts.utils";
+import { getLastPathDetail } from "../utils/app-path.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -18,7 +22,7 @@ export const listCanisters = async ({
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   }
 
-  return queryAndUpdate<CanisterDetails[], unknown>({
+  return queryAndUpdate<CanisterInfo[], unknown>({
     request: (options) => queryCanisters(options),
     onLoad: ({ response: canisters, certified }) =>
       canistersStore.setCanisters({ canisters, certified }),
@@ -55,5 +59,26 @@ export const attachCanister = async (
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
     return { success: false };
+  }
+};
+
+export const routePathCanisterId = (path: string): Principal | undefined => {
+  const maybeIdString = getLastPathDetail(path);
+  return maybeIdString !== undefined
+    ? getPrincipalFromString(maybeIdString)
+    : undefined;
+};
+
+export const getCanisterDetails = async (
+  canisterId: Principal
+): Promise<CanisterDetails | undefined> => {
+  const identity = await getIdentity();
+  try {
+    return await queryCanisterDetails({
+      canisterId,
+      identity,
+    });
+  } catch (error) {
+    // TODO: manage errors https://dfinity.atlassian.net/browse/L2-615
   }
 };
