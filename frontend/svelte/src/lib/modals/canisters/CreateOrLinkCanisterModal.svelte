@@ -93,7 +93,7 @@
     {/if}
     {#if currentStep?.name === "SelectAccount"}
       <SelectAccount
-        hideHarwareWalletAccounts
+        hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
     {/if}

@@ -9,7 +9,7 @@
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;
   export let displayTitle: boolean = false;
-  export let hideHarwareWalletAccounts: boolean = false;
+  export let hideHardwareWalletAccounts: boolean = false;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -32,7 +32,8 @@
   let showTitle: boolean = false;
   $: showTitle =
     displayTitle &&
-    (subAccounts?.length > 0 || hardwareWalletAccounts?.length > 0);
+    (subAccounts?.length > 0 ||
+      (hardwareWalletAccounts?.length > 0 && !hideHardwareWalletAccounts));
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
@@ -58,7 +59,7 @@
       >
     {/each}
 
-    {#if !hideHarwareWalletAccounts}
+    {#if !hideHardwareWalletAccounts}
       {#each hardwareWalletAccounts as hardwareWalletAccount}
         <AccountCard
           role="button"
