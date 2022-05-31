@@ -274,6 +274,7 @@ interface I18nCanisters {
   add_canister: string;
   create_canister_title: string;
   create_canister_subtitle: string;
+  create_canister_success: string;
   link_canister_title: string;
   link_canister_subtitle: string;
   link_canister_success: string;
