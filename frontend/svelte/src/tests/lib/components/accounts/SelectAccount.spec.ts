@@ -76,7 +76,7 @@ describe("SelectAccount", () => {
     });
 
     await waitFor(() =>
-        expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
+      expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
     );
 
     accountsStore.reset();
