@@ -53,7 +53,7 @@
     });
     if (id !== undefined) {
       toastsStore.success({
-        labelKey: "neurons.split_neuron_success",
+        labelKey: "neuron_detail.split_neuron_success",
       });
     }
     dispatcher("nnsClose");

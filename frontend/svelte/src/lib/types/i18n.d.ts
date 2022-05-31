@@ -204,7 +204,6 @@ interface I18nNeurons {
   confirm_update_delay: string;
   confirm_set_delay: string;
   merge_neurons_article_title: string;
-  split_neuron_success: string;
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_hardware_wallet: string;
