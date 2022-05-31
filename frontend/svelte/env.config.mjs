@@ -58,6 +58,9 @@ const HOST = getRequiredEnvVar("HOST");
 // Canister Ids for testnet and mainnet
 const GOVERNANCE_CANISTER_ID = getRequiredEnvVar("GOVERNANCE_CANISTER_ID");
 const LEDGER_CANISTER_ID = getRequiredEnvVar("LEDGER_CANISTER_ID");
+const CYCLES_MINTING_CANISTER_ID = getRequiredEnvVar(
+  "CYCLES_MINTING_CANISTER_ID"
+);
 const OWN_CANISTER_ID = getRequiredEnvVar("OWN_CANISTER_ID");
 
 // Canister URLs for the content security policy
@@ -85,6 +88,7 @@ export const envConfig = {
   IDENTITY_SERVICE_URL,
   GOVERNANCE_CANISTER_ID,
   LEDGER_CANISTER_ID,
+  CYCLES_MINTING_CANISTER_ID,
   GOVERNANCE_CANISTER_URL,
   LEDGER_CANISTER_URL,
   ROLLUP_WATCH,

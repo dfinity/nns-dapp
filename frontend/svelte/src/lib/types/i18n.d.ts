@@ -19,6 +19,7 @@ interface I18nCore {
   max: string;
   principal: string;
   toggle: string;
+  save_log_file: string;
 }
 
 interface I18nError {
@@ -199,11 +200,14 @@ interface I18nNeurons {
   voting_power: string;
   skip: string;
   update_delay: string;
-  confirm_delay: string;
+  set_delay: string;
+  confirm_update_delay: string;
+  confirm_set_delay: string;
   merge_neurons_article_title: string;
   split_neuron_success: string;
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_hotkey: string;
+  cannot_merge_hardware_wallet: string;
   only_merge_two: string;
   irreversible_action: string;
   stake_amount: string;
@@ -266,6 +270,23 @@ interface I18nCanisters {
   step3: string;
   principal_is: string;
   create_or_link: string;
+  empty: string;
+  add_canister: string;
+  create_canister_title: string;
+  create_canister_subtitle: string;
+  link_canister_title: string;
+  link_canister_subtitle: string;
+  link_canister_success: string;
+  attach_canister: string;
+  enter_canister_id: string;
+  canister_id: string;
+}
+
+interface I18nCanister_detail {
+  title: string;
+  id: string;
+  cycles: string;
+  controllers: string;
 }
 
 interface I18nTopics {
@@ -471,6 +492,7 @@ interface I18n {
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
   canisters: I18nCanisters;
+  canister_detail: I18nCanister_detail;
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;

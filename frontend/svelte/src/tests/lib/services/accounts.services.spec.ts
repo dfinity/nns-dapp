@@ -118,14 +118,6 @@ describe("accounts-services", () => {
       expect(spyLoadAccounts).toHaveBeenCalled();
     });
 
-    it("should display a successful toast after transfer ICP", async () => {
-      const spyToastSuccess = jest.spyOn(toastsStore, "success");
-
-      await transferICP(transferICPParams);
-
-      expect(spyToastSuccess).toHaveBeenCalled();
-    });
-
     it("should throw errors if transfer params not provided", async () => {
       const { err: errSelectedAccount } = await transferICP({
         ...transferICPParams,
