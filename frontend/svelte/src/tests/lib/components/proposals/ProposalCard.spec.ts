@@ -127,6 +127,8 @@ describe("ProposalCard", () => {
   });
 
   it("should open neuron modal", async () => {
+    proposalsFiltersStore.reset();
+
     const { container } = render(ProposalCard, {
       props: {
         proposalInfo: mockProposals[1],
