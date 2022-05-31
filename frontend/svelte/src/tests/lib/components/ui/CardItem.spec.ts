@@ -4,7 +4,7 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import CardItem from "../../../../lib/components/ui/CardItem.svelte";
+import CardItem from "./CardItemTest.svelte";
 
 describe("CardItem", () => {
   const props = {

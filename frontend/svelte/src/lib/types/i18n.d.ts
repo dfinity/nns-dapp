@@ -280,6 +280,13 @@ interface I18nCanisters {
   attach_canister: string;
   enter_canister_id: string;
   canister_id: string;
+  enter_amount: string;
+  review_create_canister: string;
+  t_cycles: string;
+  minimum_cycles_text: string;
+  app_subnets_beta: string;
+  review_cycles_purchase: string;
+  converted_to: string;
 }
 
 interface I18nCanister_detail {
@@ -287,6 +294,8 @@ interface I18nCanister_detail {
   id: string;
   cycles: string;
   controllers: string;
+  t_cycles: string;
+  add_controller: string;
 }
 
 interface I18nTopics {

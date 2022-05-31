@@ -28,7 +28,6 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Step } from "../stores/steps.state";
 import type { Account } from "../types/account";
-import { InvalidAmountError } from "../types/neurons.errors";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
@@ -275,16 +274,6 @@ export const isValidInputAmount = ({
   amount?: number;
   max: number;
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
-
-export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(amount.toFixed(8));
-
-  if (!(stake instanceof ICP) || stake === undefined) {
-    throw new InvalidAmountError();
-  }
-
-  return stake;
-};
 
 export const isEnoughToStakeNeuron = ({
   stake,
