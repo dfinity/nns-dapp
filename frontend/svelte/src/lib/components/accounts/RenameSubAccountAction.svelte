@@ -16,7 +16,7 @@
   let selectedAccount: Account | undefined;
   $: selectedAccount = $store.account;
 
-  let newAccountName: string = $store.account?.name ?? '';
+  let newAccountName: string = $store.account?.name ?? "";
 
   let dispatcher = createEventDispatcher();
 
