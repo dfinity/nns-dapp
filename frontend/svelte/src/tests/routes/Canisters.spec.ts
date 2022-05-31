@@ -18,6 +18,7 @@ import en from "../mocks/i18n.mock";
 jest.mock("../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
+    getIcpToCyclesExchangeRate: jest.fn(),
   };
 });
 

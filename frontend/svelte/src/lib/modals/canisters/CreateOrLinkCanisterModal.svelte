@@ -1,13 +1,21 @@
 <script lang="ts">
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
+  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
   import AttachCanister from "../../components/canisters/AttachCanister.svelte";
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
   import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
+  import { getIcpToCyclesExchangeRate } from "../../services/canisters.services";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
+  import type { Account } from "../../types/account";
   import type { CreateOrLinkType } from "../../types/canisters";
   import WizardModal from "../WizardModal.svelte";
+
+  let icpToCyclesRatio: bigint | undefined;
+  onMount(async () => {
+    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+  });
 
   const steps: Steps = [
     {
@@ -25,6 +33,11 @@
   ];
   const createCanisterSteps = [
     {
+      name: "SelectAccount",
+      title: $i18n.accounts.select_source,
+      showBackButton: true,
+    },
+    {
       name: "SelectCycles",
       title: $i18n.canisters.enter_amount,
       showBackButton: true,
@@ -38,6 +51,7 @@
 
   let currentStep: Step | undefined;
   let modal: WizardModal;
+  let account: Account | undefined;
   let amount: number | undefined;
 
   const selectType = async ({
@@ -55,11 +69,16 @@
     modal.next();
   };
 
-  const selectAmount = () => {
+  const onSelectAccount = ({
+    detail,
+  }: CustomEvent<{ selectedAccount: Account }>) => {
+    account = detail.selectedAccount;
     modal.next();
   };
 
-  // TODO: Finish flow - https://dfinity.atlassian.net/browse/L2-227
+  const selectAmount = () => {
+    modal.next();
+  };
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -72,18 +91,30 @@
     {#if currentStep?.name === "SelectNewCanisterType"}
       <SelectNewCanisterType on:nnsSelect={selectType} />
     {/if}
+    {#if currentStep?.name === "SelectAccount"}
+      <SelectAccount
+        hideHarwareWalletAccounts
+        on:nnsSelectAccount={onSelectAccount}
+      />
+    {/if}
     {#if currentStep?.name === "AttachCanister"}
       <AttachCanister on:nnsClose />
     {/if}
     {#if currentStep?.name === "SelectCycles"}
       <SelectCyclesCanister
+        {icpToCyclesRatio}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       />
     {/if}
-    {#if currentStep?.name === "ConfirmCycles"}
-      <ConfirmCyclesCanister on:nnsClose />
+    {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
+      <ConfirmCyclesCanister
+        {account}
+        {icpToCyclesRatio}
+        {amount}
+        on:nnsClose
+      />
     {/if}
   </svelte:fragment>
 </WizardModal>
