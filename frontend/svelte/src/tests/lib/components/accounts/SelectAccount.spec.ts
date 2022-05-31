@@ -112,11 +112,11 @@ describe("SelectAccount", () => {
     const { queryByText } = render(SelectAccount, {
       props: {
         displayTitle: true,
-        hideHardwareWalletAccounts: true
+        hideHardwareWalletAccounts: true,
       },
     });
 
-    expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument()
+    expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
 
     accountsStore.reset();
   });
