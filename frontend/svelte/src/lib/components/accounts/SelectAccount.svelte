@@ -30,7 +30,9 @@
   );
 
   let showTitle: boolean = false;
-  $: showTitle = displayTitle && (subAccounts?.length > 0 || hardwareWalletAccounts?.length > 0)
+  $: showTitle =
+    displayTitle &&
+    (subAccounts?.length > 0 || hardwareWalletAccounts?.length > 0);
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
