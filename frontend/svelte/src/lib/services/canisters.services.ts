@@ -17,6 +17,7 @@ import { toastsStore } from "../stores/toasts.store";
 import { getPrincipalFromString } from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
+import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -69,6 +70,9 @@ export const createCanister = async ({
       fromSubAccount,
     });
     await listCanisters({ clearBeforeQuery: false });
+    // We don't wait for `syncAccounts` to finish to give a better UX to the user.
+    // `syncAccounts` might be slow since it loads all accounts and balances.
+    syncAccounts();
     return { success: true };
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615

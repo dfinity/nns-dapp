@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
   attachCanister,
   createCanister,
@@ -17,6 +18,12 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
+
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("canisters-services", () => {
   const spyQueryCanisters = jest
@@ -159,6 +166,7 @@ describe("canisters-services", () => {
       expect(success).toBe(true);
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
+      expect(syncAccounts).toBeCalled();
     });
 
     it("should return undefined if no identity", async () => {

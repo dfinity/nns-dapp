@@ -5,7 +5,6 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import CreateOrLinkCanisterModal from "../../../../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
-import { syncAccounts } from "../../../../lib/services/accounts.services";
 import {
   attachCanister,
   createCanister,
@@ -35,12 +34,6 @@ jest.mock("../../../../lib/stores/toasts.store", () => {
     toastsStore: {
       success: jest.fn(),
     },
-  };
-});
-
-jest.mock("../../../../lib/services/accounts.services", () => {
-  return {
-    syncAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -174,7 +167,6 @@ describe("CreateOrLinkCanisterModal", () => {
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();
     expect(toastsStore.success).toBeCalled();
-    expect(syncAccounts).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.

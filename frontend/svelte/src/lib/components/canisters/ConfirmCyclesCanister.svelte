@@ -31,9 +31,6 @@
     });
     stopBusy("create-canister");
     if (success) {
-      // We don't wait for `syncAccounts` to finish to give a better UX to the user.
-      // `syncAccounts` might be slow since it loads all accounts and balances.
-      syncAccounts();
       toastsStore.success({
         labelKey: "canisters.create_canister_success",
       });
