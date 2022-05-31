@@ -44,13 +44,15 @@ describe("Toast", () => {
 
   it("should replace place holder in text", async () => {
     const { container } = render(Toast, {
-      props: {msg: {
-          labelKey: 'error__account.subaccount_not_found',
+      props: {
+        msg: {
+          labelKey: "error__account.subaccount_not_found",
           level: "error",
           substitutions: {
-            $account_identifier: 'testtesttest'
-          }
-        }},
+            $account_identifier: "testtesttest",
+          },
+        },
+      },
     });
 
     const p: HTMLParagraphElement | null = container.querySelector("p");
