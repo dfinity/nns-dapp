@@ -83,7 +83,8 @@ export const config: WebdriverIO.Config = {
       project: "tsconfig.json",
     },
   },
-  specs: ["./specs/**/*.e2e.ts"],
+  // Execute each test N times.
+  specs: Array(2).fill("./specs/**/*.e2e.ts"),
   exclude: [],
   capabilities: [
     {
@@ -104,7 +105,8 @@ export const config: WebdriverIO.Config = {
   mochaOpts: {
     ui: "bdd",
     timeout: 60000,
+    retries: 1,
   },
 
-  maxInstances: 1,
+  maxInstances: 2,
 };
