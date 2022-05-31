@@ -2,8 +2,10 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
   attachCanister,
+  createCanister,
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
@@ -17,6 +19,12 @@ import {
 } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
 
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("canisters-services", () => {
   const spyQueryCanisters = jest
     .spyOn(api, "queryCanisters")
@@ -25,6 +33,10 @@ describe("canisters-services", () => {
   const spyAttachCanister = jest
     .spyOn(api, "attachCanister")
     .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyCreateCanister = jest
+    .spyOn(api, "createCanister")
+    .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
 
   const spyQueryCanisterDetails = jest
     .spyOn(api, "queryCanisterDetails")
@@ -141,6 +153,28 @@ describe("canisters-services", () => {
       const response = await getIcpToCyclesExchangeRate();
       expect(response).toBeUndefined();
       expect(spyGetExchangeRate).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("createCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call api to create a canister", async () => {
+      const { success } = await createCanister({ amount: 3 });
+      expect(success).toBe(true);
+      expect(spyCreateCanister).toBeCalled();
+      expect(spyQueryCanisters).toBeCalled();
+      expect(syncAccounts).toBeCalled();
+    });
+
+    it("should return undefined if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await createCanister({ amount: 3 });
+      expect(success).toBe(false);
+      expect(spyCreateCanister).not.toBeCalled();
 
       resetIdentity();
     });

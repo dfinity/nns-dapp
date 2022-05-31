@@ -260,6 +260,7 @@
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",
     "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "create_canister_success": "Canister created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister was linked successfully",
@@ -270,7 +271,6 @@
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
     "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusve of 1T Cycles fee if creating a new canister)",
-    "app_subnets_beta": "Application subnets are in beta and therefore Cycles might be lost",
     "review_cycles_purchase": "Review Cycles Purchase",
     "converted_to": "converted to"
   },

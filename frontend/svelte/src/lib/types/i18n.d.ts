@@ -274,6 +274,7 @@ interface I18nCanisters {
   add_canister: string;
   create_canister_title: string;
   create_canister_subtitle: string;
+  create_canister_success: string;
   link_canister_title: string;
   link_canister_subtitle: string;
   link_canister_success: string;
@@ -284,7 +285,6 @@ interface I18nCanisters {
   review_create_canister: string;
   t_cycles: string;
   minimum_cycles_text: string;
-  app_subnets_beta: string;
   review_cycles_purchase: string;
   converted_to: string;
 }

@@ -9,6 +9,7 @@
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;
   export let displayTitle: boolean = false;
+  export let hideHarwareWalletAccounts: boolean = false;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -52,14 +53,16 @@
       >
     {/each}
 
-    {#each hardwareWalletAccounts as hardwareWalletAccount}
-      <AccountCard
-        role="button"
-        on:click={() => chooseAccount(hardwareWalletAccount)}
-        account={hardwareWalletAccount}
-        >{hardwareWalletAccount.name}</AccountCard
-      >
-    {/each}
+    {#if !hideHarwareWalletAccounts}
+      {#each hardwareWalletAccounts as hardwareWalletAccount}
+        <AccountCard
+          role="button"
+          on:click={() => chooseAccount(hardwareWalletAccount)}
+          account={hardwareWalletAccount}
+          >{hardwareWalletAccount.name}</AccountCard
+        >
+      {/each}
+    {/if}
   {:else}
     <SkeletonCard />
     <SkeletonCard />
