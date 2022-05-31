@@ -27,11 +27,14 @@
   $: hardwareWalletAccounts = ($accountsStore?.hardwareWallets ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
+
+  let showTitle: boolean = false;
+  $: showTitle = displayTitle && (subAccounts?.length > 0 || hardwareWalletAccounts?.length > 0)
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    {#if displayTitle && subAccounts?.length > 0}
+    {#if showTitle}
       <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
 

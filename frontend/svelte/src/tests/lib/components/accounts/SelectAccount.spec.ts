@@ -42,7 +42,7 @@ describe("SelectAccount", () => {
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
   });
 
-  it("should render a title", async () => {
+  it("should render a title with subaccount", async () => {
     accountsStore.set({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
@@ -57,6 +57,26 @@ describe("SelectAccount", () => {
 
     await waitFor(() =>
       expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
+    );
+
+    accountsStore.reset();
+  });
+
+  it("should render a title with hardware wallet", async () => {
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: undefined,
+      hardwareWallets: [mockSubAccount],
+    });
+
+    const { queryByText } = render(SelectAccount, {
+      props: {
+        displayTitle: true,
+      },
+    });
+
+    await waitFor(() =>
+        expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
     );
 
     accountsStore.reset();
