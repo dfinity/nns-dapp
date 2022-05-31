@@ -194,7 +194,6 @@
     "confirm_update_delay": "Confirm and Update Delay",
     "confirm_set_delay": "Confirm and Set Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
     "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
