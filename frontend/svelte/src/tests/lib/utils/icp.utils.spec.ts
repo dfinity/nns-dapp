@@ -44,7 +44,7 @@ describe("icp-utils", () => {
   });
 
   it("should format a specific transaction fee", () =>
-    expect(formattedTransactionFeeICP()).toEqual("0.00010000"));
+    expect(formattedTransactionFeeICP()).toEqual("0.0001"));
 
   it("should max ICP value", () => {
     expect(maxICP(undefined)).toEqual(0);
