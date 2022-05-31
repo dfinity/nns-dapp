@@ -32,6 +32,19 @@ export const queryCanisters = async ({
   return response;
 };
 
+export const getIcpToCyclesExchangeRate = async (
+  identity: Identity
+): Promise<bigint> => {
+  logWithTimestamp("Getting ICP to Cycles ratio call...");
+  const { cmc } = await canisters(identity);
+
+  const response = await cmc.getIcpToCyclesConversionRate();
+
+  logWithTimestamp("Getting ICP to Cycles ratio complete.");
+
+  return response;
+};
+
 export const queryCanisterDetails = async ({
   identity,
   canisterId,

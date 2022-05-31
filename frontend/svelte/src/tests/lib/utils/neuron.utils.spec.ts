@@ -13,7 +13,6 @@ import {
   MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
-import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
@@ -21,7 +20,6 @@ import {
   ballotsWithDefinedProposal,
   canBeMerged,
   checkInvalidState,
-  convertNumberToICP,
   dissolveDelayMultiplier,
   followeesByTopic,
   followeesNeurons,
@@ -644,20 +642,6 @@ describe("neuron-utils", () => {
 
     it("return false if amount is higher than max", () => {
       expect(isValidInputAmount({ amount: 40, max: 10 })).toBe(false);
-    });
-  });
-
-  describe("convertNumberToICP", () => {
-    it("returns ICP from number", () => {
-      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
-      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
-      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
-      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
-    });
-
-    it("raises error on negative numbers", () => {
-      const call = () => convertNumberToICP(-10);
-      expect(call).toThrow(InvalidAmountError);
     });
   });
 

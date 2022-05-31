@@ -133,6 +133,7 @@
     {max}
     {autocomplete}
     on:blur
+    on:focus
     on:input={handleInput}
     on:keydown={handleKeyDown}
   />
