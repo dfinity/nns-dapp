@@ -11,6 +11,7 @@
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -41,6 +42,7 @@
   $: hide = hideProposal({
     filters: $proposalsFiltersStore,
     proposalInfo,
+    neurons: $definedNeuronsStore,
   });
 </script>
 
