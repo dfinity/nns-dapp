@@ -9,11 +9,8 @@
   import { toastsStore } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICP } from "@dfinity/nns";
-  import { maxICP } from "../../utils/icp.utils";
-  import {
-    convertNumberToICP,
-    isValidInputAmount,
-  } from "../../utils/neuron.utils";
+  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
+  import { isValidInputAmount } from "../../utils/neuron.utils";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

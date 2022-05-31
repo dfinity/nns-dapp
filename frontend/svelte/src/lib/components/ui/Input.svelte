@@ -133,6 +133,7 @@
     {max}
     {autocomplete}
     on:blur
+    on:focus
     on:input={handleInput}
     on:keydown={handleKeyDown}
   />
@@ -150,10 +151,7 @@
   .input-block {
     position: relative;
 
-    margin-top: var(--padding-2x);
-    margin-bottom: var(--input-margin-bottom, var(--padding-2x));
-    margin-left: 0;
-    margin-right: 0;
+    margin: var(--padding-2x) 0 var(--input-margin-bottom, var(--padding-2x));
 
     display: flex;
     align-items: center;
@@ -165,7 +163,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-100);
+    --disabled-color: var(--gray-200);
 
     &.disabled {
       color: var(--disabled-color);

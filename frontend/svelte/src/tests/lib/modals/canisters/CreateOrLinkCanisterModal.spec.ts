@@ -5,12 +5,14 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import CreateOrLinkCanisterModal from "../../../../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
 import { attachCanister } from "../../../../lib/services/canisters.services";
+import { clickByTestId } from "../../../lib/testHelpers/clickByTestId";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
 jest.mock("../../../../lib/services/canisters.services", () => {
   return {
     attachCanister: jest.fn().mockResolvedValue({ success: true }),
+    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
   };
 });
 
@@ -35,10 +37,7 @@ describe("CreateOrLinkCanisterModal", () => {
       component: CreateOrLinkCanisterModal,
     });
 
-    const linkCanisterCard = queryByTestId("choose-link-as-new-canister");
-    expect(linkCanisterCard).toBeInTheDocument();
-
-    linkCanisterCard && (await fireEvent.click(linkCanisterCard));
+    await clickByTestId(queryByTestId, "choose-link-as-new-canister");
 
     // AttachCanister Screen
     await waitFor(() =>
@@ -53,13 +52,10 @@ describe("CreateOrLinkCanisterModal", () => {
         target: { value: "aaaaa-aa" },
       }));
 
-    const buttonElement = queryByTestId("attach-canister-button");
-    expect(buttonElement).not.toBeNull();
-
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
 
-    buttonElement && (await fireEvent.click(buttonElement));
+    await clickByTestId(queryByTestId, "attach-canister-button");
     expect(attachCanister).toBeCalled();
 
     await waitFor(() => expect(onClose).toBeCalled());
@@ -70,10 +66,7 @@ describe("CreateOrLinkCanisterModal", () => {
       component: CreateOrLinkCanisterModal,
     });
 
-    const linkCanisterCard = queryByTestId("choose-link-as-new-canister");
-    expect(linkCanisterCard).toBeInTheDocument();
-
-    linkCanisterCard && (await fireEvent.click(linkCanisterCard));
+    await clickByTestId(queryByTestId, "choose-link-as-new-canister");
 
     // AttachCanister Screen
     await waitFor(() =>
@@ -94,5 +87,38 @@ describe("CreateOrLinkCanisterModal", () => {
     const buttonElement = queryByTestId("attach-canister-button");
     expect(buttonElement).not.toBeNull();
     expect(buttonElement?.hasAttribute("disabled")).toBe(true);
+  });
+
+  it("should create a canister from ICP", async () => {
+    const { queryByTestId, container } = await renderModal({
+      component: CreateOrLinkCanisterModal,
+    });
+
+    await clickByTestId(queryByTestId, "choose-create-as-new-canister");
+
+    // Select Amount Screen
+    await waitFor(() =>
+      expect(queryByTestId("select-cycles-screen")).toBeInTheDocument()
+    );
+
+    const icpInputElement = container.querySelector('input[name="icp-amount"]');
+    expect(icpInputElement).not.toBeNull();
+
+    icpInputElement &&
+      (await fireEvent.input(icpInputElement, {
+        target: { value: 2 },
+      }));
+    icpInputElement && (await fireEvent.blur(icpInputElement));
+
+    await clickByTestId(queryByTestId, "select-cycles-button");
+
+    // Confirm Create Canister Screen
+    await waitFor(() =>
+      expect(
+        queryByTestId("confirm-create-canister-screen")
+      ).toBeInTheDocument()
+    );
+
+    // TODO: Finish flow - https://dfinity.atlassian.net/browse/L2-227
   });
 });
