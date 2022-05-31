@@ -33,17 +33,17 @@
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/list.scss";
+  @use "../../themes/mixins/card.scss";
   .actions {
     display: flex;
     justify-content: flex-end;
   }
 
   ul {
-    @include list.list;
+    @include card.list;
   }
 
   li {
-    @include list.list-item;
+    @include card.list-item;
   }
 </style>

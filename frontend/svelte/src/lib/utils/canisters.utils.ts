@@ -1,4 +1,5 @@
 import type { Principal } from "@dfinity/principal";
+import { CYCLES_PER_XDR } from "../canisters/cmc/cmc.constants";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import type { CanistersStore } from "../stores/canisters.store";
 import { formatNumber } from "./format.utils";
@@ -15,7 +16,7 @@ export const getCanisterInfoById = ({
   );
 
 export const formatCyclesToTCycles = (cycles: bigint): string =>
-  formatNumber(Number(cycles) / 1_000_000_000_000, {
+  formatNumber(Number(cycles) / Number(CYCLES_PER_XDR), {
     minFraction: 3,
     maxFraction: 3,
   });
