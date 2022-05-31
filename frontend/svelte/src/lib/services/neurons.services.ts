@@ -48,9 +48,9 @@ import { isAccountHardwareWallet } from "../utils/accounts.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
+import { convertNumberToICP } from "../utils/icp.utils";
 import {
   canBeMerged,
-  convertNumberToICP,
   followeesByTopic,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
