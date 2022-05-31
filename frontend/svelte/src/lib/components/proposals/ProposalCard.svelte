@@ -49,7 +49,7 @@
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <li class:hidden>
   {#if !hide}
-    <Card role="link" on:click={showProposal}>
+    <Card role="link" on:click={showProposal} testId="proposal-card">
       <div slot="start" class="title-container">
         <p class="title" {title}>{title}</p>
       </div>

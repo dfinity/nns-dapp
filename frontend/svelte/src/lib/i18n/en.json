@@ -260,18 +260,27 @@
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",
     "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "create_canister_success": "Canister created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister was linked successfully",
     "attach_canister": "Attach Canister",
     "enter_canister_id": "Enter Canister ID:",
-    "canister_id": "Canister ID"
+    "canister_id": "Canister ID",
+    "enter_amount": "Enter Amount",
+    "review_create_canister": "Review Canister Creation",
+    "t_cycles": "T Cycles",
+    "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusve of 1T Cycles fee if creating a new canister)",
+    "review_cycles_purchase": "Review Cycles Purchase",
+    "converted_to": "converted to"
   },
   "canister_detail": {
     "title": "Canister",
     "id": "Id: $canisterId",
     "cycles": "Cycles",
-    "controllers": "Controllers"
+    "controllers": "Controllers",
+    "t_cycles": "T Cycles",
+    "add_controller": "Add Controller"
   },
   "topics": {
     "Unspecified": "Unspecified",

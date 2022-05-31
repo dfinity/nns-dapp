@@ -1,5 +1,10 @@
 import { ICP } from "@dfinity/nns";
+import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
+  convertIcpToTCycles,
+  convertNumberToICP,
+  convertTCyclesToE8s,
   formatICP,
   formattedTransactionFeeICP,
   maxICP,
@@ -39,7 +44,7 @@ describe("icp-utils", () => {
   });
 
   it("should format a specific transaction fee", () =>
-    expect(formattedTransactionFeeICP()).toEqual("0.00010000"));
+    expect(formattedTransactionFeeICP()).toEqual("0.0001"));
 
   it("should max ICP value", () => {
     expect(maxICP(undefined)).toEqual(0);
@@ -47,5 +52,53 @@ describe("icp-utils", () => {
     expect(maxICP(ICP.fromString("0.0001") as ICP)).toEqual(0);
     expect(maxICP(ICP.fromString("0.00011") as ICP)).toEqual(0.00001);
     expect(maxICP(ICP.fromString("1") as ICP)).toEqual(0.9999);
+  });
+
+  describe("convertNumberToICP", () => {
+    it("returns ICP from number", () => {
+      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
+      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
+      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
+      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
+    });
+
+    it("raises error on negative numbers", () => {
+      const call = () => convertNumberToICP(-10);
+      expect(call).toThrow(InvalidAmountError);
+    });
+  });
+
+  describe("convertIcpToTCycles", () => {
+    it("converts ICP to TCycles", () => {
+      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(10_000) })).toBe(
+        1
+      );
+      expect(
+        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(10_000) })
+      ).toBe(2.5);
+      expect(
+        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(20_000) })
+      ).toBe(5);
+      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(15_000) })).toBe(
+        1.5
+      );
+    });
+  });
+
+  describe("convertTCyclesToE8s", () => {
+    it("converts TCycles to E8s", () => {
+      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
+        BigInt(E8S_PER_ICP)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
+        BigInt(E8S_PER_ICP * 2.5)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
+        BigInt(125_000_000)
+      );
+      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
+        BigInt(66666666)
+      );
+    });
   });
 });

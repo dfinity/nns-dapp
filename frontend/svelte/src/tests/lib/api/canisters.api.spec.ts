@@ -1,15 +1,27 @@
-import { ICP, LedgerCanister } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  ICP,
+  LedgerCanister,
+  SubAccount,
+} from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
   attachCanister,
   createCanister,
+  getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
   topUpCanister,
 } from "../../../lib/api/canisters.api";
+import { CREATE_CANISTER_MEMO } from "../../../lib/api/constants.api";
+import { toSubAccountId } from "../../../lib/api/utils.api";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
+import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import type { SubAccountArray } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
+import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
+import { mockSubAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails } from "../../mocks/canisters.mock";
 
@@ -88,6 +100,18 @@ describe("canisters-api", () => {
     });
   });
 
+  describe("getIcpToCyclesExchangeRate", () => {
+    it("should call CMC to get conversion rate", async () => {
+      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(
+        BigInt(10_000)
+      );
+
+      const response = await getIcpToCyclesExchangeRate(mockIdentity);
+      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
+      expect(response).toEqual(BigInt(10_000));
+    });
+  });
+
   describe("createCanister", () => {
     beforeEach(() => jest.clearAllMocks());
     it("should make a transfer, notify and attach the canister", async () => {
@@ -101,6 +125,43 @@ describe("canisters-api", () => {
         amount: ICP.fromString("3") as ICP,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
+      expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: "",
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
+    it("handles creating from subaccounts", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+      const amount = ICP.fromString("3") as ICP;
+
+      const response = await createCanister({
+        identity: mockIdentity,
+        amount,
+        fromSubAccount: mockSubAccount.subAccount,
+      });
+      const principal = mockIdentity.getPrincipal();
+      const toSubAccount = principalToSubAccount(principal);
+      // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
+      // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
+      const recipient = AccountIdentifier.fromPrincipal({
+        principal: CYCLES_MINTING_CANISTER_ID,
+        subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
+      });
+      const fromSubAccountId = toSubAccountId(
+        mockSubAccount.subAccount as SubAccountArray
+      );
+      expect(mockLedgerCanister.transfer).toBeCalledWith({
+        memo: CREATE_CANISTER_MEMO,
+        to: AccountIdentifier.fromHex(recipient.toHex()),
+        amount,
+        fromSubAccountId,
+      });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",

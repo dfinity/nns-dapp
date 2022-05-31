@@ -1,9 +1,13 @@
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
+import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
   attachCanister,
+  createCanister,
   getCanisterDetails,
+  getIcpToCyclesExchangeRate,
   listCanisters,
   routePathCanisterId,
 } from "../../../lib/services/canisters.services";
@@ -15,6 +19,12 @@ import {
 } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
 
+jest.mock("../../../lib/services/accounts.services", () => {
+  return {
+    syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("canisters-services", () => {
   const spyQueryCanisters = jest
     .spyOn(api, "queryCanisters")
@@ -24,9 +34,17 @@ describe("canisters-services", () => {
     .spyOn(api, "attachCanister")
     .mockImplementation(() => Promise.resolve(undefined));
 
+  const spyCreateCanister = jest
+    .spyOn(api, "createCanister")
+    .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
+
   const spyQueryCanisterDetails = jest
     .spyOn(api, "queryCanisterDetails")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails));
+
+  const spyGetExchangeRate = jest
+    .spyOn(api, "getIcpToCyclesExchangeRate")
+    .mockImplementation(() => Promise.resolve(BigInt(10_000 * E8S_PER_ICP)));
 
   describe("listCanisters", () => {
     afterEach(() => {
@@ -116,6 +134,47 @@ describe("canisters-services", () => {
       const call = () => getCanisterDetails(mockCanisterDetails.id);
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      resetIdentity();
+    });
+  });
+
+  describe("getIcpToCyclesExchangeRate", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call api to get conversion rate", async () => {
+      const response = await getIcpToCyclesExchangeRate();
+      expect(response).toBe(BigInt(10_000));
+      expect(spyGetExchangeRate).toBeCalled();
+    });
+
+    it("should return undefined if no identity", async () => {
+      setNoIdentity();
+
+      const response = await getIcpToCyclesExchangeRate();
+      expect(response).toBeUndefined();
+      expect(spyGetExchangeRate).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("createCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call api to create a canister", async () => {
+      const { success } = await createCanister({ amount: 3 });
+      expect(success).toBe(true);
+      expect(spyCreateCanister).toBeCalled();
+      expect(spyQueryCanisters).toBeCalled();
+      expect(syncAccounts).toBeCalled();
+    });
+
+    it("should return undefined if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await createCanister({ amount: 3 });
+      expect(success).toBe(false);
+      expect(spyCreateCanister).not.toBeCalled();
 
       resetIdentity();
     });
