@@ -19,8 +19,8 @@
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import SkeletonParagraph from "../lib/components/ui/SkeletonParagraph.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import CyclesCard from "../lib/components/canisters/CyclesCard.svelte";
-  import ControllersCard from "../lib/components/canisters/ControllersCard.svelte";
+  import CyclesCard from "../lib/components/canister_details/CyclesCard.svelte";
+  import ControllersCard from "../lib/components/canister_details/ControllersCard.svelte";
   import { getCanisterInfoById } from "../lib/utils/canisters.utils";
   import SkeletonTitle from "../lib/components/ui/SkeletonTitle.svelte";
   import { writable } from "svelte/store";
@@ -126,13 +126,14 @@
         </div>
       {/if}
       {#if canisterDetails !== undefined}
-        <CyclesCard />
-        <ControllersCard />
+        <CyclesCard cycles={canisterDetails.cycles} />
+        <ControllersCard {canisterDetails} />
       {:else}
         <SkeletonCard />
         <SkeletonCard />
       {/if}
     </section>
+    <!-- TODO: Add Cycles - https://dfinity.atlassian.net/browse/L2-598 -->
   </HeadlessLayout>
 {/if}
 

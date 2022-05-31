@@ -6,7 +6,10 @@ import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
 import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+import type {
+  CanisterDetails as CanisterInfo,
+  SubAccountArray,
+} from "../canisters/nns-dapp/nns-dapp.types";
 import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
@@ -14,6 +17,7 @@ import { logWithTimestamp } from "../utils/dev.utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
+import { toSubAccountId } from "./utils.api";
 
 export const queryCanisters = async ({
   identity,
@@ -28,6 +32,19 @@ export const queryCanisters = async ({
   const response = await nnsDapp.getCanisters({ certified });
 
   logWithTimestamp(`Querying Canisters certified:${certified} complete.`);
+
+  return response;
+};
+
+export const getIcpToCyclesExchangeRate = async (
+  identity: Identity
+): Promise<bigint> => {
+  logWithTimestamp("Getting ICP to Cycles ratio call...");
+  const { cmc } = await canisters(identity);
+
+  const response = await cmc.getIcpToCyclesConversionRate();
+
+  logWithTimestamp("Getting ICP to Cycles ratio complete.");
 
   return response;
 };
@@ -73,10 +90,12 @@ export const createCanister = async ({
   identity,
   amount,
   name,
+  fromSubAccount,
 }: {
   identity: Identity;
   amount: ICP;
   name?: string;
+  fromSubAccount?: SubAccountArray;
 }): Promise<Principal> => {
   logWithTimestamp("Create canister call...");
 
@@ -89,6 +108,8 @@ export const createCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
+  const fromSubAccountId =
+    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
 
   // Transfer the funds
   const blockHeight = await sendICP({
@@ -96,6 +117,7 @@ export const createCanister = async ({
     identity,
     to: recipient.toHex(),
     amount,
+    fromSubAccountId,
   });
 
   // If this fails or the client loses connection

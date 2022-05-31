@@ -49,13 +49,22 @@ describe("RenameSubAccountAction", () => {
     expect(button.getAttribute("disabled")).not.toBeNull();
   });
 
+  it("should pre-fill input with current sub-account name", async () => {
+    const { container } = renderTestCmp(mockSubAccount);
+
+    const { value } = container.querySelector("input") as HTMLInputElement;
+    expect(value).not.toBeUndefined();
+    expect(value).not.toEqual("");
+    expect(value).toEqual(mockSubAccount.name);
+  });
+
   it("should enable and disable action according input", async () => {
     const { container, getByTestId } = renderTestCmp(mockSubAccount);
 
     const input = container.querySelector("input") as HTMLInputElement;
 
     const button = getByTestId("rename-subaccount-button") as HTMLButtonElement;
-    expect(button.getAttribute("disabled")).not.toBeNull();
+    expect(button.getAttribute("disabled")).toBeNull();
 
     await fireEvent.input(input, { target: { value: "test" } });
     expect(button.getAttribute("disabled")).toBeNull();
