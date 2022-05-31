@@ -37,7 +37,7 @@ describe("SelectAccount", () => {
     jest.restoreAllMocks();
   });
 
-  it("should not render hardware wallets when prop hideHarwareWalletAccounts is true", () => {
+  it("should not render hardware wallets when prop hideHardwareWalletAccounts is true", () => {
     jest
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(
@@ -45,7 +45,7 @@ describe("SelectAccount", () => {
       );
 
     const { queryByText } = render(SelectAccount, {
-      props: { hideHarwareWalletAccounts: true },
+      props: { hideHardwareWalletAccounts: true },
     });
 
     expect(
@@ -62,7 +62,7 @@ describe("SelectAccount", () => {
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
   });
 
-  it("should render a title", async () => {
+  it("should render a title with subaccount", async () => {
     accountsStore.set({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
@@ -78,6 +78,45 @@ describe("SelectAccount", () => {
     await waitFor(() =>
       expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
     );
+
+    accountsStore.reset();
+  });
+
+  it("should render a title with hardware wallet", async () => {
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: undefined,
+      hardwareWallets: [mockSubAccount],
+    });
+
+    const { queryByText } = render(SelectAccount, {
+      props: {
+        displayTitle: true,
+      },
+    });
+
+    await waitFor(() =>
+      expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
+    );
+
+    accountsStore.reset();
+  });
+
+  it("should not render a title with hardware wallet if these kind of accounts should be hidden", async () => {
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: undefined,
+      hardwareWallets: [mockSubAccount],
+    });
+
+    const { queryByText } = render(SelectAccount, {
+      props: {
+        displayTitle: true,
+        hideHardwareWalletAccounts: true,
+      },
+    });
+
+    expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
 
     accountsStore.reset();
   });

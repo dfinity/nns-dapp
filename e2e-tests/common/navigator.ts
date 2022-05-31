@@ -41,6 +41,7 @@ export class MyNavigator {
     if (undefined === selector) {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
+    await this.browser.pause(100);
     const button = await this.browser.$(selector);
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
