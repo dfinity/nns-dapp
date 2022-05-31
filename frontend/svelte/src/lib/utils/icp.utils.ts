@@ -22,6 +22,7 @@ export const sumICPs = (...icps: ICP[]): ICP =>
   ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
+// e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (): string =>
   formatNumberToString({
     value: ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s(),
