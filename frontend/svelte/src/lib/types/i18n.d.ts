@@ -285,7 +285,6 @@ interface I18nCanisters {
   review_create_canister: string;
   t_cycles: string;
   minimum_cycles_text: string;
-  app_subnets_beta: string;
   review_cycles_purchase: string;
   converted_to: string;
 }

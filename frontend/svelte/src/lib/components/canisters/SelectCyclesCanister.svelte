@@ -89,7 +89,6 @@
       />
     </div>
     <p>{$i18n.canisters.minimum_cycles_text}</p>
-    <p>{$i18n.canisters.app_subnets_beta}</p>
   </div>
   <button
     class="primary full-width"
