@@ -4,9 +4,7 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import SelectCyclesCanister from "../../../../lib/components/canisters/SelectCyclesCanister.svelte";
-import { getIcpToCyclesExchangeRate } from "../../../../lib/services/canisters.services";
 import { clickByTestId } from "../../../lib/testHelpers/clickByTestId";
 import en from "../../../mocks/i18n.mock";
 
@@ -17,24 +15,21 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 });
 
 describe("SelectCyclesCanister", () => {
+  const props = { icpToCyclesRatio: BigInt(10_000) };
   it("renders message", () => {
-    const { queryByText } = render(SelectCyclesCanister);
+    const { queryByText } = render(SelectCyclesCanister, { props });
 
     expect(queryByText(en.canisters.minimum_cycles_text)).toBeInTheDocument();
   });
 
   it("renders two inputs", () => {
-    const { container } = render(SelectCyclesCanister);
+    const { container } = render(SelectCyclesCanister, { props });
 
     expect(container.querySelectorAll("input").length).toBe(2);
   });
 
   it("synchronizes icp input to tCycles input", async () => {
-    const { container } = render(SelectCyclesCanister);
-    // Wait for the onMount to load the conversion rate
-    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
-    // wait to update local variable with conversion rate
-    await tick();
+    const { container } = render(SelectCyclesCanister, { props });
 
     const icpInputElement = container.querySelector<HTMLInputElement>(
       'input[name="icp-amount"]'
@@ -61,11 +56,7 @@ describe("SelectCyclesCanister", () => {
   });
 
   it("synchronizes tCycles input to icp input", async () => {
-    const { container } = render(SelectCyclesCanister);
-    // Wait for the onMount to load the conversion rate
-    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
-    // wait to update local variable with conversion rate
-    await tick();
+    const { container } = render(SelectCyclesCanister, { props });
 
     const icpInputElement = container.querySelector<HTMLInputElement>(
       'input[name="icp-amount"]'
@@ -90,8 +81,10 @@ describe("SelectCyclesCanister", () => {
   });
 
   it("dispatches nnsSelectAmount event on click", async () => {
-    const { container, component, queryByTestId } =
-      render(SelectCyclesCanister);
+    const { container, component, queryByTestId } = render(
+      SelectCyclesCanister,
+      { props }
+    );
 
     const icpInputElement = container.querySelector<HTMLInputElement>(
       'input[name="icp-amount"]'
