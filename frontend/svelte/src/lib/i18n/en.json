@@ -27,12 +27,9 @@
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
-    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
     "rename_subaccount": "An error occurred while renaming your linked account.",
     "rename_subaccount_no_account": "No linked account provided.",
     "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
-    "create_subaccount_too_long": "The name of the linked account is too long. Please, choose a shorter name.",
-    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
@@ -447,6 +444,17 @@
     "no_name": "No account name provided.",
     "no_identity": "No identity connected to your hardware wallet.",
     "already_registered": "The hardware wallet is already registered with another account.",
-    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached."
+    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached.",
+    "register_hardware_wallet": "Error registering hardware wallet",
+    "create_hardware_wallet_too_long": "The name $accountName is too long (max. 24 characters). Please, choose a shorter name."
+  },
+  "error__account": {
+    "not_found": "Account not found",
+    "no_details": "Error getting account details",
+    "subaccount_too_long": "The name $subAccountName of the linked account is too long (max. 24 characters). Please, choose a shorter name.",
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
+    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
+    "subaccount_not_found": "Error renaming subAccount, subAccount ($account_identifier) not found",
+    "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
   }
 }

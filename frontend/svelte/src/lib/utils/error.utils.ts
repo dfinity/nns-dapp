@@ -16,7 +16,7 @@ import {
   NotFoundError,
 } from "../types/neurons.errors";
 import type { ToastMsg } from "../types/toast";
-import { translate } from "./i18n.utils";
+import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -82,7 +82,7 @@ export const toToastError = ({
 }: {
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
-}): { labelKey: string; err?: unknown } => {
+}): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
   let errorKey: boolean = false;
   const message: string | undefined = (err as Error)?.message;
 
@@ -91,10 +91,16 @@ export const toToastError = ({
     errorKey = label !== message;
   }
 
+  type ErrorSubstitutions = { substitutions?: I18nSubstitutions };
+
   return {
     labelKey: errorKey
       ? (err as { message: string }).message
       : fallbackErrorLabelKey,
     ...(!errorKey && { err }),
+    ...((err as ErrorSubstitutions | undefined)?.substitutions !==
+      undefined && {
+      substitutions: (err as ErrorSubstitutions).substitutions,
+    }),
   };
 };

@@ -8,10 +8,6 @@ import {
 } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
 import { toSubAccountId } from "../api/utils.api";
-import {
-  NameTooLongError,
-  SubAccountLimitExceededError,
-} from "../canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountIdentifierString,
   Transaction,
@@ -47,10 +43,12 @@ export const syncAccounts = (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       accountsStore.reset();
 
-      toastsStore.error({
-        labelKey: "error.accounts_not_found",
-        err,
-      });
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found",
+        })
+      );
     },
     logMessage: "Syncing Accounts",
   });
@@ -68,17 +66,12 @@ export const addSubAccount = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    const labelKey =
-      err instanceof NameTooLongError
-        ? "accounts.create_subaccount_too_long"
-        : err instanceof SubAccountLimitExceededError
-        ? "accounts.create_subaccount_limit_exceeded"
-        : "accounts.create_subaccount";
-
-    toastsStore.error({
-      labelKey,
-      err,
-    });
+    toastsStore.error(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__account.create_subaccount",
+      })
+    );
   }
 };
 

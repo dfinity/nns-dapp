@@ -31,12 +31,9 @@ interface I18nError {
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
-  create_subaccount: string;
   rename_subaccount: string;
   rename_subaccount_no_account: string;
   rename_subaccount_type: string;
-  create_subaccount_too_long: string;
-  create_subaccount_limit_exceeded: string;
   get_neurons: string;
   get_known_neurons: string;
   register_vote: string;
@@ -476,6 +473,18 @@ interface I18nError__attach_wallet {
   no_identity: string;
   already_registered: string;
   limit_exceeded: string;
+  register_hardware_wallet: string;
+  create_hardware_wallet_too_long: string;
+}
+
+interface I18nError__account {
+  not_found: string;
+  no_details: string;
+  subaccount_too_long: string;
+  create_subaccount_limit_exceeded: string;
+  create_subaccount: string;
+  subaccount_not_found: string;
+  rename_account_not_found: string;
 }
 
 interface I18n {
@@ -506,4 +515,5 @@ interface I18n {
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
+  error__account: I18nError__account;
 }
