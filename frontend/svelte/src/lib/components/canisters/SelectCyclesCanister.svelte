@@ -1,9 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-
   import { createEventDispatcher, onMount } from "svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { getIcpToCyclesExchangeRate } from "../../services/canisters.services";
   import { i18n } from "../../stores/i18n";
   import {
     convertIcpToTCycles,
@@ -12,13 +10,12 @@
   import Input from "../ui/Input.svelte";
 
   export let amount: number | undefined = undefined;
+  export let icpToCyclesRatio: bigint | undefined = undefined;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
-  let icpToCyclesRatio: bigint | undefined;
   let amountCycles: number | undefined;
 
   onMount(async () => {
-    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
     // Update cycles input if the component is mounted with some `amount`
     if (icpToCyclesRatio !== undefined && amount !== undefined) {
       amountCycles = convertIcpToTCycles({
@@ -92,7 +89,6 @@
       />
     </div>
     <p>{$i18n.canisters.minimum_cycles_text}</p>
-    <p>{$i18n.canisters.app_subnets_beta}</p>
   </div>
   <button
     class="primary full-width"

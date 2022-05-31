@@ -7,6 +7,7 @@ import SelectAccount from "../../../../lib/components/accounts/SelectAccount.sve
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
@@ -31,6 +32,25 @@ describe("SelectAccount", () => {
     expect(
       getByText(mockMainAccount.identifier, { exact: false })
     ).toBeInTheDocument();
+
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
+  it("should not render hardware wallets when prop hideHarwareWalletAccounts is true", () => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+
+    const { queryByText } = render(SelectAccount, {
+      props: { hideHarwareWalletAccounts: true },
+    });
+
+    expect(
+      queryByText(mockHardwareWalletAccount.name as string, { exact: false })
+    ).toBeNull();
 
     jest.clearAllMocks();
     jest.restoreAllMocks();
