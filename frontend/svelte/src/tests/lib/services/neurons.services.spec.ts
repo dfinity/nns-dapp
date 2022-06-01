@@ -6,7 +6,10 @@ import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import {
+  E8S_PER_ICP,
+  TRANSACTION_FEE_E8S,
+} from "../../../lib/constants/icp.constants";
 import * as services from "../../../lib/services/neurons.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -14,7 +17,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedError } from "../../../lib/types/errors";
+import { NotAuthorizedError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -884,6 +887,23 @@ describe("neurons-services", () => {
       });
 
       expect(spySplitNeuron).toHaveBeenCalled();
+    });
+
+    it("should add transaction fee to the amount", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const amount = 2.2;
+      const transactionFee = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+      const amountWithFee = amount + transactionFee;
+      await services.splitNeuron({
+        neuronId: controlledNeuron.neuronId,
+        amount,
+      });
+
+      expect(spySplitNeuron).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: controlledNeuron.neuronId,
+        amount: ICP.fromE8s(BigInt(Math.round(amountWithFee * E8S_PER_ICP))),
+      });
     });
 
     it("should not update neuron if no identity", async () => {

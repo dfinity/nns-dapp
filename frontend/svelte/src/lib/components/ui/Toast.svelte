@@ -86,7 +86,7 @@
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-600-shade);
+    --scrollbar-thumb: var(--green-500-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
@@ -110,8 +110,8 @@
     &.warn {
       background: var(--yellow-500);
       color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-400-tint);
-      --scrollbar-thumb: var(--yellow-600);
+      --scrollbar-background: var(--yellow-500-tint);
+      --scrollbar-thumb: var(--yellow-500);
 
       button.close {
         color: var(--yellow-500-contrast);

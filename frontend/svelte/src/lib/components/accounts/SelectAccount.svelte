@@ -9,6 +9,7 @@
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;
   export let displayTitle: boolean = false;
+  export let hideHardwareWalletAccounts: boolean = false;
 
   const dispatch = createEventDispatcher();
   const chooseAccount = (selectedAccount: Account) => {
@@ -27,11 +28,17 @@
   $: hardwareWalletAccounts = ($accountsStore?.hardwareWallets ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
+
+  let showTitle: boolean = false;
+  $: showTitle =
+    displayTitle &&
+    (subAccounts?.length > 0 ||
+      (hardwareWalletAccounts?.length > 0 && !hideHardwareWalletAccounts));
 </script>
 
 <div class="wizard-list" class:disabled={disableSelection}>
   {#if mainAccount}
-    {#if displayTitle && subAccounts?.length > 0}
+    {#if showTitle}
       <h4>{$i18n.accounts.my_accounts}</h4>
     {/if}
 
@@ -52,14 +59,16 @@
       >
     {/each}
 
-    {#each hardwareWalletAccounts as hardwareWalletAccount}
-      <AccountCard
-        role="button"
-        on:click={() => chooseAccount(hardwareWalletAccount)}
-        account={hardwareWalletAccount}
-        >{hardwareWalletAccount.name}</AccountCard
-      >
-    {/each}
+    {#if !hideHardwareWalletAccounts}
+      {#each hardwareWalletAccounts as hardwareWalletAccount}
+        <AccountCard
+          role="button"
+          on:click={() => chooseAccount(hardwareWalletAccount)}
+          account={hardwareWalletAccount}
+          >{hardwareWalletAccount.name}</AccountCard
+        >
+      {/each}
+    {/if}
   {:else}
     <SkeletonCard />
     <SkeletonCard />
