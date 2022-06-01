@@ -15,9 +15,6 @@ import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { isDefined } from "./utils";
 
-export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
-  length <= 0;
-
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
 ): ProposalId | undefined => {
