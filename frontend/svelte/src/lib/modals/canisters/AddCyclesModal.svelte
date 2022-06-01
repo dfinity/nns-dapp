@@ -18,6 +18,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
+  import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
 
   let icpToCyclesRatio: bigint | undefined;
   onMount(async () => {
@@ -122,8 +123,7 @@
             <p>{account?.identifier}</p>
           </div>
           <div>
-            <h5>{$i18n.canister_detail.title}</h5>
-            <p>{canisterId?.toText()}</p>
+            <CanisterIdInfo {canisterId} />
           </div>
         </div>
       </SelectCyclesCanister>
@@ -137,8 +137,7 @@
         on:nnsConfirm={addCycles}
       >
         <div>
-          <h5>{$i18n.canister_detail.title}</h5>
-          <p>{canisterId?.toText()}</p>
+          <CanisterIdInfo {canisterId} />
         </div>
       </ConfirmCyclesCanister>
     {/if}
