@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXX
+
+... To be filled in with the changelog from the proposal
+
 ## Proposal 61859
 * Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
 * Add the ability to dump debug info.
