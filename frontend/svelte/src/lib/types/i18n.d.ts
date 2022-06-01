@@ -291,6 +291,9 @@ interface I18nCanister_detail {
   cycles: string;
   controllers: string;
   t_cycles: string;
+  add_cycles: string;
+  top_up_canister: string;
+  top_up_successful: string;
   add_controller: string;
 }
 

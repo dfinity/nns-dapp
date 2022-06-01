@@ -276,6 +276,9 @@
     "cycles": "Cycles",
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
+    "add_cycles": "Add Cycles",
+    "top_up_canister": "Top Up Canister",
+    "top_up_successful": "Cycles added successfully",
     "add_controller": "Add Controller"
   },
   "topics": {

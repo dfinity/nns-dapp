@@ -155,14 +155,14 @@ describe("CreateOrLinkCanisterModal", () => {
     // Confirm Create Canister Screen
     await waitFor(() =>
       expect(
-        queryByTestId("confirm-create-canister-screen")
+        queryByTestId("confirm-cycles-canister-screen")
       ).toBeInTheDocument()
     );
 
     const done = jest.fn();
     component.$on("nnsClose", done);
 
-    await clickByTestId(queryByTestId, "confirm-create-canister-button");
+    await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();

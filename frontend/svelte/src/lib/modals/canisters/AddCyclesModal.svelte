@@ -1,21 +1,23 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount, tick } from "svelte";
+  import { createEventDispatcher, getContext, onMount } from "svelte";
+  import type { Principal } from "@dfinity/principal";
   import SelectAccount from "../../components/accounts/SelectAccount.svelte";
-  import AttachCanister from "../../components/canisters/AttachCanister.svelte";
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
-  import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
   import {
-    createCanister,
     getIcpToCyclesExchangeRate,
+    topUpCanister,
   } from "../../services/canisters.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
-  import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
-  import type { CreateOrLinkType } from "../../types/canisters";
   import WizardModal from "../WizardModal.svelte";
+  import { toastsStore } from "../../stores/toasts.store";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
+  import {
+    CANISTER_DETAILS_CONTEXT_KEY,
+    type CanisterDetailsContext,
+  } from "../../types/canister-detail.context";
 
   let icpToCyclesRatio: bigint | undefined;
   onMount(async () => {
@@ -24,22 +26,8 @@
 
   const steps: Steps = [
     {
-      name: "SelectNewCanisterType",
-      title: $i18n.canisters.add_canister,
-      showBackButton: false,
-    },
-  ];
-  const attachCanisterSteps = [
-    {
-      name: "AttachCanister",
-      title: $i18n.canisters.attach_canister,
-      showBackButton: true,
-    },
-  ];
-  const createCanisterSteps = [
-    {
       name: "SelectAccount",
-      title: $i18n.accounts.select_source,
+      title: $i18n.canister_detail.top_up_canister,
       showBackButton: true,
     },
     {
@@ -49,30 +37,20 @@
     },
     {
       name: "ConfirmCycles",
-      title: $i18n.canisters.review_create_canister,
+      title: $i18n.canisters.review_cycles_purchase,
       showBackButton: true,
     },
   ];
+
+  const { store, refetchDetails }: CanisterDetailsContext =
+    getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: Step | undefined;
   let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
-
-  const selectType = async ({
-    detail,
-  }: CustomEvent<{ type: CreateOrLinkType }>) => {
-    // We preserve the first step in the array because we want the current first step to *not* be re-rendered. It would cause a flickering of the content of the modal.
-    steps.splice(1, steps.length);
-    steps.push(
-      ...(detail.type === "newCanisterAttach"
-        ? attachCanisterSteps
-        : createCanisterSteps)
-    );
-    // Wait steps to be applied - components to be updated - before being able to navigate to next step
-    await tick();
-    modal.next();
-  };
+  let canisterId: Principal | undefined;
+  $: canisterId = $store.info?.canister_id;
 
   const onSelectAccount = ({
     detail,
@@ -86,25 +64,31 @@
   };
 
   const dispatcher = createEventDispatcher();
-  const create = async () => {
+  const addCycles = async () => {
     // Edge case, should not happen
-    if (amount === undefined || account === undefined) {
+    if (
+      amount === undefined ||
+      account === undefined ||
+      canisterId === undefined
+    ) {
       toastsStore.error({
         labelKey: "error.unknown",
       });
       return;
     }
     startBusy({
-      initiator: "create-canister",
+      initiator: "top-up-canister",
     });
-    const { success } = await createCanister({
+    const { success } = await topUpCanister({
       amount,
+      canisterId,
       fromSubAccount: account.subAccount,
     });
-    stopBusy("create-canister");
+    await refetchDetails();
+    stopBusy("top-up-canister");
     if (success) {
       toastsStore.success({
-        labelKey: "canisters.create_canister_success",
+        labelKey: "canister_detail.top_up_successful",
       });
       dispatcher("nnsClose");
     }
@@ -113,31 +97,35 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
-    ><span data-tid="create-link-canister-modal-title"
-      >{currentStep?.title ?? $i18n.canisters.add_canister}</span
+    ><span data-tid="top-up-canister-modal-title"
+      >{currentStep?.title ?? $i18n.accounts.select_source}</span
     ></svelte:fragment
   >
   <svelte:fragment>
-    {#if currentStep?.name === "SelectNewCanisterType"}
-      <SelectNewCanisterType on:nnsSelect={selectType} />
-    {/if}
     {#if currentStep?.name === "SelectAccount"}
       <SelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
     {/if}
-    {#if currentStep?.name === "AttachCanister"}
-      <AttachCanister on:nnsClose />
-    {/if}
-    {#if currentStep?.name === "SelectCycles"}
+    {#if currentStep?.name === "SelectCycles" && account !== undefined}
       <SelectCyclesCanister
         {icpToCyclesRatio}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       >
-        <p>{$i18n.canisters.minimum_cycles_text}</p>
+        <!-- TODO: Show transaction fee -->
+        <div>
+          <div>
+            <h5>{$i18n.accounts.source}</h5>
+            <p>{account?.identifier}</p>
+          </div>
+          <div>
+            <h5>{$i18n.canister_detail.title}</h5>
+            <p>{canisterId?.toText()}</p>
+          </div>
+        </div>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
@@ -145,9 +133,14 @@
         {account}
         {icpToCyclesRatio}
         {amount}
-        on:nnsConfirm={create}
         on:nnsClose
-      />
+        on:nnsConfirm={addCycles}
+      >
+        <div>
+          <h5>{$i18n.canister_detail.title}</h5>
+          <p>{canisterId?.toText()}</p>
+        </div>
+      </ConfirmCyclesCanister>
     {/if}
   </svelte:fragment>
 </WizardModal>

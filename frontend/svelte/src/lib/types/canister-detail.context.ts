@@ -12,6 +12,7 @@ export interface SelectCanisterDetailsStore {
 
 export interface CanisterDetailsContext {
   store: Writable<SelectCanisterDetailsStore>;
+  refetchDetails: () => Promise<void>;
 }
 
 export const CANISTER_DETAILS_CONTEXT_KEY = Symbol("canister-details");
