@@ -86,18 +86,18 @@ describe("icp-utils", () => {
 
   describe("convertTCyclesToIcpNumber", () => {
     it("converts TCycles to number", () => {
-      expect(convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
-        1
-      );
-      expect(convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
-        2.5
-      );
-      expect(convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
-        1.25
-      );
-      expect(convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
-        2 / 3
-      );
+      expect(
+        convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(10_000) })
+      ).toBe(1);
+      expect(
+        convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(10_000) })
+      ).toBe(2.5);
+      expect(
+        convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(20_000) })
+      ).toBe(1.25);
+      expect(
+        convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(15_000) })
+      ).toBe(2 / 3);
       expect(
         convertTCyclesToIcpNumber({ tCycles: 4.32, ratio: BigInt(10_000) })
       ).toBe(4.32);
