@@ -1,10 +1,9 @@
 import { ICP } from "@dfinity/nns";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
   convertIcpToTCycles,
   convertNumberToICP,
-  convertTCyclesToE8s,
+  convertTCyclesToIcp,
   formatICP,
   formattedTransactionFeeICP,
   maxICP,
@@ -85,20 +84,23 @@ describe("icp-utils", () => {
     });
   });
 
-  describe("convertTCyclesToE8s", () => {
-    it("converts TCycles to E8s", () => {
-      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
-        BigInt(E8S_PER_ICP)
+  describe("convertTCyclesToIcp", () => {
+    it("converts TCycles to ICP", () => {
+      expect(convertTCyclesToIcp({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
+        1
       );
-      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
-        BigInt(E8S_PER_ICP * 2.5)
+      expect(convertTCyclesToIcp({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
+        2.5
       );
-      expect(convertTCyclesToE8s({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
-        BigInt(125_000_000)
+      expect(convertTCyclesToIcp({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
+        1.25
       );
-      expect(convertTCyclesToE8s({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
-        BigInt(66666666)
+      expect(convertTCyclesToIcp({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
+        2 / 3
       );
+      expect(
+        convertTCyclesToIcp({ tCycles: 4.32, ratio: BigInt(10_000) })
+      ).toBe(4.32);
     });
   });
 });
