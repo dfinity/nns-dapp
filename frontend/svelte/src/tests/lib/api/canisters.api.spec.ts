@@ -13,7 +13,10 @@ import {
   queryCanisters,
   topUpCanister,
 } from "../../../lib/api/canisters.api";
-import { CREATE_CANISTER_MEMO } from "../../../lib/api/constants.api";
+import {
+  CREATE_CANISTER_MEMO,
+  TOP_UP_CANISTER_MEMO,
+} from "../../../lib/api/constants.api";
 import { toSubAccountId } from "../../../lib/api/utils.api";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
 import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
@@ -196,6 +199,41 @@ describe("canisters-api", () => {
         identity: mockIdentity,
         amount: ICP.fromString("3") as ICP,
         canisterId: mockCanisterDetails.id,
+      });
+      expect(mockLedgerCanister.transfer).toBeCalled();
+      expect(mockCMCCanister.notifyTopUp).toBeCalled();
+    });
+
+    it("should make a transfer from subaccounts", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+
+      const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
+      // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
+      // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
+      const recipient = AccountIdentifier.fromPrincipal({
+        principal: CYCLES_MINTING_CANISTER_ID,
+        subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
+      });
+      const fromSubAccountId = toSubAccountId(
+        mockSubAccount.subAccount as SubAccountArray
+      );
+
+      const amount = ICP.fromString("3") as ICP;
+      await topUpCanister({
+        identity: mockIdentity,
+        amount,
+        canisterId: mockCanisterDetails.id,
+        fromSubAccount: mockSubAccount.subAccount,
+      });
+
+      expect(mockLedgerCanister.transfer).toBeCalledWith({
+        memo: TOP_UP_CANISTER_MEMO,
+        to: AccountIdentifier.fromHex(recipient.toHex()),
+        amount,
+        fromSubAccountId,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();
