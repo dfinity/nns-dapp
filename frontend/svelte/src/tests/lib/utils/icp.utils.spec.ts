@@ -3,7 +3,7 @@ import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
   convertIcpToTCycles,
   convertNumberToICP,
-  convertTCyclesToIcp,
+  convertTCyclesToIcpNumber,
   formatICP,
   formattedTransactionFeeICP,
   maxICP,
@@ -84,22 +84,22 @@ describe("icp-utils", () => {
     });
   });
 
-  describe("convertTCyclesToIcp", () => {
-    it("converts TCycles to ICP", () => {
-      expect(convertTCyclesToIcp({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
+  describe("convertTCyclesToIcpNumber", () => {
+    it("converts TCycles to number", () => {
+      expect(convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(10_000) })).toBe(
         1
       );
-      expect(convertTCyclesToIcp({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
+      expect(convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(10_000) })).toBe(
         2.5
       );
-      expect(convertTCyclesToIcp({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
+      expect(convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(20_000) })).toBe(
         1.25
       );
-      expect(convertTCyclesToIcp({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
+      expect(convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(15_000) })).toBe(
         2 / 3
       );
       expect(
-        convertTCyclesToIcp({ tCycles: 4.32, ratio: BigInt(10_000) })
+        convertTCyclesToIcpNumber({ tCycles: 4.32, ratio: BigInt(10_000) })
       ).toBe(4.32);
     });
   });

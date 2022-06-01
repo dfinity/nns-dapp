@@ -4,7 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import {
     convertIcpToTCycles,
-    convertTCyclesToIcp,
+    convertTCyclesToIcpNumber,
   } from "../../utils/icp.utils";
   import Input from "../ui/Input.svelte";
 
@@ -29,7 +29,7 @@
   const setAmount = () =>
     (amount =
       amountCycles !== undefined && icpToCyclesRatio !== undefined
-        ? convertTCyclesToIcp({
+        ? convertTCyclesToIcpNumber({
             tCycles: amountCycles,
             ratio: icpToCyclesRatio,
           })
