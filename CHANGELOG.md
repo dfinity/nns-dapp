@@ -1,8 +1,10 @@
 # Changelog
 
-## Proposal XXX
-
-... To be filled in with the changelog from the proposal
+## Proposal 62896
+* Display the svelte version of the accounts and neurons tabs.
+* Move the hardware wallet CLI out into a separate repository.
+* Improvements to the UI.
+* More tests
 
 ## Proposal 61859
 * Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
