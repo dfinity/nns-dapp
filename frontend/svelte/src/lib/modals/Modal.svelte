@@ -147,7 +147,10 @@
       width: var(--modal-big-width);
     }
 
-    --modal-wrapper-height: min(calc(100% - var(--padding-6x)), var(--modal-max-height));
+    --modal-wrapper-height: min(
+      calc(100% - var(--padding-6x)),
+      var(--modal-max-height)
+    );
 
     height: var(--modal-wrapper-height);
     max-width: calc(100vw - var(--padding-4x));
