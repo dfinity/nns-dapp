@@ -58,11 +58,6 @@
   <Layout>
     <section>
       <p>{$i18n.canisters.text}</p>
-      <ul>
-        <li>{$i18n.canisters.step1}</li>
-        <li>{$i18n.canisters.step2}</li>
-        <li>{$i18n.canisters.step3}</li>
-      </ul>
       <p class="last-info">
         {$i18n.canisters.principal_is}
         {$authStore.identity?.getPrincipal().toText()}
