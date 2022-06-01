@@ -62,10 +62,10 @@ export const convertIcpToTCycles = ({
   return Number(icp.toE8s() * ratio) / ONE_TRILLION;
 };
 
-export const convertTCyclesToE8s = ({
+export const convertTCyclesToIcpNumber = ({
   tCycles,
   ratio,
 }: {
   tCycles: number;
   ratio: bigint;
-}): bigint => BigInt(tCycles * ONE_TRILLION) / ratio;
+}): number => (tCycles * Number(ONE_TRILLION)) / Number(ratio) / E8S_PER_ICP;
