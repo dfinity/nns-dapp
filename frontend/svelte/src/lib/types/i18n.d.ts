@@ -264,9 +264,6 @@ interface I18nVoting {
 interface I18nCanisters {
   title: string;
   text: string;
-  step1: string;
-  step2: string;
-  step3: string;
   principal_is: string;
   create_or_link: string;
   empty: string;
