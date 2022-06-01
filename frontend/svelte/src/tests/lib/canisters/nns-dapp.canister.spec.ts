@@ -19,7 +19,7 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCanisters } from "../../mocks/canisters.mock";
+import { mockCanister, mockCanisters } from "../../mocks/canisters.mock";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
@@ -232,5 +232,34 @@ describe("NNSDapp", () => {
 
       expect(service.get_transactions).toBeCalled();
     });
+  });
+
+  describe("NNSDapp.attachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.attachCanister({
+        name: "test",
+        canisterId: mockCanister.canister_id,
+      });
+
+      expect(service.attach_canister).toBeCalled();
+    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
+  });
+
+  describe("NNSDapp.detachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.detach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.detachCanister(mockCanister.canister_id);
+
+      expect(service.detach_canister).toBeCalled();
+    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
   });
 });

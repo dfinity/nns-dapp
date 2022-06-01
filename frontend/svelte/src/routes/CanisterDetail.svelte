@@ -33,6 +33,7 @@
   import type { CanisterDetails } from "../lib/canisters/ic-management/ic-management.canister.types";
   import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import DetachCanisterButton from "../lib/components/canister_details/DetachCanisterButton.svelte";
 
   onMount(async () => {
     if (!SHOW_CANISTERS_ROUTE) {
@@ -140,6 +141,9 @@
             $canisterId: canisterIdString,
           })}
         </p>
+        <div class="actions">
+          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+        </div>
       {:else}
         <div class="loader-title">
           <SkeletonTitle />
@@ -174,6 +178,12 @@
 
   p:last-of-type {
     margin-bottom: var(--padding-3x);
+  }
+
+  .actions {
+    margin-bottom: var(--padding-3x);
+    display: flex;
+    justify-content: end;
   }
 
   .loader-title {

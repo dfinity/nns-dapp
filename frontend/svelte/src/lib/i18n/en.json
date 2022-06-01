@@ -280,6 +280,11 @@
     "add_cycles": "Add Cycles",
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
+    "detach": "Detach",
+    "confirm_detach_title": "Confirm Detach",
+    "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
+    "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stoerd securely.",
+    "detach_success": "Canister detached successfully",
     "add_controller": "Add Controller"
   },
   "topics": {

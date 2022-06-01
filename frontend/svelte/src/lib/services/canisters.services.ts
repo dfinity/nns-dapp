@@ -2,6 +2,7 @@ import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
   createCanister as createCanisterApi,
+  detachCanister as detachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
@@ -116,6 +117,23 @@ export const attachCanister = async (
   try {
     const identity = await getIdentity();
     await attachCanisterApi({
+      identity,
+      canisterId,
+    });
+    await listCanisters({ clearBeforeQuery: false });
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    return { success: false };
+  }
+};
+
+export const detachCanister = async (
+  canisterId: Principal
+): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getIdentity();
+    await detachCanisterApi({
       identity,
       canisterId,
     });

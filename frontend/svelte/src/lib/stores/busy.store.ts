@@ -5,6 +5,7 @@ export type BusyStateInitiatorType =
   | "update-delay"
   | "vote"
   | "attach-canister"
+  | "detach-canister"
   | "create-canister"
   | "top-up-canister"
   | "accounts"

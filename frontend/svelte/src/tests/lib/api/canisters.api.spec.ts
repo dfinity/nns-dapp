@@ -8,6 +8,7 @@ import { mock } from "jest-mock-extended";
 import {
   attachCanister,
   createCanister,
+  detachCanister,
   getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
@@ -83,6 +84,19 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
         name: "",
       });
+    });
+  });
+
+  describe("attachCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to detach the canister id", async () => {
+      await detachCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+      });
+
+      expect(mockNNSDappCanister.detachCanister).toBeCalled();
     });
   });
 
