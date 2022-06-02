@@ -140,4 +140,4 @@ export const mapPromises = async <T, R>(
   return Promise.all(items.map(async (item) => await fun(item)));
 };
 
-export const isArrayEmpty = <T>({ length }: T[]): boolean => length <= 0;
+export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
