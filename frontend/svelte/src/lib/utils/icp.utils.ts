@@ -10,7 +10,7 @@ import { InvalidAmountError } from "../types/neurons.errors";
 
 const countDecimals = (value: number): number => {
   const split: string[] = `${value}`.split(".");
-  return split[1]?.length ?? 0;
+  return split[1]?.length ?? ICP_DISPLAYED_DECIMALS;
 };
 
 /**
@@ -38,6 +38,8 @@ export const formatICP = ({
       : detailed
       ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
       : ICP_DISPLAYED_DECIMALS;
+
+  console.log(converted, countDecimals(converted))
 
   return new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimals,

@@ -28,6 +28,21 @@ describe("icp-utils", () => {
     );
   });
 
+  it("should format icp detailed", () => {
+    // expect(formatICP({value: BigInt(0), detailed: true})).toEqual("0");
+    // expect(formatICP({value: BigInt(100), detailed: true})).toEqual("0.000001");
+    expect(formatICP({value: BigInt(100000000), detailed: true})).toEqual("1.00");
+    // expect(formatICP({value: BigInt(1000000000), detailed: true})).toEqual("10.00");
+    // expect(formatICP({value: BigInt(1010000000), detailed: true})).toEqual("10.10");
+    // expect(formatICP({value: BigInt(1012300000), detailed: true})).toEqual("10.12");
+    // expect(formatICP({value: BigInt(20000000000), detailed: true})).toEqual("200.00");
+    // expect(formatICP({value: BigInt(20000000001), detailed: true})).toEqual("200.00");
+    // expect(formatICP({value: BigInt(200000000000), detailed: true})).toEqual(`2${"\u202F"}000.00`);
+    // expect(formatICP({value: BigInt(200000000000000), detailed: true})).toEqual(
+    //     `2${"\u202F"}000${"\u202F"}000.00`
+    // );
+  });
+
   it("should add ICPs", () => {
     const icp0 = ICP.fromString("0") as ICP;
     const icp1 = ICP.fromString("1") as ICP;
