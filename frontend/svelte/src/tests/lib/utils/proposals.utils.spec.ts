@@ -8,7 +8,6 @@ import {
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import {
   concatenateUniqueProposals,
-  emptyProposals,
   excludeProposals,
   hasMatchingProposals,
   hideProposal,
@@ -30,12 +29,6 @@ import {
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-utils", () => {
-  it("should detect an empty list of proposals", () =>
-    expect(emptyProposals([])).toBeTruthy());
-
-  it("should detect an not empty list of proposals", () =>
-    expect(emptyProposals(mockProposals)).toBeFalsy());
-
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
 
