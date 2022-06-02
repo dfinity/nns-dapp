@@ -10,7 +10,7 @@ import { InvalidAmountError } from "../types/neurons.errors";
 
 const countDecimals = (value: number): number => {
   const split: string[] = `${value}`.split(".");
-  return split[1]?.length ?? ICP_DISPLAYED_DECIMALS;
+  return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
 };
 
 /**
