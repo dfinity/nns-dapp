@@ -8,20 +8,41 @@ import { InvalidAmountError } from "../types/neurons.errors";
 
 const formatNumberToString = ({
   value,
-  fractionDigits = 8,
+  fractionDigits = 2,
 }: {
   value: bigint;
   fractionDigits?: number;
-}): string =>
-  new Intl.NumberFormat("fr-FR", {
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-  })
-    .format(Number(value) / E8S_PER_ICP)
-    .replace(",", ".");
+}): string => {
+  const converted: number = Number(value) / E8S_PER_ICP;
+  const decimals: number = converted < 0.01 ? Math.max(countDecimals(converted), fractionDigits) : fractionDigits;
 
-export const formatICP = (value: bigint): string =>
-  formatNumberToString({ value });
+  return new Intl.NumberFormat("fr-FR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+      .format(Number(value) / E8S_PER_ICP)
+      .replace(",", ".");
+}
+
+const countDecimals = (value: number): number => {
+  const split: string[] = `${value}`.split('.');
+  return split[1]?.length ?? 0
+}
+
+/**
+ * Jira L2-666:
+ * - If ICP is zero then 0 should be displayed - i.e. without decimals
+ * - ICP with round number (12.0) should be displayed 12.00
+ * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
+ * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
+ */
+export const formatICP = (value: bigint): string => {
+  if (value === BigInt(0)) {
+    return '0';
+  }
+
+  return formatNumberToString({ value });
+}
 
 export const sumICPs = (...icps: ICP[]): ICP =>
   ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
@@ -31,7 +52,7 @@ export const sumICPs = (...icps: ICP[]): ICP =>
 export const formattedTransactionFeeICP = (): string =>
   formatNumberToString({
     value: ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s(),
-    fractionDigits: 4,
+    fractionDigits: 4
   });
 
 export const maxICP = (icp: ICP | undefined): number =>
