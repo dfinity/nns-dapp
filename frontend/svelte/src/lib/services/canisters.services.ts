@@ -153,18 +153,22 @@ export const routePathCanisterId = (
   return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };
 
+/**
+ * Makes a call to the IC Management "canister" to get the canister details
+ *
+ * @param canisterId: Principal
+ * @returns CanisterDetails
+ * @throws UserNotTheControllerError
+ * @throws Error
+ */
 export const getCanisterDetails = async (
   canisterId: Principal
-): Promise<CanisterDetails | undefined> => {
+): Promise<CanisterDetails> => {
   const identity = await getIdentity();
-  try {
-    return await queryCanisterDetailsApi({
-      canisterId,
-      identity,
-    });
-  } catch (error) {
-    // TODO: manage errors https://dfinity.atlassian.net/browse/L2-615
-  }
+  return queryCanisterDetailsApi({
+    canisterId,
+    identity,
+  });
 };
 
 export const getIcpToCyclesExchangeRate = async (): Promise<

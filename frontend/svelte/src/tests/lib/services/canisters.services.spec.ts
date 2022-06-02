@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
+import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
@@ -175,6 +176,17 @@ describe("canisters-services", () => {
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
       resetIdentity();
+    });
+
+    it("should throw if getCanisterDetails api throws", async () => {
+      spyQueryCanisterDetails.mockRejectedValue(
+        new UserNotTheControllerError()
+      );
+
+      const call = () => getCanisterDetails(mockCanisterDetails.id);
+
+      await expect(call).rejects.toThrow(UserNotTheControllerError);
+      spyQueryCanisterDetails.mockRestore();
     });
   });
 
