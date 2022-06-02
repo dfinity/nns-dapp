@@ -31,7 +31,7 @@ export const formatICP = ({
     return "0";
   }
 
-  const converted: number = Number(value) / E8S_PER_ICP;
+  const converted: number = (Number(value) / E8S_PER_ICP);
   const decimals: number =
     converted < 0.01
       ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
@@ -39,12 +39,12 @@ export const formatICP = ({
       ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
       : ICP_DISPLAYED_DECIMALS;
 
-  return new Intl.NumberFormat("fr-FR", {
+  return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
     .format(converted)
-    .replace(",", ".");
+    .replace(/,/g, "'");
 };
 
 export const sumICPs = (...icps: ICP[]): ICP =>
