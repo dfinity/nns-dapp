@@ -101,7 +101,7 @@
             <button
               disabled
               data-tid="merge-neurons-button"
-              class="primary"
+              class="primary full-width"
               on:click={() => openModal("merge-neurons")}
               >{$i18n.neurons.merge_neurons}</button
             >
