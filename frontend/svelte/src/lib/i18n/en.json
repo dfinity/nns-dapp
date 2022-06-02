@@ -257,7 +257,7 @@
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",
     "create_canister_subtitle": "Create a new canister, to deploy your application",
-    "create_canister_success": "Canister created successfully",
+    "create_canister_success": "New canister with id $canisterId created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister was linked successfully",
@@ -330,7 +330,8 @@
     "no_transactions": "No transactions"
   },
   "busy_screen": {
-    "pending_approval_hw": "Please use your hardware wallet to approve."
+    "pending_approval_hw": "Please use your hardware wallet to approve.",
+    "take_long": "This might take a while."
   },
   "proposal_detail": {
     "title": "Proposal",
