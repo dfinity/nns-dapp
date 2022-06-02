@@ -2,7 +2,8 @@
 Wasm sha256 hash: `9cc95005c941e7d4e4a9988c3ca859965bbe7a1d2d61ee7eb7b3d90f9e9c6b63` (`https://github.com/dfinity/nns-dapp/actions/runs/2429826488`)
 
 ## Change Log:
-* Truncate ICP per request
+* Truncate ICP per request; the full precision will be available
+  as a hover text in a future release.
 
 ## Commit log:
 
