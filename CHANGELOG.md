@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXX
+* Fix styling of modals on Safari
+
 ## Proposal 62896
 * Display the svelte version of the accounts and neurons tabs.
 * Move the hardware wallet CLI out into a separate repository.
