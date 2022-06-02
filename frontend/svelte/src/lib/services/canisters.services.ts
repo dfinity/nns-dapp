@@ -60,12 +60,12 @@ export const createCanister = async ({
 }: {
   amount: number;
   fromSubAccount?: SubAccountArray;
-}): Promise<{ success: boolean }> => {
+}): Promise<Principal | undefined> => {
   try {
     const icpAmount = convertNumberToICP(amount);
     // TODO: Validate it's enough ICP https://dfinity.atlassian.net/browse/L2-615
     const identity = await getIdentity();
-    await createCanisterApi({
+    const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount,
       fromSubAccount,
@@ -74,10 +74,10 @@ export const createCanister = async ({
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
-    return { success: true };
+    return canisterId;
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
-    return { success: false };
+    return;
   }
 };
 

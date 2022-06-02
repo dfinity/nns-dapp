@@ -167,8 +167,8 @@ describe("canisters-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call api to create a canister", async () => {
-      const { success } = await createCanister({ amount: 3 });
-      expect(success).toBe(true);
+      const canisterId = await createCanister({ amount: 3 });
+      expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
       expect(syncAccounts).toBeCalled();
@@ -177,8 +177,8 @@ describe("canisters-services", () => {
     it("should return success false if no identity", async () => {
       setNoIdentity();
 
-      const { success } = await createCanister({ amount: 3 });
-      expect(success).toBe(false);
+      const canisterId = await createCanister({ amount: 3 });
+      expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
 
       resetIdentity();

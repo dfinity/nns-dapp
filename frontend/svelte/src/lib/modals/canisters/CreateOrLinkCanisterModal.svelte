@@ -96,15 +96,20 @@
     }
     startBusy({
       initiator: "create-canister",
+      labelKey: "busy_screen.take_long",
     });
-    const { success } = await createCanister({
+    const canisterId = await createCanister({
       amount,
       fromSubAccount: account.subAccount,
     });
     stopBusy("create-canister");
-    if (success) {
-      toastsStore.success({
+    if (canisterId !== undefined) {
+      toastsStore.show({
+        level: "success",
         labelKey: "canisters.create_canister_success",
+        substitutions: {
+          $canisterId: canisterId.toText(),
+        },
       });
       dispatcher("nnsClose");
     }

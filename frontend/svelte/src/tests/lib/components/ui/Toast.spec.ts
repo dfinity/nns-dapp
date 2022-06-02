@@ -41,4 +41,23 @@ describe("Toast", () => {
 
     expect(p?.textContent).toContain("more details");
   });
+
+  it("should render substitutions", async () => {
+    const canisterId = "aaaaa-aa";
+    const { container } = render(Toast, {
+      props: {
+        msg: {
+          labelKey: "canisters.create_canister_success",
+          level: "success",
+          substitutions: {
+            $canisterId: canisterId,
+          },
+        },
+      },
+    });
+
+    const p: HTMLParagraphElement | null = container.querySelector("p");
+
+    expect(p?.textContent).toContain(canisterId);
+  });
 });

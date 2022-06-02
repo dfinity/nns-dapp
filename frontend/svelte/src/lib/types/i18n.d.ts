@@ -352,6 +352,7 @@ interface I18nWallet {
 
 interface I18nBusy_screen {
   pending_approval_hw: string;
+  take_long: string;
 }
 
 interface I18nProposal_detail {
