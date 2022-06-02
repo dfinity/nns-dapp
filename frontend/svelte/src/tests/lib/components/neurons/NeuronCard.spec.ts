@@ -74,8 +74,8 @@ describe("NeuronCard", () => {
     });
 
     const stakeText = formatICP(
-      (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
-        (mockNeuron.fullNeuron as Neuron).neuronFees
+        {value: (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
+              (mockNeuron.fullNeuron as Neuron).neuronFees}
     );
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
@@ -168,7 +168,7 @@ describe("NeuronCard", () => {
         proposerNeuron: true,
       },
     });
-    const votingValue = formatICP(mockNeuron.votingPower);
+    const votingValue = formatICP({value: mockNeuron.votingPower});
     expect(getByText(votingValue)).toBeInTheDocument();
   });
 });

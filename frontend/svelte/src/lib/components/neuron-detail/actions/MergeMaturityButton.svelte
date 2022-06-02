@@ -20,7 +20,7 @@
   text={replacePlaceholders(
     $i18n.neuron_detail.merge_maturity_disabled_tooltip,
     {
-      $amount: formatICP(BigInt(MIN_MATURITY_MERGE)),
+      $amount: formatICP({value: BigInt(MIN_MATURITY_MERGE)}),
     }
   )}
 >

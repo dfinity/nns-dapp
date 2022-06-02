@@ -19,7 +19,7 @@ describe("ICP", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())}`
+      `${formatICP({value: mockMainAccount.balance.toE8s()})}`
     );
   });
 
@@ -41,7 +41,7 @@ describe("ICP", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `+${formatICP(mockMainAccount.balance.toE8s())}`
+      `+${formatICP({value: mockMainAccount.balance.toE8s()})}`
     );
     expect(container.querySelector(".plus-sign")).toBeInTheDocument();
   });
@@ -56,7 +56,7 @@ describe("ICP", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `-${formatICP(mockMainAccount.balance.toE8s())}`
+      `-${formatICP({value: mockMainAccount.balance.toE8s()})}`
     );
   });
 });

@@ -29,7 +29,7 @@ describe("AccountCard", () => {
     const balance = container.querySelector("article > div span:first-of-type");
 
     expect(balance?.textContent).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())}`
+      `${formatICP({value: mockMainAccount.balance.toE8s()})}`
     );
   });
 

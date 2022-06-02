@@ -32,7 +32,7 @@
     </p>
 
     <p>
-      {formatICP(fullNeuron?.cachedNeuronStake ?? BigInt(0))}
+      {formatICP({value: fullNeuron?.cachedNeuronStake ?? BigInt(0)})}
     </p>
 
     <p class="hotkey">

@@ -46,7 +46,7 @@ describe("Accounts", () => {
     const titleRow = container.querySelector("section > div");
 
     expect(titleRow?.textContent).toEqual(
-      `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      `Accounts ${formatICP({value: mockMainAccount.balance.toE8s()})} ICP`
     );
   });
 
@@ -71,7 +71,7 @@ describe("Accounts", () => {
     );
 
     expect(cardTitleRow?.textContent).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      `${formatICP({value: mockMainAccount.balance.toE8s()})} ICP`
     );
   });
 
@@ -127,7 +127,7 @@ describe("Accounts", () => {
       mockSubAccount.balance.toE8s() +
       mockHardwareWalletAccount.balance.toE8s();
     expect(titleRow?.textContent).toEqual(
-      `Accounts ${formatICP(totalBalance)} ICP`
+      `Accounts ${formatICP({value: totalBalance})} ICP`
     );
   });
 

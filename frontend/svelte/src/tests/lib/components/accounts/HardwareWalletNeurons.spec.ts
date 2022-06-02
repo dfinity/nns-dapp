@@ -42,11 +42,11 @@ describe("HardwareWalletNeurons", () => {
     expect(getByText(mockNeuronStake.neuronId.toString())).toBeInTheDocument();
 
     expect(
-      getByText(formatICP((mockNeuron.fullNeuron as Neuron).cachedNeuronStake))
+      getByText(formatICP({value: (mockNeuron.fullNeuron as Neuron).cachedNeuronStake}))
     ).toBeInTheDocument();
     expect(
       getByText(
-        formatICP((mockNeuronStake.fullNeuron as Neuron).cachedNeuronStake)
+        formatICP({value: (mockNeuronStake.fullNeuron as Neuron).cachedNeuronStake})
       )
     ).toBeInTheDocument();
   });
