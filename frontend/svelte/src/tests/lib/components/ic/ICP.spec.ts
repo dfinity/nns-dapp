@@ -59,4 +59,19 @@ describe("ICP", () => {
       `-${formatICP({ value: mockMainAccount.balance.toE8s() })}`
     );
   });
+
+  it("should render a detailed ICP value", () => {
+    const { container } = render(ICP, {
+      props: {
+        ...props,
+        detailed: true
+      },
+    });
+
+    const value = container.querySelector("span:first-of-type");
+
+    expect(value?.textContent).toEqual(
+        `${formatICP({ value: mockMainAccount.balance.toE8s(), detailed: true })}`
+    );
+  });
 });
