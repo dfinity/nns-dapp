@@ -64,14 +64,14 @@ describe("ICP", () => {
     const { container } = render(ICP, {
       props: {
         ...props,
-        detailed: true
+        detailed: true,
       },
     });
 
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-        `${formatICP({ value: mockMainAccount.balance.toE8s(), detailed: true })}`
+      `${formatICP({ value: mockMainAccount.balance.toE8s(), detailed: true })}`
     );
   });
 });
