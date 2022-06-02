@@ -77,7 +77,9 @@ describe("NewTransactionReview", () => {
     const { queryByTestId } = render(NewTransactionTest, { props });
 
     const icp: HTMLSpanElement | null = queryByTestId("icp-value");
-    expect(icp?.innerHTML).toEqual(`${formatICP({ value: amount.toE8s(), detailed: true })}`);
+    expect(icp?.innerHTML).toEqual(
+      `${formatICP({ value: amount.toE8s(), detailed: true })}`
+    );
   });
 
   it("should execute transaction to transfer ICP", async () => {
