@@ -43,7 +43,7 @@ export const formatICP = ({
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
-    .format(Number(value) / E8S_PER_ICP)
+    .format(converted)
     .replace(",", ".");
 };
 
