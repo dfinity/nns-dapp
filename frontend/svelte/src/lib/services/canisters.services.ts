@@ -131,17 +131,19 @@ export const attachCanister = async (
 export const detachCanister = async (
   canisterId: Principal
 ): Promise<{ success: boolean }> => {
+  let success = false;
   try {
     const identity = await getIdentity();
     await detachCanisterApi({
       identity,
       canisterId,
     });
+    success = true;
     await listCanisters({ clearBeforeQuery: false });
-    return { success: true };
+    return { success };
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
-    return { success: false };
+    return { success };
   }
 };
 

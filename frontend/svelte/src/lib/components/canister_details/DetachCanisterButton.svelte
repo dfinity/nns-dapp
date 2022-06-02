@@ -20,6 +20,7 @@
     });
     const { success } = await detachCanister(canisterId);
     stopBusy("detach-canister");
+    close();
     if (success) {
       toastsStore.show({
         level: "success",
@@ -27,7 +28,6 @@
       });
       routeStore.replace({ path: AppPath.Canisters });
     }
-    close();
   };
 </script>
 
