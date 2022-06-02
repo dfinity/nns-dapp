@@ -99,7 +99,7 @@
             text={$i18n.neurons.need_two_to_merge}
           >
             <button
-              disabled={!enoughNeuronsToMerge}
+              disabled
               data-tid="merge-neurons-button"
               class="primary"
               on:click={() => openModal("merge-neurons")}
