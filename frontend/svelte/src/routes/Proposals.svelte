@@ -77,7 +77,7 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    const reload = reloadOnBack({
+    const reload: boolean = reloadOnBack({
       expectedPreviousPath: AppPath.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $proposalsStore.proposals,

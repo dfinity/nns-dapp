@@ -36,7 +36,7 @@
       window.location.replace("/#/canisters");
     }
 
-    const reload = reloadOnBack({
+    const reload: boolean = reloadOnBack({
       expectedPreviousPath: AppPath.CanisterDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $canistersStore.canisters,

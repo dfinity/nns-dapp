@@ -10,13 +10,13 @@ export const reloadOnBack = <T>({
   currentData,
 }: {
   expectedPreviousPath: AppPath;
-  effectivePreviousPath: AppPath | string;
-  currentData: T[];
+  effectivePreviousPath: AppPath | string | undefined;
+  currentData: T[] | undefined;
 }): boolean => {
   const isReferrerDetail: boolean = isRoutePath({
     path: expectedPreviousPath,
     routePath: effectivePreviousPath,
   });
 
-  return isArrayEmpty(currentData) || !isReferrerDetail;
+  return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };
