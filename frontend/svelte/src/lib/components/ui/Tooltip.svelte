@@ -1,16 +1,27 @@
 <script lang="ts">
+import { afterUpdate } from "svelte";
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
-  export let rightEdge: boolean = false;
+  let tooltipComponent, rightBoundary, mainWidth;
+  let rightEdge = false;
+
+  // if tooltip goes beyond viewport on the right, assign class name of 'rightEdge'
+  afterUpdate(() => {
+    rightBoundary = tooltipComponent.getBoundingClientRect().right;
+    mainWidth = document.querySelector('main')?.clientWidth;
+    if (rightBoundary > mainWidth) {
+      rightEdge = true;
+    }
+  });
 </script>
 
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
   </div>
-  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge>
+  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge bind:this={tooltipComponent}>
     {text}
   </div>
 </div>
