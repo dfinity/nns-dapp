@@ -22,9 +22,7 @@ describe("icp-utils", () => {
     expect(formatICP({ value: BigInt(1012300000) })).toEqual("10.12");
     expect(formatICP({ value: BigInt(20000000000) })).toEqual("200.00");
     expect(formatICP({ value: BigInt(20000000001) })).toEqual("200.00");
-    expect(formatICP({ value: BigInt(200000000000) })).toEqual(
-      `2'000.00`
-    );
+    expect(formatICP({ value: BigInt(200000000000) })).toEqual(`2'000.00`);
     expect(formatICP({ value: BigInt(200000000000000) })).toEqual(
       `2'000'000.00`
     );

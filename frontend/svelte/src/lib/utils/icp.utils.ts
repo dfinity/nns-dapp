@@ -31,7 +31,7 @@ export const formatICP = ({
     return "0";
   }
 
-  const converted: number = (Number(value) / E8S_PER_ICP);
+  const converted: number = Number(value) / E8S_PER_ICP;
   const decimals: number =
     converted < 0.01
       ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
