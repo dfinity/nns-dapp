@@ -53,12 +53,14 @@ export const proposalActionFields = (
 export const hideProposal = ({
   proposalInfo,
   filters,
+  neurons,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
-  isExcludedVotedProposal({ proposalInfo, filters });
+  isExcludedVotedProposal({ proposalInfo, filters, neurons });
 
 /**
  * Does the proposal returned by the backend really matches the filter selected by the user?
@@ -91,24 +93,28 @@ const matchFilters = ({
 const isExcludedVotedProposal = ({
   proposalInfo,
   filters,
+  neurons,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean => {
   const { excludeVotedProposals } = filters;
 
   const { status, ballots } = proposalInfo;
+  const isOpen = status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  const belongsToValidNeuron = (id: NeuronId) =>
+    neurons.find(({ neuronId }) => neuronId === id) !== undefined;
   const containsUnspecifiedBallot = (): boolean =>
-    // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
-    // something ballots is empty (inconsistent backend behaviour)
-    ballots?.length === 0
-      ? true
-      : ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) !== undefined;
-  return (
-    excludeVotedProposals &&
-    status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
-    !containsUnspecifiedBallot()
-  );
+    ballots.find(
+      ({ vote, neuronId }) =>
+        // TODO: This is temporary solution. Will be replaced with L2-507
+        // ignore neuronIds in ballots that are not in the neuron list of the user.
+        // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
+        belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
+    ) !== undefined;
+
+  return excludeVotedProposals && isOpen && !containsUnspecifiedBallot();
 };
 
 /**
@@ -117,9 +123,11 @@ const isExcludedVotedProposal = ({
 export const hasMatchingProposals = ({
   proposals,
   filters,
+  neurons,
 }: {
   proposals: ProposalInfo[];
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean => {
   if (proposals.length === 0) {
     return false;
@@ -127,7 +135,8 @@ export const hasMatchingProposals = ({
 
   return (
     proposals.find(
-      (proposalInfo: ProposalInfo) => !hideProposal({ proposalInfo, filters })
+      (proposalInfo: ProposalInfo) =>
+        !hideProposal({ proposalInfo, filters, neurons })
     ) !== undefined
   );
 };

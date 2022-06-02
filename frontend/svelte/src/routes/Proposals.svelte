@@ -26,6 +26,10 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import {
+    definedNeuronsStore,
+    neuronsStore,
+  } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
 
   let loading: boolean = false;
@@ -135,11 +139,19 @@
       !hasMatchingProposals({
         proposals: $proposalsStore.proposals,
         filters: $proposalsFiltersStore,
+        neurons: $definedNeuronsStore,
       });
   };
 
   let nothingFound: boolean;
-  $: initialized, loading, $proposalsStore, (() => updateNothingFound())();
+  $: initialized,
+    loading,
+    neuronsLoaded,
+    $proposalsStore,
+    (() => updateNothingFound())();
+
+  let neuronsLoaded: boolean;
+  $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
 {#if SHOW_PROPOSALS_ROUTE}
@@ -149,17 +161,19 @@
 
       <ProposalsFilters />
 
-      <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-          <ProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
+      {#if neuronsLoaded}
+        <InfiniteScroll on:nnsIntersect={findNextProposals}>
+          {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
+            <ProposalCard {hidden} {proposalInfo} />
+          {/each}
+        </InfiniteScroll>
 
-      {#if nothingFound}
-        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+        {#if nothingFound}
+          <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+        {/if}
       {/if}
 
-      {#if loading}
+      {#if loading || !neuronsLoaded}
         <div class="spinner">
           <SkeletonCard />
           <SkeletonCard />
