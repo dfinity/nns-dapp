@@ -105,6 +105,7 @@ const isExcludedVotedProposal = ({
   const { excludeVotedProposals } = filters;
 
   const { status, ballots } = proposalInfo;
+  const isOpen = status === ProposalStatus.PROPOSAL_STATUS_OPEN;
   const belongsToValidNeuron = (id: NeuronId) =>
     neurons.find(({ neuronId }) => neuronId === id) !== undefined;
   const containsUnspecifiedBallot = (): boolean =>
@@ -116,11 +117,16 @@ const isExcludedVotedProposal = ({
         belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
     ) !== undefined;
 
-  return (
-    excludeVotedProposals &&
-    status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
-    !containsUnspecifiedBallot()
-  );
+  if (ballots?.length === 0) {
+    // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
+    // sometimes ballots is empty (inconsistent backend behaviour)
+    // TODO: check and remove if logic is outdated
+    console.error("ballots.length === 0");
+
+    return excludeVotedProposals && isOpen;
+  }
+
+  return excludeVotedProposals && isOpen && !containsUnspecifiedBallot();
 };
 
 /**
