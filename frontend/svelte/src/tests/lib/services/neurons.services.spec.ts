@@ -10,6 +10,7 @@ import {
   E8S_PER_ICP,
   TRANSACTION_FEE_E8S,
 } from "../../../lib/constants/icp.constants";
+import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
 import * as services from "../../../lib/services/neurons.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -17,7 +18,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedError } from "../../../lib/types/neurons.errors";
+import { NotAuthorizedNeuronError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -36,6 +37,7 @@ const {
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
   routePathNeuronId,
+  getIdentityOfControllerByNeuronId,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
@@ -58,9 +60,11 @@ jest.mock("../../../lib/stores/toasts.store", () => {
   };
 });
 
-let testIdentity: Identity | undefined = mockIdentity;
-const setNoAccountIdentity = () => (testIdentity = undefined);
+let testIdentity: Identity | null = mockIdentity;
+const setNoAccountIdentity = () => (testIdentity = null);
 const resetAccountIdentity = () => (testIdentity = mockIdentity);
+const setAccountIdentity = (newIdentity: Identity) =>
+  (testIdentity = newIdentity);
 
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
@@ -759,7 +763,7 @@ describe("neurons-services", () => {
 
     it("should update neuron and return success when user removes itself", async () => {
       spyGetNeuron.mockImplementation(
-        jest.fn().mockRejectedValue(new NotAuthorizedError())
+        jest.fn().mockRejectedValue(new NotAuthorizedNeuronError())
       );
       neuronsStore.pushNeurons({ neurons, certified: true });
 
@@ -1310,6 +1314,77 @@ describe("neurons-services", () => {
       expect(
         store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
       ).toBeDefined();
+    });
+  });
+
+  describe("getIdentityOfControllerByNeuronId", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should return identity from authStore first", async () => {
+      const controlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      const identity = await getIdentityOfControllerByNeuronId(
+        controlledNeuron.neuronId
+      );
+      expect(identity).toBe(mockIdentity);
+      expect(getAccountIdentityByPrincipal).not.toBeCalled();
+    });
+
+    it("should return identity from accounts service", async () => {
+      const controller =
+        "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe";
+      const newIdentity = {
+        getPrincipal: () => Principal.fromText(controller),
+      } as unknown as Identity;
+      setAccountIdentity(newIdentity);
+      const controlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller,
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      const identity = await getIdentityOfControllerByNeuronId(
+        controlledNeuron.neuronId
+      );
+      expect(identity).toBe(newIdentity);
+      expect(getAccountIdentityByPrincipal).toBeCalled();
+      resetIdentity();
+    });
+
+    it("should raise NotAuthorizedNeuronError if fullNeuron is not defined", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
+      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+    });
+
+    it("should raise NotAuthorizedNeuronError if contoller is not in authStore nor accounts helper", async () => {
+      setNoAccountIdentity();
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller:
+            "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe",
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
+      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+      resetAccountIdentity();
     });
   });
 });

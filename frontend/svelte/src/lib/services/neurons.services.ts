@@ -41,7 +41,7 @@ import type { Account } from "../types/account";
 import {
   CannotBeMerged,
   InsufficientAmountError,
-  NotAuthorizedError,
+  NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
 import { isAccountHardwareWallet } from "../utils/accounts.utils";
@@ -110,28 +110,38 @@ export const getNeuronFromStore = (
 ): NeuronInfo | undefined =>
   get(definedNeuronsStore).find((neuron) => neuron.neuronId === neuronId);
 
-const getIdentityOfControllerByNeuronId = async (
+// Exported to be tested
+export const getIdentityOfControllerByNeuronId = async (
   neuronId: NeuronId
 ): Promise<Identity> => {
-  const { neuron } = await getIdentityAndNeuronHelper(neuronId);
+  const { neuron, identity } = await getIdentityAndNeuronHelper(neuronId);
 
   if (
     neuron.fullNeuron === undefined ||
     neuron.fullNeuron.controller === undefined
   ) {
-    throw new NotAuthorizedError();
+    throw new NotAuthorizedNeuronError("Neuron has no controller");
   }
 
+  // Check whether identity from authStore is controller
+  if (neuron.fullNeuron.controller === identity.getPrincipal().toText()) {
+    return identity;
+  }
+
+  // If identity form authStore is not the controller, check also accounts.
   const neuronIdentity = await getAccountIdentityByPrincipal(
     neuron.fullNeuron.controller
   );
+  if (neuronIdentity === null) {
+    throw new NotAuthorizedNeuronError();
+  }
   // `getAccountIdentityByPrincipal` returns the current user identity (because of `getIdentity`) if the account is not a hardware wallet.
-  // If we enable visiting neurons which are not ours, we will need this service to throw `NotAuthorizedError`.
+  // If we enable visiting neurons which are not ours, we will need this service to throw `NotAuthorizedNeuronError`.
   if (isIdentityController({ neuron, identity: neuronIdentity })) {
     return neuronIdentity;
   }
 
-  throw new NotAuthorizedError();
+  throw new NotAuthorizedNeuronError();
 };
 
 const getStakeNeuronPropsByAccount = ({
@@ -394,7 +404,7 @@ const getAndLoadNeuron = async (neuronId: NeuronId) => {
     throw new NotFoundError();
   }
   if (!userAuthorizedNeuron(neuron)) {
-    throw new NotAuthorizedError(
+    throw new NotAuthorizedNeuronError(
       `User not authorized to access neuron ${neuronId}`
     );
   }
@@ -591,7 +601,7 @@ export const removeHotkey = async ({
 
     return neuronId;
   } catch (err) {
-    if (removed && err instanceof NotAuthorizedError) {
+    if (removed && err instanceof NotAuthorizedNeuronError) {
       // There is no need to get the identity unless removing the hotkey succeeded
       // and it was `getAndLoadNeuron` that threw the error.
       const currentIdentityPrincipal = (await getIdentity())

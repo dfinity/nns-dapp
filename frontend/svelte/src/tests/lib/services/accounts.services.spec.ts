@@ -403,5 +403,17 @@ describe("accounts-services", () => {
       expect(getLedgerIdentityProxy).toBeCalled();
       accountsStore.reset();
     });
+
+    it("returns null if no main account nor hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe"
+      );
+      expect(expectedIdentity).toBe(null);
+      accountsStore.reset();
+    });
   });
 });
