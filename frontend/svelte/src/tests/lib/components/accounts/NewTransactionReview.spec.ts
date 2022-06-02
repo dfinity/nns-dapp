@@ -23,7 +23,7 @@ import NewTransactionTest from "./NewTransactionTest.svelte";
 describe("NewTransactionReview", () => {
   const props = { testComponent: NewTransactionReview };
 
-  const amount = ICP.fromString("10.666") as ICP;
+  const amount = ICP.fromString("10.67") as ICP;
 
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
   const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
