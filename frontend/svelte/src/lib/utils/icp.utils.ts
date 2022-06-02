@@ -1,6 +1,8 @@
 import { ICP } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
+  ICP_DISPLAYED_DECIMALS,
+  ICP_DISPLAYED_DECIMALS_DETAILED,
   ONE_TRILLION,
   TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
@@ -8,16 +10,18 @@ import { InvalidAmountError } from "../types/neurons.errors";
 
 const formatNumberToString = ({
   value,
-  fractionDigits = 2,
+  detailed = false,
 }: {
   value: bigint;
-  fractionDigits?: number;
+  detailed?: boolean;
 }): string => {
   const converted: number = Number(value) / E8S_PER_ICP;
   const decimals: number =
     converted < 0.01
-      ? Math.max(countDecimals(converted), fractionDigits)
-      : fractionDigits;
+      ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
+      : detailed
+      ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
+      : ICP_DISPLAYED_DECIMALS;
 
   return new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimals,
@@ -41,7 +45,7 @@ const countDecimals = (value: number): number => {
  */
 export const formatICP = ({
   value,
-  detailed = false,
+  detailed,
 }: {
   value: bigint;
   detailed?: boolean;
@@ -52,7 +56,7 @@ export const formatICP = ({
 
   return formatNumberToString({
     value,
-    ...(detailed && { fractionDigits: 8 }),
+    detailed,
   });
 };
 
@@ -64,7 +68,6 @@ export const sumICPs = (...icps: ICP[]): ICP =>
 export const formattedTransactionFeeICP = (): string =>
   formatNumberToString({
     value: ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s(),
-    fractionDigits: 4,
   });
 
 export const maxICP = (icp: ICP | undefined): number =>
