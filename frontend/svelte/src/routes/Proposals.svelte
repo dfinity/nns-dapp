@@ -26,7 +26,7 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import { reloadOnBack } from "../lib/utils/navigation.utils";
+  import { reloadRouteData } from "../lib/utils/navigation.utils";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -77,7 +77,7 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    const reload: boolean = reloadOnBack({
+    const reload: boolean = reloadRouteData({
       expectedPreviousPath: AppPath.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $proposalsStore.proposals,
