@@ -16,6 +16,7 @@
   import type { CanisterId } from "../lib/canisters/nns-dapp/nns-dapp.types";
   import { routeStore } from "../lib/stores/route.store";
   import CreateOrLinkCanisterModal from "../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
+  import { reloadRouteData } from "../lib/utils/navigation.utils";
 
   const loadCanisters = async () => {
     try {
@@ -33,6 +34,16 @@
   onMount(async () => {
     if (!SHOW_CANISTERS_ROUTE) {
       window.location.replace("/#/canisters");
+    }
+
+    const reload: boolean = reloadRouteData({
+      expectedPreviousPath: AppPath.CanisterDetail,
+      effectivePreviousPath: $routeStore.referrerPath,
+      currentData: $canistersStore.canisters,
+    });
+
+    if (!reload) {
+      return;
     }
 
     await loadCanisters();
