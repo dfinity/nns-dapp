@@ -208,6 +208,7 @@ interface I18nNeurons {
   cannot_merge_neuron_hotkey: string;
   cannot_merge_hardware_wallet: string;
   only_merge_two: string;
+  need_two_to_merge: string;
   irreversible_action: string;
   stake_amount: string;
 }

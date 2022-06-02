@@ -17,6 +17,8 @@
   } from "../lib/constants/routes.constants";
   import MergeNeuronsModal from "../lib/modals/neurons/MergeNeuronsModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { MAX_NEURONS_MERGED } from "../lib/constants/neurons.constants";
+  import Tooltip from "../lib/components/ui/Tooltip.svelte";
 
   let isLoading: boolean = false;
   $: isLoading = $neuronsStore.neurons === undefined;
@@ -47,6 +49,9 @@
       path: `${AppPath.NeuronDetail}/${id}`,
     });
   };
+
+  let enoughNeuronsToMerge: boolean;
+  $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>
 
 {#if SHOW_NEURONS_ROUTE}
@@ -81,12 +86,27 @@
           on:click={() => openModal("stake-neuron")}
           >{$i18n.neurons.stake_neurons}</button
         >
-        <button
-          data-tid="merge-neurons-button"
-          class="primary"
-          on:click={() => openModal("merge-neurons")}
-          >{$i18n.neurons.merge_neurons}</button
-        >
+        {#if enoughNeuronsToMerge}
+          <button
+            data-tid="merge-neurons-button"
+            class="primary"
+            on:click={() => openModal("merge-neurons")}
+            >{$i18n.neurons.merge_neurons}</button
+          >
+        {:else}
+          <Tooltip
+            id="merge-neurons-info"
+            text={$i18n.neurons.need_two_to_merge}
+          >
+            <button
+              disabled
+              data-tid="merge-neurons-button"
+              class="primary full-width"
+              on:click={() => openModal("merge-neurons")}
+              >{$i18n.neurons.merge_neurons}</button
+            >
+          </Tooltip>
+        {/if}
       </Toolbar>
     </svelte:fragment>
     {#if showModal === "stake-neuron"}
