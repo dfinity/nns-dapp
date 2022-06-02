@@ -57,7 +57,7 @@ describe("Address", () => {
     const { displayAmount } = mapTransaction({ account, transaction });
 
     expect(getByTestId("icp-value")?.textContent).toBe(
-      `-${formatICP({value: displayAmount.toE8s()})}`
+      `-${formatICP({ value: displayAmount.toE8s() })}`
     );
   });
 
@@ -68,7 +68,7 @@ describe("Address", () => {
     const { displayAmount } = mapTransaction({ account, transaction });
 
     expect(getByTestId("icp-value")?.textContent).toBe(
-      `+${formatICP({value: displayAmount.toE8s()})}`
+      `+${formatICP({ value: displayAmount.toE8s() })}`
     );
   });
 
