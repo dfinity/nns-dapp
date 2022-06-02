@@ -10,6 +10,7 @@ import {
   getIcpToCyclesExchangeRate,
   listCanisters,
   routePathCanisterId,
+  topUpCanister,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
@@ -37,6 +38,10 @@ describe("canisters-services", () => {
   const spyCreateCanister = jest
     .spyOn(api, "createCanister")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
+
+  const spyTopUpCanister = jest
+    .spyOn(api, "topUpCanister")
+    .mockImplementation(() => Promise.resolve(undefined));
 
   const spyQueryCanisterDetails = jest
     .spyOn(api, "queryCanisterDetails")
@@ -169,12 +174,39 @@ describe("canisters-services", () => {
       expect(syncAccounts).toBeCalled();
     });
 
-    it("should return undefined if no identity", async () => {
+    it("should return success false if no identity", async () => {
       setNoIdentity();
 
       const { success } = await createCanister({ amount: 3 });
       expect(success).toBe(false);
       expect(spyCreateCanister).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("topUpCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call api to top up a canister", async () => {
+      const { success } = await topUpCanister({
+        amount: 3,
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(success).toBe(true);
+      expect(spyTopUpCanister).toBeCalled();
+      expect(syncAccounts).toBeCalled();
+    });
+
+    it("should return success false if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await topUpCanister({
+        amount: 3,
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(success).toBe(false);
+      expect(spyTopUpCanister).not.toBeCalled();
 
       resetIdentity();
     });

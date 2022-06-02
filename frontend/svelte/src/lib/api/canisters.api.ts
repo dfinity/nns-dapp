@@ -148,10 +148,12 @@ export const topUpCanister = async ({
   identity,
   canisterId,
   amount,
+  fromSubAccount,
 }: {
   identity: Identity;
   canisterId: Principal;
   amount: ICP;
+  fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
 
@@ -161,11 +163,14 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
+  const fromSubAccountId =
+    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
+    fromSubAccountId,
   });
 
   // If this fails or the client loses connection

@@ -80,7 +80,7 @@
         disabled={icpToCyclesRatio === undefined}
       />
     </div>
-    <p>{$i18n.canisters.minimum_cycles_text}</p>
+    <slot />
   </div>
   <button
     class="primary full-width"

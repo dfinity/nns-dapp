@@ -261,5 +261,6 @@
 
   input::placeholder {
     visibility: hidden;
+    opacity: 0;
   }
 </style>
