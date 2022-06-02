@@ -68,7 +68,7 @@
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
-  <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} />
+  <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} detailed />
   <p>{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
 
   {#if identifier !== undefined}
