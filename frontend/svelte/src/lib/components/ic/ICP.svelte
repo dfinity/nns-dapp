@@ -12,7 +12,9 @@
 
 {#if icp}
   <div class:inline class:plus-sign={sign === "+"}>
-    <span data-tid="icp-value">{`${sign}${formatICP({value: icp.toE8s(), detailed})}`}</span>
+    <span data-tid="icp-value"
+      >{`${sign}${formatICP({ value: icp.toE8s(), detailed })}`}</span
+    >
     <span>{label}</span>
   </div>
 {/if}

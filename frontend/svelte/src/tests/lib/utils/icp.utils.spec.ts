@@ -12,18 +12,20 @@ import {
 
 describe("icp-utils", () => {
   it("should format icp", () => {
-    expect(formatICP({value: BigInt(0)})).toEqual("0");
+    expect(formatICP({ value: BigInt(0) })).toEqual("0");
     // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
     // expect(formatICP({value: BigInt(10)})).toEqual("0.0000001");
-    expect(formatICP({value: BigInt(100)})).toEqual("0.000001");
-    expect(formatICP({value: BigInt(100000000)})).toEqual("1.00");
-    expect(formatICP({value: BigInt(1000000000)})).toEqual("10.00");
-    expect(formatICP({value: BigInt(1010000000)})).toEqual("10.10");
-    expect(formatICP({value: BigInt(1012300000)})).toEqual("10.12");
-    expect(formatICP({value: BigInt(20000000000)})).toEqual("200.00");
-    expect(formatICP({value: BigInt(20000000001)})).toEqual("200.00");
-    expect(formatICP({value: BigInt(200000000000)})).toEqual(`2${"\u202F"}000.00`);
-    expect(formatICP({value: BigInt(200000000000000)})).toEqual(
+    expect(formatICP({ value: BigInt(100) })).toEqual("0.000001");
+    expect(formatICP({ value: BigInt(100000000) })).toEqual("1.00");
+    expect(formatICP({ value: BigInt(1000000000) })).toEqual("10.00");
+    expect(formatICP({ value: BigInt(1010000000) })).toEqual("10.10");
+    expect(formatICP({ value: BigInt(1012300000) })).toEqual("10.12");
+    expect(formatICP({ value: BigInt(20000000000) })).toEqual("200.00");
+    expect(formatICP({ value: BigInt(20000000001) })).toEqual("200.00");
+    expect(formatICP({ value: BigInt(200000000000) })).toEqual(
+      `2${"\u202F"}000.00`
+    );
+    expect(formatICP({ value: BigInt(200000000000000) })).toEqual(
       `2${"\u202F"}000${"\u202F"}000.00`
     );
   });

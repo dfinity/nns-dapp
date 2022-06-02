@@ -66,7 +66,7 @@
         <h5>{$i18n.neurons.neuron_balance}</h5>
         <p>
           {replacePlaceholders($i18n.neurons.icp_stake, {
-            $amount: formatICP({value: neuronStake(neuron)}),
+            $amount: formatICP({ value: neuronStake(neuron) }),
           })}
         </p>
       </div>
