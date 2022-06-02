@@ -10,7 +10,7 @@ export const mockSentToSubAccountTransaction = {
     Send: {
       to: mockSubAccount.identifier,
       fee: { e8s: BigInt(10000) },
-      amount: { e8s: BigInt(110000000) },
+      amount: { e8s: BigInt(110000023) },
     },
   },
 } as Transaction;
