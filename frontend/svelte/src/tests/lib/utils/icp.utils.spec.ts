@@ -33,7 +33,9 @@ describe("icp-utils", () => {
   it("should format icp detailed", () => {
     // expect(formatICP({value: BigInt(0), detailed: true})).toEqual("0");
     // expect(formatICP({value: BigInt(100), detailed: true})).toEqual("0.000001");
-    expect(formatICP({value: BigInt(100000000), detailed: true})).toEqual("1.00");
+    expect(formatICP({ value: BigInt(100000000), detailed: true })).toEqual(
+      "1.00"
+    );
     // expect(formatICP({value: BigInt(1000000000), detailed: true})).toEqual("10.00");
     // expect(formatICP({value: BigInt(1010000000), detailed: true})).toEqual("10.10");
     // expect(formatICP({value: BigInt(1012300000), detailed: true})).toEqual("10.12");

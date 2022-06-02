@@ -39,7 +39,7 @@ export const formatICP = ({
       ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
       : ICP_DISPLAYED_DECIMALS;
 
-  console.log(converted, countDecimals(converted))
+  console.log(converted, countDecimals(converted));
 
   return new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimals,
