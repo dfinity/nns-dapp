@@ -18,6 +18,7 @@ import {
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockCanister } from "../../../mocks/canisters.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
@@ -25,13 +26,16 @@ jest.mock("../../../../lib/services/canisters.services", () => {
   return {
     attachCanister: jest.fn().mockResolvedValue({ success: true }),
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
-    createCanister: jest.fn().mockResolvedValue({ success: true }),
+    createCanister: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
   };
 });
 
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
     toastsStore: {
+      show: jest.fn(),
       success: jest.fn(),
     },
   };
@@ -155,18 +159,18 @@ describe("CreateOrLinkCanisterModal", () => {
     // Confirm Create Canister Screen
     await waitFor(() =>
       expect(
-        queryByTestId("confirm-create-canister-screen")
+        queryByTestId("confirm-cycles-canister-screen")
       ).toBeInTheDocument()
     );
 
     const done = jest.fn();
     component.$on("nnsClose", done);
 
-    await clickByTestId(queryByTestId, "confirm-create-canister-button");
+    await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();
-    expect(toastsStore.success).toBeCalled();
+    expect(toastsStore.show).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.

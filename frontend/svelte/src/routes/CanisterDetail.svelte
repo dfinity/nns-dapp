@@ -31,6 +31,9 @@
   } from "../lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "../lib/stores/debug.store";
   import type { CanisterDetails } from "../lib/canisters/ic-management/ic-management.canister.types";
+  import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
+  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import DetachCanisterButton from "../lib/components/canister_details/DetachCanisterButton.svelte";
 
   onMount(async () => {
     if (!SHOW_CANISTERS_ROUTE) {
@@ -40,14 +43,18 @@
     await listCanisters({ clearBeforeQuery: false });
   });
 
-  let canisterId: Principal | undefined = undefined;
-  let canisterInfo: CanisterInfo | undefined;
-  let canisterDetails: CanisterDetails | undefined = undefined;
-
   const canisterDetailStore = writable<SelectCanisterDetailsStore>({
     info: undefined,
     details: undefined,
   });
+
+  let canisterId: Principal | undefined = undefined;
+  let canisterInfo: CanisterInfo | undefined;
+  let canisterDetails: CanisterDetails | undefined = undefined;
+  $: canisterDetails = $canisterDetailStore.details;
+  let showAddCyclesModal: boolean = false;
+  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
+
   // Update data in the store if source data changes
   $: {
     // If we navigate to a page where `canisterId` is undefined
@@ -65,8 +72,18 @@
   }
   debugSelectedCanisterStore(canisterDetailStore);
 
+  const refetchDetails = async () => {
+    if (canisterId !== undefined) {
+      const newDetails = await getCanisterDetails(canisterId);
+      canisterDetailStore.update((data) => ({
+        ...data,
+        details: newDetails,
+      }));
+    }
+  };
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: canisterDetailStore,
+    refetchDetails,
   });
 
   const unsubscribeRouteStore = routeStore.subscribe(
@@ -87,8 +104,15 @@
         // This automatically changes `canisterInfo`
         canisterId = newCanisterId;
         // Reset details while are being fetched
-        canisterDetails = undefined;
-        canisterDetails = await getCanisterDetails(newCanisterId);
+        canisterDetailStore.update((data) => ({
+          ...data,
+          details: undefined,
+        }));
+        const details = await getCanisterDetails(newCanisterId);
+        canisterDetailStore.update((data) => ({
+          ...data,
+          details,
+        }));
       }
     }
   );
@@ -117,6 +141,9 @@
             $canisterId: canisterIdString,
           })}
         </p>
+        <div class="actions">
+          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+        </div>
       {:else}
         <div class="loader-title">
           <SkeletonTitle />
@@ -133,7 +160,16 @@
         <SkeletonCard />
       {/if}
     </section>
-    <!-- TODO: Add Cycles - https://dfinity.atlassian.net/browse/L2-598 -->
+    <svelte:fragment slot="footer">
+      <Toolbar>
+        <button class="primary" on:click={() => (showAddCyclesModal = true)}
+          >{$i18n.canister_detail.add_cycles}</button
+        >
+      </Toolbar>
+    </svelte:fragment>
+    {#if showAddCyclesModal && canisterInfo !== undefined}
+      <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
+    {/if}
   </HeadlessLayout>
 {/if}
 
@@ -142,6 +178,12 @@
 
   p:last-of-type {
     margin-bottom: var(--padding-3x);
+  }
+
+  .actions {
+    margin-bottom: var(--padding-3x);
+    display: flex;
+    justify-content: end;
   }
 
   .loader-title {

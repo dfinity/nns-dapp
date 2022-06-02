@@ -1,11 +1,10 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { i18n } from "../../stores/i18n";
   import {
     convertIcpToTCycles,
-    convertTCyclesToE8s,
+    convertTCyclesToIcpNumber,
   } from "../../utils/icp.utils";
   import Input from "../ui/Input.svelte";
 
@@ -15,45 +14,38 @@
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
 
-  onMount(async () => {
-    // Update cycles input if the component is mounted with some `amount`
-    if (icpToCyclesRatio !== undefined && amount !== undefined) {
-      amountCycles = convertIcpToTCycles({
-        icpNumber: amount,
-        ratio: icpToCyclesRatio,
-      });
-    }
-  });
+  // Update cycles input if the component is mounted with some `amount`
+  onMount(() => setCycles());
 
-  $: {
-    if (icpToCyclesRatio !== undefined) {
-      if (isChanging === "icp") {
-        // Update cycles input
-        if (amount === undefined) {
-          amountCycles = undefined;
-        } else {
-          amountCycles = convertIcpToTCycles({
+  const setCycles = () =>
+    (amountCycles =
+      amount !== undefined && icpToCyclesRatio !== undefined
+        ? convertIcpToTCycles({
             icpNumber: amount,
             ratio: icpToCyclesRatio,
-          });
-        }
+          })
+        : undefined);
+
+  const setAmount = () =>
+    (amount =
+      amountCycles !== undefined && icpToCyclesRatio !== undefined
+        ? convertTCyclesToIcpNumber({
+            tCycles: amountCycles,
+            ratio: icpToCyclesRatio,
+          })
+        : undefined);
+
+  $: amount,
+    amountCycles,
+    (() => {
+      switch (isChanging) {
+        case "icp":
+          setCycles();
+          break;
+        case "tCycles":
+          setAmount();
       }
-      if (isChanging === "tCycles") {
-        // Update icp input
-        if (amountCycles === undefined) {
-          amount = undefined;
-        } else {
-          amount =
-            Number(
-              convertTCyclesToE8s({
-                tCycles: amountCycles,
-                ratio: icpToCyclesRatio,
-              })
-            ) / E8S_PER_ICP;
-        }
-      }
-    }
-  }
+    })();
 
   const dispatcher = createEventDispatcher();
   const selectAccount = () => {
@@ -79,7 +71,7 @@
       />
       <Input
         placeholderLabelKey="canisters.t_cycles"
-        inputType="number"
+        inputType="icp"
         name="t-cycles-amount"
         theme="dark"
         bind:value={amountCycles}
@@ -88,7 +80,7 @@
         disabled={icpToCyclesRatio === undefined}
       />
     </div>
-    <p>{$i18n.canisters.minimum_cycles_text}</p>
+    <slot />
   </div>
   <button
     class="primary full-width"

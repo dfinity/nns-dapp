@@ -86,6 +86,21 @@ export const attachCanister = async ({
   logWithTimestamp("Attaching canister call complete.");
 };
 
+export const detachCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<void> => {
+  logWithTimestamp("Detaching canister call...");
+  const { nnsDapp } = await canisters(identity);
+
+  await nnsDapp.detachCanister(canisterId);
+
+  logWithTimestamp("Detaching canister call complete.");
+};
+
 export const createCanister = async ({
   identity,
   amount,
@@ -148,10 +163,12 @@ export const topUpCanister = async ({
   identity,
   canisterId,
   amount,
+  fromSubAccount,
 }: {
   identity: Identity;
   canisterId: Principal;
   amount: ICP;
+  fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
 
@@ -161,11 +178,14 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
+  const fromSubAccountId =
+    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
+    fromSubAccountId,
   });
 
   // If this fails or the client loses connection

@@ -4,7 +4,6 @@
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
   import {
-    emptyProposals,
     hasMatchingProposals,
     lastProposalId,
   } from "../lib/utils/proposals.utils";
@@ -26,12 +25,12 @@
   } from "../lib/services/proposals.services";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
-  import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import {
     definedNeuronsStore,
     neuronsStore,
   } from "../lib/stores/neurons.store";
+  import { reloadRouteData } from "../lib/utils/navigation.utils";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -82,17 +81,13 @@
       window.location.replace(AppPath.Proposals);
     }
 
-    const isReferrerProposalDetail: boolean = isRoutePath({
-      path: AppPath.ProposalDetail,
-      routePath: $routeStore.referrerPath,
+    const reload: boolean = reloadRouteData({
+      expectedPreviousPath: AppPath.ProposalDetail,
+      effectivePreviousPath: $routeStore.referrerPath,
+      currentData: $proposalsStore.proposals,
     });
 
-    // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
-    // We do this to smoothness the back and forth navigation between this page and the detail page.
-    if (
-      !emptyProposals($proposalsStore.proposals) &&
-      isReferrerProposalDetail
-    ) {
+    if (!reload) {
       initDebounceFindProposals();
       initialized = true;
       return;
