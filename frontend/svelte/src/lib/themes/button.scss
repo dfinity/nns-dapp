@@ -13,6 +13,7 @@ button {
     width: fit-content;
 
     margin: 0 var(--padding);
+    padding: var(--padding-0_5x) 0;
 
     color: white;
 
@@ -49,6 +50,7 @@ button {
 
     position: relative;
     min-height: var(--button-min-height);
+    padding: var(--padding-0_5x) 0;
 
     font-size: var(--font-size-small);
 
@@ -59,7 +61,7 @@ button {
     &.small {
       min-height: inherit;
       font-size: inherit;
-      padding: var(--padding-0_5x) var(--padding);
+      padding: var(--padding);
     }
   }
 
@@ -84,7 +86,7 @@ button {
   }
 
   &.primary {
-    padding: var(--padding) var(--padding-2x);
+    padding: var(--padding-2x);
 
     &:hover {
       background: var(--blue-500-tint);
@@ -115,12 +117,12 @@ button {
   }
 
   &.input-button {
-    padding: var(--padding-0_5x) var(--padding-1_5x);
+    padding: var(--padding) var(--padding-1_5x);
 
     font-size: var(--font-size-ultra-small);
 
     @include media.min-width(medium) {
-      padding: var(--padding-0_5x) var(--padding-2x);
+      padding: var(--padding) var(--padding-2x);
 
       font-size: var(--font-size-small);
       font-weight: bold;
