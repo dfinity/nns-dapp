@@ -1,5 +1,5 @@
 <script lang="ts">
-import { afterUpdate } from "svelte";
+  import { afterUpdate } from "svelte";
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
@@ -10,7 +10,7 @@ import { afterUpdate } from "svelte";
   // if tooltip goes beyond viewport on the right, assign class name of 'rightEdge'
   afterUpdate(() => {
     rightBoundary = tooltipComponent.getBoundingClientRect().right;
-    mainWidth = document.querySelector('main')?.clientWidth;
+    mainWidth = document.querySelector("main")?.clientWidth;
     if (rightBoundary > mainWidth) {
       rightEdge = true;
     }
@@ -21,7 +21,14 @@ import { afterUpdate } from "svelte";
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
   </div>
-  <div class="tooltip" role="tooltip" {id} class:noWrap class:rightEdge bind:this={tooltipComponent}>
+  <div
+    class="tooltip"
+    role="tooltip"
+    {id}
+    class:noWrap
+    class:rightEdge
+    bind:this={tooltipComponent}
+  >
     {text}
   </div>
 </div>
