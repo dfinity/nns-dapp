@@ -6,7 +6,10 @@ import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import {
+  E8S_PER_ICP,
+  TRANSACTION_FEE_E8S,
+} from "../../../lib/constants/icp.constants";
 import * as services from "../../../lib/services/neurons.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -14,7 +17,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedError } from "../../../lib/types/errors";
+import { NotAuthorizedError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -43,6 +46,7 @@ const {
   stopDissolving,
   updateDelay,
   mergeNeurons,
+  reloadNeuron,
 } = services;
 
 jest.mock("../../../lib/stores/toasts.store", () => {
@@ -885,6 +889,23 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toHaveBeenCalled();
     });
 
+    it("should add transaction fee to the amount", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const amount = 2.2;
+      const transactionFee = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+      const amountWithFee = amount + transactionFee;
+      await services.splitNeuron({
+        neuronId: controlledNeuron.neuronId,
+        amount,
+      });
+
+      expect(spySplitNeuron).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: controlledNeuron.neuronId,
+        amount: ICP.fromE8s(BigInt(Math.round(amountWithFee * E8S_PER_ICP))),
+      });
+    });
+
     it("should not update neuron if no identity", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       setNoIdentity();
@@ -1228,9 +1249,29 @@ describe("neurons-services", () => {
     it("should call the api to get neuron if not in store", async () => {
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        setNeuron: jest.fn,
+        setNeuron: jest.fn(),
       });
       expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should call the api to get neuron and check the balance on update", async () => {
+      const neuronId = BigInt(333333);
+      const controlledNeuron = {
+        ...mockNeuron,
+        neuronId,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      spyGetNeuron.mockImplementation(() => Promise.resolve(controlledNeuron));
+      await loadNeuron({
+        neuronId,
+        setNeuron: jest.fn(),
+      });
+      await tick();
+      expect(spyGetNeuron).toBeCalled();
+      expect(spyGetNeuronBalance).toBeCalled();
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
@@ -1248,6 +1289,27 @@ describe("neurons-services", () => {
       });
       expect(spyGetNeuron).toBeCalled();
       expect(setNeuronSpy).toBeCalled();
+      // Reset spy implementation
+      spyGetNeuron.mockImplementation(() => Promise.resolve(mockNeuron));
+    });
+  });
+
+  describe("reloadNeuron", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should call the api", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should add neuron to the store", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      const store = get(neuronsStore);
+      expect(
+        store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
+      ).toBeDefined();
     });
   });
 });

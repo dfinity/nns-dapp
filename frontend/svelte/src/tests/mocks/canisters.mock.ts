@@ -1,16 +1,18 @@
 import { Principal } from "@dfinity/principal";
-import type { Subscriber } from "svelte/store";
+import { writable, type Subscriber } from "svelte/store";
 import {
   CanisterStatus,
   type CanisterDetails,
 } from "../../lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../../lib/canisters/nns-dapp/nns-dapp.types";
 import type { CanistersStore } from "../../lib/stores/canisters.store";
+import type { SelectCanisterDetailsStore } from "../../lib/types/canister-detail.context";
 import { mockIdentity } from "./auth.store.mock";
 
+const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
 export const mockCanister = {
   name: "",
-  canister_id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+  canister_id: mockCanisterId,
 };
 export const mockCanisters: CanisterInfo[] = [
   {
@@ -21,7 +23,7 @@ export const mockCanisters: CanisterInfo[] = [
 ];
 
 export const mockCanisterDetails: CanisterDetails = {
-  id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+  id: mockCanisterId,
   status: CanisterStatus.Running,
   memorySize: BigInt(10),
   cycles: BigInt(30),
@@ -40,3 +42,8 @@ export const mockCanistersStoreSubscribe = (
 
   return () => undefined;
 };
+
+export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
+  info: mockCanister,
+  details: mockCanisterDetails,
+});

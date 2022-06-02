@@ -7,8 +7,8 @@
 
   export let inputType: "text" | "icp" = "text";
   export let name: string;
-  export let value: string | undefined;
-  export let placeholderLabelKey: string | undefined;
+  export let value: string | undefined = undefined;
+  export let placeholderLabelKey: string = "test.placeholder";
 
   let amount: string | undefined = value;
   $: amount, (() => dispatch("testAmount", { amount }))();

@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 import { listCanisters } from "../../lib/services/canisters.services";
 import { authStore } from "../../lib/stores/auth.store";
 import { canistersStore } from "../../lib/stores/canisters.store";
@@ -17,6 +18,7 @@ import en from "../mocks/i18n.mock";
 jest.mock("../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
+    getIcpToCyclesExchangeRate: jest.fn(),
   };
 });
 
@@ -37,9 +39,6 @@ describe("Canisters", () => {
     const { getByText } = render(Canisters);
 
     expect(getByText(en.canisters.text)).toBeInTheDocument();
-    expect(getByText(en.canisters.step1)).toBeInTheDocument();
-    expect(getByText(en.canisters.step2)).toBeInTheDocument();
-    expect(getByText(en.canisters.step3)).toBeInTheDocument();
   });
 
   it("should subscribe to store", () =>
@@ -59,5 +58,20 @@ describe("Canisters", () => {
     const { queryAllByTestId } = render(Canisters);
 
     expect(queryAllByTestId("canister-card").length).toBe(2);
+  });
+
+  it("should open the CreateOrLinkCanisterModal on click to Create Or Link Canister", async () => {
+    const { queryByTestId } = render(Canisters);
+
+    const toolbarButton = queryByTestId("create-link-canister-button");
+    expect(toolbarButton).not.toBeNull();
+
+    toolbarButton !== null && (await fireEvent.click(toolbarButton));
+
+    await waitFor(() =>
+      expect(
+        queryByTestId("create-link-canister-modal-title")
+      ).toBeInTheDocument()
+    );
   });
 });

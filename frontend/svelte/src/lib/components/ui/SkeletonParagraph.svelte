@@ -23,7 +23,7 @@
     );
     background: var(--skeleton-text-background);
 
-    line-height: 0.8;
+    line-height: var(--skeleton-text-line-height, 0.8);
 
     user-select: none;
     pointer-events: none;
