@@ -1,9 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { createCanister } from "../../services/canisters.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
   import { formatNumber } from "../../utils/format.utils";
   import { convertIcpToTCycles } from "../../utils/icp.utils";
@@ -19,25 +16,12 @@
       : undefined;
 
   const dispatcher = createEventDispatcher();
-  const create = async () => {
-    startBusy({
-      initiator: "create-canister",
-    });
-    const { success } = await createCanister({
-      amount,
-      fromSubAccount: account.subAccount,
-    });
-    stopBusy("create-canister");
-    if (success) {
-      toastsStore.success({
-        labelKey: "canisters.create_canister_success",
-      });
-      dispatcher("nnsClose");
-    }
+  const confirm = () => {
+    dispatcher("nnsConfirm");
   };
 </script>
 
-<div class="wizard-wrapper wrapper" data-tid="confirm-create-canister-screen">
+<div class="wizard-wrapper wrapper" data-tid="confirm-cycles-canister-screen">
   <div class="content">
     <div class="conversion">
       <h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
@@ -54,11 +38,12 @@
       <h5>{$i18n.accounts.source}</h5>
       <p>{account.identifier}</p>
     </div>
+    <slot />
   </div>
   <button
     class="primary full-width"
-    on:click={create}
-    data-tid="confirm-create-canister-button">{$i18n.core.confirm}</button
+    on:click={confirm}
+    data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
   >
 </div>
 
@@ -72,7 +57,7 @@
     flex-direction: column;
     justify-content: center;
     flex: 1;
-    gap: var(--padding-4x);
+    gap: var(--padding);
   }
 
   .conversion {
@@ -80,6 +65,7 @@
     justify-content: center;
     align-items: center;
     gap: var(--padding);
+    margin-bottom: var(--padding-3x);
 
     p,
     h3 {

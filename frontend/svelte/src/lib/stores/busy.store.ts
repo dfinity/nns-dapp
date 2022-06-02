@@ -6,6 +6,7 @@ export type BusyStateInitiatorType =
   | "vote"
   | "attach-canister"
   | "create-canister"
+  | "top-up-canister"
   | "accounts"
   | "join-community-fund"
   | "split-neuron"

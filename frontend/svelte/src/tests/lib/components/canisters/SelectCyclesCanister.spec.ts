@@ -16,10 +16,12 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 
 describe("SelectCyclesCanister", () => {
   const props = { icpToCyclesRatio: BigInt(10_000) };
-  it("renders message", () => {
+  it("renders button", () => {
     const { queryByText } = render(SelectCyclesCanister, { props });
 
-    expect(queryByText(en.canisters.minimum_cycles_text)).toBeInTheDocument();
+    expect(
+      queryByText(en.canisters.review_cycles_purchase)
+    ).toBeInTheDocument();
   });
 
   it("renders two inputs", () => {
