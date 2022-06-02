@@ -295,6 +295,11 @@ interface I18nCanister_detail {
   add_cycles: string;
   top_up_canister: string;
   top_up_successful: string;
+  detach: string;
+  confirm_detach_title: string;
+  confirm_detach_description_1: string;
+  confirm_detach_description_2: string;
+  detach_success: string;
   add_controller: string;
 }
 

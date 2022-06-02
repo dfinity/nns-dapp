@@ -6,6 +6,7 @@ import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
   attachCanister,
   createCanister,
+  detachCanister,
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
@@ -33,6 +34,10 @@ describe("canisters-services", () => {
 
   const spyAttachCanister = jest
     .spyOn(api, "attachCanister")
+    .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyDetachCanister = jest
+    .spyOn(api, "detachCanister")
     .mockImplementation(() => Promise.resolve(undefined));
 
   const spyCreateCanister = jest
@@ -99,6 +104,34 @@ describe("canisters-services", () => {
       const response = await attachCanister(mockCanisterDetails.id);
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
+      expect(spyQueryCanisters).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("detachCanister", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      canistersStore.setCanisters({ canisters: [], certified: true });
+    });
+
+    it("should call api to attach canister and list canisters again", async () => {
+      const response = await detachCanister(mockCanisterDetails.id);
+      expect(response.success).toBe(true);
+      expect(spyDetachCanister).toBeCalled();
+      expect(spyQueryCanisters).toBeCalled();
+
+      const store = get(canistersStore);
+      expect(store.canisters).toEqual(mockCanisters);
+    });
+
+    it("should not attach canister if no identity", async () => {
+      setNoIdentity();
+
+      const response = await attachCanister(mockCanisterDetails.id);
+      expect(response.success).toBe(false);
+      expect(spyDetachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
 
       resetIdentity();

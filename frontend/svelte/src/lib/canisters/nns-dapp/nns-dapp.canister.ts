@@ -226,6 +226,17 @@ export class NNSDappCanister {
     throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
   };
 
+  public detachCanister = async (canisterId: Principal): Promise<void> => {
+    const response = await this.certifiedService.detach_canister({
+      canister_id: canisterId,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
+    throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
+  };
+
   public async getTransactions({
     accountIdentifier,
     pageSize,

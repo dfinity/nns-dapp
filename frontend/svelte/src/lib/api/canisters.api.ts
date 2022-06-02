@@ -86,6 +86,21 @@ export const attachCanister = async ({
   logWithTimestamp("Attaching canister call complete.");
 };
 
+export const detachCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<void> => {
+  logWithTimestamp("Detaching canister call...");
+  const { nnsDapp } = await canisters(identity);
+
+  await nnsDapp.detachCanister(canisterId);
+
+  logWithTimestamp("Detaching canister call complete.");
+};
+
 export const createCanister = async ({
   identity,
   amount,
