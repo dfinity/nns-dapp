@@ -21,7 +21,7 @@
     $i18n.neuron_detail.merge_maturity_disabled_tooltip,
     {
       $amount: formatICP({ value: BigInt(MIN_MATURITY_MERGE) }),
-      detailed: true
+      detailed: true,
     }
   )}
 >

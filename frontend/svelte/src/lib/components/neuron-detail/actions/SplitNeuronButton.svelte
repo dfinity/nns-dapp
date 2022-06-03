@@ -23,7 +23,7 @@
   id="split-neuron-button"
   text={replacePlaceholders($i18n.neuron_detail.split_neuron_disabled_tooltip, {
     $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE_SPLITTABLE) }),
-    detailed: true
+    detailed: true,
   })}
 >
   <button on:click={openModal} class="primary small" disabled={!isSplittable}
