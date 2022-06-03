@@ -14,6 +14,21 @@ import {
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
 
+/**
+ * c - pseudo-anonymised stringified -> console
+ * co - original stringified -> console
+ * coo - original as object -> console
+ * f - pseudo-anonymised -> json file
+ * fo - original -> json file
+ */
+export enum LogType {
+  Console = "c",
+  ConsoleOriginal = "co",
+  ConsoleOriginalObject = "coo",
+  File = "f",
+  FileOriginal = "fo",
+}
+
 const anonymiseStoreState = async () => {
   const debugStore = initDebugStore();
   const {
@@ -105,26 +120,29 @@ const anonymiseStoreState = async () => {
  * 2. log it in the dev console
  * 3. generates a json file with logged context
  */
-export const generateDebugLog = async ({
-  saveToFile,
-  anonymise,
-}: {
-  saveToFile: boolean;
-  anonymise: boolean;
-}) => {
+export const generateDebugLog = async (logType: LogType) => {
   const debugStore = initDebugStore();
+  const anonymise = logType === LogType.Console || logType === LogType.File;
+  const saveToFile =
+    logType === LogType.File || logType === LogType.FileOriginal;
   const state = anonymise ? await anonymiseStoreState() : get(debugStore);
+  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
+
+  if (logType === LogType.ConsoleOriginalObject) {
+    console.log(date, state);
+    return;
+  }
+
   const stringifiedState = stringifyJson(state, {
     indentation: 2,
   });
-  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
-
-  console.log(date, state);
 
   if (saveToFile) {
     saveToJSONFile({
       blob: new Blob([stringifiedState]),
       filename: `${date}_nns-local-state.json`,
     });
+  } else {
+    console.log(date, stringifiedState);
   }
 };
