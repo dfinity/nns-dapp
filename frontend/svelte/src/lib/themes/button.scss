@@ -4,7 +4,7 @@
 button {
   &[disabled],
   &[disabled]:hover {
-    pointer-events: none;
+    cursor: default;
   }
 
   &.text {
@@ -69,7 +69,7 @@ button {
     &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
-      pointer-events: none;
+      cursor: default;
     }
 
     background: var(--blue-500);
@@ -96,7 +96,7 @@ button {
     &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
-      pointer-events: none;
+      cursor: default;
     }
 
     background: var(--gray-600);
@@ -161,7 +161,7 @@ button {
     &[disabled]:hover {
       background: var(--gray-400);
       color: var(--gray-600);
-      pointer-events: none;
+      cursor: default;
     }
 
     @include effect.ripple-effect(--background-color-button-tint);

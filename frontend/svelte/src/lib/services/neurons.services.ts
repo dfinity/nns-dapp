@@ -30,7 +30,7 @@ import {
 import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
-import { E8S_PER_ICP } from "../constants/icp.constants";
+import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 import { MAX_CONCURRENCY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
@@ -48,9 +48,9 @@ import { isAccountHardwareWallet } from "../utils/accounts.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
+import { convertNumberToICP } from "../utils/icp.utils";
 import {
   canBeMerged,
-  convertNumberToICP,
   followeesByTopic,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
@@ -622,18 +622,16 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const stake = convertNumberToICP(amount);
+    const transactionFeeAmount = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+    const stake = convertNumberToICP(amount + transactionFeeAmount);
 
     if (!isEnoughToStakeNeuron({ stake, withTransactionFee: true })) {
       throw new InsufficientAmountError();
     }
 
     await splitNeuronApi({ neuronId, identity, amount: stake });
-    toastsStore.success({
-      labelKey: "neuron_detail.split_neuron_success",
-    });
 
-    await getAndLoadNeuron(neuronId);
+    await listNeurons();
 
     return neuronId;
   } catch (err) {
@@ -704,7 +702,7 @@ export const spawnNeuron = async ({
 
     await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
 
-    await getAndLoadNeuron(neuronId);
+    await listNeurons();
 
     return { success: true };
   } catch (err) {

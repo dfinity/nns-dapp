@@ -191,11 +191,11 @@
     "confirm_update_delay": "Confirm and Update Delay",
     "confirm_set_delay": "Confirm and Set Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
-    "split_neuron_success": "Neuron successfully split.",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
     "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
+    "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
     "stake_amount": "Stake Amount"
   },
@@ -247,28 +247,42 @@
   },
   "canisters": {
     "title": "Canisters",
-    "text": "Canisters are computational units (a form of smart contracts). They are powered by “cycles”, which they must be pre-charged with. You create cycles by converting ICP tokens.",
-    "step1": "Create new canisters",
-    "step2": "Link canisters to your account",
-    "step3": "Send cycles to canisters",
+    "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "principal_is": "Your principal id is",
     "create_or_link": "Create or Link Canister",
     "empty": "No canisters yet.",
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",
     "create_canister_subtitle": "Create a new canister, to deploy your application",
+    "create_canister_success": "New canister with id $canisterId created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister was linked successfully",
     "attach_canister": "Attach Canister",
     "enter_canister_id": "Enter Canister ID:",
-    "canister_id": "Canister ID"
+    "canister_id": "Canister ID",
+    "enter_amount": "Enter Amount",
+    "review_create_canister": "Review Canister Creation",
+    "t_cycles": "T Cycles",
+    "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusve of 1T Cycles fee if creating a new canister)",
+    "review_cycles_purchase": "Review Cycles Purchase",
+    "converted_to": "converted to"
   },
   "canister_detail": {
     "title": "Canister",
     "id": "Id: $canisterId",
     "cycles": "Cycles",
-    "controllers": "Controllers"
+    "controllers": "Controllers",
+    "t_cycles": "T Cycles",
+    "add_cycles": "Add Cycles",
+    "top_up_canister": "Top Up Canister",
+    "top_up_successful": "Cycles added successfully",
+    "detach": "Detach",
+    "confirm_detach_title": "Confirm Detach",
+    "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
+    "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stoerd securely.",
+    "detach_success": "Canister detached successfully",
+    "add_controller": "Add Controller"
   },
   "topics": {
     "Unspecified": "Unspecified",
@@ -318,7 +332,8 @@
     "no_transactions": "No transactions"
   },
   "busy_screen": {
-    "pending_approval_hw": "Please use your hardware wallet to approve."
+    "pending_approval_hw": "Please use your hardware wallet to approve.",
+    "take_long": "This might take a while."
   },
   "proposal_detail": {
     "title": "Proposal",

@@ -25,9 +25,13 @@ const initToastsStore = () => {
       });
     },
 
-    success({ labelKey }: Pick<ToastMsg, "labelKey">) {
+    success({
+      labelKey,
+      substitutions,
+    }: Pick<ToastMsg, "labelKey" | "substitutions">) {
       this.show({
         labelKey,
+        substitutions,
         level: "success",
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });

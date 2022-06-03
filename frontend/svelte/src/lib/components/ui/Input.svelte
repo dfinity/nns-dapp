@@ -133,6 +133,7 @@
     {max}
     {autocomplete}
     on:blur
+    on:focus
     on:input={handleInput}
     on:keydown={handleKeyDown}
   />
@@ -260,5 +261,6 @@
 
   input::placeholder {
     visibility: hidden;
+    opacity: 0;
   }
 </style>
