@@ -1,5 +1,9 @@
 export const E8S_PER_ICP = 100_000_000;
 export const TRANSACTION_FEE_E8S = 10_000;
+export const ONE_TRILLION = 1_000_000_000_000;
+
+export const ICP_DISPLAYED_DECIMALS = 2;
+export const ICP_DISPLAYED_DECIMALS_DETAILED = 8;
 
 /*
  * The format should be:

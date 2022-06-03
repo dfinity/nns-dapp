@@ -4,7 +4,7 @@
    */
   import { toastsStore } from "../../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
-  import { translate } from "../../utils/i18n.utils";
+  import { replacePlaceholders, translate } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
   import { onDestroy, onMount } from "svelte";
@@ -17,11 +17,13 @@
   let labelKey: string;
   let level: ToastLevel;
   let detail: string | undefined;
+  let substitutions: { [from: string]: string } | undefined;
 
-  $: ({ labelKey, level, detail } = msg);
-  $: text = `${translate({ labelKey })}${
-    detail !== undefined ? ` ${detail}` : ""
-  }`;
+  $: ({ labelKey, level, detail, substitutions } = msg);
+  $: text = replacePlaceholders(
+    `${translate({ labelKey })}${detail !== undefined ? ` ${detail}` : ""}`,
+    substitutions ?? {}
+  );
 
   let timeoutId: NodeJS.Timeout | undefined = undefined;
 
@@ -86,7 +88,7 @@
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-600-shade);
+    --scrollbar-thumb: var(--green-500-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
@@ -110,8 +112,8 @@
     &.warn {
       background: var(--yellow-500);
       color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-400-tint);
-      --scrollbar-thumb: var(--yellow-600);
+      --scrollbar-background: var(--yellow-500-tint);
+      --scrollbar-thumb: var(--yellow-500);
 
       button.close {
         color: var(--yellow-500-contrast);

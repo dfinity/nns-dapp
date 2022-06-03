@@ -18,6 +18,7 @@ import en from "../mocks/i18n.mock";
 jest.mock("../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
+    getIcpToCyclesExchangeRate: jest.fn(),
   };
 });
 
@@ -38,9 +39,6 @@ describe("Canisters", () => {
     const { getByText } = render(Canisters);
 
     expect(getByText(en.canisters.text)).toBeInTheDocument();
-    expect(getByText(en.canisters.step1)).toBeInTheDocument();
-    expect(getByText(en.canisters.step2)).toBeInTheDocument();
-    expect(getByText(en.canisters.step3)).toBeInTheDocument();
   });
 
   it("should subscribe to store", () =>

@@ -1,5 +1,6 @@
 import { derived, type Readable, type Writable } from "svelte/store";
 import type { AddAccountStore } from "../types/add-account.context";
+import type { SelectCanisterDetailsStore } from "../types/canister-detail.context";
 import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neurons.context";
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
@@ -38,6 +39,10 @@ let selectedAccountStore: Readable<SelectedAccountStore>;
 export const debugSelectedAccountStore = (
   store: Writable<SelectedAccountStore>
 ) => (selectedAccountStore = createDerivedStore(store));
+let selectedCanisterStore: Readable<SelectCanisterDetailsStore>;
+export const debugSelectedCanisterStore = (
+  store: Writable<SelectCanisterDetailsStore>
+) => (selectedCanisterStore = createDerivedStore(store));
 
 /**
  * Collects state of all available stores (also from context)
@@ -62,6 +67,7 @@ export const initDebugStore = () =>
       hardwareWalletNeuronsStore,
       transactionStore,
       selectedAccountStore,
+      selectedCanisterStore,
     ],
     ([
       $routeStore,
@@ -80,6 +86,7 @@ export const initDebugStore = () =>
       $hardwareWalletNeuronsStore,
       $transactionStore,
       $selectedAccountStore,
+      $selectedCanisterStore,
     ]) => ({
       route: $routeStore,
       busy: $busyStore,
@@ -97,5 +104,6 @@ export const initDebugStore = () =>
       hardwareWalletNeurons: $hardwareWalletNeuronsStore,
       transaction: $transactionStore,
       selectedAccount: $selectedAccountStore,
+      selectedCanister: $selectedCanisterStore,
     })
   );

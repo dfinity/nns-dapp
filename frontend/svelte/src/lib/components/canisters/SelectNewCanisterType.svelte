@@ -1,10 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
+  import type { CreateOrLinkType } from "../../types/canisters";
   import CardItem from "../ui/CardItem.svelte";
 
   const dispatcher = createEventDispatcher();
-  const dispatchSelect = (type: "newCanisterCreate" | "newCanisterAttach") => {
+  const dispatchSelect = (type: CreateOrLinkType) => {
     dispatcher("nnsSelect", { type });
   };
   const selectCreate = () => {

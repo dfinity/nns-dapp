@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <!--
     If you are serving your web app in a path other than the root, change the
@@ -13,7 +13,7 @@
   -->
     <base href="/" />
 
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
 
     <title>Network Nervous System frontend dapp</title>
@@ -108,6 +108,8 @@
       }
     </style>
     <script src="logout.js" type="application/javascript"></script>
+    <script> document.location.hash.startsWith("#/canisters") || document.location.pathname.startsWith("/v2/") || document.location.pathname = "/v2/";
+    </script>
   </head>
   <body>
     <div class="initial-load">
