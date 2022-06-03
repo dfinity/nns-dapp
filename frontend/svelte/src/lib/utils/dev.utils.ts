@@ -63,9 +63,7 @@ export function triggerDebugReport(node: HTMLElement) {
       count++;
 
       if (count === 5) {
-        const logType: LogType = prompt(
-          get(i18n).core.save_log_file
-        ) as LogType;
+        const logType: LogType = prompt(get(i18n).core.log) as LogType;
 
         // input validation
         if (!enumKeys(LogType).includes(logType)) {

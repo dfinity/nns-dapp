@@ -19,8 +19,7 @@ interface I18nCore {
   max: string;
   principal: string;
   toggle: string;
-  save_log_file: string;
-  anonymise_log: string;
+  log: string;
 }
 
 interface I18nError {

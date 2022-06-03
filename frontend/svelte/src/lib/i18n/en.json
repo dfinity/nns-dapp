@@ -16,8 +16,7 @@
     "max": "Max",
     "principal": "Principal",
     "toggle": "toggle",
-    "save_log_file": "Save the app state to the file?",
-    "anonymise_log": "Anonymise the app state?"
+    "log": "Log"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
