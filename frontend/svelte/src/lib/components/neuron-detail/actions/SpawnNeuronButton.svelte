@@ -37,8 +37,7 @@
   text={replacePlaceholders(
     $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
     {
-      $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE) }),
-      detailed: true,
+      $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE), detailed: true }),
     }
   )}
 >
