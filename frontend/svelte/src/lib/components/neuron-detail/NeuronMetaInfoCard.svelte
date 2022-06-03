@@ -74,6 +74,7 @@
                 {
                   $stake: formatICP({
                     value: neuron.fullNeuron.cachedNeuronStake,
+                    detailed: true,
                   }),
                   $delayMultiplier: dissolveDelayMultiplier(
                     Number(neuron.dissolveDelaySeconds)
