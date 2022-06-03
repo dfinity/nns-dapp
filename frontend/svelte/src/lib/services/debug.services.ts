@@ -62,10 +62,6 @@ const anonymiseStoreState = async () => {
       ),
     },
     neurons: {
-      originalNeurons: await mapPromises(
-        neurons.originalNeurons ?? [],
-        anonymizeNeuronInfo
-      ),
       neurons: await mapPromises(neurons.neurons ?? [], anonymizeNeuronInfo),
       certified: neurons.certified,
     },
