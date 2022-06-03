@@ -55,6 +55,7 @@
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.icp_stake, {
         $amount: formatICP({ value: neuronICP }),
+        detailed: true
       })}
     </p>
 
