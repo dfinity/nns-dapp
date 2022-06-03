@@ -93,7 +93,7 @@ export const anonymizeAccount = async (
 
   return {
     identifier: await cutAndAnonymize(identifier),
-    principal: isNullOrUndefined(principal) ? "yes" : "no",
+    principal: isNullOrUndefined(principal) ? "no" : "yes",
     balance: await anonymizeICP(balance),
     name: name,
     type: type,
@@ -163,7 +163,7 @@ export const anonymizeFullNeuron = async (
   return {
     id: await cutAndAnonymize(id),
     // principal string
-    controller: isNullOrUndefined(controller) ? "yes" : "no",
+    controller: isNullOrUndefined(controller) ? "no" : "yes",
     recentBallots,
     kycVerified: kycVerified,
     notForProfit,
@@ -212,7 +212,7 @@ export const anonymizeCanister = async (
     name,
     // TODO: what to do with principals
     // canister_id: await anonymize(canister_id),
-    canister_id: isNullOrUndefined(canister_id) ? "yes" : "no",
+    canister_id: isNullOrUndefined(canister_id) ? "no" : "yes",
   };
 };
 
