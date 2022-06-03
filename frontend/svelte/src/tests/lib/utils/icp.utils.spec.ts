@@ -22,11 +22,9 @@ describe("icp-utils", () => {
     expect(formatICP({ value: BigInt(1012300000) })).toEqual("10.12");
     expect(formatICP({ value: BigInt(20000000000) })).toEqual("200.00");
     expect(formatICP({ value: BigInt(20000000001) })).toEqual("200.00");
-    expect(formatICP({ value: BigInt(200000000000) })).toEqual(
-      `2${"\u202F"}000.00`
-    );
+    expect(formatICP({ value: BigInt(200000000000) })).toEqual(`2'000.00`);
     expect(formatICP({ value: BigInt(200000000000000) })).toEqual(
-      `2${"\u202F"}000${"\u202F"}000.00`
+      `2'000'000.00`
     );
   });
 
@@ -54,11 +52,11 @@ describe("icp-utils", () => {
       "200.00000001"
     );
     expect(formatICP({ value: BigInt(200000000000), detailed: true })).toEqual(
-      `2${"\u202F"}000.00`
+      `2'000.00`
     );
     expect(
       formatICP({ value: BigInt(200000000000000), detailed: true })
-    ).toEqual(`2${"\u202F"}000${"\u202F"}000.00`);
+    ).toEqual(`2'000'000.00`);
   });
 
   it("should add ICPs", () => {
