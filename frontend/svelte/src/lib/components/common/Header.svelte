@@ -4,11 +4,14 @@
   import GetICPs from "../ic/GetICPs.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import { triggerDebugReport } from "../../utils/dev.utils";
+  import IconMenu from "../../icons/IconMenu.svelte";
 </script>
 
 <header>
   {#if IS_TESTNET}
-    <GetICPs />
+    <div class="menu">
+      <IconMenu />
+    </div>
   {/if}
 
   <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
@@ -54,5 +57,13 @@
     z-index: var(--z-index);
 
     line-height: inherit;
+  }
+
+  .menu {
+    :global(svg) {
+      margin: 20px;
+      width: 32px;
+      height: 32px;
+    }
   }
 </style>
