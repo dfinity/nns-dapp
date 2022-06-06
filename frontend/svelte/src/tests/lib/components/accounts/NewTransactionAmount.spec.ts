@@ -50,7 +50,7 @@ describe("NewTransactionAmount", () => {
     const icp: HTMLSpanElement | null = queryByTestId("icp-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())}`
+      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
     );
   });
 

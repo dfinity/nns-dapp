@@ -73,7 +73,10 @@
     position: absolute;
 
     inset: calc(var(--headless-layout-header-height)) 0 0;
-    overflow: auto;
+
+    /** TODO(L2-610): workaround for release - clean solution in development (PR #908) */
+    overflow-y: auto;
+    overflow-x: hidden;
 
     background-color: var(--gray-50-background);
   }

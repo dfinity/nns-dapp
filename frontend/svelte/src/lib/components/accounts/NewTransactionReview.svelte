@@ -42,7 +42,7 @@
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
-    <ICP inline={true} icp={amount} />
+    <ICP inline={true} icp={amount} detailed />
   </div>
 
   <NewTransactionInfo />

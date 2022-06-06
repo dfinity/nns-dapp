@@ -16,6 +16,8 @@ export class NeuronsTab extends MyNavigator {
   static readonly NEURON_DETAIL_SELECTOR: string = `[data-tid="neuron-detail"]`;
   static readonly NEURON_CARD_TITLE_SELECTOR: string = `[data-tid="neuron-card-title"]`;
   static readonly MERGE_NEURONS_BUTTON_SELECTOR: string = `[data-tid="merge-neurons-button"]`;
+  static readonly MERGE_NEURONS_SUBMIT_SELECTOR: string = `[data-tid="merge-neurons-confirm-selection-button"]`;
+  static readonly MERGE_NEURONS_CONFIRM_SELECTOR: string = `[data-tid="confirm-merge-neurons-button"]`;
   static readonly DISBURSE_BUTTON_SELECTOR: string = `[data-tid="disburse-button"]`;
   static readonly DISBURSE_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`;
   static readonly DISBURSE_CONFIRM_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="disburse-neuron-button"]`;
@@ -27,15 +29,36 @@ export class NeuronsTab extends MyNavigator {
   async getNeuronById(
     neuronId: string,
     description: string,
-    options?: { timeout?: number }
+    options?: { timeout?: number; ancestor?: WebdriverIO.Element }
   ): Promise<WebdriverIO.Element> {
-    const element = await this.browser.$(
-      `//*[@data-tid = 'neuron-card' and .//*[@data-tid="neuron-id" and text() = '${neuronId}']]`
-    );
+    const selector = `.//*[@data-tid = 'neuron-card' and .//*[@data-tid="neuron-id" and text() = '${neuronId}']]`;
+    const ancestor = options?.ancestor;
+    const element =
+      undefined === ancestor
+        ? await this.browser.$(selector)
+        : await ancestor.$(selector);
     const timeout = options?.timeout ?? 5_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting for "${description}" with neuron "${neuronId}".`;
     await element.waitForExist({ timeout, timeoutMsg });
     return element;
+  }
+
+  async getNeuronBalance(neuronId: string): Promise<number> {
+    const neuron = await this.getNeuronById(
+      neuronId,
+      `Get neuron ${neuronId} to check balance`
+    );
+    const icpField = await neuron.$(`[data-tid="icp-value"]`);
+    const icpValue = Number(await icpField.getText());
+    if (Number.isFinite(icpValue)) {
+      return icpValue;
+    } else {
+      throw new Error(
+        `Could not get ICP for neuronId ${neuronId} from ${await icpField.getHTML(
+          true
+        )}`
+      );
+    }
   }
 
   // TODO: There is no good way to make sure that the browser has displayed the expected modal.  The text can change due to internationalisation.
@@ -134,5 +157,41 @@ export class NeuronsTab extends MyNavigator {
     ).then((element) => element.getText());
     console.log(`Created neuronId ${neuronId}`);
     return { neuronId };
+  }
+
+  async mergeNeurons(neuronId1: string, neuronId2: string): Promise<void> {
+    await this.click(
+      NeuronsTab.MERGE_NEURONS_BUTTON_SELECTOR,
+      "Start merge neurons flow"
+    );
+    const modal = await this.getElement(
+      NeuronsTab.MODAL_SELECTOR,
+      "Get the modal"
+    );
+    const neuronElement1 = await this.getNeuronById(
+      neuronId1,
+      "Get the first neuron to merge",
+      { ancestor: modal }
+    );
+    await neuronElement1.click();
+    const neuronElement2 = await this.getNeuronById(
+      neuronId2,
+      "Get the second neuron to merge",
+      { ancestor: modal }
+    );
+    await neuronElement2.click();
+    await this.click(
+      `${NeuronsTab.MODAL_SELECTOR} ${NeuronsTab.MERGE_NEURONS_SUBMIT_SELECTOR}`,
+      "Click to request merge"
+    );
+    await this.click(
+      `${NeuronsTab.MODAL_SELECTOR} ${NeuronsTab.MERGE_NEURONS_CONFIRM_SELECTOR}`,
+      "Click to confirm merge"
+    );
+    await this.waitForGone(
+      NeuronsTab.MODAL_SELECTOR,
+      "Waiting for the merge neurons modal to disappear"
+    );
+    await browser["screenshot"]("Merge neurons complete");
   }
 }

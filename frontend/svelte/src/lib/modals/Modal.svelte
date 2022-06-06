@@ -147,7 +147,12 @@
       width: var(--modal-big-width);
     }
 
-    height: min(calc(100% - var(--padding-6x)), var(--modal-max-height));
+    --modal-wrapper-height: min(
+      calc(100vh - var(--padding-6x)),
+      var(--modal-max-height)
+    );
+
+    height: var(--modal-wrapper-height);
     max-width: calc(100vw - var(--padding-4x));
 
     --modal-toolbar-height: 35px;
@@ -160,7 +165,7 @@
   }
 
   .light > div.wrapper {
-    --scrollbar-light-background: var(--gray-50er-background-contrast);
+    --scrollbar-light-background: var(--gray-50-background-contrast);
     ::-webkit-scrollbar {
       background: var(--scrollbar-light-background);
     }
@@ -176,8 +181,8 @@
   .toolbar {
     padding: var(--padding) var(--padding-2x);
 
-    background: var(--gray-100);
-    color: var(--gray-800);
+    background: var(--gray-50);
+    color: var(--gray-50-background);
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
@@ -225,10 +230,11 @@
     overflow-y: auto;
     overflow-x: hidden;
 
-    color: var(--gray-800);
+    color: var(--gray-50-background);
   }
 
   .small {
     height: fit-content;
+    max-height: var(--modal-wrapper-height);
   }
 </style>

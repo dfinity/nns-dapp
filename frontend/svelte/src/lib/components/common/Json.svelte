@@ -162,11 +162,9 @@
   ul {
     // reset
     margin: 0;
-    padding: 0;
-
-    padding-left: var(--padding-1_5x);
+    padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
-    color: var(--gray-100);
+    color: var(--gray-200);
   }
   .key {
     display: inline-block;
