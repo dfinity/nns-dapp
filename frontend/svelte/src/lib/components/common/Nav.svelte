@@ -29,51 +29,37 @@
   @use "../../themes/mixins/media.scss";
 
   nav {
-    position: absolute;
-    top: calc(var(--header-offset, 0px) + var(--header-height));
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0;
-
-    margin: var(--padding) var(--padding-2x);
-
-    height: var(--nav-height);
-
-    display: grid;
-    grid-template-columns: repeat(4, 25%);
-
-    justify-content: center;
-    align-items: center;
+    width: 180px;
+    bottom: 0;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: -1px -1px 2px rgb(255 255 255 / 80%), 1px 1px 2px rgb(0 0 0 / 30%);
 
     background: var(--background);
-
-    border-radius: var(--border-radius);
     overflow: hidden;
   }
 
   a {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: var(--gray-400);
+    color: var(--gray-50);
 
     font-size: var(--font-size-ultra-small);
-    font-weight: 700;
 
     text-decoration: none;
     outline: none;
 
-    &.selected {
-      background: var(--blue-500);
-      color: var(--blue-500-contrast);
+    margin-bottom: 40px;
 
-      &:focus,
-      &:hover {
-        background: var(--blue-500-tint);
-      }
+    &.selected {
+      font-weight: 700;
+      color: #00A5FF;
     }
 
     &:not(.selected):focus,

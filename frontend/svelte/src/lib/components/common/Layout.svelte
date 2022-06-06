@@ -23,8 +23,7 @@
   main {
     position: absolute;
     top: calc(
-      var(--header-offset, 0px) + var(--header-height) + var(--nav-height) +
-        var(--padding-2x)
+      var(--header-offset, 0px) + var(--header-height)
     );
     left: 0;
     right: 0;

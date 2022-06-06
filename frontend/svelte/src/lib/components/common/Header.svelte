@@ -35,15 +35,8 @@
     align-items: center;
 
     // Fallback
-    background: var(--brand-razzmatazz);
-    background: linear-gradient(
-      90deg,
-      var(--brand-sea-buckthorn) 0%,
-      var(--brand-flamingo) 25%,
-      var(--brand-razzmatazz) 50%,
-      var(--brand-meteorite) 75%,
-      var(--brand-picton-blue) 100%
-    );
+    background: linear-gradient(99.27deg, #00A5FF -0.11%, #4E48D2 100.63%);
+    box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   h4 {
