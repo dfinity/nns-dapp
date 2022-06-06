@@ -31,7 +31,7 @@
     }
 
     span {
-      color: var(--gray-200);
+      color: var(--gray-50);
     }
   }
 </style>

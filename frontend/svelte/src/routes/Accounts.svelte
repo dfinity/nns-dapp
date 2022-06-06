@@ -67,6 +67,7 @@
       {#if accounts?.main?.identifier}
         <AccountCard
           role="link"
+          main
           on:click={() => cardClick(accounts?.main?.identifier ?? "")}
           showCopy
           account={accounts?.main}>{$i18n.accounts.main}</AccountCard

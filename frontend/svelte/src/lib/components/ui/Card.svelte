@@ -4,6 +4,7 @@
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
+  export let main: boolean = false;
 
   let clickable: boolean = false;
 
@@ -24,6 +25,7 @@
   class:clickable
   class:selected
   class:disabled
+  class:main
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
@@ -46,18 +48,18 @@
   article {
     text-decoration: none;
 
-    background: var(--background);
+    background: var(--card-background, var(--background));
     color: var(--gray-50);
 
     padding: var(--padding-2_5x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
-    box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+    box-shadow: var(--box-shadow);
 
-    border: 2px solid transparent;
+    outline: 2px solid transparent;
     &.selected {
-      border: 2px solid var(--blue-500);
+      outline: 2px solid var(--blue-500);
     }
 
     &.disabled {
@@ -89,5 +91,10 @@
 
       margin: 0 0 var(--padding);
     }
+  }
+
+  .main {
+    background: linear-gradient(99.27deg, #00A5FF -0.11%, #4E48D2 100.63%);
+    color: white;
   }
 </style>

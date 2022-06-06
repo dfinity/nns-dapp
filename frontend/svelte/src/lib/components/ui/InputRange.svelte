@@ -8,7 +8,7 @@
   let backgroundStyle: string;
   $: {
     const firstHalf: number = Math.round(((value - min) / (max - min)) * 100);
-    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
+    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-50) ${
       1 - firstHalf
     }%)`;
   }

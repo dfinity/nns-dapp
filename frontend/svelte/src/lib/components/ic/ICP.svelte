@@ -31,7 +31,7 @@
     span:first-of-type {
       font-weight: 700;
       font-size: var(--icp-font-size, var(--font-size-h3));
-      color: var(--gray-50);
+      color: inherit;
     }
 
     &:not(.inline) {

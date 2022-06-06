@@ -9,6 +9,7 @@
   export let account: Account;
   export let showCopy: boolean = false;
   export let role: "button" | "link" | undefined = undefined;
+  export let main: boolean = false;
 
   let identifier: string;
   let balance: ICPType;
@@ -16,7 +17,7 @@
   $: ({ identifier, balance } = account);
 </script>
 
-<Card on:click {role} testId="account-card">
+<Card on:click {role} {main} testId="account-card">
   <div slot="start" class="title">
     <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
@@ -38,5 +39,6 @@
     margin: 0 var(--padding) 0 0;
 
     @include text.truncate;
+    color: inherit;
   }
 </style>

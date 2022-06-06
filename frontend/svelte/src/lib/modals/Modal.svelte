@@ -113,7 +113,7 @@
 
       .content {
         background: var(--gray-50-background);
-        color: var(--gray-200);
+        color: var(--gray-50);
       }
     }
   }

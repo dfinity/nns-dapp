@@ -163,7 +163,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-200);
+    --disabled-color: var(--gray-50);
 
     &.disabled {
       color: var(--disabled-color);
