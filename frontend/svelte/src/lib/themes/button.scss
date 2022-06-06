@@ -45,7 +45,8 @@ button {
   &.secondary,
   &.warning,
   &.input-button {
-    border-radius: var(--border-radius);
+    border-radius: 50px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 
     position: relative;
     min-height: var(--button-min-height);
