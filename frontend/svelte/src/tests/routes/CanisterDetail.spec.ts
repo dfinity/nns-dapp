@@ -17,10 +17,11 @@ import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 jest.mock("../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
-    routePathCanisterId: () => mockCanister.canister_id,
+    routePathCanisterId: () => mockCanister.canister_id.toText(),
     getCanisterDetails: jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockCanisterDetails)),
+    getCanisterFromStore: () => mockCanister,
   };
 });
 
@@ -44,12 +45,13 @@ describe("CanisterDetail", () => {
     expect(getByText(en.canister_detail.title)).toBeInTheDocument();
   });
 
-  it("should fetch canisters from nns-dapp", async () => {
+  it("should fetch canisters from nns-dapp if store is not loaded yet", async () => {
     render(CanisterDetail);
     await waitFor(() => expect(listCanisters).toBeCalled());
   });
 
   it("should get canister details", async () => {
+    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
     render(CanisterDetail);
     await waitFor(() => expect(getCanisterDetails).toBeCalled());
   });

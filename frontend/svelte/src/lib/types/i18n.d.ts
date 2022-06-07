@@ -48,6 +48,7 @@ interface I18nError {
   accounts_not_found: string;
   account_not_found: string;
   transactions_not_found: string;
+  canister_not_found: string;
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;

@@ -1,3 +1,4 @@
+import type { Principal } from "@dfinity/principal";
 import type { Writable } from "svelte/store";
 import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
@@ -12,7 +13,7 @@ export interface SelectCanisterDetailsStore {
 
 export interface CanisterDetailsContext {
   store: Writable<SelectCanisterDetailsStore>;
-  refetchDetails: () => Promise<void>;
+  reloadDetails: (canisterId: Principal) => Promise<void>;
 }
 
 export const CANISTER_DETAILS_CONTEXT_KEY = Symbol("canister-details");

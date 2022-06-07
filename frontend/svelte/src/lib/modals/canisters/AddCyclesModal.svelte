@@ -43,7 +43,7 @@
     },
   ];
 
-  const { store, refetchDetails }: CanisterDetailsContext =
+  const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: Step | undefined;
@@ -85,7 +85,7 @@
       canisterId,
       fromSubAccount: account.subAccount,
     });
-    await refetchDetails();
+    await reloadDetails(canisterId);
     stopBusy("top-up-canister");
     if (success) {
       toastsStore.success({

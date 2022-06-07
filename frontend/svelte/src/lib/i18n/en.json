@@ -44,6 +44,7 @@
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "account_not_found": "Sorry, the account \"account_identifier\" was not found",
     "transactions_not_found": "An error occurred while loading the transactions.",
+    "canister_not_found": "Sorry, the canister \"canister_id\" was not found",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
