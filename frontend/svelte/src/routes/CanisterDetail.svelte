@@ -136,7 +136,7 @@
       if (selectedCanister === undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.canister_not_found, {
-            canister_id: routeCanisterId ?? "",
+            $canister_id: routeCanisterId ?? "",
           }),
         });
         goBack();
