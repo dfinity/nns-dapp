@@ -1,5 +1,4 @@
 import type { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import {
   attachCanister as attachCanisterApi,
   createCanister as createCanisterApi,
@@ -15,7 +14,6 @@ import type {
   SubAccountArray,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "../constants/icp.constants";
-import type { CanistersStore } from "../stores/canisters.store";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetail } from "../utils/app-path.utils";

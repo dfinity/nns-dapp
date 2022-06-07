@@ -10,9 +10,7 @@ export const getCanisterFromStore = ({
   canisterId: string | undefined;
   canistersStore: CanistersStore;
 }): CanisterDetails | undefined =>
-  canisters?.find(
-    ({ canister_id }) => canister_id.toText() === canisterId
-  );
+  canisters?.find(({ canister_id }) => canister_id.toText() === canisterId);
 
 export const formatCyclesToTCycles = (cycles: bigint): string =>
   formatNumber(Number(cycles) / Number(ONE_TRILLION), {
