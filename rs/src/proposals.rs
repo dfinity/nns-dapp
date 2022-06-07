@@ -44,7 +44,8 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
 fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().map(|p| p.action.as_ref()).flatten() {
-        transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|_| "Unable to deserialize payload".to_string())
+        transform_payload_to_json(f.nns_function, &f.payload)
+            .unwrap_or_else(|_| "Unable to deserialize payload".to_string())
     } else {
         "Proposal has no payload".to_string()
     }
