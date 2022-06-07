@@ -3,12 +3,12 @@
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { busy, stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/neurons.services";
   import { createEventDispatcher } from "svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-  import PrincipalInput from "../../components/ui/PrincipalInput.svelte";
   import { toastsStore } from "../../stores/toasts.store";
+  import AddPrincipal from "../../components/common/AddPrincipal.svelte";
 
   export let neuronId: NeuronId;
 
@@ -31,46 +31,11 @@
 </script>
 
 <Modal on:nnsClose theme="dark" size="big">
-  <span slot="title">{$i18n.neuron_detail.add_hotkey_modal_title}</span>
-  <form on:submit|preventDefault={add} data-tid="add-hotkey-neuron-modal">
-    <div class="input-wrapper">
-      <h5>{$i18n.neuron_detail.enter_hotkey}</h5>
-      <PrincipalInput
-        bind:principal
-        placeholderLabelKey="neuron_detail.add_hotkey_placeholder"
-        name="hotkey-principal"
-      />
-    </div>
-
-    <button
-      data-tid="add-hotkey-neuron-button"
-      class="primary full-width"
-      type="submit"
-      disabled={principal === undefined || $busy}
-    >
-      {$i18n.core.confirm}
-    </button>
-  </form>
+  <span slot="title" data-tid="add-hotkey-neuron-modal"
+    >{$i18n.neuron_detail.add_hotkey_modal_title}</span
+  >
+  <AddPrincipal bind:principal on:nnsSelectPrincipal={add}>
+    <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
+    <span slot="button">{$i18n.core.confirm}</span>
+  </AddPrincipal>
 </Modal>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal.scss";
-
-  h5 {
-    text-align: center;
-  }
-
-  form {
-    @include modal.section;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
-  .input-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-</style>

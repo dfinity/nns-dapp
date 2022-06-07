@@ -20,6 +20,7 @@ interface I18nCore {
   principal: string;
   toggle: string;
   save_log_file: string;
+  principal_id: string;
 }
 
 interface I18nError {
@@ -297,6 +298,9 @@ interface I18nCanister_detail {
   confirm_detach_description_1: string;
   confirm_detach_description_2: string;
   detach_success: string;
+  confirm_new_controller: string;
+  enter_controller: string;
+  new_controller: string;
   add_controller: string;
 }
 
@@ -450,7 +454,6 @@ interface I18nNeuron_detail {
   dissolve_delay_range: string;
   maturity_range: string;
   maturity_percentage: string;
-  add_hotkey_placeholder: string;
 }
 
 interface I18nTime {

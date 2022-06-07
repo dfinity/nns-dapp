@@ -28,7 +28,7 @@
     {/each}
   </ul>
   <div class="actions">
-    <AddCanisterControllerButton />
+    <AddCanisterControllerButton canisterId={canisterDetails.id} />
   </div>
 </Card>
 
