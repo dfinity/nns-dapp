@@ -21,6 +21,7 @@ interface I18nCore {
   toggle: string;
   save_log_file: string;
   principal_id: string;
+  copy: string;
 }
 
 interface I18nError {
@@ -106,7 +107,6 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
-  copy_identifier: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;

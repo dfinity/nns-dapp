@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import Identifier from "../../../../lib/components/ic/Identifier.svelte";
+import Identifier from "../../../../lib/components/ui/Identifier.svelte";
 
 describe("Identifier", () => {
   const identifier: string = "test-identifier";
