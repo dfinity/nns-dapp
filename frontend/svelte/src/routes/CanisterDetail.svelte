@@ -79,10 +79,25 @@
 
   debugSelectedCanisterStore(selectedCanisterStore);
 
+  let loadingDetails: boolean = true;
+  let canisterInfo: CanisterInfo | undefined;
+  let canisterDetails: CanisterDetails | undefined = undefined;
+  $: canisterDetails = $selectedCanisterStore.details;
+  let errorKey: string | undefined = undefined;
+  $: errorKey =
+    $selectedCanisterStore.controller === false
+      ? "error.not_canister_controller"
+      : $selectedCanisterStore.controller === undefined && !loadingDetails
+      ? "error.canister_details_not_found"
+      : undefined;
+
+  let showAddCyclesModal: boolean = false;
+  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
+
   const reloadDetails = async (canisterId: Principal) => {
     try {
       if (canisterId !== undefined) {
-        loading = true;
+        loadingDetails = true;
         const newDetails = await getCanisterDetails(canisterId);
         selectedCanisterStore.update((data) => ({
           ...data,
@@ -98,23 +113,8 @@
           error instanceof UserNotTheControllerError ? false : undefined,
       }));
     }
-    loading = false;
+    loadingDetails = false;
   };
-
-  let loading: boolean = false;
-  let canisterInfo: CanisterInfo | undefined;
-  let canisterDetails: CanisterDetails | undefined = undefined;
-  $: canisterDetails = $selectedCanisterStore.details;
-  let errorKey: string | undefined = undefined;
-  $: errorKey =
-    $selectedCanisterStore.controller === false
-      ? "error.not_canister_controller"
-      : $selectedCanisterStore.controller === undefined && !loading
-      ? "error.canister_details_not_found"
-      : undefined;
-
-  let showAddCyclesModal: boolean = false;
-  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: selectedCanisterStore,
