@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal";
 import {
   emptyAddress,
   getAccountByPrincipal,
+  getAccountFromStore,
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
@@ -94,6 +95,40 @@ describe("accounts-utils", () => {
 
     it("returns false if no account", () => {
       expect(isAccountHardwareWallet(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("getAccountFromStore", () => {
+    const accountsStore = {
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+    };
+
+    it("should not return an account if no identifier is provided", () => {
+      expect(
+        getAccountFromStore({ identifier: undefined, accountsStore })
+      ).toBeUndefined();
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        getAccountFromStore({ identifier: "aaa", accountsStore })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding account", () => {
+      expect(
+        getAccountFromStore({
+          identifier: mockMainAccount.identifier,
+          accountsStore,
+        })
+      ).toEqual(mockMainAccount);
+      expect(
+        getAccountFromStore({
+          identifier: mockSubAccount.identifier,
+          accountsStore,
+        })
+      ).toEqual(mockSubAccount);
     });
   });
 });
