@@ -12,7 +12,7 @@ import {
   CannotBeMerged,
   InsufficientAmountError,
   InvalidAmountError,
-  NotAuthorizedError,
+  NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
 import type { ToastMsg } from "../types/toast";
@@ -46,7 +46,7 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   /* eslint-disable-next-line @typescript-eslint/ban-types */
   const collection: Array<[Function, string]> = [
     [NotFoundError, "error.neuron_not_found"],
-    [NotAuthorizedError, "error.not_authorized"],
+    [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
     [InvalidAmountError, "error.amount_not_valid"],
     [InsufficientAmountError, "error.amount_not_enough"],
     [CouldNotClaimNeuronError, "error.neuron_not_found"],

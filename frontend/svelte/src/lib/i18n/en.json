@@ -56,7 +56,7 @@
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
-    "not_authorized": "Sorry, you are not authorized to perform this action.",
+    "not_authorized_neuron_action": "Sorry, non of your principals is the controller of the neuron.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
     "insufficient_funds": "Sorry, there are not enough funds in this account",
     "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
