@@ -132,7 +132,7 @@ export const getIdentityOfControllerByNeuronId = async (
   const neuronIdentity = await getAccountIdentityByPrincipal(
     neuron.fullNeuron.controller
   );
-  if (neuronIdentity === null) {
+  if (neuronIdentity === undefined) {
     throw new NotAuthorizedNeuronError();
   }
   // `getAccountIdentityByPrincipal` returns the current user identity (because of `getIdentity`) if the account is not a hardware wallet.

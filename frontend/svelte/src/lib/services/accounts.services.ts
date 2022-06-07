@@ -226,14 +226,14 @@ export const getAccountIdentity = async (
 
 export const getAccountIdentityByPrincipal = async (
   principalString: string
-): Promise<Identity | LedgerIdentity | null> => {
+): Promise<Identity | LedgerIdentity | undefined> => {
   const accounts = get(accountsStore);
   const account = getAccountByPrincipal({
     principal: principalString,
     accounts,
   });
   if (account === undefined) {
-    return null;
+    return;
   }
   return getAccountIdentity(account.identifier);
 };

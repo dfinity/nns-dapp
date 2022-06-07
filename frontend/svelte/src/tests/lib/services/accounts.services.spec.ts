@@ -412,7 +412,7 @@ describe("accounts-services", () => {
       const expectedIdentity = await getAccountIdentityByPrincipal(
         "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe"
       );
-      expect(expectedIdentity).toBe(null);
+      expect(expectedIdentity).toBeUndefined();
       accountsStore.reset();
     });
   });
