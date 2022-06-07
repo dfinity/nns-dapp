@@ -38,7 +38,7 @@
       flex: 1 1;
 
       @include media.min-width(medium) {
-        max-width: 406px;
+        max-width: 220px;
       }
     }
   }
