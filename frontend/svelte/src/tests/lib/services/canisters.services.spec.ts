@@ -7,7 +7,6 @@ import {
   createCanister,
   detachCanister,
   getCanisterDetails,
-  getCanisterFromStore,
   getIcpToCyclesExchangeRate,
   listCanisters,
   routePathCanisterId,
@@ -245,39 +244,6 @@ describe("canisters-services", () => {
       expect(spyTopUpCanister).not.toBeCalled();
 
       resetIdentity();
-    });
-  });
-
-  describe("get-canister", () => {
-    beforeAll(() =>
-      canistersStore.setCanisters({
-        canisters: mockCanisters,
-        certified: true,
-      })
-    );
-
-    afterAll(() =>
-      canistersStore.setCanisters({
-        canisters: undefined,
-        certified: false,
-      })
-    );
-
-    it("should not return a canister if no canister id is provided", () => {
-      expect(getCanisterFromStore(undefined)).toBeUndefined();
-    });
-
-    it("should find no canister if not matches", () => {
-      expect(getCanisterFromStore("aaa")).toBeUndefined();
-    });
-
-    it("should return corresponding canister", () => {
-      expect(
-        getCanisterFromStore(mockCanisters[0].canister_id.toText())
-      ).toEqual(mockCanisters[0]);
-      expect(
-        getCanisterFromStore(mockCanisters[1].canister_id.toText())
-      ).toEqual(mockCanisters[1]);
     });
   });
 });

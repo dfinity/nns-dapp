@@ -10,7 +10,6 @@
   import {
     getCanisterDetails,
     routePathCanisterId,
-    getCanisterFromStore,
     listCanisters,
   } from "../lib/services/canisters.services";
   import { i18n } from "../lib/stores/i18n";
@@ -35,6 +34,7 @@
   import DetachCanisterButton from "../lib/components/canister_details/DetachCanisterButton.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
+  import { getCanisterFromStore } from "../lib/utils/canisters.utils";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -93,8 +93,10 @@
   $: routeCanisterId = routePathCanisterId($routeStore.path);
 
   let selectedCanister: CanisterInfo | undefined;
-  $: $canistersStore,
-    (selectedCanister = getCanisterFromStore(routeCanisterId));
+  $: selectedCanister = getCanisterFromStore({
+    canisterId: routeCanisterId,
+    canistersStore: $canistersStore,
+  });
 
   // TODO: The way the route path and the loading of the data are handled (following function) is really close to what is developed in Wallet.svelte
   // Therefore, there are probably ways to make this generic and refactor both routes

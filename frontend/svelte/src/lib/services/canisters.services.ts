@@ -182,17 +182,3 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
     return;
   }
 };
-
-export const getCanisterFromStore = (
-  canisterIdString: string | undefined
-): CanisterInfo | undefined => {
-  if (canisterIdString === undefined) {
-    return undefined;
-  }
-
-  const { canisters }: CanistersStore = get(canistersStore);
-
-  return canisters?.find(
-    ({ canister_id }: CanisterInfo) => canister_id.toText() === canisterIdString
-  );
-};
