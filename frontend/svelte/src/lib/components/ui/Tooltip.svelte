@@ -4,21 +4,17 @@
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
-  let tooltipComponent, rightBoundary, leftBoundary, mainWidth;
+  let tooltipComponent;
   let rightEdge = false;
   let leftEdge = false;
 
-  // if tooltip goes beyond viewport, assign class name of 'rightEdge' or 'leftEdge'
+  // if tooltip goes beyond Main viewport, assign class name of 'rightEdge'/ 'leftEdge'
   afterUpdate(() => {
-    rightBoundary = tooltipComponent.getBoundingClientRect().right;
-    leftBoundary = tooltipComponent.getBoundingClientRect().left;
-    mainWidth = document.querySelector("main")?.clientWidth;
-    if (rightBoundary > mainWidth) {
-      rightEdge = true;
-    }
-    if (leftBoundary < 0) {
-      leftEdge = true;
-    }
+    const {right, left} = tooltipComponent?.getBoundingClientRect();
+    //important to select the Main tag instead of window
+    const mainWidth = document.querySelector("main").clientWidth;
+    right > mainWidth ? rightEdge = true : null;
+    left < 0 ? leftEdge = true : null;
   });
 </script>
 
