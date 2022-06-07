@@ -63,3 +63,31 @@ export const getPrincipalFromString = (
 export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
+
+export const getAccountFromStore = ({
+  identifier,
+  accountsStore: { main, subAccounts, hardwareWallets },
+}: {
+  identifier: string | undefined;
+  accountsStore: AccountsStore;
+}): Account | undefined => {
+  if (identifier === undefined) {
+    return undefined;
+  }
+
+  if (main?.identifier === identifier) {
+    return main;
+  }
+
+  const subAccount: Account | undefined = subAccounts?.find(
+    (account: Account) => account.identifier === identifier
+  );
+
+  if (subAccount !== undefined) {
+    return subAccount;
+  }
+
+  return hardwareWallets?.find(
+    (account: Account) => account.identifier === identifier
+  );
+};
