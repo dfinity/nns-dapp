@@ -18,19 +18,21 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+type Json = String;
+
 thread_local! {
     // These are purposely not stored in stable memory.
-    static CACHED_PROPOSALS: RefCell<HashMap<u64, Result<ProposalInfo, String>>> = RefCell::default();
+    static CACHED_PROPOSAL_PAYLOADS: RefCell<HashMap<u64, Result<Json, String>>> = RefCell::default();
 }
 
-pub async fn get_proposal(proposal_id: u64) -> Result<ProposalInfo, String> {
-    if let Some(result) = CACHED_PROPOSALS.with(|c| c.borrow().get(&proposal_id).cloned()) {
+pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
+    if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         result
     } else {
         match crate::canisters::governance::get_proposal_info(proposal_id).await {
             Ok(Some(proposal_info)) => {
-                let result = process_proposal(proposal_info);
-                CACHED_PROPOSALS.with(|c| c.borrow_mut().insert(proposal_id, result.clone()));
+                let json = process_proposal(proposal_info);
+                CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow_mut().insert(proposal_id, Ok(json.clone())));
                 result
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
@@ -40,15 +42,12 @@ pub async fn get_proposal(proposal_id: u64) -> Result<ProposalInfo, String> {
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
-fn process_proposal(mut proposal_info: ProposalInfo) -> Result<ProposalInfo, String> {
-    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_mut().map(|p| p.action.as_mut()).flatten() {
-        match transform_payload_to_json(f.nns_function, &f.payload) {
-            Ok(json) => f.payload = json.into_bytes(),
-            Err(_) => f.payload = b"Unable to deserialize payload".to_vec(),
-        };
+fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
+    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().map(|p| p.action.as_ref()).flatten() {
+        transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|_| "Unable to deserialize payload".to_string())
+    } else {
+        "Proposal has no payload".to_string()
     }
-
-    Ok(proposal_info)
 }
 
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
@@ -81,7 +80,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         9 => transform::<UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed>(payload_bytes),
         10 => identity::<UpdateIcpXdrConversionRatePayload>(payload_bytes),
         11 => identity::<UpdateSubnetReplicaVersionPayload>(payload_bytes),
-        12 => Ok("No payload".to_string()),
+        12 => Ok("Proposal has no payload".to_string()),
         13 => identity::<RemoveNodesFromSubnetPayload>(payload_bytes),
         14 => identity::<SetAuthorizedSubnetworkListArgs>(payload_bytes),
         15 => identity::<SetFirewallConfigPayload>(payload_bytes),

@@ -191,9 +191,9 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
-#[export_name = "canister_update get_proposal"]
-pub fn get_proposal() {
-    over_async(candid_one, proposals::get_proposal)
+#[export_name = "canister_update get_proposal_payload"]
+pub fn get_proposal_payload() {
+    over_async(candid_one, proposals::get_proposal_payload)
 }
 
 /// Gets the current status of a 'multi-part' action.
