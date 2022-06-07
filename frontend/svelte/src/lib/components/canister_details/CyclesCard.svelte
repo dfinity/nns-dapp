@@ -4,7 +4,6 @@
   import Card from "../ui/Card.svelte";
 
   export let cycles: bigint;
-  // TODO: UI - https://dfinity.atlassian.net/browse/L2-599
 </script>
 
 <Card testId="canister-cycles-card">
