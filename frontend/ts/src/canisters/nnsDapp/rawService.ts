@@ -8,15 +8,15 @@ export interface AccountDetails {
 export interface AccountIdentifier { 'hash' : Array<number> }
 export type AccountIdentifierText = string;
 export type Action = { 'RegisterKnownNeuron' : KnownNeuron } |
-    { 'ManageNeuron' : ManageNeuron } |
-    { 'ExecuteNnsFunction' : ExecuteNnsFunction } |
-    { 'RewardNodeProvider' : RewardNodeProvider } |
-    { 'SetDefaultFollowees' : SetDefaultFollowees } |
-    { 'RewardNodeProviders' : RewardNodeProviders } |
-    { 'ManageNetworkEconomics' : NetworkEconomics } |
-    { 'ApproveGenesisKyc' : ApproveGenesisKyc } |
-    { 'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider } |
-    { 'Motion' : Motion };
+  { 'ManageNeuron' : ManageNeuron } |
+  { 'ExecuteNnsFunction' : ExecuteNnsFunction } |
+  { 'RewardNodeProvider' : RewardNodeProvider } |
+  { 'SetDefaultFollowees' : SetDefaultFollowees } |
+  { 'RewardNodeProviders' : RewardNodeProviders } |
+  { 'ManageNetworkEconomics' : NetworkEconomics } |
+  { 'ApproveGenesisKyc' : ApproveGenesisKyc } |
+  { 'AddOrRemoveNodeProvider' : AddOrRemoveNodeProvider } |
+  { 'Motion' : Motion };
 export interface AddHotKey { 'new_hot_key' : [] | [Principal] }
 export interface AddOrRemoveNodeProvider { 'change' : [] | [Change] }
 export interface Amount { 'e8s' : bigint }
@@ -26,20 +26,20 @@ export interface AttachCanisterRequest {
   'canister_id' : Principal,
 }
 export type AttachCanisterResponse = { 'Ok' : null } |
-    { 'CanisterAlreadyAttached' : null } |
-    { 'NameAlreadyTaken' : null } |
-    { 'NameTooLong' : null } |
-    { 'CanisterLimitExceeded' : null };
+  { 'CanisterAlreadyAttached' : null } |
+  { 'NameAlreadyTaken' : null } |
+  { 'NameTooLong' : null } |
+  { 'CanisterLimitExceeded' : null };
 export interface Ballot { 'vote' : number, 'voting_power' : bigint }
 export interface BallotInfo { 'vote' : number, 'proposal_id' : [] | [NeuronId] }
 export type BlockHeight = bigint;
 export type By = { 'NeuronIdOrSubaccount' : {} } |
-    { 'MemoAndController' : ClaimOrRefreshNeuronFromAccount } |
-    { 'Memo' : bigint };
+  { 'MemoAndController' : ClaimOrRefreshNeuronFromAccount } |
+  { 'Memo' : bigint };
 export interface CanisterDetails { 'name' : string, 'canister_id' : Principal }
 export type CanisterId = Principal;
 export type Change = { 'ToRemove' : NodeProvider } |
-    { 'ToAdd' : NodeProvider };
+  { 'ToAdd' : NodeProvider };
 export interface ClaimOrRefresh { 'by' : [] | [By] }
 export interface ClaimOrRefreshNeuronFromAccount {
   'controller' : [] | [Principal],
@@ -52,44 +52,44 @@ export interface ClaimOrRefreshResponse {
   'refreshed_neuron_id' : [] | [NeuronId],
 }
 export type Command = { 'Spawn' : Spawn } |
-    { 'Split' : Split } |
-    { 'Follow' : Follow } |
-    { 'ClaimOrRefresh' : ClaimOrRefresh } |
-    { 'Configure' : Configure } |
-    { 'RegisterVote' : RegisterVote } |
-    { 'Merge' : Merge } |
-    { 'DisburseToNeuron' : DisburseToNeuron } |
-    { 'MakeProposal' : Proposal } |
-    { 'MergeMaturity' : MergeMaturity } |
-    { 'Disburse' : Disburse };
+  { 'Split' : Split } |
+  { 'Follow' : Follow } |
+  { 'ClaimOrRefresh' : ClaimOrRefresh } |
+  { 'Configure' : Configure } |
+  { 'RegisterVote' : RegisterVote } |
+  { 'Merge' : Merge } |
+  { 'DisburseToNeuron' : DisburseToNeuron } |
+  { 'MakeProposal' : Proposal } |
+  { 'MergeMaturity' : MergeMaturity } |
+  { 'Disburse' : Disburse };
 export type Command_1 = { 'Error' : GovernanceError } |
-    { 'Spawn' : SpawnResponse } |
-    { 'Split' : SpawnResponse } |
-    { 'Follow' : {} } |
-    { 'ClaimOrRefresh' : ClaimOrRefreshResponse } |
-    { 'Configure' : {} } |
-    { 'RegisterVote' : {} } |
-    { 'Merge' : {} } |
-    { 'DisburseToNeuron' : SpawnResponse } |
-    { 'MakeProposal' : MakeProposalResponse } |
-    { 'MergeMaturity' : MergeMaturityResponse } |
-    { 'Disburse' : DisburseResponse };
+  { 'Spawn' : SpawnResponse } |
+  { 'Split' : SpawnResponse } |
+  { 'Follow' : {} } |
+  { 'ClaimOrRefresh' : ClaimOrRefreshResponse } |
+  { 'Configure' : {} } |
+  { 'RegisterVote' : {} } |
+  { 'Merge' : {} } |
+  { 'DisburseToNeuron' : SpawnResponse } |
+  { 'MakeProposal' : MakeProposalResponse } |
+  { 'MergeMaturity' : MergeMaturityResponse } |
+  { 'Disburse' : DisburseResponse };
 export type Command_2 = { 'Spawn' : Spawn } |
-    { 'Split' : Split } |
-    { 'Configure' : Configure } |
-    { 'Merge' : Merge } |
-    { 'DisburseToNeuron' : DisburseToNeuron } |
-    { 'ClaimOrRefreshNeuron' : ClaimOrRefresh } |
-    { 'MergeMaturity' : MergeMaturity } |
-    { 'Disburse' : Disburse };
+  { 'Split' : Split } |
+  { 'Configure' : Configure } |
+  { 'Merge' : Merge } |
+  { 'DisburseToNeuron' : DisburseToNeuron } |
+  { 'ClaimOrRefreshNeuron' : ClaimOrRefresh } |
+  { 'MergeMaturity' : MergeMaturity } |
+  { 'Disburse' : Disburse };
 export interface Configure { 'operation' : [] | [Operation] }
 export type CreateSubAccountResponse = { 'Ok' : SubAccountDetails } |
-    { 'AccountNotFound' : null } |
-    { 'NameTooLong' : null } |
-    { 'SubAccountLimitExceeded' : null };
+  { 'AccountNotFound' : null } |
+  { 'NameTooLong' : null } |
+  { 'SubAccountLimitExceeded' : null };
 export interface DetachCanisterRequest { 'canister_id' : Principal }
 export type DetachCanisterResponse = { 'Ok' : null } |
-    { 'CanisterNotFound' : null };
+  { 'CanisterNotFound' : null };
 export interface Disburse {
   'to_account' : [] | [AccountIdentifier],
   'amount' : [] | [Amount],
@@ -103,7 +103,7 @@ export interface DisburseToNeuron {
   'nonce' : bigint,
 }
 export type DissolveState = { 'DissolveDelaySeconds' : bigint } |
-    { 'WhenDissolvedTimestampSeconds' : bigint };
+  { 'WhenDissolvedTimestampSeconds' : bigint };
 export interface ExecuteNnsFunction {
   'nns_function' : number,
   'payload' : Array<number>,
@@ -111,9 +111,9 @@ export interface ExecuteNnsFunction {
 export interface Follow { 'topic' : number, 'followees' : Array<NeuronId> }
 export interface Followees { 'followees' : Array<NeuronId> }
 export type GetAccountResponse = { 'Ok' : AccountDetails } |
-    { 'AccountNotFound' : null };
+  { 'AccountNotFound' : null };
 export type GetProposalResponse = { 'Ok' : ProposalInfo } |
-    { 'Err' : string };
+  { 'Err' : string };
 export interface GetTransactionsRequest {
   'page_size' : number,
   'offset' : number,
@@ -199,6 +199,9 @@ export interface ListNeuronsResponse {
   'neuron_infos' : Array<[bigint, NeuronInfo]>,
   'full_neurons' : Array<Neuron>,
 }
+export interface ListNodeProvidersResponse {
+  'node_providers' : Array<NodeProvider>,
+}
 export interface ListProposalInfo {
   'include_reward_status' : Array<number>,
   'before_proposal' : [] | [NeuronId],
@@ -229,14 +232,14 @@ export interface MultiPartTransactionError {
   'block_height' : BlockHeight,
 }
 export type MultiPartTransactionStatus = { 'Queued' : null } |
-    { 'Error' : string } |
-    { 'Refunded' : [BlockHeight, string] } |
-    { 'CanisterCreated' : CanisterId } |
-    { 'Complete' : null } |
-    { 'NotFound' : null } |
-    { 'NeuronCreated' : bigint } |
-    { 'PendingSync' : null } |
-    { 'ErrorWithRefundPending' : string };
+  { 'Error' : string } |
+  { 'Refunded' : [BlockHeight, string] } |
+  { 'CanisterCreated' : CanisterId } |
+  { 'Complete' : null } |
+  { 'NotFound' : null } |
+  { 'NeuronCreated' : bigint } |
+  { 'PendingSync' : null } |
+  { 'ErrorWithRefundPending' : string };
 export interface NetworkEconomics {
   'neuron_minimum_stake_e8s' : bigint,
   'max_proposals_to_keep_per_topic' : number,
@@ -268,7 +271,7 @@ export interface Neuron {
 }
 export interface NeuronId { 'id' : bigint }
 export type NeuronIdOrSubaccount = { 'Subaccount' : Array<number> } |
-    { 'NeuronId' : NeuronId };
+  { 'NeuronId' : NeuronId };
 export interface NeuronInFlightCommand {
   'command' : [] | [Command_2],
   'timestamp' : bigint,
@@ -299,12 +302,12 @@ export interface NodeProvider {
   'reward_account' : [] | [AccountIdentifier],
 }
 export type Operation = { 'RemoveHotKey' : RemoveHotKey } |
-    { 'AddHotKey' : AddHotKey } |
-    { 'StopDissolving' : {} } |
-    { 'StartDissolving' : {} } |
-    { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
-    { 'JoinCommunityFund' : {} } |
-    { 'SetDissolveTimestamp' : SetDissolveTimestamp };
+  { 'AddHotKey' : AddHotKey } |
+  { 'StopDissolving' : {} } |
+  { 'StartDissolving' : {} } |
+  { 'IncreaseDissolveDelay' : IncreaseDissolveDelay } |
+  { 'JoinCommunityFund' : {} } |
+  { 'SetDissolveTimestamp' : SetDissolveTimestamp };
 export interface Proposal {
   'url' : string,
   'title' : [] | [string],
@@ -354,10 +357,10 @@ export interface RegisterHardwareWalletRequest {
   'name' : string,
 }
 export type RegisterHardwareWalletResponse = { 'Ok' : null } |
-    { 'AccountNotFound' : null } |
-    { 'HardwareWalletAlreadyRegistered' : null } |
-    { 'HardwareWalletLimitExceeded' : null } |
-    { 'NameTooLong' : null };
+  { 'AccountNotFound' : null } |
+  { 'HardwareWalletAlreadyRegistered' : null } |
+  { 'HardwareWalletLimitExceeded' : null } |
+  { 'NameTooLong' : null };
 export interface RegisterVote { 'vote' : number, 'proposal' : [] | [NeuronId] }
 export interface RemoveHotKey { 'hot_key_to_remove' : [] | [Principal] }
 export interface RenameSubAccountRequest {
@@ -365,19 +368,21 @@ export interface RenameSubAccountRequest {
   'account_identifier' : AccountIdentifierText,
 }
 export type RenameSubAccountResponse = { 'Ok' : null } |
-    { 'AccountNotFound' : null } |
-    { 'SubAccountNotFound' : null } |
-    { 'NameTooLong' : null };
+  { 'AccountNotFound' : null } |
+  { 'SubAccountNotFound' : null } |
+  { 'NameTooLong' : null };
 export type Result = { 'Ok' : null } |
-    { 'Err' : GovernanceError };
+  { 'Err' : GovernanceError };
 export type Result_1 = { 'Error' : GovernanceError } |
-    { 'NeuronId' : NeuronId };
+  { 'NeuronId' : NeuronId };
 export type Result_2 = { 'Ok' : Neuron } |
-    { 'Err' : GovernanceError };
+  { 'Err' : GovernanceError };
 export type Result_3 = { 'Ok' : RewardNodeProviders } |
-    { 'Err' : GovernanceError };
+  { 'Err' : GovernanceError };
 export type Result_4 = { 'Ok' : NeuronInfo } |
-    { 'Err' : GovernanceError };
+  { 'Err' : GovernanceError };
+export type Result_5 = { 'Ok' : NodeProvider } |
+  { 'Err' : GovernanceError };
 export interface RewardEvent {
   'day_after_genesis' : bigint,
   'actual_timestamp_seconds' : bigint,
@@ -385,13 +390,16 @@ export interface RewardEvent {
   'settled_proposals' : Array<NeuronId>,
 }
 export type RewardMode = { 'RewardToNeuron' : RewardToNeuron } |
-    { 'RewardToAccount' : RewardToAccount };
+  { 'RewardToAccount' : RewardToAccount };
 export interface RewardNodeProvider {
   'node_provider' : [] | [NodeProvider],
   'reward_mode' : [] | [RewardMode],
   'amount_e8s' : bigint,
 }
-export interface RewardNodeProviders { 'rewards' : Array<RewardNodeProvider> }
+export interface RewardNodeProviders {
+  'use_registry_derived_rewards' : [] | [boolean],
+  'rewards' : Array<RewardNodeProvider>,
+}
 export interface RewardToAccount { 'to_account' : [] | [AccountIdentifier] }
 export interface RewardToNeuron { 'dissolve_delay_seconds' : bigint }
 export interface Send {
@@ -404,6 +412,7 @@ export interface SetDefaultFollowees {
 }
 export interface SetDissolveTimestamp { 'dissolve_timestamp_seconds' : bigint }
 export interface Spawn {
+  'percentage_to_spawn' : [] | [number],
   'new_controller' : [] | [Principal],
   'nonce' : [] | [bigint],
 }
@@ -446,16 +455,16 @@ export interface Transaction {
 }
 export type TransactionType = { 'Burn' : null } |
   { 'Mint' : null } |
-  { 'Transfer' : null } |
   { 'StakeNeuronNotification' : null } |
   { 'TopUpCanister' : CanisterId } |
   { 'CreateCanister' : null } |
+  { 'Transfer' : null } |
   { 'TopUpNeuron' : null } |
   { 'StakeNeuron' : null };
 export type Transfer = { 'Burn' : { 'amount' : ICPTs } } |
-    { 'Mint' : { 'amount' : ICPTs } } |
-    { 'Send' : Send } |
-    { 'Receive' : Receive };
+  { 'Mint' : { 'amount' : ICPTs } } |
+  { 'Send' : Send } |
+  { 'Receive' : Receive };
 export interface UpdateNodeProvider {
   'reward_account' : [] | [AccountIdentifier],
 }
@@ -467,30 +476,30 @@ export interface _SERVICE {
   'add_stable_asset' : (arg_0: Array<number>) => Promise<undefined>,
   'attach_canister' : (arg_0: AttachCanisterRequest) => Promise<
       AttachCanisterResponse
-      >,
+    >,
   'create_sub_account' : (arg_0: string) => Promise<CreateSubAccountResponse>,
   'detach_canister' : (arg_0: DetachCanisterRequest) => Promise<
       DetachCanisterResponse
-      >,
+    >,
   'get_account' : () => Promise<GetAccountResponse>,
   'get_canisters' : () => Promise<Array<CanisterDetails>>,
   'get_multi_part_transaction_errors' : () => Promise<
       Array<MultiPartTransactionError>
-      >,
+    >,
   'get_multi_part_transaction_status' : (
       arg_0: Principal,
       arg_1: BlockHeight,
-  ) => Promise<MultiPartTransactionStatus>,
+    ) => Promise<MultiPartTransactionStatus>,
   'get_proposal' : (arg_0: bigint) => Promise<GetProposalResponse>,
   'get_stats' : () => Promise<Stats>,
   'get_transactions' : (arg_0: GetTransactionsRequest) => Promise<
       GetTransactionsResponse
-      >,
+    >,
   'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
   'register_hardware_wallet' : (
       arg_0: RegisterHardwareWalletRequest,
-  ) => Promise<RegisterHardwareWalletResponse>,
+    ) => Promise<RegisterHardwareWalletResponse>,
   'rename_sub_account' : (arg_0: RenameSubAccountRequest) => Promise<
       RenameSubAccountResponse
-      >,
+    >,
 }

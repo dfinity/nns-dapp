@@ -404,6 +404,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_monthly_node_provider_rewards' : IDL.Func([], [Result_3], []),
+    'get_network_economics_parameters' : IDL.Func(
+        [],
+        [NetworkEconomics],
+        ['query'],
+      ),
     'get_neuron_ids' : IDL.Func([], [IDL.Vec(IDL.Nat64)], ['query']),
     'get_neuron_info' : IDL.Func([IDL.Nat64], [Result_4], ['query']),
     'get_neuron_info_by_id_or_subaccount' : IDL.Func(
@@ -432,11 +437,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'manage_neuron' : IDL.Func([ManageNeuron], [ManageNeuronResponse], []),
     'transfer_gtc_neuron' : IDL.Func([NeuronId, NeuronId], [Result], []),
-    'update_node_provider' : IDL.Func(
-        [UpdateNodeProvider],
-        [Result],
-        [],
-    ),
+    'update_node_provider' : IDL.Func([UpdateNodeProvider], [Result], []),
   });
 };
 export const init = ({ IDL }) => {

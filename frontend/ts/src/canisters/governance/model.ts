@@ -339,7 +339,9 @@ export interface RemoveHotKey {
 export type RewardMode =
   | { RewardToNeuron: RewardToNeuron }
   | { RewardToAccount: RewardToAccount };
-export type RewardNodeProviders = { rewards: Array<RewardNodeProvider> };
+export type RewardNodeProviders = {
+  useRegistryDerivedRewards: Option<boolean>,
+  rewards: Array<RewardNodeProvider> };
 export interface RewardToAccount {
   toAccount: Option<AccountIdentifier>;
 }

@@ -369,6 +369,7 @@ type ListNeuronsResponse = record {
   neuron_infos : vec record { nat64; NeuronInfo };
   full_neurons : vec Neuron;
 };
+type ListNodeProvidersResponse = record { node_providers : vec NodeProvider };
 type ListProposalInfo = record {
   include_reward_status : vec int32;
   before_proposal : opt NeuronId;
@@ -509,6 +510,7 @@ type Result_1 = variant { Error : GovernanceError; NeuronId : NeuronId };
 type Result_2 = variant { Ok : Neuron; Err : GovernanceError };
 type Result_3 = variant { Ok : RewardNodeProviders; Err : GovernanceError };
 type Result_4 = variant { Ok : NeuronInfo; Err : GovernanceError };
+type Result_5 = variant { Ok : NodeProvider; Err : GovernanceError };
 type RewardEvent = record {
   day_after_genesis : nat64;
   actual_timestamp_seconds : nat64;
@@ -524,14 +526,21 @@ type RewardNodeProvider = record {
   reward_mode : opt RewardMode;
   amount_e8s : nat64;
 };
-type RewardNodeProviders = record { rewards : vec RewardNodeProvider };
+type RewardNodeProviders = record {
+  use_registry_derived_rewards : opt bool;
+  rewards : vec RewardNodeProvider;
+};
 type RewardToAccount = record { to_account : opt AccountIdentifier };
 type RewardToNeuron = record { dissolve_delay_seconds : nat64 };
 type SetDefaultFollowees = record {
   default_followees : vec record { int32; Followees };
 };
 type SetDissolveTimestamp = record { dissolve_timestamp_seconds : nat64 };
-type Spawn = record { new_controller : opt principal; nonce : opt nat64 };
+type Spawn = record {
+  percentage_to_spawn : opt nat32;
+  new_controller : opt principal;
+  nonce : opt nat64;
+};
 type SpawnResponse = record { created_neuron_id : opt NeuronId };
 type Split = record { amount_e8s : nat64 };
 type Tally = record {

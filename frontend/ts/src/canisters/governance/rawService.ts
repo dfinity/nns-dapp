@@ -142,6 +142,9 @@ export interface ListNeuronsResponse {
   'neuron_infos' : Array<[bigint, NeuronInfo]>,
   'full_neurons' : Array<Neuron>,
 }
+export interface ListNodeProvidersResponse {
+  'node_providers' : Array<NodeProvider>,
+}
 export interface ListProposalInfo {
   'include_reward_status' : Array<number>,
   'before_proposal' : [] | [NeuronId],
@@ -285,6 +288,8 @@ export type Result_3 = { 'Ok' : RewardNodeProviders } |
   { 'Err' : GovernanceError };
 export type Result_4 = { 'Ok' : NeuronInfo } |
   { 'Err' : GovernanceError };
+export type Result_5 = { 'Ok' : NodeProvider } |
+  { 'Err' : GovernanceError };
 export interface RewardEvent {
   'day_after_genesis' : bigint,
   'actual_timestamp_seconds' : bigint,
@@ -298,7 +303,10 @@ export interface RewardNodeProvider {
   'reward_mode' : [] | [RewardMode],
   'amount_e8s' : bigint,
 }
-export interface RewardNodeProviders { 'rewards' : Array<RewardNodeProvider> }
+export interface RewardNodeProviders {
+  'use_registry_derived_rewards' : [] | [boolean],
+  'rewards' : Array<RewardNodeProvider>,
+}
 export interface RewardToAccount { 'to_account' : [] | [AccountIdentifier] }
 export interface RewardToNeuron { 'dissolve_delay_seconds' : bigint }
 export interface SetDefaultFollowees {
@@ -331,20 +339,24 @@ export interface _SERVICE {
   'claim_or_refresh_neuron_from_account' : (
       arg_0: ClaimOrRefreshNeuronFromAccount,
     ) => Promise<ClaimOrRefreshNeuronFromAccountResponse>,
+  'get_build_metadata' : () => Promise<string>,
   'get_full_neuron' : (arg_0: bigint) => Promise<Result_2>,
   'get_full_neuron_by_id_or_subaccount' : (
       arg_0: NeuronIdOrSubaccount,
     ) => Promise<Result_2>,
   'get_monthly_node_provider_rewards' : () => Promise<Result_3>,
+  'get_network_economics_parameters' : () => Promise<NetworkEconomics>,
   'get_neuron_ids' : () => Promise<Array<bigint>>,
   'get_neuron_info' : (arg_0: bigint) => Promise<Result_4>,
   'get_neuron_info_by_id_or_subaccount' : (
       arg_0: NeuronIdOrSubaccount,
     ) => Promise<Result_4>,
+  'get_node_provider_by_caller' : (arg_0: null) => Promise<Result_5>,
   'get_pending_proposals' : () => Promise<Array<ProposalInfo>>,
   'get_proposal_info' : (arg_0: bigint) => Promise<[] | [ProposalInfo]>,
   'list_known_neurons' : () => Promise<ListKnownNeuronsResponse>,
   'list_neurons' : (arg_0: ListNeurons) => Promise<ListNeuronsResponse>,
+  'list_node_providers' : () => Promise<ListNodeProvidersResponse>,
   'list_proposals' : (arg_0: ListProposalInfo) => Promise<
       ListProposalInfoResponse
     >,
