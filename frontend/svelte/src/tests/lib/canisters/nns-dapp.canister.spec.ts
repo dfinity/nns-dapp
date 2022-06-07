@@ -190,7 +190,9 @@ describe("NNSDapp", () => {
         {
           AccountNotFound: null,
         },
-        new AccountNotFoundError("Error registering hardware wallet")
+        new AccountNotFoundError(
+          "error__attach_wallet.register_hardware_wallet"
+        )
       ));
 
     it("should throw register hardware wallet error name too long", async () =>
@@ -198,7 +200,10 @@ describe("NNSDapp", () => {
         {
           NameTooLong: null,
         },
-        new NameTooLongError(`Error, name "test" is too long`)
+        new NameTooLongError(
+          "error__attach_wallet.create_hardware_wallet_too_long",
+          { $accountName: "test" }
+        )
       ));
 
     it("should throw register hardware wallet error already registered", async () =>
