@@ -55,7 +55,7 @@ describe("AddHotkeyModal", () => {
         target: { value: "not a principal" },
       }));
 
-    const buttonElement = queryByTestId("add-hotkey-neuron-button");
+    const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
     expect(buttonElement?.hasAttribute("disabled")).toBe(true);
   });
@@ -72,7 +72,7 @@ describe("AddHotkeyModal", () => {
         target: { value: principalString },
       }));
 
-    const buttonElement = queryByTestId("add-hotkey-neuron-button");
+    const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
 
     buttonElement && (await fireEvent.click(buttonElement));
@@ -92,7 +92,7 @@ describe("AddHotkeyModal", () => {
         target: { value: principalString },
       }));
 
-    const buttonElement = queryByTestId("add-hotkey-neuron-button");
+    const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
 
     const onClose = jest.fn();

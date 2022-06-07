@@ -4,7 +4,11 @@
    */
   import { toastsStore } from "../../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
-  import { replacePlaceholders, translate } from "../../utils/i18n.utils";
+  import {
+    type I18nSubstitutions,
+    replacePlaceholders,
+    translate,
+  } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
   import { onDestroy, onMount } from "svelte";
@@ -17,13 +21,13 @@
   let labelKey: string;
   let level: ToastLevel;
   let detail: string | undefined;
-  let substitutions: { [from: string]: string } | undefined;
+  let substitutions: I18nSubstitutions | undefined;
 
   $: ({ labelKey, level, detail, substitutions } = msg);
-  $: text = replacePlaceholders(
-    `${translate({ labelKey })}${detail !== undefined ? ` ${detail}` : ""}`,
+  $: text = `${replacePlaceholders(
+    translate({ labelKey }),
     substitutions ?? {}
-  );
+  )}${detail !== undefined ? ` ${detail}` : ""}`;
 
   let timeoutId: NodeJS.Timeout | undefined = undefined;
 
