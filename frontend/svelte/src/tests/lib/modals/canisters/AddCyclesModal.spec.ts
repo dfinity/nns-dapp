@@ -41,8 +41,8 @@ describe("AddCyclesModal", () => {
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
 
-  const refetchDetails = jest.fn();
-  const props = { refetchDetails };
+  const reloadDetails = jest.fn();
+  const props = { reloadDetails };
   afterEach(() => jest.clearAllMocks());
   it("should display modal", () => {
     const { container } = render(AddCyclesModalTest, { props });
@@ -97,7 +97,7 @@ describe("AddCyclesModal", () => {
 
     await waitFor(() => expect(done).toBeCalled());
     expect(topUpCanister).toBeCalled();
-    expect(refetchDetails).toBeCalled();
+    expect(reloadDetails).toBeCalled();
     expect(toastsStore.success).toBeCalled();
   });
 

@@ -1,19 +1,16 @@
-import type { Principal } from "@dfinity/principal";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
 import { ONE_TRILLION } from "../constants/icp.constants";
 import type { CanistersStore } from "../stores/canisters.store";
 import { formatNumber } from "./format.utils";
 
-export const getCanisterInfoById = ({
+export const getCanisterFromStore = ({
   canisterId,
-  canistersStore,
+  canistersStore: { canisters },
 }: {
-  canisterId: Principal;
+  canisterId: string | undefined;
   canistersStore: CanistersStore;
-}): CanisterInfo | undefined =>
-  canistersStore.canisters?.find(
-    ({ canister_id }) => canister_id.toText() === canisterId.toText()
-  );
+}): CanisterDetails | undefined =>
+  canisters?.find(({ canister_id }) => canister_id.toText() === canisterId);
 
 export const formatCyclesToTCycles = (cycles: bigint): string =>
   formatNumber(Number(cycles) / Number(ONE_TRILLION), {

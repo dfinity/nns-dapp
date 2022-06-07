@@ -16,7 +16,6 @@ import type {
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
-import { getPrincipalFromString } from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
@@ -147,11 +146,11 @@ export const detachCanister = async (
   }
 };
 
-export const routePathCanisterId = (path: string): Principal | undefined => {
-  const maybeIdString = getLastPathDetail(path);
-  return maybeIdString !== undefined
-    ? getPrincipalFromString(maybeIdString)
-    : undefined;
+export const routePathCanisterId = (
+  path: string | undefined
+): string | undefined => {
+  const canisterId: string | undefined = getLastPathDetail(path);
+  return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };
 
 export const getCanisterDetails = async (
