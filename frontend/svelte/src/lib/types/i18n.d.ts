@@ -79,6 +79,7 @@ interface I18nError {
   input_length: string;
   not_canister_controller: string;
   canister_details_not_found: string;
+  controller_already_present: string;
   hardware_wallet_no_account: string;
 }
 

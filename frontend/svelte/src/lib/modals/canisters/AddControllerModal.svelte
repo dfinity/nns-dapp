@@ -6,8 +6,6 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
 
-  export let canisterId: Principal;
-
   const steps: Steps = [
     {
       name: "EnterController",
@@ -42,7 +40,7 @@
       </AddPrincipal>
     {/if}
     {#if currentStep?.name === "ConfirmController" && principal !== undefined}
-      <NewControllerReview {canisterId} controller={principal} />
+      <NewControllerReview controller={principal} on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>

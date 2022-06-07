@@ -4,6 +4,7 @@ import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
+  addController,
   attachCanister,
   createCanister,
   detachCanister,
@@ -12,6 +13,7 @@ import {
   listCanisters,
   routePathCanisterId,
   topUpCanister,
+  updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
@@ -23,6 +25,7 @@ import {
   mockCanister,
   mockCanisterDetails,
   mockCanisters,
+  mockCanisterSettings,
 } from "../../mocks/canisters.mock";
 
 jest.mock("../../../lib/services/accounts.services", () => {
@@ -42,6 +45,10 @@ describe("canisters-services", () => {
 
   const spyDetachCanister = jest
     .spyOn(api, "detachCanister")
+    .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyUpdateSettings = jest
+    .spyOn(api, "updateSettings")
     .mockImplementation(() => Promise.resolve(undefined));
 
   const spyCreateCanister = jest
@@ -130,10 +137,10 @@ describe("canisters-services", () => {
       expect(store.canisters).toEqual(mockCanisters);
     });
 
-    it("should not attach canister if no identity", async () => {
+    it("should not detach canister if no identity", async () => {
       setNoIdentity();
 
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await detachCanister(mockCanisterDetails.id);
       expect(response.success).toBe(false);
       expect(spyDetachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
@@ -142,7 +149,81 @@ describe("canisters-services", () => {
     });
   });
 
-  describe("route-path", () => {
+  describe("updateSettings", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update settings", async () => {
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("addController", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update the settings", async () => {
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if controller is already present", async () => {
+      const controller = "some-controller";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
+
+      const response = await addController({
+        controller,
+        canisterDetails: canisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("routePathCanisterId", () => {
     beforeAll(() => {
       // Avoid to print errors during test
       jest.spyOn(console, "error").mockImplementation(() => undefined);

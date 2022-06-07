@@ -7,8 +7,12 @@ import {
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   topUpCanister as topUpCanisterApi,
+  updateSettings as updateSettingsApi,
 } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
+import type {
+  CanisterDetails,
+  CanisterSettings,
+} from "../canisters/ic-management/ic-management.canister.types";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
@@ -103,6 +107,55 @@ export const topUpCanister = async ({
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    return { success: false };
+  }
+};
+
+export const addController = async ({
+  controller,
+  canisterDetails,
+}: {
+  controller: string;
+  canisterDetails: CanisterDetails;
+}): Promise<{ success: boolean }> => {
+  if (canisterDetails.settings.controllers.includes(controller)) {
+    toastsStore.error({
+      labelKey: "error.controller_already_present",
+      substitutions: {
+        $principal: controller,
+      },
+    });
+    return { success: false };
+  }
+  const newControllers = [...canisterDetails.settings.controllers, controller];
+  const newSettings = {
+    ...canisterDetails.settings,
+    controllers: newControllers,
+  };
+  return updateSettings({
+    canisterId: canisterDetails.id,
+    settings: newSettings,
+  });
+};
+
+// Export for testing purposes, better expose specific functions to be used in controllers.
+export const updateSettings = async ({
+  settings,
+  canisterId,
+}: {
+  settings: Partial<CanisterSettings>;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getIdentity();
+    await updateSettingsApi({
+      identity,
+      canisterId,
+      settings,
+    });
     return { success: true };
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
