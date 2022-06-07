@@ -35,6 +35,8 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
+  import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
+  import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -150,9 +152,6 @@
 
   let showAddCyclesModal: boolean = false;
   const closeAddCyclesModal = async () => (showAddCyclesModal = false);
-
-  let canisterIdString: string = "";
-  $: canisterIdString = canisterInfo?.canister_id.toText() ?? "";
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -163,12 +162,9 @@
 
     <section>
       {#if canisterInfo !== undefined}
-        <h1>{canisterIdString}</h1>
-        <p>
-          {replacePlaceholders($i18n.canister_detail.id, {
-            $canisterId: canisterIdString,
-          })}
-        </p>
+        <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+        <CanisterCardSubTitle canister={canisterInfo} />
+
         <div class="actions">
           <DetachCanisterButton canisterId={canisterInfo.canister_id} />
         </div>
