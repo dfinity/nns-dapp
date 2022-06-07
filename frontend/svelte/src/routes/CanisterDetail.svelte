@@ -36,6 +36,9 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
 
+  // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
+  // Therefore we can probably refactor this to generic function.
+
   const canistersStoreReady = (): boolean => {
     // We consider the canisters store as ready if it has been initialized once.
     if (canistersReady) {
