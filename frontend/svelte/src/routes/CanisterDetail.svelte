@@ -96,15 +96,13 @@
 
   const reloadDetails = async (canisterId: Principal) => {
     try {
-      if (canisterId !== undefined) {
-        loadingDetails = true;
-        const newDetails = await getCanisterDetails(canisterId);
-        selectedCanisterStore.update((data) => ({
-          ...data,
-          controller: true,
-          details: newDetails,
-        }));
-      }
+      loadingDetails = true;
+      const newDetails = await getCanisterDetails(canisterId);
+      selectedCanisterStore.update((data) => ({
+        ...data,
+        controller: true,
+        details: newDetails,
+      }));
     } catch (error) {
       selectedCanisterStore.update((data) => ({
         ...data,
@@ -112,8 +110,9 @@
         controller:
           error instanceof UserNotTheControllerError ? false : undefined,
       }));
+    } finally {
+      loadingDetails = false;
     }
-    loadingDetails = false;
   };
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
