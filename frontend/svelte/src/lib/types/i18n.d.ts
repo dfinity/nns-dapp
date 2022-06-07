@@ -64,7 +64,7 @@ interface I18nError {
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   split_neuron: string;
-  not_authorized: string;
+  not_authorized_neuron_action: string;
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
