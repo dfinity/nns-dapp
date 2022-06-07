@@ -16,7 +16,8 @@
     "max": "Max",
     "principal": "Principal",
     "toggle": "toggle",
-    "save_log_file": "Save the app state to the file"
+    "save_log_file": "Save the app state to the file",
+    "principal_id": "Principal ID"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -282,6 +283,9 @@
     "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
     "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stoerd securely.",
     "detach_success": "Canister detached successfully",
+    "confirm_new_controller": "Confirm New Controller",
+    "enter_controller": "Enter Controller",
+    "new_controller": "New Controller",
     "add_controller": "Add Controller"
   },
   "topics": {
@@ -424,8 +428,7 @@
     "current_maturity": "Current Maturity",
     "dissolve_delay_range": "Dissolve Delay Range",
     "maturity_range": "Select Maturity Range",
-    "maturity_percentage": "Percentage of maturity",
-    "add_hotkey_placeholder": "Principal ID"
+    "maturity_percentage": "Percentage of maturity"
   },
   "time": {
     "year": "year",
