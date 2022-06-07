@@ -1,19 +1,19 @@
 import { Principal } from "@dfinity/principal";
 import {
   formatCyclesToTCycles,
-  getCanisterInfoById,
+  getCanisterFromStore,
 } from "../../../lib/utils/canisters.utils";
 import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("canister-utils", () => {
-  describe("getCanisterInfoById", () => {
+  describe("getCanisterFromStore", () => {
     it("should return the canister info if present", () => {
       const store = {
         canisters: mockCanisters,
         certified: true,
       };
-      const canister = getCanisterInfoById({
-        canisterId: mockCanisters[0].canister_id,
+      const canister = getCanisterFromStore({
+        canisterId: mockCanisters[0].canister_id.toText(),
         canistersStore: store,
       });
       expect(canister).toBe(mockCanisters[0]);
@@ -24,19 +24,32 @@ describe("canister-utils", () => {
         canisters: mockCanisters,
         certified: true,
       };
-      const canister = getCanisterInfoById({
-        canisterId: Principal.fromText("aaaaa-aa"),
+      const canister = getCanisterFromStore({
+        canisterId: Principal.fromText("aaaaa-aa").toText(),
         canistersStore: store,
       });
       expect(canister).toBeUndefined();
     });
-    it("should return undefiend if no canisters in the store", () => {
+
+    it("should return undefined if no canisters in the store", () => {
       const store = {
         canisters: undefined,
         certified: true,
       };
-      const canister = getCanisterInfoById({
-        canisterId: mockCanisters[0].canister_id,
+      const canister = getCanisterFromStore({
+        canisterId: mockCanisters[0].canister_id.toText(),
+        canistersStore: store,
+      });
+      expect(canister).toBeUndefined();
+    });
+
+    it("should return undefined if no id", () => {
+      const store = {
+        canisters: mockCanisters,
+        certified: true,
+      };
+      const canister = getCanisterFromStore({
+        canisterId: undefined,
         canistersStore: store,
       });
       expect(canister).toBeUndefined();

@@ -105,7 +105,7 @@
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            account_identifier: routeAccountIdentifier ?? "",
+            $account_identifier: routeAccountIdentifier ?? "",
           }),
         });
         goBack();

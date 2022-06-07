@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
@@ -19,7 +18,11 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
+import {
+  mockCanister,
+  mockCanisterDetails,
+  mockCanisters,
+} from "../../mocks/canisters.mock";
 
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
@@ -138,23 +141,22 @@ describe("canisters-services", () => {
     });
   });
 
-  describe("routePathCanisterId", () => {
-    it("should return principal if valid in the url", () => {
-      const path = "/#/canister/tqtu6-byaaa-aaaaa-aaana-cai";
+  describe("route-path", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
 
-      expect(routePathCanisterId(path)).toBeInstanceOf(Principal);
+    it("should get canister id from valid path", () => {
+      expect(
+        routePathCanisterId(`/#/canister/${mockCanister.canister_id.toText()}`)
+      ).toEqual(mockCanister.canister_id.toText());
     });
 
-    it("should return undefined if not valid in the url", () => {
-      const path = "/#/canister/not-valid-principal";
-
-      expect(routePathCanisterId(path)).toBeUndefined();
-    });
-
-    it("should return undefined if no last detail in the path", () => {
-      const path = "/#/canister";
-
-      expect(routePathCanisterId(path)).toBeUndefined();
+    it("should not get canister id from invalid path", () => {
+      expect(routePathCanisterId("/#/canister/")).toBeUndefined();
+      expect(routePathCanisterId(undefined)).toBeUndefined();
     });
   });
 

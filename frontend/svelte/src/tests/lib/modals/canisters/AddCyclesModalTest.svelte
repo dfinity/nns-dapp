@@ -7,11 +7,11 @@
   } from "../../../../lib/types/canister-detail.context";
   import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
 
-  export let refetchDetails: () => Promise<void>;
+  export let reloadDetails: (canisterId) => Promise<void>;
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: mockCanisterDetailsStore,
-    refetchDetails,
+    reloadDetails,
   });
 </script>
 
