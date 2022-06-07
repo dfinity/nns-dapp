@@ -3,6 +3,7 @@ type BlockHeight = nat64;
 type CanisterId = principal;
 type ICPTs = record { e8s: nat64; };
 type Memo = nat64;
+type NeuronId = nat64;
 type SubAccount = vec nat8;
 
 type AccountDetails =
@@ -171,7 +172,7 @@ type GetProposalPayloadResponse =
 
 type MultiPartTransactionStatus =
     variant {
-        NeuronCreated: nat64;
+        NeuronCreated: NeuronId;
         CanisterCreated: CanisterId;
         Complete;
         Refunded: record { BlockHeight; text; };
