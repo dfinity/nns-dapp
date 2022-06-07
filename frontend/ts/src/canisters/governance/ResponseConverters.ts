@@ -464,7 +464,8 @@ export default class ResponseConverters {
       const rewardNodeProviders = action.RewardNodeProviders;
       return {
         RewardNodeProviders: {
-          useRegistryDerivedRewards: rewardNodeProviders.use_registry_derived_rewards[0] ?? null,
+          useRegistryDerivedRewards:
+            rewardNodeProviders.use_registry_derived_rewards[0] ?? null,
           rewards: rewardNodeProviders.rewards.map((r) => ({
             nodeProvider: r.node_provider.length
               ? this.toNodeProvider(r.node_provider[0])

@@ -465,9 +465,10 @@ export default class RequestConverters {
       const rewardNodeProviders = action.RewardNodeProviders;
       return {
         RewardNodeProviders: {
-          use_registry_derived_rewards: rewardNodeProviders.useRegistryDerivedRewards != null
-            ? [rewardNodeProviders.useRegistryDerivedRewards]
-            : [],
+          use_registry_derived_rewards:
+            rewardNodeProviders.useRegistryDerivedRewards != null
+              ? [rewardNodeProviders.useRegistryDerivedRewards]
+              : [],
           rewards: rewardNodeProviders.rewards.map((r) => ({
             node_provider: r.nodeProvider
               ? [this.fromNodeProvider(r.nodeProvider)]
