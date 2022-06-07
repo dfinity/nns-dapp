@@ -9,7 +9,7 @@ import type { CanistersStore } from "../../lib/stores/canisters.store";
 import type { SelectCanisterDetailsStore } from "../../lib/types/canister-detail.context";
 import { mockIdentity } from "./auth.store.mock";
 
-const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
+export const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
 export const mockCanister = {
   name: "",
   canister_id: mockCanisterId,
