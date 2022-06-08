@@ -76,6 +76,8 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  not_canister_controller: string;
+  canister_details_not_found: string;
   hardware_wallet_no_account: string;
 }
 
