@@ -20,7 +20,7 @@ describe("Identifier", () => {
     expect(button).toBeNull();
   });
 
-  it("should render an accessible button", () => {
+  it("should render a copy button", () => {
     const { queryByRole } = render(Identifier, {
       props: { identifier, showCopy: true },
     });
@@ -29,25 +29,6 @@ describe("Identifier", () => {
 
     expect(button?.getAttribute("aria-label")).toEqual(
       `Copy "${identifier}" to clipboard`
-    );
-  });
-
-  it("should copy identifier to clipboard", () => {
-    const { getByRole } = render(Identifier, {
-      props: { identifier, showCopy: true },
-    });
-
-    Object.assign(window.navigator, {
-      clipboard: {
-        writeText: jest.fn().mockImplementation(() => Promise.resolve()),
-      },
-    });
-
-    const button = getByRole("button");
-    fireEvent.click(button);
-
-    expect(window.navigator.clipboard.writeText).toHaveBeenCalledWith(
-      identifier
     );
   });
 });
