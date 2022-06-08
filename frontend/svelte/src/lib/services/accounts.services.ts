@@ -20,7 +20,10 @@ import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { TransactionStore } from "../types/transaction.context";
-import { getAccountByPrincipal } from "../utils/accounts.utils";
+import {
+  getAccountByPrincipal,
+  getAccountFromStore,
+} from "../utils/accounts.utils";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
@@ -139,33 +142,6 @@ export const routePathAccountIdentifier = (
     : undefined;
 };
 
-export const getAccountFromStore = (
-  identifier: string | undefined
-): Account | undefined => {
-  if (identifier === undefined) {
-    return undefined;
-  }
-
-  const { main, subAccounts, hardwareWallets }: AccountsStore =
-    get(accountsStore);
-
-  if (main?.identifier === identifier) {
-    return main;
-  }
-
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
-
-  if (subAccount !== undefined) {
-    return subAccount;
-  }
-
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
-};
-
 export const getAccountTransactions = async ({
   accountIdentifier,
   onLoad,
@@ -208,7 +184,10 @@ export const getAccountTransactions = async ({
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
-  const account: Account | undefined = getAccountFromStore(identifier);
+  const account: Account | undefined = getAccountFromStore({
+    identifier,
+    accountsStore: get(accountsStore),
+  });
 
   if (account?.type === "hardwareWallet") {
     return getLedgerIdentityProxy(identifier);

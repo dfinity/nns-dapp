@@ -73,6 +73,8 @@
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal.",
     "input_length": "Input must be longer than $length characters.",
+    "not_canister_controller": "You are not the controller of this canister and cannot access its details.",
+    "canister_details_not_found": "Sorry, there was an error loading the details of the canister. Please try again later.",
     "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {

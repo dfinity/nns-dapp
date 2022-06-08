@@ -46,4 +46,5 @@ export const mockCanistersStoreSubscribe = (
 export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
   info: mockCanister,
   details: mockCanisterDetails,
+  controller: true,
 });
