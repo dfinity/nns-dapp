@@ -1,12 +1,13 @@
 use crate::proposals::def::{
-    AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload, AddNodesToSubnetPayload,
-    AddOrRemoveDataCentersProposalPayload, BlessReplicaVersionPayload, ChangeNnsCanisterProposal,
-    ChangeNnsCanisterProposalTrimmed, CreateSubnetPayload, RecoverSubnetPayload, RemoveNodeOperatorsPayload,
-    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
-    RerouteCanisterRangePayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
-    UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload,
-    UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
+    AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
+    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, BlessReplicaVersionPayload,
+    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, CreateSubnetPayload, RecoverSubnetPayload,
+    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable,
+    RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangePayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload,
+    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
+    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -69,6 +70,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         transform::<Out, Out>(payload_bytes)
     }
 
+    // See full list here - https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/governance/gen/ic_nns_governance.pb.v1.rs#L1690
     match nns_function {
         1 => identity::<CreateSubnetPayload>(payload_bytes),
         2 => identity::<AddNodesToSubnetPayload>(payload_bytes),
@@ -94,6 +96,9 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         22 => identity::<UpdateUnassignedNodesConfigPayload>(payload_bytes),
         23 => transform::<RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable>(payload_bytes),
         24 => identity::<RerouteCanisterRangePayload>(payload_bytes),
+        25 => identity::<AddFirewallRulesPayload>(payload_bytes),
+        26 => identity::<RemoveFirewallRulesPayload>(payload_bytes),
+        27 => identity::<UpdateFirewallRulesPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -322,6 +327,18 @@ mod def {
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/reroute_canister_range.rs#L46
     pub type RerouteCanisterRangePayload =
         registry_canister::mutations::reroute_canister_range::RerouteCanisterRangePayload;
+
+    // NNS function 25 - AddFirewallRules
+    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L218
+    pub type AddFirewallRulesPayload = registry_canister::mutations::firewall::AddFirewallRulesPayload;
+
+    // NNS function 26 - RemoveFirewallRules
+    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L233
+    pub type RemoveFirewallRulesPayload = registry_canister::mutations::firewall::RemoveFirewallRulesPayload;
+
+    // NNS function 27 - UpdateFirewallRules
+    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L246
+    pub type UpdateFirewallRulesPayload = registry_canister::mutations::firewall::UpdateFirewallRulesPayload;
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
