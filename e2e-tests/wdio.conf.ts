@@ -2,6 +2,15 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { NNS_DAPP_URL } from "./common/constants";
 import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
 
+/**
+ * Provides the list of browsers to test.
+ * Note: wdio refers to browsers as 'capabilities'.
+ * Note: The set of browsers can be chosen by setting the environment
+ *       variable 'WDIO_BROWSER` to one of:
+ *       - chrome  (default)
+ *       - firefox
+ *       - all
+ */
 function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
   const browsers = process.env.WDIO_BROWSER ?? "chrome";
   const useChrome = ["all", "chrome"].includes(browsers);
