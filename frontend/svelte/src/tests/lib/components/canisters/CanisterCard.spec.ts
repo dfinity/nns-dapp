@@ -47,27 +47,6 @@ describe("CanisterCard", () => {
     expect(articleElement?.getAttribute("aria-label")).toBe(ariaLabel);
   });
 
-  it("renders the canister name if present", async () => {
-    const canisterName = "Da best Canister";
-    const { getByText } = render(CanisterCard, {
-      props: {
-        canister: { ...mockCanister, name: canisterName },
-      },
-    });
-    expect(getByText(canisterName)).toBeInTheDocument();
-  });
-
-  it("renders the canister id in text if name is empty string", async () => {
-    const { queryAllByText } = render(CanisterCard, {
-      props: {
-        canister: { ...mockCanister, name: "" },
-      },
-    });
-    expect(
-      queryAllByText(mockCanister.canister_id.toText()).length
-    ).toBeGreaterThan(0);
-  });
-
   it("renders the canister id", async () => {
     const { queryAllByText } = render(CanisterCard, {
       props: {
@@ -77,5 +56,33 @@ describe("CanisterCard", () => {
     expect(
       queryAllByText(mockCanister.canister_id.toText()).length
     ).toBeGreaterThan(0);
+  });
+
+  it("renders copy if no name present", async () => {
+    const { queryByRole } = render(CanisterCard, {
+      props: {
+        canister: { ...mockCanister },
+      },
+    });
+
+    const button = queryByRole("button");
+
+    expect(button?.getAttribute("aria-label")).toEqual(
+      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+    );
+  });
+
+  it("renders copy if name present", async () => {
+    const { queryByRole } = render(CanisterCard, {
+      props: {
+        canister: { ...mockCanister, name: "test" },
+      },
+    });
+
+    const button = queryByRole("button");
+
+    expect(button?.getAttribute("aria-label")).toEqual(
+      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+    );
   });
 });
