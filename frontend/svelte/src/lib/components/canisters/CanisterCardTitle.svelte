@@ -1,18 +1,20 @@
 <script lang="ts">
   import type { CanisterDetails } from "../../canisters/nns-dapp/nns-dapp.types";
   import Copy from "../ui/Copy.svelte";
-  import {mapCanisterDetails} from '../../utils/canisters.utils';
+  import { mapCanisterDetails } from "../../utils/canisters.utils";
 
   export let canister: CanisterDetails;
-  export let titleTag: 'h1' | 'h3' = 'h3'
+  export let titleTag: "h1" | "h3" = "h3";
 
   let canisterId: string;
   let validName: boolean;
-  $: ({canisterId, validName} = mapCanisterDetails(canister));
+  $: ({ canisterId, validName } = mapCanisterDetails(canister));
 </script>
 
 <div class="title">
-  <svelte:element this={titleTag}>{validName ? canister.name : canisterId}</svelte:element>
+  <svelte:element this={titleTag}
+    >{validName ? canister.name : canisterId}</svelte:element
+  >
 
   {#if !validName}
     <Copy value={canisterId} />

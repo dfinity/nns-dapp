@@ -14,7 +14,7 @@
     <CanisterCardTitle {canister} />
   </div>
 
-    <CanisterCardSubTitle {canister} />
+  <CanisterCardSubTitle {canister} />
 </Card>
 
 <style lang="scss">
