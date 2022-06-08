@@ -1,12 +1,12 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { NNS_DAPP_URL } from "./common/constants";
-import { Options as WebDriverOptions } from "@wdio/types";
+import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
 
-function capabilitiesFromEnv() {
+function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
   const browsers = process.env.WDIO_BROWSER ?? "chrome";
   const useChrome = ["all", "chrome"].includes(browsers);
   const useFirefox = ["all", "firefox"].includes(browsers);
-  const capabilities = [];
+  const capabilities: Capabilities.RemoteCapabilities = [];
   if (useChrome) {
     const chrome = {
       browserName: "chrome",
