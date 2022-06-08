@@ -12,7 +12,10 @@
   let tCyclesFormatted: number | undefined;
   $: tCyclesFormatted =
     icpToCyclesRatio !== undefined
-      ? convertIcpToTCycles({ icpNumber: amount, ratio: icpToCyclesRatio })
+      ? convertIcpToTCycles({
+          icpNumber: amount,
+          exchangeRate: icpToCyclesRatio,
+        })
       : undefined;
 
   const dispatcher = createEventDispatcher();

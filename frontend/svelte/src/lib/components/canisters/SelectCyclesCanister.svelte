@@ -22,7 +22,7 @@
       amount !== undefined && icpToCyclesRatio !== undefined
         ? convertIcpToTCycles({
             icpNumber: amount,
-            ratio: icpToCyclesRatio,
+            exchangeRate: icpToCyclesRatio,
           })
         : undefined);
 
@@ -31,7 +31,7 @@
       amountCycles !== undefined && icpToCyclesRatio !== undefined
         ? convertTCyclesToIcpNumber({
             tCycles: amountCycles,
-            ratio: icpToCyclesRatio,
+            exchangeRate: icpToCyclesRatio,
           })
         : undefined);
 

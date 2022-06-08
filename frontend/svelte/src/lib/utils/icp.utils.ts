@@ -3,7 +3,6 @@ import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
-  ONE_TRILLION,
   TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
 import { InvalidAmountError } from "../types/neurons.errors";
@@ -74,21 +73,22 @@ export const convertNumberToICP = (amount: number): ICP => {
   return stake;
 };
 
+// `exchangeRate` comes from `xdr_permyriad_per_icp` from CMC
+// `exchangeRate` is 10,000ths SDRs per 1 ICP.
+// TODO: add link to comment.
+const SDR_PARTS_IN_RATIO = 10_000;
 export const convertIcpToTCycles = ({
   icpNumber,
-  ratio,
+  exchangeRate,
 }: {
   icpNumber: number;
-  ratio: bigint;
-}): number => {
-  const icp = convertNumberToICP(icpNumber);
-  return Number(icp.toE8s() * ratio) / ONE_TRILLION;
-};
+  exchangeRate: bigint;
+}): number => icpNumber * (Number(exchangeRate) / SDR_PARTS_IN_RATIO);
 
 export const convertTCyclesToIcpNumber = ({
   tCycles,
-  ratio,
+  exchangeRate,
 }: {
   tCycles: number;
-  ratio: bigint;
-}): number => (tCycles * Number(ONE_TRILLION)) / Number(ratio) / E8S_PER_ICP;
+  exchangeRate: bigint;
+}): number => tCycles / (Number(exchangeRate) / SDR_PARTS_IN_RATIO);
