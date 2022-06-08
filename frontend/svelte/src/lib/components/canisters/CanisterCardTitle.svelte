@@ -11,8 +11,8 @@
   $: ({ canisterId, validName } = mapCanisterDetails(canister));
 </script>
 
-<div class="title">
-  <svelte:element this={titleTag}
+<div class={`title-block ${titleTag}`}>
+  <svelte:element this={titleTag} class="title"
     >{validName ? canister.name : canisterId}</svelte:element
   >
 
@@ -22,13 +22,20 @@
 </div>
 
 <style lang="scss">
-  .title {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-
+  .h3 {
     :global(button) {
-      margin-left: var(--padding-0_5x);
+      margin-bottom: var(--padding-0_5x);
     }
+  }
+
+  .h1 {
+    :global(button) {
+      margin-bottom: var(--padding);
+    }
+  }
+
+  .title {
+    white-space: pre-wrap;
+    display: initial;
   }
 </style>
