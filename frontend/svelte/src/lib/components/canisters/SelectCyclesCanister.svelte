@@ -10,6 +10,7 @@
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
+  export let minimumCycles: number | undefined = undefined;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
@@ -53,7 +54,10 @@
       amount: ICP.fromString(String(amount)),
     });
   };
-  // TODO: Add validations - https://dfinity.atlassian.net/browse/L2-644
+
+  let enoughCycles: boolean;
+  $: enoughCycles =
+    minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
 </script>
 
 <div class="wizard-wrapper wrapper" data-tid="select-cycles-screen">
@@ -86,7 +90,7 @@
     class="primary full-width"
     on:click={selectAccount}
     data-tid="select-cycles-button"
-    >{$i18n.canisters.review_cycles_purchase}</button
+    disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
   >
 </div>
 

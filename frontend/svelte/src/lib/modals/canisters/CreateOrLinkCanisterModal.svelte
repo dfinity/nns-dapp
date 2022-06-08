@@ -5,6 +5,7 @@
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
   import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
+  import { NEW_CANISTER_MIN_T_CYCLES } from "../../constants/canisters.constants";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -100,7 +101,7 @@
     });
     const canisterId = await createCanister({
       amount,
-      fromSubAccount: account.subAccount,
+      account,
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
@@ -141,7 +142,9 @@
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
+        minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
+        <!-- TODO: Check which is the minimum -->
         <p>{$i18n.canisters.minimum_cycles_text}</p>
       </SelectCyclesCanister>
     {/if}

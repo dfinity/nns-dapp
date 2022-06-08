@@ -116,7 +116,7 @@
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       >
-        <!-- TODO: Show transaction fee -->
+        <p>{$i18n.canisters.transaction_fee}</p>
         <div>
           <div>
             <h5>{$i18n.accounts.source}</h5>

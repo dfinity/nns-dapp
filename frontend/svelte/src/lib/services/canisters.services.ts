@@ -19,6 +19,7 @@ import type {
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
@@ -59,19 +60,24 @@ export const listCanisters = async ({
 
 export const createCanister = async ({
   amount,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    // TODO: Validate it's enough ICP https://dfinity.atlassian.net/browse/L2-615
+    if (icpAmount.toE8s() > account.balance.toE8s()) {
+      toastsStore.error({
+        labelKey: "error.insufficient_funds",
+      });
+      return;
+    }
     const identity = await getIdentity();
     const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount,
-      fromSubAccount,
+      fromSubAccount: account.subAccount,
     });
     await listCanisters({ clearBeforeQuery: false });
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.

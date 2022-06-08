@@ -284,6 +284,7 @@ interface I18nCanisters {
   review_create_canister: string;
   t_cycles: string;
   minimum_cycles_text: string;
+  transaction_fee: string;
   review_cycles_purchase: string;
   converted_to: string;
 }
