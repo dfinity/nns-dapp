@@ -12,11 +12,11 @@ import {
   CannotBeMerged,
   InsufficientAmountError,
   InvalidAmountError,
-  NotAuthorizedError,
+  NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
 import type { ToastMsg } from "../types/toast";
-import { translate } from "./i18n.utils";
+import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -46,7 +46,7 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
   /* eslint-disable-next-line @typescript-eslint/ban-types */
   const collection: Array<[Function, string]> = [
     [NotFoundError, "error.neuron_not_found"],
-    [NotAuthorizedError, "error.not_authorized"],
+    [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
     [InvalidAmountError, "error.amount_not_valid"],
     [InsufficientAmountError, "error.amount_not_enough"],
     [CouldNotClaimNeuronError, "error.neuron_not_found"],
@@ -82,7 +82,7 @@ export const toToastError = ({
 }: {
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
-}): { labelKey: string; err?: unknown } => {
+}): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
   let errorKey: boolean = false;
   const message: string | undefined = (err as Error)?.message;
 
@@ -91,10 +91,16 @@ export const toToastError = ({
     errorKey = label !== message;
   }
 
+  type ErrorSubstitutions = { substitutions?: I18nSubstitutions };
+
   return {
     labelKey: errorKey
       ? (err as { message: string }).message
       : fallbackErrorLabelKey,
     ...(!errorKey && { err }),
+    ...((err as ErrorSubstitutions | undefined)?.substitutions !==
+      undefined && {
+      substitutions: (err as ErrorSubstitutions).substitutions,
+    }),
   };
 };

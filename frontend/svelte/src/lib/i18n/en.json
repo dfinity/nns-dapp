@@ -16,7 +16,8 @@
     "max": "Max",
     "principal": "Principal",
     "toggle": "toggle",
-    "log": "Log"
+    "log": "Log",
+    "principal_id": "Principal ID"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -27,12 +28,9 @@
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
-    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
     "rename_subaccount": "An error occurred while renaming your linked account.",
     "rename_subaccount_no_account": "No linked account provided.",
     "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
-    "create_subaccount_too_long": "The name of the linked account is too long. Please, choose a shorter name.",
-    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
@@ -42,8 +40,9 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
-    "account_not_found": "Sorry, the account \"account_identifier\" was not found",
+    "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
     "transactions_not_found": "An error occurred while loading the transactions.",
+    "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
@@ -59,7 +58,7 @@
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
-    "not_authorized": "Sorry, you are not authorized to perform this action.",
+    "not_authorized_neuron_action": "Sorry, non of your principals is the controller of the neuron.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
     "insufficient_funds": "Sorry, there are not enough funds in this account",
     "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
@@ -285,6 +284,9 @@
     "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
     "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stoerd securely.",
     "detach_success": "Canister detached successfully",
+    "confirm_new_controller": "Confirm New Controller",
+    "enter_controller": "Enter Controller",
+    "new_controller": "New Controller",
     "add_controller": "Add Controller"
   },
   "topics": {
@@ -427,8 +429,7 @@
     "current_maturity": "Current Maturity",
     "dissolve_delay_range": "Dissolve Delay Range",
     "maturity_range": "Select Maturity Range",
-    "maturity_percentage": "Percentage of maturity",
-    "add_hotkey_placeholder": "Principal ID"
+    "maturity_percentage": "Percentage of maturity"
   },
   "time": {
     "year": "year",
@@ -462,6 +463,17 @@
     "no_name": "No account name provided.",
     "no_identity": "No identity connected to your hardware wallet.",
     "already_registered": "The hardware wallet is already registered with another account.",
-    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached."
+    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached.",
+    "register_hardware_wallet": "Error registering hardware wallet",
+    "create_hardware_wallet_too_long": "The name $accountName is too long (max. 24 characters). Please, choose a shorter name."
+  },
+  "error__account": {
+    "not_found": "Account not found",
+    "no_details": "Error getting account details",
+    "subaccount_too_long": "The name $subAccountName of the linked account is too long (max. 24 characters). Please, choose a shorter name.",
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
+    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
+    "subaccount_not_found": "Error renaming subAccount, subAccount ($account_identifier) not found",
+    "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
   }
 }
