@@ -53,6 +53,18 @@ describe("CanisterDetail", () => {
     expect(getByText(en.canister_detail.title)).toBeInTheDocument();
   });
 
+  it("should render title once loaded", async () => {
+    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
+    const { container } = render(CanisterDetail);
+
+    const title = container.querySelector("h1");
+
+    await waitFor(() => expect(title).not.toBeNull());
+    expect((title as HTMLElement).textContent).toEqual(
+      mockCanister.canister_id.toText()
+    );
+  });
+
   it("should fetch canisters from nns-dapp if store is not loaded yet", async () => {
     render(CanisterDetail);
     await waitFor(() => expect(listCanisters).toBeCalled());

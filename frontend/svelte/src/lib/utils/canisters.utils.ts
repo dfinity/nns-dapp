@@ -17,3 +17,22 @@ export const formatCyclesToTCycles = (cycles: bigint): string =>
     minFraction: 3,
     maxFraction: 3,
   });
+
+/**
+ * If no name is provided for the canister the information fallbacks to its ID.
+ */
+export const mapCanisterDetails = ({
+  canister_id,
+  name,
+}: CanisterDetails): {
+  name: string;
+  validName: boolean;
+  canisterId: string;
+} => {
+  const canisterId: string = canister_id.toText();
+  return {
+    name: name ?? canisterId,
+    validName: name.length > 0,
+    canisterId,
+  };
+};
