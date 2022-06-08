@@ -1,5 +1,7 @@
-use crate::proposals::payloads::get_payloads;
+use crate::proposals::tests::payloads::get_payloads;
 use crate::proposals::transform_payload_to_json;
+
+mod payloads;
 
 #[test]
 fn payload_deserialization() {

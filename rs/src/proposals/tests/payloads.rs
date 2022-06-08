@@ -1,14 +1,14 @@
-use crate::proposals::payloads::nns_function_02::payload_45339;
-use crate::proposals::payloads::nns_function_04::payload_44955;
-use crate::proposals::payloads::nns_function_05::payload_45091;
-use crate::proposals::payloads::nns_function_07::payload_45543;
-use crate::proposals::payloads::nns_function_10::payload_45372;
-use crate::proposals::payloads::nns_function_11::payload_45343;
-use crate::proposals::payloads::nns_function_13::payload_43630;
-use crate::proposals::payloads::nns_function_16::payload_44876;
-use crate::proposals::payloads::nns_function_20::payload_44877;
-use crate::proposals::payloads::nns_function_21::payload_43825;
-use crate::proposals::payloads::nns_function_23::payload_44892;
+use crate::proposals::tests::payloads::nns_function_02::payload_45339;
+use crate::proposals::tests::payloads::nns_function_04::payload_44955;
+use crate::proposals::tests::payloads::nns_function_05::payload_45091;
+use crate::proposals::tests::payloads::nns_function_07::payload_45543;
+use crate::proposals::tests::payloads::nns_function_10::payload_45372;
+use crate::proposals::tests::payloads::nns_function_11::payload_45343;
+use crate::proposals::tests::payloads::nns_function_13::payload_43630;
+use crate::proposals::tests::payloads::nns_function_16::payload_44876;
+use crate::proposals::tests::payloads::nns_function_20::payload_44877;
+use crate::proposals::tests::payloads::nns_function_21::payload_43825;
+use crate::proposals::tests::payloads::nns_function_23::payload_44892;
 
 mod nns_function_02;
 mod nns_function_04;

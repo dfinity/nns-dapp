@@ -350,6 +350,4 @@ mod def {
 }
 
 #[cfg(test)]
-mod payloads;
-#[cfg(test)]
 mod tests;
