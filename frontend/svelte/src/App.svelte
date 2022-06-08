@@ -51,10 +51,6 @@
     }
   );
 
-  // TODO: Remove after all seed neurons have been claimed.
-  // eslint-disable-next-line
-  (window as any).claimSeedNeurons = claimSeedNeurons;
-
   onDestroy(() => {
     unsubscribeAuth();
     unsubscribeRoute();
