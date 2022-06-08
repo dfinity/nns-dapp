@@ -1,3 +1,4 @@
+import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
@@ -15,6 +16,8 @@ import {
   updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
@@ -30,6 +33,14 @@ import {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+    },
   };
 });
 
@@ -295,17 +306,55 @@ describe("canisters-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call api to create a canister", async () => {
-      const canisterId = await createCanister({ amount: 3 });
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("5") as ICP,
+      };
+      const canisterId = await createCanister({
+        amount: 3,
+        account,
+      });
       expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
       expect(syncAccounts).toBeCalled();
     });
 
+    it("should not call api if account doesn't have enough funds", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("2") as ICP,
+      };
+      const canisterId = await createCanister({
+        amount: 3,
+        account,
+      });
+      expect(canisterId).toBeUndefined();
+      expect(spyCreateCanister).not.toBeCalled();
+      expect(spyQueryCanisters).not.toBeCalled();
+      expect(syncAccounts).not.toBeCalled();
+    });
+
+    it("should show toast error if account doesn't have enough funds", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("2") as ICP,
+      };
+      const canisterId = await createCanister({
+        amount: 3,
+        account,
+      });
+      expect(canisterId).toBeUndefined();
+      expect(toastsStore.error).toBeCalled();
+    });
+
     it("should return success false if no identity", async () => {
       setNoIdentity();
 
-      const canisterId = await createCanister({ amount: 3 });
+      const canisterId = await createCanister({
+        amount: 3,
+        account: mockMainAccount,
+      });
       expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
 
