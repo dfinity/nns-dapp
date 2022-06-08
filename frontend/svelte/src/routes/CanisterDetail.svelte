@@ -210,7 +210,7 @@
       {/if}
       {#if canisterDetails !== undefined}
         <CyclesCard cycles={canisterDetails.cycles} />
-        <ControllersCard {canisterDetails} />
+        <ControllersCard />
       {:else if errorKey !== undefined}
         <Card testId="canister-details-error-card">
           <p class="error-message">{translate({ labelKey: errorKey })}</p>
