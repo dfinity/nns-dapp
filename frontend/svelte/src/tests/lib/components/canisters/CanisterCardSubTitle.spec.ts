@@ -8,7 +8,7 @@ import { mockCanister } from "../../../mocks/canisters.mock";
 
 describe("CanisterCardSubTitle", () => {
   it("renders the canister id", async () => {
-    const { queryAllByText, container } = render(CanisterCardSubTitle, {
+    const { queryAllByText } = render(CanisterCardSubTitle, {
       props: {
         canister: { ...mockCanister, name: "test" },
       },
