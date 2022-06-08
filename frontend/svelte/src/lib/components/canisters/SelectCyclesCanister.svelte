@@ -105,5 +105,6 @@
   .inputs {
     display: flex;
     gap: var(--padding-2x);
+    justify-content: center;
   }
 </style>
