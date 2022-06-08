@@ -22,6 +22,7 @@
   import { worker } from "./lib/services/worker.services";
   import { listNeurons } from "./lib/services/neurons.services";
   import CanisterDetail from "./routes/CanisterDetail.svelte";
+  import { claimSeedNeurons } from "./lib/services/seed-neurons.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -49,6 +50,10 @@
       routeStore.replace({ path: AppPath.Accounts });
     }
   );
+
+  // TODO: Remove after all seed neurons have been claimed.
+  // eslint-disable-next-line
+  (window as any).claimSeedNeurons = claimSeedNeurons;
 
   onDestroy(() => {
     unsubscribeAuth();
