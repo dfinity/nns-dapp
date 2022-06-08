@@ -15,7 +15,7 @@
   } from "../lib/services/accounts.services";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import Identifier from "../lib/components/ic/Identifier.svelte";
+  import Identifier from "../lib/components/ui/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { toastsStore } from "../lib/stores/toasts.store";
