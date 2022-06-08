@@ -15,7 +15,7 @@
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
   import { canistersStore } from "../lib/stores/canisters.store";
-  import { replacePlaceholders } from "../lib/utils/i18n.utils";
+  import { replacePlaceholders, translate } from "../lib/utils/i18n.utils";
   import SkeletonParagraph from "../lib/components/ui/SkeletonParagraph.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "../lib/components/canister_details/CyclesCard.svelte";
@@ -35,6 +35,8 @@
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
+  import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
+  import Card from "../lib/components/ui/Card.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -72,16 +74,51 @@
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({
     info: undefined,
     details: undefined,
+    controller: undefined,
   });
 
   debugSelectedCanisterStore(selectedCanisterStore);
 
+  let loadingDetails: boolean = true;
+  let canisterInfo: CanisterInfo | undefined;
+  let canisterDetails: CanisterDetails | undefined = undefined;
+  $: canisterDetails = $selectedCanisterStore.details;
+  let errorKey: string | undefined = undefined;
+  $: errorKey =
+    $selectedCanisterStore.controller === false
+      ? "error.not_canister_controller"
+      : $selectedCanisterStore.controller === undefined && !loadingDetails
+      ? "error.canister_details_not_found"
+      : undefined;
+
+  let showAddCyclesModal: boolean = false;
+  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
+
   const reloadDetails = async (canisterId: Principal) => {
-    const details = await getCanisterDetails(canisterId);
-    selectedCanisterStore.update((data) => ({
-      ...data,
-      details,
-    }));
+    try {
+      loadingDetails = true;
+      const newDetails = await getCanisterDetails(canisterId);
+      selectedCanisterStore.update((data) => ({
+        ...data,
+        controller: true,
+        details: newDetails,
+      }));
+    } catch (error) {
+      const userNotController = error instanceof UserNotTheControllerError;
+      // Show an error if the error is not expected.
+      if (!userNotController) {
+        toastsStore.error({
+          labelKey: "error.canister_details_not_found",
+        });
+      }
+      selectedCanisterStore.update((data) => ({
+        ...data,
+        details: undefined,
+        controller: userNotController ? false : undefined,
+      }));
+    } finally {
+      loadingDetails = false;
+    }
   };
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
@@ -122,9 +159,10 @@
           storeCanister?.canister_id.toHex() ===
             selectedCanister.canister_id.toText();
 
-        selectedCanisterStore.update(({ details }) => ({
+        selectedCanisterStore.update(({ details, controller }) => ({
           info: selectedCanister,
           details: sameCanister ? details : undefined,
+          controller: sameCanister ? controller : undefined,
         }));
 
         if (selectedCanister !== undefined) {
@@ -143,13 +181,8 @@
       }
     })();
 
-  let canisterInfo: CanisterInfo | undefined;
-  let canisterDetails: CanisterDetails | undefined = undefined;
   $: ({ details: canisterDetails, info: canisterInfo } =
     $selectedCanisterStore);
-
-  let showAddCyclesModal: boolean = false;
-  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
 
   let canisterIdString: string = "";
   $: canisterIdString = canisterInfo?.canister_id.toText() ?? "";
@@ -164,7 +197,7 @@
     <section>
       {#if canisterInfo !== undefined}
         <h1>{canisterIdString}</h1>
-        <p>
+        <p class="canister-id">
           {replacePlaceholders($i18n.canister_detail.id, {
             $canisterId: canisterIdString,
           })}
@@ -183,6 +216,10 @@
       {#if canisterDetails !== undefined}
         <CyclesCard cycles={canisterDetails.cycles} />
         <ControllersCard {canisterDetails} />
+      {:else if errorKey !== undefined}
+        <Card testId="canister-details-error-card">
+          <p class="error-message">{translate({ labelKey: errorKey })}</p>
+        </Card>
       {:else}
         <SkeletonCard />
         <SkeletonCard />
@@ -193,7 +230,7 @@
         <button
           class="primary"
           on:click={() => (showAddCyclesModal = true)}
-          disabled={canisterDetails === undefined || $busy}
+          disabled={canisterInfo === undefined || $busy}
           >{$i18n.canister_detail.add_cycles}</button
         >
       </Toolbar>
@@ -208,7 +245,7 @@
 <style lang="scss">
   @use "../lib/themes/mixins/media";
 
-  p:last-of-type {
+  .canister-id {
     margin-bottom: var(--padding-3x);
   }
 
@@ -216,6 +253,10 @@
     margin-bottom: var(--padding-3x);
     display: flex;
     justify-content: end;
+  }
+
+  .error-message {
+    margin: 0;
   }
 
   .loader-title {
