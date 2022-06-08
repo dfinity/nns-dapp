@@ -104,11 +104,17 @@
         details: newDetails,
       }));
     } catch (error) {
+      const userNotController = error instanceof UserNotTheControllerError;
+      // Show an error if the error is not expected.
+      if (!userNotController) {
+        toastsStore.error({
+          labelKey: "error.canister_details_not_found",
+        });
+      }
       selectedCanisterStore.update((data) => ({
         ...data,
         details: undefined,
-        controller:
-          error instanceof UserNotTheControllerError ? false : undefined,
+        controller: userNotController ? false : undefined,
       }));
     } finally {
       loadingDetails = false;
@@ -224,7 +230,7 @@
         <button
           class="primary"
           on:click={() => (showAddCyclesModal = true)}
-          disabled={canisterDetails === undefined || $busy}
+          disabled={canisterInfo === undefined || $busy}
           >{$i18n.canister_detail.add_cycles}</button
         >
       </Toolbar>
