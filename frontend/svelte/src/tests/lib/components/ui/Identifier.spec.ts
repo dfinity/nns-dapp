@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import Identifier from "../../../../lib/components/ui/Identifier.svelte";
 
 describe("Identifier", () => {

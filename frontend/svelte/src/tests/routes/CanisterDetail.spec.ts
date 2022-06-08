@@ -52,7 +52,9 @@ describe("CanisterDetail", () => {
     const title = container.querySelector("h1");
 
     await waitFor(() => expect(title).not.toBeNull());
-    expect((title as HTMLElement).textContent).toEqual(mockCanister.canister_id.toText());
+    expect((title as HTMLElement).textContent).toEqual(
+      mockCanister.canister_id.toText()
+    );
   });
 
   it("should fetch canisters from nns-dapp if store is not loaded yet", async () => {
