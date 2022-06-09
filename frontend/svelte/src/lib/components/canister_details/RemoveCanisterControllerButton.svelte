@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
+  import IconClose from "../../icons/IconClose.svelte";
   import ConfirmationModal from "../../modals/ConfirmationModal.svelte";
   import { removeController } from "../../services/canisters.services";
   import { authStore } from "../../stores/auth.store";
@@ -52,12 +53,11 @@
 </script>
 
 <button
-  class="text"
   aria-label={$i18n.core.remove}
   on:click={openModal}
   data-tid="remove-canister-controller-button"
 >
-  x
+  <IconClose size="18px" />
 </button>
 
 {#if showModal}
@@ -97,5 +97,9 @@
 
   p {
     @include confirmation-modal.text;
+  }
+
+  button {
+    display: flex;
   }
 </style>
