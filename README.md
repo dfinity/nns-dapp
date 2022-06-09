@@ -29,8 +29,10 @@ can validate that we really deploy what we claim to deploy.
 We try to achieve some level of reproducibility using a Dockerized build
 environment. The following steps _should_ build the official Wasm image
 
-    ./scripts/docker-build
-    sha256sum nns-dapp.wasm
+```sh
+./scripts/docker-build
+sha256sum nns-dapp.wasm
+```
 
 The resulting `nns-dapp.wasm` is ready for deployment as
 `qoctq-giaaa-aaaaa-aaaea-cai`, which is the reserved principal for this service.
@@ -43,24 +45,38 @@ Development relies on the presence of a testnet that is setup with the II, gover
 
 When deploying the governance, ledger, and cycle minting canisters to the testnet you must first create a file called `test-accounts.json` in the root of the IC repo whose contents is:
 
-    {"init_ledger_accounts":["5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"]}
+```json
+{
+  "init_ledger_accounts": [
+    "5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"
+  ]
+}
+```
 
 Then run the following from the root directory of the IC repo:
 
-    ./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args "-e @$PWD/test-accounts.json"
+```sh
+./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args "-e @$PWD/test-accounts.json"
+```
 
 To deploy the NNS Dapp canister to the testnet, run the following:
 
-    ./deploy.sh testnet
+```sh
+./deploy.sh testnet
+```
 
 You can now access the frontend using:
 
-    open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.network"
+```sh
+open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.network"
+```
 
 To work on the UI locally, either use your IDE, or run the following:
 
-    cd frontend/dart
-    flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5021
+```sh
+cd frontend/dart
+flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5021
+```
 
 ## Environment variables
 
