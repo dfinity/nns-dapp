@@ -11,16 +11,17 @@
   let tooltipStyle: string | undefined = undefined;
 
   const setPosition = () => {
+    // We get the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width
+    const clientWidth = document.querySelector("main")?.clientWidth;
+
     if (
-      innerWidth === undefined ||
+      clientWidth === undefined ||
       tooltipComponent === undefined ||
       target === undefined
     ) {
       // Do nothing, we need the elements to be rendered in order to get their size and position to fix the tooltip
       return;
     }
-
-    const clientWidth = document.querySelector("main")?.clientWidth;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
