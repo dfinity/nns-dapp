@@ -32,7 +32,6 @@ export enum LogType {
 const anonymiseStoreState = async () => {
   const debugStore = initDebugStore();
   const {
-    route,
     busy,
     accounts,
     neurons,
@@ -51,7 +50,6 @@ const anonymiseStoreState = async () => {
   } = get(debugStore);
 
   return {
-    route,
     busy,
     accounts: {
       main: await anonymizeAccount(accounts?.main),

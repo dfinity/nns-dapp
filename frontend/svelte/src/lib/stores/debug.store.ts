@@ -16,7 +16,6 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "./proposals.store";
-import { routeStore } from "./route.store";
 import { toastsStore } from "./toasts.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
@@ -51,7 +50,7 @@ export const initDebugStore = () =>
   derived(
     [
       // TODO (L2-611): anonymise wallet id and neuron ids
-      routeStore,
+      // TODO: (L2-683): add routeStore
       busyStore,
       accountsStore,
       neuronsStore,
@@ -70,7 +69,6 @@ export const initDebugStore = () =>
       selectedCanisterStore,
     ],
     ([
-      $routeStore,
       $busyStore,
       $accountsStore,
       $neuronsStore,
@@ -88,7 +86,6 @@ export const initDebugStore = () =>
       $selectedAccountStore,
       $selectedCanisterStore,
     ]) => ({
-      route: $routeStore,
       busy: $busyStore,
       accounts: $accountsStore,
       neurons: $neuronsStore,
