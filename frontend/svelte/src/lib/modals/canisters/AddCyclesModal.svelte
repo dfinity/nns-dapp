@@ -83,9 +83,11 @@
     const { success } = await topUpCanister({
       amount,
       canisterId,
-      fromSubAccount: account.subAccount,
+      account,
     });
-    await reloadDetails(canisterId);
+    if (success) {
+      await reloadDetails(canisterId);
+    }
     stopBusy("top-up-canister");
     if (success) {
       toastsStore.success({
@@ -116,7 +118,7 @@
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       >
-        <!-- TODO: Show transaction fee -->
+        <p>{$i18n.canisters.transaction_fee}</p>
         <div>
           <div>
             <h5>{$i18n.accounts.source}</h5>
