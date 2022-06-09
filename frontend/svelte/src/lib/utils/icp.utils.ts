@@ -75,7 +75,7 @@ export const convertNumberToICP = (amount: number): ICP => {
 
 // `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
 // This value reflects the current market price of one ICP token.
-// https://sourcegraph.com/github.com/dfinity/ic@7cc18edf13bc7761bf58bf6e2eef558ba624adff/-/blob/rs/nns/cmc/cmc.did?L67
+// https://github.com/dfinity/ic/blob/8132ae34aeba2bf8b913647b85b9918e1cb8721c/rs/nns/cmc/cmc.did#L67
 const NUMBER_XDR_PER_ONE_ICP = 10_000;
 export const convertIcpToTCycles = ({
   icpNumber,

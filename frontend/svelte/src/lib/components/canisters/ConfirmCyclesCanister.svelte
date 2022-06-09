@@ -7,14 +7,14 @@
 
   export let amount: number;
   export let account: Account;
-  export let icpToCyclesRatio: bigint | undefined = undefined;
+  export let icpToCyclesExchangeRate: bigint | undefined = undefined;
 
   let tCyclesFormatted: number | undefined;
   $: tCyclesFormatted =
-    icpToCyclesRatio !== undefined
+    icpToCyclesExchangeRate !== undefined
       ? convertIcpToTCycles({
           icpNumber: amount,
-          exchangeRate: icpToCyclesRatio,
+          exchangeRate: icpToCyclesExchangeRate,
         })
       : undefined;
 

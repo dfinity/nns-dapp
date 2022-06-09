@@ -17,9 +17,9 @@
   import type { CreateOrLinkType } from "../../types/canisters";
   import WizardModal from "../WizardModal.svelte";
 
-  let icpToCyclesRatio: bigint | undefined;
+  let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
-    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
   const steps: Steps = [
@@ -137,7 +137,7 @@
     {/if}
     {#if currentStep?.name === "SelectCycles"}
       <SelectCyclesCanister
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
@@ -148,7 +148,7 @@
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
       <ConfirmCyclesCanister
         {account}
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         {amount}
         on:nnsConfirm={create}
         on:nnsClose
