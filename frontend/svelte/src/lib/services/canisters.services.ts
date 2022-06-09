@@ -17,7 +17,6 @@ import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
 } from "../canisters/nns-dapp/nns-dapp.types";
-import { E8S_PER_ICP } from "../constants/icp.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetail } from "../utils/app-path.utils";
@@ -229,9 +228,7 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
 > => {
   try {
     const identity = await getIdentity();
-    const trillionRatio = await getIcpToCyclesExchangeRateApi(identity);
-    // This transforms to ratio to E8s to T Cycles.
-    return trillionRatio / BigInt(E8S_PER_ICP);
+    return await getIcpToCyclesExchangeRateApi(identity);
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
     return;

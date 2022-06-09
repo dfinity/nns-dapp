@@ -1,7 +1,6 @@
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
   addController,
@@ -63,9 +62,10 @@ describe("canisters-services", () => {
     .spyOn(api, "queryCanisterDetails")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails));
 
+  const exchangeRate = BigInt(10_000);
   const spyGetExchangeRate = jest
     .spyOn(api, "getIcpToCyclesExchangeRate")
-    .mockImplementation(() => Promise.resolve(BigInt(10_000 * E8S_PER_ICP)));
+    .mockImplementation(() => Promise.resolve(exchangeRate));
 
   describe("listCanisters", () => {
     afterEach(() => {
@@ -276,7 +276,7 @@ describe("canisters-services", () => {
 
     it("should call api to get conversion rate", async () => {
       const response = await getIcpToCyclesExchangeRate();
-      expect(response).toBe(BigInt(10_000));
+      expect(response).toBe(exchangeRate);
       expect(spyGetExchangeRate).toBeCalled();
     });
 

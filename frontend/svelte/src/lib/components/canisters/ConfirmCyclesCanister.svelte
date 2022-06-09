@@ -7,12 +7,15 @@
 
   export let amount: number;
   export let account: Account;
-  export let icpToCyclesRatio: bigint | undefined = undefined;
+  export let icpToCyclesExchangeRate: bigint | undefined = undefined;
 
   let tCyclesFormatted: number | undefined;
   $: tCyclesFormatted =
-    icpToCyclesRatio !== undefined
-      ? convertIcpToTCycles({ icpNumber: amount, ratio: icpToCyclesRatio })
+    icpToCyclesExchangeRate !== undefined
+      ? convertIcpToTCycles({
+          icpNumber: amount,
+          exchangeRate: icpToCyclesExchangeRate,
+        })
       : undefined;
 
   const dispatcher = createEventDispatcher();

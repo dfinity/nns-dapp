@@ -15,7 +15,7 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 });
 
 describe("SelectCyclesCanister", () => {
-  const props = { icpToCyclesRatio: BigInt(10_000) };
+  const props = { icpToCyclesExchangeRate: BigInt(10_000) };
   it("renders button", () => {
     const { queryByText } = render(SelectCyclesCanister, { props });
 
