@@ -20,6 +20,7 @@ import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import { getLastPathDetail } from "../utils/app-path.utils";
+import { isController } from "../utils/canisters.utils";
 import { mapCanisterErrorToToastMessage } from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
@@ -140,7 +141,7 @@ export const addController = async ({
   controller: string;
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
-  if (canisterDetails.settings.controllers.includes(controller)) {
+  if (isController({ controller, canisterDetails })) {
     toastsStore.error({
       labelKey: "error.controller_already_present",
       substitutions: {
@@ -167,14 +168,13 @@ export const removeController = async ({
   controller: string;
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
-  const { controllers } = canisterDetails.settings;
-  if (!controllers.includes(controller)) {
+  if (!isController({ controller, canisterDetails })) {
     toastsStore.error({
       labelKey: "error.controller_not_present",
     });
     return { success: false };
   }
-  const newControllers = controllers.filter(
+  const newControllers = canisterDetails.settings.controllers.filter(
     (currentController) => currentController !== controller
   );
   const newSettings = {

@@ -23,6 +23,8 @@
     controller,
     authStore: $authStore,
   });
+  let lastController: boolean;
+  $: lastController = $store.details?.settings.controllers.length === 1;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -51,7 +53,7 @@
 
 <button
   class="text"
-  aria-label={$i18n.core.close}
+  aria-label={$i18n.core.remove}
   on:click={openModal}
   data-tid="remove-canister-controller-button"
 >
@@ -72,6 +74,11 @@
       {:else}
         <p>{$i18n.canister_detail.confirm_remove_controller_description}</p>
         <p>{controller}</p>
+      {/if}
+      {#if lastController}
+        <p>
+          {$i18n.canister_detail.confirm_remove_last_controller_description}
+        </p>
       {/if}
     </div>
   </ConfirmationModal>

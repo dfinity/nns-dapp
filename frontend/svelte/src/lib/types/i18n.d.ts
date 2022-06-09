@@ -4,6 +4,7 @@
 
 interface I18nCore {
   close: string;
+  remove: string;
   icp: string;
   create: string;
   filter: string;
@@ -308,6 +309,7 @@ interface I18nCanister_detail {
   confirm_remove_controller_description: string;
   confirm_remove_controller_user_description_1: string;
   confirm_remove_controller_user_description_2: string;
+  confirm_remove_last_controller_description: string;
   detach_success: string;
   confirm_new_controller: string;
   enter_controller: string;
