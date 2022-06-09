@@ -9,6 +9,10 @@ import { AccountsTab } from "../components/accounts-tab";
  * Verifies that new users get a main account.
  */
 describe("Users get a main account", () => {
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   it("Setup: Create a new user", async () => {
     await browser.url("/");
     const userId = await register(browser);

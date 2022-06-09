@@ -13,6 +13,10 @@ describe("Verifies that neurons can be disbursed", () => {
   const neuronIcp = 3;
   let accountIcpBefore: number = Infinity; // This will be set to the account holding before it receives the disbursal.
 
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   /**
    * Creates a user with:
    * - ICP in the main account

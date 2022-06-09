@@ -183,6 +183,10 @@ const redirectTest = async (
 };
 
 describe("redirects", () => {
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   it("goes to accounts page after registration", async () => {
     await browser.url("/");
     await waitForLoad(browser);

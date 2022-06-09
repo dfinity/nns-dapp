@@ -11,6 +11,10 @@ import { AccountsTab } from "../components/accounts-tab";
 describe("Users get a main account", () => {
   const linkedAccountName = "Koala";
 
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   it("Setup: Create a new user", async () => {
     await browser.url("/");
     const userId = await register(browser);

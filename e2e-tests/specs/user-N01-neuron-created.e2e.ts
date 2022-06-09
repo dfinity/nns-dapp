@@ -7,6 +7,10 @@ import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
 
 describe("Verifies that neurons can be created", () => {
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   /**
    * Creates a user with:
    * - ICP in the main account

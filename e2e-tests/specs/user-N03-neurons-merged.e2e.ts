@@ -16,6 +16,10 @@ describe("Verifies that neurons can be merged", () => {
   let neuron1IcpBefore: number = NaN;
   let neuron2IcpBefore: number = NaN;
 
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   /**
    * Setup creates a user with:
    * - ICP in the main account

@@ -9,6 +9,10 @@ import { ProposalsTab } from "../components/proposals-tab";
 describe("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
 
+  before(function () {
+    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+  });
+
   it("Setup: Register user", async () => {
     await browser.url("/");
     const userId = await register(browser);
