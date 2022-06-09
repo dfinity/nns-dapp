@@ -37,6 +37,8 @@
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
   import Card from "../lib/components/ui/Card.svelte";
+  import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
+  import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -183,9 +185,6 @@
 
   $: ({ details: canisterDetails, info: canisterInfo } =
     $selectedCanisterStore);
-
-  let canisterIdString: string = "";
-  $: canisterIdString = canisterInfo?.canister_id.toText() ?? "";
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
@@ -196,12 +195,8 @@
 
     <section>
       {#if canisterInfo !== undefined}
-        <h1>{canisterIdString}</h1>
-        <p class="canister-id">
-          {replacePlaceholders($i18n.canister_detail.id, {
-            $canisterId: canisterIdString,
-          })}
-        </p>
+        <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+        <CanisterCardSubTitle canister={canisterInfo} />
         <div class="actions">
           <DetachCanisterButton canisterId={canisterInfo.canister_id} />
         </div>
@@ -215,7 +210,7 @@
       {/if}
       {#if canisterDetails !== undefined}
         <CyclesCard cycles={canisterDetails.cycles} />
-        <ControllersCard {canisterDetails} />
+        <ControllersCard />
       {:else if errorKey !== undefined}
         <Card testId="canister-details-error-card">
           <p class="error-message">{translate({ labelKey: errorKey })}</p>

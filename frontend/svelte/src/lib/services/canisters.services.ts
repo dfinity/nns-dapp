@@ -7,13 +7,16 @@ import {
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   topUpCanister as topUpCanisterApi,
+  updateSettings as updateSettingsApi,
 } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
+import type {
+  CanisterDetails,
+  CanisterSettings,
+} from "../canisters/ic-management/ic-management.canister.types";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
 } from "../canisters/nns-dapp/nns-dapp.types";
-import { E8S_PER_ICP } from "../constants/icp.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetail } from "../utils/app-path.utils";
@@ -110,6 +113,55 @@ export const topUpCanister = async ({
   }
 };
 
+export const addController = async ({
+  controller,
+  canisterDetails,
+}: {
+  controller: string;
+  canisterDetails: CanisterDetails;
+}): Promise<{ success: boolean }> => {
+  if (canisterDetails.settings.controllers.includes(controller)) {
+    toastsStore.error({
+      labelKey: "error.controller_already_present",
+      substitutions: {
+        $principal: controller,
+      },
+    });
+    return { success: false };
+  }
+  const newControllers = [...canisterDetails.settings.controllers, controller];
+  const newSettings = {
+    ...canisterDetails.settings,
+    controllers: newControllers,
+  };
+  return updateSettings({
+    canisterId: canisterDetails.id,
+    settings: newSettings,
+  });
+};
+
+// Export for testing purposes, better expose specific functions to be used in controllers.
+export const updateSettings = async ({
+  settings,
+  canisterId,
+}: {
+  settings: Partial<CanisterSettings>;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getIdentity();
+    await updateSettingsApi({
+      identity,
+      canisterId,
+      settings,
+    });
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    return { success: false };
+  }
+};
+
 export const attachCanister = async (
   canisterId: Principal
 ): Promise<{ success: boolean }> => {
@@ -176,9 +228,7 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
 > => {
   try {
     const identity = await getIdentity();
-    const trillionRatio = await getIcpToCyclesExchangeRateApi(identity);
-    // This transforms to ratio to E8s to T Cycles.
-    return trillionRatio / BigInt(E8S_PER_ICP);
+    return await getIcpToCyclesExchangeRateApi(identity);
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
     return;

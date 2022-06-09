@@ -9,7 +9,7 @@
   import Input from "../ui/Input.svelte";
 
   export let amount: number | undefined = undefined;
-  export let icpToCyclesRatio: bigint | undefined = undefined;
+  export let icpToCyclesExchangeRate: bigint | undefined = undefined;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
@@ -19,19 +19,19 @@
 
   const setCycles = () =>
     (amountCycles =
-      amount !== undefined && icpToCyclesRatio !== undefined
+      amount !== undefined && icpToCyclesExchangeRate !== undefined
         ? convertIcpToTCycles({
             icpNumber: amount,
-            ratio: icpToCyclesRatio,
+            exchangeRate: icpToCyclesExchangeRate,
           })
         : undefined);
 
   const setAmount = () =>
     (amount =
-      amountCycles !== undefined && icpToCyclesRatio !== undefined
+      amountCycles !== undefined && icpToCyclesExchangeRate !== undefined
         ? convertTCyclesToIcpNumber({
             tCycles: amountCycles,
-            ratio: icpToCyclesRatio,
+            exchangeRate: icpToCyclesExchangeRate,
           })
         : undefined);
 
@@ -67,7 +67,7 @@
         bind:value={amount}
         on:focus={() => (isChanging = "icp")}
         on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesRatio === undefined}
+        disabled={icpToCyclesExchangeRate === undefined}
       />
       <Input
         placeholderLabelKey="canisters.t_cycles"
@@ -77,7 +77,7 @@
         bind:value={amountCycles}
         on:focus={() => (isChanging = "tCycles")}
         on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesRatio === undefined}
+        disabled={icpToCyclesExchangeRate === undefined}
       />
     </div>
     <slot />
@@ -105,5 +105,6 @@
   .inputs {
     display: flex;
     gap: var(--padding-2x);
+    justify-content: center;
   }
 </style>
