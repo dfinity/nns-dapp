@@ -40,6 +40,7 @@ jest.mock("../../../lib/stores/toasts.store", () => {
   return {
     toastsStore: {
       error: jest.fn(),
+      show: jest.fn(),
     },
   };
 });
@@ -345,7 +346,7 @@ describe("canisters-services", () => {
         account,
       });
       expect(canisterId).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
     });
 
     it("should return success false if no identity", async () => {
@@ -406,7 +407,7 @@ describe("canisters-services", () => {
         account,
       });
       expect(success).toBe(false);
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
     });
 
     it("should return success false if no identity", async () => {
