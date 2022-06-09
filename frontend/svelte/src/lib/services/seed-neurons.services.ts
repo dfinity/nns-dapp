@@ -4,15 +4,14 @@ import { HOST } from "../constants/environment.constants";
 import type { Secp256k1PublicKey } from "../keys/secp256k1";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { accountsStore } from "../stores/accounts.store";
+import { toastsStore } from "../stores/toasts.store";
 import { createAgent } from "../utils/agent.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
+import { bytesToHexString } from "../utils/utils";
 
-const buf2hex = (buffer: ArrayBuffer): string => {
-  return [...new Uint8Array(buffer)]
-    .map((x) => x.toString(16).padStart(2, "0"))
-    .join("");
-};
+const buf2hex = (buffer: ArrayBuffer): string =>
+  bytesToHexString([...new Uint8Array(buffer)]);
 
 // TODO: Remove after all seed neurons have been claimed.
 // Method to be used only from the Dev Tools console.
@@ -40,19 +39,25 @@ export const claimSeedNeurons = async () => {
     const hexPubKey = buf2hex(bufferKey.toRaw());
     const isHex = hexPubKey.match("^[0-9a-fA-F]+$");
     if (!isHex) {
-      throw new Error(`${hexPubKey} is not a hex string.`);
+      toastsStore.error({
+        labelKey: "error.pub_key_not_hex_string",
+        substitutions: {
+          $key: hexPubKey,
+        },
+      });
+      return;
     }
 
     if (hexPubKey.length < 130 || hexPubKey.length > 150) {
-      throw new Error(
-        `The key must be >= 130 characters and <= 150 characters.`
-      );
+      toastsStore.error({
+        labelKey: "error.pub_key_hex_string_invalid_length",
+      });
+      return;
     }
-    console.log("Check your wallet to continue");
-    const response = await governance.claimNeurons({ hexPubKey });
-    console.log(response);
+    return await governance.claimNeurons({ hexPubKey });
   } catch (error) {
     const toastError = mapNeuronErrorToToastMessage(error);
+    toastsStore.error(toastError);
     const message = translate({ labelKey: toastError.labelKey });
     console.error("Error during claiming neurons");
     console.error(message);

@@ -82,6 +82,8 @@ interface I18nError {
   canister_details_not_found: string;
   controller_already_present: string;
   controller_not_present: string;
+  pub_key_not_hex_string: string;
+  pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
 }
 
