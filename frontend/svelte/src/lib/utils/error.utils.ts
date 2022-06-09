@@ -8,9 +8,9 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
+import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
-  InsufficientAmountError,
   InvalidAmountError,
   NotAuthorizedNeuronError,
   NotFoundError,
@@ -48,9 +48,9 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     [NotFoundError, "error.neuron_not_found"],
     [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
     [InvalidAmountError, "error.amount_not_valid"],
-    [InsufficientAmountError, "error.amount_not_enough"],
+    [InsufficientAmountError, "error.amount_not_enough_stake_neuron"],
     [CouldNotClaimNeuronError, "error.neuron_not_found"],
-    [InsufficientAmountNNSError, "error.amount_not_enough"],
+    [InsufficientAmountNNSError, "error.amount_not_enough_stake_neuron"],
     [InvalidSenderError, "error.invalid_sender"],
     [InsufficientFundsError, "error.insufficient_funds"],
     [InvalidAccountIDError, "error.invalid_account_id"],
@@ -59,6 +59,37 @@ export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
     [NotFoundError, "error.neuron_not_found"],
     [TransferError, "error.transfer_error"],
     [CannotBeMerged, "error.cannot_merge"],
+  ];
+  const pair = collection.find(([classType]) => error instanceof classType);
+  if (pair === undefined) {
+    return {
+      labelKey: "error.unknown",
+      level: "error",
+      detail: errorToString(error),
+    };
+  }
+  return { labelKey: pair[1], detail: errorToString(error), level: "error" };
+};
+
+export const mapCanisterErrorToToastMessage = (error: Error): ToastMsg => {
+  // Check toToastError first
+  const fallbackKey = "fallback";
+  const toastError = toToastError({
+    err: error,
+    fallbackErrorLabelKey: fallbackKey,
+  });
+  // Return if error found is not fallback
+  if (toastError.labelKey !== fallbackKey) {
+    return {
+      level: "error",
+      ...toastError,
+    };
+  }
+
+  // Check CMC and IC Mgt Canister Errors
+  /* eslint-disable-next-line @typescript-eslint/ban-types */
+  const collection: Array<[Function, string]> = [
+    [InsufficientAmountError, "error.insufficient_funds"],
   ];
   const pair = collection.find(([classType]) => error instanceof classType);
   if (pair === undefined) {

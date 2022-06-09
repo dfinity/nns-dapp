@@ -54,7 +54,7 @@ interface I18nError {
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
-  amount_not_enough: string;
+  amount_not_enough_stake_neuron: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;

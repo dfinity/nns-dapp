@@ -1,3 +1,4 @@
+import type { ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
@@ -17,7 +18,9 @@ import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
+import { InsufficientAmountError } from "../types/common.errors";
 import { getLastPathDetail } from "../utils/app-path.utils";
+import { mapCanisterErrorToToastMessage } from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -55,6 +58,21 @@ export const listCanisters = async ({
   });
 };
 
+/**
+ * @throws InsufficientAmountError
+ */
+const assertEnoughBalance = ({
+  amount,
+  account,
+}: {
+  amount: ICP;
+  account: Account;
+}): void => {
+  if (amount.toE8s() > account.balance.toE8s()) {
+    throw new InsufficientAmountError();
+  }
+};
+
 export const createCanister = async ({
   amount,
   account,
@@ -64,12 +82,8 @@ export const createCanister = async ({
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    if (icpAmount.toE8s() > account.balance.toE8s()) {
-      toastsStore.error({
-        labelKey: "error.insufficient_funds",
-      });
-      return;
-    }
+    assertEnoughBalance({ amount: icpAmount, account });
+
     const identity = await getIdentity();
     const canisterId = await createCanisterApi({
       identity,
@@ -83,6 +97,7 @@ export const createCanister = async ({
     return canisterId;
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    toastsStore.show(mapCanisterErrorToToastMessage(error));
     return;
   }
 };
@@ -98,12 +113,8 @@ export const topUpCanister = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    if (icpAmount.toE8s() > account.balance.toE8s()) {
-      toastsStore.error({
-        labelKey: "error.insufficient_funds",
-      });
-      return { success: false };
-    }
+    assertEnoughBalance({ amount: icpAmount, account });
+
     const identity = await getIdentity();
     await topUpCanisterApi({
       identity,
@@ -117,6 +128,7 @@ export const topUpCanister = async ({
     return { success: true };
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    toastsStore.show(mapCanisterErrorToToastMessage(error));
     return { success: false };
   }
 };

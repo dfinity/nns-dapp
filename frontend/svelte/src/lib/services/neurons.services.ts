@@ -38,9 +38,9 @@ import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
+import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
-  InsufficientAmountError,
   NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
@@ -195,7 +195,7 @@ export const stakeNeuron = async ({
 
     if (!isEnoughToStakeNeuron({ stake })) {
       toastsStore.error({
-        labelKey: "error.amount_not_enough",
+        labelKey: "error.amount_not_enough_stake_neuron",
       });
       return;
     }
