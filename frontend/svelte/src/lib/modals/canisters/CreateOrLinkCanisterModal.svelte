@@ -144,8 +144,8 @@
         on:nnsSelectAmount={selectAmount}
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
-        <!-- TODO: Check which is the minimum -->
-        <p>{$i18n.canisters.minimum_cycles_text}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_1}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_2}</p>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
