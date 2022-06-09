@@ -6,6 +6,7 @@ import {
   RedirectToLegacy,
   REDIRECT_TO_LEGACY,
 } from "../common/constants";
+import { Capabilities } from "@wdio/types";
 
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
@@ -184,7 +185,7 @@ const redirectTest = async (
 
 describe("redirects", () => {
   before(function () {
-    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
   });
 
   it("goes to accounts page after registration", async () => {

@@ -4,6 +4,7 @@
 import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
+import { Capabilities } from "@wdio/types";
 
 /**
  * Verifies that users can create a linked account
@@ -12,7 +13,7 @@ describe("Users get a main account", () => {
   const linkedAccountName = "Koala";
 
   before(function () {
-    if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
+    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
   });
 
   it("Setup: Create a new user", async () => {
