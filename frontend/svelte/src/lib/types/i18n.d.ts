@@ -4,6 +4,7 @@
 
 interface I18nCore {
   close: string;
+  remove: string;
   icp: string;
   create: string;
   filter: string;
@@ -19,7 +20,7 @@ interface I18nCore {
   max: string;
   principal: string;
   toggle: string;
-  save_log_file: string;
+  log: string;
   principal_id: string;
   copy: string;
 }
@@ -54,7 +55,7 @@ interface I18nError {
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
-  amount_not_enough: string;
+  amount_not_enough_stake_neuron: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;
@@ -80,6 +81,7 @@ interface I18nError {
   not_canister_controller: string;
   canister_details_not_found: string;
   controller_already_present: string;
+  controller_not_present: string;
   hardware_wallet_no_account: string;
 }
 
@@ -283,7 +285,9 @@ interface I18nCanisters {
   enter_amount: string;
   review_create_canister: string;
   t_cycles: string;
-  minimum_cycles_text: string;
+  minimum_cycles_text_1: string;
+  minimum_cycles_text_2: string;
+  transaction_fee: string;
   review_cycles_purchase: string;
   converted_to: string;
 }
@@ -301,6 +305,11 @@ interface I18nCanister_detail {
   confirm_detach_title: string;
   confirm_detach_description_1: string;
   confirm_detach_description_2: string;
+  confirm_remove_controller_title: string;
+  confirm_remove_controller_description: string;
+  confirm_remove_controller_user_description_1: string;
+  confirm_remove_controller_user_description_2: string;
+  confirm_remove_last_controller_description: string;
   detach_success: string;
   confirm_new_controller: string;
   enter_controller: string;

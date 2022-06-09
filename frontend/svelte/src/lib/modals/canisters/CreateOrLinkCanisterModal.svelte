@@ -5,6 +5,7 @@
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
   import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
+  import { NEW_CANISTER_MIN_T_CYCLES } from "../../constants/canisters.constants";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -100,7 +101,7 @@
     });
     const canisterId = await createCanister({
       amount,
-      fromSubAccount: account.subAccount,
+      account,
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
@@ -141,8 +142,10 @@
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
+        minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
-        <p>{$i18n.canisters.minimum_cycles_text}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_1}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_2}</p>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
