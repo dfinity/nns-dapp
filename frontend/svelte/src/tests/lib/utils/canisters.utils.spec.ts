@@ -2,7 +2,9 @@ import { Principal } from "@dfinity/principal";
 import {
   formatCyclesToTCycles,
   getCanisterFromStore,
+  isUserController,
 } from "../../../lib/utils/canisters.utils";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("canister-utils", () => {
@@ -62,6 +64,54 @@ describe("canister-utils", () => {
       expect(formatCyclesToTCycles(BigInt(876_500_000_000))).toBe("0.877");
       expect(formatCyclesToTCycles(BigInt(876_400_000_000))).toBe("0.876");
       expect(formatCyclesToTCycles(BigInt(10_120_000_000_000))).toBe("10.120");
+    });
+  });
+
+  describe("isUserController", () => {
+    it("returns true if controller is the same in auth store", () => {
+      const authStore = {
+        identity: mockIdentity,
+      };
+      const controller = mockIdentity.getPrincipal().toText();
+      expect(
+        isUserController({
+          controller,
+          authStore,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false if controller is not the same in auth store", () => {
+      const authStore = {
+        identity: mockIdentity,
+      };
+      expect(
+        isUserController({
+          controller: "not-same",
+          authStore,
+        })
+      ).toBe(false);
+    });
+
+    it("returns false if identity is undefined or null", () => {
+      const authStoreNull = {
+        identity: null,
+      };
+      const authStoreNotDefined = {
+        identity: undefined,
+      };
+      expect(
+        isUserController({
+          controller: "some-controller",
+          authStore: authStoreNull,
+        })
+      ).toBe(false);
+      expect(
+        isUserController({
+          controller: "some-controller",
+          authStore: authStoreNotDefined,
+        })
+      ).toBe(false);
     });
   });
 });

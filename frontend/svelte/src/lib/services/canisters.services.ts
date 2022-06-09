@@ -160,6 +160,33 @@ export const addController = async ({
   });
 };
 
+export const removeController = async ({
+  controller,
+  canisterDetails,
+}: {
+  controller: string;
+  canisterDetails: CanisterDetails;
+}): Promise<{ success: boolean }> => {
+  const { controllers } = canisterDetails.settings;
+  if (!controllers.includes(controller)) {
+    toastsStore.error({
+      labelKey: "error.controller_not_present",
+    });
+    return { success: false };
+  }
+  const newControllers = controllers.filter(
+    (currentController) => currentController !== controller
+  );
+  const newSettings = {
+    ...canisterDetails.settings,
+    controllers: newControllers,
+  };
+  return updateSettings({
+    canisterId: canisterDetails.id,
+    settings: newSettings,
+  });
+};
+
 // Export for testing purposes, better expose specific functions to be used in controllers.
 export const updateSettings = async ({
   settings,

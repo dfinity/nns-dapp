@@ -11,6 +11,7 @@ import {
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
+  removeController,
   routePathCanisterId,
   topUpCanister,
   updateSettings,
@@ -41,6 +42,7 @@ jest.mock("../../../lib/stores/toasts.store", () => {
     toastsStore: {
       error: jest.fn(),
       show: jest.fn(),
+      success: jest.fn(),
     },
   };
 });
@@ -219,12 +221,67 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
+      expect(toastsStore.error).toBeCalled();
     });
 
     it("should not update settings if no identity", async () => {
       setNoIdentity();
 
       const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("removeController", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update the settings", async () => {
+      const controller = "aaaaa-aa";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
+      const response = await removeController({
+        controller,
+        canisterDetails,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not call api if controller is not in the list of current controllers", async () => {
+      const controller = "aaaaa-aa";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
+      const response = await removeController({
+        controller: "not-a-controller",
+        canisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+      expect(toastsStore.error).toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await removeController({
         controller: "some-controller",
         canisterDetails: mockCanisterDetails,
       });

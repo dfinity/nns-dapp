@@ -1,5 +1,6 @@
 import type { CanisterDetails } from "../canisters/nns-dapp/nns-dapp.types";
 import { ONE_TRILLION } from "../constants/icp.constants";
+import type { AuthStore } from "../stores/auth.store";
 import type { CanistersStore } from "../stores/canisters.store";
 import { formatNumber } from "./format.utils";
 
@@ -36,3 +37,11 @@ export const mapCanisterDetails = ({
     canisterId,
   };
 };
+
+export const isUserController = ({
+  controller,
+  authStore,
+}: {
+  controller: string;
+  authStore: AuthStore;
+}): boolean => controller === authStore.identity?.getPrincipal().toText();
