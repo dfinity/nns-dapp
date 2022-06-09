@@ -4,6 +4,8 @@ import {
   debounce,
   isDefined,
   isHash,
+  isNullable,
+  nonNullable,
   stringifyJson,
   uniqueObjects,
 } from "../../../lib/utils/utils";
@@ -163,6 +165,28 @@ describe("utils", () => {
       expect(bytesToHexString([15])).toBe("0f");
       expect(bytesToHexString([255])).toBe("ff");
       expect(bytesToHexString([1, 255, 3, 0])).toBe("01ff0300");
+    });
+  });
+
+  describe("isNullable", () => {
+    it("should determine nullable", () => {
+      expect(isNullable(null)).toBeTruthy();
+      expect(isNullable(undefined)).toBeTruthy();
+      expect(isNullable(0)).toBeFalsy();
+      expect(isNullable(1)).toBeFalsy();
+      expect(isNullable("")).toBeFalsy();
+      expect(isNullable([])).toBeFalsy();
+    });
+  });
+
+  describe("nonNullable", () => {
+    it("should determine nullable", () => {
+      expect(nonNullable(null)).toBeFalsy();
+      expect(nonNullable(undefined)).toBeFalsy();
+      expect(nonNullable(0)).toBeTruthy();
+      expect(nonNullable(1)).toBeTruthy();
+      expect(nonNullable("")).toBeTruthy();
+      expect(nonNullable([])).toBeTruthy();
     });
   });
 

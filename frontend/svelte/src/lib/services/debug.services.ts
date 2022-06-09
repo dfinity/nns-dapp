@@ -118,9 +118,8 @@ const anonymiseStoreState = async () => {
  */
 export const generateDebugLog = async (logType: LogType) => {
   const debugStore = initDebugStore();
-  const anonymise = logType === LogType.Console || logType === LogType.File;
-  const saveToFile =
-    logType === LogType.File || logType === LogType.FileOriginal;
+  const anonymise = [LogType.Console, LogType.File].includes(logType);
+  const saveToFile = [LogType.File, LogType.FileOriginal].includes(logType);
   const state = anonymise ? await anonymiseStoreState() : get(debugStore);
   const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
 

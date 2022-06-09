@@ -130,8 +130,15 @@ export const bytesToHexString = (bytes: number[]): string =>
     ""
   );
 
-export const isNullOrUndefined = (value: unknown): boolean =>
-  value === undefined || value === null;
+/** Is null or undefined */
+export const isNullable = <T>(
+  argument: T | undefined | null
+): argument is undefined | null => argument === null || argument === undefined;
+
+/** Not null and not undefined */
+export const nonNullable = <T>(
+  argument: T | undefined | null
+): argument is NonNullable<T> => !isNullable(argument);
 
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,
