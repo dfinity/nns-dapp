@@ -101,37 +101,46 @@ describe("icp-utils", () => {
 
   describe("convertIcpToTCycles", () => {
     it("converts ICP to TCycles", () => {
-      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(10_000) })).toBe(
-        1
-      );
       expect(
-        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(10_000) })
+        convertIcpToTCycles({ icpNumber: 1, exchangeRate: BigInt(10_000) })
+      ).toBe(1);
+      expect(
+        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: BigInt(10_000) })
       ).toBe(2.5);
       expect(
-        convertIcpToTCycles({ icpNumber: 2.5, ratio: BigInt(20_000) })
+        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: BigInt(20_000) })
       ).toBe(5);
-      expect(convertIcpToTCycles({ icpNumber: 1, ratio: BigInt(15_000) })).toBe(
-        1.5
-      );
+      expect(
+        convertIcpToTCycles({ icpNumber: 1, exchangeRate: BigInt(15_000) })
+      ).toBe(1.5);
     });
   });
 
   describe("convertTCyclesToIcpNumber", () => {
     it("converts TCycles to number", () => {
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(10_000) })
+        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: BigInt(10_000) })
       ).toBe(1);
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(10_000) })
+        convertTCyclesToIcpNumber({
+          tCycles: 2.5,
+          exchangeRate: BigInt(10_000),
+        })
       ).toBe(2.5);
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 2.5, ratio: BigInt(20_000) })
+        convertTCyclesToIcpNumber({
+          tCycles: 2.5,
+          exchangeRate: BigInt(20_000),
+        })
       ).toBe(1.25);
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 1, ratio: BigInt(15_000) })
+        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: BigInt(15_000) })
       ).toBe(2 / 3);
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 4.32, ratio: BigInt(10_000) })
+        convertTCyclesToIcpNumber({
+          tCycles: 4.32,
+          exchangeRate: BigInt(10_000),
+        })
       ).toBe(4.32);
     });
   });

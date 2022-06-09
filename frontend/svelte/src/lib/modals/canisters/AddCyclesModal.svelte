@@ -20,9 +20,9 @@
   } from "../../types/canister-detail.context";
   import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
 
-  let icpToCyclesRatio: bigint | undefined;
+  let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
-    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
   const steps: Steps = [
@@ -111,7 +111,7 @@
     {/if}
     {#if currentStep?.name === "SelectCycles" && account !== undefined}
       <SelectCyclesCanister
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
@@ -131,7 +131,7 @@
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
       <ConfirmCyclesCanister
         {account}
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         {amount}
         on:nnsClose
         on:nnsConfirm={addCycles}
