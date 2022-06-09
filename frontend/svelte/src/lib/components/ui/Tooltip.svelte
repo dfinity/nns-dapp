@@ -1,42 +1,53 @@
 <script lang="ts">
-  import { afterUpdate } from "svelte";
   /** Used in aria-describedby */
+
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
-  let tooltipComponent;
-  let rightEdge;
-  let leftEdge;
-  let innerWidth;
 
-  afterUpdate(() => {
-    const { right, left } = tooltipComponent?.getBoundingClientRect();
+  let tooltipComponent: HTMLDivElement | undefined = undefined;
+  let target: HTMLDivElement | undefined = undefined;
+  let innerWidth: number | undefined = undefined;
+  let tooltipStyle: string | undefined = undefined;
+
+  const setPosition = () => {
+    if (
+      innerWidth === undefined ||
+      tooltipComponent === undefined ||
+      target === undefined
+    ) {
+      // Do nothing, we need the elements to be rendered in order to get their size and position to fix the tooltip
+      return;
+    }
+
     const clientWidth = document.querySelector("main")?.clientWidth;
 
-    if (right > clientWidth) {
-      rightEdge = true;
-      let difference = right - clientWidth;
-      // if .rightEdge still overflows, shift left proportionately
-      if (difference) {
-        tooltipComponent.style.transform = `translate( calc(-50% - ${
-          difference + 1
-        }px), 100%)`;
-      }
-    } else if (innerWidth >= 904) {
-      rightEdge = false;
-    }
+    const { left: targetLeft, width: targetWidth } =
+      target.getBoundingClientRect();
+    const targetCenter = targetLeft + targetWidth / 2;
 
-    if (left < 0) {
-      leftEdge = true;
-    } else {
-      leftEdge = false;
-    }
-  });
+    const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
+
+    const spaceLeft = targetCenter;
+    const spaceRight = clientWidth - targetCenter;
+
+    const overflowLeft = tooltipWidth / 2 - spaceLeft;
+    const overflowRight = tooltipWidth / 2 - spaceRight;
+
+    tooltipStyle =
+      overflowLeft > 0
+        ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
+        : overflowRight > 0
+        ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
+        : undefined;
+  };
+
+  $: innerWidth, (() => setPosition())();
 </script>
 
 <svelte:window bind:innerWidth />
 <div class="tooltip-wrapper">
-  <div class="tooltip-target" aria-describedby={id}>
+  <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>
   <div
@@ -44,9 +55,8 @@
     role="tooltip"
     {id}
     class:noWrap
-    class:rightEdge
-    class:leftEdge
     bind:this={tooltipComponent}
+    style={tooltipStyle}
   >
     {text}
   </div>
@@ -65,7 +75,7 @@
 
     left: 50%;
     bottom: var(--padding-0_5x);
-    transform: translate(-50%, 100%);
+    transform: translate(var(--tooltip-transform-x, -50%), 100%);
 
     opacity: 0;
     visibility: hidden;
@@ -87,15 +97,8 @@
     &.noWrap {
       white-space: nowrap;
     }
-    &.rightEdge {
-      left: auto;
-    }
-    pointer-events: none;
-  }
 
-  .leftEdge {
-    transform: translate(0, 100%);
-    left: -15%;
+    pointer-events: none;
   }
 
   .tooltip-target {
