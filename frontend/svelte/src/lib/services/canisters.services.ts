@@ -13,10 +13,7 @@ import type {
   CanisterDetails,
   CanisterSettings,
 } from "../canisters/ic-management/ic-management.canister.types";
-import type {
-  CanisterDetails as CanisterInfo,
-  SubAccountArray,
-} from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
@@ -93,21 +90,26 @@ export const createCanister = async ({
 export const topUpCanister = async ({
   amount,
   canisterId,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
   canisterId: Principal;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<{ success: boolean }> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    // TODO: Validate it's enough ICP https://dfinity.atlassian.net/browse/L2-615
+    if (icpAmount.toE8s() > account.balance.toE8s()) {
+      toastsStore.error({
+        labelKey: "error.insufficient_funds",
+      });
+      return { success: false };
+    }
     const identity = await getIdentity();
     await topUpCanisterApi({
       identity,
       canisterId,
       amount: icpAmount,
-      fromSubAccount,
+      fromSubAccount: account.subAccount,
     });
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.
     // `syncAccounts` might be slow since it loads all accounts and balances.

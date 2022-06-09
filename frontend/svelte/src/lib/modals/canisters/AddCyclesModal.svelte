@@ -83,9 +83,11 @@
     const { success } = await topUpCanister({
       amount,
       canisterId,
-      fromSubAccount: account.subAccount,
+      account,
     });
-    await reloadDetails(canisterId);
+    if (success) {
+      await reloadDetails(canisterId);
+    }
     stopBusy("top-up-canister");
     if (success) {
       toastsStore.success({

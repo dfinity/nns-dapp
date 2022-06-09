@@ -366,13 +366,33 @@ describe("canisters-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call api to top up a canister", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("5") as ICP,
+      };
       const { success } = await topUpCanister({
         amount: 3,
         canisterId: mockCanisterDetails.id,
+        account,
       });
       expect(success).toBe(true);
       expect(spyTopUpCanister).toBeCalled();
       expect(syncAccounts).toBeCalled();
+    });
+
+    it("should not call api if account doesn't have enough funds", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("2") as ICP,
+      };
+      const { success } = await topUpCanister({
+        amount: 3,
+        canisterId: mockCanisterDetails.id,
+        account,
+      });
+      expect(success).toBe(false);
+      expect(spyTopUpCanister).not.toBeCalled();
+      expect(syncAccounts).not.toBeCalled();
     });
 
     it("should return success false if no identity", async () => {
@@ -380,6 +400,7 @@ describe("canisters-services", () => {
 
       const { success } = await topUpCanister({
         amount: 3,
+        account: mockMainAccount,
         canisterId: mockCanisterDetails.id,
       });
       expect(success).toBe(false);
