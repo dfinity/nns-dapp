@@ -73,17 +73,17 @@ export const convertNumberToICP = (amount: number): ICP => {
   return stake;
 };
 
-// `exchangeRate` comes from `xdr_permyriad_per_icp` from CMC
-// `exchangeRate` is 10,000ths SDRs per 1 ICP.
-// TODO: add link to comment.
-const SDR_PARTS_IN_RATIO = 10_000;
+// `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
+// This value reflects the current market price of one ICP token.
+// https://sourcegraph.com/github.com/dfinity/ic@7cc18edf13bc7761bf58bf6e2eef558ba624adff/-/blob/rs/nns/cmc/cmc.did?L67
+const NUMBER_XDR_PER_ONE_ICP = 10_000;
 export const convertIcpToTCycles = ({
   icpNumber,
   exchangeRate,
 }: {
   icpNumber: number;
   exchangeRate: bigint;
-}): number => icpNumber * (Number(exchangeRate) / SDR_PARTS_IN_RATIO);
+}): number => icpNumber * (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
 export const convertTCyclesToIcpNumber = ({
   tCycles,
@@ -91,4 +91,4 @@ export const convertTCyclesToIcpNumber = ({
 }: {
   tCycles: number;
   exchangeRate: bigint;
-}): number => tCycles / (Number(exchangeRate) / SDR_PARTS_IN_RATIO);
+}): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
