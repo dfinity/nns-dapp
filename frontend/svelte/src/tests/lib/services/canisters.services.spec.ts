@@ -1,8 +1,9 @@
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
+  addController,
   attachCanister,
   createCanister,
   detachCanister,
@@ -11,6 +12,7 @@ import {
   listCanisters,
   routePathCanisterId,
   topUpCanister,
+  updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
@@ -22,6 +24,7 @@ import {
   mockCanister,
   mockCanisterDetails,
   mockCanisters,
+  mockCanisterSettings,
 } from "../../mocks/canisters.mock";
 
 jest.mock("../../../lib/services/accounts.services", () => {
@@ -43,6 +46,10 @@ describe("canisters-services", () => {
     .spyOn(api, "detachCanister")
     .mockImplementation(() => Promise.resolve(undefined));
 
+  const spyUpdateSettings = jest
+    .spyOn(api, "updateSettings")
+    .mockImplementation(() => Promise.resolve(undefined));
+
   const spyCreateCanister = jest
     .spyOn(api, "createCanister")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
@@ -55,9 +62,10 @@ describe("canisters-services", () => {
     .spyOn(api, "queryCanisterDetails")
     .mockImplementation(() => Promise.resolve(mockCanisterDetails));
 
+  const exchangeRate = BigInt(10_000);
   const spyGetExchangeRate = jest
     .spyOn(api, "getIcpToCyclesExchangeRate")
-    .mockImplementation(() => Promise.resolve(BigInt(10_000 * E8S_PER_ICP)));
+    .mockImplementation(() => Promise.resolve(exchangeRate));
 
   describe("listCanisters", () => {
     afterEach(() => {
@@ -129,10 +137,10 @@ describe("canisters-services", () => {
       expect(store.canisters).toEqual(mockCanisters);
     });
 
-    it("should not attach canister if no identity", async () => {
+    it("should not detach canister if no identity", async () => {
       setNoIdentity();
 
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await detachCanister(mockCanisterDetails.id);
       expect(response.success).toBe(false);
       expect(spyDetachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
@@ -141,7 +149,81 @@ describe("canisters-services", () => {
     });
   });
 
-  describe("route-path", () => {
+  describe("updateSettings", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update settings", async () => {
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("addController", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update the settings", async () => {
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if controller is already present", async () => {
+      const controller = "some-controller";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
+
+      const response = await addController({
+        controller,
+        canisterDetails: canisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("routePathCanisterId", () => {
     beforeAll(() => {
       // Avoid to print errors during test
       jest.spyOn(console, "error").mockImplementation(() => undefined);
@@ -176,6 +258,17 @@ describe("canisters-services", () => {
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
       resetIdentity();
     });
+
+    it("should throw if getCanisterDetails api throws", async () => {
+      spyQueryCanisterDetails.mockRejectedValue(
+        new UserNotTheControllerError()
+      );
+
+      const call = () => getCanisterDetails(mockCanisterDetails.id);
+
+      await expect(call).rejects.toThrow(UserNotTheControllerError);
+      spyQueryCanisterDetails.mockRestore();
+    });
   });
 
   describe("getIcpToCyclesExchangeRate", () => {
@@ -183,7 +276,7 @@ describe("canisters-services", () => {
 
     it("should call api to get conversion rate", async () => {
       const response = await getIcpToCyclesExchangeRate();
-      expect(response).toBe(BigInt(10_000));
+      expect(response).toBe(exchangeRate);
       expect(spyGetExchangeRate).toBeCalled();
     });
 

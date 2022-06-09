@@ -5,7 +5,6 @@ import * as ledgerApi from "../../../lib/api/ledger.api";
 import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
-  getAccountFromStore,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   getAccountTransactions,
@@ -247,34 +246,6 @@ describe("accounts-services", () => {
     it("should not get account identifier from invalid path", () => {
       expect(routePathAccountIdentifier("/#/wallet/")).toBeUndefined();
       expect(routePathAccountIdentifier(undefined)).toBeUndefined();
-    });
-  });
-
-  describe("get-account", () => {
-    beforeAll(() =>
-      accountsStore.set({
-        main: mockMainAccount,
-        subAccounts: [mockSubAccount],
-      })
-    );
-
-    afterAll(() => accountsStore.reset());
-
-    it("should not return an account if no identifier is provided", () => {
-      expect(getAccountFromStore(undefined)).toBeUndefined();
-    });
-
-    it("should find no account if not matches", () => {
-      expect(getAccountFromStore("aaa")).toBeUndefined();
-    });
-
-    it("should return corresponding account", () => {
-      expect(getAccountFromStore(mockMainAccount.identifier)).toEqual(
-        mockMainAccount
-      );
-      expect(getAccountFromStore(mockSubAccount.identifier)).toEqual(
-        mockSubAccount
-      );
     });
   });
 

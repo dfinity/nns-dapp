@@ -21,6 +21,7 @@ interface I18nCore {
   toggle: string;
   save_log_file: string;
   principal_id: string;
+  copy: string;
 }
 
 interface I18nError {
@@ -76,6 +77,9 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  not_canister_controller: string;
+  canister_details_not_found: string;
+  controller_already_present: string;
   hardware_wallet_no_account: string;
 }
 
@@ -106,7 +110,6 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
-  copy_identifier: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;
