@@ -1,6 +1,7 @@
 {
   "core": {
     "close": "Close",
+    "remove": "Remove",
     "icp": "ICP",
     "create": "Create",
     "filter": "Filter",
@@ -50,7 +51,7 @@
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
-    "amount_not_enough": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
+    "amount_not_enough_stake_neuron": "Sorry, the amount is not large enough. You need a minimum of 1 ICP to stake a neuron",
     "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
     "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account.",
     "transaction_no_source_account": "No source account has been selected to execute the transaction.",
@@ -76,6 +77,7 @@
     "not_canister_controller": "You are not the controller of this canister and cannot access its details.",
     "canister_details_not_found": "Sorry, there was an error loading the details of the canister. Please try again later.",
     "controller_already_present": "Principal $principal is already a controller",
+    "controller_not_present": "Principal is already not a controller.",
     "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {
@@ -269,7 +271,9 @@
     "enter_amount": "Enter Amount",
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
-    "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
+    "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
+    "minimum_cycles_text_2": "Transaction fee of 0.0001 is charged to the source account.",
+    "transaction_fee": "The Transaction fee of 0.0001 is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",
     "converted_to": "converted to"
   },
@@ -286,6 +290,11 @@
     "confirm_detach_title": "Confirm Detach",
     "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
     "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stored securely.",
+    "confirm_remove_controller_title": "Confirm Remove Controller",
+    "confirm_remove_controller_description": "Are you sure you want to remove the following controller?",
+    "confirm_remove_controller_user_description_1": "Are you sure you want to remove the current user from the controllers?",
+    "confirm_remove_controller_user_description_2": "You will lose access to the canister.",
+    "confirm_remove_last_controller_description": "This is the last remaining controller. If you remove it, nobody will be able to control the canister.",
     "detach_success": "Canister detached successfully",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",
