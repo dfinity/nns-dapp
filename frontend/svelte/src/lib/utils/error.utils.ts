@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
@@ -27,7 +28,6 @@ export const errorToString = (err?: unknown): string | undefined =>
     ? (err as Error).message
     : undefined;
 
-/* eslint-disable-next-line @typescript-eslint/ban-types */
 const factoryMappingErrorToToastMessage =
   (collection: Array<[Function, string]>) =>
   (error: Error): ToastMsg => {
@@ -52,11 +52,14 @@ const factoryMappingErrorToToastMessage =
         detail: errorToString(error),
       };
     }
-    return { labelKey: pair[1], detail: errorToString(error), level: "error" };
+    return {
+      labelKey: pair[1],
+      detail: errorToString(error),
+      level: "error",
+    };
   };
 
 // Check GovernanceErrors
-/* eslint-disable-next-line @typescript-eslint/ban-types */
 const neuronMapper: Array<[Function, string]> = [
   [NotFoundError, "error.neuron_not_found"],
   [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
@@ -78,7 +81,6 @@ export const mapNeuronErrorToToastMessage =
 
 // Check CMC and IC Mgt Canister Errors
 // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
-/* eslint-disable-next-line @typescript-eslint/ban-types */
 const canisterMapper: Array<[Function, string]> = [
   [InsufficientAmountError, "error.insufficient_funds"],
 ];
