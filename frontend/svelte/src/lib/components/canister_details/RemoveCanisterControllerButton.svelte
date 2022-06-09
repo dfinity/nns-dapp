@@ -1,7 +1,6 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import IconClose from "../../icons/IconClose.svelte";
   import ConfirmationModal from "../../modals/ConfirmationModal.svelte";
   import { removeController } from "../../services/canisters.services";
   import { authStore } from "../../stores/auth.store";
@@ -13,7 +12,6 @@
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
   import { isUserController } from "../../utils/canisters.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let controller: string;
 

@@ -240,10 +240,6 @@
 <style lang="scss">
   @use "../lib/themes/mixins/media";
 
-  .canister-id {
-    margin-bottom: var(--padding-3x);
-  }
-
   .actions {
     margin-bottom: var(--padding-3x);
     display: flex;
