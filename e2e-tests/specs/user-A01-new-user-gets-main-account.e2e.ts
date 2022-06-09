@@ -11,7 +11,13 @@ import { Capabilities } from "@wdio/types";
  */
 describe("Users get a main account", () => {
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   it("Setup: Create a new user", async () => {

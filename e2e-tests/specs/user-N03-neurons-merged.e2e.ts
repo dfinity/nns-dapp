@@ -18,7 +18,13 @@ describe("Verifies that neurons can be merged", () => {
   let neuron2IcpBefore: number = NaN;
 
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   /**

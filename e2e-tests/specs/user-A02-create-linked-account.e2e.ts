@@ -13,7 +13,13 @@ describe("Users get a main account", () => {
   const linkedAccountName = "Koala";
 
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   it("Setup: Create a new user", async () => {

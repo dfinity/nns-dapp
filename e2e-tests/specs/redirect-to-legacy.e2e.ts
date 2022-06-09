@@ -185,7 +185,13 @@ const redirectTest = async (
 
 describe("redirects", () => {
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   it("goes to accounts page after registration", async () => {

@@ -11,7 +11,13 @@ describe("Makes a proposal and verifies that the filters work", () => {
   let proposalId: number | undefined = undefined;
 
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   it("Setup: Register user", async () => {

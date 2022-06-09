@@ -15,7 +15,13 @@ describe("Verifies that neurons can be disbursed", () => {
   let accountIcpBefore: number = Infinity; // This will be set to the account holding before it receives the disbursal.
 
   before(function () {
-    if (!["chrome"].includes((browser.capabilities as Capabilities.Capabilities).browserName ?? "unknown")) this.skip();
+    if (
+      !["chrome"].includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
   });
 
   /**
