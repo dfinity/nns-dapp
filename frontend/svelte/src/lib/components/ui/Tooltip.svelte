@@ -1,7 +1,7 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate, onMount } from "svelte";
-import { claim_component } from "svelte/internal";
-import { translate } from "../../utils/i18n.utils";
+  import { claim_component } from "svelte/internal";
+  import { translate } from "../../utils/i18n.utils";
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
@@ -12,7 +12,7 @@ import { translate } from "../../utils/i18n.utils";
   let innerWidth;
 
   afterUpdate(() => {
-    const {right, left} = tooltipComponent?.getBoundingClientRect();
+    const { right, left } = tooltipComponent?.getBoundingClientRect();
     const clientWidth = document.querySelector("main")?.clientWidth;
 
     if (right > clientWidth) {
@@ -20,22 +20,23 @@ import { translate } from "../../utils/i18n.utils";
       let difference = right - clientWidth;
       // if .rightEdge still overflows, shift left proportionately
       if (difference) {
-        tooltipComponent.style.transform = `translate( calc(-50% - ${difference + 1}px), 100%)`;
+        tooltipComponent.style.transform = `translate( calc(-50% - ${
+          difference + 1
+        }px), 100%)`;
       }
-    } else if (innerWidth >= 904 ) {
+    } else if (innerWidth >= 904) {
       rightEdge = false;
-    };
+    }
 
     if (left < 0) {
       leftEdge = true;
     } else {
       leftEdge = false;
     }
-  })
-
+  });
 </script>
 
-<svelte:window bind:innerWidth/>
+<svelte:window bind:innerWidth />
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
