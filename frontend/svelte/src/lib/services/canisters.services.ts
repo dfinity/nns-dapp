@@ -1,3 +1,4 @@
+import type { ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
@@ -7,16 +8,19 @@ import {
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   topUpCanister as topUpCanisterApi,
+  updateSettings as updateSettingsApi,
 } from "../api/canisters.api";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
 import type {
-  CanisterDetails as CanisterInfo,
-  SubAccountArray,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { E8S_PER_ICP } from "../constants/icp.constants";
+  CanisterDetails,
+  CanisterSettings,
+} from "../canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
+import { InsufficientAmountError } from "../types/common.errors";
 import { getLastPathDetail } from "../utils/app-path.utils";
+import { mapCanisterErrorToToastMessage } from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -54,21 +58,37 @@ export const listCanisters = async ({
   });
 };
 
+/**
+ * @throws InsufficientAmountError
+ */
+const assertEnoughBalance = ({
+  amount,
+  account,
+}: {
+  amount: ICP;
+  account: Account;
+}): void => {
+  if (amount.toE8s() > account.balance.toE8s()) {
+    throw new InsufficientAmountError();
+  }
+};
+
 export const createCanister = async ({
   amount,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    // TODO: Validate it's enough ICP https://dfinity.atlassian.net/browse/L2-615
+    assertEnoughBalance({ amount: icpAmount, account });
+
     const identity = await getIdentity();
     const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount,
-      fromSubAccount,
+      fromSubAccount: account.subAccount,
     });
     await listCanisters({ clearBeforeQuery: false });
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.
@@ -77,6 +97,7 @@ export const createCanister = async ({
     return canisterId;
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    toastsStore.show(mapCanisterErrorToToastMessage(error));
     return;
   }
 };
@@ -84,25 +105,76 @@ export const createCanister = async ({
 export const topUpCanister = async ({
   amount,
   canisterId,
-  fromSubAccount,
+  account,
 }: {
   amount: number;
   canisterId: Principal;
-  fromSubAccount?: SubAccountArray;
+  account: Account;
 }): Promise<{ success: boolean }> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    // TODO: Validate it's enough ICP https://dfinity.atlassian.net/browse/L2-615
+    assertEnoughBalance({ amount: icpAmount, account });
+
     const identity = await getIdentity();
     await topUpCanisterApi({
       identity,
       canisterId,
       amount: icpAmount,
-      fromSubAccount,
+      fromSubAccount: account.subAccount,
     });
     // We don't wait for `syncAccounts` to finish to give a better UX to the user.
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    toastsStore.show(mapCanisterErrorToToastMessage(error));
+    return { success: false };
+  }
+};
+
+export const addController = async ({
+  controller,
+  canisterDetails,
+}: {
+  controller: string;
+  canisterDetails: CanisterDetails;
+}): Promise<{ success: boolean }> => {
+  if (canisterDetails.settings.controllers.includes(controller)) {
+    toastsStore.error({
+      labelKey: "error.controller_already_present",
+      substitutions: {
+        $principal: controller,
+      },
+    });
+    return { success: false };
+  }
+  const newControllers = [...canisterDetails.settings.controllers, controller];
+  const newSettings = {
+    ...canisterDetails.settings,
+    controllers: newControllers,
+  };
+  return updateSettings({
+    canisterId: canisterDetails.id,
+    settings: newSettings,
+  });
+};
+
+// Export for testing purposes, better expose specific functions to be used in controllers.
+export const updateSettings = async ({
+  settings,
+  canisterId,
+}: {
+  settings: Partial<CanisterSettings>;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getIdentity();
+    await updateSettingsApi({
+      identity,
+      canisterId,
+      settings,
+    });
     return { success: true };
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
@@ -153,18 +225,22 @@ export const routePathCanisterId = (
   return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };
 
+/**
+ * Makes a call to the IC Management "canister" to get the canister details
+ *
+ * @param canisterId: Principal
+ * @returns CanisterDetails
+ * @throws UserNotTheControllerError
+ * @throws Error
+ */
 export const getCanisterDetails = async (
   canisterId: Principal
-): Promise<CanisterDetails | undefined> => {
+): Promise<CanisterDetails> => {
   const identity = await getIdentity();
-  try {
-    return await queryCanisterDetailsApi({
-      canisterId,
-      identity,
-    });
-  } catch (error) {
-    // TODO: manage errors https://dfinity.atlassian.net/browse/L2-615
-  }
+  return queryCanisterDetailsApi({
+    canisterId,
+    identity,
+  });
 };
 
 export const getIcpToCyclesExchangeRate = async (): Promise<
@@ -172,9 +248,7 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
 > => {
   try {
     const identity = await getIdentity();
-    const trillionRatio = await getIcpToCyclesExchangeRateApi(identity);
-    // This transforms to ratio to E8s to T Cycles.
-    return trillionRatio / BigInt(E8S_PER_ICP);
+    return await getIcpToCyclesExchangeRateApi(identity);
   } catch (error) {
     // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
     return;
