@@ -395,6 +395,20 @@ describe("canisters-services", () => {
       expect(syncAccounts).not.toBeCalled();
     });
 
+    it("should show toast error if account doesn't have enough funds", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: ICP.fromString("2") as ICP,
+      };
+      const { success } = await topUpCanister({
+        amount: 3,
+        canisterId: mockCanisterDetails.id,
+        account,
+      });
+      expect(success).toBe(false);
+      expect(toastsStore.error).toBeCalled();
+    });
+
     it("should return success false if no identity", async () => {
       setNoIdentity();
 
