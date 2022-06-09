@@ -9,8 +9,6 @@ import { AuthPage } from "../components/auth";
  * Verifies that the login/logout state is synchronised across tabs.
  */
 describe("multi-tab-auth", () => {
-  console.warn(`Browser: ${browser.capabilities.browserName}`);
-  // if (!["chrome"].includes(browser.capabilities.browserName)) this.skip();
   const nnsTabs: Array<string> = [];
   let navigator;
 
