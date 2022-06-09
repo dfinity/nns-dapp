@@ -180,7 +180,7 @@ describe("utils", () => {
   });
 
   describe("nonNullable", () => {
-    it("should determine nullable", () => {
+    it("should determine not nullable", () => {
       expect(nonNullable(null)).toBeFalsy();
       expect(nonNullable(undefined)).toBeFalsy();
       expect(nonNullable(0)).toBeTruthy();
