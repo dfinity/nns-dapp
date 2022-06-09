@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
@@ -8,15 +9,15 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
+import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
-  InsufficientAmountError,
   InvalidAmountError,
-  NotAuthorizedError,
+  NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
 import type { ToastMsg } from "../types/toast";
-import { translate } from "./i18n.utils";
+import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined =>
   typeof err === "string"
@@ -27,49 +28,64 @@ export const errorToString = (err?: unknown): string | undefined =>
     ? (err as Error).message
     : undefined;
 
-export const mapNeuronErrorToToastMessage = (error: Error): ToastMsg => {
-  // Check toToastError first
-  const fallbackKey = "fallback";
-  const toastError = toToastError({
-    err: error,
-    fallbackErrorLabelKey: fallbackKey,
-  });
-  // Return if error found is not fallback
-  if (toastError.labelKey !== fallbackKey) {
+const factoryMappingErrorToToastMessage =
+  (collection: Array<[Function, string]>) =>
+  (error: Error): ToastMsg => {
+    // Check toToastError first
+    const fallbackKey = "fallback";
+    const toastError = toToastError({
+      err: error,
+      fallbackErrorLabelKey: fallbackKey,
+    });
+    // Return if error found is not fallback
+    if (toastError.labelKey !== fallbackKey) {
+      return {
+        level: "error",
+        ...toastError,
+      };
+    }
+    const pair = collection.find(([classType]) => error instanceof classType);
+    if (pair === undefined) {
+      return {
+        labelKey: "error.unknown",
+        level: "error",
+        detail: errorToString(error),
+      };
+    }
     return {
-      level: "error",
-      ...toastError,
-    };
-  }
-
-  // Check GovernanceErrors
-  /* eslint-disable-next-line @typescript-eslint/ban-types */
-  const collection: Array<[Function, string]> = [
-    [NotFoundError, "error.neuron_not_found"],
-    [NotAuthorizedError, "error.not_authorized"],
-    [InvalidAmountError, "error.amount_not_valid"],
-    [InsufficientAmountError, "error.amount_not_enough"],
-    [CouldNotClaimNeuronError, "error.neuron_not_found"],
-    [InsufficientAmountNNSError, "error.amount_not_enough"],
-    [InvalidSenderError, "error.invalid_sender"],
-    [InsufficientFundsError, "error.insufficient_funds"],
-    [InvalidAccountIDError, "error.invalid_account_id"],
-    [InvalidPercentageError, "error.invalid_percentage"],
-    [GovernanceError, "error.governance_error"],
-    [NotFoundError, "error.neuron_not_found"],
-    [TransferError, "error.transfer_error"],
-    [CannotBeMerged, "error.cannot_merge"],
-  ];
-  const pair = collection.find(([classType]) => error instanceof classType);
-  if (pair === undefined) {
-    return {
-      labelKey: "error.unknown",
-      level: "error",
+      labelKey: pair[1],
       detail: errorToString(error),
+      level: "error",
     };
-  }
-  return { labelKey: pair[1], detail: errorToString(error), level: "error" };
-};
+  };
+
+// Check GovernanceErrors
+const neuronMapper: Array<[Function, string]> = [
+  [NotFoundError, "error.neuron_not_found"],
+  [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
+  [InvalidAmountError, "error.amount_not_valid"],
+  [InsufficientAmountError, "error.amount_not_enough_stake_neuron"],
+  [CouldNotClaimNeuronError, "error.neuron_not_found"],
+  [InsufficientAmountNNSError, "error.amount_not_enough_stake_neuron"],
+  [InvalidSenderError, "error.invalid_sender"],
+  [InsufficientFundsError, "error.insufficient_funds"],
+  [InvalidAccountIDError, "error.invalid_account_id"],
+  [InvalidPercentageError, "error.invalid_percentage"],
+  [GovernanceError, "error.governance_error"],
+  [NotFoundError, "error.neuron_not_found"],
+  [TransferError, "error.transfer_error"],
+  [CannotBeMerged, "error.cannot_merge"],
+];
+export const mapNeuronErrorToToastMessage =
+  factoryMappingErrorToToastMessage(neuronMapper);
+
+// Check CMC and IC Mgt Canister Errors
+// TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+const canisterMapper: Array<[Function, string]> = [
+  [InsufficientAmountError, "error.insufficient_funds"],
+];
+export const mapCanisterErrorToToastMessage =
+  factoryMappingErrorToToastMessage(canisterMapper);
 
 /**
  * The "message" of some type of errors that extends Error is used to map an i18n label.
@@ -82,7 +98,7 @@ export const toToastError = ({
 }: {
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
-}): { labelKey: string; err?: unknown } => {
+}): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
   let errorKey: boolean = false;
   const message: string | undefined = (err as Error)?.message;
 
@@ -91,10 +107,16 @@ export const toToastError = ({
     errorKey = label !== message;
   }
 
+  type ErrorSubstitutions = { substitutions?: I18nSubstitutions };
+
   return {
     labelKey: errorKey
       ? (err as { message: string }).message
       : fallbackErrorLabelKey,
     ...(!errorKey && { err }),
+    ...((err as ErrorSubstitutions | undefined)?.substitutions !==
+      undefined && {
+      substitutions: (err as ErrorSubstitutions).substitutions,
+    }),
   };
 };

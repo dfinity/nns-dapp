@@ -4,6 +4,18 @@
 * Provide more detailed values for neuron ICP
 * Improve support for earlier versions of iPhone
 
+## Proposal 63105
+* Truncate ICP per request
+
+## Proposal 62937
+* Fix styling of modals on Safari
+
+## Proposal 62896
+* Display the svelte version of the accounts and neurons tabs.
+* Move the hardware wallet CLI out into a separate repository.
+* Improvements to the UI.
+* More tests
+
 ## Proposal 61859
 * Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
 * Add the ability to dump debug info.

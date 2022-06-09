@@ -79,7 +79,7 @@ export class NNSDappCanister {
       certified
     ).get_account();
     if (AccountNotFound === null) {
-      throw new AccountNotFoundError("Account not found");
+      throw new AccountNotFoundError("error__account.not_found");
     }
 
     if (Ok) {
@@ -87,7 +87,7 @@ export class NNSDappCanister {
     }
 
     // We should never reach here. Some of the previous properties should be present.
-    throw new Error("Error getting account details");
+    throw new Error("error__account.no_details");
   }
 
   /**
@@ -108,18 +108,19 @@ export class NNSDappCanister {
     );
 
     if (AccountNotFound === null) {
-      throw new AccountNotFoundError("Error creating subAccount");
+      throw new AccountNotFoundError("error__account.create_subaccount");
     }
 
     if (NameTooLong === null) {
-      // Which is the character?
-      throw new NameTooLongError(`Error, name "${subAccountName}" is too long`);
+      throw new NameTooLongError("error__account.subaccount_too_long", {
+        $subAccountName: subAccountName,
+      });
     }
 
     if (SubAccountLimitExceeded === null) {
       // Which is the limit of subaccounts?
       throw new SubAccountLimitExceededError(
-        `Error, subAccount limit exceeded`
+        "error__account.create_subaccount_limit_exceeded"
       );
     }
 
@@ -128,7 +129,7 @@ export class NNSDappCanister {
     }
 
     // We should never reach here. Some of the previous properties should be present.
-    throw new Error("Error creating subaccount");
+    throw new Error("error__account.create_subaccount");
   }
 
   public async registerHardwareWallet(
@@ -138,11 +139,18 @@ export class NNSDappCanister {
       await this.certifiedService.register_hardware_wallet(request);
 
     if ("AccountNotFound" in response && response.AccountNotFound === null) {
-      throw new AccountNotFoundError("Error registering hardware wallet");
+      throw new AccountNotFoundError(
+        "error__attach_wallet.register_hardware_wallet"
+      );
     }
 
     if ("NameTooLong" in response && response.NameTooLong === null) {
-      throw new NameTooLongError(`Error, name "${request.name}" is too long`);
+      throw new NameTooLongError(
+        "error__attach_wallet.create_hardware_wallet_too_long",
+        {
+          $accountName: request.name,
+        }
+      );
     }
 
     if (
@@ -172,7 +180,10 @@ export class NNSDappCanister {
 
     if ("AccountNotFound" in response && response.AccountNotFound === null) {
       throw new AccountNotFoundError(
-        `Error renaming subAccount, account (${request.account_identifier}) not found`
+        "error__account.rename_account_not_found",
+        {
+          $account_identifier: request.account_identifier,
+        }
       );
     }
 
@@ -180,15 +191,15 @@ export class NNSDappCanister {
       "SubAccountNotFound" in response &&
       response.SubAccountNotFound === null
     ) {
-      throw new AccountNotFoundError(
-        `Error renaming subAccount, subAccount (${request.account_identifier}) not found`
-      );
+      throw new AccountNotFoundError("error__account.subaccount_not_found", {
+        $account_identifier: request.account_identifier,
+      });
     }
 
     if ("NameTooLong" in response && response.NameTooLong === null) {
-      throw new NameTooLongError(
-        `Error, name "${request.new_name}" is too long`
-      );
+      throw new NameTooLongError("error__account.subaccount_too_long", {
+        $subAccountName: request.new_name,
+      });
     }
   };
 
@@ -224,6 +235,17 @@ export class NNSDappCanister {
     }
     // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
     throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
+  };
+
+  public detachCanister = async (canisterId: Principal): Promise<void> => {
+    const response = await this.certifiedService.detach_canister({
+      canister_id: canisterId,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
+    throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
   };
 
   public async getTransactions({

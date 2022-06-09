@@ -1,27 +1,50 @@
 import { ICP } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
-  ONE_TRILLION,
+  ICP_DISPLAYED_DECIMALS,
+  ICP_DISPLAYED_DECIMALS_DETAILED,
   TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
 import { InvalidAmountError } from "../types/neurons.errors";
 
-const formatNumberToString = ({
+const countDecimals = (value: number): number => {
+  const split: string[] = `${value}`.split(".");
+  return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
+};
+
+/**
+ * Jira L2-666:
+ * - If ICP is zero then 0 should be displayed - i.e. without decimals
+ * - ICP with round number (12.0) should be displayed 12.00
+ * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
+ * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
+ */
+export const formatICP = ({
   value,
-  fractionDigits = 8,
+  detailed = false,
 }: {
   value: bigint;
-  fractionDigits?: number;
-}): string =>
-  new Intl.NumberFormat("fr-FR", {
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-  })
-    .format(Number(value) / E8S_PER_ICP)
-    .replace(",", ".");
+  detailed?: boolean;
+}): string => {
+  if (value === BigInt(0)) {
+    return "0";
+  }
 
-export const formatICP = (value: bigint): string =>
-  formatNumberToString({ value });
+  const converted: number = Number(value) / E8S_PER_ICP;
+  const decimals: number =
+    converted < 0.01
+      ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
+      : detailed
+      ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
+      : ICP_DISPLAYED_DECIMALS;
+
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+    .format(converted)
+    .replace(/,/g, "'");
+};
 
 export const sumICPs = (...icps: ICP[]): ICP =>
   ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
@@ -29,9 +52,8 @@ export const sumICPs = (...icps: ICP[]): ICP =>
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (): string =>
-  formatNumberToString({
+  formatICP({
     value: ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s(),
-    fractionDigits: 4,
   });
 
 export const maxICP = (icp: ICP | undefined): number =>
@@ -51,21 +73,22 @@ export const convertNumberToICP = (amount: number): ICP => {
   return stake;
 };
 
+// `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
+// This value reflects the current market price of one ICP token.
+// https://github.com/dfinity/ic/blob/8132ae34aeba2bf8b913647b85b9918e1cb8721c/rs/nns/cmc/cmc.did#L67
+const NUMBER_XDR_PER_ONE_ICP = 10_000;
 export const convertIcpToTCycles = ({
   icpNumber,
-  ratio,
+  exchangeRate,
 }: {
   icpNumber: number;
-  ratio: bigint;
-}): number => {
-  const icp = convertNumberToICP(icpNumber);
-  return Number(icp.toE8s() * ratio) / ONE_TRILLION;
-};
+  exchangeRate: bigint;
+}): number => icpNumber * (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
 export const convertTCyclesToIcpNumber = ({
   tCycles,
-  ratio,
+  exchangeRate,
 }: {
   tCycles: number;
-  ratio: bigint;
-}): number => (tCycles * Number(ONE_TRILLION)) / Number(ratio) / E8S_PER_ICP;
+  exchangeRate: bigint;
+}): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);

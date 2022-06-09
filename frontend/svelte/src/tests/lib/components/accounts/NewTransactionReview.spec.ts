@@ -23,7 +23,7 @@ import NewTransactionTest from "./NewTransactionTest.svelte";
 describe("NewTransactionReview", () => {
   const props = { testComponent: NewTransactionReview };
 
-  const amount = ICP.fromString("10.666") as ICP;
+  const amount = ICP.fromString("10.6756") as ICP;
 
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
   const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();
@@ -77,7 +77,9 @@ describe("NewTransactionReview", () => {
     const { queryByTestId } = render(NewTransactionTest, { props });
 
     const icp: HTMLSpanElement | null = queryByTestId("icp-value");
-    expect(icp?.innerHTML).toEqual(`${formatICP(amount.toE8s())}`);
+    expect(icp?.innerHTML).toEqual(
+      `${formatICP({ value: amount.toE8s(), detailed: true })}`
+    );
   });
 
   it("should execute transaction to transfer ICP", async () => {

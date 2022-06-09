@@ -10,13 +10,12 @@
   } from "../lib/constants/routes.constants";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import {
-    getAccountFromStore,
     getAccountTransactions,
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import Identifier from "../lib/components/ic/Identifier.svelte";
+  import Identifier from "../lib/components/ui/Identifier.svelte";
   import ICP from "../lib/components/ic/ICP.svelte";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { toastsStore } from "../lib/stores/toasts.store";
@@ -32,7 +31,10 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "../lib/types/selected-account.context";
-  import { isAccountHardwareWallet } from "../lib/utils/accounts.utils";
+  import {
+    getAccountFromStore,
+    isAccountHardwareWallet,
+  } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
 
   onMount(() => {
@@ -73,8 +75,10 @@
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
   let selectedAccount: Account | undefined;
-  $: $accountsStore,
-    (selectedAccount = getAccountFromStore(routeAccountIdentifier));
+  $: selectedAccount = getAccountFromStore({
+    identifier: routeAccountIdentifier,
+    accountsStore: $accountsStore,
+  });
 
   $: routeAccountIdentifier,
     selectedAccount,
@@ -105,7 +109,7 @@
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            account_identifier: routeAccountIdentifier ?? "",
+            $account_identifier: routeAccountIdentifier ?? "",
           }),
         });
         goBack();

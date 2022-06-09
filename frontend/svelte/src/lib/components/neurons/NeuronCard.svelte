@@ -57,9 +57,10 @@
       <ICPComponent
         label={$i18n.neurons.voting_power}
         icp={ICP.fromE8s(neuron.votingPower)}
+        detailed
       />
     {:else if neuronICP}
-      <ICPComponent icp={neuronICP} />
+      <ICPComponent icp={neuronICP} detailed />
     {/if}
   </div>
 
