@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, beforeUpdate, onMount } from "svelte";
-  import { claim_component } from "svelte/internal";
-  import { translate } from "../../utils/i18n.utils";
+  import { afterUpdate } from "svelte";
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
