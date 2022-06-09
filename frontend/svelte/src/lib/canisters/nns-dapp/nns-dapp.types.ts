@@ -38,6 +38,7 @@ export type GetAccountResponse = {
   Ok?: AccountDetails;
   AccountNotFound?: null;
 };
+export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface GetTransactionsRequest {
   page_size: number;
   offset: number;
@@ -176,6 +177,9 @@ export default interface _SERVICE {
     arg_0: Principal,
     arg_1: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
+  get_proposal_payload: (arg_0: bigint) => Promise<
+    GetProposalPayloadResponse
+  >;
   get_stats: () => Promise<Stats>;
   get_transactions: (
     arg_0: GetTransactionsRequest
