@@ -17,7 +17,7 @@
     "max": "Max",
     "principal": "Principal",
     "toggle": "toggle",
-    "save_log_file": "Save the app state to the file",
+    "log": "Log",
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard"
   },

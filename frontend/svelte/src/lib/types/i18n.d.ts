@@ -20,7 +20,7 @@ interface I18nCore {
   max: string;
   principal: string;
   toggle: string;
-  save_log_file: string;
+  log: string;
   principal_id: string;
   copy: string;
 }
