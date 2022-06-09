@@ -9,6 +9,7 @@ import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-
 export interface SelectCanisterDetailsStore {
   info: CanisterInfo | undefined;
   details: CanisterDetails | undefined;
+  controller: boolean | undefined;
 }
 
 export interface CanisterDetailsContext {

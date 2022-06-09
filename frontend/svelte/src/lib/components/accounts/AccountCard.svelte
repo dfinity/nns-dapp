@@ -2,7 +2,7 @@
   import type { Account } from "../../types/account";
   import Card from "../ui/Card.svelte";
   import ICP from "../ic/ICP.svelte";
-  import Identifier from "../ic/Identifier.svelte";
+  import Identifier from "../ui/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
 
@@ -26,17 +26,10 @@
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/text.scss";
   @use "../../themes/mixins/card.scss";
 
   .title {
     @include card.stacked-title;
-  }
-
-  h3 {
-    line-height: var(--line-height-standard);
-    margin: 0 var(--padding) 0 0;
-
-    @include text.truncate;
+    @include card.title;
   }
 </style>
