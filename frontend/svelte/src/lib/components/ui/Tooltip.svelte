@@ -1,23 +1,41 @@
 <script lang="ts">
-  import { afterUpdate } from "svelte";
+  import { afterUpdate, beforeUpdate, onMount } from "svelte";
+import { claim_component } from "svelte/internal";
+import { translate } from "../../utils/i18n.utils";
   /** Used in aria-describedby */
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
   let tooltipComponent;
-  let rightEdge = false;
-  let leftEdge = false;
+  let rightEdge;
+  let leftEdge;
+  let innerWidth;
 
-  // if tooltip goes beyond Main viewport, assign class name of 'rightEdge'/ 'leftEdge'
   afterUpdate(() => {
     const {right, left} = tooltipComponent?.getBoundingClientRect();
-    //important to select the Main tag instead of window
-    const mainWidth = document.querySelector("main").clientWidth;
-    right > mainWidth ? rightEdge = true : null;
-    left < 0 ? leftEdge = true : null;
-  });
+    const clientWidth = document.querySelector("main")?.clientWidth;
+
+    if (right > clientWidth) {
+      rightEdge = true;
+      let difference = right - clientWidth;
+      // if .rightEdge still overflows, shift left proportionately
+      if (difference) {
+        tooltipComponent.style.transform = `translate( calc(-50% - ${difference + 1}px), 100%)`;
+      }
+    } else if (innerWidth >= 904 ) {
+      rightEdge = false;
+    };
+
+    if (left < 0) {
+      leftEdge = true;
+    } else {
+      leftEdge = false;
+    }
+  })
+
 </script>
 
+<svelte:window bind:innerWidth/>
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id}>
     <slot />
