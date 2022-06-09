@@ -4,6 +4,7 @@
 
 interface I18nCore {
   close: string;
+  remove: string;
   icp: string;
   create: string;
   filter: string;
@@ -80,6 +81,7 @@ interface I18nError {
   not_canister_controller: string;
   canister_details_not_found: string;
   controller_already_present: string;
+  controller_not_present: string;
   hardware_wallet_no_account: string;
 }
 
@@ -303,6 +305,11 @@ interface I18nCanister_detail {
   confirm_detach_title: string;
   confirm_detach_description_1: string;
   confirm_detach_description_2: string;
+  confirm_remove_controller_title: string;
+  confirm_remove_controller_description: string;
+  confirm_remove_controller_user_description_1: string;
+  confirm_remove_controller_user_description_2: string;
+  confirm_remove_last_controller_description: string;
   detach_success: string;
   confirm_new_controller: string;
   enter_controller: string;

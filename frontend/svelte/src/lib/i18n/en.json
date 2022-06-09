@@ -1,6 +1,7 @@
 {
   "core": {
     "close": "Close",
+    "remove": "Remove",
     "icp": "ICP",
     "create": "Create",
     "filter": "Filter",
@@ -76,6 +77,7 @@
     "not_canister_controller": "You are not the controller of this canister and cannot access its details.",
     "canister_details_not_found": "Sorry, there was an error loading the details of the canister. Please try again later.",
     "controller_already_present": "Principal $principal is already a controller",
+    "controller_not_present": "Principal is already not a controller.",
     "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {
@@ -288,6 +290,11 @@
     "confirm_detach_title": "Confirm Detach",
     "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
     "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stored securely.",
+    "confirm_remove_controller_title": "Confirm Remove Controller",
+    "confirm_remove_controller_description": "Are you sure you want to remove the following controller?",
+    "confirm_remove_controller_user_description_1": "Are you sure you want to remove the current user from the controllers?",
+    "confirm_remove_controller_user_description_2": "You will lose access to the canister.",
+    "confirm_remove_last_controller_description": "This is the last remaining controller. If you remove it, nobody will be able to control the canister.",
     "detach_success": "Canister detached successfully",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",

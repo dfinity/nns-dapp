@@ -9,6 +9,7 @@ export type BusyStateInitiatorType =
   | "create-canister"
   | "top-up-canister"
   | "add-controller-canister"
+  | "remove-controller-canister"
   | "accounts"
   | "join-community-fund"
   | "split-neuron"
