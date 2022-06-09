@@ -34,6 +34,8 @@
     const overflowLeft = tooltipWidth / 2 - spaceLeft;
     const overflowRight = tooltipWidth / 2 - spaceRight;
 
+    // If tooltip overflow both on left and right, we only set the left anchor.
+    // It would need the width to be maximized to window screen too but it seems to be an acceptable edge case.
     tooltipStyle =
       overflowLeft > 0
         ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
