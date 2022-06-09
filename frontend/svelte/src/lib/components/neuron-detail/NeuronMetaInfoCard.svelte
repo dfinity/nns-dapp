@@ -72,7 +72,10 @@
               text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip,
                 {
-                  $stake: formatICP(neuron.fullNeuron.cachedNeuronStake),
+                  $stake: formatICP({
+                    value: neuron.fullNeuron.cachedNeuronStake,
+                    detailed: true,
+                  }),
                   $delayMultiplier: dissolveDelayMultiplier(
                     Number(neuron.dissolveDelaySeconds)
                   ).toFixed(2),

@@ -1,16 +1,19 @@
-import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
+import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
 import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
 import { syncAccounts } from "../../../lib/services/accounts.services";
 import {
+  addController,
   attachCanister,
   createCanister,
+  detachCanister,
   getCanisterDetails,
   getIcpToCyclesExchangeRate,
   listCanisters,
   routePathCanisterId,
   topUpCanister,
+  updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
@@ -18,7 +21,12 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
+import {
+  mockCanister,
+  mockCanisterDetails,
+  mockCanisters,
+  mockCanisterSettings,
+} from "../../mocks/canisters.mock";
 
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
@@ -33,6 +41,14 @@ describe("canisters-services", () => {
 
   const spyAttachCanister = jest
     .spyOn(api, "attachCanister")
+    .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyDetachCanister = jest
+    .spyOn(api, "detachCanister")
+    .mockImplementation(() => Promise.resolve(undefined));
+
+  const spyUpdateSettings = jest
+    .spyOn(api, "updateSettings")
     .mockImplementation(() => Promise.resolve(undefined));
 
   const spyCreateCanister = jest
@@ -105,23 +121,124 @@ describe("canisters-services", () => {
     });
   });
 
+  describe("detachCanister", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      canistersStore.setCanisters({ canisters: [], certified: true });
+    });
+
+    it("should call api to attach canister and list canisters again", async () => {
+      const response = await detachCanister(mockCanisterDetails.id);
+      expect(response.success).toBe(true);
+      expect(spyDetachCanister).toBeCalled();
+      expect(spyQueryCanisters).toBeCalled();
+
+      const store = get(canistersStore);
+      expect(store.canisters).toEqual(mockCanisters);
+    });
+
+    it("should not detach canister if no identity", async () => {
+      setNoIdentity();
+
+      const response = await detachCanister(mockCanisterDetails.id);
+      expect(response.success).toBe(false);
+      expect(spyDetachCanister).not.toBeCalled();
+      expect(spyQueryCanisters).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("updateSettings", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update settings", async () => {
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await updateSettings({
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
+  describe("addController", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should call api to update the settings", async () => {
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(true);
+      expect(spyUpdateSettings).toBeCalled();
+    });
+
+    it("should not update settings if controller is already present", async () => {
+      const controller = "some-controller";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
+
+      const response = await addController({
+        controller,
+        canisterDetails: canisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+    });
+
+    it("should not update settings if no identity", async () => {
+      setNoIdentity();
+
+      const response = await addController({
+        controller: "some-controller",
+        canisterDetails: mockCanisterDetails,
+      });
+      expect(response.success).toBe(false);
+      expect(spyUpdateSettings).not.toBeCalled();
+
+      resetIdentity();
+    });
+  });
+
   describe("routePathCanisterId", () => {
-    it("should return principal if valid in the url", () => {
-      const path = "/#/canister/tqtu6-byaaa-aaaaa-aaana-cai";
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
 
-      expect(routePathCanisterId(path)).toBeInstanceOf(Principal);
+    it("should get canister id from valid path", () => {
+      expect(
+        routePathCanisterId(`/#/canister/${mockCanister.canister_id.toText()}`)
+      ).toEqual(mockCanister.canister_id.toText());
     });
 
-    it("should return undefined if not valid in the url", () => {
-      const path = "/#/canister/not-valid-principal";
-
-      expect(routePathCanisterId(path)).toBeUndefined();
-    });
-
-    it("should return undefined if no last detail in the path", () => {
-      const path = "/#/canister";
-
-      expect(routePathCanisterId(path)).toBeUndefined();
+    it("should not get canister id from invalid path", () => {
+      expect(routePathCanisterId("/#/canister/")).toBeUndefined();
+      expect(routePathCanisterId(undefined)).toBeUndefined();
     });
   });
 
@@ -140,6 +257,17 @@ describe("canisters-services", () => {
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
       resetIdentity();
+    });
+
+    it("should throw if getCanisterDetails api throws", async () => {
+      spyQueryCanisterDetails.mockRejectedValue(
+        new UserNotTheControllerError()
+      );
+
+      const call = () => getCanisterDetails(mockCanisterDetails.id);
+
+      await expect(call).rejects.toThrow(UserNotTheControllerError);
+      spyQueryCanisterDetails.mockRestore();
     });
   });
 
@@ -167,8 +295,8 @@ describe("canisters-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call api to create a canister", async () => {
-      const { success } = await createCanister({ amount: 3 });
-      expect(success).toBe(true);
+      const canisterId = await createCanister({ amount: 3 });
+      expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
       expect(syncAccounts).toBeCalled();
@@ -177,8 +305,8 @@ describe("canisters-services", () => {
     it("should return success false if no identity", async () => {
       setNoIdentity();
 
-      const { success } = await createCanister({ amount: 3 });
-      expect(success).toBe(false);
+      const canisterId = await createCanister({ amount: 3 });
+      expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
 
       resetIdentity();

@@ -8,10 +8,12 @@ import { mock } from "jest-mock-extended";
 import {
   attachCanister,
   createCanister,
+  detachCanister,
   getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
   topUpCanister,
+  updateSettings,
 } from "../../../lib/api/canisters.api";
 import {
   CREATE_CANISTER_MEMO,
@@ -26,7 +28,10 @@ import type { SubAccountArray } from "../../../lib/canisters/nns-dapp/nns-dapp.t
 import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import { mockSubAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockCanisterDetails } from "../../mocks/canisters.mock";
+import {
+  mockCanisterDetails,
+  mockCanisterSettings,
+} from "../../mocks/canisters.mock";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -83,6 +88,50 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
         name: "",
       });
+    });
+  });
+
+  describe("updateSettings", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call the ic management canister to update settings", async () => {
+      mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
+      await updateSettings({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        settings: mockCanisterSettings,
+      });
+
+      expect(mockICManagementCanister.updateSettings).toBeCalled();
+    });
+
+    it("should call the ic management canister to update settings with partial settings", async () => {
+      const settings = {
+        controllers: [
+          "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+        ],
+      };
+      mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
+      await updateSettings({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        settings,
+      });
+
+      expect(mockICManagementCanister.updateSettings).toBeCalled();
+    });
+  });
+
+  describe("detachCanister", () => {
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to detach the canister id", async () => {
+      await detachCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+      });
+
+      expect(mockNNSDappCanister.detachCanister).toBeCalled();
     });
   });
 

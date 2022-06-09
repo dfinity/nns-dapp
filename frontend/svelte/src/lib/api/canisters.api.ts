@@ -4,7 +4,10 @@ import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
 import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
+import type {
+  CanisterDetails,
+  CanisterSettings,
+} from "../canisters/ic-management/ic-management.canister.types";
 import type { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
 import type {
   CanisterDetails as CanisterInfo,
@@ -84,6 +87,41 @@ export const attachCanister = async ({
   });
 
   logWithTimestamp("Attaching canister call complete.");
+};
+
+export const updateSettings = async ({
+  identity,
+  settings,
+  canisterId,
+}: {
+  identity: Identity;
+  settings: Partial<CanisterSettings>;
+  canisterId: Principal;
+}): Promise<void> => {
+  logWithTimestamp("Updating canister settings call...");
+  const { icMgt } = await canisters(identity);
+
+  await icMgt.updateSettings({
+    canisterId,
+    settings,
+  });
+
+  logWithTimestamp("Updating canister settings call complete.");
+};
+
+export const detachCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<void> => {
+  logWithTimestamp("Detaching canister call...");
+  const { nnsDapp } = await canisters(identity);
+
+  await nnsDapp.detachCanister(canisterId);
+
+  logWithTimestamp("Detaching canister call complete.");
 };
 
 export const createCanister = async ({

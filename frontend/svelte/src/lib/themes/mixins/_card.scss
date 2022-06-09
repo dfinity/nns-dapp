@@ -1,3 +1,5 @@
+@use "./text.scss";
+
 @mixin stacked-title {
   display: grid;
   flex-direction: column;
@@ -23,4 +25,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@mixin title {
+  line-height: var(--line-height-standard);
+  margin: 0 var(--padding) 0 0;
+
+  @include text.truncate;
 }

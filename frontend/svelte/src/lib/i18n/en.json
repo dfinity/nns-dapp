@@ -16,7 +16,9 @@
     "max": "Max",
     "principal": "Principal",
     "toggle": "toggle",
-    "save_log_file": "Save the app state to the file"
+    "save_log_file": "Save the app state to the file",
+    "principal_id": "Principal ID",
+    "copy": "Copy \"$value\" to clipboard"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -27,12 +29,9 @@
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
-    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
     "rename_subaccount": "An error occurred while renaming your linked account.",
     "rename_subaccount_no_account": "No linked account provided.",
     "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
-    "create_subaccount_too_long": "The name of the linked account is too long. Please, choose a shorter name.",
-    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
     "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
@@ -42,8 +41,9 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
-    "account_not_found": "Sorry, the account \"account_identifier\" was not found",
+    "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
     "transactions_not_found": "An error occurred while loading the transactions.",
+    "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the community fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
@@ -59,13 +59,13 @@
     "unexpected_number_neurons_merge": "Sorry, the number of neurons to merge should be only 2. Please try selecting again.",
     "cannot_merge": "Those two neurons cannot be merged.",
     "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
-    "not_authorized": "Sorry, you are not authorized to perform this action.",
+    "not_authorized_neuron_action": "Sorry, none of your principals is the controller of the neuron.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
     "insufficient_funds": "Sorry, there are not enough funds in this account",
     "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
-    "merge_neurons_same_id": "Two neurons with same id can't be merged.",
+    "merge_neurons_same_id": "Two neurons with the same id can't be merged.",
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller.",
-    "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followees on the topic of \"Manage Neuron\".",
+    "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followee on the topic of \"Manage Neuron\".",
     "governance_error": "Sorry, there was an error. Please try again.",
     "not_mergeable": "This neuron can't be merged.",
     "invalid_account_id": "Sorry, the account id is not valid. Please try again with a valid account id.",
@@ -73,6 +73,9 @@
     "invalid_percentage": "Sorry, the percentage amount is not valid.",
     "principal_not_valid": "Please enter a valid principal.",
     "input_length": "Input must be longer than $length characters.",
+    "not_canister_controller": "You are not the controller of this canister and cannot access its details.",
+    "canister_details_not_found": "Sorry, there was an error loading the details of the canister. Please try again later.",
+    "controller_already_present": "Principal $principal is already a controller",
     "hardware_wallet_no_account": "No hardware wallet account provided."
   },
   "warning": {
@@ -98,7 +101,6 @@
   "accounts": {
     "title": "Accounts",
     "main": "Main",
-    "copy_identifier": "Copy identifier to clipboard",
     "new_transaction": "New Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
@@ -158,7 +160,7 @@
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
-    "add_user_as_hotkey_success": "Your pincipal was added to the neuron successfully.",
+    "add_user_as_hotkey_success": "Your principal was added to the neuron successfully.",
     "remove_hotkey_success": "Hotkey removed successfully.",
     "neuron_create_success": "Neuron created successfully.",
     "your_principal": "Your NNS Principal",
@@ -195,9 +197,10 @@
     "confirm_set_delay": "Confirm and Set Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
-    "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by hotkey",
+    "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
     "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
+    "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
     "stake_amount": "Stake Amount"
   },
@@ -256,7 +259,7 @@
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",
     "create_canister_subtitle": "Create a new canister, to deploy your application",
-    "create_canister_success": "Canister created successfully",
+    "create_canister_success": "New canister with id $canisterId created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister was linked successfully",
@@ -266,7 +269,7 @@
     "enter_amount": "Enter Amount",
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
-    "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusve of 1T Cycles fee if creating a new canister)",
+    "minimum_cycles_text": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
     "review_cycles_purchase": "Review Cycles Purchase",
     "converted_to": "converted to"
   },
@@ -279,6 +282,14 @@
     "add_cycles": "Add Cycles",
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
+    "detach": "Detach",
+    "confirm_detach_title": "Confirm Detach",
+    "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
+    "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stored securely.",
+    "detach_success": "Canister detached successfully",
+    "confirm_new_controller": "Confirm New Controller",
+    "enter_controller": "Enter Controller",
+    "new_controller": "New Controller",
     "add_controller": "Add Controller"
   },
   "topics": {
@@ -329,7 +340,8 @@
     "no_transactions": "No transactions"
   },
   "busy_screen": {
-    "pending_approval_hw": "Please use your hardware wallet to approve."
+    "pending_approval_hw": "Please use your hardware wallet to approve.",
+    "take_long": "This might take a while."
   },
   "proposal_detail": {
     "title": "Proposal",
@@ -359,7 +371,7 @@
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
     "text": "The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
-    "reason_since": "created after proposal",
+    "reason_since": "created after the proposal",
     "reason_short": "dissolve delay < 6 months"
   },
   "neuron_detail": {
@@ -392,7 +404,7 @@
     "split_neuron_confirm": "Confirm Split",
     "merge_neurons_success": "Your neurons have been successfully merged.",
     "disburse_neuron_title": "Disburse Neuron",
-    "split_neuron_success": "Your neuron has successfully been splitted.",
+    "split_neuron_success": "Your neuron has successfully been split.",
     "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
     "merge_maturity_disabled_tooltip": "You need at least $amount ICP to merge maturity.",
     "spawn_maturity_disabled_tooltip": "You need at least $amount ICP to spawn a new neuron from maturity.",
@@ -420,8 +432,7 @@
     "current_maturity": "Current Maturity",
     "dissolve_delay_range": "Dissolve Delay Range",
     "maturity_range": "Select Maturity Range",
-    "maturity_percentage": "Percentage of maturity",
-    "add_hotkey_placeholder": "Principal ID"
+    "maturity_percentage": "Percentage of maturity"
   },
   "time": {
     "year": "year",
@@ -438,7 +449,7 @@
     "please_open": "Please open the Internet Computer app on your wallet and try again.",
     "locked": "Ledger Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
-    "principal_not_match": "Principal returned by device does not match public key.",
+    "principal_not_match": "Principal returned by the device does not match the public key.",
     "signature_unexpected": "A ledger error happened during signature. $message (code $code).",
     "signature_length": "Signature must be 64 bytes long (is $length)",
     "connect_no_device": "No Ledger device found. Is the wallet connected and unlocked?",
@@ -455,6 +466,17 @@
     "no_name": "No account name provided.",
     "no_identity": "No identity connected to your hardware wallet.",
     "already_registered": "The hardware wallet is already registered with another account.",
-    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached."
+    "limit_exceeded": "The limit of hardware wallet that can be attached has been reached.",
+    "register_hardware_wallet": "Error registering hardware wallet",
+    "create_hardware_wallet_too_long": "The name $accountName is too long (max. 24 characters). Please, choose a shorter name."
+  },
+  "error__account": {
+    "not_found": "Account not found",
+    "no_details": "Error getting account details",
+    "subaccount_too_long": "The name $subAccountName of the linked account is too long (max. 24 characters). Please, choose a shorter name.",
+    "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
+    "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
+    "subaccount_not_found": "Error renaming subAccount, subAccount ($account_identifier) not found",
+    "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
   }
 }

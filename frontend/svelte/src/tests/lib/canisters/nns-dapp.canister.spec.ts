@@ -19,7 +19,7 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCanisters } from "../../mocks/canisters.mock";
+import { mockCanister, mockCanisters } from "../../mocks/canisters.mock";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
@@ -190,7 +190,9 @@ describe("NNSDapp", () => {
         {
           AccountNotFound: null,
         },
-        new AccountNotFoundError("Error registering hardware wallet")
+        new AccountNotFoundError(
+          "error__attach_wallet.register_hardware_wallet"
+        )
       ));
 
     it("should throw register hardware wallet error name too long", async () =>
@@ -198,7 +200,10 @@ describe("NNSDapp", () => {
         {
           NameTooLong: null,
         },
-        new NameTooLongError(`Error, name "test" is too long`)
+        new NameTooLongError(
+          "error__attach_wallet.create_hardware_wallet_too_long",
+          { $accountName: "test" }
+        )
       ));
 
     it("should throw register hardware wallet error already registered", async () =>
@@ -232,5 +237,34 @@ describe("NNSDapp", () => {
 
       expect(service.get_transactions).toBeCalled();
     });
+  });
+
+  describe("NNSDapp.attachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.attachCanister({
+        name: "test",
+        canisterId: mockCanister.canister_id,
+      });
+
+      expect(service.attach_canister).toBeCalled();
+    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
+  });
+
+  describe("NNSDapp.detachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.detach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.detachCanister(mockCanister.canister_id);
+
+      expect(service.detach_canister).toBeCalled();
+    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
   });
 });
