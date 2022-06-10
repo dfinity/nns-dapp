@@ -11,8 +11,9 @@ describe("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
 
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )

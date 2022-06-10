@@ -185,8 +185,9 @@ const redirectTest = async (
 
 describe("redirects", () => {
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )

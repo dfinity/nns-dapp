@@ -9,8 +9,9 @@ import { Capabilities } from "@wdio/types";
 
 describe("Verifies that neurons can be created", () => {
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )

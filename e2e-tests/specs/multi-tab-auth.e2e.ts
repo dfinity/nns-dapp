@@ -14,14 +14,14 @@ describe("multi-tab-auth", () => {
   let navigator;
 
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )
     )
       this.skip();
-    // if (!(browser.capabilities.isChrome)) this.skip();
     navigator = new MyNavigator(browser);
   });
 

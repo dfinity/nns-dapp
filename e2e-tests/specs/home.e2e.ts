@@ -3,6 +3,19 @@ import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 
 describe("landing page", () => {
+
+  before(function () {
+    const compatibleBrowsers = ["chrome", "firefox"];
+    if (
+      !compatibleBrowsers.includes(
+        (browser.capabilities as Capabilities.Capabilities).browserName ??
+          "unknown"
+      )
+    )
+      this.skip();
+    navigator = new MyNavigator(browser);
+  });
+
   it("loads", async () => {
     await browser.url("/");
 

@@ -13,8 +13,9 @@ describe("Users get a main account", () => {
   const linkedAccountName = "Koala";
 
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )

@@ -11,8 +11,9 @@ import { Capabilities } from "@wdio/types";
  */
 describe("Users get a main account", () => {
   before(function () {
+    const compatibleBrowsers = ["chrome"];
     if (
-      !["chrome"].includes(
+      !compatibleBrowsers.includes(
         (browser.capabilities as Capabilities.Capabilities).browserName ??
           "unknown"
       )
