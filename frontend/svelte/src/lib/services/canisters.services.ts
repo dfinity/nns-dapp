@@ -21,7 +21,10 @@ import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import { getLastPathDetail } from "../utils/app-path.utils";
 import { isController } from "../utils/canisters.utils";
-import { mapCanisterErrorToToastMessage } from "../utils/error.utils";
+import {
+  mapCanisterErrorToToastMessage,
+  toToastError,
+} from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -97,8 +100,9 @@ export const createCanister = async ({
     syncAccounts();
     return canisterId;
   } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
-    toastsStore.show(mapCanisterErrorToToastMessage(error));
+    toastsStore.show(
+      mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
+    );
     return;
   }
 };
@@ -128,8 +132,9 @@ export const topUpCanister = async ({
     syncAccounts();
     return { success: true };
   } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
-    toastsStore.show(mapCanisterErrorToToastMessage(error));
+    toastsStore.show(
+      mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
+    );
     return { success: false };
   }
 };
@@ -204,7 +209,9 @@ export const updateSettings = async ({
     });
     return { success: true };
   } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+    toastsStore.show(
+      mapCanisterErrorToToastMessage(error, "error.canister_update_settings")
+    );
     return { success: false };
   }
 };
@@ -220,8 +227,13 @@ export const attachCanister = async (
     });
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };
-  } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+  } catch (err) {
+    toastsStore.error(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__canister.unknown_attach",
+      })
+    );
     return { success: false };
   }
 };
@@ -239,8 +251,13 @@ export const detachCanister = async (
     success = true;
     await listCanisters({ clearBeforeQuery: false });
     return { success };
-  } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+  } catch (err) {
+    toastsStore.error(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__canister.unknown_detach",
+      })
+    );
     return { success };
   }
 };
@@ -276,8 +293,11 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
   try {
     const identity = await getIdentity();
     return await getIcpToCyclesExchangeRateApi(identity);
-  } catch (error) {
-    // TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error__canister.get_exchange_rate",
+      err,
+    });
     return;
   }
 };
