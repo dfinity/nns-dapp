@@ -6,7 +6,7 @@ import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
 import { AccountsTab } from "../components/accounts-tab";
-import { Capabilities } from "@wdio/types";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Verifies that neurons can be disbursed", () => {
   let neuronId: string | undefined = undefined;
@@ -15,14 +15,7 @@ describe("Verifies that neurons can be disbursed", () => {
   let accountIcpBefore: number = Infinity; // This will be set to the account holding before it receives the disbursal.
 
   before(function () {
-    const compatibleBrowsers = ["chrome"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
   });
 
   /**

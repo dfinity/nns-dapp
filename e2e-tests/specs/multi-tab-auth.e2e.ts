@@ -4,7 +4,7 @@ import { waitForLoad } from "../common/waitForLoad";
 import { Header } from "../components/header";
 import { MyNavigator } from "../common/navigator";
 import { AuthPage } from "../components/auth";
-import { Capabilities } from "@wdio/types";
+import { skipUnlessBrowserIs } from "../common/test";
 
 /**
  * Verifies that the login/logout state is synchronised across tabs.
@@ -14,14 +14,7 @@ describe("multi-tab-auth", () => {
   let navigator;
 
   before(function () {
-    const compatibleBrowsers = ["chrome"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
     navigator = new MyNavigator(browser);
   });
 

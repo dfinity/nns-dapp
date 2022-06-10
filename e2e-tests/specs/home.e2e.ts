@@ -1,19 +1,11 @@
 import { register } from "../common/register";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("landing page", () => {
-
   before(function () {
-    const compatibleBrowsers = ["chrome", "firefox"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
-    navigator = new MyNavigator(browser);
+    skipUnlessBrowserIs.bind(this)(["chrome", "firefox"]);
   });
 
   it("loads", async () => {

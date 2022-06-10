@@ -4,21 +4,14 @@
 import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
-import { Capabilities } from "@wdio/types";
+import { skipUnlessBrowserIs } from "../common/test";
 
 /**
  * Verifies that new users get a main account.
  */
 describe("Users get a main account", () => {
   before(function () {
-    const compatibleBrowsers = ["chrome"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
   });
 
   it("Setup: Create a new user", async () => {

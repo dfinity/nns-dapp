@@ -5,20 +5,13 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { ProposalsTab } from "../components/proposals-tab";
-import { Capabilities } from "@wdio/types";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
 
   before(function () {
-    const compatibleBrowsers = ["chrome"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
   });
 
   it("Setup: Register user", async () => {

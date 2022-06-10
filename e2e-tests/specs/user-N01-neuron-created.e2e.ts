@@ -5,18 +5,11 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
-import { Capabilities } from "@wdio/types";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Verifies that neurons can be created", () => {
   before(function () {
-    const compatibleBrowsers = ["chrome"];
-    if (
-      !compatibleBrowsers.includes(
-        (browser.capabilities as Capabilities.Capabilities).browserName ??
-          "unknown"
-      )
-    )
-      this.skip();
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
   });
 
   /**
