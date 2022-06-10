@@ -1,5 +1,6 @@
 <script lang="ts">
   /** Used in aria-describedby */
+  import { debounce } from "../../utils/utils";
 
   export let id: string;
   export let text = "";
@@ -10,7 +11,7 @@
   let innerWidth: number | undefined = undefined;
   let tooltipStyle: string | undefined = undefined;
 
-  const setPosition = () => {
+  const setPosition = debounce(() => {
     // We get the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width
     const clientWidth = document.querySelector("main")?.clientWidth;
 
@@ -43,9 +44,9 @@
         : overflowRight > 0
         ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
         : undefined;
-  };
+  });
 
-  $: innerWidth, (() => setPosition())();
+  $: innerWidth, tooltipComponent, target, setPosition();
 </script>
 
 <svelte:window bind:innerWidth />
