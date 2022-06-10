@@ -80,7 +80,13 @@
     "controller_not_present": "Principal is already not a controller.",
     "pub_key_not_hex_string": "$key is not a hex string.",
     "pub_key_hex_string_invalid_length": "The key must be >= 130 characters and <= 150 characters.",
-    "hardware_wallet_no_account": "No hardware wallet account provided."
+    "hardware_wallet_no_account": "No hardware wallet account provided.",
+    "canister_refund": "Sorry, the operation was not successful and the amoun has been refunded.",
+    "canister_creation_unknown": "Sorry, there was an error creating the canister.",
+    "canister_top_up_unknown": "Sorry, there was an error adding cycles to the canister.",
+    "canister_update_settings": "Sorry, there was an error updating the canister settings.",
+    "not_canister_controller_to_update": "The current user is not the controller of the canister. Only controllers can change the settings.",
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -266,7 +272,7 @@
     "create_canister_success": "New canister with id $canisterId created successfully",
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
-    "link_canister_success": "The canister was linked successfully",
+    "link_canister_success": "The canister ($canisterId) was linked successfully",
     "attach_canister": "Attach Canister",
     "enter_canister_id": "Enter Canister ID:",
     "canister_id": "Canister ID",
@@ -489,5 +495,15 @@
     "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
     "subaccount_not_found": "Error renaming subAccount, subAccount ($account_identifier) not found",
     "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
+  },
+  "error__canister": {
+    "already_attached": "Canister ($canisterId) is already attached",
+    "name_taken": "The name $name is already in use. Names must be unique.",
+    "name_too_long": "The name $name is too long (max. 24 characters). Please, choose a shorter name.",
+    "limit_exceeded": "The limit of canisters that can be attached has been exceeded.",
+    "detach_not_found": "Error detaching, canister ($canisterId) not found.",
+    "unknown_attach": "Error attaching canister.",
+    "unknown_detach": "Error detaching canister.",
+    "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   }
 }
