@@ -9,6 +9,11 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
+import {
+  InvalidaTransactionError,
+  RefundedError,
+} from "../canisters/cmc/cmc.errors";
+import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
 import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
@@ -30,15 +35,15 @@ export const errorToString = (err?: unknown): string | undefined =>
 
 const factoryMappingErrorToToastMessage =
   (collection: Array<[Function, string]>) =>
-  (error: Error): ToastMsg => {
+  (error: Error, fallbackKey?: string): ToastMsg => {
     // Check toToastError first
-    const fallbackKey = "fallback";
+    const testFallbackKey = "fallback";
     const toastError = toToastError({
       err: error,
-      fallbackErrorLabelKey: fallbackKey,
+      fallbackErrorLabelKey: testFallbackKey,
     });
     // Return if error found is not fallback
-    if (toastError.labelKey !== fallbackKey) {
+    if (toastError.labelKey !== testFallbackKey) {
       return {
         level: "error",
         ...toastError,
@@ -47,7 +52,7 @@ const factoryMappingErrorToToastMessage =
     const pair = collection.find(([classType]) => error instanceof classType);
     if (pair === undefined) {
       return {
-        labelKey: "error.unknown",
+        labelKey: fallbackKey ?? "error.unknown",
         level: "error",
         detail: errorToString(error),
       };
@@ -80,9 +85,11 @@ export const mapNeuronErrorToToastMessage =
   factoryMappingErrorToToastMessage(neuronMapper);
 
 // Check CMC and IC Mgt Canister Errors
-// TODO: Manage proper errors https://dfinity.atlassian.net/browse/L2-615
 const canisterMapper: Array<[Function, string]> = [
   [InsufficientAmountError, "error.insufficient_funds"],
+  [RefundedError, "error.canister_refund"],
+  [InvalidaTransactionError, "error.canister_invalid_transaction"],
+  [UserNotTheControllerError, "error.not_canister_controller_to_update"],
 ];
 export const mapCanisterErrorToToastMessage =
   factoryMappingErrorToToastMessage(canisterMapper);

@@ -85,6 +85,12 @@ interface I18nError {
   pub_key_not_hex_string: string;
   pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
+  canister_refund: string;
+  canister_creation_unknown: string;
+  canister_top_up_unknown: string;
+  canister_update_settings: string;
+  not_canister_controller_to_update: string;
+  canister_invalid_transaction: string;
 }
 
 interface I18nWarning {
@@ -520,6 +526,17 @@ interface I18nError__account {
   rename_account_not_found: string;
 }
 
+interface I18nError__canister {
+  already_attached: string;
+  name_taken: string;
+  name_too_long: string;
+  limit_exceeded: string;
+  detach_not_found: string;
+  unknown_attach: string;
+  unknown_detach: string;
+  get_exchange_rate: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -549,4 +566,5 @@ interface I18n {
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
+  error__canister: I18nError__canister;
 }
