@@ -156,7 +156,6 @@
     justify-content: end;
     align-items: center;
     gap: var(--padding);
-
   }
 
   .buttons {
