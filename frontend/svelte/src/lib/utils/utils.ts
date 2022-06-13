@@ -152,3 +152,52 @@ export const mapPromises = async <T, R>(
 };
 
 export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
+
+const addZeros = (nums: number[], amountZeros: number): number[] => {
+  const newNumbers = [...nums];
+  while (newNumbers.length < amountZeros) {
+    newNumbers.push(0);
+  }
+  return newNumbers;
+};
+/**
+ * Returns true if the current version is smaller than the minVersion, false if equal or bigger.
+ *
+ * @param minVersion Ex: "1.0.0"
+ * @param currentVersion Ex: "2.0.0"
+ * @returns boolean
+ */
+export const isSmallerVersion = ({
+  minVersion,
+  currentVersion,
+}: {
+  minVersion: string;
+  currentVersion: string;
+}): boolean => {
+  const [minMajor, minMinor, minPatch] = addZeros(
+    minVersion.split(".").map(Number),
+    3
+  );
+  const [currentMajor, currentMinor, currentPatch] = addZeros(
+    currentVersion.split(".").map(Number),
+    3
+  );
+  // Check major version
+  if (currentMajor < minMajor) {
+    return true;
+  }
+  if (currentMajor > minMajor) {
+    return false;
+  }
+  // Major versions match
+  // Check minor version
+  if (currentMinor < minMinor) {
+    return true;
+  }
+  if (currentMinor > minMinor) {
+    return false;
+  }
+  // Minor version match
+  // Check patch version
+  return currentPatch < minPatch;
+};

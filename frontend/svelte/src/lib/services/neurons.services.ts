@@ -64,6 +64,7 @@ import {
   syncAccounts,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
+import { assertLedgerVersion } from "./ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
@@ -685,6 +686,8 @@ export const mergeMaturity = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
+
+    await assertLedgerVersion({ identity, minVersion: "2.0.6" });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
