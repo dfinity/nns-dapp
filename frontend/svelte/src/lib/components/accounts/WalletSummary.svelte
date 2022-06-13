@@ -1,7 +1,7 @@
 <script lang="ts">
   import { accountName as getAccountName } from "../../utils/transactions.utils";
   import { i18n } from "../../stores/i18n";
-  import ICP from "../ic/ICP.svelte";
+  import ICPComponent from "../ic/ICP.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { getContext } from "svelte";
@@ -12,6 +12,7 @@
   import { formatICP } from "../../utils/icp.utils";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
+  import {ICP} from '@dfinity/nns';
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -23,9 +24,12 @@
     mainName: $i18n.accounts.main,
   });
 
+  let accountBalance: ICP;
+  $: accountBalance = $store.account?.balance ?? ICP.fromString("0") as ICP;
+
   let detailedICP: string;
   $: detailedICP = formatICP({
-    value: ($store.account?.balance ?? ICP.fromString("0")).toE8s(),
+    value: accountBalance.toE8s(),
     detailed: true,
   });
 </script>
@@ -41,19 +45,19 @@
       }
     )}
   >
-    <ICP icp={$store.account.balance} />
+    <ICPComponent icp={accountBalance} />
   </Tooltip>
 </div>
 <div class="address">
   <Identifier
-    identifier={$store.account.identifier}
+    identifier={$store.account?.identifier ?? ""}
     label={$i18n.wallet.address}
     showCopy
     size="medium"
   />
   {#if isAccountHardwareWallet($store.account)}
     <Identifier
-      identifier={$store.account.principal?.toString() ?? ""}
+      identifier={$store.account?.principal?.toString() ?? ""}
       label={$i18n.wallet.principal}
       showCopy
     />
