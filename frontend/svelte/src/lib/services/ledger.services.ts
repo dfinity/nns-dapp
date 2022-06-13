@@ -185,8 +185,8 @@ export const assertLedgerVersion = async ({
     return;
   }
 
-  const response = await identity.getVersion();
-  const currentVersion = `${response.major}.${response.minor}.${response.patch}`;
+  const { major, minor, patch } = await identity.getVersion();
+  const currentVersion = `${major}.${minor}.${patch}`;
   if (smallerVersion({ currentVersion, minVersion })) {
     const labels = get(i18n);
     throw new LedgerErrorMessage(

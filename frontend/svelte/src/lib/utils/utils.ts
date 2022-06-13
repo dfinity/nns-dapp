@@ -153,6 +153,7 @@ export const mapPromises = async <T, R>(
 
 export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
 
+const AMOUNT_VERSION_PARTS = 3;
 const addZeros = (nums: number[], amountZeros: number): number[] => {
   const newNumbers = [...nums];
   while (newNumbers.length < amountZeros) {
@@ -174,30 +175,20 @@ export const smallerVersion = ({
   minVersion: string;
   currentVersion: string;
 }): boolean => {
-  const [minMajor, minMinor, minPatch] = addZeros(
+  const minVersionStandarized = addZeros(
     minVersion.split(".").map(Number),
-    3
-  );
-  const [currentMajor, currentMinor, currentPatch] = addZeros(
+    AMOUNT_VERSION_PARTS
+  ).join(".");
+  const currentVersionStandarized = addZeros(
     currentVersion.split(".").map(Number),
-    3
+    AMOUNT_VERSION_PARTS
+  ).join(".");
+  // Versions need to have the same number of parts to be comparable
+  // Source: https://stackoverflow.com/a/65687141
+  return (
+    currentVersionStandarized.localeCompare(minVersionStandarized, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    }) < 0
   );
-  // Check major version
-  if (currentMajor < minMajor) {
-    return true;
-  }
-  if (currentMajor > minMajor) {
-    return false;
-  }
-  // Major versions match
-  // Check minor version
-  if (currentMinor < minMinor) {
-    return true;
-  }
-  if (currentMinor > minMinor) {
-    return false;
-  }
-  // Minor version match
-  // Check patch version
-  return currentPatch < minPatch;
 };
