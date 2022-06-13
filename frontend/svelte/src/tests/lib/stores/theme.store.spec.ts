@@ -3,7 +3,7 @@
  */
 
 import { get } from "svelte/store";
-import { theme } from "../../../lib/stores/theme.store";
+import { themeStore } from "../../../lib/stores/theme.store";
 import * as themeUtils from "../../../lib/utils/theme.utils";
 
 enum TestTheme {
@@ -16,9 +16,9 @@ describe("theme-store", () => {
     const applyTheme = jest.spyOn(themeUtils, "applyTheme");
 
     // @ts-ignore we have just one theme at the moment therefore we use pseudo themes for test purpose
-    theme.select(TestTheme.LIGHT);
+    themeStore.select(TestTheme.LIGHT);
 
-    const themeValue = get(theme);
+    const themeValue = get(themeStore);
     expect(themeValue).toEqual(`${TestTheme.LIGHT}`);
     expect(applyTheme).toHaveBeenCalled();
   });

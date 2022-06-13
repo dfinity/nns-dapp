@@ -20,4 +20,4 @@ export const initTheme = () => {
   };
 };
 
-export const theme = initTheme();
+export const themeStore = initTheme();
