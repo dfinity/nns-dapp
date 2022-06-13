@@ -64,7 +64,10 @@ export const queryProposals = async ({
   return proposals;
 };
 
-export const queryProposalWithoutPayload = async ({
+/**
+ * Fetch a proposal w/o the payload.
+ */
+export const queryProposal = async ({
   proposalId,
   identity,
   certified,
@@ -76,9 +79,6 @@ export const queryProposalWithoutPayload = async ({
   logWithTimestamp(
     `Querying Proposal (${hashCode(proposalId)}) certified:${certified} call...`
   );
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: HOST }),
-  });
 
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: HOST }),
@@ -87,12 +87,12 @@ export const queryProposalWithoutPayload = async ({
   const response = await governance.listProposals({
     request: {
       limit: 1,
-      beforeProposal: proposalId,
+      beforeProposal: proposalId + 1n,
       includeRewardStatus: [],
       excludeTopic: [],
       includeStatus: [],
     },
-    certified
+    certified,
   });
 
   logWithTimestamp(
@@ -100,7 +100,7 @@ export const queryProposalWithoutPayload = async ({
       proposalId
     )}) certified:${certified} complete.`
   );
-  return response[0];
+  return response?.proposals?.[0] ?? undefined;
 };
 
 export const registerVote = async ({
