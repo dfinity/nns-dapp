@@ -3,7 +3,6 @@ import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
-  ONE_TRILLION,
   TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
 import { InvalidAmountError } from "../types/neurons.errors";
@@ -74,21 +73,22 @@ export const convertNumberToICP = (amount: number): ICP => {
   return stake;
 };
 
+// `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
+// This value reflects the current market price of one ICP token.
+// https://github.com/dfinity/ic/blob/8132ae34aeba2bf8b913647b85b9918e1cb8721c/rs/nns/cmc/cmc.did#L67
+const NUMBER_XDR_PER_ONE_ICP = 10_000;
 export const convertIcpToTCycles = ({
   icpNumber,
-  ratio,
+  exchangeRate,
 }: {
   icpNumber: number;
-  ratio: bigint;
-}): number => {
-  const icp = convertNumberToICP(icpNumber);
-  return Number(icp.toE8s() * ratio) / ONE_TRILLION;
-};
+  exchangeRate: bigint;
+}): number => icpNumber * (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
 export const convertTCyclesToIcpNumber = ({
   tCycles,
-  ratio,
+  exchangeRate,
 }: {
   tCycles: number;
-  ratio: bigint;
-}): number => (tCycles * Number(ONE_TRILLION)) / Number(ratio) / E8S_PER_ICP;
+  exchangeRate: bigint;
+}): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);

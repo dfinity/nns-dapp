@@ -2,14 +2,18 @@ import {
   getManagementCanister,
   type ManagementCanisterRecord,
 } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { toCanisterDetails } from "./converters";
 import type {
   CanisterDetails,
+  CanisterSettings,
   ICMgtCanisterOptions,
 } from "./ic-management.canister.types";
 import { mapError } from "./ic-management.errors";
 import type { CanisterStatusResponse } from "./ic-management.types";
+
+const wrapWithArray = <T>(value: T | undefined): [T] | [] =>
+  value === undefined ? [] : [value];
 
 export class ICManagementCanister {
   private constructor(private readonly service: ManagementCanisterRecord) {
@@ -42,6 +46,44 @@ export class ICManagementCanister {
       return toCanisterDetails({
         response: rawResponse,
         canisterId,
+      });
+    } catch (e) {
+      throw mapError(e);
+    }
+  };
+
+  /**
+   * Updateds canister settings
+   *
+   * @param {Principal} canisterId
+   * @param {CanisterSettings} settings
+   * @returns Promise<void>
+   * @throws UserNotTheController, Error
+   */
+  public updateSettings = async ({
+    canisterId,
+    settings: {
+      controllers,
+      freezingThreshold,
+      memoryAllocation,
+      computeAllocation,
+    },
+  }: {
+    canisterId: Principal;
+    settings: Partial<CanisterSettings>;
+  }): Promise<void> => {
+    try {
+      // Empty array does not change the value in the settings.
+      await this.service.update_settings({
+        canister_id: canisterId,
+        settings: {
+          controllers: wrapWithArray(
+            controllers?.map((c) => Principal.fromText(c))
+          ),
+          freezing_threshold: wrapWithArray(freezingThreshold),
+          memory_allocation: wrapWithArray(memoryAllocation),
+          compute_allocation: wrapWithArray(computeAllocation),
+        },
       });
     } catch (e) {
       throw mapError(e);
