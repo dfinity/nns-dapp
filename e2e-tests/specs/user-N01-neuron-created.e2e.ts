@@ -5,8 +5,13 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Verifies that neurons can be created", () => {
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
+
   /**
    * Creates a user with:
    * - ICP in the main account

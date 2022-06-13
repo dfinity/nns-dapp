@@ -5,6 +5,7 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Verifies that neurons can be merged", () => {
   let neuronId1: string = "";
@@ -15,6 +16,10 @@ describe("Verifies that neurons can be merged", () => {
   const dissolveDelaySeconds2 = 3600 * 24 * 365 * 5;
   let neuron1IcpBefore: number = NaN;
   let neuron2IcpBefore: number = NaN;
+
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
 
   /**
    * Setup creates a user with:
