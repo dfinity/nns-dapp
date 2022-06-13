@@ -29,9 +29,7 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "../lib/types/selected-account.context";
-  import {
-    getAccountFromStore,
-  } from "../lib/utils/accounts.utils";
+  import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
 
   onMount(() => {

@@ -12,7 +12,7 @@
   import { formatICP } from "../../utils/icp.utils";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import {ICP} from '@dfinity/nns';
+  import { ICP } from "@dfinity/nns";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -25,7 +25,7 @@
   });
 
   let accountBalance: ICP;
-  $: accountBalance = $store.account?.balance ?? ICP.fromString("0") as ICP;
+  $: accountBalance = $store.account?.balance ?? (ICP.fromString("0") as ICP);
 
   let detailedICP: string;
   $: detailedICP = formatICP({
@@ -38,12 +38,9 @@
   <h1>{accountName}</h1>
   <Tooltip
     id="wallet-detailed-icp"
-    text={replacePlaceholders(
-      $i18n.accounts.current_balance_detail,
-      {
-        $amount: detailedICP,
-      }
-    )}
+    text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+      $amount: detailedICP,
+    })}
   >
     <ICPComponent icp={accountBalance} />
   </Tooltip>
