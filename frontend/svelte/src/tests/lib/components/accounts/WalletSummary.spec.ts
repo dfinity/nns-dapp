@@ -10,6 +10,7 @@ import {
   type SelectedAccountContext,
   type SelectedAccountStore,
 } from "../../../../lib/types/selected-account.context";
+import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
@@ -53,5 +54,28 @@ describe("WalletSummary", () => {
       `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
+  });
+
+  it("should contain a tooltip", () => {
+    const { container } = renderWalletSummary();
+
+    expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
+  });
+
+  it("should render a detailed balance in ICP in a tooltip", () => {
+    const { container } = renderWalletSummary();
+
+    const icp: HTMLDivElement | null = container.querySelector(
+      "#wallet-detailed-icp"
+    );
+
+    expect(icp?.textContent).toEqual(
+      replacePlaceholders(en.accounts.current_balance_detail, {
+        $amount: `${formatICP({
+          value: mockMainAccount.balance.toE8s(),
+          detailed: true,
+        })}`,
+      })
+    );
   });
 });
