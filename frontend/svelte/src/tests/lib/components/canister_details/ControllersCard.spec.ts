@@ -15,6 +15,20 @@ describe("ControllersCard", () => {
     expect(queryByText(en.canister_detail.controllers)).toBeInTheDocument();
   });
 
+  it("renders a button to remove each controller", () => {
+    const controllers = [
+      "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    ];
+    const { queryAllByTestId } = render(ControllersCard, {
+      props: { controllers },
+    });
+
+    expect(queryAllByTestId("remove-canister-controller-button").length).toBe(
+      controllers.length
+    );
+  });
+
   it("renders controllers", () => {
     const controllers = [
       "ryjl3-tyaaa-aaaaa-aaaba-cai",

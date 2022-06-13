@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
+  import IconClose from "../../icons/IconClose.svelte";
   import { getIdentity } from "../../services/auth.services";
   import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";
@@ -50,7 +51,7 @@
 </script>
 
 <Card>
-  <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+  <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     <p>{$i18n.neuron_detail.no_notkeys}</p>
   {:else}
@@ -61,9 +62,9 @@
           {#if isControllable}
             <button
               class="text"
-              aria-label={$i18n.core.close}
+              aria-label={$i18n.core.remove}
               on:click={() => remove(hotkey)}
-              data-tid="remove-hotkey-button">x</button
+              data-tid="remove-hotkey-button"><IconClose size="18px" /></button
             >
           {/if}
         </li>
@@ -90,5 +91,9 @@
 
   li {
     @include card.list-item;
+
+    button {
+      display: flex;
+    }
   }
 </style>
