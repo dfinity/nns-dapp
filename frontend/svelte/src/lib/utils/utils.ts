@@ -167,7 +167,7 @@ const addZeros = (nums: number[], amountZeros: number): number[] => {
  * @param currentVersion Ex: "2.0.0"
  * @returns boolean
  */
-export const isSmallerVersion = ({
+export const smallerVersion = ({
   minVersion,
   currentVersion,
 }: {

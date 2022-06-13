@@ -11,7 +11,7 @@ import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { toToastError } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
-import { isSmallerVersion } from "../utils/utils";
+import { smallerVersion } from "../utils/utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 
@@ -187,7 +187,7 @@ export const assertLedgerVersion = async ({
 
   const response = await identity.getVersion();
   const currentVersion = `${response.major}.${response.minor}.${response.patch}`;
-  if (isSmallerVersion({ currentVersion, minVersion })) {
+  if (smallerVersion({ currentVersion, minVersion })) {
     const labels = get(i18n);
     throw new LedgerErrorMessage(
       replacePlaceholders(labels.error__ledger.version_not_supported, {
