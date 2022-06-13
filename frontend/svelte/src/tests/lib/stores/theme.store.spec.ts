@@ -12,7 +12,7 @@ enum TestTheme {
 }
 
 describe("theme-store", () => {
-  it("should select theme", () => {
+  it("should select and apply theme", () => {
     const applyTheme = jest.spyOn(themeUtils, "applyTheme");
 
     // @ts-ignore we have just one theme at the moment therefore we use pseudo themes for test purpose
