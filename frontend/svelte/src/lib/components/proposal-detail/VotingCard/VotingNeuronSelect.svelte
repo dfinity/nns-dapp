@@ -1,15 +1,22 @@
 <script lang="ts">
+  import type { ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import {
+    getVotingBallot,
+    selectedNeuronsVotingPower,
+  } from "../../../utils/proposals.utils";
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
+
+  export let proposalInfo: ProposalInfo;
 
   let total: bigint;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
+    proposal: proposalInfo,
   });
 
   const toggleSelection = (neuronId: bigint) =>
@@ -23,6 +30,7 @@
 
 <ul>
   {#each $votingNeuronSelectStore.neurons as { neuronId, votingPower }}
+    {@const ballot = getVotingBallot({ neuronId, proposalInfo })}
     <li>
       <Checkbox
         inputId={`${neuronId}`}
@@ -34,7 +42,7 @@
       >
         <span class="neuron-id">{`${neuronId}`}</span>
         <span class="neuron-voting-power"
-          >{`${formatVotingPower(votingPower)}`}</span
+          >{`${formatVotingPower(ballot?.votingPower ?? votingPower)}`}</span
         >
       </Checkbox>
     </li>

@@ -1,4 +1,5 @@
 import type {
+  Ballot,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -144,13 +145,19 @@ export const hasMatchingProposals = ({
 export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
+  proposal,
 }: {
   neurons: NeuronInfo[];
   selectedIds: NeuronId[];
+  proposal: ProposalInfo;
 }): bigint =>
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
-    .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+    .map(({ neuronId, votingPower }) => {
+      const ballot = getVotingBallot({ neuronId, proposalInfo: proposal });
+      return ballot?.votingPower ?? votingPower;
+    })
+    .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
 
 /**
  * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
@@ -286,3 +293,12 @@ export const mapProposalInfo = (
     status,
   };
 };
+
+export const getVotingBallot = ({
+  neuronId,
+  proposalInfo,
+}: {
+  neuronId: bigint;
+  proposalInfo: ProposalInfo;
+}): Ballot | undefined =>
+  proposalInfo.ballots.find((ballot) => ballot.neuronId === neuronId);
