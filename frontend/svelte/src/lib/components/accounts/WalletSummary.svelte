@@ -9,6 +9,9 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "../../types/selected-account.context";
+  import { formatICP } from "../../utils/icp.utils";
+  import Tooltip from "../ui/Tooltip.svelte";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -19,11 +22,27 @@
     account: $store.account,
     mainName: $i18n.accounts.main,
   });
+
+  let detailedICP: string;
+  $: detailedICP = formatICP({
+    value: ($store.account?.balance ?? ICP.fromString("0")).toE8s(),
+    detailed: true,
+  });
 </script>
 
 <div class="title">
   <h1>{accountName}</h1>
-  <ICP icp={$store.account.balance} />
+  <Tooltip
+    id="wallet-detailed-icp"
+    text={replacePlaceholders(
+      $i18n.accounts.current_balance_detail,
+      {
+        $amount: detailedICP,
+      }
+    )}
+  >
+    <ICP icp={$store.account.balance} />
+  </Tooltip>
 </div>
 <div class="address">
   <Identifier
