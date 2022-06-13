@@ -1,6 +1,6 @@
 import { Actor } from "@dfinity/agent";
-import { AccountIdentifier } from "@dfinity/nns";
 import type { ProposalId } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
@@ -304,12 +304,22 @@ export class NNSDappCanister {
     });
   }
 
-  public async getProposalPayload(proposalId: ProposalId): Promise<Record<string, object>> {
-    const response = await this.certifiedService.get_proposal_payload(proposalId);
+  public async getProposalPayload({
+    proposalId,
+  }: {
+    proposalId: ProposalId;
+    // TODO: implement certified support
+    // certified: boolean;
+  }): Promise<object> {
+    const response = await this.certifiedService.get_proposal_payload(
+      proposalId
+    );
     if ("Ok" in response) {
       return JSON.parse(response.Ok);
     }
     // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
-    throw new Error(`Error getting proposal payload ${JSON.stringify(response)}`);
+    throw new Error(
+      `Error getting proposal payload ${JSON.stringify(response)}`
+    );
   }
 }

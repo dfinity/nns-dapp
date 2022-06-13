@@ -3,6 +3,7 @@ import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
+  queryProposalPayload,
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
@@ -236,6 +237,30 @@ const getProposal = async ({
     onError,
     strategy,
     logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
+  });
+};
+
+/**
+ * Return proposal payload
+ */
+export const getProposalPayload = async ({
+  proposalId,
+  onLoad,
+  onError,
+}: {
+  proposalId: ProposalId;
+  onLoad: QueryAndUpdateOnResponse<object | undefined>;
+  onError: QueryAndUpdateOnError<Error | undefined>;
+}): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  return queryAndUpdate<object | undefined, unknown>({
+    request: ({ certified }) => queryProposalPayload({ proposalId, identity }),
+    onLoad,
+    onError: (error) => {
+      console.error(error);
+    },
+    logMessage: `Syncing Proposal Payload ${hashCode(proposalId)}`,
   });
 };
 

@@ -13,6 +13,7 @@ import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { enumsExclude } from "../utils/enum.utils";
+import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({
   beforeProposal,
@@ -87,7 +88,7 @@ export const queryProposal = async ({
   const response = await governance.listProposals({
     request: {
       limit: 1,
-      beforeProposal: proposalId + 1n,
+      beforeProposal: proposalId + BigInt(1),
       includeRewardStatus: [],
       excludeTopic: [],
       includeStatus: [],
@@ -101,6 +102,30 @@ export const queryProposal = async ({
     )}) certified:${certified} complete.`
   );
   return response?.proposals?.[0] ?? undefined;
+};
+
+export const queryProposalPayload = async ({
+  proposalId,
+  identity,
+}: {
+  proposalId: ProposalId;
+  identity: Identity;
+}): Promise<object> => {
+  logWithTimestamp(`Loading Proposal Payload ${hashCode(proposalId)} call...`);
+
+  const { canister } = await nnsDappCanister({ identity });
+
+  const response = await canister.getProposalPayload({
+    proposalId,
+    // certified,
+  });
+  console.log("🔥 queryProposalPayload", response);
+
+  logWithTimestamp(
+    `Loading Proposal Payload ${hashCode(proposalId)} complete.`
+  );
+
+  return response;
 };
 
 export const registerVote = async ({

@@ -9,6 +9,7 @@
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
   import { mapProposalInfo } from "../../../utils/proposals.utils";
+  import ProposalPayload from "./ProposalPayload.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -32,6 +33,9 @@
   </div>
 
   <ProposalActions {proposal} />
+  {#if proposalInfo?.id !== undefined}
+    <ProposalPayload proposalId={proposalInfo.id} />
+  {/if}
 </Card>
 
 <style lang="scss">
