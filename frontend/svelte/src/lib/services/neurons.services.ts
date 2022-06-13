@@ -31,7 +31,10 @@ import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
-import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import {
+  MAX_CONCURRENCY,
+  MIN_VERSION_MERGE_MATURITY,
+} from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
@@ -687,7 +690,10 @@ export const mergeMaturity = async ({
       neuronId
     );
 
-    await assertLedgerVersion({ identity, minVersion: "2.0.6" });
+    await assertLedgerVersion({
+      identity,
+      minVersion: MIN_VERSION_MERGE_MATURITY,
+    });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
