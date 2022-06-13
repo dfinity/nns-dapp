@@ -18,7 +18,8 @@ describe("theme-utils", () => {
   it("should update meta theme color in head element", () => {
     // Theme color tag should be defined statically by app owner first
     document.head.insertAdjacentHTML(
-        'beforeend', '<meta name="theme-color" />'
+      "beforeend",
+      '<meta name="theme-color" />'
     );
 
     applyTheme(Theme.DARK);

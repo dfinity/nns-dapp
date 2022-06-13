@@ -1,12 +1,16 @@
-import type {Theme} from '../types/theme';
+import type { Theme } from "../types/theme";
 
 export const applyTheme = (theme: Theme) => {
-  const {documentElement, head} = document;
+  const { documentElement, head } = document;
 
-  documentElement.setAttribute('theme', theme);
+  documentElement.setAttribute("theme", theme);
 
-  const color: string = getComputedStyle(documentElement).getPropertyValue('--gray-50-background');
-  head?.children?.namedItem('theme-color')?.setAttribute('content', color.trim());
+  const color: string = getComputedStyle(documentElement).getPropertyValue(
+    "--gray-50-background"
+  );
+  head?.children
+    ?.namedItem("theme-color")
+    ?.setAttribute("content", color.trim());
 
-  localStorage.setItem('theme', theme);
+  localStorage.setItem("theme", theme);
 };
