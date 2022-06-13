@@ -5,9 +5,14 @@ import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { ProposalsTab } from "../components/proposals-tab";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Makes a proposal and verifies that the filters work", () => {
   let proposalId: number | undefined = undefined;
+
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
 
   it("Setup: Register user", async () => {
     await browser.url("/");
