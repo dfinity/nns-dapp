@@ -154,13 +154,10 @@ export const mapPromises = async <T, R>(
 export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
 
 const AMOUNT_VERSION_PARTS = 3;
-const addZeros = (nums: number[], amountZeros: number): number[] => {
-  const newNumbers = [...nums];
-  while (newNumbers.length < amountZeros) {
-    newNumbers.push(0);
-  }
-  return newNumbers;
-};
+const addZeros = (nums: number[], amountZeros: number): number[] =>
+  amountZeros > nums.length
+    ? [...nums, ...[...Array(amountZeros - nums.length).keys()].map(() => 0)]
+    : nums;
 /**
  * Returns true if the current version is smaller than the minVersion, false if equal or bigger.
  *
