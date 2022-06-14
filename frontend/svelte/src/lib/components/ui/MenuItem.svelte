@@ -34,7 +34,7 @@
     text-decoration: none;
     outline: none;
 
-    padding: var(--padding) var(--padding-2x);
+    padding: var(--padding-2x);
 
     &.selected {
       background: var(--blue-500);

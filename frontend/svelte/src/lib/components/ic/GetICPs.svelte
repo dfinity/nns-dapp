@@ -101,7 +101,7 @@
     font-size: var(--font-size-h4);
     font-weight: 700;
 
-    padding: var(--padding) var(--padding-2x);
+    padding: var(--padding-2x);
 
     &:focus,
     &:hover {
