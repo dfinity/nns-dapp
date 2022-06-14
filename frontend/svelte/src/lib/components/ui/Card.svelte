@@ -51,7 +51,7 @@
     background: var(--card-background, var(--background));
     color: var(--gray-50);
 
-    padding: var(--padding-2_5x);
+    padding: var(--padding-2x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 

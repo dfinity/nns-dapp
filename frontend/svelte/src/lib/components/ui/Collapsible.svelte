@@ -141,7 +141,7 @@
     align-items: center;
 
     :global(svg) {
-      width: var(--padding-2_5x);
+      width: var(--padding-2x);
       transition: transform var(--animation-time-normal);
     }
 
