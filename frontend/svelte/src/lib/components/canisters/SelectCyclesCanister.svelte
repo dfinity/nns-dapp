@@ -21,19 +21,25 @@
   const setCycles = () =>
     (amountCycles =
       amount !== undefined && icpToCyclesExchangeRate !== undefined
-        ? convertIcpToTCycles({
-            icpNumber: amount,
-            exchangeRate: icpToCyclesExchangeRate,
-          })
+        ? // ICP Input misbehaves with more than eight decimals
+          Number(
+            convertIcpToTCycles({
+              icpNumber: amount,
+              exchangeRate: icpToCyclesExchangeRate,
+            }).toFixed(8)
+          )
         : undefined);
 
   const setAmount = () =>
     (amount =
       amountCycles !== undefined && icpToCyclesExchangeRate !== undefined
-        ? convertTCyclesToIcpNumber({
-            tCycles: amountCycles,
-            exchangeRate: icpToCyclesExchangeRate,
-          })
+        ? // ICP Input misbehaves with more than eight decimals
+          Number(
+            convertTCyclesToIcpNumber({
+              tCycles: amountCycles,
+              exchangeRate: icpToCyclesExchangeRate,
+            }).toFixed(8)
+          )
         : undefined);
 
   $: amount,

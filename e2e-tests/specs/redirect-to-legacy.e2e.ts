@@ -6,6 +6,7 @@ import {
   RedirectToLegacy,
   REDIRECT_TO_LEGACY,
 } from "../common/constants";
+import { skipUnlessBrowserIs } from "../common/test";
 
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
@@ -183,6 +184,10 @@ const redirectTest = async (
 };
 
 describe("redirects", () => {
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
+
   it("goes to accounts page after registration", async () => {
     await browser.url("/");
     await waitForLoad(browser);

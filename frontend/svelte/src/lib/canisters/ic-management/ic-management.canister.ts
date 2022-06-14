@@ -52,6 +52,15 @@ export class ICManagementCanister {
     }
   };
 
+  /**
+   * Update canister settings
+   *
+   * @param {Object} params
+   * @param {Principal} params.canisterId
+   * @param {CanisterSettings} params.settings
+   * @returns Promise<void>
+   * @throws UserNotTheController, Error
+   */
   public updateSettings = async ({
     canisterId,
     settings: {

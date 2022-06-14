@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import RemoveCanisterControllerButton from "../../../../lib/components/canister_details/RemoveCanisterControllerButton.svelte";
+  import RemoveCanisterControllerButton from "../../../../lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
