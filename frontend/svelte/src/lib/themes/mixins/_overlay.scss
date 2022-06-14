@@ -1,0 +1,72 @@
+@use "./interaction";
+
+@mixin backdrop($color) {
+  @if $color == "dark" {
+    background: rgba(0, 0, 0, 0.9);
+  } @else {
+    background: rgba(0, 0, 0, 0.15);
+  }
+}
+
+@mixin content {
+  padding: 0 var(--padding);
+  width: calc(100% - var(--padding-2x));
+}
+
+@mixin popover {
+  position: fixed;
+  inset: 0;
+
+  z-index: calc(var(--z-index) + 997);
+
+  .backdrop {
+    position: absolute;
+    inset: 0;
+
+    @include backdrop("light");
+
+    @include interaction.tappable;
+  }
+
+  .wrapper {
+    cursor: initial;
+
+    // position
+    position: absolute;
+    top: calc(var(--popover-top) + var(--padding));
+    left: var(--popover-left);
+
+    &.rtl {
+      left: auto;
+      right: var(--popover-right);
+    }
+
+    &.center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    // size
+    --size: min(calc(24 * var(--padding)), calc(100vw - var(--padding)));
+
+    min-width: var(--size);
+    max-width: var(--size);
+
+    width: fit-content;
+    height: auto;
+
+    padding: var(--padding) 0;
+
+    background-color: var(--background);
+    color: var(--background-contrast);
+    box-shadow: 0 2px 8px var(--background);
+
+    border-radius: var(--border-radius);
+  }
+
+  .close {
+    align-self: flex-end;
+    margin: var(--padding);
+  }
+}
