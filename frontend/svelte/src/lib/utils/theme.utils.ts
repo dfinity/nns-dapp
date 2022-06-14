@@ -1,6 +1,12 @@
 import type { Theme } from "../types/theme";
 
-export const applyTheme = (theme: Theme) => {
+export const applyTheme = ({
+  theme,
+  preserve = true,
+}: {
+  theme: Theme;
+  preserve?: boolean;
+}) => {
   const { documentElement, head } = document;
 
   documentElement.setAttribute("theme", theme);
@@ -15,5 +21,7 @@ export const applyTheme = (theme: Theme) => {
     ?.namedItem("theme-color")
     ?.setAttribute("content", color.trim());
 
-  localStorage.setItem("theme", theme);
+  if (preserve) {
+    localStorage.setItem("theme", theme);
+  }
 };

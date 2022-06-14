@@ -77,22 +77,23 @@
 
     <link rel="stylesheet" href="./build/bundle.css" />
 
-    <script
-      type="module"
-      src="./build/main.js"
-      nonce="main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25"
-    ></script>
-
     <!-- Init theme as fast as possible -->
     <script nonce="main-bc619616-7c54-4009-abff-493dd9b42bac">
       const isDarkPreferred = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
+
       document.documentElement.setAttribute(
         "theme",
-        localStorage.theme ?? isDarkPreferred ? "dark" : "light"
+        localStorage.theme ?? (isDarkPreferred ? "dark" : "light")
       );
     </script>
+
+    <script
+      type="module"
+      src="./build/main.js"
+      nonce="main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25"
+    ></script>
 
     <!-- BASE_HREF -->
     <!-- CONTENT_SECURITY_POLICY -->
