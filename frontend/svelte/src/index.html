@@ -85,9 +85,12 @@
 
     <!-- Init theme as fast as possible -->
     <script nonce="main-bc619616-7c54-4009-abff-493dd9b42bac">
+      const isDarkPreferred = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
       document.documentElement.setAttribute(
         "theme",
-        localStorage.theme ?? "dark"
+        localStorage.theme ?? isDarkPreferred ? "dark" : "light"
       );
     </script>
 
