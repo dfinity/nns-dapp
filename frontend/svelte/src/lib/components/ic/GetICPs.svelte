@@ -105,7 +105,7 @@
 
     &:focus,
     &:hover {
-      background: var(--background-tint);
+      background: var(--background-shade);
     }
 
     span {

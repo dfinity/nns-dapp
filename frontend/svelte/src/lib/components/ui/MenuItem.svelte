@@ -48,7 +48,7 @@
 
     &:not(.selected):focus,
     &:not(.selected):hover {
-      background: var(--background-tint);
+      background: var(--background-shade);
     }
   }
 

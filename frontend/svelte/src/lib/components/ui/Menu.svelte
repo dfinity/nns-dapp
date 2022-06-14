@@ -51,7 +51,7 @@
     width: 304px;
     max-width: 100vw;
 
-    box-shadow: 4px 0 16px rgba(var(--background-rgb), 0.3);
+    box-shadow: 4px 0 16px rgba(var(--black-rgb), 0.2);
 
     padding: var(--padding-8x) 0;
   }
