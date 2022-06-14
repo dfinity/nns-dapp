@@ -5,17 +5,22 @@
   import Nav from "./Nav.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import IconMenu from "../../icons/IconMenu.svelte";
+  import ThemeToggle from "./ThemeToggle.svelte";
 
   let open: boolean;
 </script>
 
-<button
-  class="icon-only"
-  on:click={() => (open = true)}
-  aria-label={$i18n.header.menu}
->
-  <IconMenu />
-</button>
+<div class="header">
+  <button
+          class="icon-only"
+          on:click={() => (open = true)}
+          aria-label={$i18n.header.menu}
+  >
+    <IconMenu />
+  </button>
+
+  <ThemeToggle />
+</div>
 
 <Menu bind:open>
   <Nav />
@@ -27,6 +32,10 @@
 
 <style lang="scss">
   @use "../../themes/mixins/effect";
+
+  .header {
+    display: flex;
+  }
 
   button {
     width: fit-content;
