@@ -54,5 +54,7 @@
     box-shadow: 4px 0 16px rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding-8x) 0;
+
+    overflow-y: scroll;
   }
 </style>
