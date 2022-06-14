@@ -11,7 +11,7 @@ use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_nns_common::types::NeuronId;
-use ic_nns_constants::GOVERNANCE_CANISTER_ID;
+use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use itertools::Itertools;
 use ledger_canister::Operation::{self, Burn, Mint, Transfer};
 use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, TimeStamp, Tokens};
@@ -1066,9 +1066,19 @@ impl AccountsStore {
     }
 
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
+        // There are now 2 ways to create a canister.
+        // The new way involves sending ICP directly to the CMC, the NNS Dapp canister then
+        // notifies the CMC of the transfer.
+        // The old way involves sending ICP to the NNS Dapp, the NNS Dapp then forwards the ICP
+        // on to the CMC and calls notify on the ledger which in turns notifies the CMC.
         if memo == MEMO_CREATE_CANISTER {
-            let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some(principal.into()));
-            if *to == expected_to {
+            let subaccount = principal.into();
+            let expected_to_new = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
+            if *to == expected_to_new {
+                return true;
+            }
+            let expected_to_old = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
+            if *to == expected_to_old {
                 return true;
             }
         }
@@ -1080,10 +1090,20 @@ impl AccountsStore {
         to: &AccountIdentifier,
         canister_ids: &[CanisterId],
     ) -> Option<CanisterId> {
+        // There are now 2 ways to top up a canister.
+        // The new way involves sending ICP directly to the CMC, the NNS Dapp canister then
+        // notifies the CMC of the transfer.
+        // The old way involves sending ICP to the NNS Dapp, the NNS Dapp then forwards the ICP
+        // on to the CMC and calls notify on the ledger which in turns notifies the CMC.
         if memo == MEMO_TOP_UP_CANISTER {
             for canister_id in canister_ids.iter() {
-                let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some((&canister_id.get()).into()));
-                if *to == expected_to {
+                let subaccount = (&canister_id.get()).into();
+                let expected_to_new = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
+                if *to == expected_to_new {
+                    return Some(*canister_id);
+                }
+                let expected_to_old = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
+                if *to == expected_to_old {
                     return Some(*canister_id);
                 }
             }
@@ -1185,29 +1205,43 @@ impl AccountsStore {
                 }
             }
             TransactionType::CreateCanister => {
-                let args = CreateCanisterArgs {
-                    controller: principal,
-                    amount,
-                    refund_address: from,
-                };
-                self.multi_part_transactions_processor.push(
-                    principal,
-                    block_height,
-                    MultiPartTransactionToBeProcessed::CreateCanister(args),
-                );
+                if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&principal).into())) {
+                    self.multi_part_transactions_processor.push(
+                        principal,
+                        block_height,
+                        MultiPartTransactionToBeProcessed::CreateCanisterV2(principal));
+                } else {
+                    let args = CreateCanisterArgs {
+                        controller: principal,
+                        amount,
+                        refund_address: from,
+                    };
+                    self.multi_part_transactions_processor.push(
+                        principal,
+                        block_height,
+                        MultiPartTransactionToBeProcessed::CreateCanister(args),
+                    );
+                }
             }
             TransactionType::TopUpCanister(canister_id) => {
-                let args = TopUpCanisterArgs {
-                    principal,
-                    canister_id,
-                    amount,
-                    refund_address: from,
-                };
-                self.multi_part_transactions_processor.push(
-                    principal,
-                    block_height,
-                    MultiPartTransactionToBeProcessed::TopUpCanister(args),
-                );
+                if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&canister_id.get()).into())) {
+                    self.multi_part_transactions_processor.push(
+                        principal,
+                        block_height,
+                        MultiPartTransactionToBeProcessed::TopUpCanisterV2(canister_id));
+                } else {
+                    let args = TopUpCanisterArgs {
+                        principal,
+                        canister_id,
+                        amount,
+                        refund_address: from,
+                    };
+                    self.multi_part_transactions_processor.push(
+                        principal,
+                        block_height,
+                        MultiPartTransactionToBeProcessed::TopUpCanister(args),
+                    );
+                }
             }
             _ => {}
         };
