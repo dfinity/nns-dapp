@@ -22,7 +22,7 @@
     @include interaction.tappable;
 
     &:hover {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
 
     h4 {

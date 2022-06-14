@@ -3,8 +3,6 @@
   --header-height: 76px;
   --icon-width: 24px;
 
-  --box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.3);
-
   --padding: 10px;
 
   --padding-0_5x: calc(var(--padding) / 2);
@@ -38,6 +36,12 @@
     --modal-big-width: 600px;
   }
 
+  --footer-background: linear-gradient(
+    0deg,
+    rgba(var(--black-rgb), 1) 10%,
+    rgba(var(--black-rgb), 0) 100%
+  );
+
   // Json colors
   --json-bracket-color: var(--gray-400);
   --json-value-color: var(--gray-50);
@@ -66,12 +70,12 @@
 
   /** Default theme: dark */
 
-  --background: #ffffff;
-  --background-rgb: 255,255,255;
-  --background-contrast: #000000;
-  --background-contrast-rgb: 0,0,0;
-  --background-shade: #e0e0e0;
-  --background-tint: #ffffff;
+  --background: #272929;
+  --background-rgb: 39, 41, 41;
+  --background-contrast: #ffffff;
+  --background-contrast-rgb: 255, 255, 255;
+  --background-shade: #222424;
+  --background-tint: #3d3e3e;
 
   --light-background: #ebebeb;
   --light-background-rgb: 235, 235, 235;
@@ -80,12 +84,12 @@
   --light-background-shade: #cfcfcf;
   --light-background-tint: #ededed;
 
-  --gray-50-background: #F4F5F6;
-  --gray-50-background-rgb: 244,245,246;
-  --gray-50-background-contrast: #000000;
-  --gray-50-background-contrast-rgb: 0,0,0;
-  --gray-50-background-shade: #d7d8d8;
-  --gray-50-background-tint: #f5f6f7;
+  --gray-50-background: #383c3c;
+  --gray-50-background-rgb: 56, 60, 60;
+  --gray-50-background-contrast: #ffffff;
+  --gray-50-background-contrast-rgb: 255, 255, 255;
+  --gray-50-background-shade: #313535;
+  --gray-50-background-tint: #4c5050;
 
   --black: #0b0c0c;
   --black-rgb: 11, 12, 12;
@@ -94,12 +98,12 @@
   --black-shade: #0a0b0b;
   --black-tint: #232424;
 
-  --blue-500: #00A5FF;
-  --blue-500-rgb: 0,165,255;
+  --blue-500: #0081ff;
+  --blue-500-rgb: 0, 129, 255;
   --blue-500-contrast: #ffffff;
-  --blue-500-contrast-rgb: 255,255,255;
-  --blue-500-shade: #0091e0;
-  --blue-500-tint: #1aaeff;
+  --blue-500-contrast-rgb: 255, 255, 255;
+  --blue-500-shade: #0072e0;
+  --blue-500-tint: #1a8eff;
 
   --blue-200: #99ceff;
   --blue-200-rgb: 153, 206, 255;
@@ -129,12 +133,12 @@
   --gray-400-shade: #7f8686;
   --gray-400-tint: #9ba2a2;
 
-  --gray-50: #333333;
-  --gray-50-rgb: 51,51,51;
-  --gray-50-contrast: #ffffff;
-  --gray-50-contrast-rgb: 255,255,255;
-  --gray-50-shade: #2d2d2d;
-  --gray-50-tint: #474747;
+  --gray-50: #e4f0f0;
+  --gray-50-rgb: 228, 240, 240;
+  --gray-50-contrast: #000000;
+  --gray-50-contrast-rgb: 0, 0, 0;
+  --gray-50-shade: #c9d3d3;
+  --gray-50-tint: #e7f2f2;
 
   --yellow-500: #ec9509;
   --yellow-500-rgb: 236, 149, 9;
@@ -163,4 +167,41 @@
   --pink-contrast-rgb: 255, 255, 255;
   --pink-shade: #d11a6a;
   --pink-tint: #ef3586;
+
+  &[theme="light"] {
+    --card-box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8),
+      1px 1px 2px rgba(0, 0, 0, 0.3);
+    --footer-background: linear-gradient(
+      0deg,
+      rgba(var(--gray-50-rgb), 0.2) 10%,
+      rgba(var(--gray-50-rgb), 0) 100%
+    );
+
+    --background: #ffffff;
+    --background-rgb: 255, 255, 255;
+    --background-contrast: #000000;
+    --background-contrast-rgb: 0, 0, 0;
+    --background-shade: #e0e0e0;
+    --background-tint: #ffffff;
+
+    --gray-50-background: #f4f5f6;
+    --gray-50-background-rgb: 244, 245, 246;
+    --gray-50-background-contrast: #000000;
+    --gray-50-background-contrast-rgb: 0, 0, 0;
+    --gray-50-background-shade: #d7d8d8;
+    --gray-50-background-tint: #f5f6f7;
+
+    --blue-500: #00a5ff;
+    --blue-500-rgb: 0, 165, 255;
+    --blue-500-contrast: #ffffff;
+    --blue-500-contrast-rgb: 255, 255, 255;
+    --blue-500-shade: #0091e0;
+
+    --gray-50: #333333;
+    --gray-50-rgb: 51, 51, 51;
+    --gray-50-contrast: #ffffff;
+    --gray-50-contrast-rgb: 255, 255, 255;
+    --gray-50-shade: #2d2d2d;
+    --gray-50-tint: #474747;
+  }
 }

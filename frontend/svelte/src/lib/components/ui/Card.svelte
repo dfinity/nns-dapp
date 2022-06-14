@@ -55,7 +55,7 @@
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--card-box-shadow);
 
     outline: 2px solid transparent;
     &.selected {
@@ -63,7 +63,7 @@
     }
 
     &.disabled {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
   }
 
@@ -76,7 +76,7 @@
 
     &:focus,
     &:hover {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
   }
 
