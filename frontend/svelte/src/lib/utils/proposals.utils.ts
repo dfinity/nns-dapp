@@ -144,24 +144,24 @@ export const hasMatchingProposals = ({
 
 export const getVotingBallot = ({
   neuronId,
-  proposalInfo,
+  proposalInfo: { ballots },
 }: {
   neuronId: bigint;
   proposalInfo: ProposalInfo;
 }): Ballot | undefined =>
-  proposalInfo.ballots.find((ballot) => ballot.neuronId === neuronId);
+  ballots.find((ballot) => ballot.neuronId === neuronId);
 
 export const getVotingPower = ({
-  neuron,
+  neuron: { neuronId, votingPower },
   proposal,
 }: {
   neuron: NeuronInfo;
   proposal: ProposalInfo;
 }): bigint =>
   getVotingBallot({
-    neuronId: neuron.neuronId,
+    neuronId,
     proposalInfo: proposal,
-  })?.votingPower ?? neuron.votingPower;
+  })?.votingPower ?? votingPower;
 
 export const selectedNeuronsVotingPower = ({
   neurons,

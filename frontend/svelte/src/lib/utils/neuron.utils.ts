@@ -592,7 +592,7 @@ export const votedNeuronDetails = ({
   proposal: ProposalInfo;
 }): CompactNeuronInfo[] =>
   votedNeurons({
-    neurons: neurons,
+    neurons,
     proposal,
   })
     .map((neuron) => ({
