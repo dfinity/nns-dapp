@@ -37,9 +37,7 @@
 <style lang="scss">
   header {
     display: grid;
-    grid-template-columns: var(--header-height) 1fr var(
-        --header-height
-      );
+    grid-template-columns: var(--header-height) 1fr var(--header-height);
     align-items: center;
     height: var(--header-height);
 
@@ -48,9 +46,9 @@
     z-index: 1;
 
     // Fallback
-    background: var(--blue-500);
-    background: linear-gradient(99.27deg, var(--blue-500) -0.11%, #4E48D2 100.63%);
-    color: var(--blue-500-contrast);
+    background: var(--header-background-fallback);
+    background: var(--header-background);
+    color: var(--header-color);
 
     :global(.tooltip-wrapper) {
       height: 100%;
