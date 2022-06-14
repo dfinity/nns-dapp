@@ -27,7 +27,8 @@
     position: fixed;
     inset: 0;
 
-    background-color: rgba(var(--background-rgb), 0.75);
+    background: rgba(var(--black-rgb), 0.6);
+    color: var(--black-contrast);
   }
 
   .content {
