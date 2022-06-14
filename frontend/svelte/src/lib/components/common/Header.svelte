@@ -1,15 +1,14 @@
 <script lang="ts">
-  import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import { triggerDebugReport } from "../../utils/dev.utils";
   import Menu from "./Menu.svelte";
+  import AccountMenu from "./AccountMenu.svelte";
 </script>
 
 <header>
   <Menu />
-
   <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
-  <Logout />
+  <AccountMenu />
 </header>
 
 <style lang="scss">
