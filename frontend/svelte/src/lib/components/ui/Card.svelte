@@ -48,7 +48,7 @@
   article {
     text-decoration: none;
 
-    background: var(--card-background, var(--background));
+    background: var(--background);
     color: var(--gray-50);
 
     padding: var(--padding-2x);
@@ -72,11 +72,6 @@
 
     &.disabled {
       @include interaction.disabled;
-    }
-
-    &:focus,
-    &:hover {
-      background: var(--background-shade);
     }
   }
 

@@ -4,7 +4,6 @@
 
   export let id: string | undefined = undefined;
   export let initiallyExpanded: boolean = false;
-  export let headerAlign: "left" | "center" = "left";
   export let maxContentHeight: number | undefined = undefined;
 
   export let iconSize: "small" | "medium" = "small";
@@ -58,7 +57,6 @@
   role="term"
   class="header"
   on:click={toggleContent}
-  class:align-center={headerAlign === "center"}
 >
   <div class="header-content">
     <slot name="header" />
@@ -110,20 +108,9 @@
 
     .header-content {
       flex: 1;
-      margin-right: var(--padding-3x);
-    }
-
-    @include media.min-width(medium) {
-      &.align-center {
-        justify-content: center;
-
-        .header-content {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-left: var(--padding-3x);
-        }
-      }
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
     }
   }
 

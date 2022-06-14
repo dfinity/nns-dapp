@@ -39,7 +39,6 @@
   @use "../../../themes/mixins/text";
 
   .title {
-    font-size: var(--font-size-h5);
     line-height: var(--line-height-standard);
     overflow-wrap: anywhere;
     @include text.clamp(3);
@@ -47,7 +46,6 @@
     @include media.min-width(medium) {
       margin-top: var(--padding-0_5x);
       padding-right: var(--padding);
-      font-size: var(--font-size-h3);
     }
   }
 
