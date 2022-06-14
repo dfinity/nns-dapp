@@ -24,8 +24,6 @@
   );
   $: anchor, initPosition();
   const close = () => (visible = false);
-
-  $: console.log("visible", visible);
 </script>
 
 <svelte:window on:resize={initPosition} />
