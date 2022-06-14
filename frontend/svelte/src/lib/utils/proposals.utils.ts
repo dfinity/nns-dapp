@@ -142,6 +142,27 @@ export const hasMatchingProposals = ({
   );
 };
 
+export const getVotingBallot = ({
+  neuronId,
+  proposalInfo,
+}: {
+  neuronId: bigint;
+  proposalInfo: ProposalInfo;
+}): Ballot | undefined =>
+  proposalInfo.ballots.find((ballot) => ballot.neuronId === neuronId);
+
+export const getVotingPower = ({
+  neuron,
+  proposal,
+}: {
+  neuron: NeuronInfo;
+  proposal: ProposalInfo;
+}): bigint =>
+  getVotingBallot({
+    neuronId: neuron.neuronId,
+    proposalInfo: proposal,
+  })?.votingPower ?? neuron.votingPower;
+
 export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
@@ -153,10 +174,7 @@ export const selectedNeuronsVotingPower = ({
 }): bigint =>
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
-    .map(({ neuronId, votingPower }) => {
-      const ballot = getVotingBallot({ neuronId, proposalInfo: proposal });
-      return ballot?.votingPower ?? votingPower;
-    })
+    .map((neuron) => getVotingPower({ neuron, proposal }))
     .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
 
 /**
@@ -293,12 +311,3 @@ export const mapProposalInfo = (
     status,
   };
 };
-
-export const getVotingBallot = ({
-  neuronId,
-  proposalInfo,
-}: {
-  neuronId: bigint;
-  proposalInfo: ProposalInfo;
-}): Ballot | undefined =>
-  proposalInfo.ballots.find((ballot) => ballot.neuronId === neuronId);

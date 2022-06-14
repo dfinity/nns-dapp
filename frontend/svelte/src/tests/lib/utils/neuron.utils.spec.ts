@@ -44,6 +44,7 @@ import {
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
+  votedNeuronDetails,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -58,6 +59,7 @@ import {
   mockNeuronControlled,
   mockNeuronNotControlled,
 } from "../../mocks/neurons.mock";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -1388,6 +1390,79 @@ describe("neuron-utils", () => {
     });
     it("should return true if no fullNeuron", () => {
       expect(userAuthorizedNeuron(mockNeuron)).toBe(true);
+    });
+  });
+
+  describe("votedNeuronDetails", () => {
+    it("should return array of CompactNeuronInfo", () => {
+      const neuronId1 = BigInt(10_000);
+      const neuronId2 = BigInt(20_000);
+      const proposalId = BigInt(1111);
+      const ballot1 = {
+        neuronId: neuronId1,
+        votingPower: BigInt(40),
+        vote: Vote.NO,
+      };
+      const ballot2 = {
+        neuronId: neuronId2,
+        votingPower: BigInt(50),
+        vote: Vote.YES,
+      };
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: neuronId1,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: neuronId2,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        id: proposalId,
+        ballots: [ballot1, ballot2],
+      };
+      const expected = votedNeuronDetails({
+        neurons: [neuron1, neuron2],
+        proposal,
+      });
+      expect(expected).toHaveLength(2);
+      const compactNeuron1 = expected.find(({ id }) => id === neuronId1);
+      expect(compactNeuron1).toBeDefined();
+      compactNeuron1 &&
+        expect(compactNeuron1.votingPower).toBe(ballot1.votingPower);
+    });
+
+    it("should filters out neurons without vote", () => {
+      const neuronId1 = BigInt(10_000);
+      const neuronId2 = BigInt(20_000);
+      const proposalId = BigInt(1111);
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: neuronId1,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: neuronId2,
+        recentBallots: [],
+      };
+      const ballot1 = {
+        neuronId: neuronId1,
+        votingPower: BigInt(40),
+        vote: Vote.NO,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        id: proposalId,
+        ballots: [ballot1],
+      };
+      const expected = votedNeuronDetails({
+        neurons: [neuron1, neuron2],
+        proposal,
+      });
+      expect(expected).toHaveLength(1);
     });
   });
 });

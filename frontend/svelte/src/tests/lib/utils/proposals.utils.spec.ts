@@ -10,6 +10,7 @@ import {
   concatenateUniqueProposals,
   excludeProposals,
   getVotingBallot,
+  getVotingPower,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -893,6 +894,44 @@ describe("proposals-utils", () => {
           proposalInfo: proposal,
         })
       ).toBeUndefined();
+    });
+  });
+
+  describe("getVotingPower", () => {
+    it("should return ballot voting power if present", () => {
+      const neuronId = BigInt(100);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+      };
+      const ballot: Ballot = {
+        neuronId,
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingPower({
+          neuron,
+          proposal,
+        })
+      ).toEqual(ballot.votingPower);
+    });
+
+    it("should return neuron voting power if no ballot", () => {
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [],
+      };
+      expect(
+        getVotingPower({
+          neuron: mockNeuron,
+          proposal,
+        })
+      ).toBe(mockNeuron.votingPower);
     });
   });
 });

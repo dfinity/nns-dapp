@@ -3,11 +3,14 @@ import {
   ICP,
   NeuronState,
   Topic,
+  Vote,
+  votedNeurons,
   type BallotInfo,
   type Followees,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type ProposalInfo,
 } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
 import {
@@ -34,6 +37,7 @@ import {
 } from "./accounts.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
+import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -551,3 +555,52 @@ export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
 // fullNeuron is only for users with access.
 export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined;
+
+export type CompactNeuronInfo = {
+  id: NeuronId;
+  votingPower: bigint;
+  vote: Vote;
+};
+
+const getRecentBallot = ({
+  neuron,
+  proposalId,
+}: {
+  neuron: NeuronInfo;
+  proposalId?: bigint;
+}): BallotInfo | undefined =>
+  neuron.recentBallots.find(
+    ({ proposalId: currentId }) => currentId === proposalId
+  );
+
+// We try to get the from from the neurons ballots and also from the proposal ballots
+const getVote = ({
+  neuron,
+  proposal,
+}: {
+  neuron: NeuronInfo;
+  proposal: ProposalInfo;
+}): Vote | undefined =>
+  getRecentBallot({ neuron, proposalId: proposal.id })?.vote ??
+  getVotingBallot({ neuronId: neuron.neuronId, proposalInfo: proposal })?.vote;
+
+export const votedNeuronDetails = ({
+  neurons,
+  proposal,
+}: {
+  neurons: NeuronInfo[];
+  proposal: ProposalInfo;
+}): CompactNeuronInfo[] =>
+  votedNeurons({
+    neurons: neurons,
+    proposal,
+  })
+    .map((neuron) => ({
+      id: neuron.neuronId,
+      votingPower: getVotingPower({ neuron, proposal }),
+      vote: getVote({ neuron, proposal }),
+    }))
+    // Exclude the cases where the vote was not found.
+    .filter(
+      (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
+    ) as CompactNeuronInfo[];
