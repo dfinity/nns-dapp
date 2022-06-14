@@ -117,9 +117,7 @@ export const queryProposalPayload = async ({
 
   const response = await canister.getProposalPayload({
     proposalId,
-    // certified,
   });
-  console.log("🔥 queryProposalPayload", response);
 
   logWithTimestamp(
     `Loading Proposal Payload ${hashCode(proposalId)} complete.`

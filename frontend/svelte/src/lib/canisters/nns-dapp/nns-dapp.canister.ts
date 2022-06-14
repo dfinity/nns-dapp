@@ -308,13 +308,14 @@ export class NNSDappCanister {
     proposalId,
   }: {
     proposalId: ProposalId;
-    // TODO: implement certified support
-    // certified: boolean;
   }): Promise<object> {
+    // Currently works only with certifiedService
     const response = await this.certifiedService.get_proposal_payload(
       proposalId
     );
     if ("Ok" in response) {
+      console.log("payload response:", response);
+
       return JSON.parse(response.Ok);
     }
     // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
