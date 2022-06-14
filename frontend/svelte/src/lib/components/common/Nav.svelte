@@ -6,7 +6,11 @@
   import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
   import type { SvelteComponent } from "svelte";
 
-  const routes: { context: string; label: string; icon: typeof SvelteComponent }[] = [
+  const routes: {
+    context: string;
+    label: string;
+    icon: typeof SvelteComponent;
+  }[] = [
     { context: "accounts", label: "accounts", icon: IconPerson },
     { context: "neurons", label: "neurons", icon: IconLan },
     { context: "proposals", label: "voting", icon: IconHowToVote },
