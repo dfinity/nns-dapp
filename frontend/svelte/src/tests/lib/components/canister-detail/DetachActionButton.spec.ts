@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import DetachActionButton from "../../../../lib/components/canister_details/DetachCanisterButton.svelte";
+import DetachActionButton from "../../../../lib/components/canister-detail/DetachCanisterButton.svelte";
 import { detachCanister } from "../../../../lib/services/canisters.services";
 import { mockCanister } from "../../../mocks/canisters.mock";
 

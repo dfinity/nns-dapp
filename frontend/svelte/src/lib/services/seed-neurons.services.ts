@@ -31,7 +31,7 @@ export const claimSeedNeurons = async () => {
   }
   try {
     const identity = await getLedgerIdentityProxy(hardwareWallet?.identifier);
-    const governance = await GenesisTokenCanister.create({
+    const governance = GenesisTokenCanister.create({
       agent: await createAgent({ identity, host: HOST }),
     });
 

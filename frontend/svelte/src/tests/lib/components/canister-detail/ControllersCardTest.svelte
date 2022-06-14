@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, setContext } from "svelte";
-  import ControllersCard from "../../../../lib/components/canister_details/ControllersCard.svelte";
+  import ControllersCard from "../../../../lib/components/canister-detail/ControllersCard.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
