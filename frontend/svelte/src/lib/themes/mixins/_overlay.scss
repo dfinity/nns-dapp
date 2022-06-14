@@ -1,13 +1,5 @@
 @use "./interaction";
 
-@mixin backdrop($color) {
-  @if $color == "dark" {
-    background: rgba(0, 0, 0, 0.9);
-  } @else {
-    background: rgba(0, 0, 0, 0.15);
-  }
-}
-
 @mixin content {
   padding: 0 var(--padding);
   width: calc(100% - var(--padding-2x));
@@ -18,15 +10,6 @@
   inset: 0;
 
   z-index: calc(var(--z-index) + 997);
-
-  .backdrop {
-    position: absolute;
-    inset: 0;
-
-    @include backdrop("light");
-
-    @include interaction.tappable;
-  }
 
   .wrapper {
     cursor: initial;
@@ -60,7 +43,8 @@
 
     background-color: var(--background);
     color: var(--background-contrast);
-    box-shadow: 0 2px 8px var(--background);
+
+    box-shadow: var(--box-shadow);
 
     border-radius: var(--border-radius);
   }

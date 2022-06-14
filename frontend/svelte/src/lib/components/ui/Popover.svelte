@@ -5,6 +5,7 @@
   import IconClose from "../../icons/IconClose.svelte";
   import { i18n } from "../../stores/i18n";
   import { debounce } from "../../utils/utils";
+  import Backdrop from "./Backdrop.svelte";
 
   export let anchor: HTMLElement | undefined = undefined;
   export let visible = false;
@@ -41,7 +42,7 @@
     }px`}"
     on:click|stopPropagation
   >
-    <div class="backdrop" on:click|stopPropagation={() => (visible = false)} />
+    <Backdrop on:nnsClose={() => (visible = false)} />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class="wrapper"

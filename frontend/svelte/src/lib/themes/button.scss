@@ -14,7 +14,7 @@ button {
 
     margin: 0 var(--padding);
 
-    color: white;
+    color: var(--background-contrast);
 
     &:hover,
     &:focus {

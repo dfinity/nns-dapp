@@ -23,7 +23,7 @@
 
   .toggle {
     display: flex;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
     margin-top: 1px;
   }

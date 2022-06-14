@@ -2,6 +2,7 @@
   import Popover from "../ui/Popover.svelte";
   import IconAccount from "../../icons/IconAccount.svelte";
   import Logout from "./Logout.svelte";
+  import ThemeToggle from "./ThemeToggle.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -18,7 +19,7 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
   <div class="info">
-    <button class="text theme-toggle">Toggle theme</button>
+    <ThemeToggle />
     <Logout />
   </div>
 </Popover>
