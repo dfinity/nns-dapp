@@ -116,7 +116,7 @@
 
     grid-template-columns: 110px 1fr 110px;
     align-items: center;
-    height: var(--headless-layout-header-height);
+    height: var(--header-height);
 
     @include media.min-width(medium) {
       grid-template-columns: 130px 1fr 130px;

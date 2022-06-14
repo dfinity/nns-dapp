@@ -37,18 +37,20 @@
 <style lang="scss">
   header {
     display: grid;
-    grid-template-columns: var(--headless-layout-header-height) 1fr var(
-        --headless-layout-header-height
+    grid-template-columns: var(--header-height) 1fr var(
+        --header-height
       );
     align-items: center;
-    height: var(--headless-layout-header-height);
+    height: var(--header-height);
 
     // to make the shadow visible
     position: relative;
     z-index: 1;
 
-    background-color: var(--background);
-    box-shadow: 0 4px 4px 1px rgba(var(--background-rgb), 0.7);
+    // Fallback
+    background: var(--blue-500);
+    background: linear-gradient(99.27deg, var(--blue-500) -0.11%, #4E48D2 100.63%);
+    color: var(--blue-500-contrast);
 
     :global(.tooltip-wrapper) {
       height: 100%;
@@ -66,13 +68,14 @@
 
     h2 {
       text-align: center;
+      color: inherit;
     }
   }
 
   main {
     position: absolute;
 
-    inset: calc(var(--headless-layout-header-height)) 0 0;
+    inset: calc(var(--header-height)) 0 0;
     overflow: auto;
 
     background-color: var(--gray-50-background);
