@@ -147,7 +147,7 @@
     overflow: hidden;
   }
 
-  .light > div.wrapper {
+  div.wrapper {
     ::-webkit-scrollbar {
       background: transparent;
     }
