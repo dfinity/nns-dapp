@@ -573,7 +573,7 @@ const getRecentBallot = ({
     ({ proposalId: currentId }) => currentId === proposalId
   );
 
-// We try to get the from from the neurons ballots and also from the proposal ballots
+// We try to get the vote from the neurons ballots and also from the proposal ballots
 const getVote = ({
   neuron,
   proposal,
