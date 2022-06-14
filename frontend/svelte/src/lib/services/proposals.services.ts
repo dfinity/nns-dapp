@@ -245,23 +245,23 @@ const getProposal = async ({
  */
 export const getProposalPayload = async ({
   proposalId,
-  onLoad,
-  onError,
 }: {
   proposalId: ProposalId;
-  onLoad: QueryAndUpdateOnResponse<object | undefined>;
-  onError: QueryAndUpdateOnError<Error | undefined>;
-}): Promise<void> => {
+}): Promise<object | null> => {
   const identity: Identity = await getIdentity();
 
-  return queryAndUpdate<object | undefined, unknown>({
-    request: ({ certified }) => queryProposalPayload({ proposalId, identity }),
-    onLoad,
-    onError: (error) => {
-      console.error(error);
-    },
-    logMessage: `Syncing Proposal Payload ${hashCode(proposalId)}`,
-  });
+  try {
+    return await queryProposalPayload({ proposalId, identity });
+  } catch (err) {
+    console.error(err);
+
+    toastsStore.error({
+      labelKey: "error.proposal_payload",
+      err,
+    });
+  }
+
+  return null;
 };
 
 export const routePathProposalId = (path: string): ProposalId | undefined =>

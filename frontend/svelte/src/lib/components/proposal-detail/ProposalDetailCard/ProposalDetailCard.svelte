@@ -9,7 +9,6 @@
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
   import { mapProposalInfo } from "../../../utils/proposals.utils";
-  import ProposalPayload from "./ProposalPayload.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -18,7 +17,7 @@
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let color: ProposalColor;
 
-  $: ({ proposal, status, title, color } = mapProposalInfo(proposalInfo));
+  $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));
 </script>
 
 <Card>
@@ -32,10 +31,7 @@
     <ProposalMeta {proposalInfo} />
   </div>
 
-  <ProposalActions {proposal} />
-  {#if proposalInfo?.id !== undefined}
-    <ProposalPayload proposalId={proposalInfo.id} />
-  {/if}
+  <ProposalActions proposalId={id} {proposal} />
 </Card>
 
 <style lang="scss">
