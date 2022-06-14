@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
-  import Card from "../ui/Card.svelte";
+  import CardStatic from "../ui/CardStatic.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
@@ -67,7 +67,7 @@
   }
 </script>
 
-<Card>
+<CardStatic>
   <div class="latest-tally">
     <h3>
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
@@ -106,7 +106,7 @@
       {/each}
     </ul>
   {/if}
-</Card>
+</CardStatic>
 
 <style lang="scss">
   @use "../../themes/mixins/media";

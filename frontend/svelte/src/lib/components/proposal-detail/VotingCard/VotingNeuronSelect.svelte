@@ -57,7 +57,7 @@
 
     font-size: var(--font-size-h4);
     color: var(--gray-50);
-    background: var(--background);
+    border-bottom: 1px solid currentColor;
 
     // hide voting-power-headline because of the layout
     :last-child {

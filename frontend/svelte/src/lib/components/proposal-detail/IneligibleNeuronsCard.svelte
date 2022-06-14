@@ -2,7 +2,7 @@
   import { ineligibleNeurons as filterIneligibleNeurons } from "@dfinity/nns";
   import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import Card from "../ui/Card.svelte";
+  import CardStatic from "../ui/CardStatic.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let neurons: NeuronInfo[];
@@ -23,7 +23,7 @@
 </script>
 
 {#if visible}
-  <Card>
+  <CardStatic>
     <h3 slot="start">{$i18n.proposal_detail__ineligible.headline}</h3>
     <p>{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
@@ -33,7 +33,7 @@
         </li>
       {/each}
     </ul>
-  </Card>
+  </CardStatic>
 {/if}
 
 <style lang="scss">
