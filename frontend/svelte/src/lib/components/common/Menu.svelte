@@ -42,7 +42,12 @@
     padding: var(--padding-1_5x);
     margin: 0 var(--padding-0_5x);
 
-    @include effect.ripple-effect(--yellow-500);
+    @include effect.ripple-effect(--blue-500-tint);
+
+    &:focus {
+      background: var(--blue-500-tint);
+      @include effect.ripple-effect(--blue-500-tint);
+    }
 
     :global(svg) {
       width: 30px;
