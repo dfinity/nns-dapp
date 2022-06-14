@@ -5,7 +5,6 @@ import * as ledgerApi from "../../../lib/api/ledger.api";
 import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
-  getAccountFromStore,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   getAccountTransactions,
@@ -93,7 +92,7 @@ describe("accounts-services", () => {
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
-        labelKey: "accounts.create_subaccount",
+        labelKey: "error__account.create_subaccount",
         err: new Error(en.error.missing_identity),
       });
 
@@ -250,34 +249,6 @@ describe("accounts-services", () => {
     });
   });
 
-  describe("get-account", () => {
-    beforeAll(() =>
-      accountsStore.set({
-        main: mockMainAccount,
-        subAccounts: [mockSubAccount],
-      })
-    );
-
-    afterAll(() => accountsStore.reset());
-
-    it("should not return an account if no identifier is provided", () => {
-      expect(getAccountFromStore(undefined)).toBeUndefined();
-    });
-
-    it("should find no account if not matches", () => {
-      expect(getAccountFromStore("aaa")).toBeUndefined();
-    });
-
-    it("should return corresponding account", () => {
-      expect(getAccountFromStore(mockMainAccount.identifier)).toEqual(
-        mockMainAccount
-      );
-      expect(getAccountFromStore(mockSubAccount.identifier)).toEqual(
-        mockSubAccount
-      );
-    });
-  });
-
   describe("getAccountTransactions", () => {
     const onLoad = jest.fn();
     const mockResponse = [mockSentToSubAccountTransaction];
@@ -401,6 +372,18 @@ describe("accounts-services", () => {
       );
       expect(expectedIdentity).toBe(mockIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
+      accountsStore.reset();
+    });
+
+    it("returns null if no main account nor hardware wallet account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const expectedIdentity = await getAccountIdentityByPrincipal(
+        "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe"
+      );
+      expect(expectedIdentity).toBeUndefined();
       accountsStore.reset();
     });
   });

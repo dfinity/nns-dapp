@@ -4,6 +4,7 @@
 
 interface I18nCore {
   close: string;
+  remove: string;
   icp: string;
   create: string;
   filter: string;
@@ -19,7 +20,9 @@ interface I18nCore {
   max: string;
   principal: string;
   toggle: string;
-  save_log_file: string;
+  log: string;
+  principal_id: string;
+  copy: string;
 }
 
 interface I18nError {
@@ -31,12 +34,9 @@ interface I18nError {
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
-  create_subaccount: string;
   rename_subaccount: string;
   rename_subaccount_no_account: string;
   rename_subaccount_type: string;
-  create_subaccount_too_long: string;
-  create_subaccount_limit_exceeded: string;
   get_neurons: string;
   get_known_neurons: string;
   register_vote: string;
@@ -48,13 +48,14 @@ interface I18nError {
   accounts_not_found: string;
   account_not_found: string;
   transactions_not_found: string;
+  canister_not_found: string;
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
-  amount_not_enough: string;
+  amount_not_enough_stake_neuron: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;
@@ -63,7 +64,7 @@ interface I18nError {
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   split_neuron: string;
-  not_authorized: string;
+  not_authorized_neuron_action: string;
   invalid_sender: string;
   insufficient_funds: string;
   transfer_error: string;
@@ -77,7 +78,19 @@ interface I18nError {
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
+  not_canister_controller: string;
+  canister_details_not_found: string;
+  controller_already_present: string;
+  controller_not_present: string;
+  pub_key_not_hex_string: string;
+  pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
+  canister_refund: string;
+  canister_creation_unknown: string;
+  canister_top_up_unknown: string;
+  canister_update_settings: string;
+  not_canister_controller_to_update: string;
+  canister_invalid_transaction: string;
 }
 
 interface I18nWarning {
@@ -107,7 +120,6 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
-  copy_identifier: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;
@@ -281,7 +293,9 @@ interface I18nCanisters {
   enter_amount: string;
   review_create_canister: string;
   t_cycles: string;
-  minimum_cycles_text: string;
+  minimum_cycles_text_1: string;
+  minimum_cycles_text_2: string;
+  transaction_fee: string;
   review_cycles_purchase: string;
   converted_to: string;
 }
@@ -299,7 +313,15 @@ interface I18nCanister_detail {
   confirm_detach_title: string;
   confirm_detach_description_1: string;
   confirm_detach_description_2: string;
+  confirm_remove_controller_title: string;
+  confirm_remove_controller_description: string;
+  confirm_remove_controller_user_description_1: string;
+  confirm_remove_controller_user_description_2: string;
+  confirm_remove_last_controller_description: string;
   detach_success: string;
+  confirm_new_controller: string;
+  enter_controller: string;
+  new_controller: string;
   add_controller: string;
 }
 
@@ -453,7 +475,6 @@ interface I18nNeuron_detail {
   dissolve_delay_range: string;
   maturity_range: string;
   maturity_percentage: string;
-  add_hotkey_placeholder: string;
 }
 
 interface I18nTime {
@@ -481,6 +502,7 @@ interface I18nError__ledger {
   unexpected_wallet: string;
   user_cancel: string;
   user_rejected_transaction: string;
+  version_not_supported: string;
   incorrect_identifier: string;
 }
 
@@ -491,6 +513,29 @@ interface I18nError__attach_wallet {
   no_identity: string;
   already_registered: string;
   limit_exceeded: string;
+  register_hardware_wallet: string;
+  create_hardware_wallet_too_long: string;
+}
+
+interface I18nError__account {
+  not_found: string;
+  no_details: string;
+  subaccount_too_long: string;
+  create_subaccount_limit_exceeded: string;
+  create_subaccount: string;
+  subaccount_not_found: string;
+  rename_account_not_found: string;
+}
+
+interface I18nError__canister {
+  already_attached: string;
+  name_taken: string;
+  name_too_long: string;
+  limit_exceeded: string;
+  detach_not_found: string;
+  unknown_attach: string;
+  unknown_detach: string;
+  get_exchange_rate: string;
 }
 
 interface I18n {
@@ -521,4 +566,6 @@ interface I18n {
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
+  error__account: I18nError__account;
+  error__canister: I18nError__canister;
 }

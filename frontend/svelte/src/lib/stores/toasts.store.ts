@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
 import { errorToString } from "../utils/error.utils";
+import type { I18nSubstitutions } from "../utils/i18n.utils";
 
 /**
  * Toast messages.
@@ -43,7 +44,7 @@ const initToastsStore = () => {
     }: {
       labelKey: string;
       err?: unknown;
-      substitutions?: { [from: string]: string };
+      substitutions?: I18nSubstitutions;
     }) {
       this.show({
         labelKey,

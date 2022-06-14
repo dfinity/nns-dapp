@@ -20,9 +20,9 @@
   } from "../../types/canister-detail.context";
   import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
 
-  let icpToCyclesRatio: bigint | undefined;
+  let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
-    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
   const steps: Steps = [
@@ -43,7 +43,7 @@
     },
   ];
 
-  const { store, refetchDetails }: CanisterDetailsContext =
+  const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: Step | undefined;
@@ -83,9 +83,11 @@
     const { success } = await topUpCanister({
       amount,
       canisterId,
-      fromSubAccount: account.subAccount,
+      account,
     });
-    await refetchDetails();
+    if (success) {
+      await reloadDetails(canisterId);
+    }
     stopBusy("top-up-canister");
     if (success) {
       toastsStore.success({
@@ -111,12 +113,12 @@
     {/if}
     {#if currentStep?.name === "SelectCycles" && account !== undefined}
       <SelectCyclesCanister
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       >
-        <!-- TODO: Show transaction fee -->
+        <p>{$i18n.canisters.transaction_fee}</p>
         <div>
           <div>
             <h5>{$i18n.accounts.source}</h5>
@@ -131,7 +133,7 @@
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
       <ConfirmCyclesCanister
         {account}
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         {amount}
         on:nnsClose
         on:nnsConfirm={addCycles}

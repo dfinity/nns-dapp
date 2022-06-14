@@ -90,5 +90,6 @@
 
   .question {
     margin: 0 0 var(--padding-2x);
+    word-break: break-word;
   }
 </style>
