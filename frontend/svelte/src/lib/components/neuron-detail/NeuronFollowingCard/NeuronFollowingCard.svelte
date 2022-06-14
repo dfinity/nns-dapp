@@ -11,7 +11,7 @@
     isNeuronControllable,
     isHotKeyControllable,
   } from "../../../utils/neuron.utils";
-  import Card from "../../ui/Card.svelte";
+  import CardStatic from "../../ui/CardStatic.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
 
@@ -33,7 +33,7 @@
   onMount(listKnownNeurons);
 </script>
 
-<Card>
+<CardStatic>
   <h3 slot="start">{$i18n.neuron_detail.following_title}</h3>
   <p>{$i18n.neuron_detail.following_description}</p>
 
@@ -50,7 +50,7 @@
       <FollowNeuronsButton {neuron} />
     {/if}
   </div>
-</Card>
+</CardStatic>
 
 <style lang="scss">
   h3 {

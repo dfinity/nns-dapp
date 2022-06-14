@@ -3,18 +3,16 @@
   import Card from "./Card.svelte";
   import CardStatic from "./CardStatic.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
-  import {SvelteComponent} from 'svelte';
+  import { SvelteComponent } from "svelte";
+  import type { CardType } from "../../types/card";
 
   export let size: "medium" | "large" = "medium";
-  
-  type CardType = 'card' | 'static';
+  export let cardType: CardType = "card";
+
   const cards: Record<CardType, typeof SvelteComponent> = {
-    'card': Card,
-    'static': CardStatic
-  }
-
-  export let cardType: CardType = 'card';
-
+    card: Card,
+    static: CardStatic,
+  };
 </script>
 
 <svelte:component this={cards[cardType]} testId="skeleton-card">

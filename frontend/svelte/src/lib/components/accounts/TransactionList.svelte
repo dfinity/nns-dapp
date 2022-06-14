@@ -20,7 +20,7 @@
 </script>
 
 {#if account === undefined || transactions === undefined}
-  <SkeletonCard />
+  <SkeletonCard cardType="static" />
 {:else if transactions.length === 0}
   {$i18n.wallet.no_transactions}
 {:else}

@@ -15,6 +15,9 @@
   import Card from "../ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { authStore } from "../../stores/auth.store";
+  import type {CardType} from '../../types/card';
+  import {SvelteComponent} from 'svelte';
+  import CardStatic from '../ui/CardStatic.svelte';
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -38,9 +41,16 @@
   });
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
+
+  export let cardType: CardType = "card";
+
+  const cards: Record<CardType, typeof SvelteComponent> = {
+    card: Card,
+    static: CardStatic,
+  };
 </script>
 
-<Card {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
+<svelte:component this={cards[cardType]} {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
   <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
@@ -87,7 +97,7 @@
   {/if}
 
   <slot />
-</Card>
+</svelte:component>
 
 <style lang="scss">
   @use "../../themes/mixins/display";

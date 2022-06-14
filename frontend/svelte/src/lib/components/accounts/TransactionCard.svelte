@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Account } from "../../types/account";
-  import Card from "../ui/Card.svelte";
+  import CardStatic from "../ui/CardStatic.svelte";
   import ICP from "../ic/ICP.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";
@@ -64,7 +64,7 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<Card testId="transaction-card">
+<CardStatic testId="transaction-card">
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
@@ -74,7 +74,7 @@
   {#if identifier !== undefined}
     <Identifier size="medium" {label} {identifier} />
   {/if}
-</Card>
+</CardStatic>
 
 <style lang="scss">
   @use "../../themes/mixins/card.scss";

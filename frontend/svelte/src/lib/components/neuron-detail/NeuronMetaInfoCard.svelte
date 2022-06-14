@@ -48,7 +48,7 @@
   });
 </script>
 
-<NeuronCard {neuron}>
+<NeuronCard {neuron} cardType="static">
   <section>
     <div class="space-between">
       <p>

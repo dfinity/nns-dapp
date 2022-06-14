@@ -84,10 +84,10 @@
         <NeuronHotkeysCard neuron={$neuronSelectStore} />
         <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
       {:else}
-        <SkeletonCard size="large" />
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
+        <SkeletonCard size="large" cardType="static" />
+        <SkeletonCard cardType="static" />
+        <SkeletonCard cardType="static" />
+        <SkeletonCard cardType="static" />
       {/if}
     </section>
   </HeadlessLayout>

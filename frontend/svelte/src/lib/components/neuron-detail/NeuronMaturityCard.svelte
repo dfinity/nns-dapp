@@ -4,7 +4,7 @@
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import { formatPercentage } from "../../utils/format.utils";
-  import Card from "../ui/Card.svelte";
+  import CardStatic from "../ui/CardStatic.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
@@ -23,7 +23,7 @@
   });
 </script>
 
-<Card>
+<CardStatic>
   <div class="title" slot="start">
     <h3>{$i18n.neuron_detail.maturity_title}</h3>
     <Tooltip id="maturity-info" text={$i18n.neuron_detail.maturity_tooltip}>
@@ -41,7 +41,7 @@
       <SpawnNeuronButton {neuron} />
     {/if}
   </div>
-</Card>
+</CardStatic>
 
 <style lang="scss">
   .title {
