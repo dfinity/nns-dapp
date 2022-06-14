@@ -1,13 +1,11 @@
 <script lang="ts">
   // adapted from https://www.florin-pop.com/blog/2019/05/dark-light-theme-toggle/
 
-  import { applyTheme } from "../../utils/theme.utils";
   import { Theme } from "../../types/theme";
-  import {themeStore} from "../../stores/theme.store";
+  import { themeStore } from "../../stores/theme.store";
 
   const switchTheme = ({ currentTarget }: InputEventHandler) =>
-    applyTheme(currentTarget.checked ? Theme.LIGHT : Theme.DARK);
-
+    themeStore.select(currentTarget.checked ? Theme.LIGHT : Theme.DARK);
 
   let checked: boolean;
   $: checked = $themeStore === Theme.LIGHT;
