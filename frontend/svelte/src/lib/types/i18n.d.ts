@@ -502,6 +502,7 @@ interface I18nError__ledger {
   unexpected_wallet: string;
   user_cancel: string;
   user_rejected_transaction: string;
+  version_not_supported: string;
   incorrect_identifier: string;
 }
 
