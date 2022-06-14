@@ -92,12 +92,13 @@
     "auth_sign_out": "You have been logged out because your session has expired."
   },
   "navigation": {
-    "icp": "ICP",
+    "accounts": "Accounts",
     "neurons": "Neurons",
     "voting": "Voting",
     "canisters": "Canisters"
   },
   "header": {
+    "menu": "Open menu to access navigation options",
     "title": "NETWORK NERVOUS SYSTEM",
     "logout": "Logout"
   },

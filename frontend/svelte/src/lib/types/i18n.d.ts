@@ -98,13 +98,14 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  icp: string;
+  accounts: string;
   neurons: string;
   voting: string;
   canisters: string;
 }
 
 interface I18nHeader {
+  menu: string;
   title: string;
   logout: string;
 }

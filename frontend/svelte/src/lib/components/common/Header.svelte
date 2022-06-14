@@ -1,18 +1,12 @@
 <script lang="ts">
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
-  import GetICPs from "../ic/GetICPs.svelte";
-  import { IS_TESTNET } from "../../constants/environment.constants";
   import { triggerDebugReport } from "../../utils/dev.utils";
-  import IconMenu from "../../icons/IconMenu.svelte";
+  import Menu from "./Menu.svelte";
 </script>
 
 <header>
-  {#if IS_TESTNET}
-    <div class="menu">
-      <IconMenu />
-    </div>
-  {/if}
+  <Menu />
 
   <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
   <Logout />
@@ -38,8 +32,15 @@
     align-items: center;
 
     // Fallback
-    background: linear-gradient(99.27deg, #00A5FF -0.11%, #4E48D2 100.63%);
-    box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.3);
+    background: var(--brand-razzmatazz);
+    background: linear-gradient(
+      90deg,
+      var(--brand-sea-buckthorn) 0%,
+      var(--brand-flamingo) 25%,
+      var(--brand-razzmatazz) 50%,
+      var(--brand-meteorite) 75%,
+      var(--brand-picton-blue) 100%
+    );
   }
 
   h4 {
@@ -57,13 +58,5 @@
     z-index: var(--z-index);
 
     line-height: inherit;
-  }
-
-  .menu {
-    :global(svg) {
-      margin: 20px;
-      width: 32px;
-      height: 32px;
-    }
   }
 </style>
