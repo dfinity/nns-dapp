@@ -12,7 +12,7 @@ import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
  *       - all
  */
 function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
-  const browsers = process.env.WDIO_BROWSER ?? "chrome";
+  const browsers = process.env.WDIO_BROWSER ?? "all";
   const useChrome = ["all", "chrome"].includes(browsers);
   const useFirefox = ["all", "firefox"].includes(browsers);
   const capabilities: Capabilities.RemoteCapabilities = [];
