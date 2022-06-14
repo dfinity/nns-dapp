@@ -33,10 +33,7 @@ export const proposalActionFields = (
   if (key === undefined) {
     return [];
   }
-  return Object.entries(proposal.action?.[key] ?? {}).filter(([key, value]) => {
-    if (key === "payloadBytes") {
-      return false;
-    }
+  return Object.entries(proposal.action?.[key] ?? {}).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
@@ -48,6 +45,16 @@ export const proposalActionFields = (
     }
     return false;
   });
+};
+
+export const getNnsFunctionId = (proposal: Proposal): number | undefined => {
+  const key = proposalFirstActionKey(proposal);
+
+  if (key !== "ExecuteNnsFunction") {
+    return undefined;
+  }
+
+  return Object.values(proposal.action?.[key])?.[0] as number;
 };
 
 export const hideProposal = ({
