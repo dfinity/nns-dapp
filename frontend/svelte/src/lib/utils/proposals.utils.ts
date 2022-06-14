@@ -151,6 +151,8 @@ export const getVotingBallot = ({
 }): Ballot | undefined =>
   ballots.find((ballot) => ballot.neuronId === neuronId);
 
+// We first check the voting power of the ballot from the proposal. Which is the voting power that was used to vote.
+// In the edge case that the proposal voting power is not present, then we show the neuron voting power.
 export const getVotingPower = ({
   neuron: { neuronId, votingPower },
   proposal,
