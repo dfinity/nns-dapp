@@ -94,7 +94,7 @@
 
       .toolbar {
         background: var(--gray-50-background);
-        box-shadow: 0 2px 8px var(--background);
+        box-shadow: 0 2px 8px var(--gray-50-background-shade);
 
         h3,
         button {
