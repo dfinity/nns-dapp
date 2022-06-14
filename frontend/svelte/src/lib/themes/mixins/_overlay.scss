@@ -1,8 +1,7 @@
 @use "./interaction";
 
 @mixin content {
-  padding: 0 var(--padding);
-  width: calc(100% - var(--padding-2x));
+  width: 100%;
 }
 
 @mixin popover {
@@ -31,7 +30,7 @@
     }
 
     // size
-    --size: min(calc(24 * var(--padding)), calc(100vw - var(--padding)));
+    --size: min(calc(20 * var(--padding)), calc(100vw - var(--padding)));
 
     min-width: var(--size);
     max-width: var(--size);
@@ -39,7 +38,7 @@
     width: fit-content;
     height: auto;
 
-    padding: var(--padding) 0;
+    padding: var(--padding-2x);
 
     background-color: var(--background);
     color: var(--background-contrast);

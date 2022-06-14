@@ -27,6 +27,7 @@
 <style lang="scss">
   @use "../../themes/mixins/overlay";
   @use "../../themes/mixins/effect";
+  @use "../../themes/mixins/media";
 
   .theme-toggle {
     margin: 0;
@@ -52,6 +53,10 @@
 
     display: flex;
     flex-direction: column;
-    gap: var(--padding-0_5x);
+    gap: var(--padding);
+
+    @include media.min-width(medium) {
+      gap: var(--padding-0_5x);
+    }
   }
 </style>

@@ -14,6 +14,10 @@
 <style lang="scss">
   button {
     margin: 0;
+
+    :global(svg) {
+      width: calc(2.5 * var(--padding));
+    }
   }
 
   span {
