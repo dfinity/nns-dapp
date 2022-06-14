@@ -153,17 +153,15 @@
 
   .only-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     gap: var(--padding);
-
-    @include media.min-width(small) {
-      justify-content: end;
-    }
   }
 
   .buttons {
     display: flex;
     gap: var(--padding);
+    flex-grow: 1;
+    justify-content: end;
   }
 </style>
