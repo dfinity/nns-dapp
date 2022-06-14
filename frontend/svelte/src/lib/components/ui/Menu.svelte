@@ -55,6 +55,6 @@
 
     padding: var(--padding-8x) 0;
 
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 </style>
