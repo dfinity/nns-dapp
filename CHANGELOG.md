@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXX
+... To fill in with the changelog from th eproposal
+
 ## Proposal 63234
 * Provide more detailed values for neuron ICP
 * Improve support for earlier versions of iPhone
