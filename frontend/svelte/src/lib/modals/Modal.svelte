@@ -98,7 +98,7 @@
 
         h3,
         button {
-          color: var(--background-contrast);
+          color: var(--gray-50);
         }
 
         button {
