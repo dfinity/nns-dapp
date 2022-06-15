@@ -93,6 +93,7 @@
 </Modal>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
   .open {
     display: flex;
     justify-content: flex-start;
@@ -110,6 +111,12 @@
 
     span {
       margin: 0 0 0 var(--padding);
+    }
+  }
+
+  @include media.light-theme() {
+    .how-much {
+      color: var(--background-contrast);
     }
   }
 
