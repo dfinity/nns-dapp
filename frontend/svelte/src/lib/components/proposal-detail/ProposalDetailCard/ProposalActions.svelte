@@ -40,14 +40,11 @@
 
   dl {
     margin: 0;
-    padding: 0;
-    list-style: none;
 
     dt {
       font-size: var(--font-size-ultra-small);
       color: var(--background-contrast);
       line-height: 1;
-      list-style: none;
       margin: 0 0 var(--padding-0_5x);
 
       @include media.min-width(medium) {
@@ -64,7 +61,6 @@
       color: var(--gray-200);
       overflow-wrap: break-word;
       white-space: pre-wrap;
-      list-style: none;
 
       @include media.min-width(medium) {
         font-size: var(--font-size-small);
