@@ -5,12 +5,13 @@
   import Nav from "./Nav.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import IconMenu from "../../icons/IconMenu.svelte";
+  import IconClose from "../../icons/IconClose.svelte";
 
   let open: boolean;
 </script>
 
 <button
-  class="icon-only"
+  class="icon-only open"
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
 >
@@ -18,6 +19,10 @@
 </button>
 
 <Menu bind:open>
+  <button on:click={() => (open = false)} aria-label={$i18n.core.close} class="close"
+    ><IconClose /></button
+  >
+
   <Nav />
 
   {#if IS_TESTNET}
@@ -28,7 +33,7 @@
 <style lang="scss">
   @use "../../themes/mixins/effect";
 
-  button {
+  .open {
     width: fit-content;
     padding: var(--padding-1_5x);
     margin: 0 var(--padding-0_5x);
@@ -38,6 +43,17 @@
     :global(svg) {
       width: 30px;
       height: 30px;
+    }
+  }
+
+  .close {
+    align-self: flex-start;
+    display: flex;
+    margin: 0 var(--padding-0_5x) var(--padding);
+
+    :global(svg) {
+      width: 48px;
+      height: 48px;
     }
   }
 </style>
