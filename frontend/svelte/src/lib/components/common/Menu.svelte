@@ -11,6 +11,7 @@
 </script>
 
 <button
+  data-tid="menu"
   class="icon-only open"
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
