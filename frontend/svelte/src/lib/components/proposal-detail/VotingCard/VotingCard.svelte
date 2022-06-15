@@ -54,7 +54,7 @@
 {#if visible}
   <CardStatic>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect />
+    <CastVoteCardNeuronSelect {proposalInfo} />
     <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
   </CardStatic>
 {/if}

@@ -28,6 +28,7 @@
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
+    proposal: proposalInfo,
   });
   $: disabled = $votingNeuronSelectStore.selectedIds.length === 0 || $busy;
 
