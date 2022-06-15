@@ -190,7 +190,7 @@
     --header-background: linear-gradient(
       99.27deg,
       var(--blue-500) -0.11%,
-      #4e48d2 100.63%
+      var(--color-iris) 100.63%
     );
     --header-background-fallback: var(--blue-500);
     --header-color: var(--blue-500-contrast);
@@ -221,5 +221,14 @@
     --gray-50-contrast-rgb: 255, 255, 255;
     --gray-50-shade: #2d2d2d;
     --gray-50-tint: #474747;
+
+    /** TODO: extract color that are constant and rename with --color-name instead of "--blue-500" */
+
+    --color-iris: #4e48d2;
+    --color-iris-rgb: 78,72,210;
+    --color-iris-contrast: #ffffff;
+    --color-iris-contrast-rgb: 255,255,255;
+    --color-iris-shade: #453fb9;
+    --color-iris-tint: #605ad7
   }
 }

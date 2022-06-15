@@ -5,12 +5,13 @@
   import Nav from "./Nav.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import IconMenu from "../../icons/IconMenu.svelte";
+  import {themeStore} from "../../stores/theme.store";
 
   let open: boolean;
 </script>
 
 <button
-  class="icon-only"
+  class={`icon-only ${$themeStore}`}
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
 >
@@ -26,23 +27,13 @@
 </Menu>
 
 <style lang="scss">
-  @use "../../themes/mixins/effect";
+  @use "../../themes/mixins/header";
 
-  button {
-    width: fit-content;
-    padding: var(--padding-1_5x);
-    margin: 0 var(--padding-0_5x);
+  .dark {
+    @include header.button(--brand-sea-buckthorn);
+  }
 
-    @include effect.ripple-effect(--blue-500-tint);
-
-    &:focus {
-      background: var(--blue-500-tint);
-      @include effect.ripple-effect(--blue-500-tint);
-    }
-
-    :global(svg) {
-      width: 30px;
-      height: 30px;
-    }
+  .light {
+    @include header.button(--blue-500);
   }
 </style>
