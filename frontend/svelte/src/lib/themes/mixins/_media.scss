@@ -24,3 +24,15 @@ $breakpoint-large: 880px;
     @error "UNKNOWN MEDIA BREAKPOINT #{$breakpoint}";
   }
 }
+
+@mixin light-theme {
+  [theme="light"] {
+    @content;
+  }
+}
+
+@mixin dark-theme {
+  [theme="dark"] {
+    @content;
+  }
+}
