@@ -30,7 +30,7 @@
 {#each routes as { context, label, icon }}
   <MenuItem
     href={`${baseUrl}#/${context}`}
-    testId={`tab-to-${context}`}
+    testId={`menuitem-${context}`}
     selected={currentContext === context}
   >
     <svelte:component this={icon} slot="icon" />
