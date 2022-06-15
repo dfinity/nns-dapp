@@ -22,7 +22,7 @@
         ? anchor.getBoundingClientRect()
         : { bottom: 0, left: 0, right: 0 })
   );
-  $: anchor, initPosition();
+  $: anchor, visible, initPosition();
   const close = () => (visible = false);
 </script>
 
