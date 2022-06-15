@@ -23,13 +23,9 @@
     {#each actionFields as [key, value]}
       <dt>{key}</dt>
       {#if typeof value === "object"}
-        <dd>
-          <Json json={value} />
-        </dd>
+        <dd><Json json={value} /></dd>
       {:else}
-        <dd>
-          {value}
-        </dd>
+        <dd>{value}</dd>
       {/if}
     {/each}
   </dl>
