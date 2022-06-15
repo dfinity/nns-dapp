@@ -33,6 +33,7 @@ export const claimSeedNeurons = async () => {
   try {
     startBusy({
       initiator: "claim_seed_neurons",
+      labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getLedgerIdentityProxy(hardwareWallet?.identifier);
     const governance = GenesisTokenCanister.create({
