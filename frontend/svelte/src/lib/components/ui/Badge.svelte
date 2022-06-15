@@ -9,6 +9,8 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   div {
     color: var(--badge-color, var(--gray-50-background-contrast));
     background: var(--badge-background, var(--gray-50-background));
@@ -24,6 +26,12 @@
     &.success {
       --badge-color: var(--green-500-contrast);
       --badge-background: var(--green-500);
+    }
+  }
+
+  @include media.light-theme() {
+    div.warning {
+      color: white;
     }
   }
 </style>
