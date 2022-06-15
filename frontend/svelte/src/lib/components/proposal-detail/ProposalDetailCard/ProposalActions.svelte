@@ -24,13 +24,13 @@
       <li>
         <h4>{key}</h4>
         {#if typeof value === "object"}
-          <p class="json">
+          <div class="json">
             <Json json={value} />
-          </p>
+          </div>
         {:else}
-          <p>
+          <div>
             {value}
-          </p>
+          </div>
         {/if}
       </li>
     {/each}
@@ -57,7 +57,7 @@
           font-size: var(--font-size-small);
         }
       }
-      p {
+      div {
         font-size: var(--font-size-ultra-small);
         color: var(--gray-200);
         overflow-wrap: break-word;
