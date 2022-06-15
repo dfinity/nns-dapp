@@ -74,7 +74,9 @@
     position: absolute;
 
     inset: calc(var(--header-height)) 0 0;
-    overflow: auto;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 
     background-color: var(--gray-50-background);
   }
