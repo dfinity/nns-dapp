@@ -22,7 +22,7 @@
   <button
     on:click={() => (open = false)}
     aria-label={$i18n.core.close}
-    class="close"><IconClose /></button
+    class="close icon-only"><IconClose /></button
   >
 
   <Nav />
