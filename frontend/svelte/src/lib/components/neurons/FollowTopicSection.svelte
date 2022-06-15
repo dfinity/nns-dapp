@@ -86,7 +86,7 @@
       </ul>
       <div class="button-wrapper">
         <button
-          class="secondary small"
+          class="primary small"
           data-tid="open-new-followee-modal"
           on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
         >

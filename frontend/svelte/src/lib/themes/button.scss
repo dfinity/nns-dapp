@@ -42,7 +42,6 @@ button {
 
   &.primary,
   &.danger,
-  &.secondary,
   &.warning,
   &.input-button {
     border-radius: 50px;
@@ -89,29 +88,6 @@ button {
 
     &:hover {
       background: var(--blue-500-tint);
-    }
-  }
-
-  &.secondary {
-    &[disabled],
-    &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
-      cursor: default;
-    }
-
-    background: var(--gray-600);
-    color: var(--background-contrast);
-
-    @include effect.ripple-effect(--gray-600-tint);
-
-    &:focus {
-      @include effect.ripple-effect(--gray-600-tint);
-    }
-
-    &:hover,
-    &:focus {
-      background: var(--gray-600-tint);
     }
   }
 
