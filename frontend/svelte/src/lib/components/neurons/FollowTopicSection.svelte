@@ -114,6 +114,7 @@
     align-items: start;
     justify-content: space-between;
     gap: var(--padding-2x);
+    width: 100%;
   }
 
   .subtitle {
