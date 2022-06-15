@@ -19,8 +19,10 @@
 </button>
 
 <Menu bind:open>
-  <button on:click={() => (open = false)} aria-label={$i18n.core.close} class="close icon-only"
-    ><IconClose /></button
+  <button
+    on:click={() => (open = false)}
+    aria-label={$i18n.core.close}
+    class="close"><IconClose /></button
   >
 
   <Nav />
