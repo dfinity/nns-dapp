@@ -15,15 +15,13 @@
   } from "../lib/services/accounts.services";
   import { accountsStore } from "../lib/stores/accounts.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
-  import Identifier from "../lib/components/ui/Identifier.svelte";
-  import ICP from "../lib/components/ic/ICP.svelte";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import type { Account } from "../lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "../lib/components/accounts/WalletActions.svelte";
-  import { accountName as getAccountName } from "../lib/utils/transactions.utils";
+  import WalletSummary from "../lib/components/accounts/WalletSummary.svelte";
   import { busy } from "../lib/stores/busy.store";
   import TransactionList from "../lib/components/accounts/TransactionList.svelte";
   import {
@@ -31,10 +29,7 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "../lib/types/selected-account.context";
-  import {
-    getAccountFromStore,
-    isAccountHardwareWallet,
-  } from "../lib/utils/accounts.utils";
+  import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
 
   onMount(() => {
@@ -116,12 +111,6 @@
       }
     })();
 
-  let accountName: string;
-  $: accountName = getAccountName({
-    account: selectedAccount,
-    mainName: $i18n.accounts.main,
-  });
-
   let showNewTransactionModal = false;
 
   // TODO(L2-581): Create WalletInfo component
@@ -133,26 +122,7 @@
 
     <section>
       {#if $selectedAccountStore.account !== undefined}
-        <div class="title">
-          <h1>{accountName}</h1>
-          <ICP icp={$selectedAccountStore.account.balance} />
-        </div>
-        <div class="address">
-          <Identifier
-            identifier={$selectedAccountStore.account.identifier}
-            label={$i18n.wallet.address}
-            showCopy
-            size="medium"
-          />
-          {#if isAccountHardwareWallet($selectedAccountStore.account)}
-            <Identifier
-              identifier={$selectedAccountStore.account.principal?.toString() ??
-                ""}
-              label={$i18n.wallet.principal}
-              showCopy
-            />
-          {/if}
-        </div>
+        <WalletSummary />
         <div class="actions">
           <WalletActions />
         </div>
@@ -183,35 +153,6 @@
 {/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media.scss";
-
-  .title {
-    display: block;
-    width: 100%;
-
-    margin: var(--padding-2x) 0;
-
-    --icp-font-size: var(--font-size-h1);
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-  }
-
-  .address {
-    margin-bottom: var(--padding-4x);
-    :global(p:first-of-type) {
-      color: var(--gray-50);
-      margin-bottom: var(--padding);
-    }
-  }
   .actions {
     margin-bottom: var(--padding-3x);
     display: flex;
