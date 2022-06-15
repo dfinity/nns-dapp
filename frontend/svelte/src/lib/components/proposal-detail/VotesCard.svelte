@@ -68,10 +68,11 @@
 </script>
 
 <CardStatic>
+  <h3 slot="start" class="title">Voting Results</h3>
   <div class="latest-tally">
-    <h3>
+    <h4>
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
-    </h3>
+    </h4>
     <div
       class="progressbar"
       role="progressbar"
@@ -81,13 +82,13 @@
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
-    <h3>
+    <h4>
       {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
-    </h3>
+    </h4>
   </div>
 
   {#if neuronsVotedForProposal.length}
-    <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
+    <h4 class="my-votes">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li
@@ -122,19 +123,15 @@
       grid-template-columns: 130px 1fr 130px;
     }
 
-    h3 {
-      font-size: var(--font-size-h4);
+    h4 {
       line-height: var(--line-height-standard);
       text-align: center;
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-h3);
-      }
 
       span {
         display: block;
         text-align: center;
         font-size: var(--font-size-small);
+        font-weight: initial;
 
         @include media.min-width(medium) {
           font-size: var(--font-size-h5);
@@ -176,5 +173,9 @@
       align-items: center;
       gap: var(--padding);
     }
+  }
+
+  .title {
+    padding-bottom: var(--padding);
   }
 </style>
