@@ -375,9 +375,9 @@
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
-    "neurons": "neurons",
-    "voting_power": "voting power",
-    "total": "total",
+    "neurons": "Neurons",
+    "voting_power": "Voting power",
+    "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
     "confirm_adopt_headline": "Adopt Proposal",
