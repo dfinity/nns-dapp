@@ -71,6 +71,7 @@
     margin: var(--padding-2x) 0;
 
     --icp-font-size: var(--font-size-h1);
+    --tooltip-display: inline-block;
 
     // Minimum height of ICP value + ICP label (ICP component)
     min-height: calc(

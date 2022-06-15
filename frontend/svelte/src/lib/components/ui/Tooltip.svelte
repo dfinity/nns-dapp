@@ -69,7 +69,7 @@
 <style lang="scss">
   .tooltip-wrapper {
     position: relative;
-    display: inline-block;
+    display: var(--tooltip-display);
   }
 
   .tooltip {
