@@ -5,6 +5,7 @@
   import Nav from "./Nav.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import IconMenu from "../../icons/IconMenu.svelte";
+  import IconClose from "../../icons/IconClose.svelte";
   import {themeStore} from "../../stores/theme.store";
 
   let open: boolean;
@@ -19,6 +20,10 @@
 </button>
 
 <Menu bind:open>
+  <button on:click={() => (open = false)} aria-label={$i18n.core.close} class="close"
+    ><IconClose /></button
+  >
+
   <Nav />
 
   {#if IS_TESTNET}
@@ -35,5 +40,16 @@
 
   .light {
     @include header.button(--blue-500);
+  }
+
+  .close {
+    align-self: flex-start;
+    display: flex;
+    margin: 0 0 var(--padding);
+
+    :global(svg) {
+      width: 48px;
+      height: 48px;
+    }
   }
 </style>
