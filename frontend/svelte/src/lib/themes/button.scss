@@ -51,7 +51,7 @@ button {
     min-height: var(--button-min-height);
 
     font-size: var(--font-size-small);
-    line-height: 1.25;
+    line-height: var(--line-height-standard);
 
     @include media.min-width(medium) {
       font-size: var(--font-size-h3);
