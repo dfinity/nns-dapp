@@ -84,10 +84,10 @@ flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5
 
 This environment varibale controls whether the svelte or flutter implementation will be available.
 
-| `REDIRECT_ TO_LEGACY` | Login Page | Accounts tab | Neurons tab | Proposals tab | Canisters tab |
-| --------------------- | ---------- | ------------ | ----------- | ------------- | ------------- |
-| prod                  | svelte     | flutter      | flutter     | flutter       | flutter       |
-| staging               | svelte     | flutter      | flutter     | svelte        | flutter       |
-| svelte                | svelte     | svelte       | svelte      | svelte        | svelte        |
-| flutter               | svelte     | flutter      | flutter     | flutter       | flutter       |
-| both                  | svelte     | both         | both        | both          | both          |
+| `REDIRECT_TO_LEGACY` | Login Page | Accounts tab | Neurons tab | Proposals tab | Canisters tab |
+| -------------------- | ---------- | ------------ | ----------- | ------------- | ------------- |
+| prod                 | svelte     | svelte       | svelte      | svelte        | svelte        |
+| staging              | svelte     | svelte       | svelte      | svelte        | svelte        |
+| svelte               | svelte     | svelte       | svelte      | svelte        | svelte        |
+| flutter              | svelte     | flutter      | flutter     | flutter       | flutter       |
+| both                 | svelte     | both         | both        | both          | both          |
