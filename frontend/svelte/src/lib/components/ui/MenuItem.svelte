@@ -1,7 +1,7 @@
 <script lang="ts">
   export let href: string;
   export let selected: boolean = false;
-  export let testId: string | undefined = undefined
+  export let testId: string | undefined = undefined;
 </script>
 
 <a role="menuitem" {href} class:selected data-tid={testId}>
