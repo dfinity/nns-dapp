@@ -53,7 +53,7 @@
 
     box-shadow: 4px 0 16px rgba(var(--black-rgb), 0.2);
 
-    padding: var(--padding-6x) 0 0;
+    padding: var(--padding-6x) 0 0 2px;
 
     overflow-y: auto;
   }
