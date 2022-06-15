@@ -9,6 +9,8 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   concatenateUniqueProposals,
   excludeProposals,
+  getVotingBallot,
+  getVotingPower,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -569,27 +571,47 @@ describe("proposals-utils", () => {
         votingPower: BigInt(votingPower),
       } as NeuronInfo);
 
-    it("should calculate total", () => {
-      expect(
-        selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
-          selectedIds: [1, 2, 3].map(BigInt),
-        })
-      ).toBe(BigInt(9));
+    const proposalInfo = (neurons: NeuronInfo[]): ProposalInfo => ({
+      ...mockProposalInfo,
+      ballots: neurons.map(({ neuronId, votingPower }) => ({
+        neuronId,
+        votingPower: votingPower - BigInt(1),
+        vote: Vote.NO,
+      })),
+    });
 
+    it("should calculate total ballot voting power", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
-          selectedIds: [1, 3].map(BigInt),
+          neurons,
+          selectedIds: [1, 2, 3].map(BigInt),
+          proposal,
         })
       ).toBe(BigInt(6));
     });
 
-    it("should return 0 if no selection", () => {
+    it("should take into account only selected neurons", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
+          neurons,
+          selectedIds: [1, 3].map(BigInt),
+          proposal,
+        })
+      ).toBe(BigInt(4));
+    });
+
+    it("should return 0 if no selection", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
+      expect(
+        selectedNeuronsVotingPower({
+          neurons,
           selectedIds: [],
+          proposal,
         })
       ).toBe(BigInt(0));
     });
@@ -832,6 +854,84 @@ describe("proposals-utils", () => {
           newProposals,
         })
       ).toEqual([]);
+    });
+  });
+
+  describe("getVotingBallot", () => {
+    it("should return ballot of neuron if present", () => {
+      const neuronId = BigInt(100);
+      const ballot: Ballot = {
+        neuronId,
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingBallot({
+          neuronId,
+          proposalInfo: proposal,
+        })
+      ).toEqual(ballot);
+    });
+
+    it("should return undefined if ballot not present", () => {
+      const neuronId = BigInt(100);
+      const ballot: Ballot = {
+        neuronId: BigInt(400),
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingBallot({
+          neuronId,
+          proposalInfo: proposal,
+        })
+      ).toBeUndefined();
+    });
+  });
+
+  describe("getVotingPower", () => {
+    it("should return ballot voting power if present", () => {
+      const neuronId = BigInt(100);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+      };
+      const ballot: Ballot = {
+        neuronId,
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingPower({
+          neuron,
+          proposal,
+        })
+      ).toEqual(ballot.votingPower);
+    });
+
+    it("should return neuron voting power if no ballot", () => {
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [],
+      };
+      expect(
+        getVotingPower({
+          neuron: mockNeuron,
+          proposal,
+        })
+      ).toBe(mockNeuron.votingPower);
     });
   });
 });
