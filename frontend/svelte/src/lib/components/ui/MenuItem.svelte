@@ -1,25 +1,12 @@
 <script lang="ts">
-  import { baseHref, routeContext } from "../../utils/route.utils";
-  import { i18n } from "../../stores/i18n";
-  import type { SvelteComponent } from "svelte";
-
-  const baseUrl: string = baseHref();
-  let currentContext: string = routeContext();
-
-  export let context: string;
-  export let label: string;
-  export let icon: typeof SvelteComponent;
+  export let href: string;
+  export let selected: boolean = false;
+  export let testId: string | undefined = undefined
 </script>
 
-<a
-  role="menuitem"
-  href={`${baseUrl}#/${context}`}
-  class:selected={currentContext === context}
-  data-tid={`tab-to-${context}`}
-  aria-label={label}
->
-  <svelte:component this={icon} />
-  <span>{$i18n.navigation[label]}</span>
+<a role="menuitem" {href} class:selected data-tid={testId}>
+  <slot name="icon" />
+  <span><slot /></span>
 </a>
 
 <style lang="scss">
