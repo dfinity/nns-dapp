@@ -161,8 +161,9 @@ const addZeros = (nums: number[], amountZeros: number): number[] =>
 /**
  * Returns true if the current version is smaller than the minVersion, false if equal or bigger.
  *
- * @param minVersion Ex: "1.0.0"
- * @param currentVersion Ex: "2.0.0"
+ * @param {Object} params
+ * @param {string} params.minVersion Ex: "1.0.0"
+ * @param {string} params.currentVersion Ex: "2.0.0"
  * @returns boolean
  */
 export const smallerVersion = ({
