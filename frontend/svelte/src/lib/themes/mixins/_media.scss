@@ -25,14 +25,14 @@ $breakpoint-large: 880px;
   }
 }
 
-@mixin light-theme {
-  [theme="light"] {
+@mixin light-theme() {
+  :global(html[theme="light"]) {
     @content;
   }
 }
 
-@mixin dark-theme {
-  [theme="dark"] {
+@mixin dark-theme() {
+  :global(html[theme="dark"]) {
     @content;
   }
 }
