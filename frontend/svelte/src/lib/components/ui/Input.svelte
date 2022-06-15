@@ -148,6 +148,12 @@
 <style lang="scss">
   @use "../../themes/mixins/media.scss";
 
+  @include media.light-theme() {
+    .input-block.light input {
+      color: var(--background-contrast);
+    }
+  }
+
   .input-block {
     position: relative;
 
