@@ -5,6 +5,11 @@
   import IconHowToVote from "../../icons/IconHowToVote.svelte";
   import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
   import type { SvelteComponent } from "svelte";
+  import { i18n } from "../../stores/i18n";
+  import { baseHref, routeContext } from "../../utils/route.utils";
+
+  const baseUrl: string = baseHref();
+  let currentContext: string = routeContext();
 
   const routes: {
     context: string;
@@ -23,7 +28,14 @@
 </script>
 
 {#each routes as { context, label, icon }}
-  <MenuItem {context} {label} {icon} />
+  <MenuItem
+    href={`${baseUrl}#/${context}`}
+    testId={`tab-to-${context}`}
+    selected={currentContext === context}
+  >
+    <svelte:component this={icon} slot="icon" />
+    <svelte:fragment>{$i18n.navigation[label]}</svelte:fragment>
+  </MenuItem>
 {/each}
 
 <style lang="scss">
