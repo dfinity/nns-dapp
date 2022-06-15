@@ -105,7 +105,7 @@
     :global(.collapsible-expand-icon) {
       align-items: start;
       padding-top: var(--padding-3x);
-      color: var(--background-contrast);
+      color: var(--gray-50);
     }
   }
 
@@ -125,13 +125,13 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: var(--padding-2x);
+    padding-right: var(--padding-2x);
     margin-top: var(--padding-2x);
     margin-right: var(--padding-2x);
   }
 
   .badge {
-    background-color: var(--background-contrast);
+    background-color: var(--gray-50);
     color: var(--background);
     border-radius: 50%;
     padding: var(--padding);
