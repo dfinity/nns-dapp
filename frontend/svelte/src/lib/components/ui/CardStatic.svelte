@@ -23,7 +23,7 @@
     text-decoration: none;
 
     padding: var(--padding-2x) 0;
-    margin: var(--padding-4x) 0;
+    margin: var(--padding-2x) 0;
 
     outline: 2px solid transparent;
 

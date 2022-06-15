@@ -64,6 +64,8 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
+<hr />
+
 <CardStatic testId="transaction-card">
   <div slot="start" class="title">
     <h3>{headline}</h3>
@@ -78,6 +80,12 @@
 
 <style lang="scss">
   @use "../../themes/mixins/card.scss";
+
+  hr {
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    margin-bottom: var(--padding);
+  }
 
   .title {
     @include card.stacked-title;
