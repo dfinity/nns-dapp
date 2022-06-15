@@ -88,6 +88,7 @@
 <style lang="scss">
   .wrapper {
     position: relative;
+    padding-bottom: var(--padding-2x);
 
     display: flex;
     flex-direction: column;
