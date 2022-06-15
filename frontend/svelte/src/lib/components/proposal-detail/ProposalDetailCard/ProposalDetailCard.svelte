@@ -58,4 +58,9 @@
   .detail {
     margin: var(--padding-3x) 0;
   }
+
+  h2 {
+    margin: 0;
+    line-height: var(--line-height-standard);
+  }
 </style>
