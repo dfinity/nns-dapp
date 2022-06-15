@@ -72,8 +72,8 @@ This environment varibale controls whether the svelte or flutter implementation 
 | `REDIRECT_` | Login     | Accounts tab | Neurons tab | Proposals tab | Canisters tab |
 | `TO_LEGACY` | page      |              |             |               |               |
 |-------------|-----------|--------------|-------------|---------------|---------------|
-| prod        | svelte    | flutter      | flutter     | flutter       | flutter       |
-| staging     | svelte    | flutter      | flutter     | svelte        | flutter       |
+| prod        | svelte    | svelte       | svelte      | svelte        | svelte        |
+| staging     | svelte    | svelte       | svelte      | svelte        | svelte        |
 | svelte      | svelte    | svelte       | svelte      | svelte        | svelte        |
 | flutter     | svelte    | flutter      | flutter     | flutter       | flutter       |
 | both        | svelte    | both         | both        | both          | both          |
