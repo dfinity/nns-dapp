@@ -2,6 +2,8 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
+import { CMCError, ProcessingError } from "../canisters/cmc/cmc.errors";
+import type { Cycles } from "../canisters/cmc/cmc.types";
 import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
 import type {
@@ -9,6 +11,7 @@ import type {
   CanisterSettings,
 } from "../canisters/ic-management/ic-management.canister.types";
 import type { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
+import { CanisterAlreadyAttachedError } from "../canisters/nns-dapp/nns-dapp.errors";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
@@ -17,6 +20,7 @@ import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants"
 import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { poll, PollingLimitExceededError } from "../utils/utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
@@ -124,6 +128,35 @@ export const detachCanister = async ({
   logWithTimestamp("Detaching canister call complete.");
 };
 
+// Polls CMC waiting for a reponse that is not a ProcessingError.
+const pollNotifyCreateCanister = async ({
+  cmc,
+  controller,
+  blockHeight,
+}: {
+  cmc: CMCCanister;
+  controller: Principal;
+  blockHeight: bigint;
+}): Promise<Principal> => {
+  try {
+    return await poll({
+      fn: () =>
+        cmc.notifyCreateCanister({
+          controller,
+          block_index: blockHeight,
+        }),
+      shouldRecall: (error: Error) => error instanceof ProcessingError,
+    });
+  } catch (error) {
+    if (error instanceof PollingLimitExceededError) {
+      throw new CMCError(
+        "Error creating canister. Canister might be created, refresh the page. Try again if not."
+      );
+    }
+    throw error;
+  }
+};
+
 export const createCanister = async ({
   identity,
   amount,
@@ -158,28 +191,65 @@ export const createCanister = async ({
     fromSubAccountId,
   });
 
-  // If this fails or the client loses connection
-  // nns dapp backend polls the transactions
-  // and will also notify to CMC the transaction if it's pending
-  // TODO: https://dfinity.atlassian.net/browse/L2-591
-  const canisterId = await cmc.notifyCreateCanister({
+  // If this fails or the client loses connection, nns dapp backend polls the transactions
+  // and will also notify to CMC the transaction if it's pending.
+  // If the backend is faster to notify, we might get a ProcessingError.
+  // We poll CMC until we stop getting ProcessingError or we request more than MAX_POLLING_TIMES
+  const canisterId = await pollNotifyCreateCanister({
+    cmc,
     controller: principal,
-    block_index: blockHeight,
+    blockHeight,
   });
 
   // Attach the canister to the user in the nns-dapp.
   // The same background tasks that notifies the CMC also attaches the canister.
-  // `name` is mandatory and unique per user,
-  // but it can be an empty string
-  // TODO: https://dfinity.atlassian.net/browse/L2-591
-  await nnsDapp.attachCanister({
-    name: name ?? "",
-    canisterId,
-  });
+  // `name` is mandatory and unique per user, but it can be an empty string.
+  try {
+    await nnsDapp.attachCanister({
+      name: name ?? "",
+      canisterId,
+    });
+  } catch (error) {
+    // If the background task finishes earlier, we might get CanisterAlreadyAttachedError.
+    // Which can be safely ignored.
+    if (!(error instanceof CanisterAlreadyAttachedError)) {
+      throw error;
+    }
+  }
 
   logWithTimestamp("Create canister complete.");
 
   return canisterId;
+};
+
+// Polls CMC waiting for a reponse that is not a ProcessingError.
+const pollNotifyTopUpCanister = async ({
+  cmc,
+  blockHeight,
+  canisterId,
+}: {
+  cmc: CMCCanister;
+  canisterId: Principal;
+  blockHeight: bigint;
+  counter?: number;
+}): Promise<Cycles> => {
+  try {
+    return await poll({
+      fn: () =>
+        cmc.notifyTopUp({
+          canister_id: canisterId,
+          block_index: blockHeight,
+        }),
+      shouldRecall: (error: Error) => error instanceof ProcessingError,
+    });
+  } catch (error) {
+    if (error instanceof PollingLimitExceededError) {
+      throw new CMCError(
+        "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not."
+      );
+    }
+    throw error;
+  }
 };
 
 export const topUpCanister = async ({
@@ -214,11 +284,7 @@ export const topUpCanister = async ({
   // If this fails or the client loses connection
   // nns dapp backend polls the transactions
   // and will also notify to CMC the transaction if it's pending
-  // TODO: https://dfinity.atlassian.net/browse/L2-591
-  await cmc.notifyTopUp({
-    canister_id: canisterId,
-    block_index: blockHeight,
-  });
+  await pollNotifyTopUpCanister({ cmc, canisterId, blockHeight });
 
   logWithTimestamp(`Topping up canister ${canisterId.toText()} complete.`);
 };

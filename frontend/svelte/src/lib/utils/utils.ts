@@ -189,3 +189,50 @@ export const smallerVersion = ({
     }) < 0
   );
 };
+
+const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
+export class PollingLimitExceededError extends Error {}
+const MAX_POLLING_TIMES = 10;
+/**
+ * Function that polls a specific function, checking error with passed argument to recall or not.
+ *
+ * @param {Object} params
+ * @param {fn} params.fn Function to call
+ * @param {shouldRecall} params.shouldRecall Function to check whether error raised deserves a recall or not.
+ * @param {maxTimes} params.maxTimes Param to override the default number of times to poll.
+ *
+ * @returns
+ */
+export const poll = async <T>({
+  fn,
+  shouldRecall,
+  maxTimes = MAX_POLLING_TIMES,
+  counter = 1,
+}: {
+  fn: () => Promise<T>;
+  shouldRecall: (err: Error) => boolean;
+  maxTimes?: number;
+  counter?: number;
+}): Promise<T> => {
+  if (counter >= maxTimes) {
+    throw new PollingLimitExceededError();
+  }
+  try {
+    return await fn();
+  } catch (error) {
+    if (!shouldRecall(error)) {
+      throw error;
+    }
+  }
+  await waitForMilliseconds(500);
+  return poll({
+    fn,
+    shouldRecall,
+    maxTimes,
+    counter: counter + 1,
+  });
+};

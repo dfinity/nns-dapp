@@ -6,6 +6,7 @@ import {
   isHash,
   isNullable,
   nonNullable,
+  poll,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
@@ -314,6 +315,47 @@ describe("utils", () => {
           currentVersion: "13.4.5",
         })
       ).toBe(false);
+    });
+  });
+
+  describe("poll", () => {
+    beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+    });
+
+    it("should recall the function until `shouldRecall` is false", async () => {
+      const maxCalls = 3;
+      let calls = 0;
+      await poll({
+        fn: async () => {
+          calls += 1;
+          if (calls < maxCalls) {
+            throw new Error();
+          }
+          return calls;
+        },
+        shouldRecall: () => calls < maxCalls,
+      });
+      expect(calls).toBe(maxCalls);
+    });
+
+    it("should return the value of `fn` when it doesn't throw", async () => {
+      const result = 10;
+      const expected = await poll({
+        fn: async () => result,
+        shouldRecall: () => false,
+      });
+      expect(expected).toBe(result);
+    });
+
+    it("should throw ", async () => {
+      const result = 10;
+      const expected = await poll({
+        fn: async () => result,
+        shouldRecall: () => false,
+      });
+      expect(expected).toBe(result);
     });
   });
 });
