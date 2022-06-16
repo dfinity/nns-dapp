@@ -307,6 +307,7 @@ describe("canisters-services", () => {
 
     it("should not get canister id from invalid path", () => {
       expect(routePathCanisterId("/#/canister/")).toBeUndefined();
+      expect(routePathCanisterId("/#/canisters")).toBeUndefined();
       expect(routePathCanisterId(undefined)).toBeUndefined();
     });
   });
