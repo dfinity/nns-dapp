@@ -33,10 +33,11 @@
       {:else}
         <dd>{value}</dd>
       {/if}
-      {#if nnsFunctionId !== undefined}
-        <NnsFunctionDetails {proposalId} {nnsFunctionId} />
-      {/if}
     {/each}
+
+    {#if nnsFunctionId !== undefined}
+      <NnsFunctionDetails {proposalId} {nnsFunctionId} />
+    {/if}
   </dl>
 </CardBlock>
 
@@ -46,7 +47,7 @@
   dl {
     margin: 0;
 
-    dt {
+    :global(dt) {
       font-size: var(--font-size-ultra-small);
       color: var(--background-contrast);
       line-height: 1;
@@ -56,7 +57,7 @@
         font-size: var(--font-size-small);
       }
     }
-    dd {
+    :global(dd) {
       margin: 0 0 var(--padding);
       &:last-child {
         margin: 0;

@@ -23,15 +23,11 @@
     })();
 </script>
 
-<li>
-  <h4>{$i18n.proposal_detail.nns_function_name}</h4>
-  <p>{nnsFunctionName}</p>
-</li>
-<li>
-  {#if payload === undefined}
-    <Spinner size="small" inline={true} />
-  {:else if payload !== null}
-    <h4>{$i18n.proposal_detail.payload}</h4>
-    <p><Json json={payload} /></p>
-  {/if}
-</li>
+<dt>{$i18n.proposal_detail.nns_function_name}</dt>
+<dd>{nnsFunctionName}</dd>
+{#if payload === undefined}
+  <Spinner size="small" inline={true} />
+{:else if payload !== null}
+  <dt>{$i18n.proposal_detail.payload}</dt>
+  <dd><Json json={payload} /></dd>
+{/if}
