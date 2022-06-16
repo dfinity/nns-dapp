@@ -826,8 +826,14 @@ impl AccountsStore {
         count_to_prune as u32
     }
 
-    pub fn enqueue_multi_part_transaction(&mut self, principal: PrincipalId, block_height: BlockHeight, transaction: MultiPartTransactionToBeProcessed) {
-        self.multi_part_transactions_processor.push(principal, block_height, transaction);
+    pub fn enqueue_multi_part_transaction(
+        &mut self,
+        principal: PrincipalId,
+        block_height: BlockHeight,
+        transaction: MultiPartTransactionToBeProcessed,
+    ) {
+        self.multi_part_transactions_processor
+            .push(principal, block_height, transaction);
     }
 
     pub fn get_stats(&self) -> Stats {

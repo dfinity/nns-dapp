@@ -94,7 +94,7 @@ async fn handle_create_canister_v2(block_height: BlockHeight, controller: Princi
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     controller,
                     block_height,
-                    MultiPartTransactionToBeProcessed::CreateCanisterV2(controller)
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(controller),
                 )
             });
         }
@@ -172,15 +172,17 @@ async fn handle_top_up_canister_v2(block_height: BlockHeight, principal: Princip
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     principal,
                     block_height,
-                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal)
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
                 )
             });
         }
         Ok(Err(error)) => {
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, format!("{:?}", error), false)
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    format!("{:?}", error),
+                    false,
+                )
             });
         }
         Err(error) => {
