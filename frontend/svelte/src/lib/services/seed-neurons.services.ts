@@ -4,6 +4,7 @@ import { HOST } from "../constants/environment.constants";
 import type { Secp256k1PublicKey } from "../keys/secp256k1";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { accountsStore } from "../stores/accounts.store";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { toastsStore } from "../stores/toasts.store";
 import { createAgent } from "../utils/agent.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
@@ -30,8 +31,12 @@ export const claimSeedNeurons = async () => {
     return;
   }
   try {
+    startBusy({
+      initiator: "claim_seed_neurons",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
     const identity = await getLedgerIdentityProxy(hardwareWallet?.identifier);
-    const governance = await GenesisTokenCanister.create({
+    const governance = GenesisTokenCanister.create({
       agent: await createAgent({ identity, host: HOST }),
     });
 
@@ -54,13 +59,23 @@ export const claimSeedNeurons = async () => {
       });
       return;
     }
-    return await governance.claimNeurons({ hexPubKey });
+    const ids = await governance.claimNeurons({ hexPubKey });
+
+    toastsStore.show({
+      labelKey: "neurons.claim_seed_neurons_success",
+      level: "success",
+      substitutions: {
+        $neurons: ids.map((id) => id.toString()).join(", "),
+      },
+    });
   } catch (error) {
     const toastError = mapNeuronErrorToToastMessage(error);
-    toastsStore.error(toastError);
+    toastsStore.show(toastError);
     const message = translate({ labelKey: toastError.labelKey });
     console.error("Error during claiming neurons");
     console.error(message);
     console.error(error);
+  } finally {
+    stopBusy("claim_seed_neurons");
   }
 };

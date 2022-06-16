@@ -1,4 +1,5 @@
 import type {
+  Ballot,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -148,16 +149,42 @@ export const hasMatchingProposals = ({
   );
 };
 
+export const getVotingBallot = ({
+  neuronId,
+  proposalInfo: { ballots },
+}: {
+  neuronId: bigint;
+  proposalInfo: ProposalInfo;
+}): Ballot | undefined =>
+  ballots.find((ballot) => ballot.neuronId === neuronId);
+
+// We first check the voting power of the ballot from the proposal. Which is the voting power that was used to vote.
+// In the edge case that the proposal voting power is not present, then we show the neuron voting power.
+export const getVotingPower = ({
+  neuron: { neuronId, votingPower },
+  proposal,
+}: {
+  neuron: NeuronInfo;
+  proposal: ProposalInfo;
+}): bigint =>
+  getVotingBallot({
+    neuronId,
+    proposalInfo: proposal,
+  })?.votingPower ?? votingPower;
+
 export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
+  proposal,
 }: {
   neurons: NeuronInfo[];
   selectedIds: NeuronId[];
+  proposal: ProposalInfo;
 }): bigint =>
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
-    .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+    .map((neuron) => getVotingPower({ neuron, proposal }))
+    .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
 
 /**
  * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection

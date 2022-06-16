@@ -155,7 +155,8 @@
     "hardware_wallet_add_hotkey_title": "Confirm Addition of Hotkey",
     "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
     "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
-    "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?"
+    "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?",
+    "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {
     "title": "Neurons",
@@ -213,6 +214,7 @@
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
+    "claim_seed_neurons_success": "Seed neurons claimed successfully: $neurons",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
@@ -510,6 +512,7 @@
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
     "user_cancel": "User denied the access to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
+    "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {

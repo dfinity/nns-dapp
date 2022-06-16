@@ -50,7 +50,7 @@ describe("Wallet", () => {
   };
 
   describe("loading", () => {
-    it("should render title", async () => {
+    it("should render title", () => {
       const { getAllByText } = render(Wallet);
 
       expect(getAllByText(en.wallet.title).length).toBeGreaterThan(0);

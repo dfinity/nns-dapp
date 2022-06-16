@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import NewControllerReview from "../../components/canister_details/NewControllerReview.svelte";
+  import NewControllerReview from "../../components/canister-detail/NewControllerReview.svelte";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";

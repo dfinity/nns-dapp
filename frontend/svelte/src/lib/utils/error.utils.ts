@@ -15,6 +15,7 @@ import {
 } from "../canisters/cmc/cmc.errors";
 import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
 import { InsufficientAmountError } from "../types/common.errors";
+import { LedgerErrorMessage } from "../types/ledger.errors";
 import {
   CannotBeMerged,
   InvalidAmountError,
@@ -42,6 +43,14 @@ const factoryMappingErrorToToastMessage =
       err: error,
       fallbackErrorLabelKey: testFallbackKey,
     });
+    if (error instanceof LedgerErrorMessage) {
+      return {
+        level: "error",
+        // Label key not needed, the transation is already in the message of the error
+        labelKey: "",
+        detail: error.message,
+      };
+    }
     // Return if error found is not fallback
     if (toastError.labelKey !== testFallbackKey) {
       return {

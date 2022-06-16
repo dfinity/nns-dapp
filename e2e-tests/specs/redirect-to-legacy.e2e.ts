@@ -11,26 +11,26 @@ import { skipUnlessBrowserIs } from "../common/test";
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
     [RouteHash.Accounts]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Neurons]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Proposals]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Canisters]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
   [RedirectToLegacy.staging]: {
     [RouteHash.Accounts]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Neurons]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
@@ -41,8 +41,8 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Canisters]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
   [RedirectToLegacy.flutter]: {

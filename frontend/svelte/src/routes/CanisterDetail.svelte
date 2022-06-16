@@ -18,8 +18,8 @@
   import { replacePlaceholders, translate } from "../lib/utils/i18n.utils";
   import SkeletonParagraph from "../lib/components/ui/SkeletonParagraph.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import CyclesCard from "../lib/components/canister_details/CyclesCard.svelte";
-  import ControllersCard from "../lib/components/canister_details/ControllersCard.svelte";
+  import CyclesCard from "../lib/components/canister-detail/CyclesCard.svelte";
+  import ControllersCard from "../lib/components/canister-detail/ControllersCard.svelte";
   import SkeletonTitle from "../lib/components/ui/SkeletonTitle.svelte";
   import { writable } from "svelte/store";
   import {
@@ -31,7 +31,7 @@
   import type { CanisterDetails } from "../lib/canisters/ic-management/ic-management.canister.types";
   import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import DetachCanisterButton from "../lib/components/canister_details/DetachCanisterButton.svelte";
+  import DetachCanisterButton from "../lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
@@ -144,7 +144,8 @@
     selectedCanister,
     canistersReady,
     (() => {
-      if (!canistersReady) {
+      // When detaching, this is also executed but there is no `routeCanisterId`.
+      if (!canistersReady || routeCanisterId === undefined) {
         return;
       }
 
@@ -174,11 +175,15 @@
 
       // handle unknown canister id from URL
       if (selectedCanister === undefined) {
-        toastsStore.error({
-          labelKey: replacePlaceholders($i18n.error.canister_not_found, {
-            $canister_id: routeCanisterId ?? "",
-          }),
-        });
+        // Show toast only it was not already present in the store
+        // for example, after detaching, the storeCanister is present, but not the selectedCanister
+        if (storeCanister === undefined) {
+          toastsStore.error({
+            labelKey: replacePlaceholders($i18n.error.canister_not_found, {
+              $canister_id: routeCanisterId ?? "",
+            }),
+          });
+        }
         goBack();
       }
     })();

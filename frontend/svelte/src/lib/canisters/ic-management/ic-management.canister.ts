@@ -53,10 +53,11 @@ export class ICManagementCanister {
   };
 
   /**
-   * Updateds canister settings
+   * Update canister settings
    *
-   * @param {Principal} canisterId
-   * @param {CanisterSettings} settings
+   * @param {Object} params
+   * @param {Principal} params.canisterId
+   * @param {CanisterSettings} params.settings
    * @returns Promise<void>
    * @throws UserNotTheController, Error
    */
