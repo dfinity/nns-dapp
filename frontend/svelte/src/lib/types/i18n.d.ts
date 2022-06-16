@@ -164,6 +164,7 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
+  current_balance_detail: string;
 }
 
 interface I18nNeurons {
@@ -222,6 +223,7 @@ interface I18nNeurons {
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
+  claim_seed_neurons_success: string;
   stake_amount: string;
 }
 

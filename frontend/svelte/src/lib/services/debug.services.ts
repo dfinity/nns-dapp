@@ -27,6 +27,7 @@ export enum LogType {
   ConsoleOriginalObject = "coo",
   File = "f",
   FileOriginal = "fo",
+  ClaimNeurons = "cn",
 }
 
 const anonymiseStoreState = async () => {
