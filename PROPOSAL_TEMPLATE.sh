@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p release/ci
 PR="$(git log -n1 tags/release-candidate --oneline | awk '{print $(NF)}' | tr -cd 0-9)"
-CI="https://github.com/dfinity/nns-dapp/pull/${CI}/checks"
+CI="https://github.com/dfinity/nns-dapp/pull/${PR}/checks"
 WASM="release/ci/nns-dapp.wasm"
 if test -f "$WASM"
 then SHA="$(sha256sum "$WASM" | awk '{print $1}')"
