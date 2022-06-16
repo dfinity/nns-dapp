@@ -5,7 +5,6 @@ import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
-import * as ledgerApi from "../../../lib/api/ledger.api";
 import {
   E8S_PER_ICP,
   TRANSACTION_FEE_E8S,
@@ -186,10 +185,6 @@ describe("neurons-services", () => {
   const spyClaimOrRefresh = jest
     .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
-
-  const spyGetNeuronBalance = jest
-    .spyOn(ledgerApi, "getNeuronBalance")
-    .mockImplementation(() => Promise.resolve(ICP.fromString("1") as ICP));
 
   afterEach(() => {
     spyGetNeuron.mockClear();
