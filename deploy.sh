@@ -57,6 +57,9 @@ help_text() {
 	--ii
 	  Create the internet_identity canister.
 
+	--sns
+	  Depoy one or more SNS canister sets.
+
 	--nns-dapp
 	  Depoy the NNS dapp.
 
@@ -79,6 +82,7 @@ START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
+DEPLOY_SNS="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
 
@@ -131,6 +135,7 @@ if [[ "$GUESS" == "true" ]]; then
     START_DFX=true
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
+    DEPLOY_SNS=true
     DEPLOY_NNS_DAPP=true
     POPULATE=true
     ;;
@@ -152,6 +157,7 @@ echo
 echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
+echo DEPLOY_SNS=$DEPLOY_SNS
 echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
 echo POPULATE=$POPULATE
 echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
@@ -182,9 +188,12 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-download
   ./e2e-tests/scripts/nns-canister-build
+fi
+
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
 fi
 
@@ -192,6 +201,10 @@ if [[ "$DEPLOY_II" == "true" ]]; then
   dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
   echo "Waiting for II to be stable..."
   sleep 4
+fi
+
+if [[ "$DEPLOY_SNS" == "true" ]]; then
+  sns deploy --network local --token-name "Free Up My Time" --token-symbol FUT
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
