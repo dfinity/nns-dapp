@@ -1,11 +1,5 @@
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import {
-  Topic,
-  type ICP,
-  type Neuron,
-  type NeuronId,
-  type NeuronInfo,
-} from "@dfinity/nns";
+import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
@@ -27,20 +21,19 @@ import {
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
-import { getNeuronBalance } from "../api/ledger.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
-import { MAX_CONCURRENCY } from "../constants/neurons.constants";
+import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
+import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
-  InsufficientAmountError,
   NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
@@ -57,13 +50,13 @@ import {
   isIdentityController,
   userAuthorizedNeuron,
 } from "../utils/neuron.utils";
-import { createChunks, isDefined } from "../utils/utils";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   syncAccounts,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
+import { assertLedgerVersion } from "./ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
@@ -195,7 +188,7 @@ export const stakeNeuron = async ({
 
     if (!isEnoughToStakeNeuron({ stake })) {
       toastsStore.error({
-        labelKey: "error.amount_not_enough",
+        labelKey: "error.amount_not_enough_stake_neuron",
       });
       return;
     }
@@ -239,10 +232,8 @@ export const stakeNeuron = async ({
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
 export const listNeurons = async ({
-  skipCheck = false,
   callback,
 }: {
-  skipCheck?: boolean;
   callback?: (certified: boolean) => void;
 } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
@@ -251,20 +242,6 @@ export const listNeurons = async ({
       neuronsStore.setNeurons({ neurons, certified });
 
       callback?.(certified);
-
-      if (!certified || skipCheck) {
-        return;
-      }
-      try {
-        // Query the ledger for each neuron
-        // refresh those whose stake does not match their ledger balance.
-        const refetch = await shouldRefetchNeurons(neurons);
-        if (refetch) {
-          listNeurons({ skipCheck: true });
-        }
-      } catch (error) {
-        console.error(error);
-      }
     },
     onError: ({ error, certified }) => {
       if (certified !== true) {
@@ -280,115 +257,6 @@ export const listNeurons = async ({
       });
     },
   });
-};
-
-const balanceMatchesStake = ({
-  balance,
-  fullNeuron,
-}: {
-  balance: ICP;
-  fullNeuron: Neuron;
-}): boolean => balance.toE8s() === fullNeuron.cachedNeuronStake;
-
-const balanceIsMoreThanOne = ({ balance }: { balance: ICP }): boolean =>
-  balance.toE8s() > E8S_PER_ICP;
-
-const findNeuronsStakeNotBalance = async ({
-  neurons,
-  identity,
-}: {
-  neurons: Neuron[];
-  identity: Identity;
-}): Promise<NeuronId[]> => {
-  // TODO switch to getting multiple balances in a single request once it is supported by the ledger.
-  // Until the above is supported we must limit the max concurrency otherwise our requests may be throttled.
-
-  const neuronChunks: Neuron[][] = createChunks(neurons, MAX_CONCURRENCY);
-
-  let neuronIdsToRefresh: NeuronId[] = [];
-
-  for (const neuronChunk of neuronChunks) {
-    const notMatchingNeuronIds: NeuronId[] = (
-      await getNeuronsBalance({ neurons: neuronChunk, identity })
-    )
-      .filter((params) => !balanceMatchesStake(params))
-      // We can only refresh a neuron if its balance is at least 1 ICP
-      .filter(balanceIsMoreThanOne)
-      .map(({ fullNeuron }) => fullNeuron.id)
-      .filter(isDefined);
-
-    neuronIdsToRefresh = [...neuronIdsToRefresh, ...notMatchingNeuronIds];
-  }
-
-  return neuronIdsToRefresh;
-};
-
-const getNeuronsBalance = async ({
-  neurons,
-  identity,
-}: {
-  neurons: Neuron[];
-  identity: Identity;
-}): Promise<
-  {
-    balance: ICP;
-    fullNeuron: Neuron;
-  }[]
-> =>
-  Promise.all(
-    neurons.map(
-      async (fullNeuron): Promise<{ balance: ICP; fullNeuron: Neuron }> => ({
-        // NOTE: We fetch the balance in an uncertified way as it's more efficient,
-        // and a malicious actor wouldn't gain anything by spoofing this value.
-        // This data is used only to now which neurons need to be refreshed.
-        // This data is not shown to the user, nor stored in any store.
-        balance: await getNeuronBalance({
-          neuron: fullNeuron,
-          identity,
-          certified: false,
-        }),
-        fullNeuron,
-      })
-    )
-  );
-
-const claimNeurons =
-  (identity: Identity) =>
-  (neuronIds: NeuronId[]): Promise<Array<NeuronId | undefined>> =>
-    Promise.all(
-      neuronIds.map((neuronId) => claimOrRefreshNeuron({ identity, neuronId }))
-    );
-
-const shouldRefetchNeurons = async (
-  neurons: NeuronInfo[]
-): Promise<boolean> => {
-  const identity = await getIdentity();
-
-  const fullNeurons: Neuron[] = neurons
-    .map(({ fullNeuron }) => fullNeuron)
-    .filter(isDefined);
-
-  if (fullNeurons.length === 0) {
-    return false;
-  }
-
-  const neuronIdsToRefresh: NeuronId[] = await findNeuronsStakeNotBalance({
-    neurons: fullNeurons,
-    identity,
-  });
-
-  if (neuronIdsToRefresh.length === 0) {
-    return false;
-  }
-
-  // We found neurons that need to be refreshed.
-  const neuronIdsChunks: NeuronId[][] = createChunks(
-    neuronIdsToRefresh,
-    MAX_CONCURRENCY
-  );
-  await Promise.all(neuronIdsChunks.map(claimNeurons(identity)));
-
-  return true;
 };
 
 // We always want to call this with the user identity
@@ -487,7 +355,7 @@ export const mergeNeurons = async ({
     await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
     success = true;
 
-    await listNeurons({ skipCheck: true });
+    await listNeurons();
 
     return targetNeuronId;
   } catch (err) {
@@ -664,7 +532,7 @@ export const disburse = async ({
 
     await disburseApi({ neuronId, toAccountId, identity });
 
-    await Promise.all([syncAccounts(), listNeurons({ skipCheck: true })]);
+    await Promise.all([syncAccounts(), listNeurons()]);
 
     return { success: true };
   } catch (err) {
@@ -685,6 +553,11 @@ export const mergeMaturity = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
+
+    await assertLedgerVersion({
+      identity,
+      minVersion: MIN_VERSION_MERGE_MATURITY,
+    });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
 
@@ -874,9 +747,6 @@ export const removeFollowee = async ({
 export const loadNeuron = ({
   neuronId,
   forceFetch = false,
-  // Check also the Neuron's stake when loading only one.
-  // Same we do when loading the list of neurons.
-  skipCheck = false,
   setNeuron,
   handleError,
   strategy,
@@ -917,26 +787,7 @@ export const loadNeuron = ({
         catchError(new NotFoundError(`Neuron with id ${neuronId} not found`));
         return;
       }
-      if (!certified || skipCheck) {
-        setNeuron({ neuron, certified });
-        return;
-      }
-      // If the check is required, we don't want to call `setNeuron` until it has finished.
-      // For example: to avoid closing the "IncreaseStakeNeuronModal" before we finish this check.
-      const refetch = await shouldRefetchNeurons([neuron]);
-      if (refetch) {
-        await loadNeuron({
-          neuronId,
-          forceFetch,
-          setNeuron,
-          handleError,
-          // Avoid an infinite loop skipping check
-          skipCheck: true,
-          strategy: "query",
-        });
-      } else {
-        setNeuron({ neuron, certified });
-      }
+      setNeuron({ neuron, certified });
     },
     onError: ({ error, certified }) => {
       console.error(error);
@@ -952,19 +803,23 @@ export const loadNeuron = ({
 // Not resolve until the neuron has been loaded
 export const reloadNeuron = (neuronId: NeuronId) =>
   new Promise<void>((resolve) => {
-    loadNeuron({
-      neuronId,
-      forceFetch: true,
-      strategy: "update",
-      skipCheck: false,
-      setNeuron: ({ neuron, certified }) => {
-        neuronsStore.pushNeurons({ neurons: [neuron], certified });
-        resolve();
-      },
-      handleError: () => {
-        resolve();
-      },
-    });
+    getIdentity()
+      // To update the neuron stake with the subaccount balance
+      .then((identity) => claimOrRefreshNeuron({ identity, neuronId }))
+      .then(() => {
+        loadNeuron({
+          neuronId,
+          forceFetch: true,
+          strategy: "update",
+          setNeuron: ({ neuron, certified }) => {
+            neuronsStore.pushNeurons({ neurons: [neuron], certified });
+            resolve();
+          },
+          handleError: () => {
+            resolve();
+          },
+        });
+      });
   });
 
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {

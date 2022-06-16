@@ -1,6 +1,5 @@
 <script lang="ts">
-  import IconCopy from "../../icons/IconCopy.svelte";
-  import { i18n } from "../../stores/i18n";
+  import Copy from "./Copy.svelte";
 
   export let identifier: string;
   export let label: string | undefined = undefined;
@@ -9,9 +8,6 @@
 
   let labelText: string;
   $: labelText = label === undefined ? "" : `${label} `;
-
-  const copyToClipboard = async () =>
-    await navigator.clipboard.writeText(identifier);
 </script>
 
 <p>
@@ -19,13 +15,7 @@
     >{labelText}{identifier}</span
   >
   {#if showCopy}
-    <button
-      on:click|stopPropagation={copyToClipboard}
-      aria-label={labelText + $i18n.accounts.copy_identifier}
-      class="icon-only"
-    >
-      <IconCopy />
-    </button>
+    <Copy value={identifier} />
   {/if}
 </p>
 

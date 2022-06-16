@@ -1,6 +1,19 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 65319
+* New Canisters Tab built on Svelte
+* Fix minor UI issues in the Neurons tab for smaller devices
+* Add tooltip to Wallet page to display all ICP
+* Fix voting power amount in the Proposal page
+
+## Proposal 63234
+* Provide more detailed values for neuron ICP
+* Improve support for earlier versions of iPhone
+
+## Proposal 63105
+* Truncate ICP per request
+
+## Proposal 62937
 * Fix styling of modals on Safari
 
 ## Proposal 62896

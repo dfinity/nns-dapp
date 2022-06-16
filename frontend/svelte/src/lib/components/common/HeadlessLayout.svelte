@@ -74,7 +74,6 @@
 
     inset: calc(var(--headless-layout-header-height)) 0 0;
 
-    /** TODO(L2-610): workaround for release - clean solution in development (PR #908) */
     overflow-y: auto;
     overflow-x: hidden;
 

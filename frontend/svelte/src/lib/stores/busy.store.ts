@@ -8,6 +8,8 @@ export type BusyStateInitiatorType =
   | "detach-canister"
   | "create-canister"
   | "top-up-canister"
+  | "add-controller-canister"
+  | "remove-controller-canister"
   | "accounts"
   | "join-community-fund"
   | "split-neuron"
@@ -21,6 +23,7 @@ export type BusyStateInitiatorType =
   | "merge-neurons"
   | "merge-maturity"
   | "spawn-neuron"
+  | "claim_seed_neurons"
   | "disburse-neuron";
 
 export interface BusyState {
@@ -59,7 +62,7 @@ const initBusyStore = () => {
   };
 };
 
-const busyStore = initBusyStore();
+export const busyStore = initBusyStore();
 
 export const { startBusy, stopBusy } = busyStore;
 
