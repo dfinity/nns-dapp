@@ -23,7 +23,7 @@ pub enum MultiPartTransactionToBeProcessed {
     TopUpCanister(TopUpCanisterArgs),
     RefundTransaction(RefundTransactionArgs),
     CreateCanisterV2(PrincipalId),
-    TopUpCanisterV2(CanisterId),
+    TopUpCanisterV2(PrincipalId, CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize)]

@@ -41,8 +41,8 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
                 handle_create_canister_v2(block_height, controller).await;
             }
-            MultiPartTransactionToBeProcessed::TopUpCanisterV2(canister_id) => {
-                handle_top_up_canister_v2(block_height, canister_id).await;
+            MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id) => {
+                handle_top_up_canister_v2(block_height, principal, canister_id).await;
             }
         }
     }
@@ -89,13 +89,21 @@ async fn handle_create_canister_v2(block_height: BlockHeight, controller: Princi
                 .borrow_mut()
                 .attach_newly_created_canister(controller, block_height, canister_id)
         }),
+        Ok(Err(NotifyError::Processing)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+                    controller,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(controller)
+                )
+            });
+        }
         Ok(Err(error)) => {
-            let was_refunded = matches!(error, NotifyError::Refunded { .. });
             STATE.with(|s| {
                 s.accounts_store.borrow_mut().process_multi_part_transaction_error(
                     block_height,
                     error.to_string(),
-                    was_refunded,
+                    false,
                 )
             });
         }
@@ -156,17 +164,25 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
     }
 }
 
-async fn handle_top_up_canister_v2(block_height: BlockHeight, canister_id: CanisterId) {
-    let result = match top_up_canister_v2(block_height, canister_id).await {
-        Ok(Ok(_)) => Ok(()),
-        // If the transaction is already processed, mark it as success
-        Ok(Err(NotifyError::InvalidTransaction(message))) if message.contains("already processed") => Ok(()),
-        Ok(Err(error)) => Err(error.to_string()),
-        Err(error) => Err(error),
-    };
-
-    match result {
-        Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+async fn handle_top_up_canister_v2(block_height: BlockHeight, principal: PrincipalId, canister_id: CanisterId) {
+    match top_up_canister_v2(block_height, canister_id).await {
+        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+        Ok(Err(NotifyError::Processing)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+                    principal,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal)
+                )
+            });
+        }
+        Ok(Err(error)) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, format!("{:?}", error), false)
+            });
+        }
         Err(error) => {
             STATE.with(|s| {
                 s.accounts_store

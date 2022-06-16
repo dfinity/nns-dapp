@@ -826,6 +826,10 @@ impl AccountsStore {
         count_to_prune as u32
     }
 
+    pub fn enqueue_multi_part_transaction(&mut self, principal: PrincipalId, block_height: BlockHeight, transaction: MultiPartTransactionToBeProcessed) {
+        self.multi_part_transactions_processor.push(principal, block_height, transaction);
+    }
+
     pub fn get_stats(&self) -> Stats {
         let earliest_transaction = self.transactions.front();
         let latest_transaction = self.transactions.back();
@@ -1229,7 +1233,7 @@ impl AccountsStore {
                     self.multi_part_transactions_processor.push(
                         principal,
                         block_height,
-                        MultiPartTransactionToBeProcessed::TopUpCanisterV2(canister_id),
+                        MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id),
                     );
                 } else {
                     let args = TopUpCanisterArgs {
