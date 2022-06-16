@@ -5,10 +5,11 @@ mkdir -p release/ci
 PR="$(git log -n1 tags/release-candidate --oneline | awk '{print $(NF)}' | tr -cd 0-9)"
 CI="https://github.com/dfinity/nns-dapp/pull/${CI}/checks"
 WASM="release/ci/nns-dapp.wasm"
-if test -f "$WASM"
-then SHA="$(sha256sum "$WASM" | awk '{print $1}')"
-else echo "Please populate ${WASM} and run this again."
-     exit 0
+if test -f "$WASM"; then
+  SHA="$(sha256sum "$WASM" | awk '{print $1}')"
+else
+  echo "Please populate ${WASM} and run this again."
+  exit 0
 fi
 cat <<EOF >release/PROPOSAL.md
 # Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
@@ -38,8 +39,6 @@ git checkout \`$(git rev-parse tags/release-candidate)\`
 sha256sum nns-dapp.wasm
 \`\`\`
 EOF
-
-
 
 cat <<EOF >release/ROLLBACK.md
 # Downgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
