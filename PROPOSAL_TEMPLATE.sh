@@ -7,6 +7,9 @@ CI="https://github.com/dfinity/nns-dapp/pull/${CI}/checks"
 WASM="release/ci/nns-dapp.wasm"
 if test -f "$WASM"
 then SHA="$(sha256sum "$WASM" | awk '{print $1}')"
+else echo "Please populate ${WASM} and run this again."
+     exit 0
+fi
 cat <<EOF >release/PROPOSAL.md
 # Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
 Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
