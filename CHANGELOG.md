@@ -1,7 +1,10 @@
 # Changelog
 
-## Proposal XXX
-... To fill in with the changelog from th eproposal
+## Proposal 65319
+* New Canisters Tab built on Svelte
+* Fix minor UI issues in the Neurons tab for smaller devices
+* Add tooltip to Wallet page to display all ICP
+* Fix voting power amount in the Proposal page
 
 ## Proposal 63234
 * Provide more detailed values for neuron ICP
