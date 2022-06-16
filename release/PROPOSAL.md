@@ -1,16 +1,17 @@
-# Upgrade frontend NNS Dapp canister to commit `9e2237b7fedc6351aaa723a5f69ff913b973bc0b`
-Wasm sha256 hash: `f027170454e7bda8d49c91a84129aea09b520c0f690313480df4f45c6592d8aa` (`https://github.com/dfinity/nns-dapp/actions/runs/2501725482`)
+# Upgrade frontend NNS Dapp canister to commit `e0e859686e63aae2c3b74a91ccefa2b28022f2f9`
+Wasm sha256 hash: `7eb5d026086f22eae02ed3354f871aef97394c141ea82db833496f52a69fdc46` (`https://github.com/dfinity/nns-dapp/actions/runs/2501980127`)
 
 ## Change Log:
-
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+* New Canisters Tab built on Svelte.
+* Fix minor UI issues in the Neurons tab for smaller devices.
+* Add tooltip to Wallet page to display all ICP.
+* Fix voting power amount in the Proposal page.
 
 ## Commit log:
 
 ```
-+ bash -xc "git log --format='%C(auto) %h %s' 80f9b7ab..9e2237b7"
++ bash -xc "git log --format='%C(auto) %h %s' 80f9b7ab..e0e85968"
+ e0e85968 L2-692: Detach canister remove extra notificatoins (#988)
  9e2237b7 style: align no canisters left (#993)
  472b6e9e style: adjust button line-height to support 2 lines of text in big bu… (#991)
  8c4a3334 fix: tooltip breaking list of cards width (#992)
@@ -58,6 +59,6 @@ Wasm sha256 hash: `f027170454e7bda8d49c91a84129aea09b520c0f690313480df4f45c6592d
 To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
 
 git pull  # to ensure you have the latest changes.
-git checkout `9e2237b7fedc6351aaa723a5f69ff913b973bc0b`
+git checkout `e0e859686e63aae2c3b74a91ccefa2b28022f2f9`
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
