@@ -162,7 +162,7 @@ async fn handle_top_up_canister_v2(block_height: BlockHeight, canister_id: Canis
         // If the transaction is already processed, mark it as success
         Ok(Err(NotifyError::InvalidTransaction(message))) if message.contains("already processed") => Ok(()),
         Ok(Err(error)) => Err(error.to_string()),
-        Err(error) => Err(error)
+        Err(error) => Err(error),
     };
 
     match result {
@@ -268,7 +268,10 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
     }
 }
 
-async fn create_canister_v2(block_index: BlockHeight, controller: PrincipalId) -> Result<Result<CanisterId, NotifyError>, String> {
+async fn create_canister_v2(
+    block_index: BlockHeight,
+    controller: PrincipalId,
+) -> Result<Result<CanisterId, NotifyError>, String> {
     let notify_request = NotifyCreateCanister {
         block_index,
         controller,
@@ -301,7 +304,10 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
     cmc::notify_create_canister(notify_request).await
 }
 
-async fn top_up_canister_v2(block_index: BlockHeight, canister_id: CanisterId) -> Result<Result<Cycles, NotifyError>, String> {
+async fn top_up_canister_v2(
+    block_index: BlockHeight,
+    canister_id: CanisterId,
+) -> Result<Result<Cycles, NotifyError>, String> {
     let notify_request = NotifyTopUp {
         block_index,
         canister_id,

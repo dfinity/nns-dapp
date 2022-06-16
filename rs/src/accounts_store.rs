@@ -1209,7 +1209,8 @@ impl AccountsStore {
                     self.multi_part_transactions_processor.push(
                         principal,
                         block_height,
-                        MultiPartTransactionToBeProcessed::CreateCanisterV2(principal));
+                        MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
+                    );
                 } else {
                     let args = CreateCanisterArgs {
                         controller: principal,
@@ -1228,7 +1229,8 @@ impl AccountsStore {
                     self.multi_part_transactions_processor.push(
                         principal,
                         block_height,
-                        MultiPartTransactionToBeProcessed::TopUpCanisterV2(canister_id));
+                        MultiPartTransactionToBeProcessed::TopUpCanisterV2(canister_id),
+                    );
                 } else {
                     let args = TopUpCanisterArgs {
                         principal,
