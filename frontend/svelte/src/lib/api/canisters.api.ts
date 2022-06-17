@@ -200,7 +200,7 @@ export const createCanister = async ({
   // If this fails or the client loses connection, nns dapp backend polls the transactions
   // and will also notify to CMC the transaction if it's pending.
   // If the backend is faster to notify, we might get a ProcessingError.
-  // We poll CMC until we stop getting ProcessingError or we request more than MAX_POLLING_TIMES
+  // We poll CMC until we stop getting ProcessingError or we request more than DEFAUL_MAX_POLLING_ATTEMPTS
   const canisterId = await pollNotifyCreateCanister({
     cmc,
     controller: principal,

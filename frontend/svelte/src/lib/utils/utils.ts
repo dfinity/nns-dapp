@@ -196,7 +196,7 @@ const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   });
 
 export class PollingLimitExceededError extends Error {}
-const MAX_POLLING_TIMES = 10;
+const DEFAUL_MAX_POLLING_ATTEMPTS = 10;
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
  *
@@ -211,7 +211,7 @@ const MAX_POLLING_TIMES = 10;
 export const poll = async <T>({
   fn,
   shouldExit,
-  maxAttempts = MAX_POLLING_TIMES,
+  maxAttempts = DEFAUL_MAX_POLLING_ATTEMPTS,
   counter = 0,
 }: {
   fn: () => Promise<T>;
