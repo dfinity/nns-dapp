@@ -23,13 +23,14 @@ import {
 } from "../api/governance.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
-import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import { mainTransactionFeeNumberStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import {
@@ -500,10 +501,11 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const transactionFeeAmount = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+    const transactionFee = get(mainTransactionFeeNumberStore);
+    const transactionFeeAmount = transactionFee / E8S_PER_ICP;
     const stake = convertNumberToICP(amount + transactionFeeAmount);
 
-    if (!isEnoughToStakeNeuron({ stake, withTransactionFee: true })) {
+    if (!isEnoughToStakeNeuron({ stake, fee: transactionFee })) {
       throw new InsufficientAmountError();
     }
 

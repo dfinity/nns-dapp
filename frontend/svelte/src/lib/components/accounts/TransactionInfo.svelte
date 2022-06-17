@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
+  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
 
   export let feeOnly: boolean = false;
@@ -22,7 +23,10 @@
 
 <h5>{$i18n.accounts.transaction_fee}</h5>
 
-<p class="fee">{formattedTransactionFeeICP()} {$i18n.core.icp}</p>
+<p class="fee">
+  {formattedTransactionFeeICP($mainTransactionFeeNumberStore)}
+  {$i18n.core.icp}
+</p>
 
 <style lang="scss">
   h5 {

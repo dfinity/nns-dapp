@@ -19,6 +19,9 @@
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
   import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -118,7 +121,11 @@
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
       >
-        <p>{$i18n.canisters.transaction_fee}</p>
+        <p>
+          {replacePlaceholders($i18n.canisters.transaction_fee, {
+            $amount: formattedTransactionFeeICP($mainTransactionFeeNumberStore),
+          })}
+        </p>
         <div>
           <div>
             <h5>{$i18n.accounts.source}</h5>

@@ -14,8 +14,11 @@
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
   import { toastsStore } from "../../stores/toasts.store";
+  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
   import type { CreateOrLinkType } from "../../types/canisters";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import WizardModal from "../WizardModal.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
@@ -145,7 +148,11 @@
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
         <p>{$i18n.canisters.minimum_cycles_text_1}</p>
-        <p>{$i18n.canisters.minimum_cycles_text_2}</p>
+        <p>
+          {replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
+            $amount: formattedTransactionFeeICP($mainTransactionFeeNumberStore),
+          })}
+        </p>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
