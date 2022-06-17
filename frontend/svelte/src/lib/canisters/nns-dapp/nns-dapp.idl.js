@@ -192,7 +192,7 @@ export const idlFactory = ({ IDL }) => {
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],
-      [],
+      []
     ),
     get_transactions: IDL.Func(
       [GetTransactionsRequest],

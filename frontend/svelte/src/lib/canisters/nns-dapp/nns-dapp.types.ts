@@ -177,9 +177,7 @@ export default interface _SERVICE {
     arg_0: Principal,
     arg_1: BlockHeight
   ) => Promise<MultiPartTransactionStatus>;
-  get_proposal_payload: (arg_0: bigint) => Promise<
-    GetProposalPayloadResponse
-  >;
+  get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   get_transactions: (
     arg_0: GetTransactionsRequest
