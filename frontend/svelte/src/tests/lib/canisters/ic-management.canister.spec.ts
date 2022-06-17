@@ -7,7 +7,11 @@ import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/
 import type { CanisterStatusResponse } from "../../../lib/canisters/ic-management/ic-management.types";
 import { createAgent } from "../../../lib/utils/agent.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockCanisterDetails } from "../../mocks/canisters.mock";
+import {
+  mockCanisterDetails,
+  mockCanisterId,
+  mockCanisterSettings,
+} from "../../mocks/canisters.mock";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ManagementCanisterRecord) => {
@@ -73,6 +77,69 @@ describe("ICManagementCanister", () => {
       const call = () =>
         icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
+      expect(call).rejects.toThrowError(Error);
+    });
+  });
+
+  describe("updateSettings", () => {
+    it("calls update_settings with new settings", async () => {
+      const service = mock<ManagementCanisterRecord>();
+      service.update_settings.mockResolvedValue(undefined);
+
+      const icManagement = await createICManagement(service);
+
+      await icManagement.updateSettings({
+        canisterId: mockCanisterId,
+        settings: mockCanisterSettings,
+      });
+      expect(service.update_settings).toBeCalled();
+    });
+
+    it("works when passed partial settings", async () => {
+      const partialSettings = {
+        controllers: [
+          "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+        ],
+      };
+      const service = mock<ManagementCanisterRecord>();
+      service.update_settings.mockResolvedValue(undefined);
+
+      const icManagement = await createICManagement(service);
+
+      await icManagement.updateSettings({
+        canisterId: mockCanisterId,
+        settings: partialSettings,
+      });
+      expect(service.update_settings).toBeCalled();
+    });
+
+    it("throws UserNotTheControllerError", async () => {
+      const error = new Error("code: 403");
+      const service = mock<ManagementCanisterRecord>();
+      service.update_settings.mockRejectedValue(error);
+
+      const icManagement = await createICManagement(service);
+
+      const call = () =>
+        icManagement.updateSettings({
+          canisterId: mockCanisterId,
+          settings: mockCanisterSettings,
+        });
+      expect(call).rejects.toThrowError(UserNotTheControllerError);
+    });
+
+    it("throws Error", async () => {
+      const error = new Error("Test");
+      const service = mock<ManagementCanisterRecord>();
+      service.update_settings.mockRejectedValue(error);
+
+      const icManagement = await createICManagement(service);
+
+      const call = () =>
+        icManagement.updateSettings({
+          canisterId: mockCanisterId,
+          settings: mockCanisterSettings,
+        });
       expect(call).rejects.toThrowError(Error);
     });
   });

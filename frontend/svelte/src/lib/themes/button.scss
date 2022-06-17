@@ -51,6 +51,7 @@ button {
     min-height: var(--button-min-height);
 
     font-size: var(--font-size-small);
+    line-height: var(--line-height-standard);
 
     @include media.min-width(medium) {
       font-size: var(--font-size-h3);
@@ -59,6 +60,7 @@ button {
     &.small {
       min-height: inherit;
       font-size: inherit;
+      line-height: var(--line-height-title);
       padding: var(--padding-0_5x) var(--padding);
     }
   }

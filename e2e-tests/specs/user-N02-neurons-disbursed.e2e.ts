@@ -6,12 +6,17 @@ import { MyNavigator } from "../common/navigator";
 import { Header } from "../components/header";
 import { NeuronsTab } from "../components/neurons-tab";
 import { AccountsTab } from "../components/accounts-tab";
+import { skipUnlessBrowserIs } from "../common/test";
 
 describe("Verifies that neurons can be disbursed", () => {
   let neuronId: string | undefined = undefined;
   const accountName = "Main";
   const neuronIcp = 3;
   let accountIcpBefore: number = Infinity; // This will be set to the account holding before it receives the disbursal.
+
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
 
   /**
    * Creates a user with:

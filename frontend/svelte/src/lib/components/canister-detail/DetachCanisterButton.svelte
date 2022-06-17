@@ -22,8 +22,7 @@
     stopBusy("detach-canister");
     close();
     if (success) {
-      toastsStore.show({
-        level: "success",
+      toastsStore.success({
         labelKey: "canister_detail.detach_success",
       });
       routeStore.replace({ path: AppPath.Canisters });

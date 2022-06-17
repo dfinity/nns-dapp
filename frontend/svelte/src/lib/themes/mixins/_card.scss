@@ -1,3 +1,5 @@
+@use "./text.scss";
+
 @mixin stacked-title {
   display: grid;
   flex-direction: column;
@@ -16,11 +18,18 @@
   margin-bottom: var(--padding-2x);
   display: flex;
   flex-direction: column;
-  gap: var(--padding-0_5x);
+  gap: var(--padding);
 }
 
 @mixin list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@mixin title {
+  line-height: var(--line-height-standard);
+  margin: 0 var(--padding) 0 0;
+
+  @include text.truncate;
 }

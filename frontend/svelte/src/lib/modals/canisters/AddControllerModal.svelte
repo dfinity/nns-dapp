@@ -1,12 +1,10 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import NewControllerReview from "../../components/canister_details/NewControllerReview.svelte";
+  import NewControllerReview from "../../components/canister-detail/NewControllerReview.svelte";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-
-  export let canisterId: Principal;
 
   const steps: Steps = [
     {
@@ -42,7 +40,7 @@
       </AddPrincipal>
     {/if}
     {#if currentStep?.name === "ConfirmController" && principal !== undefined}
-      <NewControllerReview {canisterId} controller={principal} />
+      <NewControllerReview controller={principal} on:nnsClose />
     {/if}
   </svelte:fragment>
 </WizardModal>

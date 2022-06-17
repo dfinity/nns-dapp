@@ -67,7 +67,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display ineligible neurons (created after proposal) ", () => {
-    const { getByText } = render(IneligibleNeuronsCard, {
+    const { getByText, container } = render(IneligibleNeuronsCard, {
       props: {
         proposalInfo: {
           ...proposalInfo,
@@ -84,8 +84,8 @@ describe("IneligibleNeuronsCard", () => {
     });
     expect(getByText("111", { exact: false })).toBeInTheDocument();
     expect(
-      getByText(en.proposal_detail__ineligible.reason_since, { exact: false })
-    ).toBeInTheDocument();
+      (container.querySelector("small") as HTMLElement).textContent
+    ).toEqual(en.proposal_detail__ineligible.reason_since);
   });
 
   it("should display multiple ineligible neurons", () => {
@@ -112,8 +112,8 @@ describe("IneligibleNeuronsCard", () => {
     });
     expect(container.querySelectorAll("li").length).toBe(2);
     expect(
-      getByText(en.proposal_detail__ineligible.reason_since, { exact: false })
-    ).toBeInTheDocument();
+      (container.querySelector("small") as HTMLElement).textContent
+    ).toEqual(en.proposal_detail__ineligible.reason_since);
     expect(
       getByText(en.proposal_detail__ineligible.reason_short, { exact: false })
     ).toBeInTheDocument();

@@ -25,7 +25,6 @@
     // The fetched neuron doesn't belong to a user so it should not be added to the neuronsStore
     await loadNeuron({
       neuronId,
-      skipCheck: true,
       setNeuron: ({ neuron: neuronInfo }) => (neuron = neuronInfo),
       handleError: () => {
         neuron = undefined;

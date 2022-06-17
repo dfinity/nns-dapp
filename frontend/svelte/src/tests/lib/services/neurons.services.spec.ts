@@ -5,7 +5,6 @@ import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
-import * as ledgerApi from "../../../lib/api/ledger.api";
 import {
   E8S_PER_ICP,
   TRANSACTION_FEE_E8S,
@@ -187,10 +186,6 @@ describe("neurons-services", () => {
     .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
 
-  const spyGetNeuronBalance = jest
-    .spyOn(ledgerApi, "getNeuronBalance")
-    .mockImplementation(() => Promise.resolve(ICP.fromString("1") as ICP));
-
   afterEach(() => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
@@ -286,70 +281,6 @@ describe("neurons-services", () => {
 
       const neuronsList = get(definedNeuronsStore);
       expect(neuronsList).toEqual(neurons);
-    });
-
-    it("should check neurons balances", async () => {
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-
-      expect(spyGetNeuronBalance).toBeCalledTimes(neurons.length);
-    });
-
-    it("should claim or refresh neurons whose balance does not match stake", async () => {
-      const balance = ICP.fromString("2") as ICP;
-      const neuronMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: balance.toE8s(),
-        },
-      };
-      const neuronNotMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(3_000_000_000),
-        },
-      };
-      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
-      spyQueryNeurons.mockImplementation(() =>
-        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
-      );
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-      await tick();
-      await tick();
-
-      expect(spyClaimOrRefresh).toBeCalledTimes(1);
-    });
-
-    it("should not claim or refresh neurons whose balance does not match stake but ICP is less than one", async () => {
-      const balance = ICP.fromString("0.9") as ICP;
-      const neuronMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: balance.toE8s(),
-        },
-      };
-      const neuronNotMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(3_000_000_000),
-        },
-      };
-      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
-      spyQueryNeurons.mockImplementation(() =>
-        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
-      );
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-
-      expect(spyClaimOrRefresh).not.toBeCalled();
     });
 
     it("should not list neurons if no identity", async () => {
@@ -1258,26 +1189,6 @@ describe("neurons-services", () => {
       expect(spyGetNeuron).toBeCalled();
     });
 
-    it("should call the api to get neuron and check the balance on update", async () => {
-      const neuronId = BigInt(333333);
-      const controlledNeuron = {
-        ...mockNeuron,
-        neuronId,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: mockIdentity.getPrincipal().toText(),
-        },
-      };
-      spyGetNeuron.mockImplementation(() => Promise.resolve(controlledNeuron));
-      await loadNeuron({
-        neuronId,
-        setNeuron: jest.fn(),
-      });
-      await tick();
-      expect(spyGetNeuron).toBeCalled();
-      expect(spyGetNeuronBalance).toBeCalled();
-    });
-
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
       const neuronId = BigInt(333333);
       const publicInfoNeuron = {
@@ -1314,6 +1225,11 @@ describe("neurons-services", () => {
       expect(
         store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
       ).toBeDefined();
+    });
+
+    it("should claim or refresh neuron", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      expect(spyClaimOrRefresh).toBeCalled();
     });
   });
 

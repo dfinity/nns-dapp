@@ -6,30 +6,31 @@ import {
   RedirectToLegacy,
   REDIRECT_TO_LEGACY,
 } from "../common/constants";
+import { skipUnlessBrowserIs } from "../common/test";
 
 const REDIRECTS = {
   [RedirectToLegacy.prod]: {
     [RouteHash.Accounts]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Neurons]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Proposals]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Canisters]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
   [RedirectToLegacy.staging]: {
     [RouteHash.Accounts]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Neurons]: {
       [FrontendPath.Flutter]: FrontendPath.Svelte,
@@ -40,8 +41,8 @@ const REDIRECTS = {
       [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
     [RouteHash.Canisters]: {
-      [FrontendPath.Flutter]: FrontendPath.Flutter,
-      [FrontendPath.Svelte]: FrontendPath.Flutter,
+      [FrontendPath.Flutter]: FrontendPath.Svelte,
+      [FrontendPath.Svelte]: FrontendPath.Svelte,
     },
   },
   [RedirectToLegacy.flutter]: {
@@ -183,6 +184,10 @@ const redirectTest = async (
 };
 
 describe("redirects", () => {
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
+
   it("goes to accounts page after registration", async () => {
     await browser.url("/");
     await waitForLoad(browser);

@@ -70,8 +70,6 @@ describe("App", () => {
     // query + update calls
     const numberOfCalls = 2;
 
-    const numberOfCheckNeuronsBalance = 1;
-
     await waitFor(() =>
       expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(
         numberOfCalls
@@ -86,7 +84,7 @@ describe("App", () => {
 
     await waitFor(() =>
       expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
-        numberOfCalls + numberOfCheckNeuronsBalance
+        numberOfCalls
       )
     );
   });

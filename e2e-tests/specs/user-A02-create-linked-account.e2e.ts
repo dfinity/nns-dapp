@@ -4,12 +4,17 @@
 import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
+import { skipUnlessBrowserIs } from "../common/test";
 
 /**
  * Verifies that users can create a linked account
  */
 describe("Users get a main account", () => {
   const linkedAccountName = "Koala";
+
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
 
   it("Setup: Create a new user", async () => {
     await browser.url("/");

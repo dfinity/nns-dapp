@@ -32,3 +32,36 @@ export class HardwareWalletAttachError extends Error {
     super(message);
   }
 }
+
+export class CanisterAlreadyAttachedError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+export class CanisterNameAlreadyTakenError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class CanisterNameTooLongError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class CanisterLimitExceededError extends AccountTranslateError {}
+
+export class CanisterNotFoundError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}

@@ -43,9 +43,11 @@ export class MyNavigator {
     }
     await this.browser.pause(100);
     const button = await this.browser.$(selector);
-    const timeout = options?.timeout ?? 5_000;
+    const timeout = options?.timeout ?? 50_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
     await button.waitForEnabled({ timeout, timeoutMsg });
+    await button.scrollIntoView();
+    await button.waitForClickable({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
       await this.browser["screenshot"](description);
     }

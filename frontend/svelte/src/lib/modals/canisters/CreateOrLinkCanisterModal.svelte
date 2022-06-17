@@ -5,6 +5,7 @@
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
   import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
+  import { NEW_CANISTER_MIN_T_CYCLES } from "../../constants/canisters.constants";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -17,9 +18,9 @@
   import type { CreateOrLinkType } from "../../types/canisters";
   import WizardModal from "../WizardModal.svelte";
 
-  let icpToCyclesRatio: bigint | undefined;
+  let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
-    icpToCyclesRatio = await getIcpToCyclesExchangeRate();
+    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
   const steps: Steps = [
@@ -100,7 +101,7 @@
     });
     const canisterId = await createCanister({
       amount,
-      fromSubAccount: account.subAccount,
+      account,
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
@@ -137,18 +138,20 @@
     {/if}
     {#if currentStep?.name === "SelectCycles"}
       <SelectCyclesCanister
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsSelectAmount={selectAmount}
+        minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
-        <p>{$i18n.canisters.minimum_cycles_text}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_1}</p>
+        <p>{$i18n.canisters.minimum_cycles_text_2}</p>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
       <ConfirmCyclesCanister
         {account}
-        {icpToCyclesRatio}
+        {icpToCyclesExchangeRate}
         {amount}
         on:nnsConfirm={create}
         on:nnsClose

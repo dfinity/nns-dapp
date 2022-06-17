@@ -1,7 +1,6 @@
 import { Actor } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type { CMCCanisterOptions } from "./cmc.canister.types";
-import { CYCLES_PER_XDR } from "./cmc.constants";
 import { throwNotifyError } from "./cmc.errors";
 import { idlFactory } from "./cmc.idl";
 import type {
@@ -39,7 +38,7 @@ export class CMCCanister {
     const { data } = await this.service.get_icp_xdr_conversion_rate();
 
     // TODO: validate the certificate in the response - https://dfinity.atlassian.net/browse/FOLLOW-223
-    return (data.xdr_permyriad_per_icp * CYCLES_PER_XDR) / BigInt(10_000);
+    return data.xdr_permyriad_per_icp;
   };
 
   /**

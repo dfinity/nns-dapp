@@ -1,9 +1,11 @@
+import type { LogType } from "../services/debug.services";
+
 const importDebugServices = () => import("../services/debug.services");
 
 export const generateDebugLogProxy = async (
-  safeToFile: boolean
+  logType: LogType
 ): Promise<void> => {
   const { generateDebugLog } = await importDebugServices();
 
-  return generateDebugLog(safeToFile);
+  return generateDebugLog(logType);
 };
