@@ -314,8 +314,6 @@ export class NNSDappCanister {
       proposalId
     );
     if ("Ok" in response) {
-      console.log("payload response:", response);
-
       return JSON.parse(response.Ok);
     }
     // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
