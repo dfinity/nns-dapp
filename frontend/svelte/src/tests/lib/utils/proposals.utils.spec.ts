@@ -9,6 +9,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   concatenateUniqueProposals,
   excludeProposals,
+  getNnsFunctionId,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -932,6 +933,30 @@ describe("proposals-utils", () => {
           proposal,
         })
       ).toBe(mockNeuron.votingPower);
+    });
+  });
+
+  describe("getNnsFunctionId", () => {
+    it("should return nnsFunctionId from proposal", () => {
+      expect(
+        getNnsFunctionId({
+          ...mockProposalInfo.proposal,
+          action: {
+            ExecuteNnsFunction: {
+              nnsFunctionId: 4,
+            },
+          },
+        } as Proposal)
+      ).toBe(4);
+    });
+
+    it("should return undefined if not ExecuteNnsFunction type", () => {
+      expect(
+        getNnsFunctionId({
+          ...mockProposalInfo.proposal,
+          action: {},
+        } as Proposal)
+      ).toBeUndefined();
     });
   });
 });
