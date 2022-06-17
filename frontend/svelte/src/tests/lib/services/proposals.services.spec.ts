@@ -5,6 +5,7 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
+  getProposalPayload,
   listNextProposals,
   listProposals,
   loadProposal,
@@ -482,6 +483,19 @@ describe("proposals-services", () => {
       expect(proposals).toEqual([]);
 
       proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+    });
+  });
+
+  describe("getProposalPayload", () => {
+    const spyQueryProposalPayload = jest
+      .spyOn(api, "queryProposalPayload")
+      .mockImplementation(() => Promise.resolve({ data: "test" }));
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call queryProposalPayload", async () => {
+      await getProposalPayload({ proposalId: BigInt(0) });
+      expect(spyQueryProposalPayload).toBeCalledTimes(1);
     });
   });
 });
