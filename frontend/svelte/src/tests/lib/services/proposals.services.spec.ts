@@ -14,6 +14,7 @@ import {
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
@@ -496,6 +497,17 @@ describe("proposals-services", () => {
     it("should call queryProposalPayload", async () => {
       await getProposalPayload({ proposalId: BigInt(0) });
       expect(spyQueryProposalPayload).toBeCalledTimes(1);
+    });
+
+    it("should update proposalPayloadsStore", async () => {
+      const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
+      await getProposalPayload({ proposalId: BigInt(0) });
+
+      expect(spyOnSetPayload).toBeCalledTimes(2);
+      expect(spyOnSetPayload).toHaveBeenLastCalledWith({
+        payload: { data: "test" },
+        proposalId: BigInt(0),
+      });
     });
   });
 });

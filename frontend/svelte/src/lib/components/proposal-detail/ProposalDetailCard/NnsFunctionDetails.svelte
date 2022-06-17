@@ -17,7 +17,6 @@
 
   let payload: object | undefined | null;
   $: payload = $proposalPayloadsStore.getPayload(proposalId);
-
   $: if (
     proposalId !== undefined &&
     !$proposalPayloadsStore.hasPayload(proposalId)

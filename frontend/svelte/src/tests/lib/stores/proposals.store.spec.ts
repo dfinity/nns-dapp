@@ -5,6 +5,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   proposalIdStore,
   proposalInfoStore,
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
@@ -253,6 +254,33 @@ describe("proposals-store", () => {
         neuronIds[0],
         neuronIds[1],
       ]);
+    });
+  });
+
+  describe("proposalPayloadStore", () => {
+    it("should store a payload", () => {
+      const $proposalPayloadsStore = get(proposalPayloadsStore);
+
+      proposalPayloadsStore.setPayload({
+        proposalId: BigInt(0),
+        payload: null,
+      });
+
+      expect($proposalPayloadsStore.hasPayload(BigInt(0))).toBeTruthy();
+      expect($proposalPayloadsStore.getPayload(BigInt(0))).toBeNull();
+    });
+
+    it("should notify on setPayload", () => {
+      const fn = jest.fn();
+
+      proposalPayloadsStore.subscribe(fn);
+
+      proposalPayloadsStore.setPayload({
+        proposalId: BigInt(0),
+        payload: null,
+      });
+
+      expect(fn).toBeCalledTimes(2);
     });
   });
 });

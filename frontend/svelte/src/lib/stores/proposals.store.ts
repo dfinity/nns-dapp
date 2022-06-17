@@ -271,6 +271,7 @@ const initProposalPayloadsStore = () => {
         map.set(proposalId, payload);
         return state;
       }),
+    reset: () => map.clear(),
   };
 };
 
