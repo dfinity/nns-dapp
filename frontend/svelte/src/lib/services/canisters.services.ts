@@ -101,8 +101,6 @@ export const createCanister = async ({
     syncAccounts();
     return canisterId;
   } catch (error) {
-    console.log("in da error");
-    console.log(error);
     toastsStore.show(
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
