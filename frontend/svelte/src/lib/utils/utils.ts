@@ -1,4 +1,5 @@
 import type { Principal } from "@dfinity/principal";
+import { errorToString } from "./error.utils";
 
 /* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
@@ -228,6 +229,8 @@ export const poll = async <T>({
     if (shouldExit(error)) {
       throw error;
     }
+    // Log swallowed errors
+    console.log(`Error polling: ${errorToString(error)}`);
   }
   await waitForMilliseconds(500);
   return poll({
