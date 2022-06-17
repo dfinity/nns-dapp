@@ -171,8 +171,8 @@ const getStakeNeuronPropsByAccount = ({
  *
  * @param {Object} params
  * @param {amount} params.amount the new neuron value. a number that will be converted to ICP.
- * @param {amount} params.amount the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
- * @param {amount} [params.amount=true] load the neuron and update the neurons store once created - i.e. certified=true query to load neuron and push to store.
+ * @param {account} params.account the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
+ * @param {loadNeuron} [params.loadNeuron=true] load the neuron and update the neurons store once created.
  */
 export const stakeNeuron = async ({
   amount,
