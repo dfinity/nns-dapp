@@ -40,6 +40,12 @@ export interface ProposalsStore {
   certified: boolean | undefined;
 }
 
+type ProposalPayload = object | null | undefined;
+export interface ProposalPayloadsStore {
+  getPayload: (proposalId: ProposalId) => ProposalPayload;
+  hasPayload: (proposalId: ProposalId) => boolean;
+}
+
 /**
  * A store that contains the proposals
  *
@@ -245,8 +251,32 @@ const initNeuronSelectStore = () => {
   };
 };
 
+const initProposalPayloadsStore = () => {
+  const map = new Map<bigint, ProposalPayload>();
+  const { subscribe, update } = writable<ProposalPayloadsStore>({
+    getPayload: (proposalId) => map.get(proposalId),
+    hasPayload: (proposalId) => map.has(proposalId),
+  });
+
+  return {
+    subscribe,
+    setPayload: ({
+      proposalId,
+      payload,
+    }: {
+      proposalId: ProposalId;
+      payload: ProposalPayload;
+    }) =>
+      update((state) => {
+        map.set(proposalId, payload);
+        return state;
+      }),
+  };
+};
+
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
 export const proposalIdStore = initProposalIdStore();
 export const proposalInfoStore = initProposalInfoStore();
 export const votingNeuronSelectStore = initNeuronSelectStore();
+export const proposalPayloadsStore = initProposalPayloadsStore();

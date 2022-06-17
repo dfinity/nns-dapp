@@ -4,6 +4,7 @@
   import { getProposalPayload } from "../../../services/proposals.services";
   import Spinner from "../../ui/Spinner.svelte";
   import { i18n } from "../../../stores/i18n";
+  import { proposalPayloadsStore } from "../../../stores/proposals.store";
 
   export let proposalId: ProposalId;
   export let nnsFunctionId: number;
@@ -15,12 +16,16 @@
     $i18n.proposal_detail.unknown_nns_function;
 
   let payload: object | undefined | null;
-  $: proposalId,
-    (async () => {
-      payload = await getProposalPayload({
-        proposalId,
-      });
-    })();
+  $: payload = $proposalPayloadsStore.getPayload(proposalId);
+
+  $: if (
+    proposalId !== undefined &&
+    !$proposalPayloadsStore.hasPayload(proposalId)
+  ) {
+    getProposalPayload({
+      proposalId,
+    });
+  }
 </script>
 
 <dt>{$i18n.proposal_detail.nns_function_name}</dt>

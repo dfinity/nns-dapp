@@ -13,11 +13,12 @@ import {
   type BusyStateInitiatorType,
 } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalInfoStore,
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
+  type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
@@ -247,11 +248,13 @@ export const getProposalPayload = async ({
   proposalId,
 }: {
   proposalId: ProposalId;
-}): Promise<object | null> => {
+}): Promise<void> => {
   const identity: Identity = await getIdentity();
 
   try {
-    return await queryProposalPayload({ proposalId, identity });
+    proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
+    const payload = await queryProposalPayload({ proposalId, identity });
+    proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {
     console.error(err);
 
@@ -260,8 +263,6 @@ export const getProposalPayload = async ({
       err,
     });
   }
-
-  return null;
 };
 
 export const routePathProposalId = (path: string): ProposalId | undefined =>
