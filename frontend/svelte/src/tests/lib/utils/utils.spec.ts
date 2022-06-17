@@ -324,7 +324,7 @@ describe("utils", () => {
       jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
     });
 
-    it("should recall the function until `shouldRecall` is false", async () => {
+    it("should recall the function until `shouldExit` is true", async () => {
       const maxCalls = 3;
       let calls = 0;
       await poll({
@@ -335,7 +335,7 @@ describe("utils", () => {
           }
           return calls;
         },
-        shouldRecall: () => calls < maxCalls,
+        shouldExit: () => calls >= maxCalls,
       });
       expect(calls).toBe(maxCalls);
     });
@@ -344,16 +344,16 @@ describe("utils", () => {
       const result = 10;
       const expected = await poll({
         fn: async () => result,
-        shouldRecall: () => false,
+        shouldExit: () => false,
       });
       expect(expected).toBe(result);
     });
 
-    it("should throw ", async () => {
+    it("should throw when `shuoldExit` returns trye", async () => {
       const result = 10;
       const expected = await poll({
         fn: async () => result,
-        shouldRecall: () => false,
+        shouldExit: () => true,
       });
       expect(expected).toBe(result);
     });

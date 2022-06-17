@@ -202,19 +202,19 @@ const MAX_POLLING_TIMES = 10;
  *
  * @param {Object} params
  * @param {fn} params.fn Function to call
- * @param {shouldRecall} params.shouldRecall Function to check whether error raised deserves a recall or not.
+ * @param {shouldExit} params.shouldExit Function to check whether function shuold stop polling.
  * @param {maxTimes} params.maxTimes Param to override the default number of times to poll.
  *
  * @returns
  */
 export const poll = async <T>({
   fn,
-  shouldRecall,
+  shouldExit,
   maxTimes = MAX_POLLING_TIMES,
   counter = 1,
 }: {
   fn: () => Promise<T>;
-  shouldRecall: (err: Error) => boolean;
+  shouldExit: (err: Error) => boolean;
   maxTimes?: number;
   counter?: number;
 }): Promise<T> => {
@@ -224,14 +224,14 @@ export const poll = async <T>({
   try {
     return await fn();
   } catch (error) {
-    if (!shouldRecall(error)) {
+    if (shouldExit(error)) {
       throw error;
     }
   }
   await waitForMilliseconds(500);
   return poll({
     fn,
-    shouldRecall,
+    shouldExit,
     maxTimes,
     counter: counter + 1,
   });

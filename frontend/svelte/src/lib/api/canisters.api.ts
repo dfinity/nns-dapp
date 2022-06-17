@@ -145,7 +145,7 @@ const pollNotifyCreateCanister = async ({
           controller,
           block_index: blockHeight,
         }),
-      shouldRecall: (error: Error) => error instanceof ProcessingError,
+      shouldExit: (error: Error) => !(error instanceof ProcessingError),
     });
   } catch (error) {
     if (error instanceof PollingLimitExceededError) {
@@ -240,7 +240,7 @@ const pollNotifyTopUpCanister = async ({
           canister_id: canisterId,
           block_index: blockHeight,
         }),
-      shouldRecall: (error: Error) => error instanceof ProcessingError,
+      shouldExit: (error: Error) => !(error instanceof ProcessingError),
     });
   } catch (error) {
     if (error instanceof PollingLimitExceededError) {
