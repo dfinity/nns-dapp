@@ -128,6 +128,11 @@ export const detachCanister = async ({
   logWithTimestamp("Detaching canister call complete.");
 };
 
+const pollingLimit = (error: Error): boolean =>
+  error instanceof PollingLimitExceededError;
+const notProcessingError = (error: Error): boolean =>
+  !(error instanceof ProcessingError);
+
 // Polls CMC waiting for a reponse that is not a ProcessingError.
 const pollNotifyCreateCanister = async ({
   cmc,
@@ -140,15 +145,16 @@ const pollNotifyCreateCanister = async ({
 }): Promise<Principal> => {
   try {
     return await poll({
-      fn: () =>
+      fn: (): Promise<Principal> =>
         cmc.notifyCreateCanister({
           controller,
           block_index: blockHeight,
         }),
-      shouldExit: (error: Error) => !(error instanceof ProcessingError),
+      shouldExit: notProcessingError,
     });
   } catch (error) {
-    if (error instanceof PollingLimitExceededError) {
+    if (pollingLimit(error)) {
+      // TODO: i18n errors https://dfinity.atlassian.net/browse/L2-721
       throw new CMCError(
         "Error creating canister. Canister might be created, refresh the page. Try again if not."
       );
@@ -235,15 +241,16 @@ const pollNotifyTopUpCanister = async ({
 }): Promise<Cycles> => {
   try {
     return await poll({
-      fn: () =>
+      fn: (): Promise<Cycles> =>
         cmc.notifyTopUp({
           canister_id: canisterId,
           block_index: blockHeight,
         }),
-      shouldExit: (error: Error) => !(error instanceof ProcessingError),
+      shouldExit: notProcessingError,
     });
   } catch (error) {
-    if (error instanceof PollingLimitExceededError) {
+    if (pollingLimit(error)) {
+      // TODO: i18n errors https://dfinity.atlassian.net/browse/L2-721
       throw new CMCError(
         "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not."
       );

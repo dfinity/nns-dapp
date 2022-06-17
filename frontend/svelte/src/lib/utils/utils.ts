@@ -202,23 +202,24 @@ const MAX_POLLING_TIMES = 10;
  *
  * @param {Object} params
  * @param {fn} params.fn Function to call
- * @param {shouldExit} params.shouldExit Function to check whether function shuold stop polling.
- * @param {maxTimes} params.maxTimes Param to override the default number of times to poll.
+ * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
+ * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
+ * @param {counter} params.counter Param to check how many times it has polled.
  *
  * @returns
  */
 export const poll = async <T>({
   fn,
   shouldExit,
-  maxTimes = MAX_POLLING_TIMES,
-  counter = 1,
+  maxAttempts = MAX_POLLING_TIMES,
+  counter = 0,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: Error) => boolean;
-  maxTimes?: number;
+  maxAttempts?: number;
   counter?: number;
 }): Promise<T> => {
-  if (counter >= maxTimes) {
+  if (counter >= maxAttempts) {
     throw new PollingLimitExceededError();
   }
   try {
@@ -232,7 +233,7 @@ export const poll = async <T>({
   return poll({
     fn,
     shouldExit,
-    maxTimes,
+    maxAttempts,
     counter: counter + 1,
   });
 };

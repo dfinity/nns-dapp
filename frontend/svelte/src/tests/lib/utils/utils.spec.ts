@@ -7,6 +7,7 @@ import {
   isNullable,
   nonNullable,
   poll,
+  PollingLimitExceededError,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
@@ -356,6 +357,23 @@ describe("utils", () => {
         shouldExit: () => true,
       });
       expect(expected).toBe(result);
+    });
+
+    it("should throw after `maxAttempts`", async () => {
+      let counter = 0;
+      const maxAttempts = 5;
+      const call = () =>
+        poll({
+          fn: async () => {
+            counter += 1;
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts,
+        });
+      // Without the `await`, the line didn't wait the `poll` to throw to move to the next line
+      await expect(call).rejects.toThrowError(PollingLimitExceededError);
+      expect(counter).toBe(maxAttempts);
     });
   });
 });
