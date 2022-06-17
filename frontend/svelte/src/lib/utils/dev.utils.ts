@@ -1,9 +1,6 @@
 import { get } from "svelte/store";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
-import { LogType } from "../services/debug.services";
-import { claimSeedNeurons } from "../services/seed-neurons.services";
 import { i18n } from "../stores/i18n";
-import { enumKeys } from "./enum.utils";
 
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
@@ -64,19 +61,7 @@ export function triggerDebugReport(node: HTMLElement) {
       count++;
 
       if (count === 5) {
-        const logType: LogType = prompt(get(i18n).core.log) as LogType;
-
-        // input validation
-        if (!enumKeys(LogType).includes(logType)) {
-          return;
-        }
-
-        if (LogType.ClaimNeurons === logType) {
-          claimSeedNeurons();
-          return;
-        }
-
-        generateDebugLogProxy(logType);
+        generateDebugLogProxy(confirm(get(i18n).core.save_log_file));
       }
     } else {
       startTime = now;

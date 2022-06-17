@@ -29,7 +29,7 @@ export const toCanisterDetails = ({
   status: getCanisterStatus(status),
   memorySize: memory_size,
   cycles: cycles,
-  settings: {
+  setting: {
     controllers: settings.controllers.map((principal) => principal.toText()),
     freezingThreshold: settings.freezing_threshold,
     memoryAllocation: settings.memory_allocation,

@@ -6,11 +6,6 @@ import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
-  CanisterAlreadyAttachedError,
-  CanisterLimitExceededError,
-  CanisterNameAlreadyTakenError,
-  CanisterNameTooLongError,
-  CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
@@ -239,34 +234,7 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    if (
-      "CanisterAlreadyAttached" in response &&
-      response.CanisterAlreadyAttached === null
-    ) {
-      throw new CanisterAlreadyAttachedError(
-        "error__canister.already_attached",
-        {
-          $canisterId: canisterId.toText(),
-        }
-      );
-    }
-    if ("NameAlreadyTaken" in response && response.NameAlreadyTaken === null) {
-      throw new CanisterNameAlreadyTakenError("error__canister.name_taken", {
-        $name: name,
-      });
-    }
-    if ("NameTooLong" in response && response.NameTooLong === null) {
-      throw new CanisterNameTooLongError("error__canister.name_too_long", {
-        $name: name,
-      });
-    }
-    if (
-      "CanisterLimitExceeded" in response &&
-      response.CanisterLimitExceeded === null
-    ) {
-      throw new CanisterLimitExceededError("error__canister.limit_exceeded");
-    }
-    // Edge case
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
     throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
   };
 
@@ -277,12 +245,7 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
-      throw new CanisterNotFoundError("error__canister.detach_not_found", {
-        $canisterId: canisterId.toText(),
-      });
-    }
-    // Edge case
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
     throw new Error(`Error detaching canister ${JSON.stringify(response)}`);
   };
 

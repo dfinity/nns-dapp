@@ -1,13 +1,8 @@
 import { register } from "../common/register";
 import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
-import { skipUnlessBrowserIs } from "../common/test";
 
 describe("landing page", () => {
-  before(function () {
-    skipUnlessBrowserIs.bind(this)(["chrome", "firefox"]);
-  });
-
   it("loads", async () => {
     await browser.url("/");
 

@@ -1,22 +1,15 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import {
-    getVotingPower,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
+  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
-
-  export let proposalInfo: ProposalInfo;
 
   let total: bigint;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
-    proposal: proposalInfo,
   });
 
   const toggleSelection = (neuronId: bigint) =>
@@ -29,21 +22,19 @@
 </p>
 
 <ul>
-  {#each $votingNeuronSelectStore.neurons as neuron}
+  {#each $votingNeuronSelectStore.neurons as { neuronId, votingPower }}
     <li>
       <Checkbox
-        inputId={`${neuron.neuronId}`}
-        checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
-        on:nnsChange={() => toggleSelection(neuron.neuronId)}
+        inputId={`${neuronId}`}
+        checked={$votingNeuronSelectStore.selectedIds.includes(neuronId)}
+        on:nnsChange={() => toggleSelection(neuronId)}
         theme="dark"
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id">{`${neuron.neuronId}`}</span>
+        <span class="neuron-id">{`${neuronId}`}</span>
         <span class="neuron-voting-power"
-          >{`${formatVotingPower(
-            getVotingPower({ neuron, proposal: proposalInfo })
-          )}`}</span
+          >{`${formatVotingPower(votingPower)}`}</span
         >
       </Checkbox>
     </li>

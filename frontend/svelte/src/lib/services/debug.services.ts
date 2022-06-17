@@ -15,27 +15,16 @@ import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
 
 /**
- * c - pseudo-anonymised stringified -> console
- * co - original stringified -> console
- * coo - original as object -> console
- * f - pseudo-anonymised -> json file
- * fo - original -> json file
+ * 1. generates anonymized version of stores state
+ * 2. log it in the dev console
+ * 3. generates a json file with logged context
  */
-export enum LogType {
-  Console = "c",
-  ConsoleOriginal = "co",
-  ConsoleOriginalObject = "coo",
-  File = "f",
-  FileOriginal = "fo",
-  ClaimNeurons = "cn",
-}
-
-const anonymiseStoreState = async () => {
+export const generateDebugLog = async (safeToFile: boolean) => {
   const debugStore = initDebugStore();
   const {
-    busy,
+    route,
     accounts,
-    neurons,
+    sortedNeuron,
     knownNeurons,
     canisters,
     proposals,
@@ -50,8 +39,8 @@ const anonymiseStoreState = async () => {
     selectedAccount,
   } = get(debugStore);
 
-  return {
-    busy,
+  const anonymizedState = {
+    route: route,
     accounts: {
       main: await anonymizeAccount(accounts?.main),
       subAccounts: await mapPromises(accounts?.subAccounts, anonymizeAccount),
@@ -60,10 +49,7 @@ const anonymiseStoreState = async () => {
         anonymizeAccount
       ),
     },
-    neurons: {
-      neurons: await mapPromises(neurons.neurons ?? [], anonymizeNeuronInfo),
-      certified: neurons.certified,
-    },
+    sortedNeuron: await mapPromises(sortedNeuron, anonymizeNeuronInfo),
     knownNeurons: await mapPromises(knownNeurons, anonymizeKnownNeuron),
     canisters: await mapPromises(canisters.canisters, anonymizeCanister),
     proposals: {
@@ -72,7 +58,7 @@ const anonymiseStoreState = async () => {
     },
     proposalsFilters: proposalsFilters,
     proposalId: proposalId,
-    proposalInfo: await anonymizeProposal(proposalInfo),
+    proposalInfo: proposalInfo,
     votingNeuronSelect: {
       neurons: await mapPromises(
         votingNeuronSelect?.neurons,
@@ -83,7 +69,7 @@ const anonymiseStoreState = async () => {
         cutAndAnonymize
       ),
     },
-    toasts,
+    toasts: toasts,
     addAccount: {
       type: addAccount?.type,
       hardwareWalletName: addAccount?.hardwareWalletName,
@@ -108,35 +94,18 @@ const anonymiseStoreState = async () => {
       ),
     },
   };
-};
 
-/**
- * 1. generates anonymized version of stores state
- * 2. log it in the dev console
- * 3. generates a json file with logged context
- */
-export const generateDebugLog = async (logType: LogType) => {
-  const debugStore = initDebugStore();
-  const anonymise = [LogType.Console, LogType.File].includes(logType);
-  const saveToFile = [LogType.File, LogType.FileOriginal].includes(logType);
-  const state = anonymise ? await anonymiseStoreState() : get(debugStore);
   const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
-
-  if (logType === LogType.ConsoleOriginalObject) {
-    console.log(date, state);
-    return;
-  }
-
-  const stringifiedState = stringifyJson(state, {
+  const anonymizedStateAsText = stringifyJson(anonymizedState, {
     indentation: 2,
   });
 
-  if (saveToFile) {
+  console.log(date, anonymizedStateAsText);
+
+  if (safeToFile) {
     saveToJSONFile({
-      blob: new Blob([stringifiedState]),
+      blob: new Blob([anonymizedStateAsText]),
       filename: `${date}_nns-local-state.json`,
     });
-  } else {
-    console.log(date, stringifiedState);
   }
 };

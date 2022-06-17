@@ -31,11 +31,10 @@ describe("CyclesMintingCanister", () => {
 
   describe("CMCCanister.getIcpToCyclesConversionRate", () => {
     it("returns the conversion rate from ICP to cycles", async () => {
-      const exchangeRate = BigInt(10_000);
       const response: IcpXdrConversionRateResponse = {
         certificate: [],
         data: {
-          xdr_permyriad_per_icp: exchangeRate,
+          xdr_permyriad_per_icp: BigInt(10_000),
           timestamp_seconds: BigInt(10),
         },
         hash_tree: [],
@@ -47,7 +46,7 @@ describe("CyclesMintingCanister", () => {
 
       const res = await cmc.getIcpToCyclesConversionRate();
 
-      expect(res).toEqual(exchangeRate);
+      expect(res).toEqual(BigInt(1_000_000_000_000));
     });
   });
 

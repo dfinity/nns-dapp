@@ -22,21 +22,12 @@ export const mockCanisters: CanisterInfo[] = [
   mockCanister,
 ];
 
-export const mockCanisterSettings = {
-  freezing_threshold: BigInt(2),
-  controllers: [
-    "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
-  ],
-  memory_allocation: BigInt(4),
-  compute_allocation: BigInt(10),
-};
-
 export const mockCanisterDetails: CanisterDetails = {
   id: mockCanisterId,
   status: CanisterStatus.Running,
   memorySize: BigInt(10),
   cycles: BigInt(30),
-  settings: {
+  setting: {
     controllers: [mockIdentity.getPrincipal().toText()],
     freezingThreshold: BigInt(30),
     memoryAllocation: BigInt(1000),
@@ -55,5 +46,4 @@ export const mockCanistersStoreSubscribe = (
 export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
   info: mockCanister,
   details: mockCanisterDetails,
-  controller: true,
 });

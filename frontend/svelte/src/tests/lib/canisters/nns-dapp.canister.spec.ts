@@ -4,11 +4,6 @@ import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
-  CanisterAlreadyAttachedError,
-  CanisterLimitExceededError,
-  CanisterNameAlreadyTakenError,
-  CanisterNameTooLongError,
-  CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
   SubAccountLimitExceededError,
@@ -257,70 +252,7 @@ describe("NNSDapp", () => {
 
       expect(service.attach_canister).toBeCalled();
     });
-
-    it("should throw CanisterAlreadyAttachedError", async () => {
-      const service = mock<NNSDappService>();
-      service.attach_canister.mockResolvedValue({
-        CanisterAlreadyAttached: null,
-      });
-      const nnsDapp = await createNnsDapp(service);
-
-      const call = () =>
-        nnsDapp.attachCanister({
-          name: "test",
-          canisterId: mockCanister.canister_id,
-        });
-
-      expect(call).rejects.toThrowError(CanisterAlreadyAttachedError);
-    });
-
-    it("should throw CanisterNameAlreadyTakenError", async () => {
-      const service = mock<NNSDappService>();
-      service.attach_canister.mockResolvedValue({
-        NameAlreadyTaken: null,
-      });
-      const nnsDapp = await createNnsDapp(service);
-
-      const call = () =>
-        nnsDapp.attachCanister({
-          name: "test",
-          canisterId: mockCanister.canister_id,
-        });
-
-      expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
-    });
-
-    it("should throw CanisterNameTooLongError", async () => {
-      const service = mock<NNSDappService>();
-      service.attach_canister.mockResolvedValue({
-        NameTooLong: null,
-      });
-      const nnsDapp = await createNnsDapp(service);
-
-      const call = () =>
-        nnsDapp.attachCanister({
-          name: "test",
-          canisterId: mockCanister.canister_id,
-        });
-
-      expect(call).rejects.toThrowError(CanisterNameTooLongError);
-    });
-
-    it("should throw CanisterLimitExceededError", async () => {
-      const service = mock<NNSDappService>();
-      service.attach_canister.mockResolvedValue({
-        CanisterLimitExceeded: null,
-      });
-      const nnsDapp = await createNnsDapp(service);
-
-      const call = () =>
-        nnsDapp.attachCanister({
-          name: "test",
-          canisterId: mockCanister.canister_id,
-        });
-
-      expect(call).rejects.toThrowError(CanisterLimitExceededError);
-    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
   });
 
   describe("NNSDapp.detachCanister", () => {
@@ -333,17 +265,6 @@ describe("NNSDapp", () => {
 
       expect(service.detach_canister).toBeCalled();
     });
-
-    it("should throw CanisterNotFoundError", async () => {
-      const service = mock<NNSDappService>();
-      service.detach_canister.mockResolvedValue({
-        CanisterNotFound: null,
-      });
-      const nnsDapp = await createNnsDapp(service);
-
-      const call = () => nnsDapp.detachCanister(mockCanister.canister_id);
-
-      expect(call).rejects.toThrowError(CanisterNotFoundError);
-    });
+    // TODO: Throw proper errors https://dfinity.atlassian.net/browse/L2-615
   });
 });

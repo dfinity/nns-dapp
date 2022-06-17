@@ -8,7 +8,7 @@
   export let name: string;
   export let principal: Principal | undefined = undefined;
 
-  let address: string = principal?.toText() ?? "";
+  let address: string = "";
   $: principal = getPrincipalFromString(address);
   let showError: boolean = false;
 

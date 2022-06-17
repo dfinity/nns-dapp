@@ -84,7 +84,7 @@
       {/each}
 
       {#if noCanisters}
-        <p>{$i18n.canisters.empty}</p>
+        <p class="no-canisters">{$i18n.canisters.empty}</p>
       {/if}
 
       {#if loading}
@@ -111,5 +111,10 @@
 <style lang="scss">
   .last-info {
     margin-bottom: var(--padding-3x);
+  }
+
+  .no-canisters {
+    text-align: center;
+    margin: var(--padding-2x) 0;
   }
 </style>

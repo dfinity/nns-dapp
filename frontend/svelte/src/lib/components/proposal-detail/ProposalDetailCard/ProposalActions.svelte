@@ -19,47 +19,53 @@
 
 <CardBlock limitHeight={false}>
   <svelte:fragment slot="title">{actionKey}</svelte:fragment>
-  <dl>
+  <ul>
     {#each actionFields as [key, value]}
-      <dt>{key}</dt>
-      {#if typeof value === "object"}
-        <dd><Json json={value} /></dd>
-      {:else}
-        <dd>{value}</dd>
-      {/if}
+      <li>
+        <h4>{key}</h4>
+        {#if typeof value === "object"}
+          <p class="json">
+            <Json json={value} />
+          </p>
+        {:else}
+          <p>
+            {value}
+          </p>
+        {/if}
+      </li>
     {/each}
-  </dl>
+  </ul>
 </CardBlock>
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
 
-  dl {
+  ul {
     margin: 0;
+    padding: 0;
+    list-style: none;
 
-    dt {
-      font-size: var(--font-size-ultra-small);
-      color: var(--background-contrast);
-      line-height: 1;
-      margin: 0 0 var(--padding-0_5x);
+    li {
+      margin-bottom: var(--padding);
 
-      @include media.min-width(medium) {
-        font-size: var(--font-size-small);
+      h4 {
+        font-size: var(--font-size-ultra-small);
+        color: var(--background-contrast);
+        line-height: 1;
+
+        @include media.min-width(medium) {
+          font-size: var(--font-size-small);
+        }
       }
-    }
-    dd {
-      margin: 0 0 var(--padding);
-      &:last-child {
-        margin: 0;
-      }
+      p {
+        font-size: var(--font-size-ultra-small);
+        color: var(--gray-200);
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
 
-      font-size: var(--font-size-ultra-small);
-      color: var(--gray-200);
-      overflow-wrap: break-word;
-      white-space: pre-wrap;
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-small);
+        @include media.min-width(medium) {
+          font-size: var(--font-size-small);
+        }
       }
     }
   }

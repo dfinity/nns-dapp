@@ -7,13 +7,9 @@
   import { formatNumber } from "../../utils/format.utils";
   import IconThumbDown from "../../icons/IconThumbDown.svelte";
   import IconThumbUp from "../../icons/IconThumbUp.svelte";
+  import { votedNeurons } from "@dfinity/nns";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import {
-    formatVotingPower,
-    votedNeuronDetails,
-    type CompactNeuronInfo,
-  } from "../../utils/neuron.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -25,11 +21,18 @@
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   $: sum = yes + no;
 
+  type CompactNeuronInfo = {
+    id: NeuronId;
+    votingPower: number;
+    vote: Vote;
+  };
   const voteIconMapper = {
     [Vote.NO]: IconThumbDown,
     [Vote.YES]: IconThumbUp,
     [Vote.UNSPECIFIED]: undefined,
   };
+
+  let neuronsVotedForProposal: CompactNeuronInfo[];
 
   const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
     const stringMapper = {
@@ -44,12 +47,23 @@
     });
   };
 
-  let neuronsVotedForProposal: CompactNeuronInfo[];
   $: {
-    neuronsVotedForProposal = votedNeuronDetails({
+    neuronsVotedForProposal = votedNeurons({
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
-    });
+    })
+      .map(({ neuronId, recentBallots, votingPower }) => ({
+        id: neuronId,
+        // TODO: replace w/ formatVotingPower()
+        votingPower: Number(votingPower) / E8S_PER_ICP,
+        vote: recentBallots.find(
+          ({ proposalId }) => proposalId === proposalInfo.id
+        )?.vote,
+      }))
+      // Exclude the cases where the vote was not found.
+      .filter(
+        (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
+      ) as CompactNeuronInfo[];
   }
 </script>
 
@@ -83,7 +97,7 @@
         >
           <p>{neuron.id}</p>
           <p class="vote-details">
-            <span>{formatVotingPower(neuron.votingPower)}</span>
+            <span>{neuron.votingPower}</span>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
             {/if}

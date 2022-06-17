@@ -71,19 +71,11 @@ describe("VotesCard", () => {
       ],
     };
     const votedNeurons = [mockNeuron, noVoted, yesVoted];
-    const proposal = {
-      ...mockProposalInfo,
-      ballots: votedNeurons.map(({ neuronId, votingPower }) => ({
-        neuronId,
-        votingPower,
-        vote: Vote.UNSPECIFIED,
-      })),
-    };
     it("should have title when proposal has been voted by some owned neuron", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { getByText } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
       expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
@@ -93,7 +85,7 @@ describe("VotesCard", () => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
       const { getByText } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
       expect(() => getByText(en.proposal_detail.my_votes)).toThrow();
@@ -103,7 +95,7 @@ describe("VotesCard", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
       const neuronElements = container.querySelectorAll(
@@ -116,7 +108,7 @@ describe("VotesCard", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
       const thumbUpElements = container.querySelectorAll(
@@ -134,7 +126,7 @@ describe("VotesCard", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { getByTitle } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
 
@@ -161,7 +153,7 @@ describe("VotesCard", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
       const { container } = render(VotesCard, {
         props: {
-          proposalInfo: proposal,
+          proposalInfo: mockProposalInfo,
         },
       });
       const element = container.querySelector(`[data-tid="neuron-data"]`);

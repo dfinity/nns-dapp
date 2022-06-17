@@ -5,10 +5,9 @@ import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neuron
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
 import { accountsStore } from "./accounts.store";
-import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
-import { neuronsStore } from "./neurons.store";
+import { sortedNeuronStore } from "./neurons.store";
 import {
   proposalIdStore,
   proposalInfoStore,
@@ -16,6 +15,7 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "./proposals.store";
+import { routeStore } from "./route.store";
 import { toastsStore } from "./toasts.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
@@ -50,10 +50,9 @@ export const initDebugStore = () =>
   derived(
     [
       // TODO (L2-611): anonymise wallet id and neuron ids
-      // TODO: (L2-683): add routeStore
-      busyStore,
+      routeStore,
       accountsStore,
-      neuronsStore,
+      sortedNeuronStore,
       knownNeuronsStore,
       canistersStore,
       proposalsStore,
@@ -69,9 +68,9 @@ export const initDebugStore = () =>
       selectedCanisterStore,
     ],
     ([
-      $busyStore,
+      $routeStore,
       $accountsStore,
-      $neuronsStore,
+      $sortedNeuronStore,
       $knownNeuronsStore,
       $canistersStore,
       $proposalsStore,
@@ -86,9 +85,9 @@ export const initDebugStore = () =>
       $selectedAccountStore,
       $selectedCanisterStore,
     ]) => ({
-      busy: $busyStore,
+      route: $routeStore,
       accounts: $accountsStore,
-      neurons: $neuronsStore,
+      sortedNeuron: $sortedNeuronStore,
       knownNeurons: $knownNeuronsStore,
       canisters: $canistersStore,
       proposals: $proposalsStore,

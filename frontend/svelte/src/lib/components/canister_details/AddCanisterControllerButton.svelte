@@ -1,6 +1,9 @@
 <script lang="ts">
+  import type { Principal } from "@dfinity/principal";
   import AddControllerModal from "../../modals/canisters/AddControllerModal.svelte";
   import { i18n } from "../../stores/i18n";
+
+  export let canisterId: Principal;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -14,5 +17,5 @@
 >
 
 {#if showModal}
-  <AddControllerModal on:nnsClose={close} />
+  <AddControllerModal {canisterId} on:nnsClose={close} />
 {/if}

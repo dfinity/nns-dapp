@@ -15,8 +15,8 @@ The plan is to deploy the pages of this project one by one as soon they are read
 
 - Log in page: Deployed.
 - Proposals: Deployed.
-- Neurons: Deployed.
-- Accounts: Deployed.
+- Neurons: In development.
+- Accounts: In development.
 - Canisters: In development.
 
 Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the routes in this project.

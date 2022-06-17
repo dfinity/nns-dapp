@@ -9,8 +9,7 @@
   import Input from "../ui/Input.svelte";
 
   export let amount: number | undefined = undefined;
-  export let icpToCyclesExchangeRate: bigint | undefined = undefined;
-  export let minimumCycles: number | undefined = undefined;
+  export let icpToCyclesRatio: bigint | undefined = undefined;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
@@ -20,26 +19,20 @@
 
   const setCycles = () =>
     (amountCycles =
-      amount !== undefined && icpToCyclesExchangeRate !== undefined
-        ? // ICP Input misbehaves with more than eight decimals
-          Number(
-            convertIcpToTCycles({
-              icpNumber: amount,
-              exchangeRate: icpToCyclesExchangeRate,
-            }).toFixed(8)
-          )
+      amount !== undefined && icpToCyclesRatio !== undefined
+        ? convertIcpToTCycles({
+            icpNumber: amount,
+            ratio: icpToCyclesRatio,
+          })
         : undefined);
 
   const setAmount = () =>
     (amount =
-      amountCycles !== undefined && icpToCyclesExchangeRate !== undefined
-        ? // ICP Input misbehaves with more than eight decimals
-          Number(
-            convertTCyclesToIcpNumber({
-              tCycles: amountCycles,
-              exchangeRate: icpToCyclesExchangeRate,
-            }).toFixed(8)
-          )
+      amountCycles !== undefined && icpToCyclesRatio !== undefined
+        ? convertTCyclesToIcpNumber({
+            tCycles: amountCycles,
+            ratio: icpToCyclesRatio,
+          })
         : undefined);
 
   $: amount,
@@ -60,10 +53,7 @@
       amount: ICP.fromString(String(amount)),
     });
   };
-
-  let enoughCycles: boolean;
-  $: enoughCycles =
-    minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
+  // TODO: Add validations - https://dfinity.atlassian.net/browse/L2-644
 </script>
 
 <div class="wizard-wrapper wrapper" data-tid="select-cycles-screen">
@@ -77,7 +67,7 @@
         bind:value={amount}
         on:focus={() => (isChanging = "icp")}
         on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesExchangeRate === undefined}
+        disabled={icpToCyclesRatio === undefined}
       />
       <Input
         placeholderLabelKey="canisters.t_cycles"
@@ -87,7 +77,7 @@
         bind:value={amountCycles}
         on:focus={() => (isChanging = "tCycles")}
         on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesExchangeRate === undefined}
+        disabled={icpToCyclesRatio === undefined}
       />
     </div>
     <slot />
@@ -96,7 +86,7 @@
     class="primary full-width"
     on:click={selectAccount}
     data-tid="select-cycles-button"
-    disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
+    >{$i18n.canisters.review_cycles_purchase}</button
   >
 </div>
 
@@ -115,6 +105,5 @@
   .inputs {
     display: flex;
     gap: var(--padding-2x);
-    justify-content: center;
   }
 </style>
