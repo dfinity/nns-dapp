@@ -6,11 +6,14 @@
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
+
+  const FADE_IN_DURATION = 75 as const;
+  const FADE_OUT_DURATION = 250 as const;
 </script>
 
 <div
-  in:fade={{ duration: 75 }}
-  out:fade={{ duration: 250 }}
+  in:fade={{ duration: FADE_IN_DURATION }}
+  out:fade={{ duration: FADE_OUT_DURATION }}
   class="backdrop"
   on:click|stopPropagation={close}
   class:disabledActions={disabled}
