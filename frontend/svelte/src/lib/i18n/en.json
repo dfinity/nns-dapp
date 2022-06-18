@@ -214,6 +214,7 @@
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
+    "claim_seed_neurons_success": "Seed neurons claimed successfully: $neurons",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {

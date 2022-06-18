@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import { ICP } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
@@ -20,6 +21,7 @@ import { canistersStore } from "../../../lib/stores/canisters.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
@@ -31,9 +33,19 @@ import {
   mockCanisterSettings,
 } from "../../mocks/canisters.mock";
 
+let identity: Identity | undefined = mockIdentity;
+const setNoAccountIdentity = () => (identity = undefined);
+const resetAccountIdentity = () => (identity = mockIdentity);
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
+    getAccountIdentity: jest.fn().mockImplementation(() => {
+      if (!identity) {
+        throw new Error(mockIdentityErrorMsg);
+      }
+
+      return Promise.resolve(identity);
+    }),
   };
 });
 
@@ -407,8 +419,8 @@ describe("canisters-services", () => {
       expect(toastsStore.show).toBeCalled();
     });
 
-    it("should return success false if no identity", async () => {
-      setNoIdentity();
+    it("should return undefined if no identity", async () => {
+      setNoAccountIdentity();
 
       const canisterId = await createCanister({
         amount: 3,
@@ -417,7 +429,7 @@ describe("canisters-services", () => {
       expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
 
-      resetIdentity();
+      resetAccountIdentity();
     });
   });
 
@@ -469,7 +481,7 @@ describe("canisters-services", () => {
     });
 
     it("should return success false if no identity", async () => {
-      setNoIdentity();
+      setNoAccountIdentity();
 
       const { success } = await topUpCanister({
         amount: 3,
@@ -479,7 +491,7 @@ describe("canisters-services", () => {
       expect(success).toBe(false);
       expect(spyTopUpCanister).not.toBeCalled();
 
-      resetIdentity();
+      resetAccountIdentity();
     });
   });
 });

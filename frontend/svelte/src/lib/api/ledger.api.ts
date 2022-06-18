@@ -1,34 +1,11 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { BlockHeight } from "@dfinity/nns";
-import {
-  AccountIdentifier,
-  ICP,
-  LedgerCanister,
-  type Neuron,
-} from "@dfinity/nns";
+import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
+import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-
-export const getNeuronBalance = async ({
-  neuron,
-  identity,
-  certified,
-}: {
-  neuron: Neuron;
-  identity: Identity;
-  certified: boolean;
-}): Promise<ICP> => {
-  logWithTimestamp(`Getting Neuron Balance certified:${certified} call...`);
-  const { canister } = await ledgerCanister({ identity });
-  const response = await canister.accountBalance({
-    accountIdentifier: AccountIdentifier.fromHex(neuron.accountIdentifier),
-    certified,
-  });
-  logWithTimestamp(`Getting Neuron Balance certified:${certified} complete.`);
-  return response;
-};
 
 /**
  * Transfer ICP between accounts.
@@ -82,6 +59,7 @@ const ledgerCanister = async ({
   const canister = LedgerCanister.create({
     agent,
     canisterId: LEDGER_CANISTER_ID,
+    hardwareWallet: await isLedgerIdentityProxy(identity),
   });
 
   logWithTimestamp(`LC complete.`);

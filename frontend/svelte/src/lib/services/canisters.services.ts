@@ -27,7 +27,7 @@ import {
   toToastError,
 } from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
-import { syncAccounts } from "./accounts.services";
+import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -89,7 +89,7 @@ export const createCanister = async ({
     const icpAmount = convertNumberToICP(amount);
     assertEnoughBalance({ amount: icpAmount, account });
 
-    const identity = await getIdentity();
+    const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount,
@@ -121,7 +121,7 @@ export const topUpCanister = async ({
     const icpAmount = convertNumberToICP(amount);
     assertEnoughBalance({ amount: icpAmount, account });
 
-    const identity = await getIdentity();
+    const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({
       identity,
       canisterId,

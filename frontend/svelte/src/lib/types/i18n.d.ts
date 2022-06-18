@@ -224,6 +224,7 @@ interface I18nNeurons {
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
+  claim_seed_neurons_success: string;
   stake_amount: string;
 }
 
