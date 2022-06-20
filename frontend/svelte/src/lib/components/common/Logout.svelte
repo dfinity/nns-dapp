@@ -1,14 +1,28 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import { logout } from "../../services/auth.services";
+  import IconExit from "../../icons/IconExit.svelte";
 </script>
 
 <button data-tid="logout" on:click={() => logout({})} class="text"
-  >{$i18n.header.logout}</button
->
+  ><span>
+    <IconExit />
+    {$i18n.header.logout}
+  </span>
+</button>
 
 <style lang="scss">
   button {
-    justify-self: flex-end;
+    margin: 0;
+
+    :global(svg) {
+      width: calc(2.5 * var(--padding));
+    }
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>
