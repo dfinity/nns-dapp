@@ -5,6 +5,7 @@
   import { triggerDebugReport } from "../../utils/dev.utils";
   import Header from "../ui/Header.svelte";
   import Toolbar from "../ui/Toolbar.svelte";
+  import Logout from "./Logout.svelte";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
@@ -20,6 +21,7 @@
       >
     </Tooltip>
     <h4 use:triggerDebugReport><slot /></h4>
+    <Logout slot="end" />
   </Toolbar>
 </Header>
 
