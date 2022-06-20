@@ -36,18 +36,10 @@
 
 <style lang="scss">
   @use "../../themes/mixins/effect";
+  @use "../../themes/mixins/header";
 
   .open {
-    width: fit-content;
-    padding: var(--padding-1_5x);
-    margin: 0 var(--padding-0_5x);
-
-    @include effect.ripple-effect(--yellow-500);
-
-    :global(svg) {
-      width: 30px;
-      height: 30px;
-    }
+    @include header.button(--brand-sea-buckthorn);
   }
 
   .close {
