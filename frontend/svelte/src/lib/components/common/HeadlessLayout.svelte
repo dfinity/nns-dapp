@@ -1,16 +1,18 @@
 <script lang="ts">
   import Footer from "./Footer.svelte";
   import Banner from "./Banner.svelte";
-  import HeadlessLayoutHeader from "./HeadlessLayoutHeader.svelte";
+  import Header from "./Header.svelte";
+  import Back from "./Back.svelte";
 
   export let showFooter = true;
 </script>
 
 <Banner headless={true} />
 
-<HeadlessLayoutHeader on:nnsBack>
+<Header>
+  <Back slot="start" on:nnsBack />
   <svelte:fragment><slot name="header" /></svelte:fragment>
-</HeadlessLayoutHeader>
+</Header>
 
 <main>
   <slot />
