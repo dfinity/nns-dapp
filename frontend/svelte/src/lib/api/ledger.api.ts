@@ -43,7 +43,7 @@ export const sendICP = async ({
   return response;
 };
 
-const ledgerCanister = async ({
+export const ledgerCanister = async ({
   identity,
 }: {
   identity: Identity;
