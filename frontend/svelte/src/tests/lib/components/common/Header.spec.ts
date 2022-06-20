@@ -4,6 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import Header from "../../../../lib/components/common/Header.svelte";
+import en from "../../../mocks/i18n.mock";
 
 describe("Header", () => {
   it("should render a title", () => {
@@ -13,15 +14,18 @@ describe("Header", () => {
   });
 
   it("should render a logout button", () => {
-    const { getByRole } = render(Header);
-    const button = getByRole("button");
-    expect(button).not.toBeUndefined();
+    const { getByTestId } = render(Header);
+    const button = getByTestId("logout");
+    expect(button).not.toBeNull();
     expect(button).toBeVisible();
-    expect(button).toHaveTextContent("Logout");
+    expect(button).toHaveTextContent(en.header.logout);
   });
 
-  it("should not render a get icps feature", () => {
-    const { container } = render(Header);
-    expect(container.querySelectorAll("button").length).toEqual(1);
+  it("should render a menu button", () => {
+    const { getByTestId } = render(Header);
+    const button = getByTestId("menu");
+    expect(button).not.toBeNull();
+    expect(button).toBeVisible();
+    expect(button.getAttribute("aria-label")).toEqual(en.header.menu);
   });
 });
