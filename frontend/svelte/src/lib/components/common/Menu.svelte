@@ -23,6 +23,7 @@
   <button
     on:click={() => (open = false)}
     aria-label={$i18n.core.close}
+    data-tid="menu-close"
     class="close icon-only"><IconClose /></button
   >
 
