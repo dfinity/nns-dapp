@@ -6,7 +6,9 @@
 
 <Banner />
 
-<LayoutHeader />
+<LayoutHeader>
+  <svelte:fragment><slot name="header" /></svelte:fragment>
+</LayoutHeader>
 
 <main>
   <slot />

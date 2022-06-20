@@ -1,6 +1,5 @@
 <script lang="ts">
   import Logout from "./Logout.svelte";
-  import { i18n } from "../../stores/i18n";
   import { triggerDebugReport } from "../../utils/dev.utils";
   import Menu from "./Menu.svelte";
   import Header from "../ui/Header.svelte";
@@ -10,7 +9,7 @@
 <Header>
   <Toolbar>
     <Menu slot="start" />
-    <h4 use:triggerDebugReport>{$i18n.header.title}</h4>
+    <h4 use:triggerDebugReport><slot /></h4>
     <Logout slot="end" />
   </Toolbar>
 </Header>

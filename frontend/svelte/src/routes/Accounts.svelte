@@ -55,6 +55,7 @@
 
 {#if SHOW_ACCOUNTS_ROUTE}
   <Layout>
+    <svelte:fragment slot="header">{$i18n.navigation.accounts}</svelte:fragment>
     <section data-tid="accounts-body">
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
