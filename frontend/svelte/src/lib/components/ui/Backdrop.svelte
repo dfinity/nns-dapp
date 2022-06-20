@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
-  export let disabled = false;
+  export let disablePointerEvents = false;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -16,7 +16,7 @@
   out:fade={{ duration: FADE_OUT_DURATION }}
   class="backdrop"
   on:click|stopPropagation={close}
-  class:disabledActions={disabled}
+  class:disablePointerEvents
 />
 
 <style lang="scss">
@@ -30,7 +30,7 @@
 
     @include interaction.tappable;
 
-    &.disabledActions {
+    &.disablePointerEvents {
       cursor: inherit;
       pointer-events: none;
     }
