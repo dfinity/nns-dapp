@@ -26,7 +26,7 @@ export class MockLedgerCanister extends LedgerCanister {
     amount: ICP;
     memo?: bigint | undefined;
     fee?: bigint | undefined;
-    fromSubAccountId?: number | undefined;
+    fromSubAccount?: number[] | undefined;
   }): Promise<BlockHeight> => {
     return BigInt(0);
   };

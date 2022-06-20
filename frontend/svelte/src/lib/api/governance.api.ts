@@ -18,7 +18,6 @@ import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
-import { toSubAccountId } from "./utils.api";
 
 export const queryNeuron = async ({
   neuronId,
@@ -309,13 +308,10 @@ export const stakeNeuron = async ({
     canisterId: LEDGER_CANISTER_ID,
   });
 
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
-
   const response = await canister.stakeNeuron({
     stake,
     principal: controller,
-    fromSubAccountId,
+    fromSubAccount,
     ledgerCanister,
   });
   logWithTimestamp(`Staking Neuron complete.`);
