@@ -39,6 +39,8 @@
     height: auto;
 
     padding: var(--padding-2x);
+    display: flex;
+    flex-direction: column;
 
     background-color: var(--background);
     color: var(--background-contrast);
@@ -50,6 +52,5 @@
 
   .close {
     align-self: flex-end;
-    margin: var(--padding);
   }
 }

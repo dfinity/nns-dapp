@@ -10,7 +10,6 @@
   export let anchor: HTMLElement | undefined = undefined;
   export let visible = false;
   export let direction: "ltr" | "rtl" = "ltr";
-  export let center = false;
   export let closeButton = false;
 
   let bottom: number;
@@ -44,7 +43,6 @@
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class="wrapper"
-      class:center
       class:rtl={direction === "rtl"}
     >
       {#if closeButton}

@@ -49,5 +49,7 @@
     justify-self: flex-end;
   }
 
-  @include header.button(--brand-picton-blue);
+  button {
+    @include header.button(--brand-picton-blue);
+  }
 </style>

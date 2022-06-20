@@ -13,7 +13,7 @@
   }
 
   :global(svg) {
-    width: 30px;
-    height: 30px;
+    width: var(--padding-3x);
+    height: var(--padding-3x);
   }
 }
