@@ -3,16 +3,18 @@
   import IconAccount from "../../icons/IconAccount.svelte";
   import Logout from "./Logout.svelte";
   import { themeStore } from "../../stores/theme.store";
+  import { i18n } from "../../stores/i18n";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
 </script>
 
 <button
+  data-tid="account-menu"
   class={`icon-only toggle ${$themeStore}`}
   bind:this={button}
   on:click={() => (visible = !visible)}
-  aria-label="Account"
+  aria-label={$i18n.header.account_menu}
 >
   <IconAccount />
 </button>
