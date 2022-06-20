@@ -49,7 +49,7 @@
         <button
           on:click|stopPropagation={close}
           aria-label={$i18n.core.close}
-          class="close icon"><IconClose /></button
+          class="close icon-only"><IconClose /></button
         >
       {/if}
 

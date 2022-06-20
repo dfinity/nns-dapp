@@ -49,7 +49,7 @@
     justify-self: flex-end;
   }
 
-  button {
+  button.icon-only {
     @include header.button(--brand-picton-blue);
   }
 </style>

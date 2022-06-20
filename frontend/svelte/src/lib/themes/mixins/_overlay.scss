@@ -23,12 +23,6 @@
       right: var(--popover-right);
     }
 
-    &.center {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
     // size
     --size: min(calc(20 * var(--padding)), calc(100vw - var(--padding)));
 
