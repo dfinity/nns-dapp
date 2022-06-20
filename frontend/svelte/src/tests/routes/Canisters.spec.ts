@@ -35,6 +35,12 @@ describe("Canisters", () => {
       .mockImplementation(mockCanistersStoreSubscribe);
   });
 
+  it("should render title", () => {
+    const { getAllByText } = render(Canisters);
+
+    expect(getAllByText(en.navigation.canisters).length).toBeGreaterThan(0);
+  });
+
   it("should render content", () => {
     const { getByText } = render(Canisters);
 
