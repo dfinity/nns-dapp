@@ -1,6 +1,7 @@
 import { get } from "svelte/store";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { LogType } from "../services/debug.services";
+import { claimSeedNeurons } from "../services/seed-neurons.services";
 import { i18n } from "../stores/i18n";
 import { enumKeys } from "./enum.utils";
 
@@ -67,6 +68,11 @@ export function triggerDebugReport(node: HTMLElement) {
 
         // input validation
         if (!enumKeys(LogType).includes(logType)) {
+          return;
+        }
+
+        if (LogType.ClaimNeurons === logType) {
+          claimSeedNeurons();
           return;
         }
 

@@ -1,4 +1,5 @@
 import type { Principal } from "@dfinity/principal";
+import { errorToString } from "./error.utils";
 
 /* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
@@ -189,4 +190,54 @@ export const smallerVersion = ({
       sensitivity: "base",
     }) < 0
   );
+};
+
+const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
+export class PollingLimitExceededError extends Error {}
+const DEFAUL_MAX_POLLING_ATTEMPTS = 10;
+/**
+ * Function that polls a specific function, checking error with passed argument to recall or not.
+ *
+ * @param {Object} params
+ * @param {fn} params.fn Function to call
+ * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
+ * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
+ * @param {counter} params.counter Param to check how many times it has polled.
+ *
+ * @returns
+ */
+export const poll = async <T>({
+  fn,
+  shouldExit,
+  maxAttempts = DEFAUL_MAX_POLLING_ATTEMPTS,
+  counter = 0,
+}: {
+  fn: () => Promise<T>;
+  shouldExit: (err: Error) => boolean;
+  maxAttempts?: number;
+  counter?: number;
+}): Promise<T> => {
+  if (counter >= maxAttempts) {
+    throw new PollingLimitExceededError();
+  }
+  try {
+    return await fn();
+  } catch (error) {
+    if (shouldExit(error)) {
+      throw error;
+    }
+    // Log swallowed errors
+    console.log(`Error polling: ${errorToString(error)}`);
+  }
+  await waitForMilliseconds(500);
+  return poll({
+    fn,
+    shouldExit,
+    maxAttempts,
+    counter: counter + 1,
+  });
 };
