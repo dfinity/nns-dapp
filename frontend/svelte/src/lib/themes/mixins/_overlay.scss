@@ -1,0 +1,55 @@
+@use "./interaction";
+
+@mixin content {
+  width: 100%;
+}
+
+@mixin popover {
+  position: fixed;
+  inset: 0;
+
+  z-index: calc(var(--z-index) + 997);
+
+  .wrapper {
+    cursor: initial;
+
+    // position
+    position: absolute;
+    top: calc(var(--popover-top) + var(--padding));
+    left: var(--popover-left);
+
+    &.rtl {
+      left: auto;
+      right: var(--popover-right);
+    }
+
+    &.center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    // size
+    --size: min(calc(20 * var(--padding)), calc(100vw - var(--padding)));
+
+    min-width: var(--size);
+    max-width: var(--size);
+
+    width: fit-content;
+    height: auto;
+
+    padding: var(--padding-2x);
+
+    background-color: var(--background);
+    color: var(--background-contrast);
+
+    box-shadow: var(--box-shadow);
+
+    border-radius: var(--border-radius);
+  }
+
+  .close {
+    align-self: flex-end;
+    margin: var(--padding);
+  }
+}
