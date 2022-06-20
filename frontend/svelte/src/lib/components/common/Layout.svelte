@@ -1,12 +1,12 @@
 <script lang="ts">
   import Footer from "./Footer.svelte";
-  import Header from "./Header.svelte";
+  import LayoutHeader from "./LayoutHeader.svelte";
   import Banner from "./Banner.svelte";
 </script>
 
 <Banner />
 
-<Header />
+<LayoutHeader />
 
 <main>
   <slot />

@@ -17,21 +17,9 @@
 
 <style lang="scss">
   @use "../../themes/mixins/text";
+  @use "../../themes/mixins/header";
 
   h4 {
-    margin: 0;
-
-    color: white;
-    letter-spacing: 1.4px;
-
-    grid-column-start: 2;
-
-    @include text.clamp(2);
-
-    text-align: center;
-
-    z-index: var(--z-index);
-
-    line-height: inherit;
+    @include header.title;
   }
 </style>

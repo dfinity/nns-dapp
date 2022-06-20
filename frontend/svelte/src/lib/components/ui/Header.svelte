@@ -10,7 +10,6 @@
     right: 0;
 
     height: var(--header-height);
-    overflow: hidden;
 
     display: block;
 

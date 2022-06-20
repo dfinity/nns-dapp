@@ -22,6 +22,8 @@
     // enable scrolling
     pointer-events: var(--toolbar-pointer-events, none);
 
+    --tooltip-width: fit-content;
+
     // buttons
     :global(button),
     :global(.tooltip-wrapper) {

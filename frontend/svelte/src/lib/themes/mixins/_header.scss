@@ -1,4 +1,5 @@
-@use "../mixins/effect";
+@use "./effect";
+@use "./text";
 
 @mixin button($color) {
   width: fit-content;
@@ -16,4 +17,19 @@
     width: 30px;
     height: 30px;
   }
+}
+
+@mixin title {
+  margin: 0;
+
+  color: white;
+  letter-spacing: 1.4px;
+
+  grid-column-start: 2;
+
+  @include text.clamp(2);
+
+  text-align: center;
+
+  line-height: inherit;
 }

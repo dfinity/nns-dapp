@@ -28,8 +28,6 @@
     }
 
     :global(.main) {
-
-
       @include media.min-width(xsmall) {
         min-width: 280px;
         max-width: calc(var(--section-max-width) * 0.7);
