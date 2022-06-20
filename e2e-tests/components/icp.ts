@@ -1,5 +1,4 @@
 import { MyNavigator } from "../common/navigator";
-import { MENU_SELECTOR } from "./nav";
 
 const GET_ICP_BUTTON: string = `[data-tid="get-icp-button"]`;
 const GET_ICP_FORM: string = `[data-tid="get-icp-form"]`;
