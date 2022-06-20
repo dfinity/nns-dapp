@@ -36,7 +36,10 @@ describe("Verifies that neurons can be disbursed", () => {
 
   it("gives_user1_a_neuron", async () => {
     const navigator = new MyNavigator(browser);
-    await navigator.navigate({selector: NAV_NEURONS_SELECTOR, description: "Go to the neurons view"});
+    await navigator.navigate({
+      selector: NAV_NEURONS_SELECTOR,
+      description: "Go to the neurons view",
+    });
     const neuronsTab = new NeuronsTab(browser);
     neuronId = (
       await neuronsTab.stakeNeuron({ icp: neuronIcp, dissolveDelay: 0 })

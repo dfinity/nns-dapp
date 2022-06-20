@@ -7,6 +7,4 @@ export class Header extends MyNavigator {
   constructor(browser: WebdriverIO.Browser) {
     super(browser);
   }
-
-
 }

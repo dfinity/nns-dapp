@@ -39,7 +39,10 @@ describe("Verifies that neurons can be merged", () => {
 
   it("Setup: Buy two neurons", async () => {
     const navigator = new MyNavigator(browser);
-    await navigator.navigate({selector: NAV_NEURONS_SELECTOR, description: "Go to the neurons view"});
+    await navigator.navigate({
+      selector: NAV_NEURONS_SELECTOR,
+      description: "Go to the neurons view",
+    });
     const neuronsTab = new NeuronsTab(browser);
     neuronId1 = (
       await neuronsTab.stakeNeuron({
