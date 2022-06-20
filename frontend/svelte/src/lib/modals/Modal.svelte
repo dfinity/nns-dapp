@@ -38,7 +38,7 @@
     on:click|stopPropagation
     on:introend
   >
-    <Backdrop disabled={$busy} on:nnsClose />
+    <Backdrop disablePointerEvents={$busy} on:nnsClose />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}

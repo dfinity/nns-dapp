@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import Menu from "../ui/Menu.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
-  import Nav from "./Nav.svelte";
+  import MenuItems from "./MenuItems.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import IconMenu from "../../icons/IconMenu.svelte";
   import IconClose from "../../icons/IconClose.svelte";
@@ -12,6 +12,7 @@
 </script>
 
 <button
+  data-tid="menu"
   class={`icon-only ${$themeStore}`}
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
@@ -20,11 +21,14 @@
 </button>
 
 <Menu bind:open>
-  <button on:click={() => (open = false)} aria-label={$i18n.core.close} class="close icon-only"
-    ><IconClose /></button
+  <button
+    on:click={() => (open = false)}
+    aria-label={$i18n.core.close}
+    data-tid="menu-close"
+    class="close icon-only"><IconClose /></button
   >
 
-  <Nav />
+  <MenuItems />
 
   {#if IS_TESTNET}
     <GetICPs />

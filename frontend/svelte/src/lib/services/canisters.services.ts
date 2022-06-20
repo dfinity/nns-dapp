@@ -15,18 +15,19 @@ import type {
   CanisterSettings,
 } from "../canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
-import { getLastPathDetail } from "../utils/app-path.utils";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { isController } from "../utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "../utils/error.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
-import { syncAccounts } from "./accounts.services";
+import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -88,7 +89,7 @@ export const createCanister = async ({
     const icpAmount = convertNumberToICP(amount);
     assertEnoughBalance({ amount: icpAmount, account });
 
-    const identity = await getIdentity();
+    const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount,
@@ -120,7 +121,7 @@ export const topUpCanister = async ({
     const icpAmount = convertNumberToICP(amount);
     assertEnoughBalance({ amount: icpAmount, account });
 
-    const identity = await getIdentity();
+    const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({
       identity,
       canisterId,
@@ -265,6 +266,9 @@ export const detachCanister = async (
 export const routePathCanisterId = (
   path: string | undefined
 ): string | undefined => {
+  if (!isRoutePath({ path: AppPath.CanisterDetail, routePath: path })) {
+    return undefined;
+  }
   const canisterId: string | undefined = getLastPathDetail(path);
   return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };

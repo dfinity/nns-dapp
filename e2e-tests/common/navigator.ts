@@ -1,3 +1,5 @@
+import { MENU_CLOSE_SELECTOR, MENU_SELECTOR } from "../components/nav";
+
 /**
  * Additional functionality for the wdio "browser".
  */
@@ -52,6 +54,32 @@ export class MyNavigator {
       await this.browser["screenshot"](description);
     }
     await button.click();
+  }
+
+  async openMenu(): Promise<void> {
+    await this.click(MENU_SELECTOR, "Open the menu");
+
+    // Small delay for menu animation
+    await this.browser.pause(500);
+  }
+
+  async closeMenu(): Promise<void> {
+    await this.click(MENU_CLOSE_SELECTOR, "Close the menu");
+
+    // Small delay for menu animation
+    await this.browser.pause(500);
+  }
+
+  async navigate({
+    selector,
+    description,
+  }: {
+    selector: string;
+    description: string;
+  }): Promise<void> {
+    await this.openMenu();
+
+    await this.click(selector, description);
   }
 
   /**

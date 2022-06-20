@@ -4,8 +4,8 @@
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const animateMenu = (
-    node: Element,
-    options: { delay?: number; duration?: number }
+    _node: Element,
+    _options: { delay?: number; duration?: number }
   ) => ({
     easing: cubicOut,
     css: (t: number) => `transform: translate(${-100 * (1 - t)}%);`,

@@ -11,7 +11,11 @@
   const baseUrl: string = baseHref();
   let currentContext: string = routeContext();
 
-  const routes: { context: string; label: string; icon: typeof SvelteComponent }[] = [
+  const routes: {
+    context: string;
+    label: string;
+    icon: typeof SvelteComponent;
+  }[] = [
     { context: "accounts", label: "accounts", icon: IconWallet },
     { context: "neurons", label: "neurons", icon: IconLockOpen },
     { context: "proposals", label: "voting", icon: IconHowToVote },
@@ -26,7 +30,7 @@
 {#each routes as { context, label, icon }}
   <MenuItem
     href={`${baseUrl}#/${context}`}
-    testId={`tab-to-${context}`}
+    testId={`menuitem-${context}`}
     selected={currentContext === context}
   >
     <svelte:component this={icon} slot="icon" />

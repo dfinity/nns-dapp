@@ -144,7 +144,8 @@
     selectedCanister,
     canistersReady,
     (() => {
-      if (!canistersReady) {
+      // When detaching, this is also executed but there is no `routeCanisterId`.
+      if (!canistersReady || routeCanisterId === undefined) {
         return;
       }
 
@@ -174,11 +175,15 @@
 
       // handle unknown canister id from URL
       if (selectedCanister === undefined) {
-        toastsStore.error({
-          labelKey: replacePlaceholders($i18n.error.canister_not_found, {
-            $canister_id: routeCanisterId ?? "",
-          }),
-        });
+        // Show toast only it was not already present in the store
+        // for example, after detaching, the storeCanister is present, but not the selectedCanister
+        if (storeCanister === undefined) {
+          toastsStore.error({
+            labelKey: replacePlaceholders($i18n.error.canister_not_found, {
+              $canister_id: routeCanisterId ?? "",
+            }),
+          });
+        }
         goBack();
       }
     })();
