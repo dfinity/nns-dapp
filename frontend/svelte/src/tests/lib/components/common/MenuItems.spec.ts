@@ -3,10 +3,10 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Nav from "../../../../lib/components/common/Nav.svelte";
+import Nav from "../../../../lib/components/common/MenuItems.svelte";
 import en from "../../../mocks/i18n.mock";
 
-describe("Nav", () => {
+describe("MenuItems", () => {
   const shouldRenderMenuItem = (context: string) => {
     const { getByTestId } = render(Nav);
     const link = getByTestId(`menuitem-${context}`) as HTMLElement;
