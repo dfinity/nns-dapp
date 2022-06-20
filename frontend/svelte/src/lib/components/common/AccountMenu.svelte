@@ -49,11 +49,5 @@
     justify-self: flex-end;
   }
 
-  .dark {
-    @include header.button(--brand-picton-blue);
-  }
-
-  .light {
-    @include header.button(--color-iris);
-  }
+  @include header.button(--brand-picton-blue);
 </style>
