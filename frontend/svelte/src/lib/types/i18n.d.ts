@@ -30,6 +30,7 @@ interface I18nError {
   sign_in: string;
   proposal_not_found: string;
   proposal_payload: string;
+  proposal_payload_not_found: string;
   neuron_not_found: string;
   neuron_load: string;
   list_proposals: string;

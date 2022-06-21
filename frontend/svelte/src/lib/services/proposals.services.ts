@@ -7,6 +7,7 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
+import { ProposalPayloadNotFoundError } from "../canisters/nns-dapp/nns-dapp.errors";
 import {
   startBusy,
   stopBusy,
@@ -257,6 +258,16 @@ export const getProposalPayload = async ({
     proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {
     console.error(err);
+
+    if (err instanceof ProposalPayloadNotFoundError) {
+      toastsStore.error({
+        labelKey: "error.proposal_payload_not_found",
+        substitutions: {
+          $proposal_id: proposalId.toString(),
+        },
+      });
+      return;
+    }
 
     toastsStore.error({
       labelKey: "error.proposal_payload",
