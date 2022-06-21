@@ -2,8 +2,8 @@
   export let sticky = false;
   let outerWidth: number = 0;
 
-  // The media query breakpoint to stick the menu is xlarge 1200px
-  $: sticky = outerWidth > 1200;
+  // The media query breakpoint to stick the menu is xlarge 1300px
+  $: sticky = outerWidth > 1300;
 </script>
 
 <svelte:window bind:outerWidth />
