@@ -97,13 +97,13 @@
       {#if accounts}
         <Toolbar>
           <button
-            class="primary"
+            class="primary full-width"
             on:click={openNewTransaction}
             data-tid="open-new-transaction"
             >{$i18n.accounts.new_transaction}</button
           >
           <button
-            class="primary"
+            class="primary full-width"
             on:click={openAddAccountModal}
             data-tid="open-add-account-modal"
             >{$i18n.accounts.add_account}</button
