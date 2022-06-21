@@ -55,7 +55,7 @@
 
     @include interaction.initial;
 
-    --menu-z-index: calc(var(--z-index) + 997);
+    --menu-z-index: calc(var(--z-index) + 996);
     z-index: var(--menu-z-index);
 
     &.sticky {
