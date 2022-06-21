@@ -14,7 +14,6 @@
 </Header>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
   @use "../../themes/mixins/header";
 
   h4 {

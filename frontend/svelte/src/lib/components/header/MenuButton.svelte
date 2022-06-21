@@ -1,13 +1,14 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import IconMenu from "../../icons/IconMenu.svelte";
+  import {themeStore} from "../../stores/theme.store";
 
   export let open: boolean = false;
 </script>
 
 <button
   data-tid="menu"
-  class="icon-only open"
+  class={`icon-only ${$themeStore}`}
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
 >
@@ -19,11 +20,17 @@
   @use "../../themes/mixins/header";
   @use "../../themes/mixins/media";
 
-  .open {
-    @include header.button(--brand-sea-buckthorn);
-
+  button {
     @include media.min-width(xlarge) {
       display: none;
     }
+  }
+
+  .dark {
+    @include header.button(--brand-sea-buckthorn);
+  }
+
+  .light {
+    @include header.button(--blue-500);
   }
 </style>
