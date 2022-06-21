@@ -1,0 +1,19 @@
+@use "../mixins/effect";
+
+@mixin button($color) {
+  width: fit-content;
+  padding: var(--padding-1_5x);
+  margin: 0 var(--padding-0_5x);
+
+  @include effect.ripple-effect($color);
+
+  &:focus {
+    background: var(--blue-500-tint);
+    @include effect.ripple-effect($color);
+  }
+
+  :global(svg) {
+    width: var(--padding-3x);
+    height: var(--padding-3x);
+  }
+}

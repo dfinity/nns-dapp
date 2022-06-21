@@ -123,7 +123,7 @@ export const register = async (
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
   await navigator.getElement(
-    Header.LOGOUT_BUTTON_SELECTOR,
+    Header.ACCOUNT_MENU_BUTTON_SELECTOR,
     "Wait for login after registration",
     { timeout: 10_000 }
   );

@@ -19,12 +19,11 @@ import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "../../../lib/api/constants.api";
-import { toSubAccountId } from "../../../lib/api/utils.api";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
+import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
 import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import type { SubAccountArray } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import { mockSubAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -185,6 +184,20 @@ describe("canisters-api", () => {
       expect(response).toEqual(mockCanisterDetails.id);
     });
 
+    it("should notify twice if the first call returns Processing", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister
+        .mockRejectedValueOnce(new ProcessingError())
+        .mockResolvedValue(mockCanisterDetails.id);
+
+      const response = await createCanister({
+        identity: mockIdentity,
+        amount: ICP.fromString("3") as ICP,
+      });
+      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
     it("handles creating from subaccounts", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
@@ -205,14 +218,11 @@ describe("canisters-api", () => {
         principal: CYCLES_MINTING_CANISTER_ID,
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
-      const fromSubAccountId = toSubAccountId(
-        mockSubAccount.subAccount as SubAccountArray
-      );
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount,
-        fromSubAccountId,
+        fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -240,9 +250,7 @@ describe("canisters-api", () => {
     beforeEach(() => jest.clearAllMocks());
     it("should make a transfer and notify", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
-        mockCanisterDetails.id
-      );
+      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
 
       await topUpCanister({
         identity: mockIdentity,
@@ -253,11 +261,23 @@ describe("canisters-api", () => {
       expect(mockCMCCanister.notifyTopUp).toBeCalled();
     });
 
+    it("should notify twice if the first returns ProcessingError", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyTopUp
+        .mockRejectedValueOnce(new ProcessingError())
+        .mockResolvedValue(BigInt(10));
+
+      await topUpCanister({
+        identity: mockIdentity,
+        amount: ICP.fromString("3") as ICP,
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
+    });
+
     it("should make a transfer from subaccounts", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
-        mockCanisterDetails.id
-      );
+      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
 
       const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
       // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
@@ -266,9 +286,6 @@ describe("canisters-api", () => {
         principal: CYCLES_MINTING_CANISTER_ID,
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
-      const fromSubAccountId = toSubAccountId(
-        mockSubAccount.subAccount as SubAccountArray
-      );
 
       const amount = ICP.fromString("3") as ICP;
       await topUpCanister({
@@ -282,7 +299,7 @@ describe("canisters-api", () => {
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount,
-        fromSubAccountId,
+        fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();
