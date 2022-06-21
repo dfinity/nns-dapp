@@ -9,7 +9,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  getNnsFunctionId,
+  getNnsFunctionIndex,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -936,10 +936,10 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("getNnsFunctionId", () => {
+  describe("getNnsFunctionIndex", () => {
     it("should return nnsFunctionId from proposal", () => {
       expect(
-        getNnsFunctionId({
+        getNnsFunctionIndex({
           ...mockProposalInfo.proposal,
           action: {
             ExecuteNnsFunction: {
@@ -952,7 +952,7 @@ describe("proposals-utils", () => {
 
     it("should return undefined if not ExecuteNnsFunction type", () => {
       expect(
-        getNnsFunctionId({
+        getNnsFunctionIndex({
           ...mockProposalInfo.proposal,
           action: {},
         } as Proposal)

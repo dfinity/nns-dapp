@@ -48,7 +48,7 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunctionId = (proposal: Proposal): number | undefined => {
+export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
   const key = proposalFirstActionKey(proposal);
 
   if (key !== "ExecuteNnsFunction") {
