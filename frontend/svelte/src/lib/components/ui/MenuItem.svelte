@@ -44,7 +44,7 @@
   @include media.light-theme() {
     a.selected {
       color: var(--blue-500);
-      background: inherit;
+      background: var(--background-shade);
 
       &:focus,
       &:hover {
