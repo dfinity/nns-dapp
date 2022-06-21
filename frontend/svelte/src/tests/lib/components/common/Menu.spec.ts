@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import Menu from "../../../../lib/components/common/MenuButton.svelte";
+import Menu from "../../../../lib/components/header/MenuButton.svelte";
 
 describe("Menu", () => {
   it("menu should be closed per default", () => {
