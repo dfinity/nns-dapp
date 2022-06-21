@@ -37,7 +37,7 @@
 
     &:not(.selected):focus,
     &:not(.selected):hover {
-      background: var(--background-shade);
+      background: var(--background-tint);
     }
   }
 
