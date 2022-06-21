@@ -94,6 +94,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/media.scss";
+
   .open {
     display: flex;
     justify-content: flex-start;
@@ -106,11 +107,20 @@
 
     &:focus,
     &:hover {
-      background: var(--background-shade);
+      background: var(--background-tint);
     }
 
     span {
       margin: 0 0 0 var(--padding);
+    }
+  }
+
+  @include media.light-theme() {
+    .open {
+      &:focus,
+      &:hover {
+        background: var(--background-shade);
+      }
     }
   }
 
