@@ -42,15 +42,13 @@
   }
 
   @include media.light-theme() {
-    @include media.min-width(xlarge) {
-      a.selected {
-        color: var(--blue-500);
-        background: inherit;
+    a.selected {
+      color: var(--blue-500);
+      background: inherit;
 
-        &:focus,
-        &:hover {
-          background: var(--background-shade);
-        }
+      &:focus,
+      &:hover {
+        background: var(--background-shade);
       }
     }
   }
