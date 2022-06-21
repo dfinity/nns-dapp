@@ -4,6 +4,7 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsFunctionDetails from "../../../../../lib/components/proposal-detail/ProposalDetailCard/NnsFunctionDetails.svelte";
@@ -12,7 +13,6 @@ import en from "../../../../mocks/i18n.mock";
 
 describe("NnsFunctionDetails", () => {
   const $proposalPayloadsStore = get(proposalPayloadsStore);
-  let spyOnGetPayload: jest.SpyInstance<unknown>;
 
   const mockPayload = { data: "test" };
   const nnsDappMock = mock<NNSDappCanister>();
@@ -20,12 +20,7 @@ describe("NnsFunctionDetails", () => {
   jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
   beforeEach(() => {
-    spyOnGetPayload = jest.spyOn($proposalPayloadsStore, "getPayload");
-  });
-
-  beforeEach(() => {
     proposalPayloadsStore.reset();
-    spyOnGetPayload.mockClear();
   });
 
   afterAll(jest.clearAllMocks);
@@ -53,8 +48,6 @@ describe("NnsFunctionDetails", () => {
   });
 
   it("should display spinner if no payload", () => {
-    spyOnGetPayload.mockImplementation(() => undefined);
-
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
@@ -66,7 +59,10 @@ describe("NnsFunctionDetails", () => {
   });
 
   it("should not display spinner if payload was loaded", () => {
-    spyOnGetPayload.mockImplementation(() => mockPayload);
+    proposalPayloadsStore.setPayload({
+      proposalId: BigInt(0),
+      payload: mockPayload,
+    });
 
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
@@ -75,12 +71,11 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    expect(spyOnGetPayload).toBeCalled();
     expect(queryByTestId("spinner")).not.toBeInTheDocument();
   });
 
   it("should not display spinner if payload is not available", () => {
-    spyOnGetPayload.mockImplementation(() => null);
+    proposalPayloadsStore.setPayload({ proposalId: BigInt(0), payload: null });
 
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
@@ -92,13 +87,12 @@ describe("NnsFunctionDetails", () => {
     expect(queryByTestId("spinner")).not.toBeInTheDocument();
   });
 
-  it("should start payload fetching", async () => {
+  it("should start payload loading", async () => {
     const spyOnGetProposalPayload = jest.spyOn(
       nnsDappMock,
       "getProposalPayload"
     );
     spyOnGetProposalPayload.mockClear();
-    // spyOnGetPayload.mockImplementation(() => null);
 
     render(NnsFunctionDetails, {
       props: {
@@ -107,11 +101,38 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    await waitFor(() => expect(spyOnGetProposalPayload).toBeCalledTimes(1));
+    await waitFor(() => expect(spyOnGetProposalPayload).toBeCalled());
+  });
+
+  it("should not call getProposalPayload if the payload is available", async () => {
+    proposalPayloadsStore.setPayload({
+      proposalId: BigInt(0),
+      payload: mockPayload,
+    });
+
+    const spyOnGetProposalPayload = jest.spyOn(
+      nnsDappMock,
+      "getProposalPayload"
+    );
+    spyOnGetProposalPayload.mockClear();
+
+    render(NnsFunctionDetails, {
+      props: {
+        proposalId: BigInt(0),
+        nnsFunctionId: BigInt(1),
+      },
+    });
+
+    await tick();
+
+    expect(spyOnGetProposalPayload).toBeCalledTimes(0);
   });
 
   it("should display payload object as Json", async () => {
-    spyOnGetPayload.mockImplementation(() => mockPayload);
+    proposalPayloadsStore.setPayload({
+      proposalId: BigInt(0),
+      payload: mockPayload,
+    });
 
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
@@ -124,7 +145,10 @@ describe("NnsFunctionDetails", () => {
   });
 
   it("should display payload fields", async () => {
-    spyOnGetPayload.mockImplementation(() => mockPayload);
+    proposalPayloadsStore.setPayload({
+      proposalId: BigInt(0),
+      payload: mockPayload,
+    });
 
     const { container } = render(NnsFunctionDetails, {
       props: {

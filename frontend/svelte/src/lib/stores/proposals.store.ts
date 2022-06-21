@@ -41,11 +41,7 @@ export interface ProposalsStore {
 }
 
 type ProposalPayload = object | null | undefined;
-export interface ProposalPayloadsStore {
-  getPayload: (proposalId: ProposalId) => ProposalPayload;
-  hasPayload: (proposalId: ProposalId) => boolean;
-}
-
+export type ProposalPayloadsStore = { [proposalId: string]: ProposalPayload };
 /**
  * A store that contains the proposals
  *
@@ -252,11 +248,7 @@ const initNeuronSelectStore = () => {
 };
 
 const initProposalPayloadsStore = () => {
-  const map = new Map<bigint, ProposalPayload>();
-  const { subscribe, update } = writable<ProposalPayloadsStore>({
-    getPayload: (proposalId) => map.get(proposalId),
-    hasPayload: (proposalId) => map.has(proposalId),
-  });
+  const { subscribe, update } = writable<ProposalPayloadsStore>({});
 
   return {
     subscribe,
@@ -267,11 +259,11 @@ const initProposalPayloadsStore = () => {
       proposalId: ProposalId;
       payload: ProposalPayload;
     }) =>
-      update((state) => {
-        map.set(proposalId, payload);
-        return state;
-      }),
-    reset: () => map.clear(),
+      update((state) => ({
+        ...state,
+        [`${proposalId}`]: payload,
+      })),
+    reset: () => update(() => ({})),
   };
 };
 

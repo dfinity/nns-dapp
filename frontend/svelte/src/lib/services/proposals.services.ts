@@ -253,7 +253,6 @@ export const getProposalPayload = async ({
   const identity: Identity = await getIdentity();
 
   try {
-    proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
     const payload = await queryProposalPayload({ proposalId, identity });
     proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {

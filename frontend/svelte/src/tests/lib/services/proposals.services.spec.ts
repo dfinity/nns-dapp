@@ -503,7 +503,7 @@ describe("proposals-services", () => {
       const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
       await getProposalPayload({ proposalId: BigInt(0) });
 
-      expect(spyOnSetPayload).toBeCalledTimes(2);
+      expect(spyOnSetPayload).toBeCalledTimes(1);
       expect(spyOnSetPayload).toHaveBeenLastCalledWith({
         payload: { data: "test" },
         proposalId: BigInt(0),

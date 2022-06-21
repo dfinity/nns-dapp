@@ -7,6 +7,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import ProposalActions from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
+import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
 import {
   getNnsFunctionId,
   proposalFirstActionKey,
@@ -85,6 +86,8 @@ describe("ProposalActions", () => {
     nnsDappMock.getProposalPayload.mockResolvedValue({});
     jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
+    beforeEach(() => proposalPayloadsStore.reset);
+
     afterAll(jest.clearAllMocks);
 
     it("should render nnsFunction id", () => {
@@ -120,15 +123,14 @@ describe("ProposalActions", () => {
     });
 
     it("should trigger getProposalPayload", async () => {
-      const spyGetProposalPayload = jest.spyOn(
-        nnsDappMock,
-        "getProposalPayload"
-      );
-      spyGetProposalPayload.mockReset();
+      const spyGetProposalPayload = jest
+        .spyOn(nnsDappMock, "getProposalPayload")
+        .mockImplementation(async () => ({}));
 
       render(ProposalActions, {
         props: {
           proposal: proposalWithNnsFunctionAction,
+          proposalId: BigInt(0),
         },
       });
 

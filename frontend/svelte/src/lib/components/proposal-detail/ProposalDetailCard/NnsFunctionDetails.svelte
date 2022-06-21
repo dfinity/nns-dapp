@@ -16,10 +16,10 @@
     $i18n.proposal_detail.unknown_nns_function;
 
   let payload: object | undefined | null;
-  $: payload = $proposalPayloadsStore.getPayload(proposalId);
+  $: payload = $proposalPayloadsStore[`${proposalId}`];
   $: if (
     proposalId !== undefined &&
-    !$proposalPayloadsStore.hasPayload(proposalId)
+    $proposalPayloadsStore[`${proposalId}`] === undefined
   ) {
     getProposalPayload({
       proposalId,

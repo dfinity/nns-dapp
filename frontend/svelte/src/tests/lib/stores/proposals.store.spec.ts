@@ -258,29 +258,13 @@ describe("proposals-store", () => {
   });
 
   describe("proposalPayloadStore", () => {
-    it("should store a payload", () => {
-      const $proposalPayloadsStore = get(proposalPayloadsStore);
-
+    it("should store a payload", async () => {
       proposalPayloadsStore.setPayload({
         proposalId: BigInt(0),
         payload: null,
       });
 
-      expect($proposalPayloadsStore.hasPayload(BigInt(0))).toBeTruthy();
-      expect($proposalPayloadsStore.getPayload(BigInt(0))).toBeNull();
-    });
-
-    it("should notify on setPayload", () => {
-      const fn = jest.fn();
-
-      proposalPayloadsStore.subscribe(fn);
-
-      proposalPayloadsStore.setPayload({
-        proposalId: BigInt(0),
-        payload: null,
-      });
-
-      expect(fn).toBeCalledTimes(2);
+      expect(get(proposalPayloadsStore)[`${BigInt(0)}`]).toBeNull();
     });
   });
 });
