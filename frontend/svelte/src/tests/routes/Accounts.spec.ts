@@ -35,6 +35,11 @@ describe("Accounts", () => {
     expect(title).not.toBeNull();
     expect(title).toBeVisible();
     expect(title).toHaveTextContent("Accounts");
+
+    const header = container.querySelector("header h4");
+    expect(header).not.toBeNull();
+    expect(header).toBeVisible();
+    expect(header).toHaveTextContent("Accounts");
   });
 
   it("should render title and account icp", () => {

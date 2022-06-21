@@ -69,6 +69,12 @@ describe("Proposals", () => {
         .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
     );
 
+    it("should render title", () => {
+      const { getAllByText } = render(Proposals);
+
+      expect(getAllByText(en.navigation.voting).length).toBeGreaterThan(0);
+    });
+
     it("should render a description", () => {
       const { getByText } = render(Proposals);
 

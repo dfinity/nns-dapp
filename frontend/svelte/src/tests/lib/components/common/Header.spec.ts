@@ -5,27 +5,26 @@
 import { render } from "@testing-library/svelte";
 import Header from "../../../../lib/components/common/Header.svelte";
 import en from "../../../mocks/i18n.mock";
+import HeaderTest from "./HeaderTest.svelte";
 
 describe("Header", () => {
-  it("should render a title", () => {
-    const { getByText } = render(Header);
-
-    expect(getByText("NETWORK NERVOUS SYSTEM")).toBeInTheDocument();
-  });
-
-  it("should render a logout button", () => {
+  it("should render an account menu button", () => {
     const { getByTestId } = render(Header);
-    const button = getByTestId("logout");
+    const button = getByTestId("account-menu");
     expect(button).not.toBeNull();
     expect(button).toBeVisible();
-    expect(button).toHaveTextContent(en.header.logout);
+    expect(button.getAttribute("aria-label")).toEqual(en.header.account_menu);
   });
 
-  it("should render a menu button", () => {
-    const { getByTestId } = render(Header);
-    const button = getByTestId("menu");
-    expect(button).not.toBeNull();
-    expect(button).toBeVisible();
-    expect(button.getAttribute("aria-label")).toEqual(en.header.menu);
+  it("should render slotted content", () => {
+    const { getByTestId } = render(HeaderTest);
+
+    expect(getByTestId("header-test-slot")).not.toBeNull();
+  });
+
+  it("should render slotted start", () => {
+    const { getByTestId } = render(HeaderTest);
+
+    expect(getByTestId("header-test-start-slot")).not.toBeNull();
   });
 });

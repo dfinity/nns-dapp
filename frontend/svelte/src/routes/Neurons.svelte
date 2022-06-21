@@ -56,6 +56,7 @@
 
 {#if SHOW_NEURONS_ROUTE}
   <Layout>
+    <svelte:fragment slot="header">{$i18n.navigation.neurons}</svelte:fragment>
     <section data-tid="neurons-body">
       <p>{$i18n.neurons.text}</p>
 

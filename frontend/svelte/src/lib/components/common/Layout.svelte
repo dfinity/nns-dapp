@@ -2,11 +2,15 @@
   import Footer from "./Footer.svelte";
   import Header from "./Header.svelte";
   import Banner from "./Banner.svelte";
+  import Menu from "./Menu.svelte";
 </script>
 
 <Banner />
 
-<Header />
+<Header>
+  <Menu slot="start" />
+  <svelte:fragment><slot name="header" /></svelte:fragment>
+</Header>
 
 <main>
   <slot />

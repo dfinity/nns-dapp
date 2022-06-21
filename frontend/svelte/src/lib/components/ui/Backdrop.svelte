@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
+  import { i18n } from "../../stores/i18n";
 
   export let disablePointerEvents = false;
 
@@ -12,6 +13,8 @@
 </script>
 
 <div
+  role="button"
+  aria-label={$i18n.core.close}
   in:fade={{ duration: FADE_IN_DURATION }}
   out:fade={{ duration: FADE_OUT_DURATION }}
   class="backdrop"

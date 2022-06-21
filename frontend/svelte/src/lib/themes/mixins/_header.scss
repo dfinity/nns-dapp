@@ -1,4 +1,5 @@
 @use "../mixins/effect";
+@use "./text";
 
 @mixin button($color) {
   width: fit-content;
@@ -13,7 +14,21 @@
   }
 
   :global(svg) {
-    width: 30px;
-    height: 30px;
+    width: var(--padding-3x);
+    height: var(--padding-3x);
   }
+}
+
+@mixin title {
+  margin: 0;
+
+  color: white;
+
+  grid-column-start: 2;
+
+  @include text.clamp(2);
+
+  text-align: center;
+
+  line-height: inherit;
 }
