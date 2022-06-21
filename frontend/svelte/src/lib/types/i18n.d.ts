@@ -90,6 +90,8 @@ interface I18nError {
   canister_top_up_unknown: string;
   canister_update_settings: string;
   not_canister_controller_to_update: string;
+  limit_exceeded_topping_up_canister: string;
+  limit_exceeded_creating_canister: string;
   canister_invalid_transaction: string;
 }
 
@@ -108,6 +110,7 @@ interface I18nHeader {
   menu: string;
   title: string;
   logout: string;
+  account_menu: string;
 }
 
 interface I18nAuth {

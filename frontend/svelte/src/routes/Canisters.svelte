@@ -67,7 +67,8 @@
 
 {#if SHOW_CANISTERS_ROUTE}
   <Layout>
-    <svelte:fragment slot="header">{$i18n.navigation.canisters}</svelte:fragment>
+    <svelte:fragment slot="header">{$i18n.navigation.canisters}</svelte:fragment
+    >
     <section>
       <p>{$i18n.canisters.text}</p>
       <p class="last-info">
