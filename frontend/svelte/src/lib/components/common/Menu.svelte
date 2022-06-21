@@ -11,12 +11,14 @@
 </script>
 
 <Menu bind:open {sticky}>
-  <button
-    on:click={() => (open = false)}
-    aria-label={$i18n.core.close}
-    data-tid="menu-close"
-    class="close icon-only"><IconClose /></button
-  >
+  {#if !sticky}
+    <button
+            on:click={() => (open = false)}
+            aria-label={$i18n.core.close}
+            data-tid="menu-close"
+            class="close icon-only"><IconClose /></button
+    >
+  {/if}
 
   <MenuItems />
 
@@ -38,10 +40,6 @@
     :global(svg) {
       width: 48px;
       height: 48px;
-    }
-
-    @include media.min-width(xlarge) {
-      display: none;
     }
   }
 </style>
