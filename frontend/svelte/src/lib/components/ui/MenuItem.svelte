@@ -10,6 +10,8 @@
 </a>
 
 <style lang="scss">
+  @use "../../themes/mixins/media";
+
   a {
     display: flex;
     justify-content: flex-start;
@@ -36,6 +38,20 @@
     &:not(.selected):focus,
     &:not(.selected):hover {
       background: var(--background-shade);
+    }
+  }
+
+  @include media.light-theme() {
+    @include media.min-width(xlarge) {
+      a.selected {
+        color: var(--blue-500);
+        background: inherit;
+
+        &:focus,
+        &:hover {
+          background: var(--background-shade);
+        }
+      }
     }
   }
 
