@@ -110,6 +110,7 @@ interface I18nHeader {
   menu: string;
   title: string;
   logout: string;
+  account_menu: string;
 }
 
 interface I18nAuth {

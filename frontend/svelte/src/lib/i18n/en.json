@@ -102,7 +102,8 @@
   "header": {
     "menu": "Open menu to access navigation options",
     "title": "NETWORK NERVOUS SYSTEM",
-    "logout": "Logout"
+    "logout": "Logout",
+    "account_menu": "Open menu to access logout button"
   },
   "auth": {
     "ic": "INTERNET COMPUTER",
