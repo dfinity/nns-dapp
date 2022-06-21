@@ -24,7 +24,6 @@ import { poll, PollingLimitExceededError } from "../utils/utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
-import { toSubAccountId } from "./utils.api";
 
 export const queryCanisters = async ({
   identity,
@@ -185,8 +184,6 @@ export const createCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
 
   // Transfer the funds
   const blockHeight = await sendICP({
@@ -194,7 +191,7 @@ export const createCanister = async ({
     identity,
     to: recipient.toHex(),
     amount,
-    fromSubAccountId,
+    fromSubAccount,
   });
 
   // If this fails or the client loses connection, nns dapp backend polls the transactions
@@ -278,14 +275,12 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
-    fromSubAccountId,
+    fromSubAccount,
   });
 
   // If this fails or the client loses connection
