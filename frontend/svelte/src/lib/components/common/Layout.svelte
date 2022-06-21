@@ -1,10 +1,10 @@
 <script lang="ts">
   import Footer from "./Footer.svelte";
-  import Header from "./Header.svelte";
-  import Banner from "./Banner.svelte";
-  import MenuButton from "./MenuButton.svelte";
+  import Header from "../header/Header.svelte";
+  import Banner from "../header/Banner.svelte";
+  import MenuButton from "../header/MenuButton.svelte";
   import Menu from "./Menu.svelte";
-  import Back from "./Back.svelte";
+  import Back from "../header/Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
 
   export let layout: "main" | "detail" = "main";
