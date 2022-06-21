@@ -1,6 +1,6 @@
 @use "./mixins/media";
 :root {
-  --header-height: 76px;
+  --header-height: 60px;
   --icon-width: 24px;
 
   --padding: 10px;
@@ -17,8 +17,6 @@
   --border-radius: 10px;
 
   --z-index: 1;
-
-  --headless-layout-header-height: 56px;
 
   --section-max-width: 800px;
   --footer-height: 20vh;

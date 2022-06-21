@@ -70,6 +70,7 @@
   .tooltip-wrapper {
     position: relative;
     display: var(--tooltip-display);
+    width: var(--tooltip-width);
   }
 
   .tooltip {
