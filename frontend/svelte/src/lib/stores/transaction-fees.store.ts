@@ -16,7 +16,7 @@ const defaultTransactionFees = {
  * - setMain: replace the current fee in `main`.
  */
 const initTransactionFeesStore = () => {
-  const { subscribe, update, set } = writable<TransactionFeesStore>(
+  const { subscribe, update } = writable<TransactionFeesStore>(
     defaultTransactionFees
   );
 
@@ -28,11 +28,6 @@ const initTransactionFeesStore = () => {
         ...data,
         main: fee,
       }));
-    },
-
-    // Used in the tests
-    reset() {
-      set(defaultTransactionFees);
     },
   };
 };

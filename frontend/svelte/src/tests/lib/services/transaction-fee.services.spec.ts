@@ -20,7 +20,9 @@ describe("transactionFee-services", () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  afterEach(() => transactionsFeesStore.reset());
+  afterEach(() =>
+    transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S))
+  );
 
   it("set transaction fee to the ledger canister value", async () => {
     await loadMainTransactionFee();

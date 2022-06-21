@@ -501,11 +501,11 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const transactionFee = get(mainTransactionFeeStore);
-    const transactionFeeAmount = transactionFee / E8S_PER_ICP;
+    const fee = get(mainTransactionFeeStore);
+    const transactionFeeAmount = fee / E8S_PER_ICP;
     const stake = convertNumberToICP(amount + transactionFeeAmount);
 
-    if (!isEnoughToStakeNeuron({ stake, fee: transactionFee })) {
+    if (!isEnoughToStakeNeuron({ stake, fee })) {
       throw new InsufficientAmountError();
     }
 

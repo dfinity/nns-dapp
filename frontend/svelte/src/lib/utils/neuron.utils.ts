@@ -602,14 +602,14 @@ export const votedNeuronDetails = ({
 export const minMaturityMerge = (fee: number): number => fee;
 
 export const hasEnoughMaturityToMerge = ({
-  neuron,
+  neuron: { fullNeuron },
   fee,
 }: {
   neuron: NeuronInfo;
   fee: number;
 }): boolean =>
-  neuron.fullNeuron !== undefined &&
-  neuron.fullNeuron.maturityE8sEquivalent > minMaturityMerge(fee);
+  fullNeuron !== undefined &&
+  fullNeuron.maturityE8sEquivalent > minMaturityMerge(fee);
 
 export const minNeuronSplittable = (fee: number): number =>
   2 * E8S_PER_ICP + fee;
