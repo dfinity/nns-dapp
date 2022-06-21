@@ -52,7 +52,8 @@ describe("Makes a proposal and verifies that it is shown", () => {
     );
     await navigator.click(
       ProposalsTab.BACK_TO_PROPOSAL_LIST_SELECTOR,
-      "Go back to proposal list"
+      "Go back to proposal list",
+      { screenshot: true }
     );
   });
 });
