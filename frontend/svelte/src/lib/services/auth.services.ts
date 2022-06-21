@@ -4,6 +4,7 @@ import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
+import {themeStore} from '../stores/theme.store';
 
 const msgParam: string = "msg";
 const levelParam: string = "level";
@@ -19,7 +20,13 @@ export const logout = async ({
     appendMsgToUrl(msg);
   }
 
+  // We preserve the anonymous theme information only so that user sign-in with same theme next time
+  const { theme: storageTheme }: Storage = localStorage;
+
   window.localStorage.clear();
+
+  // TODO: enum validation
+  themeStore.select(storageTheme);
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();
