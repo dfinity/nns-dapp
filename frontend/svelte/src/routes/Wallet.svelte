@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -122,7 +122,7 @@
 </script>
 
 {#if SHOW_ACCOUNTS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack}>
+  <Layout on:nnsBack={goBack} layout="detail">
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>
@@ -147,7 +147,7 @@
         >
       </Toolbar>
     </svelte:fragment>
-  </HeadlessLayout>
+  </Layout>
 
   {#if showNewTransactionModal}
     <NewTransactionModal

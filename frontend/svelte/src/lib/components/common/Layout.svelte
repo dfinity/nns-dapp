@@ -4,7 +4,13 @@
   import Banner from "./Banner.svelte";
   import MenuButton from "./MenuButton.svelte";
   import Menu from "./Menu.svelte";
+  import Back from "./Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
+
+  export let layout: "main" | "detail" = "main";
+
+  let showFooter: boolean;
+  $: showFooter = $$slots.footer;
 
   let open: boolean;
   let sticky: boolean;
@@ -14,7 +20,14 @@
 
 <SplitPane bind:sticky>
   <Header slot="header">
-    <MenuButton slot="start" bind:open />
+    <svelte:fragment slot="start">
+      {#if layout === "detail"}
+        <Back on:nnsBack />
+      {:else}
+        <MenuButton bind:open />
+      {/if}
+    </svelte:fragment>
+
     <svelte:fragment><slot name="header" /></svelte:fragment>
   </Header>
 
@@ -24,9 +37,11 @@
     <slot />
   </main>
 
-  <Footer>
-    <slot name="footer" />
-  </Footer>
+  {#if showFooter}
+    <Footer>
+      <slot name="footer" />
+    </Footer>
+  {/if}
 </SplitPane>
 
 <style lang="scss">
