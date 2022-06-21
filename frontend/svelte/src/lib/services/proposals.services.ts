@@ -265,6 +265,9 @@ export const loadProposalPayload = async ({
           $proposal_id: proposalId.toString(),
         },
       });
+
+      proposalPayloadsStore.setPayload({ proposalId, payload: null });
+
       return;
     }
 
