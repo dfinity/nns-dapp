@@ -7,19 +7,20 @@
   import SplitPane from "../ui/SplitPane.svelte";
 
   export let showFooter = true;
+  let sticky: boolean;
 </script>
 
 <Banner headless={true} />
 
 <!-- TODO: refactor / merge <Layout /> and <HeadlessLayout /> -->
 
-<SplitPane>
+<SplitPane bind:sticky>
   <Header slot="header">
     <Back slot="start" on:nnsBack />
     <svelte:fragment><slot name="header" /></svelte:fragment>
   </Header>
 
-  <Menu slot="menu" />
+  <Menu slot="menu" {sticky} />
 
   <main>
     <slot />
