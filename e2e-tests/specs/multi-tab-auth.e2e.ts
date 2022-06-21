@@ -49,6 +49,12 @@ describe("multi-tab-auth", () => {
   it("oneTabLogsOut", async () => {
     await browser.switchToWindow(nnsTabs[0]);
     await navigator.click(Header.ACCOUNT_MENU_BUTTON_SELECTOR, "account-menu");
+
+    // Small delay for menu animation
+    await browser.pause(500);
+
+    await navigator.click(Header.LOGOUT_BUTTON_SELECTOR, "logout");
+
     await navigator.getElement(AuthPage.SELECTOR);
   });
 
