@@ -30,10 +30,6 @@
   @use "../../themes/mixins/header";
   @use "../../themes/mixins/media";
 
-  .open {
-    @include header.button(--brand-sea-buckthorn);
-  }
-
   .close {
     align-self: flex-start;
     display: flex;
