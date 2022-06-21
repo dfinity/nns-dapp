@@ -1,3 +1,13 @@
+<script lang="ts">
+  export let sticky = false;
+  let outerWidth: number = 0;
+
+  // The media query breakpoint to stick the menu is xlarge 1200px
+  $: sticky = outerWidth > 1200;
+</script>
+
+<svelte:window bind:outerWidth />
+
 <slot name="header" />
 
 <div class="split-pane">
@@ -17,8 +27,6 @@
 
     display: flex;
     flex-flow: row nowrap;
-
-    contain: strict;
 
     pointer-events: none;
   }

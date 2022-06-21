@@ -2,20 +2,22 @@
   import Menu from "../ui/Menu.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
   import MenuItems from "./MenuItems.svelte";
+  import IconClose from "../../icons/IconClose.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
+  import { i18n } from "../../stores/i18n";
 
   export let open: boolean = false;
   export let sticky: boolean = false;
-
-  let outerWidth: number = 0;
-
-  // The media query breakpoint to stick the menu is xlarge 1200px
-  $: sticky = outerWidth > 1200;
 </script>
 
-<svelte:window bind:outerWidth />
+<Menu bind:open {sticky}>
+  <button
+    on:click={() => (open = false)}
+    aria-label={$i18n.core.close}
+    data-tid="menu-close"
+    class="close icon-only"><IconClose /></button
+  >
 
-<Menu {sticky} bind:open>
   <MenuItems />
 
   {#if IS_TESTNET}
@@ -26,6 +28,7 @@
 <style lang="scss">
   @use "../../themes/mixins/effect";
   @use "../../themes/mixins/header";
+  @use "../../themes/mixins/media";
 
   .open {
     @include header.button(--brand-sea-buckthorn);
@@ -39,6 +42,10 @@
     :global(svg) {
       width: 48px;
       height: 48px;
+    }
+
+    @include media.min-width(xlarge) {
+      display: none;
     }
   }
 </style>

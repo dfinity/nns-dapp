@@ -7,17 +7,18 @@
   import SplitPane from "../ui/SplitPane.svelte";
 
   let open: boolean;
+  let sticky: boolean;
 </script>
 
 <Banner />
 
-<SplitPane>
+<SplitPane bind:sticky>
   <Header slot="header">
     <MenuButton slot="start" bind:open />
     <svelte:fragment><slot name="header" /></svelte:fragment>
   </Header>
 
-  <Menu slot="menu" bind:open />
+  <Menu slot="menu" bind:open {sticky} />
 
   <main>
     <slot />
