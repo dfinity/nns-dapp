@@ -37,7 +37,7 @@
     }
 
     :global(button) {
-      flex: 1 1;
+      width: 50%;
     }
   }
 </style>
