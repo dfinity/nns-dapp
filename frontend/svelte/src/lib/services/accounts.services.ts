@@ -7,7 +7,6 @@ import {
   renameSubAccount as renameSubAccountApi,
 } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
-import { toSubAccountId } from "../api/utils.api";
 import type {
   AccountIdentifierString,
   Transaction,
@@ -102,11 +101,7 @@ export const transferICP = async ({
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    // TODO: refactor accountStore => we can keep in store the subAccountId, doing so we can avoid to transform it each time we call the backend
-    const fromSubAccountId =
-      subAccount !== undefined ? toSubAccountId(subAccount) : undefined;
-
-    await sendICP({ identity, to, fromSubAccountId, amount });
+    await sendICP({ identity, to, fromSubAccount: subAccount, amount });
 
     await syncAccounts();
 

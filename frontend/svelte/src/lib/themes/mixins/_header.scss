@@ -1,0 +1,34 @@
+@use "./effect";
+@use "./text";
+
+@mixin button($color) {
+  width: fit-content;
+  padding: var(--padding-1_5x);
+  margin: 0 var(--padding-0_5x);
+
+  @include effect.ripple-effect($color);
+
+  &:focus {
+    background: var(--blue-500-tint);
+    @include effect.ripple-effect($color);
+  }
+
+  :global(svg) {
+    width: var(--padding-3x);
+    height: var(--padding-3x);
+  }
+}
+
+@mixin title {
+  margin: 0;
+
+  color: white;
+
+  grid-column-start: 2;
+
+  @include text.clamp(2);
+
+  text-align: center;
+
+  line-height: inherit;
+}

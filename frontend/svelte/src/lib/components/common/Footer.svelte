@@ -3,6 +3,8 @@
 </footer>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   footer {
     position: fixed;
     bottom: 0;
@@ -19,5 +21,27 @@
       rgba(var(--black-rgb), 1) 10%,
       rgba(var(--black-rgb), 0) 100%
     );
+
+    :global(.toolbar) {
+      align-items: end;
+      margin: 0 auto var(--padding-2x);
+    }
+
+    :global(.main) {
+      @include media.min-width(xsmall) {
+        min-width: 280px;
+        max-width: calc(var(--section-max-width) * 0.7);
+        width: 100%;
+      }
+
+      @include media.min-width(medium) {
+        margin-bottom: var(--padding-2x);
+        gap: var(--padding-2x);
+      }
+    }
+
+    :global(button) {
+      flex: 1 1;
+    }
   }
 </style>
