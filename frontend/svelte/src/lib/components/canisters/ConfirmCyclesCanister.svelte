@@ -51,6 +51,8 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   .wizard-wrapper.wrapper {
     justify-content: space-between;
   }
@@ -64,15 +66,19 @@
   }
 
   .conversion {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--padding);
     margin-bottom: var(--padding-3x);
 
     p,
     h3 {
       margin: 0;
+      display: inline-block;
+    }
+
+    @include media.min-width(small) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--padding);
     }
   }
 </style>
