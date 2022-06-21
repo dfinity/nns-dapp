@@ -83,14 +83,14 @@
       <Toolbar>
         <button
           data-tid="stake-neuron-button"
-          class="primary"
+          class="primary full-width"
           on:click={() => openModal("stake-neuron")}
           >{$i18n.neurons.stake_neurons}</button
         >
         {#if enoughNeuronsToMerge}
           <button
             data-tid="merge-neurons-button"
-            class="primary"
+            class="primary full-width"
             on:click={() => openModal("merge-neurons")}
             >{$i18n.neurons.merge_neurons}</button
           >
