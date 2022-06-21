@@ -40,7 +40,7 @@ describe("multi-tab-auth", () => {
     await Promise.all(
       nnsTabs.map(async (tabId, index) => {
         await browser.switchToWindow(tabId);
-        await navigator.getElement(Header.LOGOUT_BUTTON_SELECTOR);
+        await navigator.getElement(Header.ACCOUNT_MENU_BUTTON_SELECTOR);
         await browser["screenshot"](`register-logged-in-tab-${index}`);
       })
     );
@@ -48,7 +48,7 @@ describe("multi-tab-auth", () => {
 
   it("oneTabLogsOut", async () => {
     await browser.switchToWindow(nnsTabs[0]);
-    await navigator.click(Header.LOGOUT_BUTTON_SELECTOR, "logout");
+    await navigator.click(Header.ACCOUNT_MENU_BUTTON_SELECTOR, "account-menu");
     await navigator.getElement(AuthPage.SELECTOR);
   });
 
