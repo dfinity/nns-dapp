@@ -10,7 +10,7 @@
   let sticky: boolean;
 </script>
 
-<Banner headless={true} />
+<Banner />
 
 <!-- TODO: refactor / merge <Layout /> and <HeadlessLayout /> -->
 
