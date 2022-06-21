@@ -1,4 +1,5 @@
 import { ICP } from "@dfinity/nns";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
   convertIcpToTCycles,
@@ -75,14 +76,36 @@ describe("icp-utils", () => {
   });
 
   it("should format a specific transaction fee", () =>
-    expect(formattedTransactionFeeICP()).toEqual("0.0001"));
+    expect(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S)).toEqual(
+      "0.0001"
+    ));
 
   it("should max ICP value", () => {
-    expect(maxICP(undefined)).toEqual(0);
-    expect(maxICP(ICP.fromString("0") as ICP)).toEqual(0);
-    expect(maxICP(ICP.fromString("0.0001") as ICP)).toEqual(0);
-    expect(maxICP(ICP.fromString("0.00011") as ICP)).toEqual(0.00001);
-    expect(maxICP(ICP.fromString("1") as ICP)).toEqual(0.9999);
+    expect(maxICP({ fee: DEFAULT_TRANSACTION_FEE_E8S })).toEqual(0);
+    expect(
+      maxICP({
+        icp: ICP.fromString("0") as ICP,
+        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      })
+    ).toEqual(0);
+    expect(
+      maxICP({
+        icp: ICP.fromString("0.0001") as ICP,
+        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      })
+    ).toEqual(0);
+    expect(
+      maxICP({
+        icp: ICP.fromString("0.00011") as ICP,
+        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      })
+    ).toEqual(0.00001);
+    expect(
+      maxICP({
+        icp: ICP.fromString("1") as ICP,
+        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      })
+    ).toEqual(0.9999);
   });
 
   describe("convertNumberToICP", () => {

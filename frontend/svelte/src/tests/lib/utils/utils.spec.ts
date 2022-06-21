@@ -323,6 +323,8 @@ describe("utils", () => {
     beforeEach(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      // Avoid to print errors during test
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should recall the function until `shouldExit` is true", async () => {
