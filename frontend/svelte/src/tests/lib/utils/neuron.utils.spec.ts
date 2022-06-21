@@ -6,10 +6,12 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
-import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import {
+  DEFAULT_TRANSACTION_FEE_E8S,
+  E8S_PER_ICP,
+} from "../../../lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
-  MIN_MATURITY_MERGE,
   MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
 import type { Step } from "../../../lib/stores/steps.state";
@@ -39,6 +41,8 @@ import {
   mapMergeableNeurons,
   mapNeuronIds,
   maturityByStake,
+  minMaturityMerge,
+  minNeuronSplittable,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
@@ -188,8 +192,8 @@ describe("neuron-utils", () => {
 
       const fullNeuronWithoutEnoughStake = {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(TRANSACTION_FEE_E8S / 4),
-        maturityE8sEquivalent: BigInt(TRANSACTION_FEE_E8S / 4),
+        cachedNeuronStake: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
+        maturityE8sEquivalent: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
       };
       const neuronWithoutEnoughStake = {
         ...mockNeuron,
@@ -305,49 +309,6 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
-    });
-  });
-
-  describe("hasEnoughMaturityToMerge", () => {
-    it("returns false when no full neuron", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: undefined,
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
-    });
-
-    it("returns false if neuron maturity is 0", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(0),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
-    });
-
-    it("returns true if maturity larger than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) + BigInt(1000),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(true);
-    });
-
-    it("returns false if maturity smaller than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) - BigInt(100),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
   });
 
@@ -604,32 +565,6 @@ describe("neuron-utils", () => {
           recentBallots: [ballotWithProposalId, ballotWithProposalId],
         })
       ).toEqual([ballotWithProposalId, ballotWithProposalId]);
-    });
-  });
-
-  describe("neuronCanBeSplit", () => {
-    it("should return true if neuron has enough stake to be splitted", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(1_000_000_000),
-          neuronFees: BigInt(10),
-        },
-      };
-      expect(neuronCanBeSplit(neuron)).toBe(true);
-    });
-
-    it("should return false if neuron has not enough stake to be splitted", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(100),
-          neuronFees: BigInt(10),
-        },
-      };
-      expect(neuronCanBeSplit(neuron)).toBe(false);
     });
   });
 
@@ -1463,6 +1398,92 @@ describe("neuron-utils", () => {
         proposal,
       });
       expect(expected).toHaveLength(1);
+    });
+  });
+
+  describe("neuronCanBeSplit", () => {
+    it("should return true if neuron has enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(1_000_000_000),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(true);
+    });
+
+    it("should return false if neuron has not enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("hasEnoughMaturityToMerge", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent:
+            BigInt(DEFAULT_TRANSACTION_FEE_E8S) + BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent:
+            BigInt(DEFAULT_TRANSACTION_FEE_E8S) - BigInt(100),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("minNeuronSplittable", () => {
+    it("returns fee plus two ICPs", () => {
+      const received = minNeuronSplittable(10_000);
+      expect(received).toBe(10_000 + 2 * E8S_PER_ICP);
+    });
+  });
+
+  describe("minMaturityMerge", () => {
+    it("returns value of fee", () => {
+      const fee = 10_000;
+      const received = minMaturityMerge(10_000);
+      expect(received).toBe(fee);
     });
   });
 });
