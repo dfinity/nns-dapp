@@ -13,6 +13,7 @@ import type {
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
+import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -24,7 +25,7 @@ import {
   getAccountByPrincipal,
   getAccountFromStore,
 } from "../utils/accounts.utils";
-import { getLastPathDetail } from "../utils/app-path.utils";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -133,13 +134,25 @@ const transferError = ({
   return { success: false, err: labelKey };
 };
 
+/**
+ * @param path current route path
+ * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
+ */
 export const routePathAccountIdentifier = (
   path: string | undefined
-): string | undefined => {
+): { accountIdentifier: string | undefined } | undefined => {
+  if (!isRoutePath({ path: AppPath.Wallet, routePath: path })) {
+    return undefined;
+  }
+
   const accountIdentifier: string | undefined = getLastPathDetail(path);
-  return accountIdentifier !== undefined && accountIdentifier !== ""
-    ? accountIdentifier
-    : undefined;
+
+  return {
+    accountIdentifier:
+      accountIdentifier !== undefined && accountIdentifier !== ""
+        ? accountIdentifier
+        : undefined,
+  };
 };
 
 export const getAccountTransactions = async ({

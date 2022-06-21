@@ -3,36 +3,39 @@
   import Banner from "./Banner.svelte";
   import Header from "./Header.svelte";
   import Back from "./Back.svelte";
+  import Menu from "./Menu.svelte";
+  import SplitPane from "../ui/SplitPane.svelte";
 
   export let showFooter = true;
 </script>
 
 <Banner headless={true} />
 
-<Header>
-  <Back slot="start" on:nnsBack />
-  <svelte:fragment><slot name="header" /></svelte:fragment>
-</Header>
+<!-- TODO: refactor / merge <Layout /> and <HeadlessLayout /> -->
 
-<main>
-  <slot />
-</main>
+<SplitPane>
+  <Header slot="header">
+    <Back slot="start" on:nnsBack />
+    <svelte:fragment><slot name="header" /></svelte:fragment>
+  </Header>
 
-{#if showFooter}
-  <Footer>
-    <slot name="footer" />
-  </Footer>
-{/if}
+  <Menu slot="menu" />
+
+  <main>
+    <slot />
+  </main>
+
+  {#if showFooter}
+    <Footer>
+      <slot name="footer" />
+    </Footer>
+  {/if}
+</SplitPane>
 
 <style lang="scss">
   main {
-    position: absolute;
-
-    inset: var(--header-height) 0 0;
-
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-
-    background-color: var(--gray-50-background);
   }
 </style>

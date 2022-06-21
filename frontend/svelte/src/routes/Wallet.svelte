@@ -66,18 +66,23 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier: string | undefined;
+  let routeAccountIdentifier: {accountIdentifier: string | undefined} | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
   let selectedAccount: Account | undefined;
   $: selectedAccount = getAccountFromStore({
-    identifier: routeAccountIdentifier,
+    identifier: routeAccountIdentifier?.accountIdentifier,
     accountsStore: $accountsStore,
   });
 
   $: routeAccountIdentifier,
     selectedAccount,
     (() => {
+      // Not /wallet route
+      if (routeAccountIdentifier === undefined) {
+        return;
+      }
+
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
@@ -104,7 +109,7 @@
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            $account_identifier: routeAccountIdentifier ?? "",
+            $account_identifier: routeAccountIdentifier?.accountIdentifier ?? "",
           }),
         });
         goBack();

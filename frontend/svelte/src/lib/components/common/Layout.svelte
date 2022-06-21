@@ -2,32 +2,36 @@
   import Footer from "./Footer.svelte";
   import Header from "./Header.svelte";
   import Banner from "./Banner.svelte";
+  import MenuButton from "./MenuButton.svelte";
   import Menu from "./Menu.svelte";
+  import SplitPane from "../ui/SplitPane.svelte";
+
+  let open: boolean;
 </script>
 
 <Banner />
 
-<Header>
-  <Menu slot="start" />
-  <svelte:fragment><slot name="header" /></svelte:fragment>
-</Header>
+<SplitPane>
+  <Header slot="header">
+    <MenuButton slot="start" bind:open />
+    <svelte:fragment><slot name="header" /></svelte:fragment>
+  </Header>
 
-<main>
-  <slot />
-</main>
+  <Menu slot="menu" bind:open />
 
-<Footer>
-  <slot name="footer" />
-</Footer>
+  <main>
+    <slot />
+  </main>
+
+  <Footer>
+    <slot name="footer" />
+  </Footer>
+</SplitPane>
 
 <style lang="scss">
   main {
-    position: absolute;
-    top: calc(var(--header-offset, 0px) + var(--header-height));
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    overflow: auto;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 </style>

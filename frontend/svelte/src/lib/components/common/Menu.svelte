@@ -1,32 +1,19 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
   import Menu from "../ui/Menu.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
   import MenuItems from "./MenuItems.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
-  import IconMenu from "../../icons/IconMenu.svelte";
-  import IconClose from "../../icons/IconClose.svelte";
 
-  let open: boolean;
+  export let open: boolean = false;
+  export let sticky: boolean = false;
+
+  let outerWidth: number = 0;
+  $: sticky = outerWidth > 1200;
 </script>
 
-<button
-  data-tid="menu"
-  class="icon-only open"
-  on:click={() => (open = true)}
-  aria-label={$i18n.header.menu}
->
-  <IconMenu />
-</button>
+<svelte:window bind:outerWidth />
 
-<Menu bind:open>
-  <button
-    on:click={() => (open = false)}
-    aria-label={$i18n.core.close}
-    data-tid="menu-close"
-    class="close icon-only"><IconClose /></button
-  >
-
+<Menu {sticky} bind:open>
   <MenuItems />
 
   {#if IS_TESTNET}

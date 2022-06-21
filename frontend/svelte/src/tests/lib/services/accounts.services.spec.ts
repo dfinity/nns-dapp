@@ -240,11 +240,11 @@ describe("accounts-services", () => {
     it("should get account identifier from valid path", () => {
       expect(
         routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual(mockMainAccount.identifier);
+      ).toEqual({accountIdentifier: mockMainAccount.identifier});
     });
 
     it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toBeUndefined();
+      expect(routePathAccountIdentifier("/#/wallet/")).toEqual({accountIdentifier: undefined});
       expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
