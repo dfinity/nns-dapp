@@ -37,9 +37,9 @@ const initTransactionFeesStore = () => {
   };
 };
 
-export const transactionsFeeStore = initTransactionFeesStore();
+export const transactionsFeesStore = initTransactionFeesStore();
 
-export const mainTransactionFeeNumberStore = derived(
-  transactionsFeeStore,
+export const mainTransactionFeeStore = derived(
+  transactionsFeesStore,
   ($store) => Number($store.main)
 );

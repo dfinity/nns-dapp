@@ -30,7 +30,7 @@ import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
-import { mainTransactionFeeNumberStore } from "../stores/transaction-fees.store";
+import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import {
@@ -501,7 +501,7 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const transactionFee = get(mainTransactionFeeNumberStore);
+    const transactionFee = get(mainTransactionFeeStore);
     const transactionFeeAmount = transactionFee / E8S_PER_ICP;
     const stake = convertNumberToICP(amount + transactionFeeAmount);
 

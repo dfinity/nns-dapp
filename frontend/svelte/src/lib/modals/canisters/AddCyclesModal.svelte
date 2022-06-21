@@ -21,7 +21,7 @@
   import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -123,7 +123,7 @@
       >
         <p>
           {replacePlaceholders($i18n.canisters.transaction_fee, {
-            $amount: formattedTransactionFeeICP($mainTransactionFeeNumberStore),
+            $amount: formattedTransactionFeeICP($mainTransactionFeeStore),
           })}
         </p>
         <div>

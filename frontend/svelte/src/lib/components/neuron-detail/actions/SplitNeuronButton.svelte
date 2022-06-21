@@ -9,7 +9,7 @@
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { formatICP } from "../../../utils/icp.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
-  import { mainTransactionFeeNumberStore } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -21,7 +21,7 @@
   let isSplittable: boolean;
   $: isSplittable = neuronCanBeSplit({
     neuron,
-    fee: $mainTransactionFeeNumberStore,
+    fee: $mainTransactionFeeStore,
   });
 </script>
 
@@ -29,7 +29,7 @@
   id="split-neuron-button"
   text={replacePlaceholders($i18n.neuron_detail.split_neuron_disabled_tooltip, {
     $amount: formatICP({
-      value: BigInt(minNeuronSplittable($mainTransactionFeeNumberStore)),
+      value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
       detailed: true,
     }),
   })}

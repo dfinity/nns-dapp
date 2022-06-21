@@ -9,7 +9,7 @@
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   export let account: Account;
   let amount: number;
@@ -45,7 +45,7 @@
   let max: number = 0;
   $: max = maxICP({
     icp: account.balance,
-    fee: $mainTransactionFeeNumberStore,
+    fee: $mainTransactionFeeStore,
   });
 
   const stakeMaximum = () => (amount = max);
@@ -65,7 +65,7 @@
   <div class="transaction-fee">
     <h5>{$i18n.neurons.transaction_fee}</h5>
     <small>
-      <span>{formattedTransactionFeeICP($mainTransactionFeeNumberStore)}</span>
+      <span>{formattedTransactionFeeICP($mainTransactionFeeStore)}</span>
       <span>ICP</span>
     </small>
   </div>

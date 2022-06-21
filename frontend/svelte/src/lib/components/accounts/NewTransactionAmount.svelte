@@ -11,7 +11,7 @@
   import { ICP } from "@dfinity/nns";
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
-  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -25,7 +25,7 @@
   let max: number = 0;
   $: max = maxICP({
     icp: $store.selectedAccount?.balance,
-    fee: $mainTransactionFeeNumberStore,
+    fee: $mainTransactionFeeStore,
   });
 
   let validForm: boolean;

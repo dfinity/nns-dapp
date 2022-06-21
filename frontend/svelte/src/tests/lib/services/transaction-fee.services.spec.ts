@@ -3,8 +3,8 @@ import * as api from "../../../lib/api/ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import { loadMainTransactionFee } from "../../../lib/services/transaction-fees.services";
 import {
-  mainTransactionFeeNumberStore,
-  transactionsFeeStore,
+  mainTransactionFeeStore,
+  transactionsFeesStore,
 } from "../../../lib/stores/transaction-fees.store";
 import { resetIdentity, setNoIdentity } from "../../mocks/auth.store.mock";
 
@@ -20,14 +20,14 @@ describe("transactionFee-services", () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  afterEach(() => transactionsFeeStore.reset());
+  afterEach(() => transactionsFeesStore.reset());
 
   it("set transaction fee to the ledger canister value", async () => {
     await loadMainTransactionFee();
 
     expect(spyTranactionFeeApi).toHaveBeenCalled();
 
-    const storeFee = get(mainTransactionFeeNumberStore);
+    const storeFee = get(mainTransactionFeeStore);
     expect(storeFee).toEqual(Number(fee));
   });
 
@@ -36,7 +36,7 @@ describe("transactionFee-services", () => {
 
     await loadMainTransactionFee();
 
-    const storeFee = get(mainTransactionFeeNumberStore);
+    const storeFee = get(mainTransactionFeeStore);
     expect(storeFee).toEqual(DEFAULT_TRANSACTION_FEE_E8S);
 
     resetIdentity();

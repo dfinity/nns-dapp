@@ -11,7 +11,7 @@
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
-  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -27,7 +27,7 @@
   $: max =
     stakeE8s === BigInt(0)
       ? 0
-      : (Number(stakeE8s) - $mainTransactionFeeNumberStore) / E8S_PER_ICP;
+      : (Number(stakeE8s) - $mainTransactionFeeStore) / E8S_PER_ICP;
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -69,7 +69,7 @@
     <div>
       <h5>{$i18n.neurons.transaction_fee}</h5>
 
-      <p>{formattedTransactionFeeICP($mainTransactionFeeNumberStore)} ICP</p>
+      <p>{formattedTransactionFeeICP($mainTransactionFeeStore)} ICP</p>
     </div>
 
     <button

@@ -14,7 +14,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
   import { toastsStore } from "../../stores/toasts.store";
-  import { mainTransactionFeeNumberStore } from "../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
   import type { CreateOrLinkType } from "../../types/canisters";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -150,7 +150,7 @@
         <p>{$i18n.canisters.minimum_cycles_text_1}</p>
         <p>
           {replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
-            $amount: formattedTransactionFeeICP($mainTransactionFeeNumberStore),
+            $amount: formattedTransactionFeeICP($mainTransactionFeeStore),
           })}
         </p>
       </SelectCyclesCanister>

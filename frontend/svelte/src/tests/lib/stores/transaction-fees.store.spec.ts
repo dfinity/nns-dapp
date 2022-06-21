@@ -1,29 +1,29 @@
 import { get } from "svelte/store";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
-  mainTransactionFeeNumberStore,
-  transactionsFeeStore,
+  mainTransactionFeeStore,
+  transactionsFeesStore,
 } from "../../../lib/stores/transaction-fees.store";
 
-describe("transactionsFeeStore", () => {
-  beforeEach(() => transactionsFeeStore.reset());
+describe("transactionsFeesStore", () => {
+  beforeEach(() => transactionsFeesStore.reset());
   it("should set it to default transaction fee", () => {
-    const { main } = get(transactionsFeeStore);
+    const { main } = get(transactionsFeesStore);
     expect(main).toEqual(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
   });
 
   it("should set main value", () => {
     const newFee = 40_000;
-    transactionsFeeStore.setMain(BigInt(newFee));
-    const fee = get(mainTransactionFeeNumberStore);
+    transactionsFeesStore.setMain(BigInt(newFee));
+    const fee = get(mainTransactionFeeStore);
     expect(fee).toBe(newFee);
   });
 
   it("should reset to default", () => {
-    transactionsFeeStore.setMain(BigInt(40_000));
-    const fee1 = get(transactionsFeeStore);
-    transactionsFeeStore.reset();
-    const fee2 = get(transactionsFeeStore);
+    transactionsFeesStore.setMain(BigInt(40_000));
+    const fee1 = get(transactionsFeesStore);
+    transactionsFeesStore.reset();
+    const fee2 = get(transactionsFeesStore);
     expect(fee1.main).not.toEqual(fee2);
   });
 });

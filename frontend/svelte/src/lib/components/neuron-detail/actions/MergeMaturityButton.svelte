@@ -9,7 +9,7 @@
     hasEnoughMaturityToMerge,
     minMaturityMerge,
   } from "../../../utils/neuron.utils";
-  import { mainTransactionFeeNumberStore } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -24,7 +24,7 @@
     $i18n.neuron_detail.merge_maturity_disabled_tooltip,
     {
       $amount: formatICP({
-        value: BigInt(minMaturityMerge($mainTransactionFeeNumberStore)),
+        value: BigInt(minMaturityMerge($mainTransactionFeeStore)),
         detailed: true,
       }),
     }
@@ -33,7 +33,7 @@
   <button
     disabled={!hasEnoughMaturityToMerge({
       neuron,
-      fee: $mainTransactionFeeNumberStore,
+      fee: $mainTransactionFeeStore,
     })}
     class="primary small"
     on:click={showModal}>{$i18n.neuron_detail.merge_maturity}</button
