@@ -6,8 +6,6 @@
     ROLLUP_WATCH,
   } from "../../constants/environment.constants";
 
-  export let headless: boolean = false;
-
   const localstorageKey: string = "nnsdapp-testnet-banner-display";
 
   let visible: boolean = JSON.parse(
@@ -40,7 +38,7 @@
 </svelte:head>
 
 {#if banner && visible}
-  <div class:headless>
+  <div>
     <h4>For <strong>test</strong> purpose only.</h4>
     <button on:click={close} aria-label={$i18n.core.close}><IconClose /></button
     >
@@ -55,10 +53,6 @@
     top: 0;
     left: 0;
     right: 0;
-
-    &.headless {
-      position: relative;
-    }
 
     z-index: var(--z-index);
 

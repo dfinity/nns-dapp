@@ -1,25 +1,16 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
   import Menu from "../ui/Menu.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
   import MenuItems from "./MenuItems.svelte";
-  import { IS_TESTNET } from "../../constants/environment.constants";
-  import IconMenu from "../../icons/IconMenu.svelte";
   import IconClose from "../../icons/IconClose.svelte";
+  import { IS_TESTNET } from "../../constants/environment.constants";
+  import { i18n } from "../../stores/i18n";
 
-  let open: boolean;
+  export let open: boolean = false;
+  export let sticky: boolean = false;
 </script>
 
-<button
-  data-tid="menu"
-  class="icon-only open"
-  on:click={() => (open = true)}
-  aria-label={$i18n.header.menu}
->
-  <IconMenu />
-</button>
-
-<Menu bind:open>
+<Menu bind:open {sticky}>
   <button
     on:click={() => (open = false)}
     aria-label={$i18n.core.close}
@@ -37,10 +28,7 @@
 <style lang="scss">
   @use "../../themes/mixins/effect";
   @use "../../themes/mixins/header";
-
-  .open {
-    @include header.button(--brand-sea-buckthorn);
-  }
+  @use "../../themes/mixins/media";
 
   .close {
     align-self: flex-start;
@@ -50,6 +38,10 @@
     :global(svg) {
       width: 48px;
       height: 48px;
+    }
+
+    @include media.min-width(xlarge) {
+      display: none;
     }
   }
 </style>
