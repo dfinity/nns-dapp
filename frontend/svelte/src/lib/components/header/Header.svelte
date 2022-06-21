@@ -9,7 +9,7 @@
   <Toolbar>
     <svelte:fragment slot="start"><slot name="start" /></svelte:fragment>
     <h4 use:triggerDebugReport><slot /></h4>
-    <AccountMenu />
+    <AccountMenu slot="end" />
   </Toolbar>
 </Header>
 
