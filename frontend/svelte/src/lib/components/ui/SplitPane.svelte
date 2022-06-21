@@ -1,12 +1,12 @@
 <script lang="ts">
   export let sticky = false;
-  let outerWidth: number = 0;
+  let innerWidth: number = 0;
 
   // The media query breakpoint to stick the menu is xlarge 1300px
-  $: sticky = outerWidth > 1300;
+  $: sticky = innerWidth > 1300;
 </script>
 
-<svelte:window bind:outerWidth />
+<svelte:window bind:innerWidth />
 
 <slot name="header" />
 
