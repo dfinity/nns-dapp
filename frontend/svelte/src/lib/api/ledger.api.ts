@@ -43,6 +43,19 @@ export const sendICP = async ({
   return response;
 };
 
+/**
+ * Returns transaction fee of the Ledger Canister in IC
+ *
+ * @returns {bigint}
+ */
+export const transactionFee = async ({ identity }: { identity: Identity }) => {
+  logWithTimestamp(`Getting transaction fee call...`);
+  const { canister } = await ledgerCanister({ identity });
+  const fee = await canister.transactionFee();
+  logWithTimestamp(`Getting transactoin fee complete.`);
+  return fee;
+};
+
 export const ledgerCanister = async ({
   identity,
 }: {
