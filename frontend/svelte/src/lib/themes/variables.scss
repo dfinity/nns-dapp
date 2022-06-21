@@ -1,6 +1,8 @@
 @use "./mixins/media";
 :root {
   --header-height: 56px;
+  --menu-width: 304px;
+
   --icon-width: 24px;
 
   --padding: 8px;
@@ -10,7 +12,6 @@
   --padding-2x: calc(2 * var(--padding));
   --padding-3x: calc(3 * var(--padding));
   --padding-4x: calc(4 * var(--padding));
-  --padding-6x: calc(4 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
   --border-radius: 10px;
@@ -225,10 +226,10 @@
     /** TODO: extract color that are constant and rename with --color-name instead of "--blue-500" */
 
     --color-iris: #4e48d2;
-    --color-iris-rgb: 78,72,210;
+    --color-iris-rgb: 78, 72, 210;
     --color-iris-contrast: #ffffff;
-    --color-iris-contrast-rgb: 255,255,255;
+    --color-iris-contrast-rgb: 255, 255, 255;
     --color-iris-shade: #453fb9;
-    --color-iris-tint: #605ad7
+    --color-iris-tint: #605ad7;
   }
 }

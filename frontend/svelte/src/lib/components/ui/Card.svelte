@@ -89,7 +89,7 @@
   }
 
   .main {
-    background: linear-gradient(99.27deg, #00A5FF -0.11%, #4E48D2 100.63%);
+    background: linear-gradient(99.27deg, #00a5ff -0.11%, #4e48d2 100.63%);
     color: white;
   }
 </style>

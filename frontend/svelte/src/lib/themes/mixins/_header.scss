@@ -1,4 +1,4 @@
-@use "../mixins/effect";
+@use "./effect";
 @use "./text";
 
 @mixin button($color) {

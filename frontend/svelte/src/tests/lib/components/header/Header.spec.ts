@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Header from "../../../../lib/components/common/Header.svelte";
+import Header from "../../../../lib/components/header/Header.svelte";
 import en from "../../../mocks/i18n.mock";
 import HeaderTest from "./HeaderTest.svelte";
 

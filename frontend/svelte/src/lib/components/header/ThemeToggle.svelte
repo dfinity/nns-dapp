@@ -6,8 +6,8 @@
   import { Theme } from "../../types/theme";
   import { themeStore } from "../../stores/theme.store";
 
-  const switchTheme = ({detail}: CustomEvent<boolean>) =>
-          themeStore.select(detail ? Theme.DARK : Theme.LIGHT);
+  const switchTheme = ({ detail }: CustomEvent<boolean>) =>
+    themeStore.select(detail ? Theme.DARK : Theme.LIGHT);
 
   let checked: boolean;
   $: checked = $themeStore === Theme.DARK;
@@ -19,7 +19,7 @@
   <div class="toggle">
     <IconLightMode />
     <Toggle bind:checked on:nnsToggle={switchTheme} />
-    <IconDarkMode/>
+    <IconDarkMode />
   </div>
 </div>
 

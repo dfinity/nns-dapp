@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "../lib/canisters/nns-dapp/nns-dapp.types";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import {
     AppPath,
     SHOW_CANISTERS_ROUTE,
@@ -193,7 +193,7 @@
 </script>
 
 {#if SHOW_CANISTERS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack}>
+  <Layout on:nnsBack={goBack} layout="detail">
     <svelte:fragment slot="header"
       >{$i18n.canister_detail.title}</svelte:fragment
     >
@@ -235,7 +235,7 @@
         >
       </Toolbar>
     </svelte:fragment>
-  </HeadlessLayout>
+  </Layout>
 
   {#if showAddCyclesModal}
     <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
