@@ -5,10 +5,10 @@ import * as api from "../../../lib/api/proposals.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
-  getProposalPayload,
   listNextProposals,
   listProposals,
   loadProposal,
+  loadProposalPayload,
   registerVotes,
   routePathProposalId,
 } from "../../../lib/services/proposals.services";
@@ -495,13 +495,13 @@ describe("proposals-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call queryProposalPayload", async () => {
-      await getProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: BigInt(0) });
       expect(spyQueryProposalPayload).toBeCalledTimes(1);
     });
 
     it("should update proposalPayloadsStore", async () => {
       const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
-      await getProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: BigInt(0) });
 
       expect(spyOnSetPayload).toBeCalledTimes(1);
       expect(spyOnSetPayload).toHaveBeenLastCalledWith({

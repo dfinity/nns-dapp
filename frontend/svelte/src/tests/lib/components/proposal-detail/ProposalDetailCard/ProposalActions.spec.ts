@@ -9,7 +9,7 @@ import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.
 import ProposalActions from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
 import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
 import {
-  getNnsFunctionId,
+  getNnsFunctionIndex,
   proposalFirstActionKey,
 } from "../../../../../lib/utils/proposals.utils";
 import en from "../../../../mocks/i18n.mock";
@@ -116,7 +116,7 @@ describe("ProposalActions", () => {
         },
       });
 
-      const id = getNnsFunctionId(proposalWithNnsFunctionAction);
+      const id = getNnsFunctionIndex(proposalWithNnsFunctionAction);
       const fnName = en.nns_function_names[`${id}`];
 
       expect(getByText(fnName)).toBeInTheDocument();

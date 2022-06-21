@@ -243,9 +243,9 @@ const getProposal = async ({
 };
 
 /**
- * Return proposal payload
+ * Loads proposal payload in proposalPayloadsStore
  */
-export const getProposalPayload = async ({
+export const loadProposalPayload = async ({
   proposalId,
 }: {
   proposalId: ProposalId;

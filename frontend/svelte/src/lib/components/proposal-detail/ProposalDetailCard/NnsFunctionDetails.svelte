@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalId } from "@dfinity/nns";
   import Json from "../../common/Json.svelte";
-  import { getProposalPayload } from "../../../services/proposals.services";
+  import { loadProposalPayload } from "../../../services/proposals.services";
   import Spinner from "../../ui/Spinner.svelte";
   import { i18n } from "../../../stores/i18n";
   import { proposalPayloadsStore } from "../../../stores/proposals.store";
@@ -21,7 +21,7 @@
     proposalId !== undefined &&
     $proposalPayloadsStore[`${proposalId}`] === undefined
   ) {
-    getProposalPayload({
+    loadProposalPayload({
       proposalId,
     });
   }
