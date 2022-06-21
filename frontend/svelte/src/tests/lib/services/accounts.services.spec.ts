@@ -244,7 +244,7 @@ describe("accounts-services", () => {
     });
 
     it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual({accountIdentifier: undefined});
+      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
       expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
