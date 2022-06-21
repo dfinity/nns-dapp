@@ -2,20 +2,23 @@
   import Backdrop from "./Backdrop.svelte";
   import { cubicOut } from "svelte/easing";
 
+  // Type is not exposed by Svelte
+  type SvelteTransitionConfig = {
+    delay?: number;
+    duration?: number;
+    easing?: (t: number) => number;
+    css?: (t: number, u: number) => string;
+    tick?: (t: number, u: number) => void;
+  };
+
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const animateMenu = (
     _node: Element,
     _options: { delay?: number; duration?: number }
-  ) => {
-    if (sticky) {
-      return;
-    }
-
-    return {
-      easing: cubicOut,
-      css: (t: number) => `transform: translate(${-100 * (1 - t)}%);`,
-    };
-  };
+  ): SvelteTransitionConfig => ({
+    easing: cubicOut,
+    css: (t: number) => `transform: translate(${-100 * (1 - t)}%);`,
+  });
   /* eslint-enable */
 
   export let open = false;
@@ -23,6 +26,12 @@
 
   let backdrop = true;
   $: backdrop = !sticky;
+
+  let transition: (
+    _node: Element,
+    _options: { delay?: number; duration?: number }
+  ) => SvelteTransitionConfig;
+  $: transition = sticky ? () => ({duration: 0}) : animateMenu;
 </script>
 
 {#if open || sticky}
@@ -31,7 +40,7 @@
       <Backdrop on:nnsClose={() => (open = false)} />
     {/if}
 
-    <div class="inner" transition:animateMenu>
+    <div class="inner" transition:transition>
       <slot />
     </div>
   </div>
