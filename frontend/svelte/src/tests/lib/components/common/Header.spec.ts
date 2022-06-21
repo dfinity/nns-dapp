@@ -7,11 +7,19 @@ import Header from "../../../../lib/components/common/Header.svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("Header", () => {
-  it("should render a logout button", () => {
+  it("should render a menu button", () => {
     const { getByTestId } = render(Header);
-    const button = getByTestId("logout");
+    const button = getByTestId("menu");
     expect(button).not.toBeNull();
     expect(button).toBeVisible();
-    expect(button).toHaveTextContent(en.header.logout);
+    expect(button.getAttribute("aria-label")).toEqual(en.header.menu);
+  });
+
+  it("should render an account menu button", () => {
+    const { getByTestId } = render(Header);
+    const button = getByTestId("account-menu");
+    expect(button).not.toBeNull();
+    expect(button).toBeVisible();
+    expect(button.getAttribute("aria-label")).toEqual(en.header.account_menu);
   });
 });

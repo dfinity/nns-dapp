@@ -2,7 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
-import { CMCError, ProcessingError } from "../canisters/cmc/cmc.errors";
+import { ProcessingError } from "../canisters/cmc/cmc.errors";
 import type { Cycles } from "../canisters/cmc/cmc.types";
 import { principalToSubAccount } from "../canisters/cmc/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
@@ -22,9 +22,9 @@ import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { poll, PollingLimitExceededError } from "../utils/utils";
 import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
+import { ApiErrorKey } from "./errors.api";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
-import { toSubAccountId } from "./utils.api";
 
 export const queryCanisters = async ({
   identity,
@@ -154,10 +154,7 @@ const pollNotifyCreateCanister = async ({
     });
   } catch (error) {
     if (pollingLimit(error)) {
-      // TODO: i18n errors https://dfinity.atlassian.net/browse/L2-721
-      throw new CMCError(
-        "Error creating canister. Canister might be created, refresh the page. Try again if not."
-      );
+      throw new ApiErrorKey("error.limit_exceeded_creating_canister");
     }
     throw error;
   }
@@ -185,8 +182,6 @@ export const createCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
 
   // Transfer the funds
   const blockHeight = await sendICP({
@@ -194,7 +189,7 @@ export const createCanister = async ({
     identity,
     to: recipient.toHex(),
     amount,
-    fromSubAccountId,
+    fromSubAccount,
   });
 
   // If this fails or the client loses connection, nns dapp backend polls the transactions
@@ -250,10 +245,7 @@ const pollNotifyTopUpCanister = async ({
     });
   } catch (error) {
     if (pollingLimit(error)) {
-      // TODO: i18n errors https://dfinity.atlassian.net/browse/L2-721
-      throw new CMCError(
-        "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not."
-      );
+      throw new ApiErrorKey("error.limit_exceeded_topping_up_canister.");
     }
     throw error;
   }
@@ -278,14 +270,12 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
-    fromSubAccountId,
+    fromSubAccount,
   });
 
   // If this fails or the client loses connection
