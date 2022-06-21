@@ -10,12 +10,12 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://nns.raw.ic0.app/assets/assets/favicons/icon-192x192.png",
+      "src": "https://nns.raw.ic0.app/assets/favicons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://nns.raw.ic0.app/assets/assets/favicons/icon-512x512.png",
+      "src": "https://nns.raw.ic0.app/assets/favicons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

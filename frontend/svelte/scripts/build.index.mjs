@@ -19,12 +19,12 @@ const buildIndex = () => {
 };
 
 /**
- * Specifies where the svelte app is loaded (typically "/" in local development and "/v2" in production)
+ * Specifies where the svelte app is loaded (typically "/" in both local development and in production)
  */
 const updateBaseHref = (content) =>
   content.replace(
     "<!-- BASE_HREF -->",
-    `<base href="${process.env.BASE_HREF || "/v2/"}" />`
+    `<base href="${process.env.BASE_HREF || "/"}" />`
   );
 
 /**

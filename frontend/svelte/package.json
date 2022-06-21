@@ -5,9 +5,8 @@
   "scripts": {
     "build:index": "node scripts/build.index.mjs",
     "i18n": "node scripts/i18n.types.js",
-    "import-assets-for-dev": "cp -R ../dart/assets public/assets && cp ../dart/web/manifest.json public/ && cp ../dart/web/favicon.ico public/",
-    "import-assets": "rm -fr public/assets/assets && mkdir -p public/assets && npm run import-assets-for-dev",
-    "build": "rm -fr public/assets/assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
+    "import-assets": "rm -fr public && cp -R public_template public",
+    "build": "npm run import-assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
     "dev": "npm run import-assets && npm run i18n && CANISTER_ID=qsgjb-riaaa-aaaaa-aaaga-cai DEPLOY_ENV=nnsdapp_both npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "build:config": "../../config.sh",
     "start": "sirv public",
