@@ -51,7 +51,7 @@ export class MyNavigator {
     await button.scrollIntoView();
     await button.waitForClickable({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
-      console.log('taking screenshot');
+      console.log("taking screenshot");
       await this.browser["screenshot"](description);
       await this.browser.takeScreenshot();
     }
