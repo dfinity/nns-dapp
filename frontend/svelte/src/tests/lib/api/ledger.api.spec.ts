@@ -37,17 +37,21 @@ describe("ledger-api", () => {
   });
 
   it("should call ledger to send ICP with subaccount Id", async () => {
+    const fromSubAccount = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 1,
+    ];
     await sendICP({
       identity: mockIdentity,
       to: accountIdentifier,
       amount,
-      fromSubAccountId: 1,
+      fromSubAccount,
     });
 
     expect(spyTransfer).toHaveBeenCalledWith({
       to: AccountIdentifier.fromHex(accountIdentifier),
       amount,
-      fromSubAccountId: 1,
+      fromSubAccount,
     });
   });
 
