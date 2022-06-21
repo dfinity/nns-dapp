@@ -42,13 +42,20 @@
   }
 
   @include media.light-theme() {
-    a.selected {
-      color: var(--blue-500);
-      background: var(--background-shade);
-
-      &:focus,
-      &:hover {
+    a {
+      &:not(.selected):focus,
+      &:not(.selected):hover {
         background: var(--background-shade);
+      }
+
+      &.selected {
+        color: var(--blue-500);
+        background: inherit;
+
+        &:focus,
+        &:hover {
+          background: var(--background-shade);
+        }
       }
     }
   }
