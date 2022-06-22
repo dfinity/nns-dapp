@@ -258,13 +258,30 @@ describe("proposals-store", () => {
   });
 
   describe("proposalPayloadStore", () => {
-    it("should store a payload", async () => {
+    it("should store a payload", () => {
       proposalPayloadsStore.setPayload({
         proposalId: BigInt(0),
         payload: null,
       });
 
       expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+    });
+
+    it("should throw on initial map set", () => {
+      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+
+      expect(call).toThrow();
+    });
+
+    it("should throw on map set after update", () => {
+      proposalPayloadsStore.setPayload({
+        proposalId: BigInt(0),
+        payload: null,
+      });
+
+      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+
+      expect(call).toThrow();
     });
   });
 });

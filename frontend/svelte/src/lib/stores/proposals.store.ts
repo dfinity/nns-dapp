@@ -248,10 +248,6 @@ const initNeuronSelectStore = () => {
 };
 
 const initProposalPayloadsStore = () => {
-  const { subscribe, update } = writable<ProposalPayloadsStore>(
-    new Map<ProposalId, ProposalPayload>()
-  );
-
   const throwOnSet = (
     map: Map<ProposalId, ProposalPayload>
   ): Map<ProposalId, ProposalPayload> => {
@@ -260,6 +256,10 @@ const initProposalPayloadsStore = () => {
     };
     return map;
   };
+
+  const { subscribe, update } = writable<ProposalPayloadsStore>(
+    throwOnSet(new Map<ProposalId, ProposalPayload>())
+  );
 
   return {
     subscribe,
