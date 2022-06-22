@@ -16,7 +16,7 @@ set -euo pipefail
 # - Verify that the constant appears in config.json if you run this script.
 # - Add an export clause to the bottom of this file, if you will need the constant in bash.
 #
-JSON_CONFIG_FILE="/deployment-config.json"
+JSON_CONFIG_FILE="$(dirname "${BASH_SOURCE[0]}")/deployment-config.json"
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
