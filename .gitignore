@@ -125,13 +125,6 @@ out
 /.flutter-plugins-dependencies
 /ios/Flutter/flutter_export_environment.sh
 
-frontend/dart/build/**
-frontend/dart/public/**
-frontend/dart/assets/ic_agent.js
-frontend/dart/web/ic_agent.js
-frontend/ts/build/
-frontend/ts/agent/
-frontend/ts/src/config.json
 proxy/build/
 proxy/node_modules
 canister_ids.json

@@ -7,7 +7,7 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import * as configFromFile from "./frontend/ts/src/config.json";
+import * as configFromFile from "./config.json";
 
 /**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
