@@ -27,9 +27,12 @@
   section {
     display: flex;
     flex-direction: column;
+    gap: var(--padding-3x);
 
     @include media.min-width(large) {
-      flex-direction: row;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--padding-2x);
     }
   }
 </style>
