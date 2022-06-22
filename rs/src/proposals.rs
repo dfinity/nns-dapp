@@ -22,7 +22,7 @@ use std::ops::DerefMut;
 
 type Json = String;
 
-const CACHE_SIZE_LIMIT: usize = 500;
+const CACHE_SIZE_LIMIT: usize = 100;
 
 thread_local! {
     // These are purposely not stored in stable memory.
