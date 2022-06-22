@@ -164,7 +164,14 @@ describe("canisters-api", () => {
   });
 
   describe("createCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      // Avoid to print errors during test
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
+    });
+
     it("should make a transfer, notify and attach the canister", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
@@ -247,7 +254,14 @@ describe("canisters-api", () => {
   });
 
   describe("topUpCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      // Avoid to print errors during test
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
+    });
+
     it("should make a transfer and notify", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));

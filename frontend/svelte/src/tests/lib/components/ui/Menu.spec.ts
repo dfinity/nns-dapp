@@ -39,6 +39,19 @@ describe("Menu-ui", () => {
     expect(backdrop).not.toBeNull();
   });
 
+  it("should not render a backdrop if sticky", () => {
+    const { container } = render(Menu, {
+      props: {
+        sticky: true,
+      },
+    });
+
+    const backdrop: HTMLDivElement | null =
+      container.querySelector("div.backdrop");
+
+    expect(backdrop).toBeNull();
+  });
+
   it("should render slotted content", () => {
     const { getByTestId } = render(MenuTest);
 

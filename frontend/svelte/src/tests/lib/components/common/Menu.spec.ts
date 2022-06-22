@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import Menu from "../../../../lib/components/common/Menu.svelte";
 
 describe("Menu", () => {
@@ -11,23 +11,8 @@ describe("Menu", () => {
     expect(() => getByRole("menu")).toThrow();
   });
 
-  const openMenu = async ({ getByTestId, getByRole }) => {
-    const button = getByTestId("menu") as HTMLButtonElement;
-    await fireEvent.click(button);
-
-    await waitFor(() => expect(getByRole("menu")).not.toBeNull());
-  };
-
-  it("should open the menu", async () => {
-    const renderResult = render(Menu);
-
-    await openMenu(renderResult);
-  });
-
   it("should not render a get icps feature", async () => {
-    const renderResult = render(Menu);
-
-    await openMenu(renderResult);
+    const renderResult = render(Menu, { props: { open: true } });
 
     const { getByTestId } = renderResult;
 
@@ -35,9 +20,7 @@ describe("Menu", () => {
   });
 
   it("should render navigation", async () => {
-    const renderResult = render(Menu);
-
-    await openMenu(renderResult);
+    const renderResult = render(Menu, { props: { open: true } });
 
     const { getAllByRole } = renderResult;
 
