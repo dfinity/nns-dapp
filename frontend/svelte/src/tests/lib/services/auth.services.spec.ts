@@ -3,6 +3,7 @@
  */
 
 import { AuthClient } from "@dfinity/auth-client";
+import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import {
   displayAndCleanLogoutMsg,
@@ -50,7 +51,7 @@ describe("auth-services", () => {
 
     await logout({});
 
-    expect(spy).toHaveBeenCalled();
+    await waitFor(() => expect(spy).toHaveBeenCalled());
   });
 
   it("should add msg to url", async () => {
