@@ -17,7 +17,7 @@
 
 <Layout>
   <svelte:fragment slot="header">Project Tetris</svelte:fragment>
-  <TwoColumns>
+  <TwoColumns testId="sns-project-detail">
     <ProjectInfoSection slot="left" />
     <ProjectStatusSection slot="right" />
   </TwoColumns>
