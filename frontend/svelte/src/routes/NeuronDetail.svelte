@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronId } from "@dfinity/nns";
   import { onDestroy, onMount } from "svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import {
     routePathNeuronId,
     loadNeuron,
@@ -71,7 +71,7 @@
 </script>
 
 {#if SHOW_NEURONS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
+  <Layout on:nnsBack={goBack} layout="detail">
     <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
     <section data-tid="neuron-detail">
       {#if $neuronSelectStore}
@@ -90,5 +90,5 @@
         <SkeletonCard />
       {/if}
     </section>
-  </HeadlessLayout>
+  </Layout>
 {/if}

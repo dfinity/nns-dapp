@@ -1,5 +1,5 @@
 <script lang="ts">
-  import HeadlessLayout from "../../../../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../../../../lib/components/common/Layout.svelte";
 
   export let header: string;
   export let content: string;
@@ -9,7 +9,7 @@
   const goBack = () => spy();
 </script>
 
-<HeadlessLayout on:nnsBack={goBack}>
+<Layout on:nnsBack={goBack} layout="detail">
   <svelte:fragment slot="header">{header}</svelte:fragment>
 
   <p>{content}</p>
@@ -19,4 +19,4 @@
     <button class="primary">{button}</button>
     <!-- </Toolbar> -->
   </svelte:fragment>
-</HeadlessLayout>
+</Layout>
