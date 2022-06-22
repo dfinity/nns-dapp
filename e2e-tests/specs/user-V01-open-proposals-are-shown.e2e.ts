@@ -56,11 +56,11 @@ describe("Makes a proposal and verifies that it is shown", () => {
         "test"
     );
 
-    console.log(body.getHTML());
+    console.log(`Body: ${body.getHTML()}`);
 
-    await navigator.click(
-      ProposalsTab.HEADER_BACK_SELECTOR,
-      "Go back to proposal list"
-    );
+    // await navigator.click(
+    //   ProposalsTab.HEADER_BACK_SELECTOR,
+    //   "Go back to proposal list"
+    // );
   });
 });
