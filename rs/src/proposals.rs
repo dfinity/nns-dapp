@@ -16,28 +16,42 @@ use ic_nns_governance::pb::v1::ProposalInfo;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt::Debug;
+use std::ops::DerefMut;
 
 type Json = String;
 
+const CACHE_SIZE_LIMIT: usize = 500;
+
 thread_local! {
     // These are purposely not stored in stable memory.
-    static CACHED_PROPOSAL_PAYLOADS: RefCell<HashMap<u64, Result<Json, String>>> = RefCell::default();
+    static CACHED_PROPOSAL_PAYLOADS: RefCell<BTreeMap<u64, Json>> = RefCell::default();
 }
 
 pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
-        result
+        Ok(result)
     } else {
         match crate::canisters::governance::get_proposal_info(proposal_id).await {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
-                CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow_mut().insert(proposal_id, Ok(json.clone())));
+                CACHED_PROPOSAL_PAYLOADS.with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
             Err(error) => Err(error), // We shouldn't cache this as the error may just be transient
+        }
+    }
+}
+
+fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
+    cache.insert(proposal_id, payload_json);
+
+    if cache.len() > CACHE_SIZE_LIMIT {
+        // TODO replace this with `pop_first` once it is stablized
+        if let Some(key) = cache.iter().next().map(|(key, _)| *key) {
+            cache.remove(&key);
         }
     }
 }
