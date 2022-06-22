@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import {
     routePathProposalId,
     loadProposal,
@@ -109,7 +109,7 @@
 </script>
 
 {#if SHOW_PROPOSALS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
+  <Layout on:nnsBack={goBack} layout="detail">
     <svelte:fragment slot="header"
       >{$i18n.proposal_detail.title}</svelte:fragment
     >
@@ -138,7 +138,7 @@
         <SkeletonCard />
       {/if}
     </section>
-  </HeadlessLayout>
+  </Layout>
 {/if}
 
 <style lang="scss">

@@ -6,7 +6,7 @@
   @use "../../themes/mixins/media.scss";
 
   footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
@@ -41,7 +41,7 @@
     }
 
     :global(button) {
-      flex: 1 1;
+      width: 50%;
     }
   }
 </style>
