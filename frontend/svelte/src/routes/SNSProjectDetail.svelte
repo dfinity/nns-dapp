@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import ProjectInfoSection from "../lib/components/sns-project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/sns-project-detail/ProjectStatusSection.svelte";
+  import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
@@ -14,25 +15,10 @@
   });
 </script>
 
-<HeadlessLayout>
+<Layout>
   <svelte:fragment slot="header">Project Tetris</svelte:fragment>
-  <section data-tid="sns-project-detail">
-    <ProjectInfoSection />
-    <ProjectStatusSection />
-  </section>
-</HeadlessLayout>
-
-<style lang="scss">
-  @use "../lib/themes/mixins/media";
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-3x);
-
-    @include media.min-width(large) {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--padding-2x);
-    }
-  }
-</style>
+  <TwoColumns>
+    <ProjectInfoSection slot="left" />
+    <ProjectStatusSection slot="right" />
+  </TwoColumns>
+</Layout>
