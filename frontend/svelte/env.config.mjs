@@ -14,7 +14,7 @@ import fs from "fs";
  * will be created with the mainnet values.  The values in the file MAY then be overridden
  * using environment variables.
  */
-const CONFIG_FILE = "../../config.json";
+const CONFIG_FILE = "../../deployment-config.json";
 // Edge case: we run the script to create the config file earlier than this file is executed.
 if (!fs.existsSync(CONFIG_FILE)) {
   throw new Error(

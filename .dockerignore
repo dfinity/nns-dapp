@@ -21,4 +21,4 @@ frontend/svelte/public/assets/
 proxy
 e2e-tests
 **/*.wasm
-/config.json
+/deployment-config.json

@@ -73,7 +73,7 @@ help_text() {
 GUESS="true"      # figure out which steps to run, as opposed to just performing the requested steps.
 DRY_RUN="false"   # print what would be done but don't do anything
 DFX_NETWORK=local # which network to deploy to
-CONFIG_FILE="./config.json" # the location of the app config, computed from dfx.json for the specific network.
+CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 START_DFX="false"

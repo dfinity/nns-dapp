@@ -121,7 +121,7 @@ proxy/build/
 proxy/node_modules
 canister_ids.json
 e2e-tests/node_modules
-/config.json
+/deployment-config.json
 
 .dfx/
 target/
