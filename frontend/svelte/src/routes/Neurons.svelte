@@ -123,4 +123,12 @@
   p:last-of-type {
     margin-bottom: var(--padding-3x);
   }
+
+  :global(footer .tooltip-wrapper) {
+    --tooltip-width: 50%;
+  }
+
+  :global(footer .tooltip-wrapper button) {
+    width: 100%;
+  }
 </style>

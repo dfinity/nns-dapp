@@ -11,6 +11,7 @@
 <Tooltip id="back" text={$i18n.core.back} slot="start">
   <button
     class={`back icon-only ${$themeStore}`}
+    data-tid="back"
     on:click|stopPropagation={() => dispatch("nnsBack")}
     aria-label={$i18n.core.back}><IconBackIosNew /></button
   >

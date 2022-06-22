@@ -6,8 +6,8 @@ import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
 import {
+  DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-  TRANSACTION_FEE_E8S,
 } from "../../../lib/constants/icp.constants";
 import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
 import * as services from "../../../lib/services/neurons.services";
@@ -827,7 +827,7 @@ describe("neurons-services", () => {
     it("should add transaction fee to the amount", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
-      const transactionFee = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
       const amountWithFee = amount + transactionFee;
       await services.splitNeuron({
         neuronId: controlledNeuron.neuronId,

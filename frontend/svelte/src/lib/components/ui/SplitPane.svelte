@@ -27,13 +27,6 @@
 
     display: flex;
     flex-flow: row nowrap;
-
-    pointer-events: none;
-  }
-
-  .content,
-  :global([role="menu"]) {
-    pointer-events: all;
   }
 
   .content {
