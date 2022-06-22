@@ -1,7 +1,7 @@
 <!-- adapted source: https://github.com/ionic-team/ionic-framework/tree/main/core/src/components/skeleton-text -->
 <script lang="ts">
   import Card from "./Card.svelte";
-  import CardStatic from "./CardStatic.svelte";
+  import CardInfo from "./CardInfo.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
   import { SvelteComponent } from "svelte";
   import type { CardType } from "../../types/card";
@@ -11,7 +11,7 @@
 
   const cards: Record<CardType, typeof SvelteComponent> = {
     card: Card,
-    static: CardStatic,
+    info: CardInfo,
   };
 </script>
 

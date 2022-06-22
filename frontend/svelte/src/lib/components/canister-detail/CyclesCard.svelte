@@ -1,17 +1,17 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import { formatCyclesToTCycles } from "../../utils/canisters.utils";
-  import CardStatic from "../ui/CardStatic.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
 
   export let cycles: bigint;
 </script>
 
-<CardStatic testId="canister-cycles-card">
+<CardInfo testId="canister-cycles-card">
   <p aria-label={$i18n.canister_detail.cycles}>
     <span class="cycles">{formatCyclesToTCycles(cycles)}</span>
     <span>{$i18n.canister_detail.t_cycles}</span>
   </p>
-</CardStatic>
+</CardInfo>
 
 <style lang="scss">
   p {

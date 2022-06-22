@@ -17,7 +17,7 @@
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import { SvelteComponent } from "svelte";
-  import CardStatic from "../ui/CardStatic.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -46,7 +46,7 @@
 
   const cards: Record<CardType, typeof SvelteComponent> = {
     card: Card,
-    static: CardStatic,
+    info: CardInfo,
   };
 </script>
 

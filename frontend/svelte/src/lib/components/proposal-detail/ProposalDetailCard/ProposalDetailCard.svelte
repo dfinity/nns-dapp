@@ -2,7 +2,7 @@
   import { ProposalStatus } from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
-  import CardStatic from "../../ui/CardStatic.svelte";
+  import CardInfo from "../../ui/CardInfo.svelte";
   import type { ProposalColor } from "../../../../lib/constants/proposals.constants";
   import { i18n } from "../../../../lib/stores/i18n";
   import ProposalMeta from "../../proposals/ProposalMeta.svelte";
@@ -20,7 +20,7 @@
   $: ({ proposal, status, title, color } = mapProposalInfo(proposalInfo));
 </script>
 
-<CardStatic>
+<CardInfo>
   <h2 class="title" slot="start" {title}>{title}</h2>
   <Badge slot="end" {color}
     ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
@@ -32,7 +32,7 @@
   </div>
 
   <ProposalActions {proposal} />
-</CardStatic>
+</CardInfo>
 
 <style lang="scss">
   @use "../../../themes/mixins/media";

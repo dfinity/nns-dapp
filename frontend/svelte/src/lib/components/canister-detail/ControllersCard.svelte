@@ -6,7 +6,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
-  import CardStatic from "../ui/CardStatic.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
   import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
 
@@ -19,7 +19,7 @@
   $: controllers = canisterDetails?.settings.controllers ?? [];
 </script>
 
-<CardStatic testId="canister-controllers-card">
+<CardInfo testId="canister-controllers-card">
   <h4 slot="start">{$i18n.canister_detail.controllers}</h4>
   <ul>
     {#each controllers as controller (controller)}
@@ -32,7 +32,7 @@
   <div class="actions">
     <AddCanisterControllerButton />
   </div>
-</CardStatic>
+</CardInfo>
 
 <style lang="scss">
   @use "../../themes/mixins/card.scss";

@@ -36,7 +36,7 @@
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
-  import CardStatic from "../lib/components/ui/CardStatic.svelte";
+  import CardInfo from "../lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
 
@@ -217,12 +217,12 @@
         <CyclesCard cycles={canisterDetails.cycles} />
         <ControllersCard />
       {:else if errorKey !== undefined}
-        <CardStatic testId="canister-details-error-card">
+        <CardInfo testId="canister-details-error-card">
           <p class="error-message">{translate({ labelKey: errorKey })}</p>
-        </CardStatic>
+        </CardInfo>
       {:else}
-        <SkeletonCard cardType="static" />
-        <SkeletonCard cardType="static" />
+        <SkeletonCard cardType="info" />
+        <SkeletonCard cardType="info" />
       {/if}
     </section>
     <svelte:fragment slot="footer">

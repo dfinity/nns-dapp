@@ -2,12 +2,12 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import Ballots from "./Ballots/Ballots.svelte";
-  import CardStatic from "../ui/CardStatic.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
 
   export let neuron: NeuronInfo;
 </script>
 
-<CardStatic>
+<CardInfo>
   <h3>{$i18n.neuron_detail.voting_history}</h3>
   <Ballots {neuron} />
-</CardStatic>
+</CardInfo>

@@ -127,15 +127,15 @@
           />
         {:else}
           <div class="loader">
-            <SkeletonCard cardType="static" />
+            <SkeletonCard cardType="info" />
             <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
           </div>
         {/if}
       {:else}
-        <SkeletonCard size="large" cardType="static" />
-        <SkeletonCard cardType="static" />
-        <SkeletonCard cardType="static" />
-        <SkeletonCard cardType="static" />
+        <SkeletonCard size="large" cardType="info" />
+        <SkeletonCard cardType="info" />
+        <SkeletonCard cardType="info" />
+        <SkeletonCard cardType="info" />
       {/if}
     </section>
   </Layout>

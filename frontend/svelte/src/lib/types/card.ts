@@ -1,1 +1,1 @@
-export type CardType = "card" | "static";
+export type CardType = "card" | "info";
