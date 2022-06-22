@@ -199,7 +199,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "flutter-tests", "svelte-tests", "shell-checks"]
+    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes

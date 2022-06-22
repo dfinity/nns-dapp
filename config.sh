@@ -16,8 +16,7 @@ set -euo pipefail
 # - Verify that the constant appears in config.json if you run this script.
 # - Add an export clause to the bottom of this file, if you will need the constant in bash.
 #
-# Note: After flutter has been removed, move JSON_CONFIG_FILE to the root of the repo.
-JSON_CONFIG_FILE="config.json"
+JSON_CONFIG_FILE="/deployment-config.json"
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"

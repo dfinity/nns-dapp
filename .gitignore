@@ -65,17 +65,6 @@ out
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
-**/ios/Flutter/.last_build_id
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
@@ -99,15 +88,6 @@ out
 **/macos/**/profile
 **/macos/**/xcuserdata
 **/macos/.generated/
-**/macos/Flutter/.last_build_id
-**/macos/Flutter/App.framework
-**/macos/Flutter/Flutter.framework
-**/macos/Flutter/Flutter.podspec
-**/macos/Flutter/Generated.xcconfig
-**/macos/Flutter/app.flx
-**/macos/Flutter/app.zip
-**/macos/Flutter/flutter_assets/
-**/macos/Flutter/flutter_export_environment.sh
 **/macos/ServiceDefinitions.json
 **/macos/Runner/GeneratedPluginRegistrant.*
 
