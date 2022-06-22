@@ -266,6 +266,7 @@ export const loadProposalPayload = async ({
         },
       });
 
+      // set 'null' avoid refetching of not existing data
       proposalPayloadsStore.setPayload({ proposalId, payload: null });
 
       return;
