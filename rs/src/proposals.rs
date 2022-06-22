@@ -36,7 +36,8 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
         match crate::canisters::governance::get_proposal_info(proposal_id).await {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
-                CACHED_PROPOSAL_PAYLOADS.with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
+                CACHED_PROPOSAL_PAYLOADS
+                    .with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
