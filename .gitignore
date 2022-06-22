@@ -24,10 +24,8 @@ out
 # Visual Studio Code related
 .vscode/
 
-# Flutter/Dart/Pub related
+# Pub related
 **/doc/api/
-.dart_tool/
-.flutter-plugins
 .packages
 .pub-cache/
 .pub/
@@ -47,9 +45,6 @@ out
 **/android/app/src/paid/reader-keystore.jks
 
 # Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/.flutter-plugins-dependencies
-/ios/Flutter/flutter_export_environment.sh
 
 /ios/.symlinks/
 /ios/Runner.xcworkspace/
@@ -121,9 +116,6 @@ out
 !**/ios/**/default.mode2v3
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/.flutter-plugins-dependencies
-/ios/Flutter/flutter_export_environment.sh
 
 proxy/build/
 proxy/node_modules

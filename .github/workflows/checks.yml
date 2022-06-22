@@ -33,13 +33,6 @@ jobs:
       - name: Format shell scripts
         run: ./scripts/fmt-sh
 
-      - name: Install ts dependencies
-        run: npm ci
-        working-directory: ./frontend/ts
-      - name: Format ts
-        run: npm run format
-        working-directory: ./frontend/ts
-
       - name: Install svelte dependencies
         run: npm ci
         working-directory: ./frontend/svelte
@@ -115,46 +108,6 @@ jobs:
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
-
-  flutter-tests:
-    needs: formatting
-    runs-on: ubuntu-20.04
-    env:
-      DEPLOY_ENV: mainnet
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Compile typescript
-        run: npm run build
-        working-directory: ./frontend/ts
-
-      - name: Run ESlint
-        run: npm run lint
-        working-directory: ./frontend/ts
-
-      - name: Run TS tests
-        run: npm run test
-        working-directory: ./frontend/ts
-
-      - name: Flutter setup
-        uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '2.2.3'
-          channel: 'stable'
-
-      - run: flutter pub get
-        working-directory: ./frontend/dart
-
-      - run: flutter build web --web-renderer canvaskit --release --no-sound-null-safety
-        working-directory: ./frontend/dart
-
-      - run: flutter analyze
-        working-directory: ./frontend/dart
-
-      - run: flutter test
-        working-directory: ./frontend/dart
 
   svelte-tests:
     needs: formatting

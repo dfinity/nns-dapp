@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 #
-# First the typescript shim is built and bundled into ic_agent.js, which is
-# then added to the frontend/dart codebase. This dart codebase is then built
-# into build/web. The frontend/svelte is built into public/. Both the dart
-# output (build/web/) and svelte output (public/) are bundled into a tarball,
+# The frontend/svelte is built into public/. The svelte is bundled into a tarball,
 # assets.tar.xz. This tarball is baked into the wasm binary output at build
 # time by cargo, and finally the wasm binary is read by ic-cdk-optimizer and
 # optimizer. This scripts outputs a single file, nns-dapp.wasm.
 #
-#              ic_agent.js               build/web/
-#  frontend/ts◄────────────frontend/dart ◄──────────┐
-#                                          public/  ├──assets.tar.xz
-#                          frontend/svelte◄─────────┘       ▲
+#                          frontend/svelte◄─────────── assets.tar.xz
+#                                                           ▲
 #                                                           │
 #                                                           │
 #                                                      cargo build
