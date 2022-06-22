@@ -103,6 +103,7 @@
       aria-label={$i18n.core.toggle}
       tabindex="0"
       on:click|stopPropagation={toggle}
+      on:keypress={toggle}
       >{keyLabel}
       <span class="bracket">{openBracket} ... {closeBracket}</span>
     </span>
@@ -118,6 +119,7 @@
       aria-label={$i18n.core.toggle}
       tabindex="0"
       on:click|stopPropagation={toggle}
+      on:keypress={toggle}
       >{keyLabel}<span class="bracket open">{openBracket}</span></span
     >
     <!-- children -->

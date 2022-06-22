@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
 
-  let clickable: boolean = false;
+  const dispatch = createEventDispatcher();
 
   $: clickable =
     role !== undefined ? ["button", "link", "checkbox"].includes(role) : false;
@@ -15,15 +17,28 @@
 
   let ariaChecked: boolean | undefined = undefined;
   $: ariaChecked = role === "checkbox" ? selected : undefined;
+
+  // Simulate click event on pressing "space" key (https://www.w3.org/WAI/GL/wiki/Making_actions_keyboard_accessible_by_using_keyboard_event_handlers_with_WAI-ARIA_controls)
+  const keydown = (event: KeyboardEvent) => {
+    if (
+      event.key === " " &&
+      (event.target as HTMLElement).tagName === "ARTICLE"
+    ) {
+      dispatch("click");
+      event.stopPropagation();
+    }
+  };
 </script>
 
 <article
   data-tid={testId}
   {role}
   on:click
+  on:keydown={keydown}
   class:clickable
   class:selected
   class:disabled
+  tabindex={role === undefined ? undefined : 0}
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
