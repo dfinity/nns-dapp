@@ -51,10 +51,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
       "Verifying that the proposal detail is for the correct proposal"
     );
 
-    const body = await navigator.getElement(
-        'body',
-        "test"
-    );
+    const body = await navigator.getElement("body", "test");
 
     console.log(`Body: ${body.getHTML()}`);
 
