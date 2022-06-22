@@ -50,7 +50,11 @@ describe("Makes a proposal and verifies that it is shown", () => {
       proposalMetadataSelector,
       "Verifying that the proposal detail is for the correct proposal"
     );
-    // TODO(L2-736): This test is failing for unknown reason with the new design
+
+    const body = await navigator.getElement("body", "test");
+
+    console.log(`Body: ${body.getHTML()}`);
+
     // await navigator.click(
     //   ProposalsTab.HEADER_BACK_SELECTOR,
     //   "Go back to proposal list"
