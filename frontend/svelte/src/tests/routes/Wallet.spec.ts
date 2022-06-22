@@ -41,7 +41,7 @@ describe("Wallet", () => {
     container: HTMLElement;
     disabled: boolean;
   }) => {
-    const button = container.querySelector("div.toolbar button");
+    const button = container.querySelector("footer div.toolbar button");
 
     expect(button).not.toBeNull();
     expect((button as HTMLButtonElement).hasAttribute("disabled")).toEqual(
@@ -124,7 +124,7 @@ describe("Wallet", () => {
 
     const testModal = async (container: HTMLElement) => {
       const button = container.querySelector(
-        "div.toolbar button"
+        "footer div.toolbar button"
       ) as HTMLButtonElement;
       await fireEvent.click(button);
 

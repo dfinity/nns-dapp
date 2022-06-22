@@ -55,6 +55,7 @@
 
 {#if SHOW_ACCOUNTS_ROUTE}
   <Layout>
+    <svelte:fragment slot="header">{$i18n.navigation.accounts}</svelte:fragment>
     <section data-tid="accounts-body">
       <div class="title">
         <h1>{$i18n.accounts.title}</h1>
@@ -96,13 +97,13 @@
       {#if accounts}
         <Toolbar>
           <button
-            class="primary"
+            class="primary full-width"
             on:click={openNewTransaction}
             data-tid="open-new-transaction"
             >{$i18n.accounts.new_transaction}</button
           >
           <button
-            class="primary"
+            class="primary full-width"
             on:click={openAddAccountModal}
             data-tid="open-add-account-modal"
             >{$i18n.accounts.add_account}</button

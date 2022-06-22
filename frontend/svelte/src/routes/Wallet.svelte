@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import {
     AppPath,
@@ -66,18 +66,25 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier: string | undefined;
+  let routeAccountIdentifier:
+    | { accountIdentifier: string | undefined }
+    | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
   let selectedAccount: Account | undefined;
   $: selectedAccount = getAccountFromStore({
-    identifier: routeAccountIdentifier,
+    identifier: routeAccountIdentifier?.accountIdentifier,
     accountsStore: $accountsStore,
   });
 
   $: routeAccountIdentifier,
     selectedAccount,
     (() => {
+      // Not /wallet route
+      if (routeAccountIdentifier === undefined) {
+        return;
+      }
+
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
@@ -104,7 +111,8 @@
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            $account_identifier: routeAccountIdentifier ?? "",
+            $account_identifier:
+              routeAccountIdentifier?.accountIdentifier ?? "",
           }),
         });
         goBack();
@@ -117,7 +125,7 @@
 </script>
 
 {#if SHOW_ACCOUNTS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack}>
+  <Layout on:nnsBack={goBack} layout="detail">
     <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
     <section>
@@ -142,7 +150,7 @@
         >
       </Toolbar>
     </svelte:fragment>
-  </HeadlessLayout>
+  </Layout>
 
   {#if showNewTransactionModal}
     <NewTransactionModal

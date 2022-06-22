@@ -156,6 +156,7 @@
 
 {#if SHOW_PROPOSALS_ROUTE}
   <Layout>
+    <svelte:fragment slot="header">{$i18n.navigation.voting}</svelte:fragment>
     <section data-tid="proposals-tab">
       <p>{$i18n.voting.text}</p>
 

@@ -131,7 +131,7 @@
     }
 
     --modal-wrapper-height: min(
-      calc(100vh - var(--padding-6x)),
+      calc(100vh - var(--padding-4x)),
       var(--modal-max-height)
     );
 

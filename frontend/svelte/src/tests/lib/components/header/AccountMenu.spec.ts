@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import AccountMenu from "../../../../lib/components/common/AccountMenu.svelte";
+import AccountMenu from "../../../../lib/components/header/AccountMenu.svelte";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
