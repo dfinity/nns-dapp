@@ -23,7 +23,7 @@ export const logout = async ({
 
   // We reload the page to make sure all the states are cleared
   // Trigger this reload after a brief timeout to allow the rendering of the sign-in page first otherwise the ui might be displayed as glitchy (login screen rendered over current view)
-  setTimeout(() => window.location.reload(), 50)
+  setTimeout(() => window.location.reload(), 50);
 };
 
 /**
