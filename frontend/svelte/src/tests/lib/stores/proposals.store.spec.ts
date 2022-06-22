@@ -264,7 +264,7 @@ describe("proposals-store", () => {
         payload: null,
       });
 
-      expect(get(proposalPayloadsStore)[`${BigInt(0)}`]).toBeNull();
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
     });
   });
 });

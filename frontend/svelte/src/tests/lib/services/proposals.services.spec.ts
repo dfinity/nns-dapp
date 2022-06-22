@@ -504,7 +504,7 @@ describe("proposals-services", () => {
       const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
       await loadProposalPayload({ proposalId: BigInt(0) });
 
-      expect(spyOnSetPayload).toBeCalledTimes(1);
+      expect(spyOnSetPayload).toBeCalledTimes(2);
       expect(spyOnSetPayload).toHaveBeenLastCalledWith({
         payload: { data: "test" },
         proposalId: BigInt(0),
@@ -520,7 +520,7 @@ describe("proposals-services", () => {
 
       await loadProposalPayload({ proposalId: BigInt(0) });
 
-      expect(get(proposalPayloadsStore)["0"]).toBeNull();
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
     });
   });
 });

@@ -41,7 +41,7 @@ export interface ProposalsStore {
 }
 
 type ProposalPayload = object | null | undefined;
-export type ProposalPayloadsStore = { [proposalId: string]: ProposalPayload };
+export type ProposalPayloadsStore = Map<ProposalId, ProposalPayload>;
 /**
  * A store that contains the proposals
  *
@@ -248,7 +248,18 @@ const initNeuronSelectStore = () => {
 };
 
 const initProposalPayloadsStore = () => {
-  const { subscribe, update } = writable<ProposalPayloadsStore>({});
+  const { subscribe, update } = writable<ProposalPayloadsStore>(
+    new Map<ProposalId, ProposalPayload>()
+  );
+
+  const throwOnSet = (
+    map: Map<ProposalId, ProposalPayload>
+  ): Map<ProposalId, ProposalPayload> => {
+    map.set = () => {
+      throw new Error("Please use setPayload");
+    };
+    return map;
+  };
 
   return {
     subscribe,
@@ -259,11 +270,16 @@ const initProposalPayloadsStore = () => {
       proposalId: ProposalId;
       payload: ProposalPayload;
     }) =>
-      update((state) => ({
-        ...state,
-        [`${proposalId}`]: payload,
-      })),
-    reset: () => update(() => ({})),
+      update((stateMap) =>
+        throwOnSet(
+          // Add new record to current state map and disable native Map.set()
+          new Map<ProposalId, ProposalPayload>(stateMap).set(
+            proposalId,
+            payload
+          )
+        )
+      ),
+    reset: () => update(() => throwOnSet(new Map())),
   };
 };
 

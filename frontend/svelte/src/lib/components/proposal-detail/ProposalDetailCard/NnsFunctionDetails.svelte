@@ -16,11 +16,8 @@
     $i18n.proposal_detail.unknown_nns_function;
 
   let payload: object | undefined | null;
-  $: payload = $proposalPayloadsStore[`${proposalId}`];
-  $: if (
-    proposalId !== undefined &&
-    $proposalPayloadsStore[`${proposalId}`] === undefined
-  ) {
+  $: payload = $proposalPayloadsStore.get(proposalId);
+  $: if (proposalId !== undefined && !$proposalPayloadsStore.has(proposalId)) {
     loadProposalPayload({
       proposalId,
     });

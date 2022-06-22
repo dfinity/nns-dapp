@@ -243,7 +243,11 @@ const getProposal = async ({
 };
 
 /**
- * Loads proposal payload in proposalPayloadsStore
+ * Loads proposal payload in proposalPayloadsStore.
+ * Updates the proposalPayloadsStore with:
+ * - `undefined` - loading
+ * - `null` - erroneous
+ * - otherwise data `object`
  */
 export const loadProposalPayload = async ({
   proposalId,
@@ -253,6 +257,7 @@ export const loadProposalPayload = async ({
   const identity: Identity = await getIdentity();
 
   try {
+    proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
     const payload = await queryProposalPayload({ proposalId, identity });
     proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {

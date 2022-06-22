@@ -5,15 +5,12 @@
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
-import { get } from "svelte/store";
 import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsFunctionDetails from "../../../../../lib/components/proposal-detail/ProposalDetailCard/NnsFunctionDetails.svelte";
 import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
 import en from "../../../../mocks/i18n.mock";
 
 describe("NnsFunctionDetails", () => {
-  const $proposalPayloadsStore = get(proposalPayloadsStore);
-
   const mockPayload = { data: "test" };
   const nnsDappMock = mock<NNSDappCanister>();
   nnsDappMock.getProposalPayload.mockResolvedValue(mockPayload);
