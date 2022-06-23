@@ -9,6 +9,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   concatenateUniqueProposals,
   excludeProposals,
+  getNnsFunctionIndex,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -27,17 +28,29 @@ import { mockNeuron } from "../../mocks/neurons.mock";
 import {
   generateMockProposals,
   mockProposalInfo,
+  proposalActionNnsFunction21,
+  proposalActionRewardNodeProvider,
 } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
+
+const proposalWithNnsFunctionAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionNnsFunction21,
+} as Proposal;
+
+const proposalWithRewardNodeProviderAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionRewardNodeProvider,
+} as Proposal;
 
 describe("proposals-utils", () => {
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
 
   it("should find fist action key", () =>
-    expect(
-      proposalFirstActionKey(mockProposalInfo.proposal as Proposal)
-    ).toEqual("ExecuteNnsFunction"));
+    expect(proposalFirstActionKey(proposalWithNnsFunctionAction)).toEqual(
+      "ExecuteNnsFunction"
+    ));
 
   describe("hideProposal", () => {
     const proposalWithBallot = ({
@@ -533,12 +546,10 @@ describe("proposals-utils", () => {
 
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
-      const fields = proposalActionFields(
-        mockProposalInfo.proposal as Proposal
-      );
+      const fields = proposalActionFields(proposalWithRewardNodeProviderAction);
 
       expect(fields.map(([key]) => key).join()).toEqual(
-        "nnsFunctionId,nodeProvider,nnsFunctionName,payload"
+        "nodeProvider,amountE8s,rewardMode"
       );
     });
 
@@ -550,16 +561,6 @@ describe("proposals-utils", () => {
       const fields = proposalActionFields(proposal);
 
       expect(fields.length).toBe(0);
-    });
-
-    it("should simulate flutter dapp formatting (temp solution)", () => {
-      const fields = proposalActionFields(
-        mockProposalInfo.proposal as Proposal
-      );
-      expect(fields[0][0]).toBe("nnsFunctionId");
-      expect(fields[0][1]).toBe(4);
-      expect(fields[2][0]).toBe("nnsFunctionName");
-      expect(fields[2][1]).toBe("nnsFunctionValue");
     });
   });
 
@@ -932,6 +933,30 @@ describe("proposals-utils", () => {
           proposal,
         })
       ).toBe(mockNeuron.votingPower);
+    });
+  });
+
+  describe("getNnsFunctionIndex", () => {
+    it("should return nnsFunctionId from proposal", () => {
+      expect(
+        getNnsFunctionIndex({
+          ...mockProposalInfo.proposal,
+          action: {
+            ExecuteNnsFunction: {
+              nnsFunctionId: 4,
+            },
+          },
+        } as Proposal)
+      ).toBe(4);
+    });
+
+    it("should return undefined if not ExecuteNnsFunction type", () => {
+      expect(
+        getNnsFunctionIndex({
+          ...mockProposalInfo.proposal,
+          action: {},
+        } as Proposal)
+      ).toBeUndefined();
     });
   });
 });

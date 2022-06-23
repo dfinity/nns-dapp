@@ -3,20 +3,23 @@ import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
+  queryProposalPayload,
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
+import { ProposalPayloadNotFoundError } from "../canisters/nns-dapp/nns-dapp.errors";
 import {
   startBusy,
   stopBusy,
   type BusyStateInitiatorType,
 } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import {
   proposalInfoStore,
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
+  type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
 import { getLastPathDetailId } from "../utils/app-path.utils";
@@ -237,6 +240,48 @@ const getProposal = async ({
     strategy,
     logMessage: `Syncing Proposal ${hashCode(proposalId)}`,
   });
+};
+
+/**
+ * Loads proposal payload in proposalPayloadsStore.
+ * Updates the proposalPayloadsStore with:
+ * - `undefined` - loading
+ * - `null` - erroneous
+ * - otherwise data `object`
+ */
+export const loadProposalPayload = async ({
+  proposalId,
+}: {
+  proposalId: ProposalId;
+}): Promise<void> => {
+  const identity: Identity = await getIdentity();
+
+  try {
+    proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
+    const payload = await queryProposalPayload({ proposalId, identity });
+    proposalPayloadsStore.setPayload({ proposalId, payload });
+  } catch (err) {
+    console.error(err);
+
+    if (err instanceof ProposalPayloadNotFoundError) {
+      toastsStore.error({
+        labelKey: "error.proposal_payload_not_found",
+        substitutions: {
+          $proposal_id: proposalId.toString(),
+        },
+      });
+
+      // set 'null' avoid refetching of not existing data
+      proposalPayloadsStore.setPayload({ proposalId, payload: null });
+
+      return;
+    }
+
+    toastsStore.error({
+      labelKey: "error.proposal_payload",
+      err,
+    });
+  }
 };
 
 export const routePathProposalId = (path: string): ProposalId | undefined =>

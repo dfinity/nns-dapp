@@ -5,6 +5,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.cons
 import {
   proposalIdStore,
   proposalInfoStore,
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
@@ -253,6 +254,34 @@ describe("proposals-store", () => {
         neuronIds[0],
         neuronIds[1],
       ]);
+    });
+  });
+
+  describe("proposalPayloadStore", () => {
+    it("should store a payload", () => {
+      proposalPayloadsStore.setPayload({
+        proposalId: BigInt(0),
+        payload: null,
+      });
+
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+    });
+
+    it("should throw on initial map set", () => {
+      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+
+      expect(call).toThrow();
+    });
+
+    it("should throw on map set after update", () => {
+      proposalPayloadsStore.setPayload({
+        proposalId: BigInt(0),
+        payload: null,
+      });
+
+      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+
+      expect(call).toThrow();
     });
   });
 });

@@ -1,4 +1,4 @@
-import type { ProposalInfo } from "@dfinity/nns";
+import type { Action, ProposalInfo } from "@dfinity/nns";
 
 /**
  * Generate mock proposals with autoincremented "id".
@@ -18,24 +18,39 @@ export const generateMockProposals = (
       } as unknown as ProposalInfo)
   );
 
+export const proposalActionMotion = {
+  Motion: {
+    motionText: "Test motion",
+  },
+} as Action;
+
+export const proposalActionRewardNodeProvider = {
+  RewardNodeProvider: {
+    nodeProvider: {
+      id: "aaaaa-aa",
+    },
+    amountE8s: BigInt(10000000),
+    rewardMode: {
+      RewardToNeuron: {
+        dissolveDelaySeconds: BigInt(1000),
+      },
+    },
+  },
+} as Action;
+
+export const proposalActionNnsFunction21 = {
+  ExecuteNnsFunction: {
+    nnsFunctionId: 21,
+  },
+} as Action;
+
 // Not a valid `ProposalInfo` object. Only related to the test fields are included
 export const mockProposalInfo: ProposalInfo = {
   id: BigInt(10000),
   proposal: {
     title: "title",
     url: "url",
-    action: {
-      ExecuteNnsFunction: {
-        nnsFunctionId: 4,
-        nodeProvider: { name: "Provider" },
-        nnsFunctionName: "nnsFunctionValue",
-        payload: {
-          data_source: '{"icp":["Binance"],"sdr":"fixer.io"}',
-          timestamp_seconds: BigInt(200),
-        },
-        payloadBytes: new ArrayBuffer(0),
-      },
-    },
+    action: proposalActionMotion,
     summary: "summary-content",
   },
   proposer: BigInt(123),
