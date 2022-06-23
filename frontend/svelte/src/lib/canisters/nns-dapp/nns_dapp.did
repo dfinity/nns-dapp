@@ -165,6 +165,12 @@ type DetachCanisterResponse =
         CanisterNotFound;
     };
 
+type GetProposalPayloadResponse =
+    variant {
+        Ok: text;
+        Err: text;
+    };
+
 type MultiPartTransactionStatus =
     variant {
         NeuronCreated: NeuronId;
@@ -231,6 +237,7 @@ service : {
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
+    get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;

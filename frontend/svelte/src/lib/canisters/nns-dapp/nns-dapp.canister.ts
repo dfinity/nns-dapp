@@ -1,6 +1,8 @@
 import { Actor } from "@dfinity/agent";
+import type { ProposalId } from "@dfinity/nns";
 import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { nonNullable } from "../../utils/utils";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
@@ -12,7 +14,9 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  ProposalPayloadNotFoundError,
   SubAccountLimitExceededError,
+  UnknownProposalPayloadError,
 } from "./nns-dapp.errors";
 import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
@@ -301,5 +305,29 @@ export class NNSDappCanister {
       offset,
       account_identifier: accountIdentifier,
     });
+  }
+
+  public async getProposalPayload({
+    proposalId,
+  }: {
+    proposalId: ProposalId;
+  }): Promise<object> {
+    // Currently works only with certifiedService
+    const response = await this.certifiedService.get_proposal_payload(
+      proposalId
+    );
+    if ("Ok" in response) {
+      return JSON.parse(response.Ok);
+    }
+
+    const errorText = "Err" in response ? response.Err : undefined;
+    if (errorText?.includes("Proposal not found") === true) {
+      throw new ProposalPayloadNotFoundError();
+    }
+
+    throw new UnknownProposalPayloadError(
+      errorText ??
+        (nonNullable(response) ? JSON.stringify(response) : undefined)
+    );
   }
 }
