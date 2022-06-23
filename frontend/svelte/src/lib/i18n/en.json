@@ -518,6 +518,7 @@
     "user_cancel": "User denied the access to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
+    "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {

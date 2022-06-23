@@ -546,6 +546,7 @@ interface I18nError__ledger {
   user_cancel: string;
   user_rejected_transaction: string;
   version_not_supported: string;
+  browser_not_supported: string;
   incorrect_identifier: string;
 }
 

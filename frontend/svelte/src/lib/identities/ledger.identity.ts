@@ -122,6 +122,11 @@ export class LedgerIdentity extends SignIdentity {
       if (
         (err as LedgerHQTransportError)?.name === "TransportOpenUserCancelled"
       ) {
+        if (
+          (err as LedgerHQTransportError)?.message.includes("not supported")
+        ) {
+          throw new LedgerErrorKey("error__ledger.browser_not_supported");
+        }
         throw new LedgerErrorKey("error__ledger.user_cancel");
       }
 
