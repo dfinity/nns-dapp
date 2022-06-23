@@ -24,10 +24,8 @@ out
 # Visual Studio Code related
 .vscode/
 
-# Flutter/Dart/Pub related
+# Pub related
 **/doc/api/
-.dart_tool/
-.flutter-plugins
 .packages
 .pub-cache/
 .pub/
@@ -47,9 +45,6 @@ out
 **/android/app/src/paid/reader-keystore.jks
 
 # Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/.flutter-plugins-dependencies
-/ios/Flutter/flutter_export_environment.sh
 
 /ios/.symlinks/
 /ios/Runner.xcworkspace/
@@ -70,17 +65,6 @@ out
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
-**/ios/Flutter/.last_build_id
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
@@ -104,15 +88,6 @@ out
 **/macos/**/profile
 **/macos/**/xcuserdata
 **/macos/.generated/
-**/macos/Flutter/.last_build_id
-**/macos/Flutter/App.framework
-**/macos/Flutter/Flutter.framework
-**/macos/Flutter/Flutter.podspec
-**/macos/Flutter/Generated.xcconfig
-**/macos/Flutter/app.flx
-**/macos/Flutter/app.zip
-**/macos/Flutter/flutter_assets/
-**/macos/Flutter/flutter_export_environment.sh
 **/macos/ServiceDefinitions.json
 **/macos/Runner/GeneratedPluginRegistrant.*
 
@@ -121,22 +96,12 @@ out
 !**/ios/**/default.mode2v3
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/.flutter-plugins-dependencies
-/ios/Flutter/flutter_export_environment.sh
 
-frontend/dart/build/**
-frontend/dart/public/**
-frontend/dart/assets/ic_agent.js
-frontend/dart/web/ic_agent.js
-frontend/ts/build/
-frontend/ts/agent/
-frontend/ts/src/config.json
 proxy/build/
 proxy/node_modules
 canister_ids.json
 e2e-tests/node_modules
-/config.json
+/deployment-config.json
 
 .dfx/
 target/
