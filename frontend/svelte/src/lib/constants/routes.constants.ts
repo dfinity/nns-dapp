@@ -8,6 +8,7 @@ export enum AppPath {
   ProposalDetail = "/#/proposal",
   NeuronDetail = "/#/neuron",
   CanisterDetail = "/#/canister",
+  SNSLaunchpad = "/#/sns-launchpad",
   SNSProjectDetail = "/#/sns-project",
 }
 
