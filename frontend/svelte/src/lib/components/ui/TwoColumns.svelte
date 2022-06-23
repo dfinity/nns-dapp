@@ -16,7 +16,7 @@
   section {
     display: flex;
     flex-direction: column;
-    gap: var(--row-3x);
+    gap: var(--row-gap);
 
     @include media.min-width(large) {
       display: grid;
@@ -26,7 +26,7 @@
 
       .left {
         grid-column-start: 1;
-        grid-column-end: 5;
+        grid-column-end: 6;
       }
 
       .right {

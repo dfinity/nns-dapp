@@ -5,6 +5,7 @@
 
   export let icp: ICP;
   export let label: string = $i18n.core.icp;
+  // TODO: Align with new design? https://www.figma.com/file/ei7wVYd4l8SuDQlQqVC0NV/New-NNS?node-id=1980%3A7973
   export let inline: boolean = false;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean = false;
