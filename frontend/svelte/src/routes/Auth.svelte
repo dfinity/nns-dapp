@@ -52,7 +52,7 @@
 
 {#if !signedIn}
   <img
-    src="/assets/assets/nns_background.jpeg"
+    src="/assets/nns_background.jpeg"
     loading="lazy"
     role="presentation"
     alt=""
@@ -71,7 +71,7 @@
   </main>
 
   <img
-    src="/assets/assets/100_on_chain-small-centered-white_text.svg"
+    src="/assets/100_on_chain-small-centered-white_text.svg"
     role="presentation"
     alt={$i18n.auth.on_chain}
     class="bottom-banner"

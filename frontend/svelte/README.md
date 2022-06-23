@@ -1,6 +1,6 @@
 # NNS Dapp Frontend (Svelte)
 
-This project will substitute the current frontend dapp. It has the same features and UI, but it's built with a different technology stack.
+All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
 - **Status**: This project is still under development.
