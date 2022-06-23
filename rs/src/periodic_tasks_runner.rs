@@ -38,6 +38,7 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::RefundTransaction(args) => {
                 handle_refund(args).await;
             }
+            MultiPartTransactionToBeProcessed::CreateCanisterV2(..) | MultiPartTransactionToBeProcessed::TopUpCanisterV2(..) => {}
         }
     }
 
