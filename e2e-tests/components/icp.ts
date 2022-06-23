@@ -27,7 +27,7 @@ export class Icp extends MyNavigator {
       "Get the field to enter how much ICP we want",
       { timeout: 30_000 }
     );
-    // Not intially enabled to be changed.
+    // Not initially enabled to be changed.
     await element.waitForClickable();
     element.setValue(howMuch.toString());
 
