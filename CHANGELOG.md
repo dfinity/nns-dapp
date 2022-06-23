@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXXX
+
+
 ## Proposal 65319
 * New Canisters Tab built on Svelte
 * Fix minor UI issues in the Neurons tab for smaller devices
