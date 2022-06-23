@@ -1077,19 +1077,24 @@ impl AccountsStore {
 
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
         // There are now 2 ways to create a canister.
-        // The new way involves sending ICP directly to the CMC, the NNS Dapp canister then
-        // notifies the CMC of the transfer.
-        // The old way involves sending ICP to the NNS Dapp, the NNS Dapp then forwards the ICP
-        // on to the CMC and calls notify on the ledger which in turns notifies the CMC.
+        // The new way involves sending ICP directly to an account controlled by the CMC, the NNS
+        // Dapp canister then notifies the CMC of the transfer.
+        // The old way involves sending ICP to an account controlled by the NNS Dapp, the NNS Dapp
+        // then forwards the ICP on to an account controlled by the CMC and calls notify on the
+        // ledger which in turns notifies the CMC.
         if memo == MEMO_CREATE_CANISTER {
             let subaccount = principal.into();
-            let expected_to_new = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-            if *to == expected_to_new {
-                return true;
+            { // Check if sent to CMC account for this principal
+                let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
+                if *to == expected_to {
+                    return true;
+                }
             }
-            let expected_to_old = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
-            if *to == expected_to_old {
-                return true;
+            { // Check if sent to NNS Dapp account for this principal
+                let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
+                if *to == expected_to {
+                    return true;
+                }
             }
         }
         false
@@ -1101,20 +1106,25 @@ impl AccountsStore {
         canister_ids: &[CanisterId],
     ) -> Option<CanisterId> {
         // There are now 2 ways to top up a canister.
-        // The new way involves sending ICP directly to the CMC, the NNS Dapp canister then
-        // notifies the CMC of the transfer.
-        // The old way involves sending ICP to the NNS Dapp, the NNS Dapp then forwards the ICP
-        // on to the CMC and calls notify on the ledger which in turns notifies the CMC.
+        // The new way involves sending ICP directly to an account controlled by the CMC, the NNS
+        // Dapp canister then notifies the CMC of the transfer.
+        // The old way involves sending ICP to an account controlled by the NNS Dapp, the NNS Dapp
+        // then forwards the ICP on to an account controlled by the CMC and calls notify on the
+        // ledger which in turns notifies the CMC.
         if memo == MEMO_TOP_UP_CANISTER {
             for canister_id in canister_ids.iter() {
                 let subaccount = (&canister_id.get()).into();
-                let expected_to_new = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-                if *to == expected_to_new {
-                    return Some(*canister_id);
+                { // Check if sent to CMC account for this canister
+                    let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
+                    if *to == expected_to {
+                        return Some(*canister_id);
+                    }
                 }
-                let expected_to_old = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
-                if *to == expected_to_old {
-                    return Some(*canister_id);
+                { // Check if sent to NNS Dapp account for this canister
+                    let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
+                    if *to == expected_to {
+                        return Some(*canister_id);
+                    }
                 }
             }
         }
