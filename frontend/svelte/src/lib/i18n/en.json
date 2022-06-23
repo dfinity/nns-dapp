@@ -493,6 +493,11 @@
     "maturity_range": "Select Maturity Range",
     "maturity_percentage": "Percentage of maturity"
   },
+  "sns_launchpad": {
+    "header": "Launch Pad",
+    "current_launches": "Current Launches",
+    "proposals": "Proposals"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",

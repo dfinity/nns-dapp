@@ -24,6 +24,7 @@
   import CanisterDetail from "./routes/CanisterDetail.svelte";
   import { loadMainTransactionFee } from "./lib/services/transaction-fees.services";
   import SnsProjectDetail from "./routes/SNSProjectDetail.svelte";
+  import SNSLaunchpad from "./routes/SNSLaunchpad.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -72,6 +73,7 @@
   <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
   <PrivateRoute path={AppPath.NeuronDetail} component={NeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} component={CanisterDetail} />
+  <PrivateRoute path={AppPath.SNSLaunchpad} component={SNSLaunchpad} />
   <PrivateRoute path={AppPath.SNSProjectDetail} component={SnsProjectDetail} />
 </Guard>
 

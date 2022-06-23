@@ -14,6 +14,7 @@ describe("routes", () => {
       expect(isAppPath(`${AppPath.Wallet}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.NeuronDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.SNSLaunchpad}`)).toBeTruthy();
       expect(isAppPath(`${AppPath.SNSProjectDetail}/123`)).toBeTruthy();
     });
 
