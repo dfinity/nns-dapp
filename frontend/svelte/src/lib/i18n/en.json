@@ -88,20 +88,24 @@
     "canister_top_up_unknown": "Sorry, there was an error adding cycles to the canister.",
     "canister_update_settings": "Sorry, there was an error updating the canister settings.",
     "not_canister_controller_to_update": "The current user is not the controller of the canister. Only controllers can change the settings.",
+    "limit_exceeded_topping_up_canister": "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not.",
+    "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
   },
   "navigation": {
-    "icp": "ICP",
+    "accounts": "Accounts",
     "neurons": "Neurons",
     "voting": "Voting",
     "canisters": "Canisters"
   },
   "header": {
+    "menu": "Open menu to access navigation options",
     "title": "NETWORK NERVOUS SYSTEM",
-    "logout": "Logout"
+    "logout": "Logout",
+    "account_menu": "Open menu to access logout button"
   },
   "auth": {
     "ic": "INTERNET COMPUTER",
@@ -284,8 +288,8 @@
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
     "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
-    "minimum_cycles_text_2": "Transaction fee of 0.0001 is charged to the source account.",
-    "transaction_fee": "The Transaction fee of 0.0001 is charged to the source account.",
+    "minimum_cycles_text_2": "Transaction fee of $amount is charged to the source account.",
+    "transaction_fee": "The Transaction fee of $amount is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",
     "converted_to": "converted to"
   },

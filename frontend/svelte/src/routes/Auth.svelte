@@ -7,7 +7,7 @@
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import Banner from "../lib/components/common/Banner.svelte";
+  import Banner from "../lib/components/header/Banner.svelte";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
@@ -52,7 +52,7 @@
 
 {#if !signedIn}
   <img
-    src="/assets/assets/nns_background.jpeg"
+    src="/assets/nns_background.jpeg"
     loading="lazy"
     role="presentation"
     alt=""
@@ -71,7 +71,7 @@
   </main>
 
   <img
-    src="/assets/assets/100_on_chain-small-centered-white_text.svg"
+    src="/assets/100_on_chain-small-centered-white_text.svg"
     role="presentation"
     alt={$i18n.auth.on_chain}
     class="bottom-banner"

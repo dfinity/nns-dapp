@@ -1,35 +1,53 @@
 <script lang="ts">
   import Footer from "./Footer.svelte";
-  import Header from "./Header.svelte";
-  import Nav from "./Nav.svelte";
-  import Banner from "./Banner.svelte";
+  import Header from "../header/Header.svelte";
+  import Banner from "../header/Banner.svelte";
+  import MenuButton from "../header/MenuButton.svelte";
+  import Menu from "./Menu.svelte";
+  import Back from "../header/Back.svelte";
+  import SplitPane from "../ui/SplitPane.svelte";
+
+  export let layout: "main" | "detail" = "main";
+
+  let showFooter: boolean;
+  $: showFooter = $$slots.footer;
+
+  let open: boolean;
+  let sticky: boolean;
 </script>
 
 <Banner />
 
-<Header />
+<SplitPane bind:sticky>
+  <Header slot="header">
+    <svelte:fragment slot="start">
+      {#if layout === "detail"}
+        <Back on:nnsBack />
+      {:else}
+        <MenuButton bind:open />
+      {/if}
+    </svelte:fragment>
 
-<Nav />
+    <svelte:fragment><slot name="header" /></svelte:fragment>
+  </Header>
 
-<main>
-  <slot />
-</main>
+  <Menu slot="menu" bind:open {sticky} />
 
-<Footer>
-  <slot name="footer" />
-</Footer>
+  <main>
+    <slot />
+  </main>
+
+  {#if showFooter}
+    <Footer>
+      <slot name="footer" />
+    </Footer>
+  {/if}
+</SplitPane>
 
 <style lang="scss">
   main {
-    position: absolute;
-    top: calc(
-      var(--header-offset, 0px) + var(--header-height) + var(--nav-height) +
-        var(--padding-2x)
-    );
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    overflow: auto;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 </style>

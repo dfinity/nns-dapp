@@ -22,6 +22,8 @@
   import { worker } from "./lib/services/worker.services";
   import { listNeurons } from "./lib/services/neurons.services";
   import CanisterDetail from "./routes/CanisterDetail.svelte";
+  import { loadMainTransactionFee } from "./lib/services/transaction-fees.services";
+  import SnsProjectDetail from "./routes/SNSProjectDetail.svelte";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -36,7 +38,11 @@
         return;
       }
 
-      await Promise.all([syncAccounts(), listNeurons()]);
+      await Promise.all([
+        syncAccounts(),
+        listNeurons(),
+        loadMainTransactionFee(),
+      ]);
     }
   );
 
@@ -66,6 +72,7 @@
   <PrivateRoute path={AppPath.ProposalDetail} component={ProposalDetail} />
   <PrivateRoute path={AppPath.NeuronDetail} component={NeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} component={CanisterDetail} />
+  <PrivateRoute path={AppPath.SNSProjectDetail} component={SnsProjectDetail} />
 </Guard>
 
 <Toasts />

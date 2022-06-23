@@ -1,25 +1,12 @@
 # NNS Dapp Frontend (Svelte)
 
-This project will substitute the current frontend dapp. It has the same features and UI, but it's built with a different technology stack.
+All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
-- **Status**: This project is still under development.
 
 We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [nns-js](https://github.com/dfinity/nns-js).
 
 All the Internet computer interactions are done through nns-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
-
-## Status
-
-The plan is to deploy the pages of this project one by one as soon they are ready.
-
-- Log in page: Deployed.
-- Proposals: Deployed.
-- Neurons: Deployed.
-- Accounts: Deployed.
-- Canisters: In development.
-
-Until all the pages come from this project, the NNS Dapp is a hybrid of the pages in the `dart` directory and the routes in this project.
 
 ## Installation and local development
 

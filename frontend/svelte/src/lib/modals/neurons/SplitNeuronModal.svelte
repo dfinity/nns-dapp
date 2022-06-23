@@ -4,16 +4,14 @@
   import { ICP, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
-  import {
-    E8S_PER_ICP,
-    TRANSACTION_FEE_E8S,
-  } from "../../constants/icp.constants";
+  import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { i18n } from "../../stores/i18n";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -29,7 +27,7 @@
   $: max =
     stakeE8s === BigInt(0)
       ? 0
-      : (Number(stakeE8s) - TRANSACTION_FEE_E8S) / E8S_PER_ICP;
+      : (Number(stakeE8s) - $mainTransactionFeeStore) / E8S_PER_ICP;
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -71,7 +69,7 @@
     <div>
       <h5>{$i18n.neurons.transaction_fee}</h5>
 
-      <p>{formattedTransactionFeeICP()} ICP</p>
+      <p>{formattedTransactionFeeICP($mainTransactionFeeStore)} ICP</p>
     </div>
 
     <button

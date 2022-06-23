@@ -56,6 +56,7 @@
 
 {#if SHOW_NEURONS_ROUTE}
   <Layout>
+    <svelte:fragment slot="header">{$i18n.navigation.neurons}</svelte:fragment>
     <section data-tid="neurons-body">
       <p>{$i18n.neurons.text}</p>
 
@@ -82,14 +83,14 @@
       <Toolbar>
         <button
           data-tid="stake-neuron-button"
-          class="primary"
+          class="primary full-width"
           on:click={() => openModal("stake-neuron")}
           >{$i18n.neurons.stake_neurons}</button
         >
         {#if enoughNeuronsToMerge}
           <button
             data-tid="merge-neurons-button"
-            class="primary"
+            class="primary full-width"
             on:click={() => openModal("merge-neurons")}
             >{$i18n.neurons.merge_neurons}</button
           >
@@ -121,5 +122,13 @@
 <style lang="scss">
   p:last-of-type {
     margin-bottom: var(--padding-3x);
+  }
+
+  :global(footer .tooltip-wrapper) {
+    --tooltip-width: 50%;
+  }
+
+  :global(footer .tooltip-wrapper button) {
+    width: 100%;
   }
 </style>
