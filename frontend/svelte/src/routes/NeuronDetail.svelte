@@ -21,6 +21,7 @@
   import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
 
   let neuronId: NeuronId | undefined;
   $: neuronSelectStore.select(neuronId);
@@ -34,6 +35,9 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+      return;
+    }
     const neuronIdMaybe = routePathNeuronId(path);
     if (neuronIdMaybe === undefined) {
       unsubscribe();

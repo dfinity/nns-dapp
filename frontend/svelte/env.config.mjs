@@ -14,11 +14,11 @@ import fs from "fs";
  * will be created with the mainnet values.  The values in the file MAY then be overridden
  * using environment variables.
  */
-const CONFIG_FILE = "../ts/src/config.json";
+const CONFIG_FILE = "../../deployment-config.json";
 // Edge case: we run the script to create the config file earlier than this file is executed.
 if (!fs.existsSync(CONFIG_FILE)) {
   throw new Error(
-    "Config file missing. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
+    "Config file missing from '${CONFIG_FILE}'. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
   );
 }
 const configFromFile = JSON.parse(
@@ -69,7 +69,7 @@ const LEDGER_CANISTER_URL = getRequiredEnvVar("LEDGER_CANISTER_URL");
 const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
 
 // Configuration
-// ... Redirects between the svelte and flutter frontends
+// ... Redirects between the svelte and now deleted frontends
 const REDIRECT_TO_LEGACY = getRequiredEnvVar("REDIRECT_TO_LEGACY");
 // ... The testnet name
 const DEPLOY_ENV = getRequiredEnvVar("DEPLOY_ENV");

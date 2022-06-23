@@ -1,6 +1,6 @@
 # NNS Dapp Frontend (Svelte)
 
-All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project. The `dart` and `ts` directories are not used anymore in production.
+All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
 

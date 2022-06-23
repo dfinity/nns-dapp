@@ -74,20 +74,13 @@ open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.netw
 To work on the UI locally, either use your IDE, or run the following:
 
 ```sh
-cd frontend/dart
-flutter run --no-sound-null-safety --dart-define=DEPLOY_ENV=staging --web-port 5021
+cd frontend/svelte
+npm ci
+npm run dev
 ```
 
 ## Environment variables
 
 ### `REDIRECT_TO_LEGACY`
 
-This environment varibale controls whether the svelte or flutter implementation will be available.
-
-| `REDIRECT_TO_LEGACY` | Login Page | Accounts tab | Neurons tab | Proposals tab | Canisters tab |
-| -------------------- | ---------- | ------------ | ----------- | ------------- | ------------- |
-| prod                 | svelte     | svelte       | svelte      | svelte        | svelte        |
-| staging              | svelte     | svelte       | svelte      | svelte        | svelte        |
-| svelte               | svelte     | svelte       | svelte      | svelte        | svelte        |
-| flutter              | svelte     | flutter      | flutter     | flutter       | flutter       |
-| both                 | svelte     | both         | both        | both          | both          |
+This environment varibale is deprecated and is due for removal.
