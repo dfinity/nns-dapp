@@ -520,6 +520,12 @@ interface I18nNeuron_detail {
   maturity_percentage: string;
 }
 
+interface I18nSns_launchpad {
+  header: string;
+  current_launches: string;
+  proposals: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -607,6 +613,7 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
+  sns_launchpad: I18nSns_launchpad;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
