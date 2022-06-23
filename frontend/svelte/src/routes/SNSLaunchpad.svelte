@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Layout from "../lib/components/common/Layout.svelte";
-  import SNSCurrentLaunches from "../lib/components/sns-launchpad/SNSCurrentLaunches.svelte";
+  import SnsCurrentLaunches from "../lib/components/sns-launchpad/SNSCurrentLaunches.svelte";
   import SNSProposals from "../lib/components/sns-launchpad/SNSProposals.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -17,6 +17,6 @@
 
 <Layout>
   <svelte:fragment slot="header">{$i18n.sns_launchpad.header}</svelte:fragment>
-  <SNSCurrentLaunches />
+  <SnsCurrentLaunches />
   <SNSProposals />
 </Layout>
