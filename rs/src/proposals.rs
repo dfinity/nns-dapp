@@ -23,6 +23,7 @@ use std::ops::DerefMut;
 type Json = String;
 
 const CACHE_SIZE_LIMIT: usize = 100;
+const CACHE_ITEM_SIZE_LIMIT: usize = 2 * 1024 * 1024; // 2MB
 
 thread_local! {
     // These are purposely not stored in stable memory.
@@ -61,9 +62,9 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
 fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().map(|p| p.action.as_ref()).flatten() {
         transform_payload_to_json(f.nns_function, &f.payload)
-            .unwrap_or_else(|_| "Unable to deserialize payload".to_string())
+            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
     } else {
-        "Proposal has no payload".to_string()
+        serde_json::to_string("Proposal has no payload").unwrap()
     }
 }
 
@@ -75,7 +76,12 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     {
         let payload: In = candid::decode_one(payload_bytes).map_err(debug)?;
         let payload_transformed: Out = payload.into();
-        serde_json::to_string(&payload_transformed).map_err(debug)
+        let json = serde_json::to_string(&payload_transformed).map_err(debug)?;
+        if json.len() <= CACHE_ITEM_SIZE_LIMIT {
+            Ok(json)
+        } else {
+            Err("Payload too large".to_string())
+        }
     }
 
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
