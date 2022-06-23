@@ -496,7 +496,8 @@
   "sns_launchpad": {
     "header": "Launch Pad",
     "current_launches": "Current Launches",
-    "proposals": "Proposals"
+    "proposals": "Proposals",
+    "project": "Project"
   },
   "time": {
     "year": "year",

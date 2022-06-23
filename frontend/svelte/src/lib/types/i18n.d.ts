@@ -524,6 +524,7 @@ interface I18nSns_launchpad {
   header: string;
   current_launches: string;
   proposals: string;
+  project: string;
 }
 
 interface I18nTime {
