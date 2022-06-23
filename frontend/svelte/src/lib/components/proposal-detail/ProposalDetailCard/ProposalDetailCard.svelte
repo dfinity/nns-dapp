@@ -17,7 +17,7 @@
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let color: ProposalColor;
 
-  $: ({ proposal, status, title, color } = mapProposalInfo(proposalInfo));
+  $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));
 </script>
 
 <Card>
@@ -31,7 +31,7 @@
     <ProposalMeta {proposalInfo} />
   </div>
 
-  <ProposalActions {proposal} />
+  <ProposalActions proposalId={id} {proposal} />
 </Card>
 
 <style lang="scss">

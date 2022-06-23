@@ -235,25 +235,4 @@ describe("route-utils", () => {
     it("should push location", () =>
       testPushHistory({ baseUrl, historyIndex: window.history.length - 1 }));
   });
-
-  describe("base href is /v2/", () => {
-    const baseUrl = "https://nns.ic0.app/v2/";
-
-    beforeAll(() =>
-      jest.spyOn(routeUtils, "baseHref").mockImplementation(() => "/v2/")
-    );
-
-    afterEach(() => resetTestURL(baseUrl));
-
-    it("should return the pathname and the hash without base href", () =>
-      testRoutePath());
-
-    it("should find context for the route", () => testRouteContext());
-
-    it("should replace location", () =>
-      testReplaceHistory({ baseUrl, historyIndex: window.history.length - 1 }));
-
-    it("should push location", () =>
-      testPushHistory({ baseUrl, historyIndex: window.history.length - 1 }));
-  });
 });

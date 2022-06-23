@@ -16,11 +16,10 @@ set -euo pipefail
 # - Verify that the constant appears in config.json if you run this script.
 # - Add an export clause to the bottom of this file, if you will need the constant in bash.
 #
-# Note: After flutter has been removed, move JSON_CONFIG_FILE to the root of the repo.
-JSON_CONFIG_FILE="frontend/ts/src/config.json"
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
+JSON_CONFIG_FILE="$PWD/deployment-config.json"
 
 : "Scan environment:"
 DFX_NETWORK="${DFX_NETWORK:-$DEPLOY_ENV}"
@@ -73,7 +72,7 @@ jq -s '
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
-echo "Config has been defined.  Let it never be changed." >&2
+echo "Config has been defined in '${JSON_CONFIG_FILE}'" >&2
 
 : "Export values used by bash:"
 get_var() {
