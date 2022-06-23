@@ -1084,13 +1084,15 @@ impl AccountsStore {
         // ledger which in turns notifies the CMC.
         if memo == MEMO_CREATE_CANISTER {
             let subaccount = principal.into();
-            { // Check if sent to CMC account for this principal
+            {
+                // Check if sent to CMC account for this principal
                 let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
                 if *to == expected_to {
                     return true;
                 }
             }
-            { // Check if sent to NNS Dapp account for this principal
+            {
+                // Check if sent to NNS Dapp account for this principal
                 let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
                 if *to == expected_to {
                     return true;
@@ -1114,13 +1116,15 @@ impl AccountsStore {
         if memo == MEMO_TOP_UP_CANISTER {
             for canister_id in canister_ids.iter() {
                 let subaccount = (&canister_id.get()).into();
-                { // Check if sent to CMC account for this canister
+                {
+                    // Check if sent to CMC account for this canister
                     let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
                     if *to == expected_to {
                         return Some(*canister_id);
                     }
                 }
-                { // Check if sent to NNS Dapp account for this canister
+                {
+                    // Check if sent to NNS Dapp account for this canister
                     let expected_to = AccountIdentifier::new(dfn_core::api::id().get(), Some(subaccount));
                     if *to == expected_to {
                         return Some(*canister_id);
