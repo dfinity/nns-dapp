@@ -15,10 +15,7 @@
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import {
-    AppPath,
-    SHOW_PROPOSALS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import { AppPath } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -76,11 +73,6 @@
   };
 
   onMount(async () => {
-    // TODO: To be removed once this page has been implemented
-    if (!SHOW_PROPOSALS_ROUTE) {
-      window.location.replace(AppPath.Proposals);
-    }
-
     const reload: boolean = reloadRouteData({
       expectedPreviousPath: AppPath.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
@@ -154,35 +146,33 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-{#if SHOW_PROPOSALS_ROUTE}
-  <Layout>
-    <svelte:fragment slot="header">{$i18n.navigation.voting}</svelte:fragment>
-    <section data-tid="proposals-tab">
-      <p>{$i18n.voting.text}</p>
+<Layout>
+  <svelte:fragment slot="header">{$i18n.navigation.voting}</svelte:fragment>
+  <section data-tid="proposals-tab">
+    <p>{$i18n.voting.text}</p>
 
-      <ProposalsFilters />
+    <ProposalsFilters />
 
-      {#if neuronsLoaded}
-        <InfiniteScroll on:nnsIntersect={findNextProposals}>
-          {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-            <ProposalCard {hidden} {proposalInfo} />
-          {/each}
-        </InfiniteScroll>
+    {#if neuronsLoaded}
+      <InfiniteScroll on:nnsIntersect={findNextProposals}>
+        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
+          <ProposalCard {hidden} {proposalInfo} />
+        {/each}
+      </InfiniteScroll>
 
-        {#if nothingFound}
-          <p class="no-proposals">{$i18n.voting.nothing_found}</p>
-        {/if}
+      {#if nothingFound}
+        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
       {/if}
+    {/if}
 
-      {#if loading || !neuronsLoaded}
-        <div class="spinner">
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      {/if}
-    </section>
-  </Layout>
-{/if}
+    {#if loading || !neuronsLoaded}
+      <div class="spinner">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    {/if}
+  </section>
+</Layout>
 
 <style lang="scss">
   .spinner {
