@@ -2,7 +2,10 @@ import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
-import { ProposalPayloadNotFoundError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
+} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
@@ -521,6 +524,20 @@ describe("proposals-services", () => {
       await loadProposalPayload({ proposalId: BigInt(0) });
 
       expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+    });
+
+    it("should update proposalPayloadsStore with null if the payload was not found", async () => {
+      proposalPayloadsStore.reset();
+
+      jest.spyOn(api, "queryProposalPayload").mockImplementation(() => {
+        throw new ProposalPayloadTooLargeError();
+      });
+
+      await loadProposalPayload({ proposalId: BigInt(0) });
+
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toEqual({
+        error: "Payload too large",
+      });
     });
   });
 });
