@@ -22,7 +22,7 @@ dfx start
 
 # in another shell, deploy the canister
 # in the repo root
-DEPLOY_ENV=nobuild dfx deploy --network local
+NNS_DAPP_WASM=nns-dapp.wasm dfx deploy --network local
 ```
 
 Install all the dependencies for the test suite, and run the tests:

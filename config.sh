@@ -22,11 +22,8 @@ pushd "$(dirname "${BASH_SOURCE[0]}")"
 JSON_CONFIG_FILE="$PWD/deployment-config.json"
 
 : "Scan environment:"
-DFX_NETWORK="${DFX_NETWORK:-$DEPLOY_ENV}"
-DEPLOY_ENV="${DFX_NETWORK}"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
-export DEPLOY_ENV
 
 local_deployment_data="$(
   set -euo pipefail
@@ -64,7 +61,6 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 jq -s '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
-  .DEPLOY_ENV = env.DEPLOY_ENV |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |

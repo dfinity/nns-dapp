@@ -18,7 +18,7 @@ const CONFIG_FILE = "../../deployment-config.json";
 // Edge case: we run the script to create the config file earlier than this file is executed.
 if (!fs.existsSync(CONFIG_FILE)) {
   throw new Error(
-    "Config file missing from '${CONFIG_FILE}'. Run `DEPLOY_ENV=testnet npm run build:config` for local development."
+    "Config file missing from '${CONFIG_FILE}'. Run `DFX_NETWORK=testnet npm run build:config` for local development."
   );
 }
 const configFromFile = JSON.parse(
@@ -45,7 +45,7 @@ const ROLLUP_WATCH = process.env.ROLLUP_WATCH === "true";
 
 const ENVIRONMENT = ROLLUP_WATCH
   ? "local" // Note: This is also deployed to testnets.
-  : process.env.DEPLOY_ENV === "testnet"
+  : process.env.DFX_NETWORK === "testnet"
   ? "testnet"
   : "mainnet";
 
@@ -72,13 +72,13 @@ const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
 // ... Redirects between the svelte and now deleted frontends
 const REDIRECT_TO_LEGACY = getRequiredEnvVar("REDIRECT_TO_LEGACY");
 // ... The testnet name
-const DEPLOY_ENV = getRequiredEnvVar("DEPLOY_ENV");
+const DFX_NETWORK = getRequiredEnvVar("DFX_NETWORK");
 // ... Whether to get the root key
 const FETCH_ROOT_KEY = getRequiredEnvVar("FETCH_ROOT_KEY");
 
 export const envConfig = {
   ENVIRONMENT,
-  DEPLOY_ENV,
+  DFX_NETWORK,
   FETCH_ROOT_KEY,
   REDIRECT_TO_LEGACY,
   MAINNET,

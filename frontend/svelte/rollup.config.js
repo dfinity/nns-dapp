@@ -44,7 +44,7 @@ function serve() {
 const replaceMap = [
   "ROLLUP_WATCH",
   "IDENTITY_SERVICE_URL",
-  "DEPLOY_ENV",
+  "DFX_NETWORK",
   "REDIRECT_TO_LEGACY",
   "FETCH_ROOT_KEY",
   "HOST",
