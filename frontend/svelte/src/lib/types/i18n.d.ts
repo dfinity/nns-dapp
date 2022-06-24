@@ -526,6 +526,13 @@ interface I18nSns_launchpad {
   proposals: string;
 }
 
+interface I18nSns_project_detail {
+  token_name: string;
+  token_symbol: string;
+  min_commitment: string;
+  max_commitment: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -615,6 +622,7 @@ interface I18n {
   nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

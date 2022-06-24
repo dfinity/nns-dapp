@@ -69,8 +69,6 @@ const LEDGER_CANISTER_URL = getRequiredEnvVar("LEDGER_CANISTER_URL");
 const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
 
 // Configuration
-// ... Redirects between the svelte and now deleted frontends
-const REDIRECT_TO_LEGACY = getRequiredEnvVar("REDIRECT_TO_LEGACY");
 // ... The testnet name
 const DFX_NETWORK = getRequiredEnvVar("DFX_NETWORK");
 // ... Whether to get the root key
@@ -80,7 +78,6 @@ export const envConfig = {
   ENVIRONMENT,
   DFX_NETWORK,
   FETCH_ROOT_KEY,
-  REDIRECT_TO_LEGACY,
   MAINNET,
   HOST,
   OWN_CANISTER_ID,

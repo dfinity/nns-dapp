@@ -25,7 +25,8 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     echo "File not found, or node is not a file: NNS_DAPP_WASM='${NNS_DAPP_WASM}'"
     exit 1
   } >&2
-  [[ "$(realpath "${NNS_DAPP_WASM}")" == "$(realpath nns-dapp.wasm)" ]] || cp "${NNS_DAPP_WASM}" nns-dapp.wasm
+  INSTALL_LOCATION="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
+  [[ "$(realpath "${NNS_DAPP_WASM}")" == "$(realpath "${INSTALL_LOCATION}")" ]] || cp "${NNS_DAPP_WASM}" "${INSTALL_LOCATION}"
   echo "Skipping build as the WASM file has already been provided."
   exit 0
 }

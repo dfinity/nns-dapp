@@ -45,7 +45,6 @@ const replaceMap = [
   "ROLLUP_WATCH",
   "IDENTITY_SERVICE_URL",
   "DFX_NETWORK",
-  "REDIRECT_TO_LEGACY",
   "FETCH_ROOT_KEY",
   "HOST",
   "OWN_CANISTER_ID",
