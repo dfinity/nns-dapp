@@ -3,7 +3,9 @@ Wasm sha256 hash: `d5c209e83736182cde55a4f6b0d0a208a4a99c7b617b1ccdec69b3b80c2c9
 
 ## Change Log:
 * Update canister payment flow
-* UI improvements
+* New Navigation menu
+* Improvements getting the Proposal payload
+* Other UI improvements
 * Removal of now unused flutter code
 
 ## Commit log:
