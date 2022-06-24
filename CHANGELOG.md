@@ -1,7 +1,11 @@
 # Changelog
 
-## Proposal XXX
-... to fill in with the changelog in the proposal
+## Proposal 66831
+* Update canister payment flow
+* New Navigation menu
+* Improvements getting the Proposal payload
+* Other UI improvements
+* Removal of now unused flutter code
 
 ## Proposal 65319
 * New Canisters Tab built on Svelte
