@@ -499,6 +499,12 @@
     "proposals": "Proposals",
     "project": "Project"
   },
+  "sns_project_detail": {
+    "token_name": "Token Name",
+    "token_symbol": "Token Symbol",
+    "min_commitment": "Minimum Commitment",
+    "max_commitment": "Maximum Commitment"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",

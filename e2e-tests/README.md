@@ -5,33 +5,18 @@ more info.
 
 ## Run the tests
 
-First, build the canister:
+First, deploy to a local replica the required canisters:
 
 ```bash
-# in the repo root
-./scripts/docker-build
+# in root folder
+./deploy.sh --network local
 ```
 
-This generates `nns-dapp.wasm`.
-
-Then, deploy the canister:
-
-```bash
-# in a shell, start the replica:
-dfx start
-
-# in another shell, deploy the canister
-# in the repo root
-DEPLOY_ENV=nobuild dfx deploy --network local
-```
+This will build NNS Dapp and deploy all the necessary canister to your local machine.
 
 Install all the dependencies for the test suite, and run the tests:
 
 ```bash
-# in proxy/
-npm ci
-npm run build
-
 # in e2e-tests/
 npm ci
 npm run test
@@ -44,5 +29,5 @@ Finally, shut down the replica by killing the `dfx start` process.
 Use the environment variables `NNS_DAPP_URL` and direct wdio command:
 
 ```
-NNS_DAPP_URL=... npm run wdio
+NNS_DAPP_URL=... npm run test
 ```

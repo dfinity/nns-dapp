@@ -24,7 +24,7 @@ help_text() {
 
 case "$(basename "${SHELL:-}")" in
 bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
-zsh) DEFAULT_USER_PROFILE="$HOME/.zshenv" ;;
+zsh) DEFAULT_USER_PROFILE="$HOME/.zshrc" ;;
 ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
 *) # dash, ash, tsh, tcsh
   DEFAULT_USER_PROFILE="$HOME/.profile" ;;
@@ -206,8 +206,8 @@ command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -v ic-cdk-optimizer || install_ic_cdk_optimizer
-command -v ic-admin || "install_ic_admin_$OS"
+command -V ic-cdk-optimizer || install_ic_cdk_optimizer
+command -V ic-admin || "install_ic_admin_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

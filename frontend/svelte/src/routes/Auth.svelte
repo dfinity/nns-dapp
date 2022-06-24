@@ -51,37 +51,48 @@
 </script>
 
 {#if !signedIn}
-  <img
-    src="/assets/nns_background.jpeg"
-    loading="lazy"
-    role="presentation"
-    alt=""
-    aria-hidden="true"
-    class="background"
-  />
+  <div class="container">
+    <img
+      src="/assets/nns_background.jpeg"
+      role="presentation"
+      alt=""
+      aria-hidden="true"
+      class="background"
+    />
 
-  <Banner />
+    <Banner />
 
-  <main data-tid="auth-page">
-    <h1>{$i18n.auth.nns}</h1>
-    <h2>{$i18n.auth.ic}</h2>
-    <p>{$i18n.auth.icp_governance}</p>
-    <button on:click={signIn} data-tid="login-button">{$i18n.auth.login}</button
-    >
-  </main>
+    <main data-tid="auth-page">
+      <h1>{$i18n.auth.nns}</h1>
+      <h2>{$i18n.auth.ic}</h2>
+      <p>{$i18n.auth.icp_governance}</p>
+      <button on:click={signIn} data-tid="login-button"
+        >{$i18n.auth.login}</button
+      >
+    </main>
 
-  <img
-    src="/assets/100_on_chain-small-centered-white_text.svg"
-    role="presentation"
-    alt={$i18n.auth.on_chain}
-    class="bottom-banner"
-    loading="lazy"
-  />
+    <img
+      src="/assets/100_on_chain-small-centered-white_text.svg"
+      role="presentation"
+      alt={$i18n.auth.on_chain}
+      class="bottom-banner"
+      loading="lazy"
+    />
+  </div>
 {/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/img";
   @use "../lib/themes/mixins/media";
+
+  .container {
+    position: fixed;
+    inset: 0;
+
+    display: block;
+
+    background: black;
+  }
 
   main {
     height: 100%;
