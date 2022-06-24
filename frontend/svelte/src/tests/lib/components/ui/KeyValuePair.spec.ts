@@ -24,13 +24,4 @@ describe("KeyValuePair", () => {
 
     expect(queryByTestId("icon-info")).toBeInTheDocument();
   });
-
-  it("should not show info text", () => {
-    const infoText = "test info";
-    const { queryByText } = render(KeyValuePairTest, {
-      props: { key, value, info: true, infoText: "test info" },
-    });
-
-    expect(queryByText(infoText, { exact: false })).not.toBeVisible();
-  });
 });

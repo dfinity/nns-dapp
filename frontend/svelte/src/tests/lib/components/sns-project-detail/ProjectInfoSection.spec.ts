@@ -7,12 +7,12 @@ import ProjectInfoSection from "../../../../lib/components/sns-project-detail/Pr
 
 describe("ProjectInfoSection", () => {
   it("should render title", async () => {
-    const { queryByTestId } = render(ProjectInfoSection);
-    expect(queryByTestId("sns-project-detail-title")).toBeInTheDocument();
+    const { container } = render(ProjectInfoSection);
+    expect(container.querySelector("h1")).toBeInTheDocument();
   });
 
   it("should render project link", async () => {
-    const { queryByTestId } = render(ProjectInfoSection);
-    expect(queryByTestId("sns-project-detail-link")).toBeInTheDocument();
+    const { container } = render(ProjectInfoSection);
+    expect(container.querySelector("a")).toBeInTheDocument();
   });
 });
