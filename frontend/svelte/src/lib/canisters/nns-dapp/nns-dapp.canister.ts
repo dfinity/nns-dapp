@@ -15,6 +15,7 @@ import {
   HardwareWalletAttachError,
   NameTooLongError,
   ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   UnknownProposalPayloadError,
 } from "./nns-dapp.errors";
@@ -323,6 +324,10 @@ export class NNSDappCanister {
     const errorText = "Err" in response ? response.Err : undefined;
     if (errorText?.includes("Proposal not found") === true) {
       throw new ProposalPayloadNotFoundError();
+    }
+
+    if (errorText?.includes("cannot be larger than") === true) {
+      throw new ProposalPayloadTooLargeError();
     }
 
     throw new UnknownProposalPayloadError(
