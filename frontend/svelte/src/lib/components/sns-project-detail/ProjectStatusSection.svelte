@@ -11,7 +11,7 @@
   const mockIcp2 = ICP.fromString("20") as ICP;
 </script>
 
-<div class="wrapper">
+<div class="wrapper" data-tid="sns-project-detail-status">
   <div class="title">
     <h2>{$i18n.sns_project_detail.status}</h2>
     <!-- TODO: Create another Badge for SNS? -->
