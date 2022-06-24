@@ -520,6 +520,20 @@ interface I18nNeuron_detail {
   maturity_percentage: string;
 }
 
+interface I18nSns_launchpad {
+  header: string;
+  current_launches: string;
+  proposals: string;
+  project: string;
+}
+
+interface I18nSns_project_detail {
+  token_name: string;
+  token_symbol: string;
+  min_commitment: string;
+  max_commitment: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -546,6 +560,7 @@ interface I18nError__ledger {
   user_cancel: string;
   user_rejected_transaction: string;
   version_not_supported: string;
+  browser_not_supported: string;
   incorrect_identifier: string;
 }
 
@@ -607,6 +622,8 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
+  sns_launchpad: I18nSns_launchpad;
+  sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

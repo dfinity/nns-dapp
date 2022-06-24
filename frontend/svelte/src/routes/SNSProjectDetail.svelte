@@ -13,11 +13,16 @@
       routeStore.replace({ path: AppPath.Accounts });
     }
   });
+
+  const goBack = () =>
+    routeStore.navigate({
+      path: AppPath.SNSLaunchpad,
+    });
 </script>
 
-<Layout>
+<Layout on:nnsBack={goBack} layout="detail">
   <svelte:fragment slot="header">Project Tetris</svelte:fragment>
-  <TwoColumns testId="sns-project-detail">
+  <TwoColumns>
     <ProjectInfoSection slot="left" />
     <ProjectStatusSection slot="right" />
   </TwoColumns>
