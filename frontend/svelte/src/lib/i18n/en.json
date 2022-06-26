@@ -495,7 +495,8 @@
   },
   "sns_launchpad": {
     "header": "Launch Pad",
-    "current_launches": "Current Launches",
+    "opportunity_projects": "Current Launches",
+    "upcoming_projects": "Upcoming",
     "proposals": "Proposals",
     "project": "Project"
   },
