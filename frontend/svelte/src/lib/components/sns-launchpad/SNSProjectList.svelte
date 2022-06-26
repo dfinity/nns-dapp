@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/snsProjects.store";
-  import Card from "../ui/Card.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import SnsProject from "./SNSProject.svelte";
 
   export let projects: SnsFullProject[] | undefined = undefined;
   export let title: string;
@@ -19,14 +18,8 @@
     <SkeletonCard />
     <SkeletonCard />
   {:else if projects !== undefined}
-    {#each projects as { summary: { logo, name, description } }}
-      <Card role="link">
-        <div slot="start">
-          <img src={logo} alt="project logo" />
-          <h3>{$i18n.sns_launchpad.project} {name}</h3>
-        </div>
-        <p>{description}</p>
-      </Card>
+    {#each projects as project}
+      <SnsProject {project} />
     {/each}
   {/if}
 {/if}

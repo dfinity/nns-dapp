@@ -6,7 +6,7 @@
     snsFullProjectStore,
     type SnsFullProject,
   } from "../../stores/snsProjects.store";
-  import SnsProjects from "./SNSProjects.svelte";
+  import SnsProjectList from "./SNSProjectList.svelte";
 
   let loading: boolean = false;
   let opportunityProjects: SnsFullProject[] | undefined;
@@ -29,13 +29,13 @@
   load();
 </script>
 
-<SnsProjects
+<SnsProjectList
   projects={opportunityProjects}
   title={$i18n.sns_launchpad.opportunity_projects}
   {loading}
 />
 
-<SnsProjects
+<SnsProjectList
   projects={upcomingProjects}
   title={$i18n.sns_launchpad.upcoming_projects}
   {loading}

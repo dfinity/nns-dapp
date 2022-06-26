@@ -497,8 +497,12 @@
     "header": "Launch Pad",
     "opportunity_projects": "Current Launches",
     "upcoming_projects": "Upcoming",
-    "proposals": "Proposals",
-    "project": "Project"
+    "proposals": "Proposals"
+  },
+  "sns_project": {
+    "project": "Project",
+    "deadline": "Deadline",
+    "your_commitment": "Your Current Commitment"
   },
   "sns_project_detail": {
     "token_name": "Token Name",
