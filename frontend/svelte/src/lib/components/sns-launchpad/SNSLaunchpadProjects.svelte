@@ -26,9 +26,6 @@
     loading = false;
   };
 
-  $: $snsFullProjectStore,
-    console.log("------ $snsFullProjectStore", $snsFullProjectStore);
-
   load();
 </script>
 

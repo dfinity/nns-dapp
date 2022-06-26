@@ -10,7 +10,6 @@
 
   let hidden: boolean;
   $: hidden = projects?.length === 0;
-  $: console.log(",<<l projects", projects);
 </script>
 
 {#if !hidden}
