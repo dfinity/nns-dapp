@@ -46,44 +46,44 @@ export interface SnsSummary {
   tokenName: string;
   description: string;
 
-  deadline: BigInt; // seconds
-  minCommitment: BigInt; // e8s
-  maxCommitment: BigInt; // e8s
+  deadline: bigint; // seconds
+  minCommitment: bigint; // e8s
+  maxCommitment: bigint; // e8s
 
   status: SnsProjectStatus;
 }
 
 export interface SnsSwapState {
   rootCanisterId: Principal;
-  myCommitment: BigInt; // e8s
-  currentCommitment: BigInt; // e8s
+  myCommitment: bigint; // e8s
+  currentCommitment: bigint; // e8s
 }
 
 export const SNS_SWAP_STATES_MAP: Record<string, SnsSwapState> = {
   [principal(0).toText()]: {
     rootCanisterId: principal(0),
-    myCommitment: BigInt(25),
-    currentCommitment: BigInt(100),
+    myCommitment: BigInt(25 * 100000000),
+    currentCommitment: BigInt(100 * 100000000),
   },
   [principal(1).toText()]: {
     rootCanisterId: principal(1),
-    myCommitment: BigInt(25),
-    currentCommitment: BigInt(775),
+    myCommitment: BigInt(50 * 100000000),
+    currentCommitment: BigInt(775 * 100000000),
   },
   [principal(2).toText()]: {
     rootCanisterId: principal(2),
-    myCommitment: BigInt(0),
-    currentCommitment: BigInt(1000),
+    myCommitment: BigInt(0 * 100000000),
+    currentCommitment: BigInt(1000 * 100000000),
   },
   [principal(3).toText()]: {
     rootCanisterId: principal(3),
-    myCommitment: BigInt(0),
-    currentCommitment: BigInt(500),
+    myCommitment: BigInt(0 * 100000000),
+    currentCommitment: BigInt(500 * 100000000),
   },
 };
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
-const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]);
+const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
 export const SNS_SUMMARY_LIST: SnsSummary[] = [
   {
@@ -91,8 +91,8 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
     status: SnsProjectStatus.Opportunity,
 
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 3),
-    minCommitment: BigInt(1500),
-    maxCommitment: BigInt(3000),
+    minCommitment: BigInt(1500 * 100000000),
+    maxCommitment: BigInt(3000 * 100000000),
     tokenName: "string",
 
     logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACzSURBVHgB7ZrBCcIwAEUTcYSMI6KC2H2cw30UQRwoO1Ry6DkptMhL3zvk9C7vEPiExMPxPIbO2Jcj51wVU0pN3hy3eN/Pu+qdLtcmb3J3oUOMomAUBaModBkVN78oXukZWrjlwUWxNEZRMIqCURRcFBT+vijWeB/xTlEwioJRFIyi4KKYsyha3OKNj7oX74OLwigKRlEwioKLgsJq/yhal8KS3uR6pygYRcEoCkZRcCZR+AGaGlXJPd3qegAAAABJRU5ErkJggg==",
@@ -107,8 +107,8 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
     status: SnsProjectStatus.Opportunity,
 
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 30),
-    minCommitment: BigInt(1000),
-    maxCommitment: BigInt(2000),
+    minCommitment: BigInt(1000 * 100000000),
+    maxCommitment: BigInt(2000 * 100000000),
     tokenName: "string",
 
     logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAClSURBVHgB7dqxDYMwEEBRE2UET5I6icQUzMgc9EziHUAuqLElS+if/iuoruAXyCeL6fufjxTMuz5KKbeDOee0rXtq8Vs+TbM9cy3vWNX3fKWAjKIwisIoipBRU9iNYuTp3zM7eu6a9ZuiMIrCKAqjKNwoek711nuPkXPXrN8UhVEURlEYReFG4R3Fg4yiMIrCKAo3Cgr/o6AwisIoCqMojKIIuSadjJ5VyRrmqP4AAAAASUVORK5CYII=",
@@ -124,8 +124,8 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
 
     // what needs to be shown for upcomming projects
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
-    minCommitment: BigInt(1500),
-    maxCommitment: BigInt(3000),
+    minCommitment: BigInt(1500 * 100000000),
+    maxCommitment: BigInt(3000 * 100000000),
     tokenName: "string",
 
     logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACjSURBVHgB7dkxDkRAGEDh32ZPsuWWWy+JQ4gzimPolUpXIXMCM4nmjfcVqglegT+j+Xf9EZV5p8MyrZcL2/EX+7BFjs/8zVpbsi7nHpN0n6+okFEURlEYRVFlVPP4iaLkq37npFB6bZ8pCqMojKIwisKJomSP4s5zukcRvig4jKIwisKJgsK/HhRGURhFYRSFEwWFEwWFURRGURhFYRRFlWPSCah/Vck0pRWfAAAAAElFTkSuQmCC",
@@ -140,8 +140,8 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
     status: SnsProjectStatus.Upcoming,
 
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
-    minCommitment: BigInt(1500),
-    maxCommitment: BigInt(3000),
+    minCommitment: BigInt(1500 * 100000000),
+    maxCommitment: BigInt(3000 * 100000000),
     tokenName: "string",
 
     logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC6SURBVHgB7ZkxCsJAFAUTETyAexcbEfZSHsJLBcTGu6wHsFK3SL0/EIvZzBSpHj87gYXHz3i+5M/QGfv6OB2mZvD5zqHcnC2lNHMppb+8ezd0iFIUlKKgFIUupcbNN4rpeB0i5Ndt1ZnRefNM7xQFpSgoRUEpCv02ijX3CZXoTmFJLnLGSj2nd4qCUhSUoqAUBXcUSxrF497O/j6ofz2iKEVBKQpKUbBRUHBHQUEpCkpRUIqCUhS6rElfBK1VyaWjTNYAAAAASUVORK5CYII=",
