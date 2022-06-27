@@ -33,8 +33,8 @@
   article {
     text-decoration: none;
 
-    background: var(--background);
-    color: var(--gray-50);
+    background: var(--card-background);
+    color: var(--card-background-contrast);
     box-shadow: var(--card-box-shadow);
 
     padding: var(--padding-2x);

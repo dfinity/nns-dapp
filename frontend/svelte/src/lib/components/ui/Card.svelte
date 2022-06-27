@@ -46,14 +46,13 @@
   article {
     text-decoration: none;
 
-    background: var(--background);
-    color: var(--gray-50);
+    background: var(--card-background);
+    color: var(--card-background-contrast);
+    box-shadow: var(--card-box-shadow);
 
     padding: var(--padding-2x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
-
-    box-shadow: var(--card-box-shadow);
 
     outline: 2px solid transparent;
     &.selected {
