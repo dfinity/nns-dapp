@@ -129,3 +129,4 @@ get_wasm identity-canister.wasm
 get_wasm nns-ui-canister.wasm
 get_wasm sns-root-canister.wasm
 get_wasm sns-governance-canister.wasm
+get_wasm sns-wasm-canister.wasm.gz
