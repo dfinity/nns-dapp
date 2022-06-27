@@ -1,6 +1,5 @@
 <script lang="ts">
-  import {ProposalStatus} from "@dfinity/nns";
-  import type {ProposalId} from "@dfinity/nns";
+  import { type ProposalId, ProposalStatus } from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import CardInfo from "../../ui/CardInfo.svelte";
