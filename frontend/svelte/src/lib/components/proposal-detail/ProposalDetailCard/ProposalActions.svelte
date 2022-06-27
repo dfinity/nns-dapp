@@ -9,7 +9,7 @@
   import Json from "../../common/Json.svelte";
   import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
 
-  export let proposalId: ProposalId;
+  export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
@@ -35,7 +35,7 @@
       {/if}
     {/each}
 
-    {#if nnsFunctionId !== undefined}
+    {#if nnsFunctionId !== undefined && proposalId !== undefined}
       <NnsFunctionDetails {proposalId} {nnsFunctionId} />
     {/if}
   </dl>
