@@ -20,7 +20,7 @@ describe("Layout", () => {
 
   describe("Detail layout", () => {
     const spyBackClick = jest.fn();
-    let container, getByText;
+    let container, getByText, queryByTestId;
 
     beforeEach(() => {
       const rendered = render(LayoutTest, {
@@ -33,6 +33,7 @@ describe("Layout", () => {
       });
       container = rendered.container;
       getByText = rendered.getByText;
+      queryByTestId = rendered.queryByTestId;
     });
 
     it("should render a header", () => {
@@ -49,10 +50,8 @@ describe("Layout", () => {
       ).toBe("the button");
     });
 
-    it("should contain a back button tooltip", () => {
-      expect(
-        container.querySelector(".tooltip-wrapper button.back")
-      ).toBeInTheDocument();
+    it("should contain a back button", () => {
+      expect(queryByTestId("back")).toBeInTheDocument();
     });
 
     it("should dispatch on back click", () => {
