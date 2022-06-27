@@ -40,6 +40,7 @@ describe("ProposalActions", () => {
     const { getByText } = render(ProposalActions, {
       props: {
         proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -51,6 +52,7 @@ describe("ProposalActions", () => {
     const { getByText } = render(ProposalActions, {
       props: {
         proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -65,6 +67,7 @@ describe("ProposalActions", () => {
     const nodeProviderActions = render(ProposalActions, {
       props: {
         proposal: proposalWithRewardNodeProviderAction,
+        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -75,6 +78,7 @@ describe("ProposalActions", () => {
     const motionActions = render(ProposalActions, {
       props: {
         proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -94,6 +98,7 @@ describe("ProposalActions", () => {
       const { getByText } = render(ProposalActions, {
         props: {
           proposal: proposalWithNnsFunctionAction,
+          proposalId: mockProposalInfo.id,
         },
       });
 
@@ -113,6 +118,7 @@ describe("ProposalActions", () => {
       const { getByText } = render(ProposalActions, {
         props: {
           proposal: proposalWithNnsFunctionAction,
+          proposalId: mockProposalInfo.id,
         },
       });
 
