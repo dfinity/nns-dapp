@@ -503,7 +503,14 @@
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "min_commitment": "Minimum Commitment",
-    "max_commitment": "Maximum Commitment"
+    "max_commitment": "Maximum Commitment",
+    "current_commitment": "Current Overall Commitment",
+    "min_commitment_goal": "Minimum Commitment Goal",
+    "deadline": "Deadline",
+    "user_commitment": "Your Current Commitment",
+    "status": "Status",
+    "accepting": "Accepting Participation",
+    "participate": "Participate"
   },
   "time": {
     "year": "year",

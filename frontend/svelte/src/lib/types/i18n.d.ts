@@ -532,6 +532,11 @@ interface I18nSns_project_detail {
   token_symbol: string;
   min_commitment: string;
   max_commitment: string;
+  current_commitment: string;
+  min_commitment_goal: string;
+  deadline: string;
+  user_commitment: string;
+  participate: string;
 }
 
 interface I18nTime {
