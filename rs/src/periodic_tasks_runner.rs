@@ -38,6 +38,12 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::RefundTransaction(args) => {
                 handle_refund(args).await;
             }
+            MultiPartTransactionToBeProcessed::CreateCanisterV2(controller) => {
+                handle_create_canister_v2(block_height, controller).await;
+            }
+            MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id) => {
+                handle_top_up_canister_v2(block_height, principal, canister_id).await;
+            }
         }
     }
 
@@ -73,6 +79,41 @@ async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId,
                 .borrow_mut()
                 .process_multi_part_transaction_error(block_height, e, false)
         }),
+    }
+}
+
+async fn handle_create_canister_v2(block_height: BlockHeight, controller: PrincipalId) {
+    match create_canister_v2(block_height, controller).await {
+        Ok(Ok(canister_id)) => STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .attach_newly_created_canister(controller, block_height, canister_id)
+        }),
+        Ok(Err(NotifyError::Processing)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+                    controller,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(controller),
+                )
+            });
+        }
+        Ok(Err(error)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    error.to_string(),
+                    false,
+                )
+            });
+        }
+        Err(error) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error.clone(), true)
+            });
+        }
     }
 }
 
@@ -119,6 +160,37 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
                 error,
             )
             .await;
+        }
+    }
+}
+
+async fn handle_top_up_canister_v2(block_height: BlockHeight, principal: PrincipalId, canister_id: CanisterId) {
+    match top_up_canister_v2(block_height, canister_id).await {
+        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+        Ok(Err(NotifyError::Processing)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+                    principal,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
+                )
+            });
+        }
+        Ok(Err(error)) => {
+            STATE.with(|s| {
+                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
+                    block_height,
+                    format!("{:?}", error),
+                    false,
+                )
+            });
+        }
+        Err(error) => {
+            STATE.with(|s| {
+                s.accounts_store
+                    .borrow_mut()
+                    .process_multi_part_transaction_error(block_height, error, false)
+            });
         }
     }
 }
@@ -214,6 +286,18 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
     }
 }
 
+async fn create_canister_v2(
+    block_index: BlockHeight,
+    controller: PrincipalId,
+) -> Result<Result<CanisterId, NotifyError>, String> {
+    let notify_request = NotifyCreateCanister {
+        block_index,
+        controller,
+    };
+
+    cmc::notify_create_canister(notify_request).await
+}
+
 async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Result<CanisterId, NotifyError>, String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.get_e8s() - (2 * DEFAULT_TRANSFER_FEE.get_e8s()));
@@ -236,6 +320,18 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
     };
 
     cmc::notify_create_canister(notify_request).await
+}
+
+async fn top_up_canister_v2(
+    block_index: BlockHeight,
+    canister_id: CanisterId,
+) -> Result<Result<Cycles, NotifyError>, String> {
+    let notify_request = NotifyTopUp {
+        block_index,
+        canister_id,
+    };
+
+    cmc::notify_top_up_canister(notify_request).await
 }
 
 async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<Result<Cycles, NotifyError>, String> {

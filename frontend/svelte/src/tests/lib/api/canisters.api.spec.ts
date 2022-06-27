@@ -19,13 +19,11 @@ import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "../../../lib/api/constants.api";
-import { toSubAccountId } from "../../../lib/api/utils.api";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
 import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
 import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import type { SubAccountArray } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import { mockSubAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -166,7 +164,14 @@ describe("canisters-api", () => {
   });
 
   describe("createCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      // Avoid to print errors during test
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
+    });
+
     it("should make a transfer, notify and attach the canister", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
@@ -220,14 +225,11 @@ describe("canisters-api", () => {
         principal: CYCLES_MINTING_CANISTER_ID,
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
-      const fromSubAccountId = toSubAccountId(
-        mockSubAccount.subAccount as SubAccountArray
-      );
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount,
-        fromSubAccountId,
+        fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -252,7 +254,14 @@ describe("canisters-api", () => {
   });
 
   describe("topUpCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      // Avoid to print errors during test
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
+    });
+
     it("should make a transfer and notify", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
@@ -291,9 +300,6 @@ describe("canisters-api", () => {
         principal: CYCLES_MINTING_CANISTER_ID,
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
-      const fromSubAccountId = toSubAccountId(
-        mockSubAccount.subAccount as SubAccountArray
-      );
 
       const amount = ICP.fromString("3") as ICP;
       await topUpCanister({
@@ -307,7 +313,7 @@ describe("canisters-api", () => {
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount,
-        fromSubAccountId,
+        fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();

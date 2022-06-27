@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { NeuronId } from "@dfinity/nns";
-  import { onDestroy, onMount } from "svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import { onDestroy } from "svelte";
+  import Layout from "../lib/components/common/Layout.svelte";
   import {
     routePathNeuronId,
     loadNeuron,
@@ -12,28 +12,28 @@
   import NeuronMetaInfoCard from "../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import {
-    AppPath,
-    SHOW_NEURONS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
-  import { neuronSelectStore, neuronsStore } from "../lib/stores/neurons.store";
+  import { neuronsStore } from "../lib/stores/neurons.store";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
+  import { getNeuronById } from "../lib/utils/neuron.utils";
+
+  // Neurons are fetch on page load. No need to do it in the route.
 
   let neuronId: NeuronId | undefined;
-  $: neuronSelectStore.select(neuronId);
-
-  // TODO: To be removed once this page has been implemented
-  onMount(() => {
-    if (!SHOW_NEURONS_ROUTE) {
-      window.location.replace(`/${window.location.hash}`);
-      return;
-    }
-  });
+  let neuron: NeuronInfo | undefined;
+  $: neuron =
+    neuronId !== undefined
+      ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
+      : undefined;
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
+    if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+      return;
+    }
     const neuronIdMaybe = routePathNeuronId(path);
     if (neuronIdMaybe === undefined) {
       unsubscribe();
@@ -70,25 +70,23 @@
   };
 </script>
 
-{#if SHOW_NEURONS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
-    <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
-    <section data-tid="neuron-detail">
-      {#if $neuronSelectStore}
-        <NeuronMetaInfoCard neuron={$neuronSelectStore} />
-        <NeuronMaturityCard neuron={$neuronSelectStore} />
-        <NeuronFollowingCard neuron={$neuronSelectStore} />
-        {#if IS_TESTNET}
-          <NeuronProposalsCard neuron={$neuronSelectStore} />
-        {/if}
-        <NeuronHotkeysCard neuron={$neuronSelectStore} />
-        <NeuronVotingHistoryCard neuron={$neuronSelectStore} />
-      {:else}
-        <SkeletonCard size="large" />
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
+<Layout on:nnsBack={goBack} layout="detail">
+  <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
+  <section data-tid="neuron-detail">
+    {#if neuron}
+      <NeuronMetaInfoCard {neuron} />
+      <NeuronMaturityCard {neuron} />
+      <NeuronFollowingCard {neuron} />
+      {#if IS_TESTNET}
+        <NeuronProposalsCard {neuron} />
       {/if}
-    </section>
-  </HeadlessLayout>
-{/if}
+      <NeuronHotkeysCard {neuron} />
+      <NeuronVotingHistoryCard {neuron} />
+    {:else}
+      <SkeletonCard size="large" cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
+    {/if}
+  </section>
+</Layout>

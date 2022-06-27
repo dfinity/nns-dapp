@@ -2,6 +2,7 @@ $breakpoint-xsmall: 320px;
 $breakpoint-small: 576px;
 $breakpoint-medium: 768px;
 $breakpoint-large: 880px;
+$breakpoint-extra-large: 1300px;
 
 @mixin min-width($breakpoint) {
   @if ($breakpoint == xsmall) {
@@ -20,7 +21,23 @@ $breakpoint-large: 880px;
     @media (min-width: $breakpoint-large) {
       @content;
     }
+  } @else if ($breakpoint == xlarge) {
+    @media (min-width: $breakpoint-extra-large) {
+      @content;
+    }
   } @else {
     @error "UNKNOWN MEDIA BREAKPOINT #{$breakpoint}";
+  }
+}
+
+@mixin light-theme() {
+  :global(html[theme="light"]) {
+    @content;
+  }
+}
+
+@mixin dark-theme() {
+  :global(html[theme="dark"]) {
+    @content;
   }
 }

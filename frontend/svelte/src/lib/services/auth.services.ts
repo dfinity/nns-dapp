@@ -1,6 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
+import { themeStore } from "../stores/theme.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
@@ -19,7 +20,12 @@ export const logout = async ({
     appendMsgToUrl(msg);
   }
 
+  // We preserve the anonymous theme information only so that user sign-in with same theme next time
+  const { theme: storageTheme }: Storage = localStorage;
+
   window.localStorage.clear();
+
+  themeStore.select(storageTheme);
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();

@@ -69,6 +69,8 @@
   let isArray: boolean;
   let openBracket: string;
   let closeBracket: string;
+  let root: boolean;
+  let testId: "json" | undefined;
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
@@ -79,6 +81,8 @@
     isArray = Array.isArray(json);
     openBracket = isArray ? "[" : "{";
     closeBracket = isArray ? "]" : "}";
+    root = _level === 1;
+    testId = root ? "json" : undefined;
   }
 
   let title: string | undefined;
@@ -94,10 +98,11 @@
 {#if isExpandable && hasChildren}
   {#if collapsed}
     <span
+      data-tid={testId}
       class="key"
       class:expanded={!collapsed}
       class:collapsed
-      class:root={_level === 1}
+      class:root
       class:arrow={isExpandable && hasChildren}
       role="button"
       aria-label={$i18n.core.toggle}
@@ -109,10 +114,11 @@
   {:else}
     <!-- key -->
     <span
+      data-tid={testId}
       class="key"
       class:expanded={!collapsed}
       class:collapsed
-      class:root={_level === 1}
+      class:root
       class:arrow={isExpandable && hasChildren}
       role="button"
       aria-label={$i18n.core.toggle}
@@ -137,13 +143,13 @@
   {/if}
 {:else if isExpandable}
   <!-- no childre -->
-  <span class="key" class:root={_level === 1}
+  <span data-tid={testId} class="key" class:root
     >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
   >
 {:else}
   <!-- key:value -->
-  <span class="key-value">
-    <span class="key" class:root={_level === 1}>{keyLabel}</span><span
+  <span data-tid={testId} class="key-value">
+    <span class="key" class:root>{keyLabel}</span><span
       class="value {valueType}"
       {title}>{value}</span
     ></span
@@ -164,7 +170,7 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
-    color: var(--gray-200);
+    color: var(--gray-50);
   }
   .key {
     display: inline-block;

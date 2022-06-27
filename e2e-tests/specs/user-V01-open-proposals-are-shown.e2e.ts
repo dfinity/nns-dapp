@@ -51,7 +51,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
       "Verifying that the proposal detail is for the correct proposal"
     );
     await navigator.click(
-      ProposalsTab.BACK_TO_PROPOSAL_LIST_SELECTOR,
+      ProposalsTab.HEADER_BACK_SELECTOR,
       "Go back to proposal list"
     );
   });

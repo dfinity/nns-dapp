@@ -2,17 +2,23 @@ import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
+import {
+  ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
+} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import {
   listNextProposals,
   listProposals,
   loadProposal,
+  loadProposalPayload,
   registerVotes,
   routePathProposalId,
 } from "../../../lib/services/proposals.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
@@ -482,6 +488,56 @@ describe("proposals-services", () => {
       expect(proposals).toEqual([]);
 
       proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+    });
+  });
+
+  describe("getProposalPayload", () => {
+    const spyQueryProposalPayload = jest
+      .spyOn(api, "queryProposalPayload")
+      .mockImplementation(() => Promise.resolve({ data: "test" }));
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call queryProposalPayload", async () => {
+      await loadProposalPayload({ proposalId: BigInt(0) });
+      expect(spyQueryProposalPayload).toBeCalledTimes(1);
+    });
+
+    it("should update proposalPayloadsStore", async () => {
+      const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
+      await loadProposalPayload({ proposalId: BigInt(0) });
+
+      expect(spyOnSetPayload).toBeCalledTimes(2);
+      expect(spyOnSetPayload).toHaveBeenLastCalledWith({
+        payload: { data: "test" },
+        proposalId: BigInt(0),
+      });
+    });
+
+    it("should update proposalPayloadsStore with null if the payload was not found", async () => {
+      proposalPayloadsStore.reset();
+
+      jest.spyOn(api, "queryProposalPayload").mockImplementation(() => {
+        throw new ProposalPayloadNotFoundError();
+      });
+
+      await loadProposalPayload({ proposalId: BigInt(0) });
+
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+    });
+
+    it("should update proposalPayloadsStore with null if the payload was not found", async () => {
+      proposalPayloadsStore.reset();
+
+      jest.spyOn(api, "queryProposalPayload").mockImplementation(() => {
+        throw new ProposalPayloadTooLargeError();
+      });
+
+      await loadProposalPayload({ proposalId: BigInt(0) });
+
+      expect(get(proposalPayloadsStore).get(BigInt(0))).toEqual({
+        error: "Payload too large",
+      });
     });
   });
 });

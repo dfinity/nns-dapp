@@ -93,6 +93,8 @@
 </Modal>
 
 <style lang="scss">
+  @use "../../themes/mixins/media.scss";
+
   .open {
     display: flex;
     justify-content: flex-start;
@@ -113,8 +115,23 @@
     }
   }
 
+  @include media.light-theme() {
+    .open {
+      &:focus,
+      &:hover {
+        background: var(--background-shade);
+      }
+    }
+  }
+
   .how-much {
     margin-bottom: var(--padding-0_5x);
+  }
+
+  @include media.light-theme() {
+    .how-much {
+      color: var(--background-contrast);
+    }
   }
 
   form {

@@ -3,7 +3,6 @@ import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
-  TRANSACTION_FEE_E8S,
 } from "../constants/icp.constants";
 import { InvalidAmountError } from "../types/neurons.errors";
 
@@ -51,13 +50,13 @@ export const sumICPs = (...icps: ICP[]): ICP =>
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
-export const formattedTransactionFeeICP = (): string =>
+export const formattedTransactionFeeICP = (fee: number): string =>
   formatICP({
-    value: ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)).toE8s(),
+    value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });
 
-export const maxICP = (icp: ICP | undefined): number =>
-  Math.max((Number(icp?.toE8s() ?? 0) - TRANSACTION_FEE_E8S) / E8S_PER_ICP, 0);
+export const maxICP = ({ icp, fee }: { icp?: ICP; fee: number }): number =>
+  Math.max((Number(icp?.toE8s() ?? 0) - fee) / E8S_PER_ICP, 0);
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);

@@ -2,11 +2,8 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "../lib/canisters/nns-dapp/nns-dapp.types";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
-  import {
-    AppPath,
-    SHOW_CANISTERS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import Layout from "../lib/components/common/Layout.svelte";
+  import { AppPath } from "../lib/constants/routes.constants";
   import {
     getCanisterDetails,
     routePathCanisterId,
@@ -36,7 +33,7 @@
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
-  import Card from "../lib/components/ui/Card.svelte";
+  import CardInfo from "../lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
 
@@ -59,10 +56,6 @@
   $: $canistersStore, (canistersReady = canistersStoreReady());
 
   onMount(async () => {
-    if (!SHOW_CANISTERS_ROUTE) {
-      window.location.replace("/#/canisters");
-    }
-
     if (!canistersStoreReady()) {
       await listCanisters({ clearBeforeQuery: false });
     }
@@ -192,54 +185,50 @@
     $selectedCanisterStore);
 </script>
 
-{#if SHOW_CANISTERS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack}>
-    <svelte:fragment slot="header"
-      >{$i18n.canister_detail.title}</svelte:fragment
-    >
+<Layout on:nnsBack={goBack} layout="detail">
+  <svelte:fragment slot="header">{$i18n.canister_detail.title}</svelte:fragment>
 
-    <section>
-      {#if canisterInfo !== undefined}
-        <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-        <CanisterCardSubTitle canister={canisterInfo} />
-        <div class="actions">
-          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
-        </div>
-      {:else}
-        <div class="loader-title">
-          <SkeletonTitle />
-        </div>
-        <div class="loader-subtitle">
-          <SkeletonParagraph />
-        </div>
-      {/if}
-      {#if canisterDetails !== undefined}
-        <CyclesCard cycles={canisterDetails.cycles} />
-        <ControllersCard />
-      {:else if errorKey !== undefined}
-        <Card testId="canister-details-error-card">
-          <p class="error-message">{translate({ labelKey: errorKey })}</p>
-        </Card>
-      {:else}
-        <SkeletonCard />
-        <SkeletonCard />
-      {/if}
-    </section>
-    <svelte:fragment slot="footer">
-      <Toolbar>
-        <button
-          class="primary"
-          on:click={() => (showAddCyclesModal = true)}
-          disabled={canisterInfo === undefined || $busy}
-          >{$i18n.canister_detail.add_cycles}</button
-        >
-      </Toolbar>
-    </svelte:fragment>
-  </HeadlessLayout>
+  <section>
+    {#if canisterInfo !== undefined}
+      <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+      <CanisterCardSubTitle canister={canisterInfo} />
+      <div class="actions">
+        <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+      </div>
+    {:else}
+      <div class="loader-title">
+        <SkeletonTitle />
+      </div>
+      <div class="loader-subtitle">
+        <SkeletonParagraph />
+      </div>
+    {/if}
+    {#if canisterDetails !== undefined}
+      <CyclesCard cycles={canisterDetails.cycles} />
+      <ControllersCard />
+    {:else if errorKey !== undefined}
+      <CardInfo testId="canister-details-error-card">
+        <p class="error-message">{translate({ labelKey: errorKey })}</p>
+      </CardInfo>
+    {:else}
+      <SkeletonCard />
+      <SkeletonCard />
+    {/if}
+  </section>
+  <svelte:fragment slot="footer">
+    <Toolbar>
+      <button
+        class="primary"
+        on:click={() => (showAddCyclesModal = true)}
+        disabled={canisterInfo === undefined || $busy}
+        >{$i18n.canister_detail.add_cycles}</button
+      >
+    </Toolbar>
+  </svelte:fragment>
+</Layout>
 
-  {#if showAddCyclesModal}
-    <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
-  {/if}
+{#if showAddCyclesModal}
+  <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
 {/if}
 
 <style lang="scss">

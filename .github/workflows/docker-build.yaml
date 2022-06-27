@@ -35,7 +35,7 @@ jobs:
       matrix:
        include:
          - BUILD_NAME: "mainnet"
-           DEPLOY_ENV: "mainnet"
+           DFX_NETWORK: "mainnet"
            OWN_CANISTER_ID: ""
            REDIRECT_TO_LEGACY: "prod"
     steps:
@@ -43,13 +43,13 @@ jobs:
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v1
       # Build and upload testnet assets
-      - name: Build ${{ matrix.DEPLOY_ENV }} nns-dapp Docker image
+      - name: Build ${{ matrix.DFX_NETWORK }} nns-dapp Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: Dockerfile
           build-args: |
-            DEPLOY_ENV=${{ matrix.DEPLOY_ENV }}
+            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
             OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
             REDIRECT_TO_LEGACY=${{ matrix.REDIRECT_TO_LEGACY }}
           cache-from: type=gha,scope=cached-stage
@@ -71,7 +71,7 @@ jobs:
          git config user.name "GitHub Actions Bot"
          git config user.email "<>"
          : Make a note of the WASM shasum.
-         NOTE="refs/notes/${{ matrix.DEPLOY_ENV }}/wasm-sha"
+         NOTE="refs/notes/${{ matrix.DFX_NETWORK }}/wasm-sha"
          SHA="$(sha256sum < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
          git fetch origin "+${NOTE}:${NOTE}"
          if git notes --ref="${{ matrix.BUILD_NAME }}/wasm-sha" add -m "$SHA"
