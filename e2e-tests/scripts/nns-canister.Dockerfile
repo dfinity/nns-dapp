@@ -53,9 +53,15 @@ RUN binary="cycles-minting-canister" && \
 RUN binary="cycles-minting-canister" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
+RUN cd sns/sale && \
+    cargo build --target wasm32-unknown-unknown --release
+RUN binary="sns-sale-canister" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+
 
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
 COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public.did
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
+COPY --from=builder /ic/rs/sns/sale/canister/sale.did /swap.did
 COPY --from=builder /ic/rs/target/*.wasm /

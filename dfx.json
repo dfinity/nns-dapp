@@ -29,6 +29,14 @@
       "wasm": "target/ic/ledger-canister_notify-method.wasm",
       "type": "custom"
     },
+    "sns_swap": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/swap.did",
+      "wasm": "target/ic/sns-sale-canister.wasm",
+      "type": "custom"
+    },
     "sns_root": {
       "build": [
         "true"
