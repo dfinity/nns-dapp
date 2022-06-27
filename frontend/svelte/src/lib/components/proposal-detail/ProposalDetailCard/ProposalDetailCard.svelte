@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ProposalStatus } from "@dfinity/nns";
+  import { type ProposalId, ProposalStatus } from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import Card from "../../ui/Card.svelte";
@@ -13,6 +13,7 @@
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
+  let id: ProposalId | undefined;
   let title: string | undefined;
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let color: ProposalColor;
