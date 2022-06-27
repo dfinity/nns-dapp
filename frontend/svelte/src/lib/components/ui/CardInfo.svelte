@@ -1,4 +1,5 @@
 <script lang="ts">
+  // Same data-tid as <Card /> for backwards compatibility with existing jest test
   export let testId: string = "card";
 
   let showHeadline: boolean;
