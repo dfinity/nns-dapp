@@ -9,13 +9,14 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="toggle" aria-label={ariaLabel}>
+<div class="toggle">
   <input
     type="checkbox"
     id="toggle"
     on:input={({ currentTarget }) =>
       dispatch("nnsToggle", currentTarget.checked)}
     {checked}
+    aria-label={ariaLabel}
   />
   <label for="toggle" />
 </div>
