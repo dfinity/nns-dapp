@@ -68,9 +68,12 @@ append_to_profile() {
 }
 
 have_correct_dfx() {
-  expected="$(jq -r .dfx dfx.json)"
-  actual="$(dfx --version | awk '{print $2}')"
-  [[ "$expected" == "$actual" ]]
+  # Sadly `command -V dfx` just gives the path to `dfx` so we need both `command` and `dfx --version`.
+  command -v dfx >/dev/null && {
+    expected="$(jq -r .dfx dfx.json)"
+    actual="$(dfx --version | awk '{print $2}')"
+    [[ "$expected" == "$actual" ]]
+  }
 }
 install_dfx() {
   DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
