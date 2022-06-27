@@ -80,7 +80,7 @@ while (($# > 0)); do
 done
 
 test -n "${DFX_NETWORK:-}" || test -n "${testnet:-}" || {
-    DFX_NETWORK="local"
+  DFX_NETWORK="local"
 }
 
 if test -n "${DFX_NETWORK:-}" && [[ "$DFX_NETWORK" != "local" ]]; then
