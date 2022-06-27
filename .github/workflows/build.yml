@@ -122,11 +122,11 @@ jobs:
 
       - name: Deploy
         run: |
-          ./deploy.sh --ii --nns-dapp
+          ./deploy.sh --ii --nns-dapp local
 
       - name: Create initial state
         run: |
-          ./deploy.sh --populate
+          ./deploy.sh --populate local
 
       - name: Build proxy
         working-directory: proxy
