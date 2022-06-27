@@ -11,4 +11,10 @@ describe("SNSProjectDetail", () => {
 
     expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
   });
+
+  it("should render status section", () => {
+    const { queryByTestId } = render(SNSProjectDetail);
+
+    expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+  });
 });
