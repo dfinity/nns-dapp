@@ -62,5 +62,10 @@ export const enumSize = <T>(enm: T): number => {
   return Object.values(enm).filter(isNaN).length;
 };
 
-export const enumFromStringExists = <T>({ obj, value }: { obj: T; value: string | null }): boolean =>
-  Object.values(obj).includes(value);
+export const enumFromStringExists = <T>({
+  obj,
+  value,
+}: {
+  obj: T;
+  value: string | null;
+}): boolean => Object.values(obj).includes(value);

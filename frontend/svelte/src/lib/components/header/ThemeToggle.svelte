@@ -5,7 +5,7 @@
 
   import { Theme } from "../../types/theme";
   import { themeStore } from "../../stores/theme.store";
-  import {i18n} from "../../stores/i18n";
+  import { i18n } from "../../stores/i18n";
 
   const switchTheme = ({ detail }: CustomEvent<boolean>) =>
     themeStore.select(detail ? Theme.DARK : Theme.LIGHT);
@@ -19,7 +19,11 @@
 
   <div class="toggle">
     <IconLightMode />
-    <Toggle bind:checked on:nnsToggle={switchTheme} ariaLabel={$i18n.theme.switch_theme} />
+    <Toggle
+      bind:checked
+      on:nnsToggle={switchTheme}
+      ariaLabel={$i18n.theme.switch_theme}
+    />
     <IconDarkMode />
   </div>
 </div>
