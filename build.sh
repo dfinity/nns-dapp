@@ -26,7 +26,8 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     exit 1
   } >&2
   INSTALL_LOCATION="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
-  [[ "$(realpath "${NNS_DAPP_WASM}")" == "$(realpath "${INSTALL_LOCATION}")" ]] || cp "${NNS_DAPP_WASM}" "${INSTALL_LOCATION}"
+  [[ "$(realpath "${NNS_DAPP_WASM}")" == "$(realpath "${INSTALL_LOCATION}")" ]] ||
+    cp "${NNS_DAPP_WASM}" "${INSTALL_LOCATION}"
   echo "Skipping build as the WASM file has already been provided."
   exit 0
 }
