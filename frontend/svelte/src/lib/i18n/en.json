@@ -290,7 +290,7 @@
   },
   "canister_detail": {
     "title": "Canister",
-    "id": "Id: $canisterId",
+    "id": "ID: $canisterId",
     "cycles": "Cycles",
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
@@ -367,7 +367,7 @@
     "title": "Proposal",
     "summary": "Proposal Summary",
     "topic_prefix": "Topic:",
-    "id_prefix": "Id:",
+    "id_prefix": "ID:",
     "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
     "reject": "Reject",
