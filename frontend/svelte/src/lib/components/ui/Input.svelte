@@ -148,6 +148,12 @@
 <style lang="scss">
   @use "../../themes/mixins/media.scss";
 
+  @include media.light-theme() {
+    .input-block.light input {
+      color: var(--background-contrast);
+    }
+  }
+
   .input-block {
     position: relative;
 
@@ -163,7 +169,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-200);
+    --disabled-color: var(--gray-50);
 
     &.disabled {
       color: var(--disabled-color);

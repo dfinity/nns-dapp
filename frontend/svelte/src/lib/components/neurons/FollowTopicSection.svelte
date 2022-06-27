@@ -86,7 +86,7 @@
       </ul>
       <div class="button-wrapper">
         <button
-          class="secondary small"
+          class="primary small"
           data-tid="open-new-followee-modal"
           on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
         >
@@ -105,7 +105,7 @@
     :global(.collapsible-expand-icon) {
       align-items: start;
       padding-top: var(--padding-3x);
-      color: var(--background-contrast);
+      color: var(--gray-50);
     }
   }
 
@@ -114,6 +114,7 @@
     align-items: start;
     justify-content: space-between;
     gap: var(--padding-2x);
+    width: 100%;
   }
 
   .subtitle {
@@ -124,13 +125,13 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: var(--padding-2x);
+    padding-right: var(--padding-2x);
     margin-top: var(--padding-2x);
     margin-right: var(--padding-2x);
   }
 
   .badge {
-    background-color: var(--background-contrast);
+    background-color: var(--gray-50);
     color: var(--background);
     border-radius: 50%;
     padding: var(--padding);

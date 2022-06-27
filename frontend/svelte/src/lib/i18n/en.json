@@ -384,9 +384,9 @@
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
-    "neurons": "neurons",
-    "voting_power": "voting power",
-    "total": "total",
+    "neurons": "Neurons",
+    "voting_power": "Voting power",
+    "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
     "confirm_adopt_headline": "Adopt Proposal",
@@ -568,5 +568,9 @@
     "unknown_attach": "Error attaching canister.",
     "unknown_detach": "Error detaching canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
+  },
+  "theme": {
+    "theme": "Theme",
+    "switch_theme": "Switch theme"
   }
 }

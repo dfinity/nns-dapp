@@ -7,7 +7,7 @@
 
 <button
   data-tid="menu"
-  class="icon-only open"
+  class="icon-only"
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
 >
@@ -19,11 +19,15 @@
   @use "../../themes/mixins/header";
   @use "../../themes/mixins/media";
 
-  .open {
-    @include header.button(--brand-sea-buckthorn);
-
+  button {
     @include media.min-width(xlarge) {
       display: none;
+    }
+
+    @include header.button(--blue-200);
+
+    @include media.min-width(small) {
+      @include header.button(--blue-500-tint);
     }
   }
 </style>

@@ -18,8 +18,13 @@
 
 <style lang="scss">
   @use "../../themes/mixins/header";
+  @use "../../themes/mixins/media";
 
-  .back {
-    @include header.button(--brand-sea-buckthorn);
+  button {
+    @include header.button(--blue-200);
+
+    @include media.min-width(small) {
+      @include header.button(--blue-500-tint);
+    }
   }
 </style>

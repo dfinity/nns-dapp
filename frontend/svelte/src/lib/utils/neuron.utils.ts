@@ -44,7 +44,7 @@ import { isDefined } from "./utils";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  colorVar: "--gray-50" | "--yellow-500" | "--gray-200";
+  colorVar: "--gray-50" | "--yellow-500";
 };
 
 type StateMapper = {
@@ -63,7 +63,7 @@ const stateTextMapper: StateMapper = {
   [NeuronState.DISSOLVED]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
-    colorVar: "--gray-200",
+    colorVar: "--gray-50",
   },
   [NeuronState.DISSOLVING]: {
     textKey: "dissolving",

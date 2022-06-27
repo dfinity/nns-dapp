@@ -41,7 +41,7 @@
     <button
       on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
-      class="secondary full-width">{$i18n.neurons.skip}</button
+      class="primary full-width">{$i18n.neurons.skip}</button
     >
     <button
       class="primary full-width"

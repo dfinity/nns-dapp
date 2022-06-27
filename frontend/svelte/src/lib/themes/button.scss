@@ -14,7 +14,7 @@ button {
 
     margin: 0 var(--padding);
 
-    color: white;
+    color: var(--background-contrast);
 
     &:hover,
     &:focus {
@@ -42,10 +42,10 @@ button {
 
   &.primary,
   &.danger,
-  &.secondary,
   &.warning,
   &.input-button {
-    border-radius: var(--border-radius);
+    border-radius: 50px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
 
     position: relative;
     min-height: var(--button-min-height);
@@ -54,14 +54,14 @@ button {
     line-height: var(--line-height-standard);
 
     @include media.min-width(medium) {
-      font-size: var(--font-size-h3);
+      font-size: var(--font-size-h4);
     }
 
     &.small {
       min-height: inherit;
       font-size: inherit;
       line-height: var(--line-height-title);
-      padding: var(--padding-0_5x) var(--padding);
+      padding: var(--padding-0_5x) var(--padding-2x);
     }
   }
 
@@ -90,29 +90,6 @@ button {
 
     &:hover {
       background: var(--blue-500-tint);
-    }
-  }
-
-  &.secondary {
-    &[disabled],
-    &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
-      cursor: default;
-    }
-
-    background: var(--gray-600);
-    color: var(--background-contrast);
-
-    @include effect.ripple-effect(--gray-600-tint);
-
-    &:focus {
-      @include effect.ripple-effect(--gray-600-tint);
-    }
-
-    &:hover,
-    &:focus {
-      background: var(--gray-600-tint);
     }
   }
 

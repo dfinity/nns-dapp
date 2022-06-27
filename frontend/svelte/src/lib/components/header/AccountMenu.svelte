@@ -2,8 +2,8 @@
   import Popover from "../ui/Popover.svelte";
   import IconAccount from "../../icons/IconAccount.svelte";
   import Logout from "./Logout.svelte";
-  import { themeStore } from "../../stores/theme.store";
   import { i18n } from "../../stores/i18n";
+  import ThemeToggle from "./ThemeToggle.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -11,7 +11,7 @@
 
 <button
   data-tid="account-menu"
-  class={`icon-only toggle ${$themeStore}`}
+  class="icon-only toggle"
   bind:this={button}
   on:click={() => (visible = !visible)}
   aria-label={$i18n.header.account_menu}
@@ -21,19 +21,15 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
   <div class="info">
+    <ThemeToggle />
     <Logout />
   </div>
 </Popover>
 
 <style lang="scss">
   @use "../../themes/mixins/overlay";
-  @use "../../themes/mixins/effect";
   @use "../../themes/mixins/media";
   @use "../../themes/mixins/header";
-
-  .theme-toggle {
-    margin: 0;
-  }
 
   .info {
     @include overlay.content;
@@ -49,9 +45,7 @@
 
   .toggle {
     justify-self: flex-end;
-  }
 
-  button.icon-only {
-    @include header.button(--brand-picton-blue);
+    @include header.button(--blue-500);
   }
 </style>
