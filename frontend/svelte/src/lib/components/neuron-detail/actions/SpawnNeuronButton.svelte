@@ -23,8 +23,8 @@
   const showModal = async () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 
-  let isEnoughMaturity: boolean;
-  $: isEnoughMaturity =
+  let enoughMaturity: boolean;
+  $: enoughMaturity =
     neuron.fullNeuron === undefined
       ? false
       : isEnoughToStakeNeuron({
@@ -32,23 +32,25 @@
         });
 </script>
 
-<Tooltip
-  id="spawn-maturity-button"
-  text={replacePlaceholders(
-    $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
-    {
-      $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE), detailed: true }),
-    }
-  )}
->
-  <button
-    disabled={!isEnoughMaturity}
-    class="primary small"
-    on:click={showModal}
-  >
+{#if enoughMaturity}
+  <button class="primary small" on:click={showModal}>
     {$i18n.neuron_detail.spawn_neuron}
   </button>
-</Tooltip>
+{:else}
+  <Tooltip
+    id="spawn-maturity-button"
+    text={replacePlaceholders(
+      $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
+      {
+        $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE), detailed: true }),
+      }
+    )}
+  >
+    <button disabled class="primary small" on:click={showModal}>
+      {$i18n.neuron_detail.spawn_neuron}
+    </button>
+  </Tooltip>
+{/if}
 
 {#if isOpen}
   <SpawnNeuronModal
