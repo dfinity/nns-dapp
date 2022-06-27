@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import IconMenu from "../../icons/IconMenu.svelte";
-  import {themeStore} from "../../stores/theme.store";
+  import { themeStore } from "../../stores/theme.store";
 
   export let open: boolean = false;
 </script>

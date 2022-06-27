@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import Tooltip from "../ui/Tooltip.svelte";
   import { createEventDispatcher } from "svelte";
-  import {themeStore} from "../../stores/theme.store";
+  import { themeStore } from "../../stores/theme.store";
 
   const dispatch = createEventDispatcher();
 </script>
