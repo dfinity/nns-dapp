@@ -14,7 +14,7 @@
   $: checked = $themeStore === Theme.DARK;
 </script>
 
-<div class="toggle-group" data-tid="theme-toggle">
+<div class="theme-toggle" data-tid="theme-toggle">
   <span>{$i18n.theme.theme}</span>
 
   <div class="toggle">
@@ -29,7 +29,7 @@
 </div>
 
 <style lang="scss">
-  .toggle-group {
+  .theme-toggle {
     display: flex;
     align-items: center;
 
