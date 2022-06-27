@@ -1,0 +1,52 @@
+/** Light theme colors - override default dark options */
+
+:root {
+  &[theme="light"] {
+    // Shadows
+    --card-box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8),
+      1px 1px 2px rgba(0, 0, 0, 0.3);
+    --box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+
+    // Footer
+    --footer-background: linear-gradient(
+      0deg,
+      rgba(var(--gray-50-rgb), 0.2) 10%,
+      rgba(var(--gray-50-rgb), 0) 100%
+    );
+
+    // Json colors
+    --json-string-color: var(--brand-flamingo);
+    --json-principal-color: var(--yellow-500);
+    --json-hash-color: var(--yellow-500);
+
+    // Palette
+    --background: #ffffff;
+    --background-rgb: 255, 255, 255;
+    /** --gray-50 value */
+    --background-contrast: #333333;
+    /** --gray-50-rgb value */
+    --background-contrast-rgb: 51, 51, 51;
+    --background-shade: #e0e0e0;
+    --background-tint: #ffffff;
+
+    --gray-50-background: #f4f5f6;
+    --gray-50-background-rgb: 244, 245, 246;
+    --gray-50-background-contrast: #000000;
+    --gray-50-background-contrast-rgb: 0, 0, 0;
+    --gray-50-background-shade: #d7d8d8;
+    --gray-50-background-tint: #f5f6f7;
+
+    --blue-500: #00a5ff;
+    --blue-500-rgb: 0, 165, 255;
+    --blue-500-contrast: #ffffff;
+    --blue-500-contrast-rgb: 255, 255, 255;
+    --blue-500-shade: #0091e0;
+
+    --gray-50: #333333;
+    --gray-50-rgb: 51, 51, 51;
+    --gray-50-contrast: #ffffff;
+    --gray-50-contrast-rgb: 255, 255, 255;
+    --gray-50-shade: #2d2d2d;
+    --gray-50-tint: #474747;
+  }
+}

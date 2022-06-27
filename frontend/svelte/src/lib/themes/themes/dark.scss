@@ -1,0 +1,143 @@
+/** Default theme: dark */
+
+:root {
+  // Footer
+  --footer-background: linear-gradient(
+    0deg,
+    rgba(var(--black-rgb), 1) 10%,
+    rgba(var(--black-rgb), 0) 100%
+  );
+
+  // Header
+  --header-background: linear-gradient(
+    99.27deg,
+    var(--blue-500) -0.11%,
+    var(--color-iris) 100.63%
+  );
+  --header-background-fallback: var(--blue-500);
+  --header-color: var(--blue-500-contrast);
+
+  // Json colors
+  --json-bracket-color: var(--gray-400);
+  --json-value-color: var(--gray-50);
+  --json-string-color: var(--brand-sea-buckthorn);
+  --json-number-color: var(--brand-picton-blue);
+  --json-null-color: var(--gray-400);
+  --json-principal-color: var(--yellow-400);
+  --json-hash-color: var(--yellow-400);
+  --json-bigint-color: var(--brand-picton-blue);
+  --json-boolean-color: var(--brand-picton-blue);
+
+  // Palette
+  --background: #272929;
+  --background-rgb: 39, 41, 41;
+  --background-contrast: #ffffff;
+  --background-contrast-rgb: 255, 255, 255;
+  --background-shade: #222424;
+  --background-tint: #3d3e3e;
+
+  --light-background: #ebebeb;
+  --light-background-rgb: 235, 235, 235;
+  --light-background-contrast: #000000;
+  --light-background-contrast-rgb: 0, 0, 0;
+  --light-background-shade: #cfcfcf;
+  --light-background-tint: #ededed;
+
+  --gray-50-background: #383c3c;
+  --gray-50-background-rgb: 56, 60, 60;
+  --gray-50-background-contrast: #ffffff;
+  --gray-50-background-contrast-rgb: 255, 255, 255;
+  --gray-50-background-shade: #313535;
+  --gray-50-background-tint: #4c5050;
+
+  --black: #0b0c0c;
+  --black-rgb: 11, 12, 12;
+  --black-contrast: #ffffff;
+  --black-contrast-rgb: 255, 255, 255;
+  --black-shade: #0a0b0b;
+  --black-tint: #232424;
+
+  --blue-500: #0081ff;
+  --blue-500-rgb: 0, 129, 255;
+  --blue-500-contrast: #ffffff;
+  --blue-500-contrast-rgb: 255, 255, 255;
+  --blue-500-shade: #0072e0;
+  --blue-500-tint: #1a8eff;
+
+  --blue-200: #99ceff;
+  --blue-200-rgb: 153, 206, 255;
+  --blue-200-contrast: #000000;
+  --blue-200-contrast-rgb: 0, 0, 0;
+  --blue-200-shade: #87b5e0;
+  --blue-200-tint: #a3d3ff;
+
+  --blue-50: #ebf5ff;
+  --blue-50-rgb: 235, 245, 255;
+  --blue-50-contrast: #000000;
+  --blue-50-contrast-rgb: 0, 0, 0;
+  --blue-50-shade: #cfd8e0;
+  --blue-50-tint: #edf6ff;
+
+  --gray-600: #545858;
+  --gray-600-rgb: 84, 88, 88;
+  --gray-600-contrast: #ffffff;
+  --gray-600-contrast-rgb: 255, 255, 255;
+  --gray-600-shade: #4a4d4d;
+  --gray-600-tint: #656969;
+
+  --gray-400: #909898;
+  --gray-400-rgb: 144, 152, 152;
+  --gray-400-contrast: #000000;
+  --gray-400-contrast-rgb: 0, 0, 0;
+  --gray-400-shade: #7f8686;
+  --gray-400-tint: #9ba2a2;
+
+  --gray-50: #e4f0f0;
+  --gray-50-rgb: 228, 240, 240;
+  --gray-50-contrast: #000000;
+  --gray-50-contrast-rgb: 0, 0, 0;
+  --gray-50-shade: #c9d3d3;
+  --gray-50-tint: #e7f2f2;
+
+  --yellow-500: #ec9509;
+  --yellow-500-rgb: 236, 149, 9;
+  --yellow-500-contrast: #000000;
+  --yellow-500-contrast-rgb: 0, 0, 0;
+  --yellow-500-shade: #d08308;
+  --yellow-500-tint: #eea022;
+
+  --yellow-400: #f9b74d;
+  --yellow-400-rgb: 249, 183, 77;
+  --yellow-400-contrast: #000000;
+  --yellow-400-contrast-rgb: 0, 0, 0;
+  --yellow-400-shade: #dba144;
+  --yellow-400-tint: #fabe5f;
+
+  --green-500: #39a831;
+  --green-500-rgb: 57, 168, 49;
+  --green-500-contrast: #ffffff;
+  --green-500-contrast-rgb: 255, 255, 255;
+  --green-500-shade: #32942b;
+  --green-500-tint: #4db146;
+
+  --pink: #ed1e79;
+  --pink-rgb: 237, 30, 121;
+  --pink-contrast: #ffffff;
+  --pink-contrast-rgb: 255, 255, 255;
+  --pink-shade: #d11a6a;
+  --pink-tint: #ef3586;
+
+  --color-iris: #4e48d2;
+  --color-iris-rgb: 78, 72, 210;
+  --color-iris-contrast: #ffffff;
+  --color-iris-contrast-rgb: 255, 255, 255;
+  --color-iris-shade: #453fb9;
+  --color-iris-tint: #605ad7;
+
+  --error: #ed254e;
+  --error-rgb: 237, 37, 78;
+  --error-contrast: #ffffff;
+  --error-contrast-rgb: 255, 255, 255;
+  --error-shade: #d12145;
+  --error-tint: #ef3b60;
+}
