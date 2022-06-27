@@ -42,7 +42,6 @@
       placeholderLabelKey="accounts.rename_new_name_placeholder"
       name="newAccountName"
       bind:value={newAccountName}
-      theme="dark"
       disabled={$busy}
     />
   </div>

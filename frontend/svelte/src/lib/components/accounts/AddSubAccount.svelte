@@ -30,7 +30,6 @@
       placeholderLabelKey="accounts.new_linked_account_placeholder"
       name="newAccount"
       bind:value={newAccountName}
-      theme="dark"
       disabled={$busy}
     />
   </div>

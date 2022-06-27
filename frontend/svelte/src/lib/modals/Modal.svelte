@@ -10,7 +10,6 @@
   import Backdrop from "../components/ui/Backdrop.svelte";
 
   export let visible: boolean = true;
-  export let theme: "dark" | "light" = "light";
   export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
@@ -29,7 +28,7 @@
 
 {#if visible}
   <div
-    class={`modal ${theme}`}
+    class="modal"
     transition:fade
     role="dialog"
     data-tid={testId}
@@ -84,36 +83,6 @@
     z-index: calc(var(--z-index) + 998);
 
     @include interaction.initial;
-
-    &.dark {
-      color: var(--background-contrast);
-
-      .wrapper {
-        background: none;
-      }
-
-      .toolbar {
-        background: var(--card-background);
-        box-shadow: none;
-        border-bottom: 1px solid var(--card-background-shade);
-
-        h3,
-        button {
-          color: var(--gray-50);
-        }
-
-        button {
-          &[disabled] {
-            color: var(--gray-600);
-          }
-        }
-      }
-
-      .content {
-        background: var(--card-background);
-        color: var(--gray-50);
-      }
-    }
   }
 
   .wrapper {
@@ -141,9 +110,10 @@
 
     --modal-toolbar-height: 35px;
 
-    background: var(--menu-background);
-    color: var(--menu-background-contrast);
-    --select-color: var(--menu-background-contrast);
+
+    background: var(--background);
+    color: var(--background-contrast);
+    --select-color: var(--background-contrast);
     --select-border-radius: 0;
 
     border-radius: calc(2 * var(--border-radius));
@@ -199,8 +169,6 @@
     height: calc(100% - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
-
-    color: var(--card-background);
   }
 
   .small {

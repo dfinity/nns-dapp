@@ -23,7 +23,6 @@
 </script>
 
 <Modal
-  theme="dark"
   size="big"
   on:nnsClose
   on:introend={() => (presented = true)}

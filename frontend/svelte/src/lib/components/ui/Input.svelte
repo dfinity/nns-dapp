@@ -21,8 +21,6 @@
 
   export let placeholderLabelKey: string;
 
-  export let theme: "dark" | "light" = "light";
-
   let inputElement: HTMLInputElement | undefined;
 
   let selectionStart: number | null = 0;
@@ -117,7 +115,7 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme} `} class:disabled>
+<div class="input-block" class:disabled>
   <input
     data-tid="input-ui-element"
     type={inputType === "icp" ? "text" : inputType}
@@ -169,7 +167,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-50);
+    --disabled-color: var(--gray-600);
 
     &.disabled {
       color: var(--disabled-color);
@@ -177,37 +175,17 @@
       .placeholder {
         color: var(--disabled-color);
       }
-    }
-
-    &.dark {
-      color: var(--background-contrast);
-      background: none;
-
-      --disabled-color: var(--gray-600);
-
-      &.disabled {
-        input {
-          border: 1px solid var(--disabled-color);
-        }
-
-        .placeholder {
-          color: var(--disabled-color);
-        }
-      }
 
       input {
-        background-color: var(--card-background);
-        border: 1px solid var(--input-error-color, var(--black));
-
-        &:not(:placeholder-shown) + span.placeholder {
-          background-color: var(--card-background);
-          color: var(--input-error-color, currentColor);
-        }
+        border: 1px solid var(--disabled-color);
       }
+    }
 
-      .placeholder {
-        color: var(--gray-400);
-      }
+    color: var(--background-contrast);
+    background: none;
+
+    .placeholder {
+      color: var(--gray-400);
     }
   }
 
@@ -219,8 +197,15 @@
 
     border-radius: calc(4 * var(--border-radius));
 
-    border: 1px solid var(--input-error-color, currentColor);
+    background-color: var(--background);
+
+    border: 1px solid var(--input-error-color, var(--background-contrast));
     outline: none;
+
+    &:not(:placeholder-shown) + span.placeholder {
+      background-color: var(--background);
+      color: var(--input-error-color, currentColor);
+    }
 
     @include media.min-width(medium) {
       padding: var(--padding-2x);
@@ -248,7 +233,7 @@
 
   .input-block input:not(:placeholder-shown) + span.placeholder {
     transform: scale(0.8) translate(0, calc(-50% - 30px));
-    background: #ffffff;
+    background-color: var(--background);
 
     padding: 0 var(--padding-0_5x);
 

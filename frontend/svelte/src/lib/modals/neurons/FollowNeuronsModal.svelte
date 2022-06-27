@@ -7,7 +7,7 @@
   export let neuron: NeuronInfo;
 </script>
 
-<Modal theme="dark" size="big" on:nnsClose>
+<Modal size="big" on:nnsClose>
   <span slot="title">{$i18n.neurons.follow_neurons_screen}</span>
   <section>
     <EditFollowNeurons {neuron} />

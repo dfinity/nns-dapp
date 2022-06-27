@@ -59,7 +59,7 @@
   };
 </script>
 
-<Modal on:nnsClose theme="dark" size="big">
+<Modal on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.split_neuron}</span>
   <section data-tid="split-neuron-modal">
     <CurrentBalance {balance} />

@@ -47,7 +47,6 @@
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
       name="walletName"
       bind:value={hardwareWalletName}
-      theme="dark"
       on:blur={showInvalidInputLength}
       errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {

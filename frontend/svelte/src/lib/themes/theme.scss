@@ -16,26 +16,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background: var(--black);
-  color: var(--black-contrast);
+  background: var(--background);
+  color: var(--background-contrast);
 
   box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
-  background: var(--card-background);
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--card-background-shade);
+  background: var(--background-shade);
   height: 200px;
-  border: solid 2.5px var(--card-background);
+  border: solid 2.5px var(--background);
   border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
 
 ::-webkit-scrollbar-corner {
-  background: var(--card-background-shade);
+  background: var(--background-shade);
 }
 
 a,

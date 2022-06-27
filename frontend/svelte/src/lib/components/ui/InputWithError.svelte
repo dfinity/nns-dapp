@@ -18,12 +18,10 @@
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
-  export let theme: "dark" | "light" = "light";
 </script>
 
 <div class="wrapper" class:error>
   <Input
-    {theme}
     {inputType}
     {required}
     {spellcheck}
