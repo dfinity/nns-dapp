@@ -1,7 +1,8 @@
 @use "./mixins/media";
 :root {
-  --header-height: 76px;
-  --nav-height: 64px;
+  --header-height: 60px;
+  --menu-width: 304px;
+
   --icon-width: 24px;
 
   --padding: 10px;
@@ -12,14 +13,14 @@
   --padding-2_5x: calc(2.5 * var(--padding));
   --padding-3x: calc(3 * var(--padding));
   --padding-4x: calc(4 * var(--padding));
-  --padding-6x: calc(4 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
+
+  --column-gap: var(--padding-2x);
+  --row-gap: var(--padding-3x);
 
   --border-radius: 10px;
 
   --z-index: 1;
-
-  --headless-layout-header-height: 56px;
 
   --section-max-width: 800px;
   --footer-height: 20vh;
@@ -62,6 +63,8 @@
   --error-contrast-rgb: 255, 255, 255;
   --error-shade: #d12145;
   --error-tint: #ef3b60;
+
+  /** Default theme: dark */
 
   --background: #272929;
   --background-rgb: 39, 41, 41;

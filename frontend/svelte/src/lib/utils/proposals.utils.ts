@@ -1,4 +1,5 @@
 import type {
+  Ballot,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -14,9 +15,6 @@ import {
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import { isDefined } from "./utils";
-
-export const emptyProposals = ({ length }: ProposalInfo[]): boolean =>
-  length <= 0;
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
@@ -36,10 +34,7 @@ export const proposalActionFields = (
   if (key === undefined) {
     return [];
   }
-  return Object.entries(proposal.action?.[key] ?? {}).filter(([key, value]) => {
-    if (key === "payloadBytes") {
-      return false;
-    }
+  return Object.entries(proposal.action?.[key] ?? {}).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
@@ -53,15 +48,27 @@ export const proposalActionFields = (
   });
 };
 
+export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
+  const key = proposalFirstActionKey(proposal);
+
+  if (key !== "ExecuteNnsFunction") {
+    return undefined;
+  }
+
+  return Object.values(proposal.action?.[key])?.[0] as number;
+};
+
 export const hideProposal = ({
   proposalInfo,
   filters,
+  neurons,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
-  isExcludedVotedProposal({ proposalInfo, filters });
+  isExcludedVotedProposal({ proposalInfo, filters, neurons });
 
 /**
  * Does the proposal returned by the backend really matches the filter selected by the user?
@@ -94,24 +101,28 @@ const matchFilters = ({
 const isExcludedVotedProposal = ({
   proposalInfo,
   filters,
+  neurons,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean => {
   const { excludeVotedProposals } = filters;
 
   const { status, ballots } = proposalInfo;
+  const isOpen = status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  const belongsToValidNeuron = (id: NeuronId) =>
+    neurons.find(({ neuronId }) => neuronId === id) !== undefined;
   const containsUnspecifiedBallot = (): boolean =>
-    // Sometimes ballots contains all neurons with Vote.UNSPECIFIED
-    // something ballots is empty (inconsistent backend behaviour)
-    ballots?.length === 0
-      ? true
-      : ballots.find(({ vote }) => vote === Vote.UNSPECIFIED) !== undefined;
-  return (
-    excludeVotedProposals &&
-    status === ProposalStatus.PROPOSAL_STATUS_OPEN &&
-    !containsUnspecifiedBallot()
-  );
+    ballots.find(
+      ({ vote, neuronId }) =>
+        // TODO: This is temporary solution. Will be replaced with L2-507
+        // ignore neuronIds in ballots that are not in the neuron list of the user.
+        // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
+        belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
+    ) !== undefined;
+
+  return excludeVotedProposals && isOpen && !containsUnspecifiedBallot();
 };
 
 /**
@@ -120,9 +131,11 @@ const isExcludedVotedProposal = ({
 export const hasMatchingProposals = ({
   proposals,
   filters,
+  neurons,
 }: {
   proposals: ProposalInfo[];
   filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
 }): boolean => {
   if (proposals.length === 0) {
     return false;
@@ -130,21 +143,48 @@ export const hasMatchingProposals = ({
 
   return (
     proposals.find(
-      (proposalInfo: ProposalInfo) => !hideProposal({ proposalInfo, filters })
+      (proposalInfo: ProposalInfo) =>
+        !hideProposal({ proposalInfo, filters, neurons })
     ) !== undefined
   );
 };
 
+export const getVotingBallot = ({
+  neuronId,
+  proposalInfo: { ballots },
+}: {
+  neuronId: bigint;
+  proposalInfo: ProposalInfo;
+}): Ballot | undefined =>
+  ballots.find((ballot) => ballot.neuronId === neuronId);
+
+// We first check the voting power of the ballot from the proposal. Which is the voting power that was used to vote.
+// In the edge case that the proposal voting power is not present, then we show the neuron voting power.
+export const getVotingPower = ({
+  neuron: { neuronId, votingPower },
+  proposal,
+}: {
+  neuron: NeuronInfo;
+  proposal: ProposalInfo;
+}): bigint =>
+  getVotingBallot({
+    neuronId,
+    proposalInfo: proposal,
+  })?.votingPower ?? votingPower;
+
 export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
+  proposal,
 }: {
   neurons: NeuronInfo[];
   selectedIds: NeuronId[];
+  proposal: ProposalInfo;
 }): bigint =>
   neurons
     .filter(({ neuronId }) => selectedIds.includes(neuronId))
-    .reduce((sum, { votingPower }) => sum + votingPower, BigInt(0));
+    .map((neuron) => getVotingPower({ neuron, proposal }))
+    .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
 
 /**
  * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection

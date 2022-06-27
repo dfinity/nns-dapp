@@ -72,7 +72,10 @@
               text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip,
                 {
-                  $stake: formatICP(neuron.fullNeuron.cachedNeuronStake),
+                  $stake: formatICP({
+                    value: neuron.fullNeuron.cachedNeuronStake,
+                    detailed: true,
+                  }),
                   $delayMultiplier: dissolveDelayMultiplier(
                     Number(neuron.dissolveDelaySeconds)
                   ).toFixed(2),
@@ -150,17 +153,15 @@
 
   .only-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     gap: var(--padding);
-
-    @include media.min-width(small) {
-      justify-content: end;
-    }
   }
 
   .buttons {
     display: flex;
     gap: var(--padding);
+    flex-grow: 1;
+    justify-content: end;
   }
 </style>

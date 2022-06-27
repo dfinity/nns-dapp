@@ -7,16 +7,12 @@ import {
   renameSubAccount as renameSubAccountApi,
 } from "../api/accounts.api";
 import { sendICP } from "../api/ledger.api";
-import { toSubAccountId } from "../api/utils.api";
-import {
-  NameTooLongError,
-  SubAccountLimitExceededError,
-} from "../canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountIdentifierString,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
+import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
@@ -24,8 +20,11 @@ import { accountsStore } from "../stores/accounts.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { TransactionStore } from "../types/transaction.context";
-import { getAccountByPrincipal } from "../utils/accounts.utils";
-import { getLastPathDetail } from "../utils/app-path.utils";
+import {
+  getAccountByPrincipal,
+  getAccountFromStore,
+} from "../utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -47,10 +46,12 @@ export const syncAccounts = (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       accountsStore.reset();
 
-      toastsStore.error({
-        labelKey: "error.accounts_not_found",
-        err,
-      });
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found",
+        })
+      );
     },
     logMessage: "Syncing Accounts",
   });
@@ -68,17 +69,12 @@ export const addSubAccount = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    const labelKey =
-      err instanceof NameTooLongError
-        ? "accounts.create_subaccount_too_long"
-        : err instanceof SubAccountLimitExceededError
-        ? "accounts.create_subaccount_limit_exceeded"
-        : "accounts.create_subaccount";
-
-    toastsStore.error({
-      labelKey,
-      err,
-    });
+    toastsStore.error(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__account.create_subaccount",
+      })
+    );
   }
 };
 
@@ -106,11 +102,7 @@ export const transferICP = async ({
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    // TODO: refactor accountStore => we can keep in store the subAccountId, doing so we can avoid to transform it each time we call the backend
-    const fromSubAccountId =
-      subAccount !== undefined ? toSubAccountId(subAccount) : undefined;
-
-    await sendICP({ identity, to, fromSubAccountId, amount });
+    await sendICP({ identity, to, fromSubAccount: subAccount, amount });
 
     await syncAccounts();
 
@@ -137,40 +129,25 @@ const transferError = ({
   return { success: false, err: labelKey };
 };
 
+/**
+ * @param path current route path
+ * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
+ */
 export const routePathAccountIdentifier = (
   path: string | undefined
-): string | undefined => {
-  const accountIdentifier: string | undefined = getLastPathDetail(path);
-  return accountIdentifier !== undefined && accountIdentifier !== ""
-    ? accountIdentifier
-    : undefined;
-};
-
-export const getAccountFromStore = (
-  identifier: string | undefined
-): Account | undefined => {
-  if (identifier === undefined) {
+): { accountIdentifier: string | undefined } | undefined => {
+  if (!isRoutePath({ path: AppPath.Wallet, routePath: path })) {
     return undefined;
   }
 
-  const { main, subAccounts, hardwareWallets }: AccountsStore =
-    get(accountsStore);
+  const accountIdentifier: string | undefined = getLastPathDetail(path);
 
-  if (main?.identifier === identifier) {
-    return main;
-  }
-
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
-
-  if (subAccount !== undefined) {
-    return subAccount;
-  }
-
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return {
+    accountIdentifier:
+      accountIdentifier !== undefined && accountIdentifier !== ""
+        ? accountIdentifier
+        : undefined,
+  };
 };
 
 export const getAccountTransactions = async ({
@@ -215,7 +192,10 @@ export const getAccountTransactions = async ({
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
-  const account: Account | undefined = getAccountFromStore(identifier);
+  const account: Account | undefined = getAccountFromStore({
+    identifier,
+    accountsStore: get(accountsStore),
+  });
 
   if (account?.type === "hardwareWallet") {
     return getLedgerIdentityProxy(identifier);
@@ -226,14 +206,14 @@ export const getAccountIdentity = async (
 
 export const getAccountIdentityByPrincipal = async (
   principalString: string
-): Promise<Identity | LedgerIdentity> => {
+): Promise<Identity | LedgerIdentity | undefined> => {
   const accounts = get(accountsStore);
   const account = getAccountByPrincipal({
     principal: principalString,
     accounts,
   });
   if (account === undefined) {
-    throw new Error(`Account with principal ${principalString} not found!`);
+    return;
   }
   return getAccountIdentity(account.identifier);
 };

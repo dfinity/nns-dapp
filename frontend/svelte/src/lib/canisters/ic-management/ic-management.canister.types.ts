@@ -27,6 +27,6 @@ export interface CanisterDetails {
   status: CanisterStatus;
   memorySize: bigint;
   cycles: bigint;
-  setting: CanisterSettings;
+  settings: CanisterSettings;
   moduleHash?: ArrayBuffer;
 }

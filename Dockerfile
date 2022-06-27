@@ -43,22 +43,17 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 
 ENV PATH=/cargo/bin:$PATH
 
-RUN curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.2.3-stable.tar.xz -o flutter.tar.xz
-RUN tar xJf flutter.tar.xz
-ENV PATH=/flutter/bin:$PATH
-
 # Install IC CDK optimizer
 RUN cargo install --version 0.3.1 ic-cdk-optimizer
 
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
-# to build only the dependecies, we pretend that our project is a simple, empty
+# to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/Cargo.toml rs/Cargo.toml
-COPY rs/nns_functions_candid_gen ./rs/nns_functions_candid_gen
 RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
 
 # Install dfx
@@ -68,8 +63,8 @@ RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfini
 # Start the second container
 FROM builder AS build
 SHELL ["bash", "-c"]
-ARG DEPLOY_ENV=mainnet
-RUN echo "DEPLOY_ENV: '$DEPLOY_ENV'"
+ARG DFX_NETWORK=mainnet
+RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 
 ARG OWN_CANISTER_ID
 RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
@@ -82,7 +77,6 @@ RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
 COPY . /build
 WORKDIR /build
 RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
-RUN git config --global --add safe.directory /flutter
 RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm

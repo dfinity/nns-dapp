@@ -30,62 +30,94 @@ describe("Neurons", () => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
   });
 
-  it("should render content", () => {
-    const { getByText } = render(Neurons);
+  describe("with enough neurons", () => {
+    beforeEach(() => {
+      const mockNeuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(223),
+      };
+      jest
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(
+          buildMockNeuronsStoreSubscribe([mockNeuron, mockNeuron2])
+        );
+    });
 
-    expect(
-      getByText("Earn rewards by staking your ICP in neurons.", {
-        exact: false,
-      })
-    ).toBeInTheDocument();
+    it("should render title", () => {
+      const { getAllByText } = render(Neurons);
+
+      expect(getAllByText(en.navigation.neurons).length).toBeGreaterThan(0);
+    });
+
+    it("should render content", () => {
+      const { getByText } = render(Neurons);
+
+      expect(
+        getByText("Earn rewards by staking your ICP in neurons.", {
+          exact: false,
+        })
+      ).toBeInTheDocument();
+    });
+
+    it("should subscribe to store", () =>
+      expect(authStoreMock).toHaveBeenCalled());
+
+    it("should render a principal as text", () => {
+      const { getByText } = render(Neurons);
+
+      expect(
+        getByText(mockPrincipal.toText(), { exact: false })
+      ).toBeInTheDocument();
+    });
+
+    it("should render a NeuronCard", async () => {
+      const { container } = render(Neurons);
+
+      waitFor(() =>
+        expect(container.querySelector('article[role="link"]')).not.toBeNull()
+      );
+    });
+
+    it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
+      const { queryByTestId, queryByText } = render(Neurons);
+
+      const toolbarButton = queryByTestId("stake-neuron-button");
+      expect(toolbarButton).not.toBeNull();
+      expect(queryByText(en.accounts.select_source)).toBeNull();
+
+      toolbarButton !== null && (await fireEvent.click(toolbarButton));
+
+      expect(queryByText(en.accounts.select_source)).not.toBeNull();
+    });
+
+    it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {
+      const { queryByTestId, queryByText } = render(Neurons);
+
+      const toolbarButton = queryByTestId("merge-neurons-button");
+      expect(toolbarButton).not.toBeNull();
+      expect(queryByText(en.neurons.merge_neurons_modal_title)).toBeNull();
+
+      toolbarButton !== null && (await fireEvent.click(toolbarButton));
+
+      expect(queryByText(en.neurons.merge_neurons_modal_title)).not.toBeNull();
+    });
   });
 
-  it("should subscribe to store", () =>
-    expect(authStoreMock).toHaveBeenCalled());
+  describe("with less than two neurons", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+    });
+    it("should have disabled Merge Neurons button", async () => {
+      const { queryByTestId } = render(Neurons);
 
-  it("should render a principal as text", () => {
-    const { getByText } = render(Neurons);
-
-    expect(
-      getByText(mockPrincipal.toText(), { exact: false })
-    ).toBeInTheDocument();
-  });
-
-  it("should render a NeuronCard", async () => {
-    const { container } = render(Neurons);
-
-    waitFor(() =>
-      expect(container.querySelector('article[role="link"]')).not.toBeNull()
-    );
-  });
-
-  it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
-    const { queryByTestId, queryByText } = render(Neurons);
-
-    const toolbarButton = queryByTestId("stake-neuron-button");
-    expect(toolbarButton).not.toBeNull();
-    expect(queryByText(en.accounts.select_source)).toBeNull();
-
-    toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-    expect(queryByText(en.accounts.select_source)).not.toBeNull();
-  });
-
-  it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {
-    const { queryByTestId, queryByText } = render(Neurons);
-
-    const toolbarButton = queryByTestId("merge-neurons-button");
-    expect(toolbarButton).not.toBeNull();
-    expect(queryByText(en.neurons.merge_neurons_modal_title)).toBeNull();
-
-    toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-    expect(queryByText(en.neurons.merge_neurons_modal_title)).not.toBeNull();
+      const toolbarButton = queryByTestId("merge-neurons-button");
+      expect(toolbarButton).not.toBeNull();
+      toolbarButton &&
+        expect(toolbarButton.hasAttribute("disabled")).toBeTruthy();
+    });
   });
 });

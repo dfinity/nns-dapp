@@ -105,7 +105,7 @@ describe("markdown.utils", () => {
         return {};
       };
       jest.mock(
-        "/assets/assets/libs/marked.min.js",
+        "/assets/libs/marked.min.js",
         () => ({
           marked,
         }),
@@ -113,7 +113,7 @@ describe("markdown.utils", () => {
       );
 
       jest.mock(
-        "/assets/assets/libs/purify.min.js",
+        "/assets/libs/purify.min.js",
         () => ({
           sanitize: (value: string) => value + "-sanitize",
         }),

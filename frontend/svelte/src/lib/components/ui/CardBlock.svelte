@@ -38,8 +38,8 @@
   article {
     text-decoration: none;
 
-    background: var(--background);
-    color: var(--background-contrast);
+    background: var(--gray-50-background);
+    color: var(--gray50-background-contrast);
 
     padding: var(--padding-1_5x);
     margin: var(--padding-1_5x) 0;

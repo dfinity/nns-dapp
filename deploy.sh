@@ -73,9 +73,10 @@ help_text() {
 }
 
 #
-GUESS="true"      # figure out which steps to run, as opposed to just performing the requested steps.
-DRY_RUN="false"   # print what would be done but don't do anything
-DFX_NETWORK=local # which network to deploy to
+GUESS="true"                           # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false"                        # print what would be done but don't do anything
+DFX_NETWORK=local                      # which network to deploy to
+CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 START_DFX="false"
@@ -217,7 +218,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
   dfx deploy --network "$DFX_NETWORK" nns-dapp
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL ./frontend/ts/src/config.json)"
+  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
@@ -236,9 +237,8 @@ if [[ "$POPULATE" == "true" ]]; then
 
   # Create users and neurons
   # Note: Cannot be used with flutter.
-  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY frontend/ts/src/config.json)"
-  [[ "$REDIRECT_TO_LEGACY" == "prod" ]] ||
-    [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
+  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY "$CONFIG_FILE")"
+  [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
     echo Creating users and neurons...
     pushd e2e-tests
     npm ci
@@ -249,7 +249,7 @@ if [[ "$POPULATE" == "true" ]]; then
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL ./frontend/ts/src/config.json)"
+  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Opening: $OWN_CANISTER_URL"
   case "$(uname)" in
   Linux) xdg-open "$OWN_CANISTER_URL" ;;

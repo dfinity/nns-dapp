@@ -6,12 +6,16 @@
   export let icp: ICP;
   export let label: string = $i18n.core.icp;
   export let inline: boolean = false;
+  export let singleLine: boolean = false;
   export let sign: "+" | "-" | "" = "";
+  export let detailed: boolean = false;
 </script>
 
 {#if icp}
-  <div class:inline class:plus-sign={sign === "+"}>
-    <span data-tid="icp-value">{`${sign}${formatICP(icp.toE8s())}`}</span>
+  <div class:inline class:singleLine class:plus-sign={sign === "+"}>
+    <span data-tid="icp-value"
+      >{`${sign}${formatICP({ value: icp.toE8s(), detailed })}`}</span
+    >
     <span>{label}</span>
   </div>
 {/if}
@@ -31,7 +35,13 @@
       color: var(--gray-50);
     }
 
-    &:not(.inline) {
+    &.singleLine span:first-of-type {
+      font-weight: normal;
+      font-size: var(--font-size-h5);
+      color: var(--gray-50);
+    }
+
+    &:not(.inline, .singleLine) {
       @include media.min-width(medium) {
         display: flex;
         flex-direction: column;

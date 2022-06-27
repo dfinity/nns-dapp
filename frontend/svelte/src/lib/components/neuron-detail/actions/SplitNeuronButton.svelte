@@ -1,12 +1,15 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { MIN_NEURON_STAKE_SPLITTABLE } from "../../../constants/neurons.constants";
   import SplitNeuronModal from "../../../modals/neurons/SplitNeuronModal.svelte";
+  import {
+    minNeuronSplittable,
+    neuronCanBeSplit,
+  } from "../../../utils/neuron.utils";
   import { i18n } from "../../../stores/i18n";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { formatICP } from "../../../utils/icp.utils";
-  import { neuronCanBeSplit } from "../../../utils/neuron.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
+  import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -16,13 +19,19 @@
   const closeModal = () => (isOpen = false);
 
   let isSplittable: boolean;
-  $: isSplittable = neuronCanBeSplit(neuron);
+  $: isSplittable = neuronCanBeSplit({
+    neuron,
+    fee: $mainTransactionFeeStore,
+  });
 </script>
 
 <Tooltip
   id="split-neuron-button"
   text={replacePlaceholders($i18n.neuron_detail.split_neuron_disabled_tooltip, {
-    $amount: formatICP(BigInt(MIN_NEURON_STAKE_SPLITTABLE)),
+    $amount: formatICP({
+      value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
+      detailed: true,
+    }),
   })}
 >
   <button on:click={openModal} class="primary small" disabled={!isSplittable}

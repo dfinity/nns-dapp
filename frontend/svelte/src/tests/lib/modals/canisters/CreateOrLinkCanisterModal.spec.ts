@@ -4,6 +4,7 @@
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { NEW_CANISTER_MIN_T_CYCLES } from "../../../../lib/constants/canisters.constants";
 import CreateOrLinkCanisterModal from "../../../../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
 import {
   attachCanister,
@@ -18,20 +19,24 @@ import {
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockCanister } from "../../../mocks/canisters.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
 jest.mock("../../../../lib/services/canisters.services", () => {
   return {
     attachCanister: jest.fn().mockResolvedValue({ success: true }),
-    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
-    createCanister: jest.fn().mockResolvedValue({ success: true }),
+    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
+    createCanister: jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
   };
 });
 
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
     toastsStore: {
+      show: jest.fn(),
       success: jest.fn(),
     },
   };
@@ -166,7 +171,7 @@ describe("CreateOrLinkCanisterModal", () => {
 
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();
-    expect(toastsStore.success).toBeCalled();
+    expect(toastsStore.show).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.
@@ -189,5 +194,45 @@ describe("CreateOrLinkCanisterModal", () => {
 
     expect(accountCards.length).toBe(2);
     expect(queryByText(mockHardwareWalletAccount.name as string)).toBeNull();
+  });
+
+  it("should have disabled button when creating canister with less T Cycles than minimum", async () => {
+    const { queryByTestId, queryAllByTestId, container } = await renderModal({
+      component: CreateOrLinkCanisterModal,
+    });
+    // Wait for the onMount to load the conversion rate
+    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
+    // wait to update local variable with conversion rate
+    await tick();
+
+    await clickByTestId(queryByTestId, "choose-create-as-new-canister");
+
+    // Select Account Screen
+    await waitFor(() =>
+      expect(queryAllByTestId("account-card").length).toBeGreaterThan(0)
+    );
+    const accountCards = queryAllByTestId("account-card");
+    expect(accountCards.length).toBe(2);
+
+    fireEvent.click(accountCards[0]);
+
+    // Select Amount Screen
+    await waitFor(() =>
+      expect(queryByTestId("select-cycles-screen")).toBeInTheDocument()
+    );
+
+    const icpInputElement = container.querySelector('input[name="icp-amount"]');
+    expect(icpInputElement).not.toBeNull();
+
+    icpInputElement &&
+      (await fireEvent.input(icpInputElement, {
+        target: { value: NEW_CANISTER_MIN_T_CYCLES - 0.2 },
+      }));
+    icpInputElement && (await fireEvent.blur(icpInputElement));
+
+    const continueButton = queryByTestId("select-cycles-button");
+    expect(continueButton).not.toBeNull();
+    continueButton &&
+      expect(continueButton.hasAttribute("disabled")).toBeTruthy();
   });
 });

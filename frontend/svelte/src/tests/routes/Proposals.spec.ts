@@ -2,11 +2,23 @@
  * @jest-environment jsdom
  */
 
-import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  type Proposal,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
+import { DEFAULT_PROPOSALS_FILTERS } from "../../lib/constants/proposals.constants";
 import { authStore } from "../../lib/stores/auth.store";
-import { proposalsStore } from "../../lib/stores/proposals.store";
+import {
+  neuronsStore,
+  type NeuronsStore,
+} from "../../lib/stores/neurons.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../../lib/stores/proposals.store";
 import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
@@ -29,6 +41,17 @@ describe("Proposals", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    const mockNeuronsStoreSubscribe = (
+      run: Subscriber<NeuronsStore>
+    ): (() => void) => {
+      run({ neurons: [], certified: true });
+
+      return () => undefined;
+    };
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(mockNeuronsStoreSubscribe);
   });
 
   describe("Matching results", () => {
@@ -45,6 +68,12 @@ describe("Proposals", () => {
         .spyOn(GovernanceCanister, "create")
         .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
     );
+
+    it("should render title", () => {
+      const { getAllByText } = render(Proposals);
+
+      expect(getAllByText(en.navigation.voting).length).toBeGreaterThan(0);
+    });
 
     it("should render a description", () => {
       const { getByText } = render(Proposals);
@@ -70,10 +99,38 @@ describe("Proposals", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render a spinner while searching proposals", () => {
+    it("should render a spinner while searching proposals", async () => {
       const { container } = render(Proposals);
 
-      expect(container.querySelector("div.spinner")).not.toBeNull();
+      proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
+
+      await waitFor(() =>
+        expect(container.querySelector("div.spinner")).not.toBeNull()
+      );
+    });
+
+    describe("neuron loading", () => {
+      beforeEach(() => {
+        const mockNeuronsStoreSubscribe = (
+          run: Subscriber<NeuronsStore>
+        ): (() => void) => {
+          run({ neurons: undefined, certified: false });
+
+          return () => undefined;
+        };
+        jest
+          .spyOn(neuronsStore, "subscribe")
+          .mockImplementation(mockNeuronsStoreSubscribe);
+      });
+      afterEach(() => jest.clearAllMocks());
+
+      it("should render a spinner while loading neurons", async () => {
+        const { container } = render(Proposals);
+
+        await waitFor(() =>
+          expect(container.querySelector("div.spinner")).not.toBeNull()
+        );
+      });
     });
 
     it("should render proposals", () => {

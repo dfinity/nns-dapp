@@ -7,6 +7,7 @@
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
   import { triggerDebugReport } from "../utils/dev.utils";
+  import Backdrop from "../components/ui/Backdrop.svelte";
 
   export let visible: boolean = true;
   export let theme: "dark" | "light" = "light";
@@ -37,11 +38,7 @@
     on:click|stopPropagation
     on:introend
   >
-    <div
-      class="backdrop"
-      on:click|stopPropagation={close}
-      class:disabledActions={$busy}
-    />
+    <Backdrop disablePointerEvents={$busy} on:nnsClose />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
@@ -118,20 +115,6 @@
     }
   }
 
-  .backdrop {
-    position: absolute;
-    inset: 0;
-
-    background: rgba(var(--background-rgb), 0.8);
-
-    @include interaction.tappable;
-
-    &.disabledActions {
-      cursor: inherit;
-      pointer-events: none;
-    }
-  }
-
   .wrapper {
     position: absolute;
     top: 50%;
@@ -148,7 +131,7 @@
     }
 
     --modal-wrapper-height: min(
-      calc(100% - var(--padding-6x)),
+      calc(100vh - var(--padding-4x)),
       var(--modal-max-height)
     );
 

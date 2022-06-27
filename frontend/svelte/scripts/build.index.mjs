@@ -19,12 +19,12 @@ const buildIndex = () => {
 };
 
 /**
- * Specifies where the svelte app is loaded (typically "/" in local development and "/v2" in production)
+ * Specifies where the svelte app is loaded (typically "/" in both local development and in production)
  */
 const updateBaseHref = (content) =>
   content.replace(
     "<!-- BASE_HREF -->",
-    `<base href="${process.env.BASE_HREF || "/v2/"}" />`
+    `<base href="${process.env.BASE_HREF || "/"}" />`
   );
 
 /**
@@ -54,7 +54,7 @@ const updateCSP = (content) => {
         img-src 'self' https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'strict-dynamic' 'nonce-main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25';
+        script-src 'unsafe-eval' 'strict-dynamic' 'nonce-main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25' 'nonce-main-bc619616-7c54-4009-abff-493dd9b42bac';
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';

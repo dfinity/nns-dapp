@@ -5,11 +5,11 @@ import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/governance.api";
-import * as ledgerApi from "../../../lib/api/ledger.api";
 import {
+  DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-  TRANSACTION_FEE_E8S,
 } from "../../../lib/constants/icp.constants";
+import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
 import * as services from "../../../lib/services/neurons.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
@@ -17,7 +17,7 @@ import {
   neuronsStore,
 } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedError } from "../../../lib/types/neurons.errors";
+import { NotAuthorizedNeuronError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -36,6 +36,7 @@ const {
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
   routePathNeuronId,
+  getIdentityOfControllerByNeuronId,
   joinCommunityFund,
   listNeurons,
   loadNeuron,
@@ -58,9 +59,11 @@ jest.mock("../../../lib/stores/toasts.store", () => {
   };
 });
 
-let testIdentity: Identity | undefined = mockIdentity;
-const setNoAccountIdentity = () => (testIdentity = undefined);
+let testIdentity: Identity | null = mockIdentity;
+const setNoAccountIdentity = () => (testIdentity = null);
 const resetAccountIdentity = () => (testIdentity = mockIdentity);
+const setAccountIdentity = (newIdentity: Identity) =>
+  (testIdentity = newIdentity);
 
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
@@ -183,10 +186,6 @@ describe("neurons-services", () => {
     .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
 
-  const spyGetNeuronBalance = jest
-    .spyOn(ledgerApi, "getNeuronBalance")
-    .mockImplementation(() => Promise.resolve(ICP.fromString("1") as ICP));
-
   afterEach(() => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
@@ -282,70 +281,6 @@ describe("neurons-services", () => {
 
       const neuronsList = get(definedNeuronsStore);
       expect(neuronsList).toEqual(neurons);
-    });
-
-    it("should check neurons balances", async () => {
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-
-      expect(spyGetNeuronBalance).toBeCalledTimes(neurons.length);
-    });
-
-    it("should claim or refresh neurons whose balance does not match stake", async () => {
-      const balance = ICP.fromString("2") as ICP;
-      const neuronMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: balance.toE8s(),
-        },
-      };
-      const neuronNotMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(3_000_000_000),
-        },
-      };
-      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
-      spyQueryNeurons.mockImplementation(() =>
-        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
-      );
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-      await tick();
-      await tick();
-
-      expect(spyClaimOrRefresh).toBeCalledTimes(1);
-    });
-
-    it("should not claim or refresh neurons whose balance does not match stake but ICP is less than one", async () => {
-      const balance = ICP.fromString("0.9") as ICP;
-      const neuronMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: balance.toE8s(),
-        },
-      };
-      const neuronNotMatchingStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(3_000_000_000),
-        },
-      };
-      spyGetNeuronBalance.mockImplementation(() => Promise.resolve(balance));
-      spyQueryNeurons.mockImplementation(() =>
-        Promise.resolve([neuronNotMatchingStake, neuronMatchingStake])
-      );
-      await listNeurons();
-      // `await` does not wait for `onLoad` to finish
-      await tick();
-
-      expect(spyClaimOrRefresh).not.toBeCalled();
     });
 
     it("should not list neurons if no identity", async () => {
@@ -759,7 +694,7 @@ describe("neurons-services", () => {
 
     it("should update neuron and return success when user removes itself", async () => {
       spyGetNeuron.mockImplementation(
-        jest.fn().mockRejectedValue(new NotAuthorizedError())
+        jest.fn().mockRejectedValue(new NotAuthorizedNeuronError())
       );
       neuronsStore.pushNeurons({ neurons, certified: true });
 
@@ -892,7 +827,7 @@ describe("neurons-services", () => {
     it("should add transaction fee to the amount", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
-      const transactionFee = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
       const amountWithFee = amount + transactionFee;
       await services.splitNeuron({
         neuronId: controlledNeuron.neuronId,
@@ -1228,6 +1163,8 @@ describe("neurons-services", () => {
       expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
       expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
       expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
+      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
+      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
     });
   });
 
@@ -1252,26 +1189,6 @@ describe("neurons-services", () => {
         setNeuron: jest.fn(),
       });
       expect(spyGetNeuron).toBeCalled();
-    });
-
-    it("should call the api to get neuron and check the balance on update", async () => {
-      const neuronId = BigInt(333333);
-      const controlledNeuron = {
-        ...mockNeuron,
-        neuronId,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: mockIdentity.getPrincipal().toText(),
-        },
-      };
-      spyGetNeuron.mockImplementation(() => Promise.resolve(controlledNeuron));
-      await loadNeuron({
-        neuronId,
-        setNeuron: jest.fn(),
-      });
-      await tick();
-      expect(spyGetNeuron).toBeCalled();
-      expect(spyGetNeuronBalance).toBeCalled();
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
@@ -1310,6 +1227,82 @@ describe("neurons-services", () => {
       expect(
         store.neurons?.find(({ neuronId }) => neuronId === mockNeuron.neuronId)
       ).toBeDefined();
+    });
+
+    it("should claim or refresh neuron", async () => {
+      await reloadNeuron(mockNeuron.neuronId);
+      expect(spyClaimOrRefresh).toBeCalled();
+    });
+  });
+
+  describe("getIdentityOfControllerByNeuronId", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+    it("should return identity from authStore first", async () => {
+      const controlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      const identity = await getIdentityOfControllerByNeuronId(
+        controlledNeuron.neuronId
+      );
+      expect(identity).toBe(mockIdentity);
+      expect(getAccountIdentityByPrincipal).not.toBeCalled();
+    });
+
+    it("should return identity from accounts service", async () => {
+      const controller =
+        "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe";
+      const newIdentity = {
+        getPrincipal: () => Principal.fromText(controller),
+      } as unknown as Identity;
+      setAccountIdentity(newIdentity);
+      const controlledNeuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller,
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [controlledNeuron], certified: true });
+      const identity = await getIdentityOfControllerByNeuronId(
+        controlledNeuron.neuronId
+      );
+      expect(identity).toBe(newIdentity);
+      expect(getAccountIdentityByPrincipal).toBeCalled();
+      resetIdentity();
+    });
+
+    it("should raise NotAuthorizedNeuronError if fullNeuron is not defined", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
+      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+    });
+
+    it("should raise NotAuthorizedNeuronError if contoller is not in authStore nor accounts helper", async () => {
+      setNoAccountIdentity();
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller:
+            "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe",
+        },
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
+      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+      resetAccountIdentity();
     });
   });
 });

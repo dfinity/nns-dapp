@@ -57,7 +57,7 @@ export const makeDummyProposals = async ({
   const { canister } = await governanceCanister({ identity });
 
   const dummyProposalsScriptPath: string =
-    "/assets/assets/libs/dummy-proposals.utils.js";
+    "/assets/libs/dummy-proposals.utils.js";
   const { makeDummyProposals: makeProposals } = await import(
     dummyProposalsScriptPath
   );

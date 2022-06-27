@@ -1,13 +1,18 @@
 /**
  * Creates a proposal and verifies that a user can see it, without changing filters.
  */
-import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
-import { Header } from "../components/header";
+import { register } from "../common/register";
+import { skipUnlessBrowserIs } from "../common/test";
+import { NAV_PROPOSALS_SELECTOR } from "../components/nav";
 import { ProposalsTab } from "../components/proposals-tab";
 
 describe("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
+
+  before(function () {
+    skipUnlessBrowserIs.bind(this)(["chrome"]);
+  });
 
   it("Setup: Register user", async () => {
     await browser.url("/");
@@ -21,10 +26,10 @@ describe("Makes a proposal and verifies that it is shown", () => {
 
   it("Go to voting tab", async () => {
     const navigator = new MyNavigator(browser);
-    await navigator.click(
-      Header.TAB_TO_PROPOSALS_SELECTOR,
-      "Go to the neurons tab"
-    );
+    await navigator.navigate({
+      selector: NAV_PROPOSALS_SELECTOR,
+      description: "Go to the neurons view",
+    });
   });
 
   it("Can see the new proposal", async () => {
@@ -46,7 +51,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
       "Verifying that the proposal detail is for the correct proposal"
     );
     await navigator.click(
-      ProposalsTab.BACK_TO_PROPOSAL_LIST_SELECTOR,
+      ProposalsTab.HEADER_BACK_SELECTOR,
       "Go back to proposal list"
     );
   });

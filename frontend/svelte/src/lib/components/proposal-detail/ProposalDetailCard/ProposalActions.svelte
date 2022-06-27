@@ -1,12 +1,15 @@
 <script lang="ts">
-  import type { Proposal } from "@dfinity/nns";
+  import type { Proposal, ProposalId } from "@dfinity/nns";
   import CardBlock from "../../ui/CardBlock.svelte";
   import {
     proposalFirstActionKey,
     proposalActionFields,
+    getNnsFunctionIndex,
   } from "../../../../lib/utils/proposals.utils";
   import Json from "../../common/Json.svelte";
+  import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
 
+  export let proposalId: ProposalId;
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
@@ -15,57 +18,58 @@
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
   $: actionFields =
     (proposal !== undefined && proposalActionFields(proposal)) || [];
+
+  let nnsFunctionId: number | undefined;
+  $: nnsFunctionId = proposal && getNnsFunctionIndex(proposal);
 </script>
 
 <CardBlock limitHeight={false}>
   <svelte:fragment slot="title">{actionKey}</svelte:fragment>
-  <ul>
+  <dl>
     {#each actionFields as [key, value]}
-      <li>
-        <h4>{key}</h4>
-        {#if typeof value === "object"}
-          <p class="json">
-            <Json json={value} />
-          </p>
-        {:else}
-          <p>
-            {value}
-          </p>
-        {/if}
-      </li>
+      <dt>{key}</dt>
+      {#if typeof value === "object"}
+        <dd><Json json={value} /></dd>
+      {:else}
+        <dd>{value}</dd>
+      {/if}
     {/each}
-  </ul>
+
+    {#if nnsFunctionId !== undefined}
+      <NnsFunctionDetails {proposalId} {nnsFunctionId} />
+    {/if}
+  </dl>
 </CardBlock>
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
 
-  ul {
+  dl {
     margin: 0;
-    padding: 0;
-    list-style: none;
 
-    li {
-      margin-bottom: var(--padding);
+    :global(dt) {
+      font-size: var(--font-size-ultra-small);
+      color: var(--background-contrast);
+      line-height: 1;
+      margin: 0 0 var(--padding-0_5x);
 
-      h4 {
-        font-size: var(--font-size-ultra-small);
-        color: var(--background-contrast);
-        line-height: 1;
-
-        @include media.min-width(medium) {
-          font-size: var(--font-size-small);
-        }
+      @include media.min-width(medium) {
+        font-size: var(--font-size-small);
       }
-      p {
-        font-size: var(--font-size-ultra-small);
-        color: var(--gray-200);
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
+    }
+    :global(dd) {
+      margin: 0 0 var(--padding);
+      &:last-child {
+        margin: 0;
+      }
 
-        @include media.min-width(medium) {
-          font-size: var(--font-size-small);
-        }
+      font-size: var(--font-size-ultra-small);
+      color: var(--gray-200);
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+
+      @include media.min-width(medium) {
+        font-size: var(--font-size-small);
       }
     }
   }

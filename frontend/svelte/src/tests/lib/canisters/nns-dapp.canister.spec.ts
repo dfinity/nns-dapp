@@ -4,9 +4,17 @@ import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
+  CanisterAlreadyAttachedError,
+  CanisterLimitExceededError,
+  CanisterNameAlreadyTakenError,
+  CanisterNameTooLongError,
+  CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  UnknownProposalPayloadError,
 } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
@@ -19,7 +27,7 @@ import {
   mockSubAccountDetails,
 } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCanisters } from "../../mocks/canisters.mock";
+import { mockCanister, mockCanisters } from "../../mocks/canisters.mock";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
@@ -190,7 +198,9 @@ describe("NNSDapp", () => {
         {
           AccountNotFound: null,
         },
-        new AccountNotFoundError("Error registering hardware wallet")
+        new AccountNotFoundError(
+          "error__attach_wallet.register_hardware_wallet"
+        )
       ));
 
     it("should throw register hardware wallet error name too long", async () =>
@@ -198,7 +208,10 @@ describe("NNSDapp", () => {
         {
           NameTooLong: null,
         },
-        new NameTooLongError(`Error, name "test" is too long`)
+        new NameTooLongError(
+          "error__attach_wallet.create_hardware_wallet_too_long",
+          { $accountName: "test" }
+        )
       ));
 
     it("should throw register hardware wallet error already registered", async () =>
@@ -232,5 +245,181 @@ describe("NNSDapp", () => {
 
       expect(service.get_transactions).toBeCalled();
     });
+  });
+
+  describe("NNSDapp.attachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.attachCanister({
+        name: "test",
+        canisterId: mockCanister.canister_id,
+      });
+
+      expect(service.attach_canister).toBeCalled();
+    });
+
+    it("should throw CanisterAlreadyAttachedError", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({
+        CanisterAlreadyAttached: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.attachCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterAlreadyAttachedError);
+    });
+
+    it("should throw CanisterNameAlreadyTakenError", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({
+        NameAlreadyTaken: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.attachCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
+    });
+
+    it("should throw CanisterNameTooLongError", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({
+        NameTooLong: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.attachCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterNameTooLongError);
+    });
+
+    it("should throw CanisterLimitExceededError", async () => {
+      const service = mock<NNSDappService>();
+      service.attach_canister.mockResolvedValue({
+        CanisterLimitExceeded: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.attachCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterLimitExceededError);
+    });
+  });
+
+  describe("NNSDapp.detachCanister", () => {
+    it("should call attach_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.detach_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.detachCanister(mockCanister.canister_id);
+
+      expect(service.detach_canister).toBeCalled();
+    });
+
+    it("should throw CanisterNotFoundError", async () => {
+      const service = mock<NNSDappService>();
+      service.detach_canister.mockResolvedValue({
+        CanisterNotFound: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () => nnsDapp.detachCanister(mockCanister.canister_id);
+
+      expect(call).rejects.toThrowError(CanisterNotFoundError);
+    });
+  });
+
+  describe("NNSDapp.getProposalPayload", () => {
+    it("should call get_proposal_payload", async () => {
+      const service = mock<NNSDappService>();
+      service.get_proposal_payload.mockResolvedValue({ Ok: "{}" });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+      expect(service.get_proposal_payload).toBeCalled();
+    });
+  });
+
+  it("should parse successful response", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Ok: JSON.stringify({ test: "data" }),
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const result = await nnsDapp.getProposalPayload({
+      proposalId: BigInt(0),
+    });
+
+    expect(result).toEqual({ test: "data" });
+  });
+
+  it("should throw ProposalPayloadNotFoundError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "Proposal not found",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
+  });
+
+  it("should throw ProposalPayloadTooLargeError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "An error occurred while loading proposal payload. IC0504: Canister xxxx violated contract: ic0.msg_reply_data_append: application payload size (2553969) cannot be larger than 2097152",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
+  });
+
+  it("should throw UnknownProposalPayloadError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "test error",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(UnknownProposalPayloadError);
   });
 });

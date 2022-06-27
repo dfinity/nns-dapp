@@ -14,7 +14,7 @@ get_canister_id >/dev/null || {
 }
 
 WASM_FILE=nns-dapp.wasm
-test -e "$WASM_FILE" || DEPLOY_ENV="$DFX_NETWORK" ./scripts/docker-build
+test -e "$WASM_FILE" || DFX_NETWORK="$DFX_NETWORK" ./scripts/docker-build
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 CANISTER_ID="$(get_canister_id)"
 
