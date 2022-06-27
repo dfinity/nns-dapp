@@ -538,6 +538,11 @@ interface I18nSns_project_detail {
   token_symbol: string;
   min_commitment: string;
   max_commitment: string;
+  current_commitment: string;
+  min_commitment_goal: string;
+  deadline: string;
+  user_commitment: string;
+  participate: string;
 }
 
 interface I18nTime {
@@ -602,6 +607,11 @@ interface I18nError__canister {
   get_exchange_rate: string;
 }
 
+interface I18nTheme {
+  theme: string;
+  switch_theme: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -636,4 +646,5 @@ interface I18n {
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
   error__canister: I18nError__canister;
+  theme: I18nTheme;
 }

@@ -33,7 +33,7 @@
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
-  import Card from "../lib/components/ui/Card.svelte";
+  import CardInfo from "../lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
 
@@ -207,9 +207,9 @@
       <CyclesCard cycles={canisterDetails.cycles} />
       <ControllersCard />
     {:else if errorKey !== undefined}
-      <Card testId="canister-details-error-card">
+      <CardInfo testId="canister-details-error-card">
         <p class="error-message">{translate({ labelKey: errorKey })}</p>
-      </Card>
+      </CardInfo>
     {:else}
       <SkeletonCard />
       <SkeletonCard />

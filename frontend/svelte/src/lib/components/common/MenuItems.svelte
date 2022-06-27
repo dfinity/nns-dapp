@@ -64,7 +64,7 @@
 
 <style lang="scss">
   :global(svg) {
-    width: 24px;
-    height: 24px;
+    width: var(--padding-3x);
+    height: var(--padding-3x);
   }
 </style>

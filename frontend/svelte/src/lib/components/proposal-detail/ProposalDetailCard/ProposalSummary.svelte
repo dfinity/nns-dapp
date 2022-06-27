@@ -17,7 +17,7 @@
 
   .markdown {
     font-size: var(--font-size-small);
-    color: var(--gray-200);
+    color: var(--gray-50);
     overflow-wrap: break-word;
 
     @include media.min-width(medium) {

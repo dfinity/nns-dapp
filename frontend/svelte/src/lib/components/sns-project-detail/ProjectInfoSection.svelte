@@ -58,7 +58,11 @@
   }
 
   .details {
-    margin-top: var(--padding);
+    margin-top: var(--padding-2x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 
   .contrast {

@@ -108,13 +108,13 @@
         />
       {:else}
         <div class="loader">
-          <SkeletonCard />
+          <SkeletonCard cardType="info" />
           <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
         </div>
       {/if}
     {:else}
       <div class="loader">
-        <SkeletonCard />
+        <SkeletonCard cardType="info" />
         <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
       </div>
     {/if}

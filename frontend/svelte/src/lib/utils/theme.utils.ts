@@ -1,6 +1,34 @@
-import type { Theme } from "../types/theme";
+import { browser } from "../constants/environment.constants";
+import { Theme } from "../types/theme";
+import { enumFromStringExists } from "./enum.utils";
 
-export const applyTheme = (theme: Theme) => {
+export const initTheme = (): Theme => {
+  // Jest NodeJS environment has no document
+  if (!browser) {
+    return Theme.DARK;
+  }
+
+  const theme: string | null = document.documentElement.getAttribute("theme");
+
+  const initialTheme: Theme = enumFromStringExists({
+    obj: Theme as unknown as Theme,
+    value: theme,
+  })
+    ? (theme as Theme)
+    : Theme.DARK;
+
+  applyTheme({ theme: initialTheme, preserve: false });
+
+  return initialTheme;
+};
+
+export const applyTheme = ({
+  theme,
+  preserve = true,
+}: {
+  theme: Theme;
+  preserve?: boolean;
+}) => {
   const { documentElement, head } = document;
 
   documentElement.setAttribute("theme", theme);
@@ -15,5 +43,7 @@ export const applyTheme = (theme: Theme) => {
     ?.namedItem("theme-color")
     ?.setAttribute("content", color.trim());
 
-  localStorage.setItem("theme", theme);
+  if (preserve) {
+    localStorage.setItem("theme", theme);
+  }
 };

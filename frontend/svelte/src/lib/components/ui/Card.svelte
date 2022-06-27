@@ -49,19 +49,19 @@
     background: var(--background);
     color: var(--gray-50);
 
-    padding: var(--padding-2_5x);
+    padding: var(--padding-2x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
-    box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+    box-shadow: var(--card-box-shadow);
 
-    border: 2px solid transparent;
+    outline: 2px solid transparent;
     &.selected {
-      border: 2px solid var(--blue-500);
+      outline: 2px solid var(--blue-500);
     }
 
     &.disabled {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
   }
 
@@ -70,11 +70,6 @@
 
     &.disabled {
       @include interaction.disabled;
-    }
-
-    &:focus,
-    &:hover {
-      background: var(--background-hover);
     }
   }
 
