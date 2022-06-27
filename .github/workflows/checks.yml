@@ -12,7 +12,7 @@ jobs:
   formatting:
     runs-on: ubuntu-20.04
     env:
-      DEPLOY_ENV: mainnet
+      DFX_NETWORK: mainnet
 
     steps:
       - name: Checkout
@@ -117,7 +117,7 @@ jobs:
         shell: bash
         working-directory: ./frontend/svelte
     env:
-      DEPLOY_ENV: mainnet
+      DFX_NETWORK: mainnet
       REDIRECT_TO_LEGACY: svelte
 
     steps:
@@ -146,7 +146,7 @@ jobs:
         shell: bash
         working-directory: ./frontend/svelte
     env:
-      DEPLOY_ENV: mainnet
+      DFX_NETWORK: mainnet
 
     steps:
       - name: Checkout
@@ -168,7 +168,7 @@ jobs:
       run:
         shell: bash
     env:
-      DEPLOY_ENV: mainnet
+      DFX_NETWORK: mainnet
 
     steps:
       - name: Checkout

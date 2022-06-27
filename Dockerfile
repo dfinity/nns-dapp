@@ -63,8 +63,8 @@ RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfini
 # Start the second container
 FROM builder AS build
 SHELL ["bash", "-c"]
-ARG DEPLOY_ENV=mainnet
-RUN echo "DEPLOY_ENV: '$DEPLOY_ENV'"
+ARG DFX_NETWORK=mainnet
+RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 
 ARG OWN_CANISTER_ID
 RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
