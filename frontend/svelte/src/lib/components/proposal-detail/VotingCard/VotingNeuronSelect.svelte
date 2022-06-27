@@ -39,10 +39,14 @@
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id" aria-label={`neuron ${neuron.neuronId}`}>{`${neuron.neuronId}`}</span>
-        <span class="neuron-voting-power" aria-label={`voting power ${formatVotingPower(
-          getVotingPower({ neuron, proposal: proposalInfo })
-        )}`}
+        <span class="neuron-id" aria-label={`neuron ${neuron.neuronId}`}
+          >{`${neuron.neuronId}`}</span
+        >
+        <span
+          class="neuron-voting-power"
+          aria-label={`voting power ${formatVotingPower(
+            getVotingPower({ neuron, proposal: proposalInfo })
+          )}`}
           >{`${formatVotingPower(
             getVotingPower({ neuron, proposal: proposalInfo })
           )}`}</span
