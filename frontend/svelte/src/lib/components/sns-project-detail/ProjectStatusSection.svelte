@@ -38,7 +38,7 @@
     </div>
     <div>
       <ProgressBar value={85} max={100}>
-        <p slot="top" class="stretch">
+        <p slot="top" class="push-apart">
           <span>
             {$i18n.sns_project_detail.deadline}
           </span>
@@ -94,7 +94,7 @@
     text-align: right;
   }
 
-  .stretch {
+  .push-apart {
     display: flex;
     justify-content: space-between;
   }
