@@ -1,20 +1,33 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import type {
+    SnsSummary,
+    SnsSwapState,
+  } from "../../services/sns.services.mock";
 
   import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/snsProjects.store";
+  import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
+  import Spinner from "../ui/Spinner.svelte";
 
   export let project: SnsFullProject;
+
+  let summary: SnsSummary;
+  let swapState: SnsSwapState | undefined;
+  $: ({ summary, swapState } = project);
 
   let logo: string;
   let name: string;
   let description: string;
   let deadline: bigint;
-  $: ({ logo, name, description, deadline } = project.summary);
+  $: ({ logo, name, description, deadline } = summary);
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
+
+  let durationTillDeadline: bigint;
+  $: durationTillDeadline = deadline - BigInt(Math.round(Date.now() / 1000));
 
   let myCommitment: ICP | undefined;
   $: myCommitment =
@@ -33,13 +46,16 @@
   <p>{description}</p>
   <dl>
     <dt>{$i18n.sns_project.deadline}</dt>
-    <!-- TODO: replace with readable format -->
-    <dd>{new Date(Number(deadline) * 1000).toJSON()}</dd>
+    <dd>{secondsToDuration(durationTillDeadline)}</dd>
     {#if myCommitment !== undefined}
       <dt>{$i18n.sns_project.your_commitment}</dt>
       <dd><Icp icp={myCommitment} singleLine /></dd>
     {/if}
   </dl>
+
+  {#if swapState === undefined}
+    <Spinner size="small" inline />
+  {/if}
 </Card>
 
 <style lang="scss">

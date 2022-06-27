@@ -90,7 +90,7 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
     rootCanisterId: principal(0),
     status: SnsProjectStatus.Opportunity,
 
-    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 3),
+    deadline: BigInt(Math.round(Date.now() / 1000) + SECONDS_IN_DAY / 4),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "string",
