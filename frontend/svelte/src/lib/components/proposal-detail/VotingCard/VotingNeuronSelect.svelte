@@ -35,7 +35,6 @@
         inputId={`${neuron.neuronId}`}
         checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
         on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        theme="dark"
         text="block"
         selector="neuron-checkbox"
       >

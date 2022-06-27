@@ -77,7 +77,6 @@
     inputId="hide-unavailable-proposals"
     checked={excludeVotedProposals}
     on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
-    theme="dark"
     text="block"
     selector="hide-unavailable-proposals"
     >{$i18n.voting.hide_unavailable_proposals}</Checkbox

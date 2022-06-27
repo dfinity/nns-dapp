@@ -141,30 +141,18 @@
 
     --modal-toolbar-height: 35px;
 
-    background: white;
+    background: var(--menu-background);
+    color: var(--menu-background-contrast);
+    --select-color: var(--menu-background-contrast);
+    --select-border-radius: 0;
 
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
   }
 
-  div.wrapper {
-    ::-webkit-scrollbar {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--light-background-shade);
-      border: solid 2.5px transparent;
-    }
-    ::-webkit-scrollbar-corner {
-      background: var(--light-background);
-    }
-  }
-
   .toolbar {
     padding: var(--padding) var(--padding-2x);
-
-    color: initial;
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
@@ -196,7 +184,7 @@
       &:active,
       &:focus,
       &:hover {
-        background: rgba(var(--light-background-rgb), 0.3);
+        background: var(--background-shade);
         border-radius: var(--border-radius);
       }
     }

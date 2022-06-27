@@ -18,7 +18,7 @@
     background: var(--select-background-hover);
   }
 
-  border-radius: var(--select-border-radius);
+  border-radius: var(--select-border-radius, var(--border-radius));
 
   --select-input-size: 20px;
   --select-input-border: 2px;
