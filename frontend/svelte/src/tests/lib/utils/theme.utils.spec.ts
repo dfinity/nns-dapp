@@ -7,7 +7,7 @@ import { applyTheme } from "../../../lib/utils/theme.utils";
 
 describe("theme-utils", () => {
   it("should apply theme to root html element", () => {
-    applyTheme(Theme.DARK);
+    applyTheme({theme: Theme.DARK});
 
     const { documentElement } = document;
 
@@ -22,7 +22,7 @@ describe("theme-utils", () => {
       '<meta name="theme-color" />'
     );
 
-    applyTheme(Theme.DARK);
+    applyTheme({theme: Theme.DARK});
 
     const { head } = document;
     const meta = head.querySelector("meta") as HTMLElement;

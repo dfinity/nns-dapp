@@ -1,4 +1,20 @@
-import type { Theme } from "../types/theme";
+import { browser } from "../constants/environment.constants";
+import { Theme } from "../types/theme";
+
+export const initTheme = (): Theme => {
+  // Jest NodeJS environment has no document
+  if (!browser) {
+    return Theme.DARK;
+  }
+
+  // TODO: enum validation
+  const initialTheme: Theme =
+    (document.documentElement.getAttribute("theme") as Theme) ?? Theme.DARK;
+
+  applyTheme({ theme: initialTheme, preserve: false });
+
+  return initialTheme;
+};
 
 export const applyTheme = ({
   theme,

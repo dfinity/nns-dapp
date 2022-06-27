@@ -1,14 +1,10 @@
 import { writable } from "svelte/store";
-import { Theme } from "../types/theme";
-import { applyTheme } from "../utils/theme.utils";
+import type { Theme } from "../types/theme";
+import { applyTheme, initTheme } from "../utils/theme.utils";
 
-// TODO: enum validation
-const initialTheme: Theme =
-  (document.documentElement.getAttribute("theme") as Theme) ?? Theme.DARK;
+const initialTheme: Theme = initTheme();
 
-applyTheme({ theme: initialTheme, preserve: false });
-
-export const initTheme = () => {
+export const initThemeStore = () => {
   const { subscribe, set } = writable<Theme>(initialTheme);
 
   return {
@@ -21,4 +17,4 @@ export const initTheme = () => {
   };
 };
 
-export const themeStore = initTheme();
+export const themeStore = initThemeStore();
