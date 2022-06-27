@@ -201,8 +201,10 @@
 
     --background: #ffffff;
     --background-rgb: 255, 255, 255;
-    --background-contrast: #000000;
-    --background-contrast-rgb: 0, 0, 0;
+    /** --gray-50 value */
+    --background-contrast: #333333;
+    /** --gray-50-rgb value */
+    --background-contrast-rgb: 51, 51, 51;
     --background-shade: #e0e0e0;
     --background-tint: #ffffff;
 
