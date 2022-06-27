@@ -49,7 +49,7 @@
     <dd>{secondsToDuration(durationTillDeadline)}</dd>
     {#if myCommitment !== undefined}
       <dt>{$i18n.sns_project.your_commitment}</dt>
-      <dd><Icp icp={myCommitment} singleLine /></dd>
+      <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
     {/if}
   </dl>
 
