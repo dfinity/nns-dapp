@@ -7,7 +7,10 @@ import {
   queryProposals,
   registerVote,
 } from "../api/proposals.api";
-import { ProposalPayloadNotFoundError } from "../canisters/nns-dapp/nns-dapp.errors";
+import {
+  ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
+} from "../canisters/nns-dapp/nns-dapp.errors";
 import {
   startBusy,
   stopBusy,
@@ -263,6 +266,14 @@ export const loadProposalPayload = async ({
   } catch (err) {
     console.error(err);
 
+    if (err instanceof ProposalPayloadTooLargeError) {
+      proposalPayloadsStore.setPayload({
+        proposalId,
+        payload: { error: "Payload too large" },
+      });
+
+      return;
+    }
     if (err instanceof ProposalPayloadNotFoundError) {
       toastsStore.error({
         labelKey: "error.proposal_payload_not_found",

@@ -12,6 +12,7 @@ import {
   HardwareWalletAttachError,
   NameTooLongError,
   ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   UnknownProposalPayloadError,
 } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
@@ -390,6 +391,21 @@ describe("NNSDapp", () => {
       });
 
     expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
+  });
+
+  it("should throw ProposalPayloadTooLargeError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "An error occurred while loading proposal payload. IC0504: Canister xxxx violated contract: ic0.msg_reply_data_append: application payload size (2553969) cannot be larger than 2097152",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
   });
 
   it("should throw UnknownProposalPayloadError", async () => {
