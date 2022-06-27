@@ -14,7 +14,7 @@
   $: checked = $themeStore === Theme.DARK;
 </script>
 
-<div class="toggle-group">
+<div class="toggle-group" data-tid="theme-toggle">
   <span>{$i18n.theme.theme}</span>
 
   <div class="toggle">
