@@ -51,7 +51,11 @@ export const sendICP = async ({
  *
  * @returns {bigint}
  */
-export const transactionFee = async ({ identity }: { identity: Identity }): Promise<bigint> => {
+export const transactionFee = async ({
+  identity,
+}: {
+  identity: Identity;
+}): Promise<bigint> => {
   logWithTimestamp(`Getting transaction fee call...`);
   const { canister } = await ledgerCanister({ identity });
   const fee = await canister.transactionFee();
