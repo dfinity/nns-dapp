@@ -1,6 +1,6 @@
 <script lang="ts">
   import { loadSnsFullProjects } from "../../services/sns.services";
-  import { SnsProjectStatus } from "../../services/sns.services.mock";
+  import { SnsProjectStatus } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,

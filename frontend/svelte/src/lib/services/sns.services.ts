@@ -1,15 +1,14 @@
 import type { Principal } from "@dfinity/principal";
 import {
+  mockSnsSummaryList,
+  mockSnsSwapState,
+} from "../../tests/mocks/sns-projects.mock";
+import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/snsProjects.store";
-import {
-  mockWaiting,
-  SNS_SUMMARY_LIST,
-  SNS_SWAP_STATES_MAP,
-  type SnsSummary,
-  type SnsSwapState,
-} from "./sns.services.mock";
+import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
 /**
  * Loads summaries with swapStates
@@ -35,7 +34,7 @@ export const loadSnsFullProjects = async () => {
 export const loadSnsSwapState = async (
   rootCanisterId: Principal
 ): Promise<SnsSwapState> =>
-  mockWaiting(() => SNS_SWAP_STATES_MAP[rootCanisterId.toText()]);
+  mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
 
 export const listSnsSummary = async (): Promise<SnsSummary[]> =>
-  mockWaiting(() => SNS_SUMMARY_LIST);
+  mockAbout5SecondsWaiting(() => mockSnsSummaryList);

@@ -1,4 +1,10 @@
 import { Principal } from "@dfinity/principal";
+import {
+  SnsProjectStatus,
+  type SnsSummary,
+  type SnsSwapState,
+} from "../../lib/services/sns.mock";
+import type { SnsFullProject } from "../../lib/stores/snsProjects.store";
 
 const principal = (index: number): Principal =>
   [
@@ -16,76 +22,34 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
-// utils
-export const mockWaiting = <T>(generator: () => T): Promise<T> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () => resolve(generator()),
-      Math.round((0.5 + Math.random() * 4.5) * 1000)
-    )
-  );
-
-/**
- * MOCK TYPES AND DATA
- */
-
-// https://www.notion.so/SNS-MVP-Stories-e27f9f7d66cc4f93ad7b41f9ae8f0ead#f3b110e2adb041688d3abfff2a3666b5
-export enum SnsProjectStatus {
-  Opportunity = 0,
-  Upcoming = 1,
-}
-
-export interface SnsSummary {
-  rootCanisterId: Principal;
-
-  logo: string;
-  name: string;
-  symbol: string;
-  url: string;
-
-  tokenName: string;
-  description: string;
-
-  deadline: bigint; // seconds
-  minCommitment: bigint; // e8s
-  maxCommitment: bigint; // e8s
-
-  status: SnsProjectStatus;
-}
-
-export interface SnsSwapState {
-  rootCanisterId: Principal;
-  myCommitment: bigint; // e8s
-  currentCommitment: bigint; // e8s
-}
-
-export const SNS_SWAP_STATES_MAP: Record<string, SnsSwapState> = {
-  [principal(0).toText()]: {
-    rootCanisterId: principal(0),
-    myCommitment: BigInt(25 * 100000000),
-    currentCommitment: BigInt(100 * 100000000),
-  },
-  [principal(1).toText()]: {
-    rootCanisterId: principal(1),
-    myCommitment: BigInt(50 * 100000000),
-    currentCommitment: BigInt(775 * 100000000),
-  },
-  [principal(2).toText()]: {
-    rootCanisterId: principal(2),
-    myCommitment: BigInt(0 * 100000000),
-    currentCommitment: BigInt(1000 * 100000000),
-  },
-  [principal(3).toText()]: {
-    rootCanisterId: principal(3),
-    myCommitment: BigInt(0 * 100000000),
-    currentCommitment: BigInt(500 * 100000000),
-  },
-};
+export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
+  ({
+    [principal(0).toText()]: {
+      rootCanisterId: principal(0),
+      myCommitment: BigInt(25 * 100000000),
+      currentCommitment: BigInt(100 * 100000000),
+    },
+    [principal(1).toText()]: {
+      rootCanisterId: principal(1),
+      myCommitment: BigInt(50 * 100000000),
+      currentCommitment: BigInt(775 * 100000000),
+    },
+    [principal(2).toText()]: {
+      rootCanisterId: principal(2),
+      myCommitment: BigInt(0 * 100000000),
+      currentCommitment: BigInt(1000 * 100000000),
+    },
+    [principal(3).toText()]: {
+      rootCanisterId: principal(3),
+      myCommitment: BigInt(0 * 100000000),
+      currentCommitment: BigInt(500 * 100000000),
+    },
+  }[rootCanisterId.toText()]);
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const SNS_SUMMARY_LIST: SnsSummary[] = [
+export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
     status: SnsProjectStatus.Opportunity,
@@ -152,3 +116,9 @@ export const SNS_SUMMARY_LIST: SnsSummary[] = [
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
   },
 ];
+
+export const mockSnsFullProject = {
+  rootCanisterId: principal(0),
+  summary: mockSnsSummaryList[0],
+  swapState: mockSnsSwapState(principal(0)),
+} as SnsFullProject;

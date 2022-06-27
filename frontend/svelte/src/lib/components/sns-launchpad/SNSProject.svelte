@@ -1,9 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import type {
-    SnsSummary,
-    SnsSwapState,
-  } from "../../services/sns.services.mock";
+  import type { SnsSummary, SnsSwapState } from "../../services/sns.mock";
 
   import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/snsProjects.store";
