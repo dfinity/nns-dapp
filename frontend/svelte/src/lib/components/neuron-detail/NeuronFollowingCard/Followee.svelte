@@ -64,7 +64,7 @@
     display: inline-block;
     padding: calc(0.5 * var(--padding)) var(--padding);
 
-    color: var(--gray-200);
+    color: var(--gray-50);
     border: 1px solid var(--gray-400-shade);
     border-radius: var(--border-radius);
   }

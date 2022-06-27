@@ -8,7 +8,7 @@
   let backgroundStyle: string;
   $: {
     const firstHalf: number = Math.round(((value - min) / (max - min)) * 100);
-    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
+    backgroundStyle = `linear-gradient(90deg, var(--gray-400) ${firstHalf}%, var(--gray-50) ${
       1 - firstHalf
     }%)`;
   }
@@ -48,7 +48,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--gray-50);
     @include interaction.tappable;
     appearance: none;
   }
@@ -57,7 +57,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--gray-50);
     @include interaction.tappable;
   }
 
@@ -65,7 +65,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--gray-50);
     @include interaction.tappable;
   }
 

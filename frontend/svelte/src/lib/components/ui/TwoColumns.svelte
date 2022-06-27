@@ -2,21 +2,26 @@
   export let testId: string | undefined = undefined;
 </script>
 
-<section data-tid={testId}>
+<div class="wrapper" data-tid={testId}>
   <div class="left">
     <slot name="left" />
   </div>
   <div class="right">
     <slot name="right" />
   </div>
-</section>
+</div>
 
 <style lang="scss">
   @use "../../themes/mixins/media";
-  section {
+  .wrapper {
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
+    min-height: 100%;
+
+    & .right {
+      flex: 1;
+    }
 
     @include media.min-width(large) {
       display: grid;

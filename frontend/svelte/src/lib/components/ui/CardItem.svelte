@@ -22,7 +22,7 @@
     @include interaction.tappable;
 
     &:hover {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
 
     h4 {
@@ -31,7 +31,7 @@
     }
 
     span {
-      color: var(--gray-200);
+      color: var(--gray-50);
     }
   }
 </style>

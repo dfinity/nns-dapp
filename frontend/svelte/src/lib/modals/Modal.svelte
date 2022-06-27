@@ -94,11 +94,12 @@
 
       .toolbar {
         background: var(--gray-50-background);
-        box-shadow: 0 2px 8px var(--background);
+        box-shadow: none;
+        border-bottom: 1px solid var(--gray-50-background-shade);
 
         h3,
         button {
-          color: var(--background-contrast);
+          color: var(--gray-50);
         }
 
         button {
@@ -110,7 +111,7 @@
 
       .content {
         background: var(--gray-50-background);
-        color: var(--gray-200);
+        color: var(--gray-50);
       }
     }
   }
@@ -147,14 +148,13 @@
     overflow: hidden;
   }
 
-  .light > div.wrapper {
-    --scrollbar-light-background: var(--gray-50-background-contrast);
+  div.wrapper {
     ::-webkit-scrollbar {
-      background: var(--scrollbar-light-background);
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
       background: var(--light-background-shade);
-      border: solid 2.5px var(--scrollbar-light-background);
+      border: solid 2.5px transparent;
     }
     ::-webkit-scrollbar-corner {
       background: var(--light-background);
@@ -164,8 +164,7 @@
   .toolbar {
     padding: var(--padding) var(--padding-2x);
 
-    background: var(--gray-50);
-    color: var(--gray-50-background);
+    color: initial;
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));

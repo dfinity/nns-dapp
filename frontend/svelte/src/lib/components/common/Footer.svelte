@@ -16,11 +16,7 @@
     will-change: transform;
     pointer-events: none;
 
-    background: linear-gradient(
-      0deg,
-      rgba(var(--black-rgb), 1) 10%,
-      rgba(var(--black-rgb), 0) 100%
-    );
+    background: var(--footer-background);
 
     :global(.toolbar) {
       align-items: end;
