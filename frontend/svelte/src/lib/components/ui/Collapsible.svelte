@@ -68,6 +68,7 @@
     data-tid="collapsible-expand-button"
     aria-expanded={expanded}
     aria-controls={id}
+    title={expanded ? "collapse summary" : "expand summary"}
   >
     <IconExpandMore />
   </button>
