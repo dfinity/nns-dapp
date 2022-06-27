@@ -25,7 +25,6 @@ export const logout = async ({
 
   window.localStorage.clear();
 
-  // TODO: enum validation
   themeStore.select(storageTheme);
 
   // We reload the page to make sure all the states are cleared
