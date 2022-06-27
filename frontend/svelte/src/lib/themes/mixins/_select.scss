@@ -58,12 +58,12 @@
   position: relative;
 
   &:checked {
-    background: var(--blue-500);
-    border: 2px solid var(--blue-500);
+    background: var(--primary);
+    border: 2px solid var(--primary);
   }
 
   &:focus {
-    outline: 2px solid var(--blue-500);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 

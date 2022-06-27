@@ -26,7 +26,7 @@
 
     :global(a) {
       font-size: var(--font-size-small);
-      color: var(--blue-500-tint);
+      color: var(--primary-tint);
       text-decoration: none;
     }
 

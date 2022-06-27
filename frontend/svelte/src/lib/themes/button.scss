@@ -74,14 +74,14 @@ button {
       cursor: default;
     }
 
-    background: var(--blue-500);
-    color: var(--blue-500-contrast);
+    background: var(--primary);
+    color: var(--primary-contrast);
 
-    @include effect.ripple-effect(--blue-500-tint);
+    @include effect.ripple-effect(--primary-tint);
 
     &:focus {
-      background: var(--blue-500-tint);
-      @include effect.ripple-effect(--blue-500-tint);
+      background: var(--primary-tint);
+      @include effect.ripple-effect(--primary-tint);
     }
   }
 
@@ -89,7 +89,7 @@ button {
     padding: var(--padding) var(--padding-2x);
 
     &:hover {
-      background: var(--blue-500-tint);
+      background: var(--primary-tint);
     }
   }
 

@@ -24,7 +24,7 @@
     @include header.button(--blue-200);
 
     @include media.min-width(small) {
-      @include header.button(--blue-500-tint);
+      @include header.button(--primary-tint);
     }
   }
 </style>

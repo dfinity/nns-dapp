@@ -57,7 +57,7 @@
 
     outline: 2px solid transparent;
     &.selected {
-      outline: 2px solid var(--blue-500);
+      outline: 2px solid var(--primary);
     }
 
     &.disabled {

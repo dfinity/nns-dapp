@@ -3,9 +3,9 @@
 :root {
   &[theme="light"] {
     // Shadows
-    --card-box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8),
-      1px 1px 2px rgba(0, 0, 0, 0.3);
+    --card-box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), var(--menu-box-shadow);
     --box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    --menu-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 
     // Footer
     --footer-background: linear-gradient(
@@ -20,14 +20,20 @@
     --json-hash-color: var(--yellow-500);
 
     // Palette
-    --background: #ffffff;
-    --background-rgb: 255, 255, 255;
-    /** --gray-50 value */
+    --background: #f4f5f6;
+    --background-rgb: 244, 245, 246;
     --background-contrast: #333333;
-    /** --gray-50-rgb value */
     --background-contrast-rgb: 51, 51, 51;
-    --background-shade: #e0e0e0;
-    --background-tint: #ffffff;
+    --background-shade: #d7d8d8;
+    --background-tint: #f5f6f7;
+
+    --card-background: #ffffff;
+    --card-background-rgb: 255, 255, 255;
+    --card-background-contrast: #333333;
+    --card-background-contrast-rgb: 51, 51, 51;
+    --card-background-shade: #e0e0e0;
+    --card-background-tint: #ffffff;
+
 
     --gray-50-background: #f4f5f6;
     --gray-50-background-rgb: 244, 245, 246;
@@ -35,12 +41,6 @@
     --gray-50-background-contrast-rgb: 0, 0, 0;
     --gray-50-background-shade: #d7d8d8;
     --gray-50-background-tint: #f5f6f7;
-
-    --blue-500: #00a5ff;
-    --blue-500-rgb: 0, 165, 255;
-    --blue-500-contrast: #ffffff;
-    --blue-500-contrast-rgb: 255, 255, 255;
-    --blue-500-shade: #0091e0;
 
     --gray-50: #333333;
     --gray-50-rgb: 51, 51, 51;

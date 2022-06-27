@@ -536,6 +536,8 @@ interface I18nSns_project_detail {
   min_commitment_goal: string;
   deadline: string;
   user_commitment: string;
+  status: string;
+  accepting: string;
   participate: string;
 }
 

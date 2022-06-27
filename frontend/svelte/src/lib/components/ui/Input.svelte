@@ -258,7 +258,7 @@
   }
 
   input:focus {
-    border: 1px solid var(--blue-500);
+    border: 1px solid var(--primary);
   }
 
   input[disabled] {

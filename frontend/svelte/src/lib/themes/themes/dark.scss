@@ -1,6 +1,10 @@
 /** Default theme: dark */
 
 :root {
+  // Shadows
+  --card-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  --menu-box-shadow: var(--card-box-shadow);
+
   // Footer
   --footer-background: linear-gradient(
     0deg,
@@ -8,14 +12,14 @@
     rgba(var(--black-rgb), 0) 100%
   );
 
-  // Header
-  --header-background: linear-gradient(
+  // Gradient
+  --primary-gradient: linear-gradient(
     99.27deg,
-    var(--blue-500) -0.11%,
-    var(--color-iris) 100.63%
+    var(--primary) -0.11%,
+    #4E48D2 100.63%
   );
-  --header-background-fallback: var(--blue-500);
-  --header-color: var(--blue-500-contrast);
+  --primary-gradient-fallback: var(--primary);
+  --primary-gradient-contrast: var(--primary-contrast);
 
   // Json colors
   --json-bracket-color: var(--gray-400);
@@ -29,12 +33,28 @@
   --json-boolean-color: var(--brand-picton-blue);
 
   // Palette
-  --background: #272929;
-  --background-rgb: 39, 41, 41;
+  --background: #383c3c;
+  --background-rgb: 56, 60, 60;
   --background-contrast: #ffffff;
   --background-contrast-rgb: 255, 255, 255;
-  --background-shade: #222424;
-  --background-tint: #3d3e3e;
+  --background-shade: #313535;
+  --background-tint: #4c5050;
+
+  --card-background: #272929;
+  --card-background-rgb: 39,41,41;
+  --card-background-contrast: #ffffff;
+  --card-background-contrast-rgb: 255,255,255;
+  --card-background-shade: #222424;
+  --card-background-tint: #3d3e3e;
+
+  --primary: #00a5ff;
+  --primary-rgb: 0,165,255;
+  --primary-contrast: #ffffff;
+  --primary-contrast-rgb: 255,255,255;
+  --primary-shade: #0091e0;
+  --primary-tint: #1aaeff;
+
+
 
   --light-background: #ebebeb;
   --light-background-rgb: 235, 235, 235;
@@ -56,13 +76,6 @@
   --black-contrast-rgb: 255, 255, 255;
   --black-shade: #0a0b0b;
   --black-tint: #232424;
-
-  --blue-500: #0081ff;
-  --blue-500-rgb: 0, 129, 255;
-  --blue-500-contrast: #ffffff;
-  --blue-500-contrast-rgb: 255, 255, 255;
-  --blue-500-shade: #0072e0;
-  --blue-500-tint: #1a8eff;
 
   --blue-200: #99ceff;
   --blue-200-rgb: 153, 206, 255;
@@ -126,13 +139,6 @@
   --pink-contrast-rgb: 255, 255, 255;
   --pink-shade: #d11a6a;
   --pink-tint: #ef3586;
-
-  --color-iris: #4e48d2;
-  --color-iris-rgb: 78, 72, 210;
-  --color-iris-contrast: #ffffff;
-  --color-iris-contrast-rgb: 255, 255, 255;
-  --color-iris-shade: #453fb9;
-  --color-iris-tint: #605ad7;
 
   --error: #ed254e;
   --error-rgb: 237, 37, 78;
