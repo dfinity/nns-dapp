@@ -1,5 +1,6 @@
 import { browser } from "../constants/environment.constants";
 import { Theme } from "../types/theme";
+import { enumFromStringExists } from "./enum.utils";
 
 export const initTheme = (): Theme => {
   // Jest NodeJS environment has no document
@@ -7,9 +8,14 @@ export const initTheme = (): Theme => {
     return Theme.DARK;
   }
 
-  // TODO: enum validation
-  const initialTheme: Theme =
-    (document.documentElement.getAttribute("theme") as Theme) ?? Theme.DARK;
+  const theme: string | null = document.documentElement.getAttribute("theme");
+
+  const initialTheme: Theme = enumFromStringExists({
+    obj: Theme as unknown as Theme,
+    value: theme,
+  })
+    ? (theme as Theme)
+    : Theme.DARK;
 
   applyTheme({ theme: initialTheme, preserve: false });
 
