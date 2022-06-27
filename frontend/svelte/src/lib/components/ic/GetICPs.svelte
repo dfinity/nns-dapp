@@ -124,14 +124,14 @@
     }
   }
 
+  .how-much {
+    margin-bottom: var(--padding-0_5x);
+  }
+
   @include media.light-theme() {
     .how-much {
       color: var(--background-contrast);
     }
-  }
-
-  .how-much {
-    margin-bottom: var(--padding-0_5x);
   }
 
   form {
