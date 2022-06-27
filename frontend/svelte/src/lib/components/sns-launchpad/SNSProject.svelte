@@ -30,7 +30,7 @@
   $: myCommitment =
     project.swapState?.myCommitment === undefined
       ? undefined
-      : project.swapState.myCommitment === 0n
+      : project.swapState.myCommitment === undefined
       ? undefined
       : ICP.fromE8s(project.swapState.myCommitment);
 </script>
@@ -50,6 +50,7 @@
     {/if}
   </dl>
 
+  <!-- TODO L2-751: handle fetching errors -->
   {#if swapState === undefined}
     <Spinner size="small" inline />
   {/if}

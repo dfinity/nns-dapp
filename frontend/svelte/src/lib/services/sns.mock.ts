@@ -26,6 +26,6 @@ export interface SnsSummary {
 
 export interface SnsSwapState {
   rootCanisterId: Principal;
-  myCommitment: bigint; // e8s
+  myCommitment: bigint | undefined; // e8s
   currentCommitment: bigint; // e8s
 }

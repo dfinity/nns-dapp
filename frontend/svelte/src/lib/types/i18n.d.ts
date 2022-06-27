@@ -522,9 +522,10 @@ interface I18nNeuron_detail {
 
 interface I18nSns_launchpad {
   header: string;
-  opportunity_projects: string;
-  upcoming_projects: string;
+  projects: string;
+  no_projects: string;
   proposals: string;
+  no_proposals: string;
 }
 
 interface I18nSns_project {

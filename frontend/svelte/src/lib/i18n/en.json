@@ -495,9 +495,10 @@
   },
   "sns_launchpad": {
     "header": "Launch Pad",
-    "opportunity_projects": "Current Launches",
-    "upcoming_projects": "Upcoming",
-    "proposals": "Proposals"
+    "projects": "Current Launches",
+    "no_projects": "No current launches at the moment",
+    "proposals": "Proposals",
+    "no_proposals": "No current proposals at the moment"
   },
   "sns_project": {
     "project": "Project",

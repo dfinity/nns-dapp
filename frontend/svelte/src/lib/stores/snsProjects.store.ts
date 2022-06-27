@@ -31,6 +31,13 @@ const initSnsSummariesStore = () => {
   return {
     subscribe,
 
+    reset() {
+      set({
+        summaries: undefined,
+        certified: undefined,
+      });
+    },
+
     setSummaries({
       summaries,
       certified,
@@ -79,7 +86,7 @@ export const snsSwapStatesStore = initSnsSwapStatesStore();
 export const snsFullProjectStore: Readable<SnsFullProject[] | undefined> =
   derived(
     [snsSummariesStore, snsSwapStatesStore],
-    ([{ summaries }, $snsSwapStatesStore]) =>
+    ([{ summaries }, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
       summaries === undefined
         ? undefined
         : summaries.map((summary) => {
@@ -93,6 +100,6 @@ export const snsFullProjectStore: Readable<SnsFullProject[] | undefined> =
               rootCanisterId,
               summary,
               swapState: swapStateStoreEntry?.swapState,
-            } as SnsFullProject;
+            };
           })
   );
