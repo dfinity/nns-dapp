@@ -33,7 +33,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
 
       - name: Download prebuilt nns canisters
         if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
