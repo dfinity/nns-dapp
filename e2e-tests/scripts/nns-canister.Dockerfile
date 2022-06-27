@@ -1,4 +1,4 @@
-FROM rust:1.55.0 as builder
+FROM rust:1.61.0 as builder
 
 RUN rustup target add wasm32-unknown-unknown
 RUN apt -yq update && \
