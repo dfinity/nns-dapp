@@ -1,9 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import {
-  SnsProjectStatus,
-  type SnsSummary,
-  type SnsSwapState,
-} from "../../lib/services/sns.mock";
+import type { SnsSummary, SnsSwapState } from "../../lib/services/sns.mock";
 import type { SnsFullProject } from "../../lib/stores/snsProjects.store";
 
 const principal = (index: number): Principal =>
@@ -52,7 +48,6 @@ const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
-    status: SnsProjectStatus.Opportunity,
 
     deadline: BigInt(Math.round(Date.now() / 1000) + SECONDS_IN_DAY / 4),
     minCommitment: BigInt(1500 * 100000000),
@@ -68,7 +63,6 @@ export const mockSnsSummaryList: SnsSummary[] = [
   },
   {
     rootCanisterId: principal(1),
-    status: SnsProjectStatus.Opportunity,
 
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 30),
     minCommitment: BigInt(1000 * 100000000),
@@ -84,7 +78,6 @@ export const mockSnsSummaryList: SnsSummary[] = [
   },
   {
     rootCanisterId: principal(2),
-    status: SnsProjectStatus.Upcoming,
 
     // what needs to be shown for upcomming projects
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
@@ -101,7 +94,6 @@ export const mockSnsSummaryList: SnsSummary[] = [
   },
   {
     rootCanisterId: principal(3),
-    status: SnsProjectStatus.Upcoming,
 
     deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
     minCommitment: BigInt(1500 * 100000000),
