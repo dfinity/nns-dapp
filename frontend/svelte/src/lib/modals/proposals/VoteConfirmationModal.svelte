@@ -49,8 +49,8 @@
     color: var(--background-contrast);
 
     :global(svg) {
-      width: calc(6 * var(--padding));
-      height: calc(6 * var(--padding));
+      width: var(--padding-6x);
+      height: var(--padding-6x);
     }
   }
 

@@ -51,8 +51,8 @@
     grid-column-gap: 2px;
 
     :global(svg) {
-      width: 16px;
-      height: 16px;
+      width: var(--padding-2x);
+      height: var(--padding-2x);
 
       &:first-of-type {
         margin-right: calc(var(--padding-0_5x) / 2);
