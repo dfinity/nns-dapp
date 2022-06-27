@@ -25,6 +25,8 @@
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
     "sign_in": "The sign-in process was aborted or did not succeed.",
     "proposal_not_found": "An error occurred while loading the proposal.",
+    "proposal_payload": "An error occurred while loading proposal payload.",
+    "proposal_payload_not_found": "Payload for proposal: $proposal_id was not found.",
     "neuron_not_found": "Neuron not found.",
     "neuron_load": "An error occurred while loading the neuron.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
@@ -375,7 +377,10 @@
     "adopt": "Adopt",
     "reject": "Reject",
     "my_votes": "My Votes",
-    "loading_neurons": "Loading your neurons..."
+    "loading_neurons": "Loading your neurons...",
+    "unknown_nns_function": "Unknown nnsFunction",
+    "nns_function_name": "nnsFunctionName",
+    "payload": "Payload"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
@@ -396,6 +401,37 @@
     "text": "The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
     "reason_since": "created after the proposal",
     "reason_short": "dissolve delay < 6 months"
+  },
+  "nns_function_names": {
+    "1": "Create subnet",
+    "2": "Add nodes to subnet",
+    "3": "Install NNS canister",
+    "4": "Upgrade NNS canister",
+    "5": "Bless replica version",
+    "6": "Recover subnet",
+    "7": "Update subnet config",
+    "8": "Assign node operator Id",
+    "9": "Update NNS root canister",
+    "10": "Update ICP/XDR conversion rate",
+    "11": "Update subnet replica version",
+    "12": "Clear provisional whitelist",
+    "13": "Remove nodes from subnet",
+    "14": "Set authorized subnetworks",
+    "15": "Change firewall config",
+    "16": "Update node operator config",
+    "17": "Start or stop NNS canister",
+    "18": "Remove nodes from registry",
+    "19": "Uninstall code from canister",
+    "20": "Update the node rewards table",
+    "21": "Add or remove data centers",
+    "22": "Update unassigned nodes config",
+    "23": "Remove node operators",
+    "24": "Reroute canister range",
+    "25": "Add firewall rules",
+    "26": "Remove firewall rules",
+    "27": "Update firewall rules",
+    "28": "Prepare Canister Migration",
+    "29": "Complete Canister Migration"
   },
   "neuron_detail": {
     "title": "Neuron",
@@ -457,6 +493,18 @@
     "maturity_range": "Select Maturity Range",
     "maturity_percentage": "Percentage of maturity"
   },
+  "sns_launchpad": {
+    "header": "Launch Pad",
+    "current_launches": "Current Launches",
+    "proposals": "Proposals",
+    "project": "Project"
+  },
+  "sns_project_detail": {
+    "token_name": "Token Name",
+    "token_symbol": "Token Symbol",
+    "min_commitment": "Minimum Commitment",
+    "max_commitment": "Maximum Commitment"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",
@@ -482,6 +530,7 @@
     "user_cancel": "User denied the access to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
+    "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {

@@ -14,6 +14,9 @@
   --padding-4x: calc(4 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
+  --column-gap: var(--padding-2x);
+  --row-gap: var(--padding-3x);
+
   --border-radius: 10px;
 
   --z-index: 1;

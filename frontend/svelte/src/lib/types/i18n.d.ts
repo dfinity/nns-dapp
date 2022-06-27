@@ -29,6 +29,8 @@ interface I18nError {
   auth_sync: string;
   sign_in: string;
   proposal_not_found: string;
+  proposal_payload: string;
+  proposal_payload_not_found: string;
   neuron_not_found: string;
   neuron_load: string;
   list_proposals: string;
@@ -398,6 +400,9 @@ interface I18nProposal_detail {
   reject: string;
   my_votes: string;
   loading_neurons: string;
+  unknown_nns_function: string;
+  nns_function_name: string;
+  payload: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -420,6 +425,38 @@ interface I18nProposal_detail__ineligible {
   text: string;
   reason_since: string;
   reason_short: string;
+}
+
+interface I18nNns_function_names {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+  7: string;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+  12: string;
+  13: string;
+  14: string;
+  15: string;
+  16: string;
+  17: string;
+  18: string;
+  19: string;
+  20: string;
+  21: string;
+  22: string;
+  23: string;
+  24: string;
+  25: string;
+  26: string;
+  27: string;
+  28: string;
+  29: string;
 }
 
 interface I18nNeuron_detail {
@@ -483,6 +520,20 @@ interface I18nNeuron_detail {
   maturity_percentage: string;
 }
 
+interface I18nSns_launchpad {
+  header: string;
+  current_launches: string;
+  proposals: string;
+  project: string;
+}
+
+interface I18nSns_project_detail {
+  token_name: string;
+  token_symbol: string;
+  min_commitment: string;
+  max_commitment: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -509,6 +560,7 @@ interface I18nError__ledger {
   user_cancel: string;
   user_rejected_transaction: string;
   version_not_supported: string;
+  browser_not_supported: string;
   incorrect_identifier: string;
 }
 
@@ -568,7 +620,10 @@ interface I18n {
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
+  nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
+  sns_launchpad: I18nSns_launchpad;
+  sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

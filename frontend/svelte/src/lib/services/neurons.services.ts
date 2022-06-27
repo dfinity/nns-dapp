@@ -25,6 +25,7 @@ import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
 import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
+import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
@@ -39,7 +40,7 @@ import {
   NotFoundError,
 } from "../types/neurons.errors";
 import { isAccountHardwareWallet } from "../utils/accounts.utils";
-import { getLastPathDetailId } from "../utils/app-path.utils";
+import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
@@ -847,5 +848,9 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   }
 };
 
-export const routePathNeuronId = (path: string): NeuronId | undefined =>
-  getLastPathDetailId(path);
+export const routePathNeuronId = (path: string): NeuronId | undefined => {
+  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+    return undefined;
+  }
+  return getLastPathDetailId(path);
+};

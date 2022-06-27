@@ -1163,6 +1163,8 @@ describe("neurons-services", () => {
       expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
       expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
       expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
+      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
+      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
     });
   });
 

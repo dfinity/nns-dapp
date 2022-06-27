@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { ProposalStatus } from "@dfinity/nns";
+  import {ProposalStatus} from "@dfinity/nns";
+  import type {ProposalId} from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
   import Badge from "../../ui/Badge.svelte";
   import CardInfo from "../../ui/CardInfo.svelte";
@@ -13,11 +14,12 @@
   export let proposalInfo: ProposalInfo;
 
   let proposal: Proposal | undefined;
+  let id: ProposalId | undefined;
   let title: string | undefined;
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let color: ProposalColor;
 
-  $: ({ proposal, status, title, color } = mapProposalInfo(proposalInfo));
+  $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));
 </script>
 
 <CardInfo>
@@ -31,7 +33,7 @@
     <ProposalMeta {proposalInfo} />
   </div>
 
-  <ProposalActions {proposal} />
+  <ProposalActions proposalId={id} {proposal} />
 </CardInfo>
 
 <style lang="scss">

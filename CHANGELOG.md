@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal 66831
+* Update canister payment flow
+* New Navigation menu
+* Improvements getting the Proposal payload
+* Other UI improvements
+* Removal of now unused flutter code
+
 ## Proposal 65319
 * New Canisters Tab built on Svelte
 * Fix minor UI issues in the Neurons tab for smaller devices

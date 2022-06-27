@@ -11,7 +11,10 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  ProposalPayloadNotFoundError,
+  ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  UnknownProposalPayloadError,
 } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
@@ -345,5 +348,78 @@ describe("NNSDapp", () => {
 
       expect(call).rejects.toThrowError(CanisterNotFoundError);
     });
+  });
+
+  describe("NNSDapp.getProposalPayload", () => {
+    it("should call get_proposal_payload", async () => {
+      const service = mock<NNSDappService>();
+      service.get_proposal_payload.mockResolvedValue({ Ok: "{}" });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+      expect(service.get_proposal_payload).toBeCalled();
+    });
+  });
+
+  it("should parse successful response", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Ok: JSON.stringify({ test: "data" }),
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const result = await nnsDapp.getProposalPayload({
+      proposalId: BigInt(0),
+    });
+
+    expect(result).toEqual({ test: "data" });
+  });
+
+  it("should throw ProposalPayloadNotFoundError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "Proposal not found",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
+  });
+
+  it("should throw ProposalPayloadTooLargeError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "An error occurred while loading proposal payload. IC0504: Canister xxxx violated contract: ic0.msg_reply_data_append: application payload size (2553969) cannot be larger than 2097152",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
+  });
+
+  it("should throw UnknownProposalPayloadError", async () => {
+    const service = mock<NNSDappService>();
+    service.get_proposal_payload.mockResolvedValue({
+      Err: "test error",
+    });
+    const nnsDapp = await createNnsDapp(service);
+
+    const call = () =>
+      nnsDapp.getProposalPayload({
+        proposalId: BigInt(0),
+      });
+
+    expect(call).rejects.toThrowError(UnknownProposalPayloadError);
   });
 });
