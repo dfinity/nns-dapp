@@ -3,7 +3,7 @@
   import Card from "./Card.svelte";
   import CardInfo from "./CardInfo.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import type { CardType } from "../../types/card";
 
   export let size: "medium" | "large" = "medium";

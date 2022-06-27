@@ -1,9 +1,11 @@
 <script lang="ts">
+  export let testId: string = "card";
+
   let showHeadline: boolean;
   $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;
 </script>
 
-<article>
+<article data-tid={testId}>
   {#if showHeadline}
     <div>
       <slot name="start" />

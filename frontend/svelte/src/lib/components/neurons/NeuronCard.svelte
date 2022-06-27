@@ -16,7 +16,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import CardInfo from "../ui/CardInfo.svelte";
 
   export let neuron: NeuronInfo;
