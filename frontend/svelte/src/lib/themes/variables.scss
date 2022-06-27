@@ -43,6 +43,14 @@
     rgba(var(--black-rgb), 0) 100%
   );
 
+  --header-background: linear-gradient(
+    99.27deg,
+    var(--blue-500) -0.11%,
+    var(--color-iris) 100.63%
+  );
+  --header-background-fallback: var(--blue-500);
+  --header-color: var(--blue-500-contrast);
+
   // Json colors
   --json-bracket-color: var(--gray-400);
   --json-value-color: var(--gray-50);
@@ -69,18 +77,9 @@
   --error-shade: #d12145;
   --error-tint: #ef3b60;
 
-  /** Default theme: dark */
+  /** TODO: review variable names and colors according design */
 
-  --header-background: linear-gradient(
-    90deg,
-    var(--brand-sea-buckthorn) 0%,
-    var(--brand-flamingo) 25%,
-    var(--brand-razzmatazz) 50%,
-    var(--brand-meteorite) 75%,
-    var(--brand-picton-blue) 100%
-  );
-  --header-background-fallback: var(--brand-razzmatazz);
-  --header-color: #ffffff;
+  /** Default theme: dark */
 
   --background: #272929;
   --background-rgb: 39, 41, 41;
@@ -180,6 +179,13 @@
   --pink-shade: #d11a6a;
   --pink-tint: #ef3586;
 
+  --color-iris: #4e48d2;
+  --color-iris-rgb: 78, 72, 210;
+  --color-iris-contrast: #ffffff;
+  --color-iris-contrast-rgb: 255, 255, 255;
+  --color-iris-shade: #453fb9;
+  --color-iris-tint: #605ad7;
+
   &[theme="light"] {
     --card-box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8),
       1px 1px 2px rgba(0, 0, 0, 0.3);
@@ -190,14 +196,6 @@
       rgba(var(--gray-50-rgb), 0.2) 10%,
       rgba(var(--gray-50-rgb), 0) 100%
     );
-
-    --header-background: linear-gradient(
-      99.27deg,
-      var(--blue-500) -0.11%,
-      var(--color-iris) 100.63%
-    );
-    --header-background-fallback: var(--blue-500);
-    --header-color: var(--blue-500-contrast);
 
     // Json colors
     --json-string-color: var(--brand-flamingo);
@@ -232,14 +230,5 @@
     --gray-50-contrast-rgb: 255, 255, 255;
     --gray-50-shade: #2d2d2d;
     --gray-50-tint: #474747;
-
-    /** TODO: extract color that are constant and rename with --color-name instead of "--blue-500" */
-
-    --color-iris: #4e48d2;
-    --color-iris-rgb: 78, 72, 210;
-    --color-iris-contrast: #ffffff;
-    --color-iris-contrast-rgb: 255, 255, 255;
-    --color-iris-shade: #453fb9;
-    --color-iris-tint: #605ad7;
   }
 }

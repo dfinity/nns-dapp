@@ -1,14 +1,13 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import IconMenu from "../../icons/IconMenu.svelte";
-  import { themeStore } from "../../stores/theme.store";
 
   export let open: boolean = false;
 </script>
 
 <button
   data-tid="menu"
-  class={`icon-only ${$themeStore}`}
+  class="icon-only"
   on:click={() => (open = true)}
   aria-label={$i18n.header.menu}
 >
@@ -24,13 +23,11 @@
     @include media.min-width(xlarge) {
       display: none;
     }
-  }
 
-  .dark {
-    @include header.button(--brand-sea-buckthorn);
-  }
+    @include header.button(--blue-200);
 
-  .light {
-    @include header.button(--blue-500);
+    @include media.min-width(small) {
+      @include header.button(--blue-500-tint);
+    }
   }
 </style>
