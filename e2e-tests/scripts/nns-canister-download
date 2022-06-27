@@ -8,7 +8,7 @@ cd "$(dirname "$0")/../.."
 #   then, a commit from master is a safe choice.
 # - We apply a patch to customise the code; if you change the hash, please check on the
 #   first run that the patch applies cleanly.  Docker SHOULD fail if it doesn't.
-IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+IC_COMMIT=56a10250a7dfb57b31263b996dfa35ff9e1b5ab7
 DOWNLOAD_DIR="$PWD/target/ic"
 NO_CLOBBER=""
 
@@ -116,6 +116,7 @@ get_wasm() {
 }
 
 get_binary ic-nns-init
+get_binary sns
 get_wasm registry-canister.wasm
 get_wasm governance-canister.wasm
 get_wasm governance-canister_test.wasm

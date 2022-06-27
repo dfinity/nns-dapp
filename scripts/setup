@@ -213,7 +213,23 @@ install_ic_admin_darwin() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
-  which ic-admin ||
+  command -v ic-admin ||
+    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
+install_sns_linux() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+}
+install_sns_darwin() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+  # shellcheck disable=SC2016
+  command -v sns ||
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
@@ -239,6 +255,7 @@ command -v flutter || "install_flutter"
 command -v cmake || "install_cmake_$OS"
 command -v ic-cdk-optimizer || install_ic_cdk_optimizer
 command -v ic-admin || "install_ic_admin_$OS"
+command -v sns || "install_sns_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
