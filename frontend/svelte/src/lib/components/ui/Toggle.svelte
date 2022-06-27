@@ -4,11 +4,12 @@
   import { createEventDispatcher } from "svelte";
 
   export let checked: boolean;
+  export let ariaLabel: string;
 
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="toggle" aria-label="Switch theme">
+<div class="toggle" aria-label={ariaLabel}>
   <input
     type="checkbox"
     id="toggle"

@@ -4,7 +4,6 @@
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
-  export let main: boolean = false;
 
   let clickable: boolean = false;
 
@@ -25,7 +24,6 @@
   class:clickable
   class:selected
   class:disabled
-  class:main
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
@@ -86,10 +84,5 @@
 
       margin: 0 0 var(--padding);
     }
-  }
-
-  .main {
-    background: linear-gradient(99.27deg, #00a5ff -0.11%, #4e48d2 100.63%);
-    color: white;
   }
 </style>

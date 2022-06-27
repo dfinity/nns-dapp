@@ -561,5 +561,9 @@
     "unknown_attach": "Error attaching canister.",
     "unknown_detach": "Error detaching canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
+  },
+  "theme": {
+    "theme": "Theme",
+    "switch_theme": "Switch theme"
   }
 }
