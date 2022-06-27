@@ -196,11 +196,11 @@
       }
 
       input {
-        background-color: var(--gray-50-background);
+        background-color: var(--card-background);
         border: 1px solid var(--input-error-color, var(--black));
 
         &:not(:placeholder-shown) + span.placeholder {
-          background-color: var(--gray-50-background);
+          background-color: var(--card-background);
           color: var(--input-error-color, currentColor);
         }
       }

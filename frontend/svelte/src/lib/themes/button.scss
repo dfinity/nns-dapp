@@ -37,7 +37,7 @@ button {
 
     border-radius: 50%;
 
-    @include effect.ripple-effect(--gray-50-background);
+    @include effect.ripple-effect(--card-background);
   }
 
   &.primary,

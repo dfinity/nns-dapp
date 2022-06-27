@@ -34,7 +34,7 @@
   }
 
   .toggle label {
-    background-color: var(--gray-50-background);
+    background-color: var(--card-background-contrast);
     border-radius: 50px;
     cursor: pointer;
     display: inline-block;
@@ -56,7 +56,7 @@
     width: var(--padding-2x);
     height: var(--padding-2x);
 
-    background: white;
+    background: var(--card-background);
     box-shadow: var(--box-shadow);
   }
 

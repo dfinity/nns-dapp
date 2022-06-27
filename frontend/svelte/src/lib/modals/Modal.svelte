@@ -93,9 +93,9 @@
       }
 
       .toolbar {
-        background: var(--gray-50-background);
+        background: var(--card-background);
         box-shadow: none;
-        border-bottom: 1px solid var(--gray-50-background-shade);
+        border-bottom: 1px solid var(--card-background-shade);
 
         h3,
         button {
@@ -110,7 +110,7 @@
       }
 
       .content {
-        background: var(--gray-50-background);
+        background: var(--card-background);
         color: var(--gray-50);
       }
     }
@@ -200,7 +200,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 
-    color: var(--gray-50-background);
+    color: var(--card-background);
   }
 
   .small {

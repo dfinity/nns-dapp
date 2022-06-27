@@ -12,8 +12,8 @@
   @use "../../themes/mixins/media.scss";
 
   div {
-    color: var(--badge-color, var(--gray-50-background-contrast));
-    background: var(--badge-background, var(--gray-50-background));
+    color: var(--badge-color, var(--background-contrast));
+    background: var(--badge-background, var(--background));
 
     padding: var(--padding-0_5x);
     border-radius: var(--padding-0_5x);
