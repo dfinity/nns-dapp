@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
 </script>
 
-<div class="container">
+<div class="container" data-tid="auth-layout">
   <img
     src="/assets/nns_background.jpeg"
     role="presentation"
