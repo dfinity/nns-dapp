@@ -6,15 +6,15 @@ import { render } from "@testing-library/svelte";
 import SNSProjectDetail from "../../routes/SNSProjectDetail.svelte";
 
 describe("SNSProjectDetail", () => {
-  it("should render info section", () => {
-    const { queryByTestId } = render(SNSProjectDetail);
+  it("should render a header", () => {
+    const { queryByText } = render(SNSProjectDetail);
 
-    expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
+    expect(queryByText("Project Tetris")).toBeInTheDocument();
   });
 
-  it("should render status section", () => {
-    const { queryByTestId } = render(SNSProjectDetail);
+  it("should render a spinner", () => {
+    const { getByTestId } = render(SNSProjectDetail);
 
-    expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+    expect(getByTestId("spinner")).toBeInTheDocument();
   });
 });

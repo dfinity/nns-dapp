@@ -8,6 +8,7 @@
   import { routeStore } from "../lib/stores/route.store";
 
   let pageContent: typeof SvelteComponent | undefined;
+
   const importPageContent = async () => {
     pageContent = await (
       await import("../lib/components/sns-launchpad/SNSLaunchpadContent.svelte")

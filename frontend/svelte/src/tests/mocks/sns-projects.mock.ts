@@ -95,7 +95,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(3),
 
-    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
+    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 1000),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "string",

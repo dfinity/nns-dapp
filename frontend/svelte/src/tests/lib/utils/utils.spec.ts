@@ -22,6 +22,10 @@ describe("utils", () => {
     jest.spyOn(global, "setTimeout");
   });
 
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it("should debounce function with timeout", () => {
     const testDebounce = debounce(callback, 100);
 
