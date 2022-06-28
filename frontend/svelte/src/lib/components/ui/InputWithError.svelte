@@ -59,7 +59,7 @@
 
   .error {
     --input-margin-bottom: 0;
-    --input-error-color: var(--error);
+    --input-error-color: var(--negative-emphasis);
   }
 
   .error-message {
@@ -72,7 +72,7 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    color: var(--error);
+    color: var(--negative-emphasis);
 
     span {
       color: var(--contrast-very-light);

@@ -107,10 +107,10 @@
     }
 
     &.error {
-      background: var(--negative-emphasis-light);
+      background: var(--negative-emphasis);
       color: var(--negative-emphasis-light-contrast);
-      --scrollbar-background: var(--negative-emphasis-light-tint);
-      --scrollbar-thumb: var(--negative-emphasis-light);
+      --scrollbar-background: var(--negative-emphasis-tint);
+      --scrollbar-thumb: var(--negative-emphasis);
     }
 
     &.warn {
