@@ -191,9 +191,12 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-download
   ./e2e-tests/scripts/nns-canister-build
+fi
+
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
 fi
 
