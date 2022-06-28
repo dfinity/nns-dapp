@@ -35,13 +35,8 @@
   section {
     box-sizing: border-box;
     min-height: 100%;
-    padding: var(--padding-2x) var(--padding);
 
     display: flex;
     align-items: stretch;
-
-    @include media.min-width(medium) {
-      padding: var(--padding-2x) var(--padding-2_5x);
-    }
   }
 </style>

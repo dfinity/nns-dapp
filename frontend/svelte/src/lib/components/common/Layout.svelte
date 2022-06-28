@@ -7,7 +7,7 @@
   import Back from "../header/Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
 
-  export let layout: "main" | "detail" = "main";
+  export let layout: "old-main" | "old-detail" | "detail" | "main" = "old-main";
 
   let showFooter: boolean;
   $: showFooter = $$slots.footer;
@@ -21,7 +21,7 @@
 <SplitPane bind:sticky>
   <Header slot="header">
     <svelte:fragment slot="start">
-      {#if layout === "detail"}
+      {#if layout === "detail" || layout === "old-detail"}
         <Back on:nnsBack />
       {:else}
         <MenuButton bind:open />
@@ -33,7 +33,7 @@
 
   <Menu slot="menu" bind:open {sticky} />
 
-  <main>
+  <main class={layout}>
     <slot />
   </main>
 
@@ -49,5 +49,12 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &.old-detail,
+    &.old-main {
+      --section-max-width: 800px;
+      --section-padding: var(--padding-2x) var(--padding-2x)
+        var(--footer-height);
+    }
   }
 </style>

@@ -115,7 +115,7 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
+<Layout on:nnsBack={goBack} layout="old-detail">
   <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
 
   <section>

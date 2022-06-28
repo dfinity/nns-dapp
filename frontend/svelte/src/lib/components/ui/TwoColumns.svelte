@@ -18,6 +18,7 @@
     flex-direction: column;
     gap: var(--row-gap);
     min-height: 100%;
+    width: 100%;
 
     & .right {
       flex: 1;
@@ -36,7 +37,7 @@
 
       .right {
         grid-column-start: 7;
-        grid-column-end: 12;
+        grid-column-end: 13;
       }
     }
   }

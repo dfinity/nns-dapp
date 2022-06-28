@@ -15,14 +15,18 @@
   --padding-6x: calc(6 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
-  --column-gap: var(--padding-2x);
+  --column-gap: var(--padding-4x);
   --row-gap: var(--padding-3x);
 
   --border-radius: 10px;
 
   --z-index: 1;
 
-  --section-max-width: 800px;
+  --section-max-width: 1300px;
+  --section-padding: var(--padding-4x) var(--padding-2x);
+  @include media.min-width(medium) {
+    --section-padding: var(--padding-4x);
+  }
   --footer-height: 20vh;
 
   --animation-time-normal: 0.2s;

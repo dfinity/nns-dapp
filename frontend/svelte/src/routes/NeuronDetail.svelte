@@ -70,7 +70,7 @@
   };
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
+<Layout on:nnsBack={goBack} layout="old-detail">
   <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
   <section data-tid="neuron-detail">
     {#if neuron}

@@ -15,8 +15,10 @@
   });
 </script>
 
-<Layout>
+<Layout layout="main">
   <svelte:fragment slot="header">{$i18n.sns_launchpad.header}</svelte:fragment>
-  <SNSProjects />
-  <SNSProposals />
+  <section>
+    <SNSProjects />
+    <SNSProposals />
+  </section>
 </Layout>

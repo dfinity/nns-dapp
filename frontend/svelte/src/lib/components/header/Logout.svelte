@@ -16,7 +16,7 @@
     margin: 0;
 
     :global(svg) {
-      width: var(--padding-2_5x);
+      width: var(--padding-2x);
     }
   }
 

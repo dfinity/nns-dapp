@@ -92,7 +92,7 @@
   });
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
+<Layout on:nnsBack={goBack} layout="old-detail">
   <svelte:fragment slot="header">{$i18n.proposal_detail.title}</svelte:fragment>
 
   <section>
