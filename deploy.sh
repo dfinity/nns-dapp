@@ -57,6 +57,9 @@ help_text() {
 	--ii
 	  Create the internet_identity canister.
 
+	--sns
+	  Create an SNS canister set.
+
 	--nns-dapp
 	  Depoy the NNS dapp.
 
@@ -79,6 +82,7 @@ CONFIG_FILE="./deployment-config.json" # the location of the app config, compute
 START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
+DEPLOY_SNS="false"
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
@@ -98,6 +102,10 @@ while (($# > 0)); do
   --ii)
     GUESS="false"
     DEPLOY_II="true"
+    ;;
+  --sns)
+    GUESS="false"
+    DEPLOY_SNS="true"
     ;;
   --nns-backend)
     GUESS="false"
@@ -193,6 +201,19 @@ if [[ "$DEPLOY_II" == "true" ]]; then
   dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
   echo "Waiting for II to be stable..."
   sleep 4
+fi
+
+# Note: On mainnet SNS are created much later and have unpredictable canister IDs, however
+# until an index canister exists we need the SNS to exist at a predictable address, so we install it now.
+# Note: There may be multiple SNS canister sets; at present this can be done in a somewhat clunky way by
+# adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
+# several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
+if [[ "$DEPLOY_SNS" == "true" ]]; then
+  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
+  sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then

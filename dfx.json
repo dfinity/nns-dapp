@@ -12,6 +12,38 @@
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-03-30/internet_identity_dev.wasm\" -o internet_identity.wasm"
+    },
+    "sns_governance": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/governance.did",
+      "wasm": "target/ic/sns-governance-canister.wasm",
+      "type": "custom"
+    },
+    "sns_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ledger.did",
+      "wasm": "target/ic/ledger-canister_notify-method.wasm",
+      "type": "custom"
+    },
+    "sns_swap": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/swap.did",
+      "wasm": "target/ic/sns-sale-canister.wasm",
+      "type": "custom"
+    },
+    "sns_root": {
+      "build": [
+        "true"
+      ],
+      "candid": "../root/canister/root.did",
+      "wasm": "target/ic/sns-root-canister.wasm",
+      "type": "custom"
     }
   },
   "networks": {
