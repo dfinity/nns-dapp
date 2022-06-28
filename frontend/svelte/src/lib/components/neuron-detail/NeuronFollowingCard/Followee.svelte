@@ -56,7 +56,7 @@
 
   li {
     display: inline-block;
-    padding: calc(0.5 * var(--padding)) var(--padding);
+    padding: calc(var(--padding-0_5x) / 2) var(--padding);
 
     color: var(--primary);
     border: 1px solid var(--primary);
