@@ -9,7 +9,7 @@
   let pageContent: typeof SvelteComponent | undefined;
 
   const importPageContent = async () => {
-    pageContent = await (
+    pageContent = (
       await import(
         "../lib/components/sns-project-detail/SNSProjectDetailContent.svelte"
       )
