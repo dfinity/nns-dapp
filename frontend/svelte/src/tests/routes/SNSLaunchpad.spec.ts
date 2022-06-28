@@ -13,10 +13,9 @@ describe("SNSLaunchpad", () => {
     expect(queryByText(en.sns_launchpad.header)).toBeInTheDocument();
   });
 
-  it("should render sub blocks", () => {
-    const { queryByText } = render(SNSLaunchpad);
+  it("should render a spinner", () => {
+    const { getByTestId } = render(SNSLaunchpad);
 
-    expect(queryByText(en.sns_launchpad.projects)).toBeInTheDocument();
-    expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    expect(getByTestId("spinner")).toBeInTheDocument();
   });
 });
