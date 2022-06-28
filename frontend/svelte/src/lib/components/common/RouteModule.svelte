@@ -7,6 +7,7 @@
   import AuthLayout from "../common/AuthLayout.svelte";
   import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
+  import {isNode} from '../../utils/dev.utils';
 
   export let path: AppPath;
 
@@ -59,6 +60,11 @@
 
     // Reset back action because only detail routes have such feature other views use the menu
     layoutBackStore.set(undefined);
+
+    // Lazy loading not supported in jest environment
+    if (isNode()) {
+      return;
+    }
 
     component = await loadModule();
   });

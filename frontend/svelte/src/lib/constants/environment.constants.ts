@@ -6,6 +6,3 @@ export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
   !HOST.includes(".ic0.app");
-
-// Lower case as in SvelteKit
-export const browser: boolean = typeof window !== "undefined";
