@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "../lib/stores/accounts.store";
@@ -15,6 +14,7 @@
   import { sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
 
   let accounts: AccountsStore | undefined;
 
@@ -43,69 +43,66 @@
   }
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.accounts}</svelte:fragment>
-  <section data-tid="accounts-body">
-    <div class="title">
-      <h1>{$i18n.accounts.title}</h1>
+<section data-tid="accounts-body">
+  <div class="title">
+    <h1>{$i18n.accounts.title}</h1>
 
-      {#if accounts?.main}
-        <ICPComponent icp={totalBalance} />
-      {/if}
-    </div>
+    {#if accounts?.main}
+      <ICPComponent icp={totalBalance} />
+    {/if}
+  </div>
 
-    {#if accounts?.main?.identifier}
+  {#if accounts?.main?.identifier}
+    <AccountCard
+      role="link"
+      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+      showCopy
+      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+    >
+    {#each accounts.subAccounts || [] as subAccount}
       <AccountCard
         role="link"
-        on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+        on:click={() => cardClick(subAccount.identifier)}
         showCopy
-        account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+        account={subAccount}>{subAccount.name}</AccountCard
       >
-      {#each accounts.subAccounts || [] as subAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(subAccount.identifier)}
-          showCopy
-          account={subAccount}>{subAccount.name}</AccountCard
-        >
-      {/each}
-      {#each accounts.hardwareWallets || [] as walletAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(walletAccount.identifier)}
-          showCopy
-          account={walletAccount}>{walletAccount.name}</AccountCard
-        >
-      {/each}
-    {:else}
-      <SkeletonCard />
-    {/if}
-  </section>
+    {/each}
+    {#each accounts.hardwareWallets || [] as walletAccount}
+      <AccountCard
+        role="link"
+        on:click={() => cardClick(walletAccount.identifier)}
+        showCopy
+        account={walletAccount}>{walletAccount.name}</AccountCard
+      >
+    {/each}
+  {:else}
+    <SkeletonCard />
+  {/if}
+</section>
 
-  <svelte:fragment slot="footer">
-    {#if accounts}
-      <Toolbar>
-        <button
-          class="primary full-width"
-          on:click={openNewTransaction}
-          data-tid="open-new-transaction"
-          >{$i18n.accounts.new_transaction}</button
-        >
-        <button
-          class="primary full-width"
-          on:click={openAddAccountModal}
-          data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
-        >
-      </Toolbar>
-    {/if}
-  </svelte:fragment>
-  {#if modal === "AddAccountModal"}
-    <AddAcountModal on:nnsClose={closeModal} />
-  {/if}
-  {#if modal === "NewTransaction"}
-    <NewTransactionModal on:nnsClose={closeModal} />
-  {/if}
-</Layout>
+{#if modal === "AddAccountModal"}
+  <AddAcountModal on:nnsClose={closeModal} />
+{/if}
+{#if modal === "NewTransaction"}
+  <NewTransactionModal on:nnsClose={closeModal} />
+{/if}
+
+{#if accounts}
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary full-width"
+        on:click={openNewTransaction}
+        data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
+      >
+      <button
+        class="primary full-width"
+        on:click={openAddAccountModal}
+        data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
+      >
+    </Toolbar>
+  </Footer>
+{/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/media.scss";
