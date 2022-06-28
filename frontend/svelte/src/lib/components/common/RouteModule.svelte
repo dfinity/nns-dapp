@@ -4,9 +4,9 @@
   import { AppPath } from "../../constants/routes.constants";
   import Spinner from "../ui/Spinner.svelte";
   import Layout from "../common/Layout.svelte";
-  import {routeStore} from "../../stores/route.store";
-  import {layoutTitleStore} from '../../stores/layout.store';
-  import {i18n} from '../../stores/i18n';
+  import { routeStore } from "../../stores/route.store";
+  import {layoutBackStore, layoutTitleStore} from "../../stores/layout.store";
+  import { i18n } from "../../stores/i18n";
 
   export let path: AppPath;
 
@@ -41,7 +41,7 @@
   };
 
   const titleKeys: Record<AppPath, string> = {
-    [AppPath.Authentication]: '',
+    [AppPath.Authentication]: "",
     [AppPath.Accounts]: $i18n.navigation.accounts,
     [AppPath.Neurons]: $i18n.navigation.neurons,
     [AppPath.Proposals]: $i18n.navigation.voting,
@@ -51,15 +51,17 @@
     [AppPath.NeuronDetail]: $i18n.neuron_detail.title,
     [AppPath.CanisterDetail]: $i18n.canister_detail.title,
     [AppPath.SNSLaunchpad]: $i18n.sns_launchpad.header,
-    [AppPath.SNSProjectDetail]: '',
-  }
+    [AppPath.SNSProjectDetail]: "",
+  };
 
   onMount(async () => {
     layoutTitleStore.set(titleKeys[path]);
 
+    // Reset back action because only detail routes have such feature other views use the menu
+    layoutBackStore.set(undefined);
+
     component = await loadModule();
   });
-
 </script>
 
 <Layout>
