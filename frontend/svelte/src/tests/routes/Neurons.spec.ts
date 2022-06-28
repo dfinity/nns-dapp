@@ -45,12 +45,6 @@ describe("Neurons", () => {
         );
     });
 
-    it("should render title", () => {
-      const { getAllByText } = render(Neurons);
-
-      expect(getAllByText(en.navigation.neurons).length).toBeGreaterThan(0);
-    });
-
     it("should render content", () => {
       const { getByText } = render(Neurons);
 

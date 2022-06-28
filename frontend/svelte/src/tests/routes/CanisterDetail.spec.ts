@@ -47,12 +47,6 @@ describe("CanisterDetail", () => {
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   });
 
-  it("should render title", () => {
-    const { getByText } = render(CanisterDetail);
-
-    expect(getByText(en.canister_detail.title)).toBeInTheDocument();
-  });
-
   it("should render title once loaded", async () => {
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
     const { container } = render(CanisterDetail);
