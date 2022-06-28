@@ -11,7 +11,6 @@
   import type { AppPath } from "../../constants/routes.constants";
 
   export let path: AppPath;
-  export let component: typeof SvelteComponent;
 
   let signedIn: boolean = false;
 
@@ -41,5 +40,5 @@
 </script>
 
 {#if signedIn}
-  <Route {path} {component} />
+  <Route {path} />
 {/if}
