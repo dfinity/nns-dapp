@@ -25,8 +25,6 @@
   onMount(load);
 </script>
 
-<h2>{$i18n.sns_launchpad.projects}</h2>
-
 {#if loading}
   <CardGrid>
     <!-- TODO L2-774: SkeletonProjectCard -->
