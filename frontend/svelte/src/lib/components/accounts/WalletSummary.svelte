@@ -88,7 +88,6 @@
   .address {
     margin-bottom: var(--padding-4x);
     :global(p:first-of-type) {
-      color: var(--gray-50);
       margin-bottom: var(--padding);
     }
   }

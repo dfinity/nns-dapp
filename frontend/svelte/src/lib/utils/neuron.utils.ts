@@ -44,7 +44,7 @@ import { isDefined } from "./utils";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  colorVar: "--gray-50" | "--yellow-500";
+  status: "ok" | "warn";
 };
 
 type StateMapper = {
@@ -54,21 +54,21 @@ const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.UNSPECIFIED]: {
     textKey: "unspecified",
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.DISSOLVED]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.DISSOLVING]: {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
-    colorVar: "--yellow-500",
+    status: "warn",
   },
 };
 

@@ -8,7 +8,7 @@
   // Footer
   --footer-background: linear-gradient(
     0deg,
-    rgba(var(--card-background-rgb), 1) 10%,
+    rgba(var(--card-background-rgb), 0.4) 10%,
     rgba(var(--card-background-rgb), 0) 100%
   );
 
@@ -23,7 +23,7 @@
 
   // Json colors
   --json-bracket-color: var(--contrast-very-light);
-  --json-value-color: var(--gray-50);
+  --json-value-color: var(--contrast-very-light-tint);
   --json-string-color: var(--brand-sea-buckthorn);
   --json-number-color: var(--brand-picton-blue);
   --json-null-color: var(--contrast-very-light);
@@ -69,13 +69,6 @@
   --primary-contrast-rgb: 255, 255, 255;
   --primary-shade: #0091e0;
   --primary-tint: #1aaeff;
-
-  --gray-50: #e4f0f0;
-  --gray-50-rgb: 228, 240, 240;
-  --gray-50-contrast: #000000;
-  --gray-50-contrast-rgb: 0, 0, 0;
-  --gray-50-shade: #c9d3d3;
-  --gray-50-tint: #e7f2f2;
 
   --yellow-500: #ec9509;
   --yellow-500-rgb: 236, 149, 9;

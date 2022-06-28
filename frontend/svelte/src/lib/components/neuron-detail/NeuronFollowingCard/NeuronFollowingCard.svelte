@@ -61,7 +61,6 @@
 
   p {
     margin-top: 0;
-    color: var(--gray-50);
   }
 
   .frame {

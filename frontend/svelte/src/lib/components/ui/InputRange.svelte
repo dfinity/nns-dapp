@@ -65,7 +65,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--gray-50);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
     appearance: none;
   }
@@ -74,7 +74,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--gray-50);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
   }
 
@@ -82,7 +82,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--gray-50);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
   }
 

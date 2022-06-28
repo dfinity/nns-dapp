@@ -38,7 +38,6 @@
     &.singleLine span:first-of-type {
       font-weight: normal;
       font-size: var(--font-size-h5);
-      color: var(--gray-50);
     }
 
     &:not(.inline, .singleLine) {

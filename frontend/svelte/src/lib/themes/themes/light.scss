@@ -11,8 +11,8 @@
     // Footer
     --footer-background: linear-gradient(
       0deg,
-      rgba(var(--gray-50-rgb), 0.2) 10%,
-      rgba(var(--gray-50-rgb), 0) 100%
+      rgba(var(--contrast-very-light-rgb), 0.1) 10%,
+      rgba(var(--contrast-very-light-rgb), 0) 100%
     );
 
     // Json colors
@@ -45,12 +45,5 @@
     --contrast-very-light-contrast-rgb: 0, 0, 0;
     --contrast-very-light-shade: #989898;
     --contrast-very-light-tint: #b5b5b5;
-
-    --gray-50: #333333;
-    --gray-50-rgb: 51, 51, 51;
-    --gray-50-contrast: #ffffff;
-    --gray-50-contrast-rgb: 255, 255, 255;
-    --gray-50-shade: #2d2d2d;
-    --gray-50-tint: #474747;
   }
 }

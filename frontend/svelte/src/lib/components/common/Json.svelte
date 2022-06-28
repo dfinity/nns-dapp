@@ -170,7 +170,6 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
-    color: var(--gray-50);
   }
   .key {
     display: inline-block;
