@@ -91,8 +91,8 @@
     border-radius: 4px;
 
     font-size: var(--font-size-ultra-small);
-    background: var(--gray-600);
 
+    background: var(--gray-600);
     color: var(--gray-600-contrast);
 
     // limit width

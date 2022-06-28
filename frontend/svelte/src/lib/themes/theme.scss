@@ -102,3 +102,9 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+hr {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  margin-bottom: var(--padding);
+}

@@ -51,21 +51,15 @@
 
     margin-bottom: var(--padding);
     padding: 0 0 calc(2 * var(--padding));
-    border-bottom: 1px solid var(--gray-600);
-
-    &:last-of-type {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
+    border-bottom: 1px solid currentColor;
   }
 
   li {
     display: inline-block;
     padding: calc(0.5 * var(--padding)) var(--padding);
 
-    color: var(--gray-50);
-    border: 1px solid var(--gray-400-shade);
-    border-radius: var(--border-radius);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: var(--border-radius-5x);
   }
 </style>

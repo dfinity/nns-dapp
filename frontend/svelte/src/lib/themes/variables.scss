@@ -20,6 +20,7 @@
   --row-gap: var(--padding-3x);
 
   --border-radius: 10px;
+  --border-radius-5x: calc(5 * var(--border-radius));
 
   --z-index: 1;
 
