@@ -120,8 +120,8 @@ button {
   }
 
   &.warning {
-    --background-color-button: var(--yellow-500);
-    --background-color-button-tint: var(--yellow-500-tint);
+    --background-color-button: var(--warning-emphasis);
+    --background-color-button-tint: var(--warning-emphasis-tint);
     --color-button: var(--background-contrast);
   }
 

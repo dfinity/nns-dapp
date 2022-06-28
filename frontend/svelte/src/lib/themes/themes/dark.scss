@@ -27,8 +27,8 @@
   --json-string-color: var(--brand-sea-buckthorn);
   --json-number-color: var(--brand-picton-blue);
   --json-null-color: var(--contrast-very-light);
-  --json-principal-color: var(--yellow-400);
-  --json-hash-color: var(--yellow-400);
+  --json-principal-color: var(--warning-emphasis);
+  --json-hash-color: var(--warning-emphasis);
   --json-bigint-color: var(--brand-picton-blue);
   --json-boolean-color: var(--brand-picton-blue);
 
@@ -70,19 +70,12 @@
   --primary-shade: #0091e0;
   --primary-tint: #1aaeff;
 
-  --yellow-500: #ec9509;
-  --yellow-500-rgb: 236, 149, 9;
-  --yellow-500-contrast: #000000;
-  --yellow-500-contrast-rgb: 0, 0, 0;
-  --yellow-500-shade: #d08308;
-  --yellow-500-tint: #eea022;
-
-  --yellow-400: #f9b74d;
-  --yellow-400-rgb: 249, 183, 77;
-  --yellow-400-contrast: #000000;
-  --yellow-400-contrast-rgb: 0, 0, 0;
-  --yellow-400-shade: #dba144;
-  --yellow-400-tint: #fabe5f;
+  --warning-emphasis: #FFC700;
+  --warning-emphasis-rgb: 255,199,0;
+  --warning-emphasis-contrast: #000000;
+  --warning-emphasis-contrast-rgb: 0,0,0;
+  --warning-emphasis-shade: #e0af00;
+  --warning-emphasis-tint: #ffcd1a;
 
   --green-500: #39a831;
   --green-500-rgb: 57, 168, 49;

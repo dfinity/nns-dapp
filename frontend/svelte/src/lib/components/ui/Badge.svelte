@@ -19,8 +19,8 @@
     border-radius: var(--padding-0_5x);
 
     &.warning {
-      --badge-color: var(--yellow-400-contrast);
-      --badge-background: var(--yellow-400);
+      --badge-color: var(--warning-emphasis-contrast);
+      --badge-background: var(--warning-emphasis);
     }
 
     &.success {

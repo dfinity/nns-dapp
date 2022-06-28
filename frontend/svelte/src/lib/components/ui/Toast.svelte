@@ -114,13 +114,13 @@
     }
 
     &.warn {
-      background: var(--yellow-500);
-      color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-500-tint);
-      --scrollbar-thumb: var(--yellow-500);
+      background: var(--warning-emphasis);
+      color: var(--warning-emphasis-contrast);
+      --scrollbar-background: var(--warning-emphasis-tint);
+      --scrollbar-thumb: var(--warning-emphasis);
 
       button.close {
-        color: var(--yellow-500-contrast);
+        color: var(--warning-emphasis-contrast);
       }
     }
   }
