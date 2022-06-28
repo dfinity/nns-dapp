@@ -23,6 +23,7 @@
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import {layoutBackStore} from '../lib/stores/layout.store';
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -85,6 +86,8 @@
     });
   };
 
+  layoutBackStore.set(goBack);
+
   onDestroy(() => {
     unsubscribeRouteStore();
     unsubscribeProposalIdStore();
@@ -92,34 +95,30 @@
   });
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{$i18n.proposal_detail.title}</svelte:fragment>
+<section>
+  {#if $proposalInfoStore}
+    <ProposalDetailCard proposalInfo={$proposalInfoStore} />
 
-  <section>
-    {#if $proposalInfoStore}
-      <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-
-      {#if neuronsReady}
-        <VotesCard proposalInfo={$proposalInfoStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} />
-        <IneligibleNeuronsCard
-          proposalInfo={$proposalInfoStore}
-          neurons={$definedNeuronsStore}
-        />
-      {:else}
-        <div class="loader">
-          <SkeletonCard cardType="info" />
-          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-        </div>
-      {/if}
+    {#if neuronsReady}
+      <VotesCard proposalInfo={$proposalInfoStore} />
+      <VotingCard proposalInfo={$proposalInfoStore} />
+      <IneligibleNeuronsCard
+              proposalInfo={$proposalInfoStore}
+              neurons={$definedNeuronsStore}
+      />
     {:else}
       <div class="loader">
         <SkeletonCard cardType="info" />
         <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
       </div>
     {/if}
-  </section>
-</Layout>
+  {:else}
+    <div class="loader">
+      <SkeletonCard cardType="info" />
+      <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+    </div>
+  {/if}
+</section>
 
 <style lang="scss">
   .loader {

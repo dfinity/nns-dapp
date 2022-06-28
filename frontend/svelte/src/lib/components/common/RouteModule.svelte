@@ -43,15 +43,15 @@
   const titleKeys: Record<AppPath, string> = {
     [AppPath.Authentication]: '',
     [AppPath.Accounts]: $i18n.navigation.accounts,
-    [AppPath.Neurons]: '../../../routes/Neurons.svelte',
-    [AppPath.Proposals]: '../../../routes/Proposals.svelte',
-    [AppPath.Canisters]: '../../../routes/Canisters.svelte',
+    [AppPath.Neurons]: $i18n.navigation.neurons,
+    [AppPath.Proposals]: $i18n.navigation.voting,
+    [AppPath.Canisters]: $i18n.navigation.canisters,
     [AppPath.Wallet]: $i18n.wallet.title,
-    [AppPath.ProposalDetail]: '../../../routes/ProposalDetail.svelte',
-    [AppPath.NeuronDetail]: '../../../routes/NeuronDetail.svelte',
-    [AppPath.CanisterDetail]: '../../../routes/CanisterDetail.svelte',
-    [AppPath.SNSLaunchpad]: '../../../routes/SNSLaunchpad.svelte',
-    [AppPath.SNSProjectDetail]: '../../../routes/SNSProjectDetail.svelte',
+    [AppPath.ProposalDetail]: $i18n.proposal_detail.title,
+    [AppPath.NeuronDetail]: $i18n.neuron_detail.title,
+    [AppPath.CanisterDetail]: $i18n.canister_detail.title,
+    [AppPath.SNSLaunchpad]: $i18n.sns_launchpad.header,
+    [AppPath.SNSProjectDetail]: '',
   }
 
   onMount(async () => {

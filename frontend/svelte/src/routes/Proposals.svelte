@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
@@ -146,33 +145,30 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.voting}</svelte:fragment>
-  <section data-tid="proposals-tab">
-    <p>{$i18n.voting.text}</p>
+<section data-tid="proposals-tab">
+  <p>{$i18n.voting.text}</p>
 
-    <ProposalsFilters />
+  <ProposalsFilters />
 
-    {#if neuronsLoaded}
-      <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-          <ProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
+  {#if neuronsLoaded}
+    <InfiniteScroll on:nnsIntersect={findNextProposals}>
+      {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
+        <ProposalCard {hidden} {proposalInfo} />
+      {/each}
+    </InfiniteScroll>
 
-      {#if nothingFound}
-        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
-      {/if}
+    {#if nothingFound}
+      <p class="no-proposals">{$i18n.voting.nothing_found}</p>
     {/if}
+  {/if}
 
-    {#if loading || !neuronsLoaded}
-      <div class="spinner">
-        <SkeletonCard />
-        <SkeletonCard />
-      </div>
-    {/if}
-  </section>
-</Layout>
+  {#if loading || !neuronsLoaded}
+    <div class="spinner">
+      <SkeletonCard />
+      <SkeletonCard />
+    </div>
+  {/if}
+</section>
 
 <style lang="scss">
   .spinner {
