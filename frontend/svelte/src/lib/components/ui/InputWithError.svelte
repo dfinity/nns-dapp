@@ -40,7 +40,7 @@
   </Input>
 
   {#if error}
-    <p class={`error-message ${theme}`} data-tid="input-error-message">
+    <p class="error-message" data-tid="input-error-message">
       <IconInfo />
       <span>
         {errorMessage}
@@ -75,7 +75,7 @@
     color: var(--error);
 
     span {
-      color: var(--gray-600);
+      color: var(--contrast-very-light);
     }
 
     @include media.min-width(medium) {
@@ -84,7 +84,7 @@
 
     &.dark {
       span {
-        color: var(--gray-400);
+        color: var(--contrast-very-light);
       }
     }
   }

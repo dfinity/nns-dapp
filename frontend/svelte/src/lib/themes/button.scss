@@ -69,8 +69,8 @@ button {
   &.input-button {
     &[disabled],
     &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
+      background: var(--contrast-very-light);
+      color: var(--contrast-very-light-contrast);
       cursor: default;
     }
 
@@ -138,8 +138,8 @@ button {
 
     &[disabled],
     &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
+      background: var(--contrast-very-light);
+      color: var(--contrast-very-light-contrast);
       cursor: default;
     }
 

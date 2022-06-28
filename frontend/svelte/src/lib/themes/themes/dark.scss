@@ -22,11 +22,11 @@
   --primary-gradient-contrast: var(--primary-contrast);
 
   // Json colors
-  --json-bracket-color: var(--gray-400);
+  --json-bracket-color: var(--contrast-very-light);
   --json-value-color: var(--gray-50);
   --json-string-color: var(--brand-sea-buckthorn);
   --json-number-color: var(--brand-picton-blue);
-  --json-null-color: var(--gray-400);
+  --json-null-color: var(--contrast-very-light);
   --json-principal-color: var(--yellow-400);
   --json-hash-color: var(--yellow-400);
   --json-bigint-color: var(--brand-picton-blue);
@@ -55,26 +55,20 @@
   --card-background-shade: #222424;
   --card-background-tint: #3d3e3e;
 
+  /** TODO: implement correct color from hex rgba(255, 255, 255, 0.4) */
+  --contrast-very-light: #adadad;
+  --contrast-very-light-rgb: 173, 173, 173;
+  --contrast-very-light-contrast: #000000;
+  --contrast-very-light-contrast-rgb: 0, 0, 0;
+  --contrast-very-light-shade: #989898;
+  --contrast-very-light-tint: #b5b5b5;
+
   --primary: #00a5ff;
   --primary-rgb: 0, 165, 255;
   --primary-contrast: #ffffff;
   --primary-contrast-rgb: 255, 255, 255;
   --primary-shade: #0091e0;
   --primary-tint: #1aaeff;
-
-  --gray-600: #545858;
-  --gray-600-rgb: 84, 88, 88;
-  --gray-600-contrast: #ffffff;
-  --gray-600-contrast-rgb: 255, 255, 255;
-  --gray-600-shade: #4a4d4d;
-  --gray-600-tint: #656969;
-
-  --gray-400: #909898;
-  --gray-400-rgb: 144, 152, 152;
-  --gray-400-contrast: #000000;
-  --gray-400-contrast-rgb: 0, 0, 0;
-  --gray-400-shade: #7f8686;
-  --gray-400-tint: #9ba2a2;
 
   --gray-50: #e4f0f0;
   --gray-50-rgb: 228, 240, 240;

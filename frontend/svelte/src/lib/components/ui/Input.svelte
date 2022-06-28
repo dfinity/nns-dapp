@@ -167,7 +167,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-600);
+    --disabled-color: var(--contrast-very-light);
 
     &.disabled {
       color: var(--disabled-color);
@@ -185,7 +185,7 @@
     background: none;
 
     .placeholder {
-      color: var(--gray-400);
+      color: var(--contrast-very-light);
     }
   }
 
@@ -225,7 +225,7 @@
     pointer-events: none;
 
     font-size: var(--font-size-h4);
-    color: var(--gray-600);
+    color: var(--contrast-very-light);
 
     /** Space to display fully the caret if field is focused and empty */
     margin-left: 4px;
