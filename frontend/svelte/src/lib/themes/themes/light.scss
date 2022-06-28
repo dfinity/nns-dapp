@@ -11,8 +11,8 @@
     // Footer
     --footer-background: linear-gradient(
       0deg,
-      rgba(var(--contrast-very-light-rgb), 0.1) 10%,
-      rgba(var(--contrast-very-light-rgb), 0) 100%
+      rgba(var(--background-contrast-rgb), 0.05) 10%,
+      rgba(var(--background-contrast-rgb), 0) 100%
     );
 
     // Json colors
@@ -23,6 +23,10 @@
     // Menu
     --menu-background: #fafbfc;
     --menu-background-contrast: #333333;
+
+    // Disable
+    --disable: #E5E5E5;
+    --disable-contrast: #858585;
 
     // Palette
     --background: #f4f5f6;
@@ -38,12 +42,5 @@
     --card-background-contrast-rgb: 51, 51, 51;
     --card-background-shade: #e0e0e0;
     --card-background-tint: #ffffff;
-
-    --contrast-very-light: #adadad;
-    --contrast-very-light-rgb: 173, 173, 173;
-    --contrast-very-light-contrast: #000000;
-    --contrast-very-light-contrast-rgb: 0, 0, 0;
-    --contrast-very-light-shade: #989898;
-    --contrast-very-light-tint: #b5b5b5;
   }
 }

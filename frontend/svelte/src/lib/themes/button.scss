@@ -67,8 +67,8 @@ button {
   &.primary {
     &[disabled],
     &[disabled]:hover {
-      background: var(--contrast-very-light);
-      color: var(--contrast-very-light-contrast);
+      background: var(--disable);
+      color: var(--disable-contrast);
       cursor: default;
     }
 
@@ -118,8 +118,8 @@ button {
 
     &[disabled],
     &[disabled]:hover {
-      background: var(--contrast-very-light);
-      color: var(--contrast-very-light-contrast);
+      background: var(--disable);
+      color: var(--disable-contrast);
       cursor: default;
     }
 

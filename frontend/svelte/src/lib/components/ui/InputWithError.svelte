@@ -75,17 +75,11 @@
     color: var(--negative-emphasis);
 
     span {
-      color: var(--contrast-very-light);
+      color: var(--background-contrast);
     }
 
     @include media.min-width(medium) {
       padding: 0 var(--padding-2x);
-    }
-
-    &.dark {
-      span {
-        color: var(--contrast-very-light);
-      }
     }
   }
 </style>

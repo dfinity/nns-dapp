@@ -48,7 +48,7 @@
         99.27deg,
         var(--primary) -0.11%,
         #4e48d2 var(--range-progression),
-        var(--contrast-very-light) var(--range-end)
+        var(--background-shade) var(--range-end)
       );
     }
   }
