@@ -104,7 +104,7 @@
   article {
     :global(.collapsible-expand-icon) {
       align-items: start;
-      padding-top: var(--padding-3x)
+      padding-top: var(--padding-3x);
     }
   }
 

@@ -110,7 +110,6 @@
 
     --modal-toolbar-height: 35px;
 
-
     background: var(--background);
     color: var(--background-contrast);
     --select-color: var(--background-contrast);

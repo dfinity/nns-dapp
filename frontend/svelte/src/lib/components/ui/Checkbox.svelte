@@ -16,10 +16,7 @@
   const onClick = () => dispatch("nnsChange");
 </script>
 
-<div
-  on:click|preventDefault={onClick}
-  class={`checkbox ${selector ?? ""}`}
->
+<div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
   <label for={inputId} class={text}><slot /></label>
   <input
     type="checkbox"
