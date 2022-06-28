@@ -48,7 +48,7 @@
 
     background: var(--card-background);
     color: var(--card-background-contrast);
-    box-shadow: var(--card-box-shadow);
+    box-shadow: var(--box-shadow);
 
     padding: var(--padding-2x);
     margin: var(--padding-2x) 0;

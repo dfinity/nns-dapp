@@ -2,8 +2,8 @@
 
 :root {
   // Shadows
-  --card-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  --menu-box-shadow: var(--card-box-shadow);
+  --box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  --menu-box-shadow: var(--box-shadow);
 
   // Footer
   --footer-background: linear-gradient(

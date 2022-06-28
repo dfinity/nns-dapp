@@ -57,7 +57,6 @@
     height: var(--padding-2x);
 
     background: var(--card-background);
-    box-shadow: var(--box-shadow);
   }
 
   .toggle input[type="checkbox"]:checked ~ label::after {
