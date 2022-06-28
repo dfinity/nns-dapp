@@ -1,4 +1,4 @@
-FROM rust:1.55.0 as builder
+FROM rust:1.61.0 as builder
 
 RUN rustup target add wasm32-unknown-unknown
 RUN apt -yq update && \
@@ -30,6 +30,7 @@ RUN export CARGO_TARGET_DIR=/ic/rs/target && \
 ENV CARGO_TARGET_DIR=/ic/rs/target
 WORKDIR /ic/rs
 
+# Note: This is available as a download however we patch the source code to make testing easier.
 # Note: The naming convention of the wasm files needs to match this:
 #       https://github.com/dfinity/ic/blob/master/gitlab-ci/src/job_scripts/cargo_build_canisters.py#L82
 #       Otherwise the built binary will simply not be deployed by ic-nns-init.
@@ -41,6 +42,7 @@ RUN binary=ledger-canister && \
     ls "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
+# Note: This is available as a download however we patch the source code to make testing easier.
 RUN binary="governance-canister" && \
     features="test" && \
     cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance --features "$features"
@@ -48,9 +50,16 @@ RUN binary="governance-canister" && \
     features="test" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
+# Note: This is available as a download however we patch the source code to make testing easier.
 RUN binary="cycles-minting-canister" && \
     cargo build --target wasm32-unknown-unknown --release -p "$binary"
 RUN binary="cycles-minting-canister" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+
+# Note: This is not yet available as a download so we have to build it.  Also, it is to be renamed from sale to swap.
+RUN cd sns/sale && \
+    cargo build --target wasm32-unknown-unknown --release
+RUN binary="sns-sale-canister" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
 
@@ -58,4 +67,5 @@ FROM scratch AS scratch
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
 COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public.did
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
+COPY --from=builder /ic/rs/sns/sale/canister/sale.did /swap.did
 COPY --from=builder /ic/rs/target/*.wasm /

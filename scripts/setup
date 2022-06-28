@@ -68,9 +68,12 @@ append_to_profile() {
 }
 
 have_correct_dfx() {
-  expected="$(jq -r .dfx dfx.json)"
-  actual="$(dfx --version | awk '{print $2}')"
-  [[ "$expected" == "$actual" ]]
+  # Sadly `command -V dfx` just gives the path to `dfx` so we need both `command` and `dfx --version`.
+  command -v dfx >/dev/null && {
+    expected="$(jq -r .dfx dfx.json)"
+    actual="$(dfx --version | awk '{print $2}')"
+    [[ "$expected" == "$actual" ]]
+  }
 }
 install_dfx() {
   DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -170,7 +173,7 @@ install_cmake_linux() {
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+IC_COMMIT=7fcae4939dc6fac179ce3dd25ded6e6b650e2293
 install_ic_admin_linux() {
   local USER_BIN="$HOME/.local/bin"
   mkdir -p "$USER_BIN"
@@ -184,6 +187,22 @@ install_ic_admin_darwin() {
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
   command -v ic-admin ||
+    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
+install_sns_linux() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+}
+install_sns_darwin() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+  # shellcheck disable=SC2016
+  command -v sns ||
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
@@ -208,6 +227,7 @@ command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
 command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
+command -v sns || "install_sns_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

@@ -30,6 +30,7 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
 import type { Account } from "../types/account";
 import {
@@ -621,3 +622,12 @@ export const neuronCanBeSplit = ({
   neuron: NeuronInfo;
   fee: number;
 }): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+
+export const getNeuronById = ({
+  neuronsStore,
+  neuronId,
+}: {
+  neuronsStore: NeuronsStore;
+  neuronId: NeuronId;
+}): NeuronInfo | undefined =>
+  neuronsStore.neurons?.find((n) => n.neuronId === neuronId);

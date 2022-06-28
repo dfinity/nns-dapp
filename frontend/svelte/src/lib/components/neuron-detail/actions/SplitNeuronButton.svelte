@@ -18,26 +18,35 @@
   const openModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 
-  let isSplittable: boolean;
-  $: isSplittable = neuronCanBeSplit({
+  let splittable: boolean;
+  $: splittable = neuronCanBeSplit({
     neuron,
     fee: $mainTransactionFeeStore,
   });
 </script>
 
-<Tooltip
-  id="split-neuron-button"
-  text={replacePlaceholders($i18n.neuron_detail.split_neuron_disabled_tooltip, {
-    $amount: formatICP({
-      value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
-      detailed: true,
-    }),
-  })}
->
-  <button on:click={openModal} class="primary small" disabled={!isSplittable}
+{#if splittable}
+  <button on:click={openModal} class="primary small"
     >{$i18n.neuron_detail.split_neuron}</button
   >
-</Tooltip>
+{:else}
+  <Tooltip
+    id="split-neuron-button"
+    text={replacePlaceholders(
+      $i18n.neuron_detail.split_neuron_disabled_tooltip,
+      {
+        $amount: formatICP({
+          value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
+          detailed: true,
+        }),
+      }
+    )}
+  >
+    <button on:click={openModal} class="primary small" disabled
+      >{$i18n.neuron_detail.split_neuron}</button
+    >
+  </Tooltip>
+{/if}
 
 {#if isOpen}
   <SplitNeuronModal {neuron} on:nnsClose={closeModal} />
