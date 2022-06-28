@@ -10,6 +10,7 @@
     layoutBackStore,
     layoutTitleStore,
   } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -27,25 +28,25 @@
   layoutTitleStore.set("Project Tetris");
 </script>
 
-<section>
-  <TwoColumns>
-    <ProjectInfoSection slot="left" />
-    <ProjectStatusSection slot="right" />
-  </TwoColumns>
-</section>
+<MainContentWrapper>
+  <div class="stretch-mobile">
+    <TwoColumns>
+      <ProjectInfoSection slot="left" />
+      <ProjectStatusSection slot="right" />
+    </TwoColumns>
+  </div>
+</MainContentWrapper>
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";
-  section {
-    box-sizing: border-box;
+  .stretch-mobile {
     min-height: 100%;
-    padding: var(--padding-2x) var(--padding);
 
     display: flex;
     align-items: stretch;
 
-    @include media.min-width(medium) {
-      padding: var(--padding-2x) var(--padding-2_5x);
+    @include media.min-width(large) {
+      display: block;
     }
   }
 </style>
