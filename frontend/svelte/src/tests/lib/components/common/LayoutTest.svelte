@@ -1,22 +1,15 @@
 <script lang="ts">
   import Layout from "../../../../lib/components/common/Layout.svelte";
+  import {layoutBackStore} from '../../../../lib/stores/layout.store';
 
-  export let header: string;
   export let content: string;
-  export let button: string;
   export let spy: () => void;
 
   const goBack = () => spy();
+
+  layoutBackStore.set(goBack);
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{header}</svelte:fragment>
-
+<Layout>
   <p>{content}</p>
-
-  <svelte:fragment slot="footer">
-    <!-- <Toolbar> -->
-    <button class="primary">{button}</button>
-    <!-- </Toolbar> -->
-  </svelte:fragment>
 </Layout>

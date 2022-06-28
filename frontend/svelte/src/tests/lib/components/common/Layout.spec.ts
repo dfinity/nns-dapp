@@ -25,9 +25,7 @@ describe("Layout", () => {
     beforeEach(() => {
       const rendered = render(LayoutTest, {
         props: {
-          header: "the header",
           content: "the content",
-          button: "the button",
           spy: spyBackClick,
         },
       });
@@ -36,18 +34,8 @@ describe("Layout", () => {
       queryByTestId = rendered.queryByTestId;
     });
 
-    it("should render a header", () => {
-      expect(getByText("the header")).toBeInTheDocument();
-    });
-
     it("should render a content", () => {
       expect(getByText("the content")).toBeInTheDocument();
-    });
-
-    it("should render a button in the footer", () => {
-      expect(
-        container.querySelector("footer").querySelector("button").innerHTML
-      ).toBe("the button");
     });
 
     it("should contain a back button", () => {
