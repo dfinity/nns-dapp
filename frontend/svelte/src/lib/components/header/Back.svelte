@@ -21,10 +21,6 @@
   @use "../../themes/mixins/media";
 
   button {
-    @include header.button(--blue-200);
-
-    @include media.min-width(small) {
-      @include header.button(--primary-tint);
-    }
+    @include header.button(--primary-tint);
   }
 </style>

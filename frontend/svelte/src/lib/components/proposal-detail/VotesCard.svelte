@@ -136,7 +136,8 @@
         bottom: 0;
         left: 0;
 
-        background: var(--blue-200-shade);
+        background: var(--primary-gradient-fallback);
+        background: var(--primary-gradient);
       }
     }
   }
