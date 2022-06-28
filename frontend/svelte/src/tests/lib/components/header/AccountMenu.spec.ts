@@ -29,4 +29,12 @@ describe("AccountMenu", () => {
 
     expect(renderResult.getByTestId("logout")).not.toBeNull();
   });
+
+  it("should display theme toggle", async () => {
+    const renderResult = render(AccountMenu);
+
+    await show(renderResult);
+
+    expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+  });
 });

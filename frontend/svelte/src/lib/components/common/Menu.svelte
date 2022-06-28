@@ -38,8 +38,8 @@
     margin: 0 var(--padding-0_5x) var(--padding);
 
     :global(svg) {
-      width: 48px;
-      height: 48px;
+      width: var(--padding-6x);
+      height: var(--padding-6x);
     }
   }
 </style>

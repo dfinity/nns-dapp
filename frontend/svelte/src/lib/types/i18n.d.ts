@@ -522,9 +522,16 @@ interface I18nNeuron_detail {
 
 interface I18nSns_launchpad {
   header: string;
-  current_launches: string;
+  projects: string;
+  no_projects: string;
   proposals: string;
+  no_proposals: string;
+}
+
+interface I18nSns_project {
   project: string;
+  deadline: string;
+  your_commitment: string;
 }
 
 interface I18nSns_project_detail {
@@ -532,6 +539,11 @@ interface I18nSns_project_detail {
   token_symbol: string;
   min_commitment: string;
   max_commitment: string;
+  current_commitment: string;
+  min_commitment_goal: string;
+  deadline: string;
+  user_commitment: string;
+  participate: string;
 }
 
 interface I18nTime {
@@ -596,6 +608,11 @@ interface I18nError__canister {
   get_exchange_rate: string;
 }
 
+interface I18nTheme {
+  theme: string;
+  switch_theme: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -623,10 +640,12 @@ interface I18n {
   nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
   error__canister: I18nError__canister;
+  theme: I18nTheme;
 }

@@ -43,7 +43,7 @@
     }
 
     &.dark {
-      --select-color: var(--gray-200);
+      --select-color: var(--gray-50);
       --select-background-hover: rgba(var(--light-background-rgb), 0.1);
       --select-border-radius: var(--border-radius);
     }

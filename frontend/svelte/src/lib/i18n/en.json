@@ -384,9 +384,9 @@
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
-    "neurons": "neurons",
-    "voting_power": "voting power",
-    "total": "total",
+    "neurons": "Neurons",
+    "voting_power": "Voting power",
+    "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
     "confirm_adopt_headline": "Adopt Proposal",
@@ -495,15 +495,28 @@
   },
   "sns_launchpad": {
     "header": "Launch Pad",
-    "current_launches": "Current Launches",
+    "projects": "Current Launches",
+    "no_projects": "No current launches at the moment",
     "proposals": "Proposals",
-    "project": "Project"
+    "no_proposals": "No current proposals at the moment"
+  },
+  "sns_project": {
+    "project": "Project",
+    "deadline": "Deadline",
+    "your_commitment": "Your Current Commitment"
   },
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "min_commitment": "Minimum Commitment",
-    "max_commitment": "Maximum Commitment"
+    "max_commitment": "Maximum Commitment",
+    "current_commitment": "Current Overall Commitment",
+    "min_commitment_goal": "Minimum Commitment Goal",
+    "deadline": "Deadline",
+    "user_commitment": "Your Current Commitment",
+    "status": "Status",
+    "accepting": "Accepting Participation",
+    "participate": "Participate"
   },
   "time": {
     "year": "year",
@@ -561,5 +574,9 @@
     "unknown_attach": "Error attaching canister.",
     "unknown_detach": "Error detaching canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
+  },
+  "theme": {
+    "theme": "Theme",
+    "switch_theme": "Switch theme"
   }
 }

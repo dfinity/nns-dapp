@@ -16,9 +16,9 @@
 
     margin: var(--padding-0_5x) 0;
 
-    --skeleton-text-background: rgba(var(--light-background-rgb), 0.065);
+    --skeleton-text-background: rgba(var(--background-contrast-rgb), 0.065);
     --skeleton-text-background-animated: rgba(
-      var(--light-background-rgb),
+      var(--background-contrast-rgb),
       0.135
     );
     background: var(--skeleton-text-background);

@@ -111,7 +111,7 @@
       <button
         on:click={cancel}
         data-tid="cancel-neuron-delay"
-        class="secondary full-width">{cancelButtonText}</button
+        class="primary full-width">{cancelButtonText}</button
       >
     {/if}
     <button

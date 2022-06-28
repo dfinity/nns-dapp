@@ -29,7 +29,7 @@
     position: absolute;
     inset: 0;
 
-    background: rgba(var(--background-rgb), 0.8);
+    background: rgba(var(--black-rgb), 0.6);
 
     @include interaction.tappable;
 

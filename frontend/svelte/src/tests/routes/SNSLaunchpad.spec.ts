@@ -16,7 +16,7 @@ describe("SNSLaunchpad", () => {
   it("should render sub blocks", () => {
     const { queryByText } = render(SNSLaunchpad);
 
-    expect(queryByText(en.sns_launchpad.current_launches)).toBeInTheDocument();
+    expect(queryByText(en.sns_launchpad.projects)).toBeInTheDocument();
     expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
   });
 });
