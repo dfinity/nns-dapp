@@ -28,7 +28,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   article {
     text-decoration: none;

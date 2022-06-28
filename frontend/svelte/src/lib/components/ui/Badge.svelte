@@ -9,7 +9,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   div {
     color: var(--badge-color, var(--background-contrast));

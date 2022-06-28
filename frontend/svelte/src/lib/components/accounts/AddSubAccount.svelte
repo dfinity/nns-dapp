@@ -43,7 +43,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   form {
     @include modal.wizard-single-input-form;

@@ -62,7 +62,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .title {
     display: block;

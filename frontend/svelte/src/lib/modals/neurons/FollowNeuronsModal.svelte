@@ -15,7 +15,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   section {
     @include modal.section;

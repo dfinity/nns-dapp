@@ -21,7 +21,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   div {
     display: inline-grid;

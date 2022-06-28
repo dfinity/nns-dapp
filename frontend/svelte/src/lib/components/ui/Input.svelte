@@ -144,7 +144,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   @include media.light-theme() {
     .input-block.light input {

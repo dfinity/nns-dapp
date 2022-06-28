@@ -50,7 +50,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .wrapper {
     position: relative;
