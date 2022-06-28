@@ -5,13 +5,13 @@
   import Menu from "./Menu.svelte";
   import Back from "../header/Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
-  import {layoutTitleStore, layoutBackStore} from "../../stores/layout.store";
+  import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
 
   let open: boolean;
   let sticky: boolean;
 
   let back: boolean = false;
-  $: back = $layoutBackStore !== undefined
+  $: back = $layoutBackStore !== undefined;
 </script>
 
 <Banner />
