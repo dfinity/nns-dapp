@@ -60,10 +60,10 @@
   {:else}
     {#each $sortedNeuronStore as neuron}
       <NeuronCard
-              role="link"
-              ariaLabel={$i18n.neurons.aria_label_neuron_card}
-              on:click={goToNeuronDetails(neuron.neuronId)}
-              {neuron}
+        role="link"
+        ariaLabel={$i18n.neurons.aria_label_neuron_card}
+        on:click={goToNeuronDetails(neuron.neuronId)}
+        {neuron}
       />
     {/each}
   {/if}
@@ -72,26 +72,26 @@
 <Footer>
   <Toolbar>
     <button
-            data-tid="stake-neuron-button"
-            class="primary full-width"
-            on:click={() => openModal("stake-neuron")}
-    >{$i18n.neurons.stake_neurons}</button
+      data-tid="stake-neuron-button"
+      class="primary full-width"
+      on:click={() => openModal("stake-neuron")}
+      >{$i18n.neurons.stake_neurons}</button
     >
     {#if enoughNeuronsToMerge}
       <button
-              data-tid="merge-neurons-button"
-              class="primary full-width"
-              on:click={() => openModal("merge-neurons")}
-      >{$i18n.neurons.merge_neurons}</button
+        data-tid="merge-neurons-button"
+        class="primary full-width"
+        on:click={() => openModal("merge-neurons")}
+        >{$i18n.neurons.merge_neurons}</button
       >
     {:else}
       <Tooltip id="merge-neurons-info" text={$i18n.neurons.need_two_to_merge}>
         <button
-                disabled
-                data-tid="merge-neurons-button"
-                class="primary full-width"
-                on:click={() => openModal("merge-neurons")}
-        >{$i18n.neurons.merge_neurons}</button
+          disabled
+          data-tid="merge-neurons-button"
+          class="primary full-width"
+          on:click={() => openModal("merge-neurons")}
+          >{$i18n.neurons.merge_neurons}</button
         >
       </Tooltip>
     {/if}

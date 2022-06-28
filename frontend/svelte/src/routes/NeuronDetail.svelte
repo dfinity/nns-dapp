@@ -18,7 +18,7 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { getNeuronById } from "../lib/utils/neuron.utils";
-  import {layoutBackStore} from '../lib/stores/layout.store';
+  import { layoutBackStore } from "../lib/stores/layout.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 

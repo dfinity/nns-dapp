@@ -5,7 +5,7 @@
   import Spinner from "../ui/Spinner.svelte";
   import Layout from "../common/Layout.svelte";
   import { routeStore } from "../../stores/route.store";
-  import {layoutBackStore, layoutTitleStore} from "../../stores/layout.store";
+  import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
 
   export let path: AppPath;

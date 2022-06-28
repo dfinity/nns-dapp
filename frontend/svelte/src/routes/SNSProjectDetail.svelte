@@ -6,7 +6,10 @@
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
-  import {layoutBackStore, layoutTitleStore} from '../lib/stores/layout.store';
+  import {
+    layoutBackStore,
+    layoutTitleStore,
+  } from "../lib/stores/layout.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -21,7 +24,7 @@
 
   layoutBackStore.set(goBack);
 
-  layoutTitleStore.set('Project Tetris');
+  layoutTitleStore.set("Project Tetris");
 </script>
 
 <section>

@@ -35,7 +35,7 @@
   import CardInfo from "../lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
-  import {layoutBackStore} from '../lib/stores/layout.store';
+  import { layoutBackStore } from "../lib/stores/layout.store";
   import Footer from "../lib/components/common/Footer.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
@@ -219,10 +219,10 @@
 <Footer>
   <Toolbar>
     <button
-            class="primary"
-            on:click={() => (showAddCyclesModal = true)}
-            disabled={canisterInfo === undefined || $busy}
-    >{$i18n.canister_detail.add_cycles}</button
+      class="primary"
+      on:click={() => (showAddCyclesModal = true)}
+      disabled={canisterInfo === undefined || $busy}
+      >{$i18n.canister_detail.add_cycles}</button
     >
   </Toolbar>
 </Footer>

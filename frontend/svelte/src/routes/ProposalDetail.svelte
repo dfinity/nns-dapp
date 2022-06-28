@@ -23,7 +23,7 @@
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import {layoutBackStore} from '../lib/stores/layout.store';
+  import { layoutBackStore } from "../lib/stores/layout.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -103,8 +103,8 @@
       <VotesCard proposalInfo={$proposalInfoStore} />
       <VotingCard proposalInfo={$proposalInfoStore} />
       <IneligibleNeuronsCard
-              proposalInfo={$proposalInfoStore}
-              neurons={$definedNeuronsStore}
+        proposalInfo={$proposalInfoStore}
+        neurons={$definedNeuronsStore}
       />
     {:else}
       <div class="loader">
