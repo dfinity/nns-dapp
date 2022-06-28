@@ -209,10 +209,10 @@ fi
 # adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if [[ "$DEPLOY_SNS" == "true" ]]; then
-  dfx canister --network local create sns_governance
-  dfx canister --network local create sns_ledger
-  dfx canister --network local create sns_root
-  dfx canister --network local create sns_swap
+  dfx canister --network "$DFX_NETWORK" create sns_governance
+  dfx canister --network "$DFX_NETWORK" create sns_ledger
+  dfx canister --network "$DFX_NETWORK" create sns_root
+  dfx canister --network "$DFX_NETWORK" create sns_swap
   sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
 fi
 
