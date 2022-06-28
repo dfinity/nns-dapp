@@ -495,9 +495,15 @@
   },
   "sns_launchpad": {
     "header": "Launch Pad",
-    "current_launches": "Current Launches",
+    "projects": "Current Launches",
+    "no_projects": "No current launches at the moment",
     "proposals": "Proposals",
-    "project": "Project"
+    "no_proposals": "No current proposals at the moment"
+  },
+  "sns_project": {
+    "project": "Project",
+    "deadline": "Deadline",
+    "your_commitment": "Your Current Commitment"
   },
   "sns_project_detail": {
     "token_name": "Token Name",
