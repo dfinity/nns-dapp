@@ -3,7 +3,7 @@
 </footer>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   footer {
     position: absolute;

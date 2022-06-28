@@ -19,7 +19,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
   @use "../../themes/mixins/display";
 
   article {

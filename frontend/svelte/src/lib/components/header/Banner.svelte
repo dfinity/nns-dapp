@@ -64,8 +64,8 @@
     justify-content: center;
     align-items: center;
 
-    background: var(--pink);
-    color: var(--pink-contrast);
+    background: var(--negative-emphasis-light);
+    color: var(--negative-emphasis-light-contrast);
 
     :global(:root) {
       --header-offset: 60px;

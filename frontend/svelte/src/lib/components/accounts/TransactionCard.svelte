@@ -79,13 +79,7 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card.scss";
-
-  hr {
-    border: 0;
-    border-bottom: 1px solid currentColor;
-    margin-bottom: var(--padding);
-  }
+  @use "../../themes/mixins/card";
 
   .title {
     @include card.stacked-title;

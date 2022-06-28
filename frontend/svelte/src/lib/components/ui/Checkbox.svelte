@@ -4,7 +4,6 @@
   export let inputId: string;
   export let checked: boolean;
 
-  export let theme: "dark" | "light" = "light";
   export let text: "block" | "inline" = "inline";
 
   export let selector: string | undefined = undefined;
@@ -17,10 +16,7 @@
   const onClick = () => dispatch("nnsChange");
 </script>
 
-<div
-  on:click|preventDefault={onClick}
-  class={`checkbox ${theme} ${selector ?? ""}`}
->
+<div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
   <label for={inputId} class={text}><slot /></label>
   <input
     type="checkbox"
@@ -37,16 +33,7 @@
   .checkbox {
     @include select.group;
 
-    &.light {
-      --select-color: var(--gray-600);
-      --select-background-hover: var(--light-background);
-    }
-
-    &.dark {
-      --select-color: var(--gray-50);
-      --select-background-hover: rgba(var(--light-background-rgb), 0.1);
-      --select-border-radius: var(--border-radius);
-    }
+    --select-background-hover: var(--background-shade);
   }
 
   label {

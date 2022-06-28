@@ -91,9 +91,9 @@
     border-radius: 4px;
 
     font-size: var(--font-size-ultra-small);
-    background: var(--gray-600);
 
-    color: var(--gray-600-contrast);
+    background: var(--card-background-contrast);
+    color: var(--card-background);
 
     // limit width
     white-space: pre-wrap;

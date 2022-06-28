@@ -79,6 +79,10 @@ while (($# > 0)); do
   esac
 done
 
+test -n "${DFX_NETWORK:-}" || test -n "${testnet:-}" || {
+  DFX_NETWORK="local"
+}
+
 if test -n "${DFX_NETWORK:-}" && [[ "$DFX_NETWORK" != "local" ]]; then
   DFX_NETWORK="$DFX_NETWORK" jq -er '.networks[env.DFX_NETWORK].providers[0]' dfx.json
 elif test -n "${testnet:-}"; then

@@ -30,6 +30,7 @@ import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
 import type { Account } from "../types/account";
 import {
@@ -44,7 +45,7 @@ import { isDefined } from "./utils";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  colorVar: "--gray-50" | "--yellow-500";
+  status: "ok" | "warn";
 };
 
 type StateMapper = {
@@ -54,21 +55,21 @@ const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.UNSPECIFIED]: {
     textKey: "unspecified",
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.DISSOLVED]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.DISSOLVING]: {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
-    colorVar: "--yellow-500",
+    status: "warn",
   },
 };
 
@@ -621,3 +622,12 @@ export const neuronCanBeSplit = ({
   neuron: NeuronInfo;
   fee: number;
 }): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+
+export const getNeuronById = ({
+  neuronsStore,
+  neuronId,
+}: {
+  neuronsStore: NeuronsStore;
+  neuronId: NeuronId;
+}): NeuronInfo | undefined =>
+  neuronsStore.neurons?.find((n) => n.neuronId === neuronId);

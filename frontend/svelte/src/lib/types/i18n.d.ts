@@ -522,9 +522,16 @@ interface I18nNeuron_detail {
 
 interface I18nSns_launchpad {
   header: string;
-  current_launches: string;
+  projects: string;
+  no_projects: string;
   proposals: string;
+  no_proposals: string;
+}
+
+interface I18nSns_project {
   project: string;
+  deadline: string;
+  your_commitment: string;
 }
 
 interface I18nSns_project_detail {
@@ -536,6 +543,8 @@ interface I18nSns_project_detail {
   min_commitment_goal: string;
   deadline: string;
   user_commitment: string;
+  status: string;
+  accepting: string;
   participate: string;
 }
 
@@ -633,6 +642,7 @@ interface I18n {
   nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;

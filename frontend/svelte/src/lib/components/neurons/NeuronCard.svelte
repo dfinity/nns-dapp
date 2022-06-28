@@ -75,7 +75,12 @@
   </div>
 
   <div class="info">
-    <p style={`color: var(${stateInfo.colorVar});`} class="status">
+    <p
+      style={stateInfo.status === "warn"
+        ? `color: var(--warning-emphasis);`
+        : ""}
+      class="status"
+    >
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>

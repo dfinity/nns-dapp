@@ -64,7 +64,6 @@
       }
 
       font-size: var(--font-size-ultra-small);
-      color: var(--gray-50);
       overflow-wrap: break-word;
       white-space: pre-wrap;
 

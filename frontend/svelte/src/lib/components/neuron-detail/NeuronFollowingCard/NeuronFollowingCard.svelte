@@ -39,6 +39,8 @@
 
   {#if followees.length > 0}
     <div class="frame">
+      <hr />
+
       {#each followees as followee}
         <Followee {followee} />
       {/each}
@@ -59,14 +61,11 @@
 
   p {
     margin-top: 0;
-    color: var(--gray-50);
   }
 
   .frame {
-    margin: calc(2 * var(--padding)) 0;
-    padding: calc(2 * var(--padding));
-    border: 1px solid var(--gray-600);
-    border-radius: var(--border-radius);
+    margin: var(--padding-2x) 0;
+    padding: var(--padding-2x) 0;
   }
 
   .actions {

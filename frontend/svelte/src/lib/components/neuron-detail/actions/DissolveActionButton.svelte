@@ -51,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../../themes/mixins/confirmation-modal.scss";
+  @use "../../../themes/mixins/confirmation-modal";
 
   div {
     @include confirmation-modal.wrapper;

@@ -1,4 +1,5 @@
 import { ICP, NeuronState, Topic, Vote, type BallotInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -14,6 +15,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
+import { neuronsStore } from "../../../lib/stores/neurons.store";
 import type { Step } from "../../../lib/stores/steps.state";
 import { enumValues } from "../../../lib/utils/enum.utils";
 import {
@@ -27,6 +29,7 @@ import {
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
+  getNeuronById,
   hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -1484,6 +1487,40 @@ describe("neuron-utils", () => {
       const fee = 10_000;
       const received = minMaturityMerge(10_000);
       expect(received).toBe(fee);
+    });
+  });
+
+  describe("getNeuronById", () => {
+    afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
+    it("returns neuron when present in store", () => {
+      const neuronId = BigInt(1234);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBe(neuron);
+    });
+
+    it("returns undefined when not present in store", () => {
+      const neuronId = BigInt(1234);
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(1235),
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBeUndefined();
+    });
+
+    it("returns undefined if no neurons in store", () => {
+      const neuronId = BigInt(1234);
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBeUndefined();
     });
   });
 });

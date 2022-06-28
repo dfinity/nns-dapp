@@ -9,23 +9,23 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   div {
-    color: var(--badge-color, var(--gray-50-background-contrast));
-    background: var(--badge-background, var(--gray-50-background));
+    color: var(--badge-color, var(--background-contrast));
+    background: var(--badge-background, var(--background));
 
     padding: var(--padding-0_5x);
     border-radius: var(--padding-0_5x);
 
     &.warning {
-      --badge-color: var(--yellow-400-contrast);
-      --badge-background: var(--yellow-400);
+      --badge-color: var(--warning-emphasis-contrast);
+      --badge-background: var(--warning-emphasis);
     }
 
     &.success {
-      --badge-color: var(--green-500-contrast);
-      --badge-background: var(--green-500);
+      --badge-color: var(--positive-emphasis-contrast);
+      --badge-background: var(--positive-emphasis);
     }
   }
 

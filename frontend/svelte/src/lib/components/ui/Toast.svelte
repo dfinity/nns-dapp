@@ -84,15 +84,15 @@
     height: calc(8.5 * var(--padding));
 
     border-radius: var(--border-radius);
-    background: var(--green-500);
-    color: var(--green-500-contrast);
+    background: var(--positive-emphasis);
+    color: var(--positive-emphasis-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-500-shade);
+    --scrollbar-thumb: var(--positive-emphasis-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
@@ -107,20 +107,20 @@
     }
 
     &.error {
-      background: var(--pink);
-      color: var(--pink-contrast);
-      --scrollbar-background: #ffa3c5;
-      --scrollbar-thumb: #a9054c;
+      background: var(--negative-emphasis);
+      color: var(--negative-emphasis-light-contrast);
+      --scrollbar-background: var(--negative-emphasis-tint);
+      --scrollbar-thumb: var(--negative-emphasis);
     }
 
     &.warn {
-      background: var(--yellow-500);
-      color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-500-tint);
-      --scrollbar-thumb: var(--yellow-500);
+      background: var(--warning-emphasis);
+      color: var(--warning-emphasis-contrast);
+      --scrollbar-background: var(--warning-emphasis-tint);
+      --scrollbar-thumb: var(--warning-emphasis);
 
       button.close {
-        color: var(--yellow-500-contrast);
+        color: var(--warning-emphasis-contrast);
       }
     }
   }
