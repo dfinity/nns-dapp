@@ -41,7 +41,7 @@
       "build": [
         "true"
       ],
-      "candid": "../root/canister/root.did",
+      "candid": "target/ic/root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     }
