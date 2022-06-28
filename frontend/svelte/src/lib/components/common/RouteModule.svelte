@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
-  import { onMount, setContext } from "svelte";
+  import { onMount } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
   import Spinner from "../ui/Spinner.svelte";
   import Layout from "../common/Layout.svelte";
-  import { routeStore } from "../../stores/route.store";
-  import {layoutBackStore, layoutTitleStore} from "../../stores/layout.store";
+  import AuthLayout from "../common/AuthLayout.svelte";
+  import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
 
   export let path: AppPath;
@@ -62,24 +62,34 @@
 
     component = await loadModule();
   });
+
+  let authLayout: boolean = true;
+  $: authLayout = path === AppPath.Authentication;
+
+  let layout: typeof SvelteComponent | undefined = undefined;
+  $: layout = authLayout ? AuthLayout : Layout;
 </script>
 
-<Layout>
+<svelte:component this={layout}>
   {#if component !== undefined}
     <svelte:component this={component} />
   {:else}
-    <section>
+    <section class:authLayout>
       <Spinner />
     </section>
   {/if}
-</Layout>
+</svelte:component>
 
 <style lang="scss">
   section {
     position: absolute;
     inset: 0;
 
-    background: var(--background);
     color: rgba(var(--background-contrast-rgb), 0.2);
+  }
+
+  .authLayout {
+    // Fancy color based on the milky way of the auth background image
+    color: rgba(112, 71, 224, 0.6);
   }
 </style>

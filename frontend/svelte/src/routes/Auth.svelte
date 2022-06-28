@@ -7,7 +7,6 @@
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import Banner from "../lib/components/header/Banner.svelte";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
@@ -51,72 +50,20 @@
 </script>
 
 {#if !signedIn}
-  <div class="container">
-    <img
-      src="/assets/nns_background.jpeg"
-      role="presentation"
-      alt=""
-      aria-hidden="true"
-      class="background"
-    />
-
-    <Banner />
-
-    <main data-tid="auth-page">
-      <h1>{$i18n.auth.nns}</h1>
-      <h2>{$i18n.auth.ic}</h2>
-      <p>{$i18n.auth.icp_governance}</p>
-      <button on:click={signIn} data-tid="login-button"
-        >{$i18n.auth.login}</button
-      >
-    </main>
-
-    <img
-      src="/assets/100_on_chain-small-centered-white_text.svg"
-      role="presentation"
-      alt={$i18n.auth.on_chain}
-      class="bottom-banner"
-      loading="lazy"
-    />
-  </div>
+  <h1>{$i18n.auth.nns}</h1>
+  <h2>{$i18n.auth.ic}</h2>
+  <p>{$i18n.auth.icp_governance}</p>
+  <button on:click={signIn} data-tid="login-button">{$i18n.auth.login}</button>
 {/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/img";
   @use "../lib/themes/mixins/media";
 
-  .container {
-    position: fixed;
-    inset: 0;
-
-    display: block;
-
-    background: black;
-  }
-
-  main {
-    height: 100%;
-    width: 100%;
-    max-width: 720px;
-
-    margin: 0 auto;
-    padding: 80px 0 120px;
-
-    box-sizing: border-box;
-
-    display: grid;
-    grid-template-rows: repeat(2, fit-content(100%)) auto 60px;
-
-    justify-content: center;
-
-    background: transparent;
-    color: inherit;
-
-    z-index: 2;
-
-    > * {
-      z-index: 3;
-    }
+  h1,
+  h2,
+  p,
+  button {
+    z-index: 3;
   }
 
   h1 {
@@ -147,21 +94,6 @@
     align-self: flex-end;
   }
 
-  .background {
-    @include img.background;
-
-    z-index: 1;
-  }
-
-  .bottom-banner {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translate(-50%, 0);
-
-    z-index: 1;
-  }
-
   button {
     --letter-spacing: 0.4rem;
 
@@ -190,16 +122,6 @@
   }
 
   @media screen and (min-width: media.$breakpoint-medium) and (min-height: 640px) {
-    main {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -46%);
-
-      max-height: 424px;
-      padding: 0;
-    }
-
     h1 {
       font-size: var(--font-size-h1);
       letter-spacing: 0.3rem;
