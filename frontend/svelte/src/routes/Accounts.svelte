@@ -108,7 +108,7 @@
 </Layout>
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media.scss";
+  @use "../lib/themes/mixins/media";
 
   .title {
     display: block;

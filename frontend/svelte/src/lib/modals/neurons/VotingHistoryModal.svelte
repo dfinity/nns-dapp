@@ -34,7 +34,7 @@
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose theme="dark" size="big">
+<Modal testId="voting-history-modal" on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}

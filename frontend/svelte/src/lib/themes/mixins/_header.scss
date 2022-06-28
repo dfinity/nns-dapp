@@ -9,7 +9,7 @@
   @include effect.ripple-effect($color);
 
   &:focus {
-    background: var(--blue-500-tint);
+    background: var(--primary-tint);
     @include effect.ripple-effect($color);
   }
 

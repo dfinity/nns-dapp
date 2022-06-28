@@ -89,23 +89,9 @@ describe("Checkbox", () => {
       props,
     });
 
-    const div: HTMLDivElement | null = container.querySelector("div.checkbox");
-
-    expect(div?.classList.contains("light")).toBeTruthy();
-
     const label: HTMLLabelElement | null = container.querySelector("label");
 
     expect(label?.classList.contains("inline")).toBeTruthy();
-  });
-
-  it("should render a dark container", () => {
-    const { container } = render(Checkbox, {
-      props: { ...props, theme: "dark" },
-    });
-
-    const div: HTMLDivElement | null = container.querySelector("div.checkbox");
-
-    expect(div?.classList.contains("dark")).toBeTruthy();
   });
 
   it("should render block label", () => {

@@ -26,7 +26,7 @@
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/card.scss";
+  @use "../../themes/mixins/card";
 
   .title {
     @include card.stacked-title;

@@ -13,9 +13,9 @@
 
     display: block;
 
-    background: var(--header-background-fallback);
-    background: var(--header-background);
-    color: var(--header-color);
+    background: var(--primary-gradient-fallback);
+    background: var(--primary-gradient);
+    color: var(--primary-gradient-contrast);
 
     --toolbar-pointer-events: all;
   }

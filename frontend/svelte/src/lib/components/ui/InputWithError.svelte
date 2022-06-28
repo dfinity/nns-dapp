@@ -18,12 +18,10 @@
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
-  export let theme: "dark" | "light" = "light";
 </script>
 
 <div class="wrapper" class:error>
   <Input
-    {theme}
     {inputType}
     {required}
     {spellcheck}
@@ -42,7 +40,7 @@
   </Input>
 
   {#if error}
-    <p class={`error-message ${theme}`} data-tid="input-error-message">
+    <p class="error-message" data-tid="input-error-message">
       <IconInfo />
       <span>
         {errorMessage}
@@ -52,7 +50,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .wrapper {
     position: relative;
@@ -61,7 +59,7 @@
 
   .error {
     --input-margin-bottom: 0;
-    --input-error-color: var(--error);
+    --input-error-color: var(--negative-emphasis);
   }
 
   .error-message {
@@ -74,20 +72,14 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    color: var(--error);
+    color: var(--negative-emphasis);
 
     span {
-      color: var(--gray-600);
+      color: var(--background-contrast);
     }
 
     @include media.min-width(medium) {
       padding: 0 var(--padding-2x);
-    }
-
-    &.dark {
-      span {
-        color: var(--gray-400);
-      }
     }
   }
 </style>
