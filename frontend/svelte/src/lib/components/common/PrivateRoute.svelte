@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { AuthStore } from "../../stores/auth.store";
   import { authStore } from "../../stores/auth.store";
-  import { onDestroy, SvelteComponent } from "svelte";
+  import { onDestroy } from "svelte";
   import Route from "./Route.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { routeContext, routePath } from "../../utils/route.utils";

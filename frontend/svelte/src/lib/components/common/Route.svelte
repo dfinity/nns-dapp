@@ -4,7 +4,7 @@
   import { routeStore } from "../../stores/route.store";
   import type { RouteStore } from "../../stores/route.store";
   import { onDestroy } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
+  import type { AppPath } from "../../constants/routes.constants";
   import RouteModule from "./RouteModule.svelte";
   import { isRoutePath } from "../../utils/app-path.utils";
 

@@ -19,7 +19,7 @@
 <SplitPane bind:sticky>
   <Header slot="header">
     <svelte:fragment slot="start">
-      {#if back}
+      {#if back && $layoutBackStore !== undefined}
         <Back on:nnsBack={$layoutBackStore} />
       {:else}
         <MenuButton bind:open />

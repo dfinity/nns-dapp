@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy } from "svelte";
   import {
     routePathProposalId,
