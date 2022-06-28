@@ -65,7 +65,7 @@
 <style lang="scss">
   @use "../../themes/mixins/text";
   @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   li.hidden {
     visibility: hidden;

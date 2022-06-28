@@ -19,16 +19,6 @@ describe("Input", () => {
     expect(input).not.toBeNull();
   });
 
-  it("should render a dark input", () => {
-    const { container } = render(Input, {
-      props: { ...props, theme: "dark" },
-    });
-
-    const inputContainer: HTMLDivElement | null =
-      container.querySelector(".input-block.dark");
-    expect(inputContainer).not.toBeNull();
-  });
-
   it("should render a placeholder", () => {
     const { getByText } = render(Input, {
       props,

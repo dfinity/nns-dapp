@@ -51,7 +51,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .wizard-wrapper.wrapper {
     justify-content: space-between;

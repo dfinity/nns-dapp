@@ -4,7 +4,7 @@
   import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
 </script>
 
-<Modal on:nnsClose theme="dark" size="big">
+<Modal on:nnsClose size="big">
   <span slot="title">{$i18n.neurons.title}</span>
 
   <div>

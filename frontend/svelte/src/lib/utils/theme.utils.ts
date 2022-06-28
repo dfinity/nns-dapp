@@ -33,9 +33,8 @@ export const applyTheme = ({
 
   documentElement.setAttribute("theme", theme);
 
-  const color: string = getComputedStyle(documentElement).getPropertyValue(
-    "--gray-50-background"
-  );
+  const color: string =
+    getComputedStyle(documentElement).getPropertyValue("--card-background");
 
   // Update theme-color for mobile devices to customize the display of the page or of the surrounding user interface
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color

@@ -35,7 +35,7 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card.scss";
+  @use "../../themes/mixins/card";
   .actions {
     display: flex;
     justify-content: flex-end;

@@ -29,9 +29,5 @@
       line-height: 1;
       margin-bottom: var(--padding);
     }
-
-    span {
-      color: var(--gray-50);
-    }
   }
 </style>

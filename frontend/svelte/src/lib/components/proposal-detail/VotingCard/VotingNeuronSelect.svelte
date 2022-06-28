@@ -35,7 +35,6 @@
         inputId={`${neuron.neuronId}`}
         checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
         on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        theme="dark"
         text="block"
         selector="neuron-checkbox"
       >
@@ -65,7 +64,6 @@
     justify-content: space-between;
 
     font-size: var(--font-size-h4);
-    color: var(--gray-50);
     border-bottom: 1px solid currentColor;
 
     // hide voting-power-headline because of the layout
@@ -130,7 +128,6 @@
 
     border-top: 1px solid currentColor;
 
-    color: var(--gray-50);
     text-align: right;
     font-size: var(--font-size-h5);
 
