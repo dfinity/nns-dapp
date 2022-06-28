@@ -114,9 +114,9 @@ button {
   }
 
   &.danger {
-    --background-color-button: var(--pink);
-    --background-color-button-tint: var(--pink-tint);
-    --color-button: var(--pink-contrast);
+    --background-color-button: var(--negative-emphasis-light);
+    --background-color-button-tint: var(--negative-emphasis-light-tint);
+    --color-button: var(--negative-emphasis-light-contrast);
   }
 
   &.warning {

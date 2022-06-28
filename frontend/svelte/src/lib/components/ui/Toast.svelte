@@ -107,10 +107,10 @@
     }
 
     &.error {
-      background: var(--pink);
-      color: var(--pink-contrast);
-      --scrollbar-background: #ffa3c5;
-      --scrollbar-thumb: #a9054c;
+      background: var(--negative-emphasis-light);
+      color: var(--negative-emphasis-light-contrast);
+      --scrollbar-background: var(--negative-emphasis-light-tint);
+      --scrollbar-thumb: var(--negative-emphasis-light);
     }
 
     &.warn {

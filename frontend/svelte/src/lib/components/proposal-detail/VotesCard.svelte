@@ -128,7 +128,7 @@
     .progressbar {
       position: relative;
       height: 10px;
-      background: var(--pink);
+      background: var(--negative-emphasis-light);
 
       .progressbar-value {
         position: absolute;
