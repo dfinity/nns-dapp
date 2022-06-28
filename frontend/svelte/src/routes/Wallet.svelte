@@ -28,7 +28,7 @@
   } from "../lib/types/selected-account.context";
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
-  import {layoutBackStore} from '../lib/stores/layout.store';
+  import { layoutBackStore } from "../lib/stores/layout.store";
 
   const goBack = () =>
     routeStore.navigate({
@@ -133,10 +133,10 @@
 <Footer>
   <Toolbar>
     <button
-            class="primary"
-            on:click={() => (showNewTransactionModal = true)}
-            disabled={$selectedAccountStore.account === undefined || $busy}
-    >{$i18n.accounts.new_transaction}</button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      >{$i18n.accounts.new_transaction}</button
     >
   </Toolbar>
 </Footer>
