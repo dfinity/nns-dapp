@@ -1,10 +1,10 @@
-import { browser } from "../constants/environment.constants";
 import { Theme } from "../types/theme";
+import { isNode } from "./dev.utils";
 import { enumFromStringExists } from "./enum.utils";
 
 export const initTheme = (): Theme => {
   // Jest NodeJS environment has no document
-  if (!browser) {
+  if (isNode()) {
     return Theme.DARK;
   }
 

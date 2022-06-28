@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "../lib/stores/auth.store";
@@ -46,65 +46,64 @@
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.neurons}</svelte:fragment>
-  <section data-tid="neurons-body">
-    <p>{$i18n.neurons.text}</p>
+<section data-tid="neurons-body">
+  <p>{$i18n.neurons.text}</p>
 
-    <p>
-      {$i18n.neurons.principal_is}
-      {principalText}
-    </p>
+  <p>
+    {$i18n.neurons.principal_is}
+    {principalText}
+  </p>
 
-    {#if isLoading}
-      <SkeletonCard />
-      <SkeletonCard />
-    {:else}
-      {#each $sortedNeuronStore as neuron}
-        <NeuronCard
-          role="link"
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
-          {neuron}
-        />
-      {/each}
-    {/if}
-  </section>
-  <svelte:fragment slot="footer">
-    <Toolbar>
+  {#if isLoading}
+    <SkeletonCard />
+    <SkeletonCard />
+  {:else}
+    {#each $sortedNeuronStore as neuron}
+      <NeuronCard
+        role="link"
+        ariaLabel={$i18n.neurons.aria_label_neuron_card}
+        on:click={goToNeuronDetails(neuron.neuronId)}
+        {neuron}
+      />
+    {/each}
+  {/if}
+</section>
+
+<Footer>
+  <Toolbar>
+    <button
+      data-tid="stake-neuron-button"
+      class="primary full-width"
+      on:click={() => openModal("stake-neuron")}
+      >{$i18n.neurons.stake_neurons}</button
+    >
+    {#if enoughNeuronsToMerge}
       <button
-        data-tid="stake-neuron-button"
+        data-tid="merge-neurons-button"
         class="primary full-width"
-        on:click={() => openModal("stake-neuron")}
-        >{$i18n.neurons.stake_neurons}</button
+        on:click={() => openModal("merge-neurons")}
+        >{$i18n.neurons.merge_neurons}</button
       >
-      {#if enoughNeuronsToMerge}
+    {:else}
+      <Tooltip id="merge-neurons-info" text={$i18n.neurons.need_two_to_merge}>
         <button
+          disabled
           data-tid="merge-neurons-button"
           class="primary full-width"
           on:click={() => openModal("merge-neurons")}
           >{$i18n.neurons.merge_neurons}</button
         >
-      {:else}
-        <Tooltip id="merge-neurons-info" text={$i18n.neurons.need_two_to_merge}>
-          <button
-            disabled
-            data-tid="merge-neurons-button"
-            class="primary full-width"
-            on:click={() => openModal("merge-neurons")}
-            >{$i18n.neurons.merge_neurons}</button
-          >
-        </Tooltip>
-      {/if}
-    </Toolbar>
-  </svelte:fragment>
-  {#if showModal === "stake-neuron"}
-    <CreateNeuronModal on:nnsClose={closeModal} />
-  {/if}
-  {#if showModal === "merge-neurons"}
-    <MergeNeuronsModal on:nnsClose={closeModal} />
-  {/if}
-</Layout>
+      </Tooltip>
+    {/if}
+  </Toolbar>
+</Footer>
+
+{#if showModal === "stake-neuron"}
+  <CreateNeuronModal on:nnsClose={closeModal} />
+{/if}
+{#if showModal === "merge-neurons"}
+  <MergeNeuronsModal on:nnsClose={closeModal} />
+{/if}
 
 <style lang="scss">
   p:last-of-type {

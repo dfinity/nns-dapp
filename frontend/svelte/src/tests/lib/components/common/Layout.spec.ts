@@ -4,17 +4,28 @@
 
 import { fireEvent, render } from "@testing-library/svelte";
 import Layout from "../../../../lib/components/common/Layout.svelte";
+import { layoutTitleStore } from "../../../../lib/stores/layout.store";
 import en from "../../../mocks/i18n.mock";
 import LayoutTest from "./LayoutTest.svelte";
 
 describe("Layout", () => {
   describe("Main layout", () => {
+    beforeAll(() => layoutTitleStore.set("the header"));
+
+    afterAll(() => layoutTitleStore.set(""));
+
     it("should render a menu button", () => {
       const { getByTestId } = render(Layout);
       const button = getByTestId("menu");
       expect(button).not.toBeNull();
       expect(button).toBeVisible();
       expect(button.getAttribute("aria-label")).toEqual(en.header.menu);
+    });
+
+    it("should render a header", () => {
+      const { getByText } = render(Layout);
+
+      expect(getByText("the header")).toBeInTheDocument();
     });
   });
 
@@ -25,9 +36,7 @@ describe("Layout", () => {
     beforeEach(() => {
       const rendered = render(LayoutTest, {
         props: {
-          header: "the header",
           content: "the content",
-          button: "the button",
           spy: spyBackClick,
         },
       });
@@ -36,18 +45,8 @@ describe("Layout", () => {
       queryByTestId = rendered.queryByTestId;
     });
 
-    it("should render a header", () => {
-      expect(getByText("the header")).toBeInTheDocument();
-    });
-
     it("should render a content", () => {
       expect(getByText("the content")).toBeInTheDocument();
-    });
-
-    it("should render a button in the footer", () => {
-      expect(
-        container.querySelector("footer").querySelector("button").innerHTML
-      ).toBe("the button");
     });
 
     it("should contain a back button", () => {
