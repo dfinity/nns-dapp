@@ -7,7 +7,8 @@
   } from "../../stores/snsProjects.store";
   import { onMount } from "svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import SnsProject from "./SNSProject.svelte";
+  import SNSProjectCard from "./SNSProjectCard.svelte";
+  import CardGrid from "../ui/CardGrid.svelte";
 
   let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
@@ -27,13 +28,17 @@
 <h2>{$i18n.sns_launchpad.projects}</h2>
 
 {#if loading}
-  <SkeletonCard />
-  <SkeletonCard />
+  <CardGrid>
+    <!-- TODO L2-774: SkeletonProjectCard -->
+    <SkeletonCard />
+    <SkeletonCard />
+  </CardGrid>
 {:else if projects !== undefined}
-  {#each projects as project}
-    <SnsProject {project} />
-  {/each}
-
+  <CardGrid>
+    {#each projects as project}
+      <SNSProjectCard {project} />
+    {/each}
+  </CardGrid>
   {#if projects.length === 0}
     <p>{$i18n.sns_launchpad.no_projects}</p>
   {/if}
