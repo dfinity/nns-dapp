@@ -72,4 +72,7 @@
   @import "./lib/themes/button.scss";
   @import "./lib/themes/link.scss";
   @import "./lib/themes/modal.scss";
+  @import "./lib/themes/themes/dark.scss";
+  @import "./lib/themes/themes/light.scss";
+  @import "./lib/themes/colors.scss";
 </style>

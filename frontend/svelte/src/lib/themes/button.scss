@@ -37,15 +37,14 @@ button {
 
     border-radius: 50%;
 
-    @include effect.ripple-effect(--gray-50-background);
+    @include effect.ripple-effect(--card-background);
   }
 
   &.primary,
   &.danger,
-  &.warning,
-  &.input-button {
+  &.warning {
     border-radius: 50px;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+    box-shadow: var(--interaction-box-shadow);
 
     position: relative;
     min-height: var(--button-min-height);
@@ -65,23 +64,22 @@ button {
     }
   }
 
-  &.primary,
-  &.input-button {
+  &.primary {
     &[disabled],
     &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
+      background: var(--disable);
+      color: var(--disable-contrast);
       cursor: default;
     }
 
-    background: var(--blue-500);
-    color: var(--blue-500-contrast);
+    background: var(--primary);
+    color: var(--primary-contrast);
 
-    @include effect.ripple-effect(--blue-500-tint);
+    @include effect.ripple-effect(--primary-tint);
 
     &:focus {
-      background: var(--blue-500-tint);
-      @include effect.ripple-effect(--blue-500-tint);
+      background: var(--primary-tint);
+      @include effect.ripple-effect(--primary-tint);
     }
   }
 
@@ -89,46 +87,28 @@ button {
     padding: var(--padding) var(--padding-2x);
 
     &:hover {
-      background: var(--blue-500-tint);
-    }
-  }
-
-  &.input-button {
-    padding: var(--padding-0_5x) var(--padding-1_5x);
-
-    font-size: var(--font-size-ultra-small);
-
-    @include media.min-width(medium) {
-      padding: var(--padding-0_5x) var(--padding-2x);
-
-      font-size: var(--font-size-small);
-      font-weight: bold;
-    }
-
-    // shadow animation
-    transition: box-shadow var(--animation-time-normal);
-    box-shadow: 1px 2px 2px 0 rgba(var(--background-rgb), 0.75);
-    &:hover {
-      box-shadow: 2px 3px 3px 0 rgba(var(--background-rgb), 0.65);
+      background: var(--primary-tint);
     }
   }
 
   &.danger {
-    --background-color-button: var(--pink);
-    --background-color-button-tint: var(--pink-tint);
-    --color-button: var(--pink-contrast);
+    --background-color-button: var(--negative-emphasis-light);
+    --background-color-button-contrast: var(--negative-emphasis-light-contrast);
+    --background-color-button-tint: var(--negative-emphasis-light-tint);
+    --color-button: var(--negative-emphasis-light-contrast);
   }
 
   &.warning {
-    --background-color-button: var(--yellow-500);
-    --background-color-button-tint: var(--yellow-500-tint);
+    --background-color-button: var(--warning-emphasis);
+    --background-color-button-contrast: var(--warning-emphasis-contrast);
+    --background-color-button-tint: var(--warning-emphasis-tint);
     --color-button: var(--background-contrast);
   }
 
   &.danger,
   &.warning {
     background: var(--background-color-button);
-    color: var(--color-button);
+    color: var(--background-color-button-contrast);
 
     font-size: var(--font-size-small);
 
@@ -138,8 +118,8 @@ button {
 
     &[disabled],
     &[disabled]:hover {
-      background: var(--gray-400);
-      color: var(--gray-600);
+      background: var(--disable);
+      color: var(--disable-contrast);
       cursor: default;
     }
 

@@ -26,37 +26,18 @@
     padding: var(--padding-2x);
 
     &.selected {
-      background: var(--blue-500);
-      color: var(--blue-500-contrast);
+      color: var(--primary);
+      background: inherit;
 
       &:focus,
       &:hover {
-        background: var(--blue-500-tint);
+        background: var(--background-shade);
       }
     }
 
     &:not(.selected):focus,
     &:not(.selected):hover {
-      background: var(--background-tint);
-    }
-  }
-
-  @include media.light-theme() {
-    a {
-      &:not(.selected):focus,
-      &:not(.selected):hover {
-        background: var(--background-shade);
-      }
-
-      &.selected {
-        color: var(--blue-500);
-        background: inherit;
-
-        &:focus,
-        &:hover {
-          background: var(--background-shade);
-        }
-      }
+      background: var(--background-shade);
     }
   }
 

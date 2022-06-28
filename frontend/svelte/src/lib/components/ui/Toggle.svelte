@@ -34,7 +34,7 @@
   }
 
   .toggle label {
-    background-color: var(--gray-50-background);
+    background-color: var(--card-background-contrast);
     border-radius: 50px;
     cursor: pointer;
     display: inline-block;
@@ -56,8 +56,7 @@
     width: var(--padding-2x);
     height: var(--padding-2x);
 
-    background: white;
-    box-shadow: var(--box-shadow);
+    background: var(--card-background);
   }
 
   .toggle input[type="checkbox"]:checked ~ label::after {

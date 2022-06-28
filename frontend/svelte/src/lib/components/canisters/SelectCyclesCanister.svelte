@@ -73,7 +73,6 @@
         placeholderLabelKey="core.icp"
         inputType="icp"
         name="icp-amount"
-        theme="dark"
         bind:value={amount}
         on:focus={() => (isChanging = "icp")}
         on:blur={() => (isChanging = undefined)}
@@ -83,7 +82,6 @@
         placeholderLabelKey="canisters.t_cycles"
         inputType="icp"
         name="t-cycles-amount"
-        theme="dark"
         bind:value={amountCycles}
         on:focus={() => (isChanging = "tCycles")}
         on:blur={() => (isChanging = undefined)}

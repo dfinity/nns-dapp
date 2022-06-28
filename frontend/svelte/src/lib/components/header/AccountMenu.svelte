@@ -46,6 +46,6 @@
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--blue-500);
+    @include header.button(--primary);
   }
 </style>

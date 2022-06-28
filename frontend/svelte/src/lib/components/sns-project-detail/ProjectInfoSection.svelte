@@ -22,13 +22,13 @@
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_name}</svelte:fragment
       >
-      <span slot="value" class="contrast">Tetris Token</span>
+      <span slot="value">Tetris Token</span>
     </KeyValuePair>
     <KeyValuePair>
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
       >
-      <span slot="value" class="contrast">TET</span>
+      <span slot="value">TET</span>
     </KeyValuePair>
     <!-- TODO: Expandable Component -->
     <KeyValuePair info>
@@ -63,9 +63,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .contrast {
-    color: var(--gray-50);
   }
 </style>

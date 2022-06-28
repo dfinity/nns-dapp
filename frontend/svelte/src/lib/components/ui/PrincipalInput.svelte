@@ -24,7 +24,6 @@
   {placeholderLabelKey}
   {name}
   bind:value={address}
-  theme="dark"
   errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
   on:blur={showErrorIfAny}
 />

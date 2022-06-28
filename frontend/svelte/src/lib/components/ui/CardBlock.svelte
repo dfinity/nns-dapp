@@ -28,14 +28,14 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   article {
     text-decoration: none;
 
-    background: var(--background);
-    color: var(--gray-50);
-    box-shadow: var(--card-box-shadow);
+    background: var(--card-background);
+    color: var(--card-background-contrast);
+    box-shadow: var(--box-shadow);
 
     padding: var(--padding-2x);
 

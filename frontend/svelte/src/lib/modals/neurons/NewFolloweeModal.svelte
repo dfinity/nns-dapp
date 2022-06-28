@@ -86,7 +86,7 @@
   };
 </script>
 
-<Modal theme="dark" size="big" on:nnsClose>
+<Modal size="big" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
@@ -97,7 +97,6 @@
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
-          theme="dark"
         />
         <button
           class="primary small"
