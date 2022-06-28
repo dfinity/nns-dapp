@@ -24,8 +24,8 @@
     }
 
     &.success {
-      --badge-color: var(--green-500-contrast);
-      --badge-background: var(--green-500);
+      --badge-color: var(--positive-emphasis-contrast);
+      --badge-background: var(--positive-emphasis);
     }
   }
 

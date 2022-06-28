@@ -51,10 +51,10 @@
     }
 
     &.plus-sign {
-      color: var(--green-500-tint);
+      color: var(--positive-emphasis-tint);
 
       span:first-of-type {
-        color: var(--green-500);
+        color: var(--positive-emphasis);
       }
     }
   }

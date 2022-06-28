@@ -84,15 +84,15 @@
     height: calc(8.5 * var(--padding));
 
     border-radius: var(--border-radius);
-    background: var(--green-500);
-    color: var(--green-500-contrast);
+    background: var(--positive-emphasis);
+    color: var(--positive-emphasis-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-500-shade);
+    --scrollbar-thumb: var(--positive-emphasis-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
