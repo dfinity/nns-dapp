@@ -7,7 +7,7 @@
   import AuthLayout from "../common/AuthLayout.svelte";
   import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
-  import {isNode} from '../../utils/dev.utils';
+  import { isNode } from "../../utils/dev.utils";
 
   export let path: AppPath;
 

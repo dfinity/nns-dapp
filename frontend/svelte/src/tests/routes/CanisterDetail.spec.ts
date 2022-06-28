@@ -13,7 +13,6 @@ import { canistersStore } from "../../lib/stores/canisters.store";
 import { routeStore } from "../../lib/stores/route.store";
 import CanisterDetail from "../../routes/CanisterDetail.svelte";
 import { mockCanister, mockCanisterDetails } from "../mocks/canisters.mock";
-import en from "../mocks/i18n.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);

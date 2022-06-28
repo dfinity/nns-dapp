@@ -1,6 +1,6 @@
 import { Theme } from "../types/theme";
+import { isNode } from "./dev.utils";
 import { enumFromStringExists } from "./enum.utils";
-import {isNode} from './dev.utils';
 
 export const initTheme = (): Theme => {
   // Jest NodeJS environment has no document
