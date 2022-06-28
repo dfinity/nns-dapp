@@ -9,9 +9,6 @@
 
   let open: boolean;
   let sticky: boolean;
-
-  let back: boolean = false;
-  $: back = $layoutBackStore !== undefined;
 </script>
 
 <Banner />
@@ -19,7 +16,7 @@
 <SplitPane bind:sticky>
   <Header slot="header">
     <svelte:fragment slot="start">
-      {#if back && $layoutBackStore !== undefined}
+      {#if $layoutBackStore !== undefined}
         <Back on:nnsBack={$layoutBackStore} />
       {:else}
         <MenuButton bind:open />
