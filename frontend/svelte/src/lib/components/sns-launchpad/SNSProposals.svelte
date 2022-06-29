@@ -5,8 +5,8 @@
   import { loadSnsProposals } from "../../services/proposals.services";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
-  import ProposalCard from "../proposals/ProposalCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import SnsProposalCard from "./SNSProposalCard.svelte";
 
   let loading: boolean = false;
   let proposals: ProposalInfo[] | undefined = undefined;
@@ -15,7 +15,8 @@
     loading = true;
 
     try {
-      proposals = await loadSnsProposals();
+      // TODO L2-751: remove slice
+      proposals = ((await loadSnsProposals()) ?? []).slice(0, 5);
     } catch (err) {
       toastsStore.error({
         labelKey: "Loading sns proposals failed",
@@ -42,7 +43,7 @@
     <!-- CardGrid -->
     <div>
       {#each proposals as proposalInfo (proposalInfo.id)}
-        <ProposalCard {proposalInfo} />
+        <SnsProposalCard {proposalInfo} />
       {/each}
     </div>
   {/if}

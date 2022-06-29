@@ -165,11 +165,11 @@ const findProposals = async ({
 // TODO L2-751: switch to real data
 export const loadSnsProposals = async (): Promise<ProposalInfo[]> => {
   const identity: Identity = await getIdentity();
-  const topics: Topic[] = [Topic.SubnetManagement];
   const filters: ProposalsFiltersStore = {
     ...get(proposalsFiltersStore),
-    topics,
+    topics: [Topic.Governance],
     rewards: [],
+    // rewards: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES],
     status: [],
     excludeVotedProposals: false,
     lastAppliedFilter: undefined,
