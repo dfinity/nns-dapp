@@ -6,6 +6,9 @@
   import Back from "../header/Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
   import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
+  import MainContentWrapper from "../ui/MainContentWrapper.svelte";
+
+  export let sns: boolean = false;
 
   let open: boolean;
   let sticky: boolean;
@@ -28,15 +31,7 @@
 
   <Menu slot="menu" bind:open {sticky} />
 
-  <main>
+  <MainContentWrapper {sns}>
     <slot />
-  </main>
+  </MainContentWrapper>
 </SplitPane>
-
-<style lang="scss">
-  main {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-</style>

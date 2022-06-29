@@ -1,17 +1,26 @@
-<section>
+<script lang="ts">
+  export let sns: boolean = false;
+</script>
+
+<main class:sns>
   <slot />
-</section>
+</main>
 
 <style lang="scss">
   @use "../../themes/mixins/media";
-  section {
-    padding: var(--padding-4x) var(--padding-2x);
-    max-width: 1300px;
-    box-sizing: border-box;
+  main {
     height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-    @include media.min-width(medium) {
-      padding: var(--padding-4x);
+    &.sns {
+      padding: var(--padding-4x) var(--padding-2x);
+      max-width: 1300px;
+      box-sizing: border-box;
+
+      @include media.min-width(medium) {
+        padding: var(--padding-4x);
+      }
     }
   }
 </style>
