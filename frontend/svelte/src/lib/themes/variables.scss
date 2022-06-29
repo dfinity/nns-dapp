@@ -35,6 +35,8 @@
   --modal-big-width: calc(100% - var(--padding-2x));
   --modal-max-height: 630px;
 
+  --current-box-inset-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4) inset;
+
   @include media.min-width(medium) {
     --modal-small-width: 500px;
     --modal-big-width: 600px;

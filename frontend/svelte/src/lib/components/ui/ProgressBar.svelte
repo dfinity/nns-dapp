@@ -8,14 +8,19 @@
 
 <div class="wrapper">
   <slot name="top" />
-  <progress {max} {value} class={color} />
+  <progress
+    {max}
+    {value}
+    class={color}
+    aria-valuemax={max}
+    aria-valuenow={value}
+  />
   <slot name="bottom" />
 </div>
 
 <style lang="scss">
   div {
-    --current-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4) inset;
-    --current-height: 10px;
+    --current-height: var(--padding);
   }
 
   .wrapper {
@@ -27,16 +32,16 @@
   // Target only FF
   @supports (-moz-appearance: none) {
     progress {
-      background-color: #fff;
+      background-color: var(--background);
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-shadow);
+      box-shadow: var(--current-box-inset-shadow);
       border: 0;
 
       &::-moz-progress-bar {
         border-radius: var(--current-height);
-        box-shadow: var(--current-box-shadow);
+        box-shadow: var(--current-box-inset-shadow);
       }
 
       &.yellow {
@@ -67,12 +72,12 @@
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-shadow);
+      box-shadow: var(--current-box-inset-shadow);
     }
 
     &::-webkit-progress-value {
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-shadow);
+      box-shadow: var(--current-box-inset-shadow);
     }
 
     &.yellow {

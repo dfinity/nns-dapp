@@ -36,7 +36,7 @@
           <span
             class="min-indicator triangle up"
             data-tid="commitment-min-indicator"
-            style={`left: ${minIndicatorPosition}px;`}
+            style={`left: calc(${minIndicatorPosition}px - var(--padding));`}
           />
         </div>
         <p>
@@ -69,13 +69,13 @@
   }
 
   .indicator-wrapper {
-    height: 12px;
+    height: var(--padding-1_5x);
 
     position: relative;
   }
 
   .triangle {
-    --triangle-side: 8px solid transparent;
+    --triangle-side: var(--padding) solid transparent;
 
     display: block;
 
@@ -86,18 +86,18 @@
 
     &.up {
       // Borders do not support gradients
-      border-bottom: 12px solid var(--yellow-400);
+      border-bottom: var(--padding-1_5x) solid var(--yellow-400);
     }
 
     &.down {
       // Borders do not support gradients
-      border-top: 12px solid var(--header-background-fallback);
+      border-top: var(--padding-1_5x) solid var(--header-background-fallback);
     }
   }
 
   .max-indicator {
     position: absolute;
-    right: 0;
+    right: calc(var(--padding) * -1);
   }
 
   .min-indicator {
