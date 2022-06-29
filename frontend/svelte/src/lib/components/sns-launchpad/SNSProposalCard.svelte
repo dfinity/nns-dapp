@@ -21,7 +21,7 @@
   };
 </script>
 
-<Card role="link" on:click={showProposal} testId="proposal-card">
+<Card role="link" on:click={showProposal} testId="sns-proposal-card">
   <h2 slot="start">{title}</h2>
 
   <VotesProgress {proposalInfo} />
