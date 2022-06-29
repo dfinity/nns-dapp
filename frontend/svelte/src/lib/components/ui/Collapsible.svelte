@@ -1,6 +1,8 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import { i18n } from "../../stores/i18n";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let id: string | undefined = undefined;
   export let initiallyExpanded: boolean = false;
@@ -49,6 +51,8 @@
 
   // recalculate max-height after DOM update
   afterUpdate(updateMaxHeight);
+  let toggleView: string;
+  $: toggleView = expanded ? "collpase" : "expand";
 </script>
 
 <div
@@ -68,7 +72,9 @@
     data-tid="collapsible-expand-button"
     aria-expanded={expanded}
     aria-controls={id}
-    title={expanded ? "collapse summary" : "expand summary"}
+    title={replacePlaceholders($i18n.proposal_detail.summary_toggle_view, {
+      $toggleView: toggleView
+    })}
   >
     <IconExpandMore />
   </button>

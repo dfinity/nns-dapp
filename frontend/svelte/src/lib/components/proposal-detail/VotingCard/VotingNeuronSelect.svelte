@@ -8,6 +8,7 @@
   } from "../../../utils/proposals.utils";
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -38,14 +39,19 @@
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id" aria-label={`neuron ${neuron.neuronId}`}
+        <span class="neuron-id" aria-label={replacePlaceholders($i18n.proposal_detail__vote.cast_vote_neuronId, {
+          $neuronId : `${neuron.neuronId}`,
+        })}
           >{`${neuron.neuronId}`}</span
         >
         <span
           class="neuron-voting-power"
-          aria-label={`voting power ${formatVotingPower(
-            getVotingPower({ neuron, proposal: proposalInfo })
-          )}`}
+          aria-label={replacePlaceholders($i18n.proposal_detail__vote.cast_vote_votingPower, {
+            $votingPower: formatVotingPower(
+              getVotingPower({ neuron, proposal: proposalInfo })
+              )
+            }
+          )}
           >{`${formatVotingPower(
             getVotingPower({ neuron, proposal: proposalInfo })
           )}`}</span
