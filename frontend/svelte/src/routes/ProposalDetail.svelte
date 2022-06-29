@@ -23,6 +23,8 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
+  import { get } from "svelte/store";
+  import Route from "../lib/components/common/Route.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -80,8 +82,12 @@
   });
 
   const goBack = () => {
+    const { lastPath } = get(routeStore);
     routeStore.navigate({
-      path: AppPath.Proposals,
+      path:
+        lastPath === AppPath.SNSLaunchpad
+          ? AppPath.SNSLaunchpad
+          : AppPath.Proposals,
     });
   };
 
