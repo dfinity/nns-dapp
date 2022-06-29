@@ -23,6 +23,8 @@
 
 <Card role="link" on:click={showProposal} testId="proposal-card">
   <h2 slot="start">{title}</h2>
+
+  <VotesProgress {proposalInfo} />
 </Card>
 
 <style lang="scss">
