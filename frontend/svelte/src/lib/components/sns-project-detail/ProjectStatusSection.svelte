@@ -6,6 +6,7 @@
   import Badge from "../ui/Badge.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
+  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
 
   const mockIcp1 = ICP.fromString("1327") as ICP;
   const mockIcp2 = ICP.fromString("20") as ICP;
@@ -27,17 +28,14 @@
       </svelte:fragment>
     </KeyValuePair>
     <div data-tid="sns-project-commitment-progress">
-      <ProgressBar value={1327} max={3000}>
-        <p slot="top" class="right">
-          {$i18n.sns_project_detail.max_commitment}
-        </p>
-        <p slot="bottom">
-          {$i18n.sns_project_detail.min_commitment_goal}
-        </p>
-      </ProgressBar>
+      <CommitmentProgressBar
+        value={BigInt(1327)}
+        max={BigInt(3000)}
+        minimumIndicator={BigInt(1500)}
+      />
     </div>
     <div>
-      <ProgressBar value={85} max={100}>
+      <ProgressBar value={85} max={100} color="blue">
         <p slot="top" class="push-apart">
           <span>
             {$i18n.sns_project_detail.deadline}
