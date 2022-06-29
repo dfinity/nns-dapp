@@ -28,7 +28,7 @@
         documentElement: { style },
       } = document;
 
-      if (visible) {
+      if (banner && visible) {
         style.setProperty("--header-offset", "50px");
         return;
       }
