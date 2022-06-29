@@ -30,12 +30,6 @@ describe("SNSProjects", () => {
     expect(loadSnsFullProjects).toBeCalled();
   });
 
-  it("should render a title", () => {
-    const { queryByText } = render(SNSProjects);
-
-    expect(queryByText(en.sns_launchpad.projects)).toBeInTheDocument();
-  });
-
   it("should render projects", () => {
     const principal = mockSnsSummaryList[0].rootCanisterId;
 

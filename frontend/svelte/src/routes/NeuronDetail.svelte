@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { onDestroy } from "svelte";
-  import Layout from "../lib/components/common/Layout.svelte";
   import {
     routePathNeuronId,
     loadNeuron,
@@ -13,13 +12,14 @@
   import NeuronProposalsCard from "../lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "../lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
-  import { i18n } from "../lib/stores/i18n";
   import { routeStore } from "../lib/stores/route.store";
   import { neuronsStore } from "../lib/stores/neurons.store";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { getNeuronById } from "../lib/utils/neuron.utils";
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -68,10 +68,11 @@
       path: AppPath.Neurons,
     });
   };
+
+  layoutBackStore.set(goBack);
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{$i18n.neuron_detail.title}</svelte:fragment>
+<MainContentWrapper>
   <section data-tid="neuron-detail">
     {#if neuron}
       <NeuronMetaInfoCard {neuron} />
@@ -89,4 +90,4 @@
       <SkeletonCard cardType="info" />
     {/if}
   </section>
-</Layout>
+</MainContentWrapper>

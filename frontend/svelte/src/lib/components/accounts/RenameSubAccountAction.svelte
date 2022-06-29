@@ -42,7 +42,6 @@
       placeholderLabelKey="accounts.rename_new_name_placeholder"
       name="newAccountName"
       bind:value={newAccountName}
-      theme="dark"
       disabled={$busy}
     />
   </div>
@@ -59,7 +58,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   form {
     @include modal.wizard-single-input-form;

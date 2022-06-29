@@ -72,13 +72,12 @@
     display: flex;
     flex-direction: column;
 
-    background: var(--background);
-    color: var(--background-contrast);
+    background: var(--menu-background);
+    color: var(--menu-background-contrast);
+    box-shadow: var(--menu-box-shadow);
 
     width: var(--menu-width);
     max-width: 100vw;
-
-    box-shadow: 4px 0 16px rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding-4x) 0 0;
 

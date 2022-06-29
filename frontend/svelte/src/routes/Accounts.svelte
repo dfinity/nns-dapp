@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "../lib/stores/accounts.store";
@@ -15,6 +14,8 @@
   import { sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   let accounts: AccountsStore | undefined;
 
@@ -43,8 +44,7 @@
   }
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.accounts}</svelte:fragment>
+<MainContentWrapper>
   <section data-tid="accounts-body">
     <div class="title">
       <h1>{$i18n.accounts.title}</h1>
@@ -82,8 +82,15 @@
     {/if}
   </section>
 
-  <svelte:fragment slot="footer">
-    {#if accounts}
+  {#if modal === "AddAccountModal"}
+    <AddAcountModal on:nnsClose={closeModal} />
+  {/if}
+  {#if modal === "NewTransaction"}
+    <NewTransactionModal on:nnsClose={closeModal} />
+  {/if}
+
+  {#if accounts}
+    <Footer>
       <Toolbar>
         <button
           class="primary full-width"
@@ -97,18 +104,12 @@
           data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
         >
       </Toolbar>
-    {/if}
-  </svelte:fragment>
-  {#if modal === "AddAccountModal"}
-    <AddAcountModal on:nnsClose={closeModal} />
+    </Footer>
   {/if}
-  {#if modal === "NewTransaction"}
-    <NewTransactionModal on:nnsClose={closeModal} />
-  {/if}
-</Layout>
+</MainContentWrapper>
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media.scss";
+  @use "../lib/themes/mixins/media";
 
   .title {
     display: block;

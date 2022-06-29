@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
@@ -14,6 +14,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import CreateOrLinkCanisterModal from "../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   const loadCanisters = async () => {
     try {
@@ -58,8 +59,7 @@
   const closeModal = () => (modal = undefined);
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.canisters}</svelte:fragment>
+<MainContentWrapper>
   <section>
     <p>{$i18n.canisters.text}</p>
     <p class="last-info">
@@ -86,7 +86,11 @@
     {/if}
   </section>
 
-  <svelte:fragment slot="footer">
+  {#if modal === "CreateOrLinkCanister"}
+    <CreateOrLinkCanisterModal on:nnsClose={closeModal} />
+  {/if}
+
+  <Footer>
     <Toolbar>
       <button
         data-tid="create-link-canister-button"
@@ -94,11 +98,8 @@
         on:click={openModal}>{$i18n.canisters.create_or_link}</button
       >
     </Toolbar>
-  </svelte:fragment>
-  {#if modal === "CreateOrLinkCanister"}
-    <CreateOrLinkCanisterModal on:nnsClose={closeModal} />
-  {/if}
-</Layout>
+  </Footer>
+</MainContentWrapper>
 
 <style lang="scss">
   .last-info {

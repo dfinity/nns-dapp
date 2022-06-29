@@ -15,7 +15,6 @@
   name="amount"
   bind:value={amount}
   {max}
-  theme="dark"
   inputType="icp"
 >
   <button

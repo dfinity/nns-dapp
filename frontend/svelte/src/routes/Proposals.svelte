@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
@@ -28,6 +27,7 @@
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -146,8 +146,7 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.voting}</svelte:fragment>
+<MainContentWrapper>
   <section data-tid="proposals-tab">
     <p>{$i18n.voting.text}</p>
 
@@ -172,7 +171,7 @@
       </div>
     {/if}
   </section>
-</Layout>
+</MainContentWrapper>
 
 <style lang="scss">
   .spinner {

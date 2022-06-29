@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy } from "svelte";
   import {
     routePathProposalId,
@@ -23,6 +22,9 @@
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import { get } from "svelte/store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -80,10 +82,16 @@
   });
 
   const goBack = () => {
+    const { referrerPath } = get(routeStore);
     routeStore.navigate({
-      path: AppPath.Proposals,
+      path:
+        referrerPath === AppPath.SNSLaunchpad
+          ? AppPath.SNSLaunchpad
+          : AppPath.Proposals,
     });
   };
+
+  layoutBackStore.set(goBack);
 
   onDestroy(() => {
     unsubscribeRouteStore();
@@ -92,9 +100,7 @@
   });
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{$i18n.proposal_detail.title}</svelte:fragment>
-
+<MainContentWrapper>
   <section>
     {#if $proposalInfoStore}
       <ProposalDetailCard proposalInfo={$proposalInfoStore} />
@@ -119,7 +125,7 @@
       </div>
     {/if}
   </section>
-</Layout>
+</MainContentWrapper>
 
 <style lang="scss">
   .loader {

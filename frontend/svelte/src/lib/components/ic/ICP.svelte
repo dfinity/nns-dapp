@@ -27,7 +27,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   div {
     display: inline-grid;
@@ -44,7 +44,6 @@
     &.singleLine span:first-of-type {
       font-weight: normal;
       font-size: var(--font-size-h5);
-      color: var(--gray-50);
     }
 
     &.inheritSize span:first-of-type {
@@ -63,10 +62,10 @@
     }
 
     &.plus-sign {
-      color: var(--green-500-tint);
+      color: var(--positive-emphasis-tint);
 
       span:first-of-type {
-        color: var(--green-500);
+        color: var(--positive-emphasis);
       }
     }
   }

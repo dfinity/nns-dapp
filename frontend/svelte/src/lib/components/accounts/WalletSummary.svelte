@@ -62,7 +62,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .title {
     display: block;
@@ -88,7 +88,6 @@
   .address {
     margin-bottom: var(--padding-4x);
     :global(p:first-of-type) {
-      color: var(--gray-50);
       margin-bottom: var(--padding);
     }
   }

@@ -2,7 +2,7 @@
   import { setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import Layout from "../lib/components/common/Layout.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
@@ -28,11 +28,15 @@
   } from "../lib/types/selected-account.context";
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   const goBack = () =>
     routeStore.navigate({
       path: AppPath.Accounts,
     });
+
+  layoutBackStore.set(goBack);
 
   const reloadTransactions = async (accountIdentifier: AccountIdentifier) =>
     await getAccountTransactions({
@@ -115,9 +119,7 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
-
+<MainContentWrapper>
   <section>
     {#if $selectedAccountStore.account !== undefined}
       <WalletSummary />
@@ -130,7 +132,7 @@
     {/if}
   </section>
 
-  <svelte:fragment slot="footer">
+  <Footer>
     <Toolbar>
       <button
         class="primary"
@@ -139,15 +141,15 @@
         >{$i18n.accounts.new_transaction}</button
       >
     </Toolbar>
-  </svelte:fragment>
-</Layout>
+  </Footer>
 
-{#if showNewTransactionModal}
-  <NewTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
-    selectedAccount={$selectedAccountStore.account}
-  />
-{/if}
+  {#if showNewTransactionModal}
+    <NewTransactionModal
+      on:nnsClose={() => (showNewTransactionModal = false)}
+      selectedAccount={$selectedAccountStore.account}
+    />
+  {/if}
+</MainContentWrapper>
 
 <style lang="scss">
   .actions {

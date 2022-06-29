@@ -1,8 +1,10 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapState } from "../../services/sns.mock";
 
   import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/snsProjects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
@@ -33,14 +35,22 @@
       : project.swapState.myCommitment === undefined
       ? undefined
       : ICP.fromE8s(project.swapState.myCommitment);
+
+  const showProject = () => {
+    routeStore.navigate({
+      path: `${AppPath.SNSProjectDetail}/${project.rootCanisterId.toText()}`,
+    });
+  };
 </script>
 
-<Card role="link">
-  <div slot="start">
+<Card role="link" on:click={showProject}>
+  <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h3>{title}</h3>
   </div>
+
   <p>{description}</p>
+
   <dl>
     <dt>{$i18n.sns_project.deadline}</dt>
     <dd>{secondsToDuration(durationTillDeadline)}</dd>
@@ -52,18 +62,21 @@
 
   <!-- TODO L2-751: handle fetching errors -->
   {#if swapState === undefined}
-    <Spinner size="small" inline />
+    <div class="spinner">
+      <Spinner size="small" inline />
+    </div>
   {/if}
 </Card>
 
 <style lang="scss">
-  div {
+  .title {
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
 
     h3 {
       margin: 0;
+      line-height: var(--line-height-standard);
     }
   }
 
@@ -84,8 +97,17 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--padding);
 
+    dt {
+      // TODO L2-775: use blend color here
+      color: rgba(var(--background-contrast-rgb), 0.6);
+    }
+
     dd {
       text-align: right;
     }
+  }
+
+  .spinner {
+    margin-top: var(--padding);
   }
 </style>

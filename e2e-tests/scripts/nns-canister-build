@@ -6,7 +6,7 @@ DOWNLOAD_DIR="$(realpath ../..)/target/ic"
 # Note: This is the default commit of the IC repo to use; it can be overridden on the command line.
 #       The commit should come from the master branch and should be updated regularly.
 #       The default commit is used in CI, so should be a known, tested value.
-IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+IC_COMMIT=7fcae4939dc6fac179ce3dd25ded6e6b650e2293
 
 help_text() {
   cat <<-EOF
