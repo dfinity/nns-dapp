@@ -19,6 +19,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { getNeuronById } from "../lib/utils/neuron.utils";
   import { layoutBackStore } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -71,20 +72,22 @@
   layoutBackStore.set(goBack);
 </script>
 
-<section data-tid="neuron-detail">
-  {#if neuron}
-    <NeuronMetaInfoCard {neuron} />
-    <NeuronMaturityCard {neuron} />
-    <NeuronFollowingCard {neuron} />
-    {#if IS_TESTNET}
-      <NeuronProposalsCard {neuron} />
+<MainContentWrapper>
+  <section data-tid="neuron-detail">
+    {#if neuron}
+      <NeuronMetaInfoCard {neuron} />
+      <NeuronMaturityCard {neuron} />
+      <NeuronFollowingCard {neuron} />
+      {#if IS_TESTNET}
+        <NeuronProposalsCard {neuron} />
+      {/if}
+      <NeuronHotkeysCard {neuron} />
+      <NeuronVotingHistoryCard {neuron} />
+    {:else}
+      <SkeletonCard size="large" cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
     {/if}
-    <NeuronHotkeysCard {neuron} />
-    <NeuronVotingHistoryCard {neuron} />
-  {:else}
-    <SkeletonCard size="large" cardType="info" />
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
-  {/if}
-</section>
+  </section>
+</MainContentWrapper>

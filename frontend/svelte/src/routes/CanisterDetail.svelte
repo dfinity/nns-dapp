@@ -37,6 +37,7 @@
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import Footer from "../lib/components/common/Footer.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -188,48 +189,50 @@
     $selectedCanisterStore);
 </script>
 
-<section>
-  {#if canisterInfo !== undefined}
-    <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-    <CanisterCardSubTitle canister={canisterInfo} />
-    <div class="actions">
-      <DetachCanisterButton canisterId={canisterInfo.canister_id} />
-    </div>
-  {:else}
-    <div class="loader-title">
-      <SkeletonTitle />
-    </div>
-    <div class="loader-subtitle">
-      <SkeletonParagraph />
-    </div>
-  {/if}
-  {#if canisterDetails !== undefined}
-    <CyclesCard cycles={canisterDetails.cycles} />
-    <ControllersCard />
-  {:else if errorKey !== undefined}
-    <CardInfo testId="canister-details-error-card">
-      <p class="error-message">{translate({ labelKey: errorKey })}</p>
-    </CardInfo>
-  {:else}
-    <SkeletonCard />
-    <SkeletonCard />
-  {/if}
-</section>
+<MainContentWrapper>
+  <section>
+    {#if canisterInfo !== undefined}
+      <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+      <CanisterCardSubTitle canister={canisterInfo} />
+      <div class="actions">
+        <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+      </div>
+    {:else}
+      <div class="loader-title">
+        <SkeletonTitle />
+      </div>
+      <div class="loader-subtitle">
+        <SkeletonParagraph />
+      </div>
+    {/if}
+    {#if canisterDetails !== undefined}
+      <CyclesCard cycles={canisterDetails.cycles} />
+      <ControllersCard />
+    {:else if errorKey !== undefined}
+      <CardInfo testId="canister-details-error-card">
+        <p class="error-message">{translate({ labelKey: errorKey })}</p>
+      </CardInfo>
+    {:else}
+      <SkeletonCard />
+      <SkeletonCard />
+    {/if}
+  </section>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showAddCyclesModal = true)}
-      disabled={canisterInfo === undefined || $busy}
-      >{$i18n.canister_detail.add_cycles}</button
-    >
-  </Toolbar>
-</Footer>
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary"
+        on:click={() => (showAddCyclesModal = true)}
+        disabled={canisterInfo === undefined || $busy}
+        >{$i18n.canister_detail.add_cycles}</button
+      >
+    </Toolbar>
+  </Footer>
 
-{#if showAddCyclesModal}
-  <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
-{/if}
+  {#if showAddCyclesModal}
+    <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
+  {/if}
+</MainContentWrapper>
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";

@@ -6,9 +6,6 @@
   import Back from "../header/Back.svelte";
   import SplitPane from "../ui/SplitPane.svelte";
   import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
-  import MainContentWrapper from "../ui/MainContentWrapper.svelte";
-
-  export let sns: boolean = false;
 
   let open: boolean;
   let sticky: boolean;
@@ -31,7 +28,5 @@
 
   <Menu slot="menu" bind:open {sticky} />
 
-  <MainContentWrapper {sns}>
-    <slot />
-  </MainContentWrapper>
+  <slot />
 </SplitPane>

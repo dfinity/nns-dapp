@@ -15,7 +15,7 @@
   });
 </script>
 
-<MainContentWrapper>
+<MainContentWrapper sns>
   <h2>{$i18n.sns_launchpad.projects}</h2>
   <SNSProjects />
 

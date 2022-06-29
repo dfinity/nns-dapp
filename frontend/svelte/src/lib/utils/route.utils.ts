@@ -1,5 +1,3 @@
-import { AppPath } from "../constants/routes.constants";
-
 /**
  * The pathname and the hash without base href and without the query string
  */
@@ -70,6 +68,3 @@ export const baseHref = (): string => {
   const { origin }: URL = new URL(document.baseURI);
   return base?.href.replace(origin, "") ?? "/";
 };
-
-export const snsPath = (path: string): boolean =>
-  path === AppPath.SNSLaunchpad || path === AppPath.SNSProjectDetail;

@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { AppPath } from "../../../lib/constants/routes.constants";
 import * as routeUtils from "../../../lib/utils/route.utils";
 import {
   baseHref,
@@ -10,7 +9,6 @@ import {
   replaceHistory,
   routeContext,
   routePath,
-  snsPath,
 } from "../../../lib/utils/route.utils";
 
 describe("route-utils", () => {
@@ -236,17 +234,5 @@ describe("route-utils", () => {
 
     it("should push location", () =>
       testPushHistory({ baseUrl, historyIndex: window.history.length - 1 }));
-  });
-
-  describe("snsPath", () => {
-    it("should return true for sns paths", () => {
-      expect(snsPath(AppPath.SNSLaunchpad)).toBe(true);
-      expect(snsPath(AppPath.SNSProjectDetail)).toBe(true);
-    });
-
-    it("should return false for non sns paths", () => {
-      expect(snsPath(AppPath.NeuronDetail)).toBe(false);
-      expect(snsPath(AppPath.ProposalDetail)).toBe(false);
-    });
   });
 });

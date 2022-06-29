@@ -28,7 +28,7 @@
   layoutTitleStore.set("Project Tetris");
 </script>
 
-<MainContentWrapper>
+<MainContentWrapper sns>
   <div class="stretch-mobile">
     <TwoColumns>
       <ProjectInfoSection slot="left" />

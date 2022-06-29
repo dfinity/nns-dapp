@@ -8,7 +8,6 @@
   import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
   import { isNode } from "../../utils/dev.utils";
-  import { snsPath } from "../../utils/route.utils";
 
   export let path: AppPath;
 
@@ -73,31 +72,19 @@
   let authLayout: boolean = true;
   $: authLayout = path === AppPath.Authentication;
 
-  let sns: boolean = false;
-  $: sns = snsPath(path);
+  let layout: typeof SvelteComponent | undefined = undefined;
+  $: layout = authLayout ? AuthLayout : Layout;
 </script>
 
-{#if authLayout}
-  <AuthLayout>
-    {#if component !== undefined}
-      <svelte:component this={component} />
-    {:else}
-      <section class:authLayout>
-        <Spinner />
-      </section>
-    {/if}
-  </AuthLayout>
-{:else}
-  <Layout {sns}>
-    {#if component !== undefined}
-      <svelte:component this={component} />
-    {:else}
-      <section class:authLayout>
-        <Spinner />
-      </section>
-    {/if}
-  </Layout>
-{/if}
+<svelte:component this={layout}>
+  {#if component !== undefined}
+    <svelte:component this={component} />
+  {:else}
+    <section class:authLayout>
+      <Spinner />
+    </section>
+  {/if}
+</svelte:component>
 
 <style lang="scss">
   section {
