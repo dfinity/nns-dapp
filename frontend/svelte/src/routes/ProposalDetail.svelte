@@ -24,7 +24,7 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import { get } from "svelte/store";
-  import Route from "../lib/components/common/Route.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -100,30 +100,32 @@
   });
 </script>
 
-<section>
-  {#if $proposalInfoStore}
-    <ProposalDetailCard proposalInfo={$proposalInfoStore} />
+<MainContentWrapper>
+  <section>
+    {#if $proposalInfoStore}
+      <ProposalDetailCard proposalInfo={$proposalInfoStore} />
 
-    {#if neuronsReady}
-      <VotesCard proposalInfo={$proposalInfoStore} />
-      <VotingCard proposalInfo={$proposalInfoStore} />
-      <IneligibleNeuronsCard
-        proposalInfo={$proposalInfoStore}
-        neurons={$definedNeuronsStore}
-      />
+      {#if neuronsReady}
+        <VotesCard proposalInfo={$proposalInfoStore} />
+        <VotingCard proposalInfo={$proposalInfoStore} />
+        <IneligibleNeuronsCard
+          proposalInfo={$proposalInfoStore}
+          neurons={$definedNeuronsStore}
+        />
+      {:else}
+        <div class="loader">
+          <SkeletonCard cardType="info" />
+          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+        </div>
+      {/if}
     {:else}
       <div class="loader">
         <SkeletonCard cardType="info" />
         <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
       </div>
     {/if}
-  {:else}
-    <div class="loader">
-      <SkeletonCard cardType="info" />
-      <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-    </div>
-  {/if}
-</section>
+  </section>
+</MainContentWrapper>
 
 <style lang="scss">
   .loader {
