@@ -99,7 +99,8 @@
     "accounts": "Accounts",
     "neurons": "Neurons",
     "voting": "Voting",
-    "canisters": "Canisters"
+    "canisters": "Canisters",
+    "launchpad": "Launch Pad"
   },
   "header": {
     "menu": "Open menu to access navigation options",
