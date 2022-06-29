@@ -1,8 +1,10 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapState } from "../../services/sns.mock";
 
   import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/snsProjects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
@@ -33,9 +35,15 @@
       : project.swapState.myCommitment === undefined
       ? undefined
       : ICP.fromE8s(project.swapState.myCommitment);
+
+  const showProject = () => {
+    routeStore.navigate({
+      path: `${AppPath.SNSProjectDetail}/${project.rootCanisterId.toText()}`,
+    });
+  };
 </script>
 
-<Card role="link">
+<Card role="link" on:click={showProject}>
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h2>{title}</h2>
