@@ -28,15 +28,5 @@
 
   <Menu slot="menu" bind:open {sticky} />
 
-  <main>
-    <slot />
-  </main>
+  <slot />
 </SplitPane>
-
-<style lang="scss">
-  main {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-</style>
