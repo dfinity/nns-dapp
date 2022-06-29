@@ -24,11 +24,16 @@
 
   $: visible,
     (() => {
+      if (!banner) {
+        // If no banner has to be displayed, setting or removing the header offset can be skipped
+        return;
+      }
+
       const {
         documentElement: { style },
       } = document;
 
-      if (banner && visible) {
+      if (visible) {
         style.setProperty("--header-offset", "50px");
         return;
       }
