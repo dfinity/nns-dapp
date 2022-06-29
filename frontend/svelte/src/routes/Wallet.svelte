@@ -29,6 +29,7 @@
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
   import { layoutBackStore } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   const goBack = () =>
     routeStore.navigate({
@@ -118,35 +119,37 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<section>
-  {#if $selectedAccountStore.account !== undefined}
-    <WalletSummary />
-    <div class="actions">
-      <WalletActions />
-    </div>
-    <TransactionList />
-  {:else}
-    <Spinner />
+<MainContentWrapper>
+  <section>
+    {#if $selectedAccountStore.account !== undefined}
+      <WalletSummary />
+      <div class="actions">
+        <WalletActions />
+      </div>
+      <TransactionList />
+    {:else}
+      <Spinner />
+    {/if}
+  </section>
+
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary"
+        on:click={() => (showNewTransactionModal = true)}
+        disabled={$selectedAccountStore.account === undefined || $busy}
+        >{$i18n.accounts.new_transaction}</button
+      >
+    </Toolbar>
+  </Footer>
+
+  {#if showNewTransactionModal}
+    <NewTransactionModal
+      on:nnsClose={() => (showNewTransactionModal = false)}
+      selectedAccount={$selectedAccountStore.account}
+    />
   {/if}
-</section>
-
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
-      >{$i18n.accounts.new_transaction}</button
-    >
-  </Toolbar>
-</Footer>
-
-{#if showNewTransactionModal}
-  <NewTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
-    selectedAccount={$selectedAccountStore.account}
-  />
-{/if}
+</MainContentWrapper>
 
 <style lang="scss">
   .actions {

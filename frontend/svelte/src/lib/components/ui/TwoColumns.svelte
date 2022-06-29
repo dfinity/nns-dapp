@@ -17,7 +17,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
-    min-height: 100%;
+    width: 100%;
 
     & .right {
       flex: 1;
@@ -28,6 +28,7 @@
       grid-template-columns: repeat(12, 1fr);
       place-items: stretch;
       column-gap: var(--column-gap);
+      min-height: auto;
 
       .left {
         grid-column-start: 1;
@@ -36,7 +37,7 @@
 
       .right {
         grid-column-start: 7;
-        grid-column-end: 12;
+        grid-column-end: 13;
       }
     }
   }
