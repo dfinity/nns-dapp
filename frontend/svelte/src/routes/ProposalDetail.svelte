@@ -82,10 +82,10 @@
   });
 
   const goBack = () => {
-    const { lastPath } = get(routeStore);
+    const { referrerPath } = get(routeStore);
     routeStore.navigate({
       path:
-        lastPath === AppPath.SNSLaunchpad
+        referrerPath === AppPath.SNSLaunchpad
           ? AppPath.SNSLaunchpad
           : AppPath.Proposals,
     });

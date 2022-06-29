@@ -5,7 +5,6 @@ import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
   path: AppPath | string;
-  lastPath: AppPath | string | undefined;
   referrerPath?: AppPath | string;
   isKnownPath: boolean;
 }
@@ -27,7 +26,6 @@ export interface RouteStore {
 const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
     path: routePath(),
-    lastPath: undefined,
     isKnownPath: isAppPath(routePath()),
   });
 
@@ -38,7 +36,6 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        lastPath: state.path,
         referrerPath: state.path,
         isKnownPath: isAppPath(path),
       })),
@@ -47,7 +44,6 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        lastPath: state.path,
         referrerPath: state.path,
         isKnownPath: isAppPath(path),
       }));
@@ -59,7 +55,6 @@ const initRouteStore = () => {
       update((state: RouteStore) => ({
         ...state,
         path,
-        lastPath: state.path,
         referrerPath: state.path,
         isKnownPath: isAppPath(path),
       }));
