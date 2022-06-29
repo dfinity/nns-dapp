@@ -53,11 +53,11 @@
   </dl>
 
   <!-- TODO L2-751: handle fetching errors -->
-  <div class="spinner">
-    {#if swapState === undefined}
+  {#if swapState === undefined}
+    <div class="spinner">
       <Spinner size="small" inline />
-    {/if}
-  </div>
+    </div>
+  {/if}
 </Card>
 
 <style lang="scss">
