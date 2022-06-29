@@ -7,10 +7,10 @@ import SNSLaunchpad from "../../routes/SNSLaunchpad.svelte";
 import en from "../mocks/i18n.mock";
 
 describe("SNSLaunchpad", () => {
-  it("should render sub blocks", () => {
-    const { queryByText } = render(SNSLaunchpad);
+  it("should render titles", () => {
+    const { getByText } = render(SNSLaunchpad);
 
-    expect(queryByText(en.sns_launchpad.projects)).toBeInTheDocument();
-    expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    expect(getByText(en.sns_launchpad.projects)).toBeInTheDocument();
+    expect(getByText(en.sns_launchpad.proposals)).toBeInTheDocument();
   });
 });
