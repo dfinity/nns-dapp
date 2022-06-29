@@ -73,7 +73,7 @@
     aria-expanded={expanded}
     aria-controls={id}
     title={replacePlaceholders($i18n.proposal_detail.summary_toggle_view, {
-      $toggleView: toggleView
+      $toggleView: toggleView,
     })}
   >
     <IconExpandMore />

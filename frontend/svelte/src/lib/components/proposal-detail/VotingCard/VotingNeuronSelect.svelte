@@ -39,17 +39,23 @@
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id" aria-label={replacePlaceholders($i18n.proposal_detail__vote.cast_vote_neuronId, {
-          $neuronId : `${neuron.neuronId}`,
-        })}
-          >{`${neuron.neuronId}`}</span
+        <span
+          class="neuron-id"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_neuronId,
+            {
+              $neuronId: `${neuron.neuronId}`,
+            }
+          )}>{`${neuron.neuronId}`}</span
         >
         <span
           class="neuron-voting-power"
-          aria-label={replacePlaceholders($i18n.proposal_detail__vote.cast_vote_votingPower, {
-            $votingPower: formatVotingPower(
-              getVotingPower({ neuron, proposal: proposalInfo })
-              )
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_votingPower,
+            {
+              $votingPower: formatVotingPower(
+                getVotingPower({ neuron, proposal: proposalInfo })
+              ),
             }
           )}
           >{`${formatVotingPower(
