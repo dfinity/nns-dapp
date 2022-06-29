@@ -36,11 +36,13 @@
 </script>
 
 <Card role="link">
-  <div slot="start">
+  <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h2>{title}</h2>
   </div>
+
   <p>{description}</p>
+
   <dl>
     <dt>{$i18n.sns_project.deadline}</dt>
     <dd>{secondsToDuration(durationTillDeadline)}</dd>
@@ -52,12 +54,14 @@
 
   <!-- TODO L2-751: handle fetching errors -->
   {#if swapState === undefined}
-    <Spinner size="small" inline />
+    <div class="spinner">
+      <Spinner size="small" inline />
+    </div>
   {/if}
 </Card>
 
 <style lang="scss">
-  div {
+  .title {
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
@@ -86,8 +90,17 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--padding);
 
+    dt {
+      // TODO L2-775: use blend color here
+      color: rgba(var(--background-contrast-rgb), 0.6);
+    }
+
     dd {
       text-align: right;
     }
+  }
+
+  .spinner {
+    margin-top: var(--padding);
   }
 </style>

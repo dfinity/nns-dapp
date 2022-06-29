@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { listSnsProposals } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
+  import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import SNSProposalCard from "./SNSProposalCard.svelte";
 
@@ -22,21 +23,19 @@
 </script>
 
 {#if loading}
-  <!-- CardGrid -->
-  <div>
+  <CardGrid>
     <SkeletonCard />
     <SkeletonCard />
-  </div>
+  </CardGrid>
 {:else if proposals !== undefined}
   {#if proposals.length === 0}
     <p class="no-proposals">{$i18n.voting.nothing_found}</p>
   {:else}
-    <!-- CardGrid -->
-    <div>
+    <CardGrid>
       {#each proposals as proposalInfo (proposalInfo.id)}
         <SNSProposalCard {proposalInfo} />
       {/each}
-    </div>
+    </CardGrid>
   {/if}
 {/if}
 

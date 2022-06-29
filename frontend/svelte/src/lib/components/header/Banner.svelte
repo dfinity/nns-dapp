@@ -16,26 +16,31 @@
   const localEnv: boolean = ROLLUP_WATCH;
   const banner: boolean = testnet && !localEnv;
 
-  const rootStyle: string = `
-    <style>
-      :root {
-        --header-offset: 50px;
-      }
-    </style>
-  `;
-
   const close = () => {
     visible = false;
 
     localStorage.setItem(localstorageKey, "false");
   };
-</script>
 
-<svelte:head>
-  {#if banner && visible}
-    {@html rootStyle}
-  {/if}
-</svelte:head>
+  $: visible,
+    (() => {
+      if (!banner) {
+        // If no banner has to be displayed, setting or removing the header offset can be skipped
+        return;
+      }
+
+      const {
+        documentElement: { style },
+      } = document;
+
+      if (visible) {
+        style.setProperty("--header-offset", "50px");
+        return;
+      }
+
+      style.removeProperty("--header-offset");
+    })();
+</script>
 
 {#if banner && visible}
   <div>
