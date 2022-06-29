@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXXXX
+* Add light theme
+* Enable theming
+* Upgrade agent-js
+* Improve signout flow
+* Improvements in error management
+
+
 ## Proposal 66831
 * Update canister payment flow
 * New Navigation menu
