@@ -1,12 +1,10 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-
-  import { loadSnsProposals } from "../../services/proposals.services";
+  import { listSnsProposals } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import SnsProposalCard from "./SNSProposalCard.svelte";
+  import SNSProposalCard from "./SNSProposalCard.svelte";
 
   let loading: boolean = false;
   let proposals: ProposalInfo[] | undefined = undefined;
@@ -14,15 +12,8 @@
   const load = async () => {
     loading = true;
 
-    try {
-      // TODO L2-751: remove slice
-      proposals = ((await loadSnsProposals()) ?? []).slice(0, 5);
-    } catch (err) {
-      toastsStore.error({
-        labelKey: "Loading sns proposals failed",
-        err,
-      });
-    }
+    // TODO L2-751: replace the source
+    proposals = await listSnsProposals();
 
     loading = false;
   };
@@ -43,7 +34,7 @@
     <!-- CardGrid -->
     <div>
       {#each proposals as proposalInfo (proposalInfo.id)}
-        <SnsProposalCard {proposalInfo} />
+        <SNSProposalCard {proposalInfo} />
       {/each}
     </div>
   {/if}

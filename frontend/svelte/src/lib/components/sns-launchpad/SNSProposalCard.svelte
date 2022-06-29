@@ -5,7 +5,7 @@
   import { AppPath } from "../../constants/routes.constants";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
-  import VotesProgress from "../proposal-detail/VotesProgress.svelte";
+  import VotesProgress from "./VotesProgress.svelte";
 
   export let proposalInfo: ProposalInfo;
 
