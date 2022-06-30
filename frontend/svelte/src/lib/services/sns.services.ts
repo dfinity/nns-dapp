@@ -6,10 +6,12 @@ import {
   mockSnsSwapState,
 } from "../../tests/mocks/sns-projects.mock";
 import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/snsProjects.store";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { loadSnsProposals } from "./proposals.services";
 import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
@@ -32,6 +34,31 @@ export const loadSnsFullProjects = async () => {
       })
     );
   }
+};
+
+/**
+ * Loads summaries with swapStates
+ */
+export const loadSnsFullProject = async (canisterId) => {
+  const summaries = await listSnsSummary();
+
+  snsSummariesStore.setSummaries({
+    summaries,
+    certified: true,
+  });
+
+  await Promise.all(
+    summaries.map(
+      async ({ rootCanisterId }) =>
+        canisterId === rootCanisterId &&
+        loadSnsSwapState(rootCanisterId).then((swapState) =>
+          snsSwapStatesStore.setSwapState({
+            swapState,
+            certified: true,
+          })
+        )
+    )
+  );
 };
 
 export const loadSnsSwapState = async (
@@ -98,3 +125,10 @@ export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
       },
     ] as ProposalInfo[];
   });
+
+export const routePathRootCanisterId = (path: string): string | undefined => {
+  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+    return undefined;
+  }
+  return getLastPathDetail(path);
+};
