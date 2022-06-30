@@ -14,8 +14,9 @@
     overflow-x: hidden;
 
     &.sns {
+      margin: 0 auto;
       padding: var(--padding-4x) var(--padding-2x);
-      max-width: 1300px;
+      max-width: 1450px;
       box-sizing: border-box;
 
       @include media.min-width(medium) {

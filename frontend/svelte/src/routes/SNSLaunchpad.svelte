@@ -25,6 +25,6 @@
 
 <style lang="scss">
   h2 {
-    margin: var(--padding-3x) 0;
+    margin: var(--padding) 0 var(--padding-3x);
   }
 </style>
