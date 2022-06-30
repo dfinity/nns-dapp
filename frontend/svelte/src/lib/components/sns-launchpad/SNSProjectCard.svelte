@@ -93,7 +93,7 @@
   }
 
   p {
-    margin: var(--padding-0_5x) 0 var(--padding-1_5x);
+    margin: 0 0 var(--padding-1_5x);
   }
 
   dl {

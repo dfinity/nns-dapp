@@ -1,10 +1,13 @@
 <script lang="ts">
+  import IconArrowRight from "../../icons/IconArrowRight.svelte";
+
   export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
   export let style: "default" | "blue" = "default";
+  export let withArrow: boolean | undefined = undefined;
 
   let clickable: boolean = false;
 
@@ -23,6 +26,7 @@
   {role}
   on:click
   class:clickable
+  class:withArrow
   class:selected
   class:disabled
   class:blue={style === "blue"}
@@ -30,6 +34,10 @@
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
 >
+  {#if withArrow === true}
+    <IconArrowRight />
+  {/if}
+
   {#if showHeadline}
     <div>
       <slot name="start" />
@@ -71,6 +79,24 @@
       background: var(--primary-gradient-fallback);
       background: var(--primary-gradient);
       color: var(--primary-gradient-contrast);
+    }
+
+    &.withArrow {
+      position: relative;
+      padding-right: var(--padding-6x);
+
+      :global(svg:first-child) {
+        position: absolute;
+
+        height: var(--padding-3x);
+        width: auto;
+
+        right: var(--padding-2x);
+        top: 50%;
+        margin-top: calc(-1 * var(--padding-1_5x));
+
+        opacity: var(--light-opacity);
+      }
     }
   }
 
