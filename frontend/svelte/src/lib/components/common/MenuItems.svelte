@@ -52,21 +52,22 @@
       label: "canisters",
       icon: IconSettingsApplications,
     },
+    // Launchpad should not be visible on mainnet
+    ...(IS_TESTNET
+      ? [
+          {
+            context: "launchpad",
+            selected: isSelectedPath([
+              AppPath.SNSLaunchpad,
+              AppPath.SNSProjectDetail,
+            ]),
+            label: "launchpad",
+            icon: IconRocketLaunch,
+            statusIcon: New,
+          },
+        ]
+      : []),
   ];
-
-  if (IS_TESTNET) {
-    // Launchpad should not be available on mainnet
-    routes.push({
-      context: "launchpad",
-      selected: isSelectedPath([
-        AppPath.SNSLaunchpad,
-        AppPath.SNSProjectDetail,
-      ]),
-      label: "launchpad",
-      icon: IconRocketLaunch,
-      statusIcon: New,
-    });
-  }
 </script>
 
 {#each routes as { context, label, icon, statusIcon, selected }}
