@@ -12,17 +12,22 @@
   let tooltipStyle: string | undefined = undefined;
 
   const setPosition = debounce(() => {
-    // We get the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width
-    const clientWidth = document.querySelector("main")?.clientWidth;
+    // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
+    const main: HTMLElement | null = document.querySelector("main");
 
     if (
-      clientWidth === undefined ||
+      main === null ||
       tooltipComponent === undefined ||
       target === undefined
     ) {
       // Do nothing, we need the elements to be rendered in order to get their size and position to fix the tooltip
       return;
     }
+
+    const { innerWidth } = window;
+
+    const { clientWidth, offsetWidth } = main;
+    const scrollbarWidth: number = offsetWidth - clientWidth;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
@@ -31,7 +36,7 @@
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
     const spaceLeft = targetCenter;
-    const spaceRight = clientWidth - targetCenter;
+    const spaceRight = innerWidth - scrollbarWidth - targetCenter;
 
     const overflowLeft = tooltipWidth / 2 - spaceLeft;
     const overflowRight = tooltipWidth / 2 - spaceRight;
