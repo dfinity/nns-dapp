@@ -19,7 +19,8 @@
     "toggle": "toggle",
     "log": "Log",
     "principal_id": "Principal ID",
-    "copy": "Copy \"$value\" to clipboard"
+    "copy": "Copy \"$value\" to clipboard",
+    "new": "New"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",

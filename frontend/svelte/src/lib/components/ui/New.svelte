@@ -1,8 +1,9 @@
 <script lang="ts">
   import IconFiberNew from "../../icons/IconFiberNew.svelte";
+  import { i18n } from "../../stores/i18n";
 </script>
 
-<span>
+<span aria-label={$i18n.core.new}>
   <IconFiberNew />
 </span>
 
