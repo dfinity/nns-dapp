@@ -19,7 +19,8 @@
     "toggle": "toggle",
     "log": "Log",
     "principal_id": "Principal ID",
-    "copy": "Copy \"$value\" to clipboard"
+    "copy": "Copy \"$value\" to clipboard",
+    "badgeNew": "New"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -99,7 +100,8 @@
     "accounts": "Accounts",
     "neurons": "Neurons",
     "voting": "Voting",
-    "canisters": "Canisters"
+    "canisters": "Canisters",
+    "launchpad": "Launch Pad"
   },
   "header": {
     "menu": "Open menu to access navigation options",
