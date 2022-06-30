@@ -23,7 +23,7 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
-  new: string;
+  badgeNew: string;
 }
 
 interface I18nError {

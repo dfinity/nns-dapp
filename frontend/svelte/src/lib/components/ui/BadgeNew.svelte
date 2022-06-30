@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
 </script>
 
-<span aria-label={$i18n.core.new}>
+<span aria-label={$i18n.core.badgeNew}>
   <IconFiberNew />
 </span>
 
