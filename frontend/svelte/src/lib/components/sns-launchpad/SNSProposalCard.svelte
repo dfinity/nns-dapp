@@ -22,12 +22,12 @@
 </script>
 
 <Card role="link" withArrow on:click={showProposal} testId="sns-proposal-card">
-  <h2 slot="start">{title}</h2>
+  <h3 slot="start">{title}</h3>
   <VotesProgress {proposalInfo} />
 </Card>
 
 <style lang="scss">
-  h2 {
+  h3 {
     line-height: var(--line-height-standard);
   }
 </style>

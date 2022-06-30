@@ -50,7 +50,7 @@
 >
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
-    <h2>{title}</h2>
+    <h3>{title}</h3>
   </div>
 
   <p>{description}</p>
@@ -79,7 +79,7 @@
     align-items: center;
     margin-bottom: var(--padding);
 
-    h2 {
+    h3 {
       margin: 0;
       line-height: var(--line-height-standard);
     }
