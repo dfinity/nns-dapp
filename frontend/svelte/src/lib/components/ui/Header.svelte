@@ -9,6 +9,9 @@
     left: 0;
     right: 0;
 
+    z-index: var(--header-z-index);
+    box-shadow: var(--header-box-shadow);
+
     height: var(--header-height);
 
     display: block;
