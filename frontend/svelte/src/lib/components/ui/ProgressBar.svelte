@@ -26,7 +26,7 @@
   .wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-0_5x);
   }
 
   // Target only FF
