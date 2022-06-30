@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 67799
 * Add light theme
 * Review dark theme
 * Enable theming
