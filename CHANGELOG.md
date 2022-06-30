@@ -8,7 +8,7 @@
 * Improve signout flow
 * Improvements in error management
 * No tooltip when not needed. It had problems with Android devices
-
+* Lazy load routes to improve performance
 
 ## Proposal 66831
 * Update canister payment flow
