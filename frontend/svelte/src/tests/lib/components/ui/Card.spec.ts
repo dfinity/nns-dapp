@@ -36,4 +36,13 @@ describe("Card", () => {
     expect(article).not.toBeNull();
     article && fireEvent.click(article);
   });
+
+  it("should render an arrow", () => {
+    const { container } = render(Card, {
+      props: { withArrow: true },
+    });
+
+    const arrow = container.querySelector("svg");
+    expect(arrow).not.toBeNull();
+  });
 });
