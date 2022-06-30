@@ -43,7 +43,11 @@
   };
 </script>
 
-<Card role="link" on:click={showProject}>
+<Card
+  role="link"
+  on:click={showProject}
+  style={myCommitment === undefined ? "default" : "blue"}
+>
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h3>{title}</h3>
@@ -88,18 +92,17 @@
   }
 
   p {
-    margin-top: 0;
+    margin: var(--padding-0_5x) 0 var(--padding-1_5x);
   }
 
   dl {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--padding);
+    gap: var(--padding-1_5x);
 
     dt {
-      // TODO L2-775: use blend color here
-      color: rgba(var(--background-contrast-rgb), 0.6);
+      opacity: var(--light-opacity);
     }
 
     dd {
@@ -108,6 +111,6 @@
   }
 
   .spinner {
-    margin-top: var(--padding);
+    margin-top: var(--padding-1_5x);
   }
 </style>

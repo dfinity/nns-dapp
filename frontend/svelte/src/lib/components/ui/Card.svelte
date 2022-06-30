@@ -4,6 +4,7 @@
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
+  export let style: "default" | "blue" = "default";
 
   let clickable: boolean = false;
 
@@ -24,6 +25,7 @@
   class:clickable
   class:selected
   class:disabled
+  class:blue={style === "blue"}
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
@@ -50,6 +52,8 @@
     color: var(--card-background-contrast);
     box-shadow: var(--box-shadow);
 
+    transition: color var(--animation-time-normal);
+
     padding: var(--padding-2x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
@@ -61,6 +65,12 @@
 
     &.disabled {
       background: var(--background-shade);
+    }
+
+    &.blue {
+      background: var(--primary-gradient-fallback);
+      background: var(--primary-gradient);
+      color: var(--primary-gradient-contrast);
     }
   }
 
