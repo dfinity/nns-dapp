@@ -23,6 +23,7 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
+  badgeNew: string;
 }
 
 interface I18nError {
@@ -106,6 +107,7 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   canisters: string;
+  launchpad: string;
 }
 
 interface I18nHeader {
