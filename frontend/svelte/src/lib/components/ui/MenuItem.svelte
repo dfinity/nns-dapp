@@ -7,6 +7,7 @@
 <a role="menuitem" {href} class:selected data-tid={testId}>
   <slot name="icon" />
   <span><slot /></span>
+  <slot name="statusIcon" />
 </a>
 
 <style lang="scss">
@@ -39,15 +40,23 @@
     &:not(.selected):hover {
       background: var(--background-shade);
     }
+
+    :global(& > :first-child) {
+      // preserve icon size
+      flex: none;
+    }
+
+    :global(:nth-child(3)) {
+      margin: 0 var(--padding-2x) 0 auto;
+      // preserve icon size
+      flex: none;
+    }
   }
 
   span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    /** 24px is the size of the svg **/
-    max-width: calc(100% - 24px - var(--padding));
 
     margin: 0 0 0 var(--padding);
   }

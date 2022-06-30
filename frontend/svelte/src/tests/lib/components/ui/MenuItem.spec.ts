@@ -54,4 +54,10 @@ describe("Menuitem", () => {
 
     expect(getByTestId("menuitem-test-icon")).not.toBeNull();
   });
+
+  it("should render slotted statusIcon", () => {
+    const { getByTestId } = render(MenuItemTest);
+
+    expect(getByTestId("menuitem-test-status-icon")).not.toBeNull();
+  });
 });
