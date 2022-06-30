@@ -2,10 +2,12 @@
 
 ## Proposal XXXXX
 * Add light theme
+* Review dark theme
 * Enable theming
 * Upgrade agent-js
 * Improve signout flow
 * Improvements in error management
+* No tooltip when not needed. It had problems with Android devices
 
 
 ## Proposal 66831
