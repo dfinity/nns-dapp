@@ -1,34 +1,34 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import type { SnsSummary } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
 
-  const mockIcp1 = ICP.fromString("5") as ICP;
-  const mockIcp2 = ICP.fromString("50") as ICP;
+  export let summary: SnsSummary;
+
+  const minCommitmentIcp = ICP.fromE8s(summary.minCommitment);
+  const maxCommitmentIcp = ICP.fromE8s(summary.maxCommitment);
 </script>
 
 <div data-tid="sns-project-detail-info">
-  <h1>Project Tetris</h1>
+  <h1>{summary.name}</h1>
   <p>
-    Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-    eiusmod tempor
+    {summary.description}
   </p>
-  <a href="https://6hsbt-vqaaa-aaaaf-aaafq-cai.ic0.app/"
-    >http://linkToValuePropositionExternal</a
-  >
+  <a href={summary.url} target="_blank">{summary.url}</a>
   <div class="details">
     <KeyValuePair>
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_name}</svelte:fragment
       >
-      <span slot="value">Tetris Token</span>
+      <span slot="value">{summary.tokenName}</span>
     </KeyValuePair>
     <KeyValuePair>
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
       >
-      <span slot="value">TET</span>
+      <span slot="value">{summary.symbol}</span>
     </KeyValuePair>
     <!-- TODO: Expandable Component -->
     <KeyValuePair info>
@@ -36,7 +36,7 @@
         >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
       >
       <svelte:fragment slot="value">
-        <Icp icp={mockIcp1} singleLine />
+        <Icp icp={minCommitmentIcp} singleLine />
       </svelte:fragment>
     </KeyValuePair>
     <!-- TODO: Expandable Component -->
@@ -45,7 +45,7 @@
         >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
       >
       <svelte:fragment slot="value"
-        ><Icp icp={mockIcp2} singleLine /></svelte:fragment
+        ><Icp icp={maxCommitmentIcp} singleLine /></svelte:fragment
       >
     </KeyValuePair>
   </div>

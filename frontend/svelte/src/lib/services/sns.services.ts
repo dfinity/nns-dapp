@@ -1,5 +1,5 @@
 import type { ProposalInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
   mockSnsSummaryList,
@@ -39,26 +39,19 @@ export const loadSnsFullProjects = async () => {
 /**
  * Loads summaries with swapStates
  */
-export const loadSnsFullProject = async (canisterId) => {
-  const summaries = await listSnsSummary();
-
+export const loadSnsFullProject = async (canisterId: string) => {
+  const [summaries, swapState] = await Promise.all([
+    listSnsSummary(),
+    loadSnsSwapState(Principal.fromText(canisterId)),
+  ]);
   snsSummariesStore.setSummaries({
     summaries,
     certified: true,
   });
-
-  await Promise.all(
-    summaries.map(
-      async ({ rootCanisterId }) =>
-        canisterId === rootCanisterId &&
-        loadSnsSwapState(rootCanisterId).then((swapState) =>
-          snsSwapStatesStore.setSwapState({
-            swapState,
-            certified: true,
-          })
-        )
-    )
-  );
+  snsSwapStatesStore.setSwapState({
+    swapState,
+    certified: true,
+  });
 };
 
 export const loadSnsSwapState = async (
@@ -127,7 +120,7 @@ export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   });
 
 export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+  if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);

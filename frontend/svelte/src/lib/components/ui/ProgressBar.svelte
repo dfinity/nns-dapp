@@ -46,13 +46,14 @@
 
       &.yellow {
         &::-moz-progress-bar {
-          background: var(--yellow-400);
+          background: var(--warning-emphasis);
         }
       }
 
       &.blue {
         &::-moz-progress-bar {
-          background: var(--header-background);
+          background: var(--primary-gradient-fallback);
+          background: var(--primary-gradient);
         }
       }
     }
@@ -82,13 +83,14 @@
 
     &.yellow {
       &::-webkit-progress-value {
-        background: var(--yellow-400);
+        background: var(--warning-emphasis);
       }
     }
 
     &.blue {
       &::-webkit-progress-value {
-        background: var(--header-background);
+        background: var(--primary-gradient-fallback);
+        background: var(--primary-gradient);
       }
     }
   }

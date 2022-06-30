@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import ProjectInfoSection from "../lib/components/sns-project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/sns-project-detail/ProjectStatusSection.svelte";
   import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
@@ -21,6 +21,7 @@
     snsFullProjectStore,
   } from "../lib/stores/snsProjects.store";
   import { getSnsProjectById } from "../lib/utils/sns.utils";
+  import Spinner from "../lib/components/ui/Spinner.svelte";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -34,24 +35,24 @@
     id: rootCanisterIdString,
     projects: $snsFullProjectStore,
   });
-  $: {
-    console.log("fullProject", fullProject);
-  }
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathRootCanisterId(path);
+
     if (rootCanisterIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.SNSLaunchpad });
       return;
     }
     rootCanisterIdString = rootCanisterIdMaybe;
 
     await loadSnsFullProject(rootCanisterIdString);
   });
+
+  onDestroy(unsubscribe);
 
   const goBack = () =>
     routeStore.navigate({
@@ -60,17 +61,22 @@
 
   layoutBackStore.set(goBack);
 
-  layoutTitleStore.set("Project Tetris");
+  $: layoutTitleStore.set(fullProject?.summary.name ?? "");
 </script>
 
-<MainContentWrapper sns>
-  <div class="stretch-mobile">
-    <TwoColumns>
-      <ProjectInfoSection slot="left" />
-      <ProjectStatusSection slot="right" />
-    </TwoColumns>
-  </div>
-</MainContentWrapper>
+{#if fullProject === undefined}
+  <!-- TODO: Proper skeleton -->
+  <Spinner />
+{:else}
+  <MainContentWrapper sns>
+    <div class="stretch-mobile">
+      <TwoColumns>
+        <ProjectInfoSection summary={fullProject.summary} slot="left" />
+        <ProjectStatusSection project={fullProject} slot="right" />
+      </TwoColumns>
+    </div>
+  </MainContentWrapper>
+{/if}
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";
