@@ -46,7 +46,7 @@
 <Card role="link" on:click={showProject}>
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
-    <h3>{title}</h3>
+    <h2>{title}</h2>
   </div>
 
   <p>{description}</p>
@@ -73,8 +73,9 @@
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
+    margin-bottom: var(--padding);
 
-    h3 {
+    h2 {
       margin: 0;
       line-height: var(--line-height-standard);
     }

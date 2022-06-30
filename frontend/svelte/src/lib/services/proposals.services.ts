@@ -1,5 +1,11 @@
 import type { Identity } from "@dfinity/agent";
-import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
+import {
+  Topic,
+  type NeuronId,
+  type ProposalId,
+  type ProposalInfo,
+  type Vote,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -152,6 +158,28 @@ const findProposals = async ({
     logMessage: `Syncing proposals ${
       beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
     }`,
+  });
+};
+
+// Simplified demo function because currently it's not clear which proposal type and which store will be used.
+// TODO L2-751: switch to real data
+export const loadSnsProposals = async (): Promise<ProposalInfo[]> => {
+  const identity: Identity = await getIdentity();
+  const filters: ProposalsFiltersStore = {
+    ...get(proposalsFiltersStore),
+    topics: [Topic.Governance],
+    rewards: [],
+    // rewards: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES],
+    status: [],
+    excludeVotedProposals: false,
+    lastAppliedFilter: undefined,
+  };
+
+  return queryProposals({
+    beforeProposal: undefined,
+    identity,
+    filters,
+    certified: false,
   });
 };
 
