@@ -41,8 +41,15 @@
       background: var(--background-shade);
     }
 
+    :global(& > :first-child) {
+      // preserve icon size
+      flex: none;
+    }
+
     :global(:nth-child(3)) {
-      margin-right: var(--padding-2x);
+      margin: 0 var(--padding-2x) 0 auto;
+      // preserve icon size
+      flex: none;
     }
   }
 
@@ -50,10 +57,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: auto;
-
-    /** 24px is the size of the svg **/
-    max-width: calc(100% - 24px - var(--padding));
 
     margin: 0 0 0 var(--padding);
   }
