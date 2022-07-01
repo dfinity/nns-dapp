@@ -21,32 +21,13 @@
   };
 </script>
 
-<Card role="link" on:click={showProposal} testId="sns-proposal-card">
-  <h2 slot="start">{title}</h2>
-
+<Card role="link" withArrow on:click={showProposal} testId="sns-proposal-card">
+  <h3 slot="start">{title}</h3>
   <VotesProgress {proposalInfo} />
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/text";
-
-  li.hidden {
-    visibility: hidden;
-  }
-
-  h2 {
-    // TODO L2-751: to remove
-    @include text.clamp(1);
-
-    width: 100%;
+  h3 {
     line-height: var(--line-height-standard);
-  }
-
-  .title {
-    @include media.min-width(small) {
-      margin: 0 var(--padding-2x) 0 0;
-    }
   }
 </style>

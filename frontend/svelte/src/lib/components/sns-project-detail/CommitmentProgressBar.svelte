@@ -86,12 +86,12 @@
 
     &.up {
       // Borders do not support gradients
-      border-bottom: var(--padding-1_5x) solid var(--yellow-400);
+      border-bottom: var(--padding-1_5x) solid var(--warning-emphasis);
     }
 
     &.down {
       // Borders do not support gradients
-      border-top: var(--padding-1_5x) solid var(--header-background-fallback);
+      border-top: var(--padding-1_5x) solid var(--primary-gradient-fallback);
     }
   }
 

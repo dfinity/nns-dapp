@@ -1,7 +1,4 @@
 <script lang="ts">
-  import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
-
-  export let info: boolean = false;
   export let testId: string | undefined = undefined;
 </script>
 
@@ -10,9 +7,6 @@
     <span>
       <slot name="key" />
     </span>
-    {#if info}
-      <IconInfoOutline />
-    {/if}
   </dt>
   <dd>
     <slot name="value" />
@@ -23,9 +17,12 @@
   dl {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     gap: var(--padding-2x);
 
     margin: 0;
+
+    width: 100%;
   }
 
   dt {

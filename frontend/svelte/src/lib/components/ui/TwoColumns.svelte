@@ -19,10 +19,6 @@
     gap: var(--row-gap);
     width: 100%;
 
-    & .right {
-      flex: 1;
-    }
-
     @include media.min-width(large) {
       display: grid;
       grid-template-columns: repeat(12, 1fr);

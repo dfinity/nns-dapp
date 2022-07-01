@@ -87,9 +87,11 @@
 </svelte:component>
 
 <style lang="scss">
+  @use "../../themes/mixins/display";
+
   section {
     position: absolute;
-    inset: 0;
+    @include display.inset;
 
     color: rgba(var(--background-contrast-rgb), 0.2);
   }
