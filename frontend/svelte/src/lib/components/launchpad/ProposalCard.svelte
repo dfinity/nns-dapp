@@ -12,7 +12,7 @@
   let id: ProposalId | undefined;
   let title: string | undefined;
 
-  $: ({ status, id, title, color } = mapProposalInfo(proposalInfo));
+  $: ({ id, title } = mapProposalInfo(proposalInfo));
 
   const showProposal = () => {
     routeStore.navigate({

@@ -33,7 +33,7 @@
   </CardGrid>
 {:else if projects !== undefined}
   <CardGrid>
-    {#each projects as project}
+    {#each projects as project (project.rootCanisterId.toText())}
       <ProjectCard {project} />
     {/each}
   </CardGrid>
