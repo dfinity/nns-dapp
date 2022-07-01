@@ -3,6 +3,7 @@
 :root {
   --header-height: 56px;
   --menu-width: 304px;
+  --max-main-content-width: 1450px;
 
   --icon-width: 24px;
 
@@ -23,6 +24,11 @@
   --border-radius-5x: calc(5 * var(--border-radius));
 
   --z-index: 1;
+  --menu-z-index: calc(var(--z-index) + 996);
+  --header-z-index: calc(var(--menu-z-index) + 1);
+  --overlay-z-index: calc(var(--header-z-index) + 1);
+  --modal-z-index: calc(var(--overlay-z-index) + 1);
+  --toast-z-index: calc(var(--modal-z-index) + 1);
 
   --section-max-width: 800px;
   --footer-height: 20vh;

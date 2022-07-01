@@ -40,7 +40,7 @@
     display: grid;
 
     grid-template-columns: auto 1fr auto;
-    gap: var(--padding-4x);
+    gap: var(--padding-3x);
     align-items: center;
 
     p {
@@ -48,17 +48,14 @@
       line-height: var(--line-height-standard);
       text-align: center;
       font-weight: normal;
+      font-size: var(--font-size-small);
 
       span {
-        // TODO L2-777: contrast-light color
         display: block;
-        text-align: center;
-        font-size: var(--font-size-small);
-        font-weight: initial;
 
-        @include media.min-width(medium) {
-          font-size: var(--font-size-h5);
-        }
+        text-align: center;
+        font-weight: initial;
+        opacity: var(--light-opacity);
       }
     }
 

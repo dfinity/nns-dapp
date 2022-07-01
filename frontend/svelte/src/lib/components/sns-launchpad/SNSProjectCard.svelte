@@ -45,10 +45,14 @@
   };
 </script>
 
-<Card role="link" on:click={showProject}>
+<Card
+  role="link"
+  on:click={showProject}
+  highlighted={myCommitment !== undefined}
+>
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h2>{title}</h2>
+    <h3>{title}</h3>
   </div>
 
   <p>{description}</p>
@@ -77,25 +81,24 @@
     align-items: center;
     margin-bottom: var(--padding);
 
-    h2 {
+    h3 {
       margin: 0;
       line-height: var(--line-height-standard);
     }
   }
 
   p {
-    margin-top: 0;
+    margin: 0 0 var(--padding-1_5x);
   }
 
   dl {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--padding);
+    gap: var(--padding-1_5x);
 
     dt {
-      // TODO L2-775: use blend color here
-      color: rgba(var(--background-contrast-rgb), 0.6);
+      opacity: var(--light-opacity);
     }
 
     dd {
@@ -104,6 +107,6 @@
   }
 
   .spinner {
-    margin-top: var(--padding);
+    margin-top: var(--padding-1_5x);
   }
 </style>
