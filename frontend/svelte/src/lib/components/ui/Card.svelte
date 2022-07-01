@@ -6,7 +6,7 @@
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
-  export let blue: boolean | undefined = undefined;
+  export let highlighted: boolean | undefined = undefined;
   export let withArrow: boolean | undefined = undefined;
 
   let clickable: boolean = false;
@@ -29,7 +29,7 @@
   class:withArrow
   class:selected
   class:disabled
-  class:blue
+  class:highlighted
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
@@ -75,7 +75,7 @@
       background: var(--background-shade);
     }
 
-    &.blue {
+    &.highlighted {
       background: var(--primary-gradient-fallback);
       background: var(--primary-gradient);
       color: var(--primary-gradient-contrast);

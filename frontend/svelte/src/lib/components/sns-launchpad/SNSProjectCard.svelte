@@ -43,7 +43,11 @@
   };
 </script>
 
-<Card role="link" on:click={showProject} blue={myCommitment !== undefined}>
+<Card
+  role="link"
+  on:click={showProject}
+  highlighted={myCommitment !== undefined}
+>
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h3>{title}</h3>
