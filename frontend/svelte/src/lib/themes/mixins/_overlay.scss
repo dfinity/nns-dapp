@@ -8,7 +8,7 @@
   position: fixed;
   inset: 0;
 
-  z-index: calc(var(--z-index) + 997);
+  z-index: var(--overlay-z-index);
 
   .wrapper {
     cursor: initial;

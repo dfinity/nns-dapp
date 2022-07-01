@@ -35,7 +35,7 @@
 </script>
 
 {#if open || sticky}
-  <div role="menu" class:sticky>
+  <div role="menu" class:sticky class:open>
     {#if backdrop}
       <Backdrop on:nnsClose={() => (open = false)} />
     {/if}
@@ -55,13 +55,16 @@
 
     @include interaction.initial;
 
-    --menu-z-index: calc(var(--z-index) + 996);
     z-index: var(--menu-z-index);
 
     &.sticky {
       position: relative;
       width: var(--menu-width);
       min-width: var(--menu-width);
+    }
+
+    &.open:not(.sticky) {
+      z-index: var(--overlay-z-index);
     }
   }
 

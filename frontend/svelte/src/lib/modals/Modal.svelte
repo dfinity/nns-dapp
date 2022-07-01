@@ -80,7 +80,7 @@
     position: fixed;
     inset: 0;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
   }
