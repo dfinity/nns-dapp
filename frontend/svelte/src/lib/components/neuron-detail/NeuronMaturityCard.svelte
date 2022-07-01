@@ -52,7 +52,7 @@
 
   .actions {
     display: flex;
-    justify-content: end;
+    justify-content: flex-start;
     gap: var(--padding);
   }
 </style>
