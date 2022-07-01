@@ -20,6 +20,7 @@
   import { getNeuronById } from "../lib/utils/neuron.utils";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import NeuronJoinFundCard from "../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -77,6 +78,7 @@
     {#if neuron}
       <NeuronMetaInfoCard {neuron} />
       <NeuronMaturityCard {neuron} />
+      <NeuronJoinFundCard {neuron} />
       <NeuronFollowingCard {neuron} />
       {#if IS_TESTNET}
         <NeuronProposalsCard {neuron} />
