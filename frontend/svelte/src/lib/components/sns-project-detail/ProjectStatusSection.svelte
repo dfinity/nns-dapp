@@ -24,6 +24,17 @@
     swapState?.myCommitment !== undefined
       ? ICP.fromE8s(swapState?.myCommitment)
       : undefined;
+  let currentDateTillStartSeconds: number;
+  $: currentDateTillStartSeconds = Number(
+    BigInt(Math.round(Date.now() / 1000)) - project.summary.swapStart
+  );
+  let deadlineTillStartSeconds: number;
+  $: deadlineTillStartSeconds = Number(
+    project.summary.swapDeadline - project.summary.swapStart
+  );
+  let durationTillDeadline: bigint;
+  $: durationTillDeadline =
+    project.summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
 </script>
 
 {#if swapState === undefined}
@@ -54,13 +65,17 @@
         />
       </div>
       <div>
-        <ProgressBar value={85} max={100} color="blue">
+        <ProgressBar
+          value={currentDateTillStartSeconds}
+          max={deadlineTillStartSeconds}
+          color="blue"
+        >
           <p slot="top" class="push-apart">
             <span>
               {$i18n.sns_project_detail.deadline}
             </span>
             <span>
-              {secondsToDuration(BigInt(3600 * 24 * 14 + 3600 * 4))}
+              {secondsToDuration(durationTillDeadline)}
             </span>
           </p>
         </ProgressBar>

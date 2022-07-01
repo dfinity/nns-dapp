@@ -4,6 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import Logo from "../ui/Logo.svelte";
 
   export let summary: SnsSummary;
 
@@ -12,7 +13,10 @@
 </script>
 
 <div data-tid="sns-project-detail-info">
-  <h1>{summary.name}</h1>
+  <div class="title">
+    <Logo src={summary.logo} alt={$i18n.sns_launchpad.project_logo} />
+    <h1>{summary.name}</h1>
+  </div>
   <p>
     {summary.description}
   </p>
@@ -52,6 +56,17 @@
 </div>
 
 <style lang="scss">
+  .title {
+    display: flex;
+    gap: var(--padding-1_5x);
+    align-items: center;
+    margin-bottom: var(--padding);
+
+    h1 {
+      margin: 0;
+      line-height: var(--line-height-standard);
+    }
+  }
   a {
     // TODO: change <a /> global styling?
     font-size: 1rem;

@@ -49,7 +49,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
 
-    deadline: BigInt(Math.round(Date.now() / 1000) + SECONDS_IN_DAY / 4),
+    swapDeadline: BigInt(Math.round(Date.now() / 1000) + SECONDS_IN_DAY / 4),
+    swapStart: BigInt(Math.round(Date.now() / 1000) - SECONDS_IN_DAY / 4),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "Tetris",
@@ -64,7 +65,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(1),
 
-    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 30),
+    swapDeadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 30),
+    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 20),
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
     tokenName: "Pacman",
@@ -80,7 +82,10 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(2),
 
     // what needs to be shown for upcomming projects
-    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
+    swapDeadline: BigInt(
+      SECONDS_TODAY + SECONDS_IN_DAY * 8 + SECONDS_IN_DAY / 2
+    ),
+    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 5),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "Mario",
@@ -95,7 +100,10 @@ export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(3),
 
-    deadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 10),
+    swapDeadline: BigInt(
+      SECONDS_TODAY + SECONDS_IN_DAY * 10 + SECONDS_IN_DAY / 3
+    ),
+    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 3),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "Kong",

@@ -71,7 +71,7 @@ describe("SNSProjectCard", () => {
     });
 
     const durationTillDeadline =
-      mockSnsFullProject.summary.deadline -
+      mockSnsFullProject.summary.swapDeadline -
       BigInt(Math.round(Date.now() / 1000));
 
     expect(
