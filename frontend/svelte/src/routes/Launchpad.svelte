@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Projects from "../lib/components/sns-launchpad/Projects.svelte";
-  import SnsProposals from "../lib/components/sns-launchpad/SnsProposals.svelte";
+  import Proposals from "../lib/components/sns-launchpad/Proposals.svelte";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -20,7 +20,7 @@
   <Projects />
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>
-  <SnsProposals />
+  <Proposals />
 </MainContentWrapper>
 
 <style lang="scss">
