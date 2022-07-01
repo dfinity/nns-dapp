@@ -1,4 +1,5 @@
 @use "./interaction";
+@use "./display";
 
 @mixin content {
   width: 100%;
@@ -6,7 +7,7 @@
 
 @mixin popover {
   position: fixed;
-  inset: 0;
+  @include display.inset;
 
   z-index: calc(var(--z-index) + 997);
 

@@ -9,9 +9,11 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/display";
+
   .toolbar {
     position: absolute;
-    inset: 0;
+    @include display.inset;
 
     display: grid;
     grid-template-columns: 25% 50% 25%;
