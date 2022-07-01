@@ -526,6 +526,8 @@
     "status": "Status",
     "accepting": "Accepting Participation",
     "enter_amount": "Enter Amount",
+    "closed": "Closed",
+    "pending": "Pending",
     "participate": "Participate"
   },
   "time": {
