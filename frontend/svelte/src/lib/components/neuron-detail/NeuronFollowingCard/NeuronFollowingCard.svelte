@@ -61,15 +61,15 @@
 
   p {
     margin-top: 0;
+    margin-bottom: var(--padding-2x);
   }
 
   .frame {
-    margin: var(--padding-2x) 0;
-    padding: var(--padding-2x) 0;
+    padding-bottom: var(--padding-2x);
   }
 
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 </style>

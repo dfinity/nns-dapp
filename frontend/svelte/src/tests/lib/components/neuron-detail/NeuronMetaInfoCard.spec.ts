@@ -89,9 +89,6 @@ describe("NeuronMetaInfoCard", () => {
     });
 
     expect(
-      queryByText(en.neuron_detail.join_community_fund)
-    ).toBeInTheDocument();
-    expect(
       queryByText(en.neuron_detail.increase_dissolve_delay)
     ).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.start_dissolving)).toBeInTheDocument();
@@ -114,9 +111,6 @@ describe("NeuronMetaInfoCard", () => {
       props,
     });
 
-    expect(
-      queryByText(en.neuron_detail.join_community_fund)
-    ).not.toBeInTheDocument();
     expect(
       queryByText(en.neuron_detail.increase_dissolve_delay)
     ).not.toBeInTheDocument();
