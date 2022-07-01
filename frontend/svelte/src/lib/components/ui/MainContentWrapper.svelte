@@ -16,7 +16,7 @@
     &.sns {
       margin: 0 auto;
       padding: var(--padding-4x) var(--padding-2x);
-      max-width: 1450px;
+      max-width: var(--max-main-content-width);
       box-sizing: border-box;
 
       @include media.min-width(medium) {
