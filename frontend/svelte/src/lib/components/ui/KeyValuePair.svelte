@@ -11,7 +11,9 @@
       <slot name="key" />
     </span>
     {#if info}
-      <IconInfoOutline />
+      <span class="icon">
+        <IconInfoOutline />
+      </span>
     {/if}
   </dt>
   <dd>
@@ -34,6 +36,13 @@
     display: flex;
     align-items: center;
     gap: var(--padding);
+  }
+
+  .icon {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   dd {
