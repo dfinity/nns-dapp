@@ -103,6 +103,11 @@
 
 <style lang="scss">
   @use "../../themes/mixins/media";
+
+  h2 {
+    margin: 0;
+    line-height: var(--line-height-standard);
+  }
   p {
     margin: 0;
   }
@@ -111,7 +116,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
+    gap: var(--padding-3x);
   }
 
   .title {
@@ -134,16 +139,12 @@
   .actions {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-end;
     gap: var(--padding-2x);
-
-    flex: 1;
+    padding-top: var(--padding-2x);
 
     @include media.min-width(medium) {
+      padding: 0;
       align-items: flex-start;
-
-      flex: initial;
     }
   }
 </style>
