@@ -27,7 +27,7 @@ export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
     },
     [principal(1).toText()]: {
       rootCanisterId: principal(1),
-      myCommitment: BigInt(0 * 100000000),
+      myCommitment: BigInt(0),
       currentCommitment: BigInt(775 * 100000000),
     },
     [principal(2).toText()]: {
