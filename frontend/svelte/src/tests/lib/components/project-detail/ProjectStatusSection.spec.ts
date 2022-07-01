@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import ProjectStatusSection from "../../../../lib/components/sns-project-detail/ProjectStatusSection.svelte";
+import ProjectStatusSection from "../../../../lib/components/project-detail/ProjectStatusSection.svelte";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 
 describe("ProjectStatusSection", () => {

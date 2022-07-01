@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import type { SnsSummary, SnsSwapState } from "../../lib/services/sns.mock";
-import type { SnsFullProject } from "../../lib/stores/snsProjects.store";
+import type { SnsFullProject } from "../../lib/stores/projects.store";
 
 const principal = (index: number): Principal =>
   [

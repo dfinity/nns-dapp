@@ -58,8 +58,8 @@
           {
             context: "launchpad",
             selected: isSelectedPath([
-              AppPath.SNSLaunchpad,
-              AppPath.SNSProjectDetail,
+              AppPath.Launchpad,
+              AppPath.ProjectDetail,
             ]),
             label: "launchpad",
             icon: IconRocketLaunch,

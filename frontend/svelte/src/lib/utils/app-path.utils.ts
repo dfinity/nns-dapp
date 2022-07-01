@@ -7,7 +7,7 @@ const mapper: Record<string, string> = {
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.NeuronDetail]: `${AppPath.NeuronDetail}/[0-9]+`,
   [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/[a-zA-Z0-9-]+`,
-  [AppPath.SNSProjectDetail]: `${AppPath.SNSProjectDetail}/[a-zA-Z0-9-]+`,
+  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+`,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
