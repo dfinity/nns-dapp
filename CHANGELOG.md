@@ -1,5 +1,15 @@
 # Changelog
 
+## Proposal 67799
+* Add light theme
+* Review dark theme
+* Enable theming
+* Upgrade agent-js
+* Improve signout flow
+* Improvements in error management
+* No tooltip when not needed. It had problems with Android devices
+* Lazy load routes to improve performance
+
 ## Proposal 66831
 * Update canister payment flow
 * New Navigation menu
