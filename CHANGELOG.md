@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXXX
+* Polyfill CSS to support older browsers
+* UI improvements
+
 ## Proposal 66831
 * Update canister payment flow
 * New Navigation menu
