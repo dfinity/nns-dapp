@@ -7,6 +7,8 @@ export const getSnsProjectById = ({
   id?: string;
   projects?: SnsFullProject[];
 }): SnsFullProject | undefined =>
-  projects?.find(
-    ({ rootCanisterId }: SnsFullProject) => rootCanisterId.toText() === id
-  );
+  id === undefined
+    ? undefined
+    : projects?.find(
+        ({ rootCanisterId }: SnsFullProject) => rootCanisterId.toText() === id
+      );
