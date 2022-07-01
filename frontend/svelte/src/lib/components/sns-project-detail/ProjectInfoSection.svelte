@@ -3,6 +3,7 @@
   import type { SnsSummary } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
+  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import Logo from "../ui/Logo.svelte";
 
@@ -34,23 +35,27 @@
       >
       <span slot="value">{summary.symbol}</span>
     </KeyValuePair>
-    <!-- TODO: Expandable Component -->
-    <KeyValuePair info>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
-      >
-      <svelte:fragment slot="value">
-        <Icp icp={minCommitmentIcp} singleLine />
-      </svelte:fragment>
+    <KeyValuePair>
+      <InfoContextKey slot="key"
+        ><svelte:fragment slot="header"
+          >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
+        >
+        <p class="small">
+          This is the text that is hidden and should appear on click
+        </p>
+      </InfoContextKey>
+      <Icp slot="value" icp={minCommitmentIcp} singleLine />
     </KeyValuePair>
-    <!-- TODO: Expandable Component -->
-    <KeyValuePair info>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
-      >
-      <svelte:fragment slot="value"
-        ><Icp icp={maxCommitmentIcp} singleLine /></svelte:fragment
-      >
+    <KeyValuePair>
+      <InfoContextKey slot="key"
+        ><svelte:fragment slot="header"
+          >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
+        >
+        <p class="small">
+          This should be an explanation of what does maximum commitment means
+        </p>
+      </InfoContextKey>
+      <Icp slot="value" icp={maxCommitmentIcp} singleLine />
     </KeyValuePair>
   </div>
 </div>
@@ -78,5 +83,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+  }
+
+  .small {
+    font-size: var(--font-size-small);
   }
 </style>

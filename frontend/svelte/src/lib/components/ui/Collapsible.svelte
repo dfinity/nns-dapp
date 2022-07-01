@@ -8,7 +8,7 @@
   export let initiallyExpanded: boolean = false;
   export let maxContentHeight: number | undefined = undefined;
 
-  export let iconSize: "small" | "medium" = "small";
+  export let iconSize: "small" | "medium" | "none" = "small";
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
@@ -65,19 +65,21 @@
   <div class="header-content">
     <slot name="header" />
   </div>
-  <button
-    class="collapsible-expand-icon"
-    class:size-medium={iconSize === "medium"}
-    class:expanded
-    data-tid="collapsible-expand-button"
-    aria-expanded={expanded}
-    aria-controls={id}
-    title={replacePlaceholders($i18n.proposal_detail.summary_toggle_view, {
-      $toggleView: toggleView,
-    })}
-  >
-    <IconExpandMore />
-  </button>
+  {#if iconSize !== "none"}
+    <button
+      class="collapsible-expand-icon"
+      class:size-medium={iconSize === "medium"}
+      class:expanded
+      data-tid="collapsible-expand-button"
+      aria-expanded={expanded}
+      aria-controls={id}
+      title={replacePlaceholders($i18n.proposal_detail.summary_toggle_view, {
+        $toggleView: toggleView,
+      })}
+    >
+      <IconExpandMore />
+    </button>
+  {/if}
 </div>
 <div
   data-tid="collapsible-content"
@@ -103,10 +105,6 @@
   .header {
     @include interaction.tappable;
     user-select: none;
-
-    // increase click area
-    margin: calc(-1 * var(--padding));
-    padding: var(--padding);
 
     position: relative;
 
