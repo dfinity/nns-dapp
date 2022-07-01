@@ -81,7 +81,7 @@
     position: fixed;
     @include display.inset;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
   }
