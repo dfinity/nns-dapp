@@ -48,10 +48,11 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/display";
 
   div[role="menu"] {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
     @include interaction.initial;
 
@@ -70,7 +71,10 @@
 
   .inner {
     position: absolute;
-    inset: 0 auto 0 0;
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
 
     display: flex;
     flex-direction: column;
