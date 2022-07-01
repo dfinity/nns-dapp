@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import CommitmentProgressBar from "../../../../lib/components/sns-project-detail/CommitmentProgressBar.svelte";
+import CommitmentProgressBar from "../../../../lib/components/project-detail/CommitmentProgressBar.svelte";
 
 describe("CommitmentProgressBar", () => {
   const props = {

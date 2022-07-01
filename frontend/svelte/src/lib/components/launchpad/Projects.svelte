@@ -4,7 +4,7 @@
   import {
     snsFullProjectStore,
     type SnsFullProject,
-  } from "../../stores/snsProjects.store";
+  } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import ProjectCard from "./ProjectCard.svelte";

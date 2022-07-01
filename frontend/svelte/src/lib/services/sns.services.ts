@@ -10,7 +10,7 @@ import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
-} from "../stores/snsProjects.store";
+} from "../stores/projects.store";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { loadSnsProposals } from "./proposals.services";
 import type { SnsSummary, SnsSwapState } from "./sns.mock";

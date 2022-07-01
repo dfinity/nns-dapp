@@ -3,12 +3,12 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Projects from "../../../../lib/components/sns-launchpad/Projects.svelte";
+import Projects from "../../../../lib/components/launchpad/Projects.svelte";
 import { loadSnsFullProjects } from "../../../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
-} from "../../../../lib/stores/snsProjects.store";
+} from "../../../../lib/stores/projects.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,

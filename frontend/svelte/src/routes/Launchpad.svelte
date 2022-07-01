@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Projects from "../lib/components/sns-launchpad/Projects.svelte";
-  import Proposals from "../lib/components/sns-launchpad/Proposals.svelte";
+  import Projects from "../lib/components/launchpad/Projects.svelte";
+  import Proposals from "../lib/components/launchpad/Proposals.svelte";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";

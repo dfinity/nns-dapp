@@ -2,7 +2,7 @@
   import { ICP } from "@dfinity/nns";
   import type { SnsSwapState } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
-  import type { SnsFullProject } from "../../stores/snsProjects.store";
+  import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import Badge from "../ui/Badge.svelte";

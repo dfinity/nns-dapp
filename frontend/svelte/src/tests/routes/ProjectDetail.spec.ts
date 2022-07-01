@@ -5,11 +5,11 @@
 import { render, waitFor } from "@testing-library/svelte";
 import type { SnsSwapState } from "../../lib/services/sns.mock";
 import { loadSnsFullProject } from "../../lib/services/sns.services";
-import { routeStore } from "../../lib/stores/route.store";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
-} from "../../lib/stores/snsProjects.store";
+} from "../../lib/stores/projects.store";
+import { routeStore } from "../../lib/stores/route.store";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 import { mockSnsFullProject } from "../mocks/sns-projects.mock";

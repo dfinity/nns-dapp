@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import ProjectCard from "../../../../lib/components/sns-launchpad/ProjectCard.svelte";
+import ProjectCard from "../../../../lib/components/launchpad/ProjectCard.svelte";
 import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
