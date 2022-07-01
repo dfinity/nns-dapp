@@ -6,7 +6,7 @@
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
-  export let style: "default" | "blue" = "default";
+  export let blue: boolean | undefined = undefined;
   export let withArrow: boolean | undefined = undefined;
 
   let clickable: boolean = false;
@@ -29,7 +29,7 @@
   class:withArrow
   class:selected
   class:disabled
-  class:blue={style === "blue"}
+  class:blue
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}

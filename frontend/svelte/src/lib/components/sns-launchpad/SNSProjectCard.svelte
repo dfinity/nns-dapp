@@ -43,11 +43,7 @@
   };
 </script>
 
-<Card
-  role="link"
-  on:click={showProject}
-  style={myCommitment === undefined ? "default" : "blue"}
->
+<Card role="link" on:click={showProject} blue={myCommitment !== undefined}>
   <div class="title" slot="start">
     <img src={logo} alt="project logo" />
     <h3>{title}</h3>
