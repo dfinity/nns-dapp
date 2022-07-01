@@ -531,6 +531,7 @@ interface I18nSns_launchpad {
   projects: string;
   no_projects: string;
   proposals: string;
+  project_logo: string;
   no_proposals: string;
 }
 

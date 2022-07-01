@@ -1,15 +1,17 @@
 import type { ProposalInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
   mockSnsSummaryList,
   mockSnsSwapState,
 } from "../../tests/mocks/sns-projects.mock";
 import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/snsProjects.store";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { loadSnsProposals } from "./proposals.services";
 import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
@@ -32,6 +34,24 @@ export const loadSnsFullProjects = async () => {
       })
     );
   }
+};
+
+/**
+ * Loads summaries with swapStates
+ */
+export const loadSnsFullProject = async (canisterId: string) => {
+  const [summaries, swapState] = await Promise.all([
+    listSnsSummary(),
+    loadSnsSwapState(Principal.fromText(canisterId)),
+  ]);
+  snsSummariesStore.setSummaries({
+    summaries,
+    certified: true,
+  });
+  snsSwapStatesStore.setSwapState({
+    swapState,
+    certified: true,
+  });
 };
 
 export const loadSnsSwapState = async (
@@ -98,3 +118,10 @@ export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
       },
     ] as ProposalInfo[];
   });
+
+export const routePathRootCanisterId = (path: string): string | undefined => {
+  if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
+    return undefined;
+  }
+  return getLastPathDetail(path);
+};
