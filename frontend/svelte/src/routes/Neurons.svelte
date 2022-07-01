@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "../lib/stores/auth.store";
@@ -16,6 +16,7 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { MAX_NEURONS_MERGED } from "../lib/constants/neurons.constants";
   import Tooltip from "../lib/components/ui/Tooltip.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -46,8 +47,7 @@
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>
 
-<Layout>
-  <svelte:fragment slot="header">{$i18n.navigation.neurons}</svelte:fragment>
+<MainContentWrapper>
   <section data-tid="neurons-body">
     <p>{$i18n.neurons.text}</p>
 
@@ -70,7 +70,8 @@
       {/each}
     {/if}
   </section>
-  <svelte:fragment slot="footer">
+
+  <Footer>
     <Toolbar>
       <button
         data-tid="stake-neuron-button"
@@ -97,14 +98,15 @@
         </Tooltip>
       {/if}
     </Toolbar>
-  </svelte:fragment>
+  </Footer>
+
   {#if showModal === "stake-neuron"}
     <CreateNeuronModal on:nnsClose={closeModal} />
   {/if}
   {#if showModal === "merge-neurons"}
     <MergeNeuronsModal on:nnsClose={closeModal} />
   {/if}
-</Layout>
+</MainContentWrapper>
 
 <style lang="scss">
   p:last-of-type {

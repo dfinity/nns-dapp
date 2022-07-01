@@ -30,7 +30,7 @@
   };
 </script>
 
-<Modal on:nnsClose theme="dark" size="big">
+<Modal on:nnsClose size="big">
   <span slot="title" data-tid="add-hotkey-neuron-modal"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</span
   >

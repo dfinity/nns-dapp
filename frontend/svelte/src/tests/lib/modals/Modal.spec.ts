@@ -22,14 +22,6 @@ describe("Modal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should display a dark modal", () => {
-    const { container } = render(Modal, {
-      props: { visible: true, theme: "dark" },
-    });
-
-    expect(container.querySelector("div.modal.dark")).not.toBeNull();
-  });
-
   it("should display a medium size modal", () => {
     const { container } = render(Modal, {
       props: { visible: true, size: "medium" },

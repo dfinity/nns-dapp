@@ -93,7 +93,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .open {
     display: flex;

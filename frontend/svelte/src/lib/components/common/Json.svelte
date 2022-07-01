@@ -170,7 +170,6 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
-    color: var(--gray-50);
   }
   .key {
     display: inline-block;
@@ -193,13 +192,13 @@
     border-radius: var(--padding-0_5x);
 
     &:hover {
-      color: var(--blue-500-contrast);
-      background: var(--blue-500);
+      color: var(--primary-contrast);
+      background: var(--primary);
       &::before {
-        color: var(--blue-500);
+        color: var(--primary);
       }
       .bracket {
-        color: var(--blue-500-contrast);
+        color: var(--primary-contrast);
       }
     }
 

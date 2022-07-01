@@ -10,7 +10,6 @@
   import Backdrop from "../components/ui/Backdrop.svelte";
 
   export let visible: boolean = true;
-  export let theme: "dark" | "light" = "light";
   export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
@@ -29,7 +28,7 @@
 
 {#if visible}
   <div
-    class={`modal ${theme}`}
+    class="modal"
     transition:fade
     role="dialog"
     data-tid={testId}
@@ -76,44 +75,15 @@
 <style lang="scss">
   @use "../themes/mixins/interaction";
   @use "../themes/mixins/text";
+  @use "../themes/mixins/display";
 
   .modal {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
-
-    &.dark {
-      color: var(--background-contrast);
-
-      .wrapper {
-        background: none;
-      }
-
-      .toolbar {
-        background: var(--gray-50-background);
-        box-shadow: none;
-        border-bottom: 1px solid var(--gray-50-background-shade);
-
-        h3,
-        button {
-          color: var(--gray-50);
-        }
-
-        button {
-          &[disabled] {
-            color: var(--gray-600);
-          }
-        }
-      }
-
-      .content {
-        background: var(--gray-50-background);
-        color: var(--gray-50);
-      }
-    }
   }
 
   .wrapper {
@@ -141,30 +111,18 @@
 
     --modal-toolbar-height: 35px;
 
-    background: white;
+    background: var(--background);
+    color: var(--background-contrast);
+    --select-color: var(--background-contrast);
+    --select-border-radius: 0;
 
     border-radius: calc(2 * var(--border-radius));
 
     overflow: hidden;
   }
 
-  div.wrapper {
-    ::-webkit-scrollbar {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--light-background-shade);
-      border: solid 2.5px transparent;
-    }
-    ::-webkit-scrollbar-corner {
-      background: var(--light-background);
-    }
-  }
-
   .toolbar {
     padding: var(--padding) var(--padding-2x);
-
-    color: initial;
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
@@ -196,7 +154,7 @@
       &:active,
       &:focus,
       &:hover {
-        background: rgba(var(--light-background-rgb), 0.3);
+        background: var(--background-shade);
         border-radius: var(--border-radius);
       }
     }
@@ -211,8 +169,6 @@
     height: calc(100% - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
-
-    color: var(--gray-50-background);
   }
 
   .small {

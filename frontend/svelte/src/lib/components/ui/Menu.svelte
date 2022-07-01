@@ -35,7 +35,7 @@
 </script>
 
 {#if open || sticky}
-  <div role="menu" class:sticky>
+  <div role="menu" class:sticky class:open>
     {#if backdrop}
       <Backdrop on:nnsClose={() => (open = false)} />
     {/if}
@@ -48,14 +48,14 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/display";
 
   div[role="menu"] {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
     @include interaction.initial;
 
-    --menu-z-index: calc(var(--z-index) + 996);
     z-index: var(--menu-z-index);
 
     &.sticky {
@@ -63,22 +63,28 @@
       width: var(--menu-width);
       min-width: var(--menu-width);
     }
+
+    &.open:not(.sticky) {
+      z-index: var(--overlay-z-index);
+    }
   }
 
   .inner {
     position: absolute;
-    inset: 0 auto 0 0;
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
 
     display: flex;
     flex-direction: column;
 
-    background: var(--background);
-    color: var(--background-contrast);
+    background: var(--menu-background);
+    color: var(--menu-background-contrast);
+    box-shadow: var(--menu-box-shadow);
 
     width: var(--menu-width);
     max-width: 100vw;
-
-    box-shadow: 4px 0 16px rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding-4x) 0 0;
 

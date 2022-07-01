@@ -7,6 +7,7 @@
 <a role="menuitem" {href} class:selected data-tid={testId}>
   <slot name="icon" />
   <span><slot /></span>
+  <slot name="statusIcon" />
 </a>
 
 <style lang="scss">
@@ -26,37 +27,29 @@
     padding: var(--padding-2x);
 
     &.selected {
-      background: var(--blue-500);
-      color: var(--blue-500-contrast);
+      color: var(--primary);
+      background: inherit;
 
       &:focus,
       &:hover {
-        background: var(--blue-500-tint);
+        background: var(--background-shade);
       }
     }
 
     &:not(.selected):focus,
     &:not(.selected):hover {
-      background: var(--background-tint);
+      background: var(--background-shade);
     }
-  }
 
-  @include media.light-theme() {
-    a {
-      &:not(.selected):focus,
-      &:not(.selected):hover {
-        background: var(--background-shade);
-      }
+    :global(& > :first-child) {
+      // preserve icon size
+      flex: none;
+    }
 
-      &.selected {
-        color: var(--blue-500);
-        background: inherit;
-
-        &:focus,
-        &:hover {
-          background: var(--background-shade);
-        }
-      }
+    :global(:nth-child(3)) {
+      margin: 0 var(--padding-2x) 0 auto;
+      // preserve icon size
+      flex: none;
     }
   }
 
@@ -64,9 +57,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    /** 24px is the size of the svg **/
-    max-width: calc(100% - 24px - var(--padding));
 
     margin: 0 0 0 var(--padding);
   }

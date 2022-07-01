@@ -8,6 +8,7 @@
   } from "../../../utils/proposals.utils";
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -35,12 +36,28 @@
         inputId={`${neuron.neuronId}`}
         checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
         on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        theme="dark"
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id">{`${neuron.neuronId}`}</span>
-        <span class="neuron-voting-power"
+        <span
+          class="neuron-id"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_neuronId,
+            {
+              $neuronId: `${neuron.neuronId}`,
+            }
+          )}>{`${neuron.neuronId}`}</span
+        >
+        <span
+          class="neuron-voting-power"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_votingPower,
+            {
+              $votingPower: formatVotingPower(
+                getVotingPower({ neuron, proposal: proposalInfo })
+              ),
+            }
+          )}
           >{`${formatVotingPower(
             getVotingPower({ neuron, proposal: proposalInfo })
           )}`}</span
@@ -65,7 +82,6 @@
     justify-content: space-between;
 
     font-size: var(--font-size-h4);
-    color: var(--gray-50);
     border-bottom: 1px solid currentColor;
 
     // hide voting-power-headline because of the layout
@@ -130,7 +146,6 @@
 
     border-top: 1px solid currentColor;
 
-    color: var(--gray-50);
     text-align: right;
     font-size: var(--font-size-h5);
 

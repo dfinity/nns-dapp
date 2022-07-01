@@ -2,7 +2,6 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "../lib/canisters/nns-dapp/nns-dapp.types";
-  import Layout from "../lib/components/common/Layout.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
   import {
     getCanisterDetails,
@@ -36,6 +35,9 @@
   import CardInfo from "../lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "../lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import Footer from "../lib/components/common/Footer.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -65,6 +67,8 @@
     routeStore.navigate({
       path: AppPath.Canisters,
     });
+
+  layoutBackStore.set(goBack);
 
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({
     info: undefined,
@@ -185,9 +189,7 @@
     $selectedCanisterStore);
 </script>
 
-<Layout on:nnsBack={goBack} layout="detail">
-  <svelte:fragment slot="header">{$i18n.canister_detail.title}</svelte:fragment>
-
+<MainContentWrapper>
   <section>
     {#if canisterInfo !== undefined}
       <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
@@ -215,7 +217,8 @@
       <SkeletonCard />
     {/if}
   </section>
-  <svelte:fragment slot="footer">
+
+  <Footer>
     <Toolbar>
       <button
         class="primary"
@@ -224,12 +227,12 @@
         >{$i18n.canister_detail.add_cycles}</button
       >
     </Toolbar>
-  </svelte:fragment>
-</Layout>
+  </Footer>
 
-{#if showAddCyclesModal}
-  <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
-{/if}
+  {#if showAddCyclesModal}
+    <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
+  {/if}
+</MainContentWrapper>
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";

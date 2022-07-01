@@ -24,12 +24,14 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/display";
 
   .backdrop {
     position: absolute;
-    inset: 0;
+    @include display.inset;
 
-    background: rgba(var(--black-rgb), 0.6);
+    background: var(--backdrop);
+    color: var(--backdrop-contrast);
 
     @include interaction.tappable;
 

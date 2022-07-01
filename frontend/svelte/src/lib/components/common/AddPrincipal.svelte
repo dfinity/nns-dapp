@@ -33,7 +33,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   h5 {
     text-align: center;

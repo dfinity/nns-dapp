@@ -79,10 +79,15 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card.scss";
+  @use "../../themes/mixins/card";
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: var(--padding-2x);
   }
 
   ul {

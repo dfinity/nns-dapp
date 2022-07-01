@@ -1,0 +1,46 @@
+/** Light theme colors - override default dark options */
+
+:root {
+  &[theme="light"] {
+    // Shadows
+    --box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.8), var(--menu-box-shadow);
+    --menu-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    --interaction-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), -1px -1px 2px #ffffff,
+      var(--menu-box-shadow);
+
+    // Footer
+    --footer-background: linear-gradient(
+      0deg,
+      rgba(var(--background-contrast-rgb), 0.05) 10%,
+      rgba(var(--background-contrast-rgb), 0) 100%
+    );
+
+    // Json colors
+    --json-string-color: var(--brand-flamingo);
+    --json-principal-color: var(--warning-emphasis);
+    --json-hash-color: var(--warning-emphasis);
+
+    // Menu
+    --menu-background: #fafbfc;
+    --menu-background-contrast: #333333;
+
+    // Disable
+    --disable: #e5e5e5;
+    --disable-contrast: #858585;
+
+    // Palette
+    --background: #f4f5f6;
+    --background-rgb: 244, 245, 246;
+    --background-contrast: #333333;
+    --background-contrast-rgb: 51, 51, 51;
+    --background-shade: #d7d8d8;
+    --background-tint: #f5f6f7;
+
+    --card-background: #ffffff;
+    --card-background-rgb: 255, 255, 255;
+    --card-background-contrast: #333333;
+    --card-background-contrast-rgb: 51, 51, 51;
+    --card-background-shade: #e0e0e0;
+    --card-background-tint: #ffffff;
+  }
+}

@@ -62,6 +62,7 @@
     <div
       class="progressbar"
       role="progressbar"
+      aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}
       aria-valuemax={sum}
@@ -128,7 +129,7 @@
     .progressbar {
       position: relative;
       height: 10px;
-      background: var(--pink);
+      background: var(--negative-emphasis-light);
 
       .progressbar-value {
         position: absolute;
@@ -136,7 +137,8 @@
         bottom: 0;
         left: 0;
 
-        background: var(--blue-200-shade);
+        background: var(--primary-gradient-fallback);
+        background: var(--primary-gradient);
       }
     }
   }
