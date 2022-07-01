@@ -38,7 +38,7 @@ export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
     [principal(3).toText()]: {
       rootCanisterId: principal(3),
       myCommitment: undefined,
-      currentCommitment: BigInt(500 * 100000000),
+      currentCommitment: BigInt(1500 * 100000000),
     },
   }[rootCanisterId.toText()]);
 
@@ -86,7 +86,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       SECONDS_TODAY + SECONDS_IN_DAY * 8 + SECONDS_IN_DAY / 2
     ),
     swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 5),
-    minCommitment: BigInt(1500 * 100000000),
+    minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "Mario",
 
@@ -104,7 +104,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       SECONDS_TODAY + SECONDS_IN_DAY * 10 + SECONDS_IN_DAY / 3
     ),
     swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 3),
-    minCommitment: BigInt(1500 * 100000000),
+    minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     tokenName: "Kong",
 
