@@ -3,6 +3,7 @@
   import type { SnsSummary } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
+  import Collapsible from "../ui/Collapsible.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import Logo from "../ui/Logo.svelte";
 
@@ -34,24 +35,36 @@
       >
       <span slot="value">{summary.symbol}</span>
     </KeyValuePair>
-    <!-- TODO: Expandable Component -->
-    <KeyValuePair info>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
-      >
-      <svelte:fragment slot="value">
-        <Icp icp={minCommitmentIcp} singleLine />
-      </svelte:fragment>
-    </KeyValuePair>
-    <!-- TODO: Expandable Component -->
-    <KeyValuePair info>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
-      >
-      <svelte:fragment slot="value"
-        ><Icp icp={maxCommitmentIcp} singleLine /></svelte:fragment
-      >
-    </KeyValuePair>
+    <div>
+      <Collapsible iconSize="none">
+        <KeyValuePair info slot="header">
+          <svelte:fragment slot="key"
+            >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
+          >
+          <svelte:fragment slot="value">
+            <Icp icp={minCommitmentIcp} singleLine />
+          </svelte:fragment>
+        </KeyValuePair>
+        <p class="small">
+          This is the text that is hidden and should appear on click
+        </p>
+      </Collapsible>
+    </div>
+    <div>
+      <Collapsible iconSize="none">
+        <KeyValuePair info slot="header">
+          <svelte:fragment slot="key"
+            >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
+          >
+          <svelte:fragment slot="value"
+            ><Icp icp={maxCommitmentIcp} singleLine /></svelte:fragment
+          >
+        </KeyValuePair>
+        <p class="small">
+          This should be an explanation of what does maximum commitment means
+        </p>
+      </Collapsible>
+    </div>
   </div>
 </div>
 
@@ -78,5 +91,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+  }
+
+  .small {
+    font-size: var(--font-size-small);
   }
 </style>

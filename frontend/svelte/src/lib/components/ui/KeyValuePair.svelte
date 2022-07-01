@@ -26,6 +26,8 @@
     gap: var(--padding-2x);
 
     margin: 0;
+
+    width: 100%;
   }
 
   dt {
