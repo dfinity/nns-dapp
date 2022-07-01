@@ -24,10 +24,11 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/display";
 
   .backdrop {
     position: absolute;
-    inset: 0;
+    @include display.inset;
 
     background: var(--backdrop);
     color: var(--backdrop-contrast);

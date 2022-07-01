@@ -9,6 +9,7 @@
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
+  import Logo from "../ui/Logo.svelte";
   import Spinner from "../ui/Spinner.svelte";
 
   export let project: SnsFullProject;
@@ -20,13 +21,14 @@
   let logo: string;
   let name: string;
   let description: string;
-  let deadline: bigint;
-  $: ({ logo, name, description, deadline } = summary);
+  let swapDeadline: bigint;
+  $: ({ logo, name, description, swapDeadline } = summary);
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
   let durationTillDeadline: bigint;
-  $: durationTillDeadline = deadline - BigInt(Math.round(Date.now() / 1000));
+  $: durationTillDeadline =
+    swapDeadline - BigInt(Math.round(Date.now() / 1000));
 
   let myCommitment: ICP | undefined;
   $: myCommitment =
@@ -43,9 +45,13 @@
   };
 </script>
 
-<Card role="link" on:click={showProject}>
+<Card
+  role="link"
+  on:click={showProject}
+  highlighted={myCommitment !== undefined}
+>
   <div class="title" slot="start">
-    <img src={logo} alt="project logo" />
+    <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
     <h3>{title}</h3>
   </div>
 
@@ -73,6 +79,7 @@
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
+    margin-bottom: var(--padding);
 
     h3 {
       margin: 0;
@@ -80,26 +87,18 @@
     }
   }
 
-  img {
-    width: var(--padding-3x);
-    height: var(--padding-3x);
-    border-radius: var(--border-radius);
-    border: 2px solid var(--background-contrast);
-  }
-
   p {
-    margin-top: 0;
+    margin: 0 0 var(--padding-1_5x);
   }
 
   dl {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--padding);
+    gap: var(--padding-1_5x);
 
     dt {
-      // TODO L2-775: use blend color here
-      color: rgba(var(--background-contrast-rgb), 0.6);
+      opacity: var(--light-opacity);
     }
 
     dd {
@@ -108,6 +107,6 @@
   }
 
   .spinner {
-    margin-top: var(--padding);
+    margin-top: var(--padding-1_5x);
   }
 </style>

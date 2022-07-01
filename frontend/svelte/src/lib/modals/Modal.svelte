@@ -75,12 +75,13 @@
 <style lang="scss">
   @use "../themes/mixins/interaction";
   @use "../themes/mixins/text";
+  @use "../themes/mixins/display";
 
   .modal {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
   }

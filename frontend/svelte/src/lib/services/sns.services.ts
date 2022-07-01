@@ -1,13 +1,18 @@
-import type { Principal } from "@dfinity/principal";
+import type { ProposalInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
   mockSnsSummaryList,
   mockSnsSwapState,
 } from "../../tests/mocks/sns-projects.mock";
 import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/snsProjects.store";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
+import { loadSnsProposals } from "./proposals.services";
 import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
 /**
@@ -31,6 +36,24 @@ export const loadSnsFullProjects = async () => {
   }
 };
 
+/**
+ * Loads summaries with swapStates
+ */
+export const loadSnsFullProject = async (canisterId: string) => {
+  const [summaries, swapState] = await Promise.all([
+    listSnsSummary(),
+    loadSnsSwapState(Principal.fromText(canisterId)),
+  ]);
+  snsSummariesStore.setSummaries({
+    summaries,
+    certified: true,
+  });
+  snsSwapStatesStore.setSwapState({
+    swapState,
+    certified: true,
+  });
+};
+
 export const loadSnsSwapState = async (
   rootCanisterId: Principal
 ): Promise<SnsSwapState> =>
@@ -38,3 +61,67 @@ export const loadSnsSwapState = async (
 
 export const listSnsSummary = async (): Promise<SnsSummary[]> =>
   mockAbout5SecondsWaiting(() => mockSnsSummaryList);
+
+export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
+  mockAbout5SecondsWaiting(async () => {
+    // we need real testnet/mainnet ids to reach proposal details page
+    const realProposalIds = (await loadSnsProposals())?.map(({ id }) => id);
+
+    return [
+      {
+        ...mockProposalInfo,
+        id: realProposalIds?.[0] ?? BigInt(0),
+        proposal: {
+          ...mockProposalInfo.proposal,
+          title: "Project Lode Jogger",
+        },
+        latestTally: {
+          no: BigInt(400000000),
+          yes: BigInt(1600000000),
+        },
+      },
+      {
+        ...mockProposalInfo,
+        id: realProposalIds?.[1] ?? BigInt(1),
+        proposal: {
+          ...mockProposalInfo.proposal,
+          title: "Project ExciteBicycle",
+        },
+        latestTally: {
+          no: BigInt(100000000),
+          yes: BigInt(2000000000),
+        },
+      },
+      {
+        ...mockProposalInfo,
+        id: realProposalIds?.[2] ?? BigInt(2),
+        proposal: {
+          ...mockProposalInfo.proposal,
+          title: "Project The Amazing Bug-Man",
+        },
+        latestTally: {
+          no: BigInt(900000000),
+          yes: BigInt(10000000),
+        },
+      },
+      {
+        ...mockProposalInfo,
+        id: realProposalIds?.[3] ?? BigInt(3),
+        proposal: {
+          ...mockProposalInfo.proposal,
+          title: "Project Street Conflicter",
+        },
+        latestTally: {
+          no: BigInt(500000000),
+          yes: BigInt(500000000),
+        },
+      },
+    ] as ProposalInfo[];
+  });
+
+export const routePathRootCanisterId = (path: string): string | undefined => {
+  if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
+    return undefined;
+  }
+  return getLastPathDetail(path);
+};

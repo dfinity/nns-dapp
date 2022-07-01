@@ -297,7 +297,7 @@
   },
   "canister_detail": {
     "title": "Canister",
-    "id": "Id: $canisterId",
+    "id": "ID: $canisterId",
     "cycles": "Cycles",
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
@@ -374,7 +374,7 @@
     "title": "Proposal",
     "summary": "Proposal Summary",
     "topic_prefix": "Topic:",
-    "id_prefix": "Id:",
+    "id_prefix": "ID:",
     "proposer_prefix": "Proposer:",
     "adopt": "Adopt",
     "reject": "Reject",
@@ -382,12 +382,14 @@
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",
     "nns_function_name": "nnsFunctionName",
-    "payload": "Payload"
+    "payload": "Payload",
+    "summary_toggle_view": "$toggleView summary"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
     "neurons": "Neurons",
     "voting_power": "Voting power",
+    "vote_progress": "Vote Progress",
     "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
@@ -396,7 +398,9 @@
     "confirm_reject_headline": "Reject Proposal",
     "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?",
     "vote_status": "Neuron $neuronId has voted $vote",
-    "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?"
+    "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?",
+    "cast_vote_neuronId": "Neuron ID $neuronId",
+    "cast_vote_votingPower": "Voting power of $votingPower"
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
@@ -440,11 +444,11 @@
     "voting_history": "Voting History",
     "vote": "Vote",
     "join_community_fund": "Join Community Fund",
-    "increase_dissolve_delay": "Increase Dissolve Delay",
+    "increase_dissolve_delay": "Increase Delay",
     "start_dissolving": "Start Dissolving",
     "stop_dissolving": "Stop Dissolving",
     "disburse": "Disburse",
-    "increase_stake": "Increase Neuron Stake",
+    "increase_stake": "Increase Stake",
     "split_neuron": "Split Neuron",
     "voting_power_tooltip": "Calculated as: \nICP stake x Dissolve Delay Bonus x Age Bonus:\n$stake x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to join the community fund? This action is irreversible.",
@@ -500,6 +504,7 @@
     "projects": "Current Launches",
     "no_projects": "No current launches at the moment",
     "proposals": "Proposals",
+    "project_logo": "project logo",
     "no_proposals": "No current proposals at the moment"
   },
   "sns_project": {

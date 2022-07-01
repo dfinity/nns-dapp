@@ -30,10 +30,11 @@
 <style lang="scss">
   @use "../../themes/mixins/img";
   @use "../../themes/mixins/media";
+  @use "../../themes/mixins/display";
 
   .container {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
     display: block;
 
