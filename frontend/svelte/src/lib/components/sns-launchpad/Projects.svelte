@@ -7,7 +7,7 @@
   } from "../../stores/snsProjects.store";
   import { onMount } from "svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import SNSProjectCard from "./SNSProjectCard.svelte";
+  import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
 
   let loading: boolean = false;
@@ -34,7 +34,7 @@
 {:else if projects !== undefined}
   <CardGrid>
     {#each projects as project}
-      <SNSProjectCard {project} />
+      <ProjectCard {project} />
     {/each}
   </CardGrid>
   {#if projects.length === 0}

@@ -26,7 +26,7 @@ describe("InfoContextKey", () => {
 
   it("should show extra content on click", async () => {
     const { container, getByTestId, queryByText } = render(InfoContextKeyTest, {
-      props: { content },
+      props: { content, header },
     });
     expect(queryByText(content)).not.toBeVisible();
 

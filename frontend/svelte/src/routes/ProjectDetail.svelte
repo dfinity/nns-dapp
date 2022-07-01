@@ -37,14 +37,14 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
+    if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathRootCanisterId(path);
 
     if (rootCanisterIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.SNSLaunchpad });
+      routeStore.replace({ path: AppPath.Launchpad });
       return;
     }
     rootCanisterIdString = rootCanisterIdMaybe;
@@ -56,7 +56,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.SNSLaunchpad,
+      path: AppPath.Launchpad,
     });
 
   layoutBackStore.set(goBack);

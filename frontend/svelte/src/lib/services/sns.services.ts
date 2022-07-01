@@ -120,7 +120,7 @@ export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   });
 
 export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
+  if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);

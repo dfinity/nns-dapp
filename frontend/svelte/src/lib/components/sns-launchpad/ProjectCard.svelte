@@ -40,7 +40,7 @@
 
   const showProject = () => {
     routeStore.navigate({
-      path: `${AppPath.SNSProjectDetail}/${project.rootCanisterId.toText()}`,
+      path: `${AppPath.ProjectDetail}/${project.rootCanisterId.toText()}`,
     });
   };
 </script>

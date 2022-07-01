@@ -58,8 +58,8 @@
   <PrivateRoute path={AppPath.ProposalDetail} />
   <PrivateRoute path={AppPath.NeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} />
-  <PrivateRoute path={AppPath.SNSLaunchpad} />
-  <PrivateRoute path={AppPath.SNSProjectDetail} />
+  <PrivateRoute path={AppPath.Launchpad} />
+  <PrivateRoute path={AppPath.ProjectDetail} />
 </Guard>
 
 <Toasts />

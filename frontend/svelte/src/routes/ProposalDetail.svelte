@@ -85,8 +85,8 @@
     const { referrerPath } = get(routeStore);
     routeStore.navigate({
       path:
-        referrerPath === AppPath.SNSLaunchpad
-          ? AppPath.SNSLaunchpad
+        referrerPath === AppPath.Launchpad
+          ? AppPath.Launchpad
           : AppPath.Proposals,
     });
   };
