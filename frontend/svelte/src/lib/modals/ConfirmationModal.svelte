@@ -7,7 +7,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal size="small" on:nnsClose>
+<Modal on:nnsClose>
   <article>
     <slot />
     <div role="toolbar">
