@@ -1,7 +1,8 @@
 # Changelog
 
-## Proposal XXXX
+## Proposal 67969
 * Polyfill CSS to support older browsers
+* Buttons realignment in Neuron Detail Page
 * UI improvements
 
 ## Proposal 67799
