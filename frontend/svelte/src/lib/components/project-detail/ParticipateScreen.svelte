@@ -6,13 +6,14 @@
     mainTransactionFeeStoreAsIcp,
     mainTransactionFeeStore,
   } from "../../stores/transaction-fees.store";
-
   import type { Account } from "../../types/account";
   import { maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
   import Input from "../ui/Input.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+
+  // Tested in the ParticipateSwapModal
 
   export let selectedAccount: Account | undefined = undefined;
   export let amount: number | undefined = undefined;
@@ -59,9 +60,7 @@
         >{$i18n.core.max}</button
       >
     </KeyValuePair>
-    <!-- New Inputs do not show the placeholder above the input -->
-    <!-- Now adapt to the new design -->
-    <!-- Shall we create a new Input component? Or pass a prop? -->
+    <!-- TODO: ParticipateScreen -->
     <Input
       inputType="icp"
       name="amount"

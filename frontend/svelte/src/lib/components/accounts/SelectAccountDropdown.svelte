@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
+
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
@@ -8,7 +10,7 @@
   export let skipHardwareWallets: boolean = false;
 
   let selectableAccounts: Account[] | undefined;
-  accountsStore.subscribe((accounts) => {
+  const unsubscribe = accountsStore.subscribe((accounts) => {
     if (accounts.main !== undefined) {
       selectedAccount = accounts.main;
       selectableAccounts = [
@@ -18,6 +20,8 @@
       ];
     }
   });
+
+  onDestroy(unsubscribe);
 </script>
 
 <!-- TODO: Implement https://dfinity.atlassian.net/browse/L2-800 -->
