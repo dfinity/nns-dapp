@@ -17,7 +17,8 @@
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 
-  const enoughMaturity = hasEnoughMaturityToMerge({
+  let enoughMaturity: boolean;
+  $: enoughMaturity = hasEnoughMaturityToMerge({
     neuron,
     fee: $mainTransactionFeeStore,
   });
