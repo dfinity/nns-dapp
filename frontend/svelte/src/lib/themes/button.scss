@@ -41,6 +41,7 @@ button {
   }
 
   &.primary,
+  &.secondary,
   &.danger,
   &.warning {
     border-radius: 50px;
@@ -80,6 +81,25 @@ button {
     &:focus {
       background: var(--primary-tint);
       @include effect.ripple-effect(--primary-tint);
+    }
+  }
+
+  &.secondary {
+    &[disabled],
+    &[disabled]:hover {
+      background: var(--disable);
+      color: var(--disable-contrast);
+      cursor: default;
+    }
+
+    background: var(--primary-contrast);
+    color: var(--primary);
+
+    @include effect.ripple-effect(--primary-contrast);
+
+    &:focus {
+      background: var(--primary-contrast);
+      @include effect.ripple-effect(--primary-contrast);
     }
   }
 

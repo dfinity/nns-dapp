@@ -9,8 +9,8 @@
 
   export let summary: SnsSummary;
 
-  const minCommitmentIcp = ICP.fromE8s(summary.minCommitment);
-  const maxCommitmentIcp = ICP.fromE8s(summary.maxCommitment);
+  const minCommitmentIcp = ICP.fromE8s(summary.minParticipationCommitment);
+  const maxCommitmentIcp = ICP.fromE8s(summary.maxParticipationCommitment);
 </script>
 
 <div data-tid="sns-project-detail-info">
