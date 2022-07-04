@@ -69,4 +69,5 @@ COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
 COPY --from=builder /ic/rs/sns/swap/canister/swap.did /swap.did
 COPY --from=builder /ic/rs/sns/root/canister/root.did /root.did
+COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns-wasm.did
 COPY --from=builder /ic/rs/target/*.wasm /

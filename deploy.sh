@@ -191,10 +191,10 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
-  ./e2e-tests/scripts/nns-canister-download
-  ./e2e-tests/scripts/nns-canister-build
-fi
+#if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
+#  ./e2e-tests/scripts/nns-canister-download
+#  ./e2e-tests/scripts/nns-canister-build
+#fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
@@ -212,12 +212,27 @@ fi
 # adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if [[ "$DEPLOY_SNS" == "true" ]]; then
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --init-config-file sns_init.yml
-  #dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
-  #dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
-  #dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
-  #dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
-  #./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
+  # If the wasm canister has not been installed already, install it.
+  # TODO: Maybe put this behind a flag?
+echo Checking whether sns wasm is installed
+  SNS_WASM_CANISTER_ID="$(dfx canister --network local id wasm_canister 2>/dev/null)"
+  if test -n "${SNS_WASM_CANISTER_ID}"
+  then
+    echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
+  else
+    echo "Creating SNS wasm canister..."
+    NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
+    SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
+    dfx deploy wasm_canister  --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )'
+    SNS_WASM_CANISTER_ID="$(dfx canister --network local id wasm_canister)"
+    echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
+  fi
+
+  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then

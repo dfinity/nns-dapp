@@ -13,6 +13,14 @@
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-03-30/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
+    "wasm_canister": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/sns-wasm.did",
+      "wasm": "target/ic/sns-wasm-canister.wasm",
+      "type": "custom"
+    },
     "sns_governance": {
       "build": [
         "true"

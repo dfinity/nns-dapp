@@ -9,7 +9,11 @@ initial_token_distribution:
     total_e8s: 3000000000
     distributions:
       fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1000000000
-  swap: 1
+  treasury:
+    total_e8s: 5000000000
+    distributions:
+        "fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe": 500000000
+  swap: 10000
 
 max_icp_e8s: 50
 min_participants: 1
