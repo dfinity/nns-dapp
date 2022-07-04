@@ -45,7 +45,9 @@
   }
 
   h3 {
-    margin: 0;
+    // increase click area
+    margin: calc(-1 * var(--padding));
+    padding: var(--padding);
   }
 
   .content {

@@ -16,12 +16,4 @@ describe("KeyValuePair", () => {
     expect(queryByText(key)).toBeInTheDocument();
     expect(queryByText(value)).toBeInTheDocument();
   });
-
-  it("should render info icon", () => {
-    const { queryByTestId } = render(KeyValuePairTest, {
-      props: { key, value, info: true },
-    });
-
-    expect(queryByTestId("icon-info")).toBeInTheDocument();
-  });
 });

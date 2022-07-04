@@ -4,13 +4,13 @@ import {
   snsFullProjectStore,
   snsSummariesStore,
   snsSwapStatesStore,
-} from "../../../lib/stores/snsProjects.store";
+} from "../../../lib/stores/projects.store";
 import {
   mockSnsSummaryList,
   mockSnsSwapState,
 } from "../../mocks/sns-projects.mock";
 
-describe("snsProjects.store", () => {
+describe("projects.store", () => {
   describe("snsSummariesStore", () => {
     it("should store summaries", async () => {
       snsSummariesStore.setSummaries({

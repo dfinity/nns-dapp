@@ -2,10 +2,11 @@
   import { ICP } from "@dfinity/nns";
   import type { SnsSwapState } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
-  import type { SnsFullProject } from "../../stores/snsProjects.store";
+  import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import Badge from "../ui/Badge.svelte";
+  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
@@ -49,13 +50,14 @@
       <Badge>{$i18n.sns_project_detail.accepting}</Badge>
     </div>
     <div class="content">
-      <KeyValuePair info testId="sns-project-current-commitment">
-        <svelte:fragment slot="key"
-          >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
-        >
-        <svelte:fragment slot="value">
-          <Icp icp={currentCommitmentIcp} singleLine />
-        </svelte:fragment>
+      <KeyValuePair testId="sns-project-current-commitment">
+        <InfoContextKey slot="key">
+          <svelte:fragment slot="header"
+            >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
+          >
+          <p>Some details about what the current commitment means.</p>
+        </InfoContextKey>
+        <Icp slot="value" icp={currentCommitmentIcp} singleLine />
       </KeyValuePair>
       <div data-tid="sns-project-commitment-progress">
         <CommitmentProgressBar

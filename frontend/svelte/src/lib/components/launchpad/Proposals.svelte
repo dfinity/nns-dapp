@@ -5,7 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import SNSProposalCard from "./SNSProposalCard.svelte";
+  import ProposalCard from "./ProposalCard.svelte";
 
   let loading: boolean = false;
   let proposals: ProposalInfo[] | undefined = undefined;
@@ -33,7 +33,7 @@
   {:else}
     <CardGrid>
       {#each proposals as proposalInfo (proposalInfo.id)}
-        <SNSProposalCard {proposalInfo} />
+        <ProposalCard {proposalInfo} />
       {/each}
     </CardGrid>
   {/if}
