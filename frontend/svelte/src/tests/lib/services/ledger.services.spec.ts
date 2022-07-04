@@ -1,14 +1,15 @@
 import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 import * as api from "../../../lib/api/governance.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
-import { LedgerErrorKey } from "../../../lib/errors/ledger.errors";
 import { LedgerIdentity } from "../../../lib/identities/ledger.identity";
 import * as accountsServices from "../../../lib/services/accounts.services";
 import * as authServices from "../../../lib/services/auth.services";
 import {
+  assertLedgerVersion,
   connectToHardwareWallet,
   getLedgerIdentity,
   listNeuronsHardwareWallet,
@@ -17,11 +18,16 @@ import {
 } from "../../../lib/services/ledger.services";
 import { authStore } from "../../../lib/stores/auth.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
+import {
+  LedgerErrorKey,
+  LedgerErrorMessage,
+} from "../../../lib/types/ledger.errors";
 import * as agent from "../../../lib/utils/agent.utils";
 import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
@@ -317,6 +323,88 @@ describe("ledger-services", () => {
 
         spyToastError.mockRestore();
       });
+    });
+  });
+
+  describe("assertLedgerVersion", () => {
+    it("should throw if ledger version is smaller than min version", async () => {
+      const minVersion = "2.0.6";
+      const versionResponse: ResponseVersion = {
+        returnCode: LedgerError.NoErrors,
+        testMode: true,
+        major: 1,
+        minor: 0,
+        patch: 10,
+        deviceLocked: false,
+        targetId: "test",
+      };
+      const identity = await MockLedgerIdentity.create({
+        version: versionResponse,
+      });
+
+      const call = () =>
+        assertLedgerVersion({
+          identity,
+          minVersion,
+        });
+      expect(call).rejects.toThrow(LedgerErrorMessage);
+    });
+
+    it("should not throw if ledger version is larger than min version", async () => {
+      const minVersion = "2.0.6";
+      const versionResponse: ResponseVersion = {
+        returnCode: LedgerError.NoErrors,
+        testMode: true,
+        major: 3,
+        minor: 0,
+        patch: 10,
+        deviceLocked: false,
+        targetId: "test",
+      };
+      const identity = await MockLedgerIdentity.create({
+        version: versionResponse,
+      });
+
+      const call = () =>
+        assertLedgerVersion({
+          identity,
+          minVersion,
+        });
+      expect(call).not.toThrow(LedgerErrorMessage);
+    });
+
+    it("should not throw if ledger version is the same as min version", async () => {
+      const minVersion = "2.0.6";
+      const versionResponse: ResponseVersion = {
+        returnCode: LedgerError.NoErrors,
+        testMode: true,
+        major: 2,
+        minor: 0,
+        patch: 6,
+        deviceLocked: false,
+        targetId: "test",
+      };
+      const identity = await MockLedgerIdentity.create({
+        version: versionResponse,
+      });
+
+      const call = () =>
+        assertLedgerVersion({
+          identity,
+          minVersion,
+        });
+      expect(call).not.toThrow(LedgerErrorMessage);
+    });
+
+    it("should not throw if identity is not LedgerIdentity", async () => {
+      const minVersion = "2.0.6";
+
+      const call = () =>
+        assertLedgerVersion({
+          identity: mockIdentity,
+          minVersion,
+        });
+      expect(call).not.toThrow(LedgerErrorMessage);
     });
   });
 });

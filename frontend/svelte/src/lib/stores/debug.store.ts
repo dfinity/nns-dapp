@@ -5,17 +5,18 @@ import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neuron
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
 import { accountsStore } from "./accounts.store";
+import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
-import { sortedNeuronStore } from "./neurons.store";
+import { neuronsStore } from "./neurons.store";
 import {
   proposalIdStore,
   proposalInfoStore,
+  proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
 } from "./proposals.store";
-import { routeStore } from "./route.store";
 import { toastsStore } from "./toasts.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
@@ -50,9 +51,10 @@ export const initDebugStore = () =>
   derived(
     [
       // TODO (L2-611): anonymise wallet id and neuron ids
-      routeStore,
+      // TODO: (L2-683): add routeStore
+      busyStore,
       accountsStore,
-      sortedNeuronStore,
+      neuronsStore,
       knownNeuronsStore,
       canistersStore,
       proposalsStore,
@@ -60,6 +62,7 @@ export const initDebugStore = () =>
       proposalIdStore,
       proposalInfoStore,
       votingNeuronSelectStore,
+      proposalPayloadsStore,
       toastsStore,
       addAccountStore,
       hardwareWalletNeuronsStore,
@@ -68,9 +71,9 @@ export const initDebugStore = () =>
       selectedCanisterStore,
     ],
     ([
-      $routeStore,
+      $busyStore,
       $accountsStore,
-      $sortedNeuronStore,
+      $neuronsStore,
       $knownNeuronsStore,
       $canistersStore,
       $proposalsStore,
@@ -78,6 +81,7 @@ export const initDebugStore = () =>
       $proposalIdStore,
       $proposalInfoStore,
       $votingNeuronSelectStore,
+      $proposalPayloadsStore,
       $toastsStore,
       $addAccountStore,
       $hardwareWalletNeuronsStore,
@@ -85,9 +89,9 @@ export const initDebugStore = () =>
       $selectedAccountStore,
       $selectedCanisterStore,
     ]) => ({
-      route: $routeStore,
+      busy: $busyStore,
       accounts: $accountsStore,
-      sortedNeuron: $sortedNeuronStore,
+      neurons: $neuronsStore,
       knownNeurons: $knownNeuronsStore,
       canisters: $canistersStore,
       proposals: $proposalsStore,
@@ -95,6 +99,7 @@ export const initDebugStore = () =>
       proposalId: $proposalIdStore,
       proposalInfo: $proposalInfoStore,
       votingNeuronSelect: $votingNeuronSelectStore,
+      proposalPayloads: $proposalPayloadsStore,
       toasts: $toastsStore,
       addAccount: $addAccountStore,
       hardwareWalletNeurons: $hardwareWalletNeuronsStore,

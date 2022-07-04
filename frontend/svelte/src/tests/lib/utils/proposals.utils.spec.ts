@@ -1,4 +1,4 @@
-import type { Ballot, NeuronInfo, Proposal } from "@dfinity/nns";
+import type { Ballot, NeuronInfo, Proposal, ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
   ProposalStatus,
@@ -8,8 +8,10 @@ import {
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import {
   concatenateUniqueProposals,
-  emptyProposals,
   excludeProposals,
+  getNnsFunctionIndex,
+  getVotingBallot,
+  getVotingPower,
   hasMatchingProposals,
   hideProposal,
   lastProposalId,
@@ -26,370 +28,528 @@ import { mockNeuron } from "../../mocks/neurons.mock";
 import {
   generateMockProposals,
   mockProposalInfo,
+  proposalActionNnsFunction21,
+  proposalActionRewardNodeProvider,
 } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
+const proposalWithNnsFunctionAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionNnsFunction21,
+} as Proposal;
+
+const proposalWithRewardNodeProviderAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionRewardNodeProvider,
+} as Proposal;
+
 describe("proposals-utils", () => {
-  it("should detect an empty list of proposals", () =>
-    expect(emptyProposals([])).toBeTruthy());
-
-  it("should detect an not empty list of proposals", () =>
-    expect(emptyProposals(mockProposals)).toBeFalsy());
-
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
 
   it("should find fist action key", () =>
-    expect(
-      proposalFirstActionKey(mockProposalInfo.proposal as Proposal)
-    ).toEqual("ExecuteNnsFunction"));
+    expect(proposalFirstActionKey(proposalWithNnsFunctionAction)).toEqual(
+      "ExecuteNnsFunction"
+    ));
 
-  it("should display proposal", () => {
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeFalsy();
+  describe("hideProposal", () => {
+    const proposalWithBallot = ({
+      proposal,
+      vote,
+    }: {
+      proposal: ProposalInfo;
+      vote?: Vote;
+    }): ProposalInfo => ({
+      ...proposal,
+      ballots: [
+        {
+          neuronId: BigInt(0),
+          vote: vote ?? Vote.UNSPECIFIED,
+        } as Ballot,
+      ],
+    });
+    const neurons = [
+      {
+        neuronId: BigInt(0),
+      } as NeuronInfo,
+    ];
 
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[1],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeFalsy();
+    it("hideProposal", () => {
+      expect(
+        hideProposal({
+          proposalInfo: mockProposals[0],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
+      expect(
+        hideProposal({
+          proposalInfo: mockProposals[1],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[1],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({ proposal: mockProposals[0] }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.UNSPECIFIED,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeFalsy();
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({ proposal: mockProposals[1] }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[1],
-          ballots: [
-            {
-              vote: Vote.UNSPECIFIED,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeFalsy();
-
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.UNSPECIFIED,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
-
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[1],
-          ballots: [
-            {
-              vote: Vote.UNSPECIFIED,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
-  });
-
-  it("should hide proposal", () => {
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.YES,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.NO,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeTruthy();
-  });
-
-  it("should hide proposal if a filter is empty", () => {
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          topics: [],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          status: [],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          rewards: [],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-  });
-
-  it("should hide proposal if does not match filter", () => {
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          topics: [Topic.Kyc],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          status: [ProposalStatus.PROPOSAL_STATUS_EXECUTED],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hideProposal({
-        proposalInfo: mockProposals[0],
-        filters: {
-          ...DEFAULT_PROPOSALS_FILTERS,
-          rewards: [
-            ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-          ],
-          excludeVotedProposals: false,
-        },
-      })
-    ).toBeTruthy();
-  });
-
-  it("should show proposal without ballots", () => {
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
-    expect(
-      hideProposal({
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.UNSPECIFIED,
-            } as Ballot,
-          ],
-        },
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
-  });
-
-  it("should have matching proposals", () => {
-    expect(
-      hasMatchingProposals({
-        proposals: mockProposals,
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hasMatchingProposals({
-        proposals: mockProposals,
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeTruthy();
-
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          ...mockProposals,
-          {
+      expect(
+        hideProposal({
+          proposalInfo: {
             ...mockProposals[0],
             ballots: [
               {
+                neuronId: BigInt(0),
                 vote: Vote.UNSPECIFIED,
               } as Ballot,
             ],
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeTruthy();
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          ...mockProposals,
-          {
+      expect(
+        hideProposal({
+          proposalInfo: {
             ...mockProposals[1],
             ballots: [
               {
+                neuronId: BigInt(0),
                 vote: Vote.UNSPECIFIED,
               } as Ballot,
             ],
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeTruthy();
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
 
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          ...mockProposals,
-          {
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({ proposal: mockProposals[0] }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({ proposal: mockProposals[1] }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+    });
+
+    it("should hide proposal", () => {
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+            vote: Vote.YES,
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+            vote: Vote.NO,
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+    });
+
+    it("should hide proposal if a filter is empty", () => {
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            topics: [],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            status: [],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            rewards: [],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+    });
+
+    it("should hide proposal if does not match filter", () => {
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            topics: [Topic.Kyc],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            status: [ProposalStatus.PROPOSAL_STATUS_EXECUTED],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            rewards: [
+              ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+            ],
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not show proposal without ballots", () => {
+      expect(
+        hideProposal({
+          proposalInfo: {
+            ...mockProposals[0],
+            ballots: [],
+          },
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hideProposal({
+          proposalInfo: {
             ...mockProposals[0],
             ballots: [
               {
+                neuronId: BigInt(0),
                 vote: Vote.UNSPECIFIED,
               } as Ballot,
             ],
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeTruthy();
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+    });
 
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          ...mockProposals,
-          {
-            ...mockProposals[1],
+    it("should ignore ballots neuronIds that are not in neurons", () => {
+      expect(
+        hideProposal({
+          proposalInfo: {
+            ...mockProposals[0],
             ballots: [
               {
+                neuronId: BigInt(0),
                 vote: Vote.UNSPECIFIED,
               } as Ballot,
             ],
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeTruthy();
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons: [
+            {
+              neuronId: BigInt(666),
+            } as NeuronInfo,
+          ],
+        })
+      ).toBeTruthy();
+    });
   });
 
-  it("should not have matching proposals", () => {
-    expect(
-      hasMatchingProposals({
-        proposals: [],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: false },
-      })
-    ).toBeFalsy();
+  describe("hasMatchingProposals", () => {
+    const neurons = [
+      {
+        neuronId: BigInt(0),
+      } as NeuronInfo,
+    ];
 
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          {
-            ...mockProposals[0],
+    it("should have matching proposals", () => {
+      expect(
+        hasMatchingProposals({
+          proposals: mockProposals,
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: mockProposals.map((proposal) => ({
+            ...proposal,
             ballots: [
               {
-                vote: Vote.YES,
+                neuronId: BigInt(0),
+                vote: Vote.UNSPECIFIED,
               } as Ballot,
             ],
+          })),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
+          neurons,
+        })
+      ).toBeTruthy();
 
-    expect(
-      hasMatchingProposals({
-        proposals: [
-          {
-            ...mockProposals[0],
-            ballots: [
-              {
-                vote: Vote.NO,
-              } as Ballot,
-            ],
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            ...mockProposals,
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.UNSPECIFIED,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
           },
-        ],
-        filters: { ...DEFAULT_PROPOSALS_FILTERS, excludeVotedProposals: true },
-      })
-    ).toBeFalsy();
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            ...mockProposals,
+            {
+              ...mockProposals[1],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.UNSPECIFIED,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            ...mockProposals,
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.UNSPECIFIED,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            ...mockProposals,
+            {
+              ...mockProposals[1],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.UNSPECIFIED,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not have matching proposals", () => {
+      expect(
+        hasMatchingProposals({
+          proposals: [],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: false,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.YES,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.NO,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+        })
+      ).toBeFalsy();
+    });
   });
 
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
-      const fields = proposalActionFields(
-        mockProposalInfo.proposal as Proposal
-      );
+      const fields = proposalActionFields(proposalWithRewardNodeProviderAction);
 
       expect(fields.map(([key]) => key).join()).toEqual(
-        "nnsFunctionId,nodeProvider,nnsFunctionName,payload"
+        "nodeProvider,amountE8s,rewardMode"
       );
     });
 
@@ -402,16 +562,6 @@ describe("proposals-utils", () => {
 
       expect(fields.length).toBe(0);
     });
-
-    it("should simulate flutter dapp formatting (temp solution)", () => {
-      const fields = proposalActionFields(
-        mockProposalInfo.proposal as Proposal
-      );
-      expect(fields[0][0]).toBe("nnsFunctionId");
-      expect(fields[0][1]).toBe(4);
-      expect(fields[2][0]).toBe("nnsFunctionName");
-      expect(fields[2][1]).toBe("nnsFunctionValue");
-    });
   });
 
   describe("selectedNeuronsVotingPover", () => {
@@ -422,27 +572,47 @@ describe("proposals-utils", () => {
         votingPower: BigInt(votingPower),
       } as NeuronInfo);
 
-    it("should calculate total", () => {
-      expect(
-        selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
-          selectedIds: [1, 2, 3].map(BigInt),
-        })
-      ).toBe(BigInt(9));
+    const proposalInfo = (neurons: NeuronInfo[]): ProposalInfo => ({
+      ...mockProposalInfo,
+      ballots: neurons.map(({ neuronId, votingPower }) => ({
+        neuronId,
+        votingPower: votingPower - BigInt(1),
+        vote: Vote.NO,
+      })),
+    });
 
+    it("should calculate total ballot voting power", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
-          selectedIds: [1, 3].map(BigInt),
+          neurons,
+          selectedIds: [1, 2, 3].map(BigInt),
+          proposal,
         })
       ).toBe(BigInt(6));
     });
 
-    it("should return 0 if no selection", () => {
+    it("should take into account only selected neurons", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons: [neuron(1, 1), neuron(2, 3), neuron(3, 5)],
+          neurons,
+          selectedIds: [1, 3].map(BigInt),
+          proposal,
+        })
+      ).toBe(BigInt(4));
+    });
+
+    it("should return 0 if no selection", () => {
+      const neurons = [neuron(1, 1), neuron(2, 3), neuron(3, 5)];
+      const proposal = proposalInfo(neurons);
+      expect(
+        selectedNeuronsVotingPower({
+          neurons,
           selectedIds: [],
+          proposal,
         })
       ).toBe(BigInt(0));
     });
@@ -685,6 +855,108 @@ describe("proposals-utils", () => {
           newProposals,
         })
       ).toEqual([]);
+    });
+  });
+
+  describe("getVotingBallot", () => {
+    it("should return ballot of neuron if present", () => {
+      const neuronId = BigInt(100);
+      const ballot: Ballot = {
+        neuronId,
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingBallot({
+          neuronId,
+          proposalInfo: proposal,
+        })
+      ).toEqual(ballot);
+    });
+
+    it("should return undefined if ballot not present", () => {
+      const neuronId = BigInt(100);
+      const ballot: Ballot = {
+        neuronId: BigInt(400),
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingBallot({
+          neuronId,
+          proposalInfo: proposal,
+        })
+      ).toBeUndefined();
+    });
+  });
+
+  describe("getVotingPower", () => {
+    it("should return ballot voting power if present", () => {
+      const neuronId = BigInt(100);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+      };
+      const ballot: Ballot = {
+        neuronId,
+        votingPower: BigInt(30),
+        vote: Vote.YES,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+      expect(
+        getVotingPower({
+          neuron,
+          proposal,
+        })
+      ).toEqual(ballot.votingPower);
+    });
+
+    it("should return neuron voting power if no ballot", () => {
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [],
+      };
+      expect(
+        getVotingPower({
+          neuron: mockNeuron,
+          proposal,
+        })
+      ).toBe(mockNeuron.votingPower);
+    });
+  });
+
+  describe("getNnsFunctionIndex", () => {
+    it("should return nnsFunctionId from proposal", () => {
+      expect(
+        getNnsFunctionIndex({
+          ...mockProposalInfo.proposal,
+          action: {
+            ExecuteNnsFunction: {
+              nnsFunctionId: 4,
+            },
+          },
+        } as Proposal)
+      ).toBe(4);
+    });
+
+    it("should return undefined if not ExecuteNnsFunction type", () => {
+      expect(
+        getNnsFunctionIndex({
+          ...mockProposalInfo.proposal,
+          action: {},
+        } as Proposal)
+      ).toBeUndefined();
     });
   });
 });

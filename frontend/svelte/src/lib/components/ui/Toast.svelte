@@ -4,7 +4,11 @@
    */
   import { toastsStore } from "../../stores/toasts.store";
   import { fade, fly } from "svelte/transition";
-  import { translate } from "../../utils/i18n.utils";
+  import {
+    type I18nSubstitutions,
+    replacePlaceholders,
+    translate,
+  } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
   import { onDestroy, onMount } from "svelte";
@@ -17,11 +21,13 @@
   let labelKey: string;
   let level: ToastLevel;
   let detail: string | undefined;
+  let substitutions: I18nSubstitutions | undefined;
 
-  $: ({ labelKey, level, detail } = msg);
-  $: text = `${translate({ labelKey })}${
-    detail !== undefined ? ` ${detail}` : ""
-  }`;
+  $: ({ labelKey, level, detail, substitutions } = msg);
+  $: text = `${replacePlaceholders(
+    translate({ labelKey }),
+    substitutions ?? {}
+  )}${detail !== undefined ? ` ${detail}` : ""}`;
 
   let timeoutId: NodeJS.Timeout | undefined = undefined;
 
@@ -78,15 +84,15 @@
     height: calc(8.5 * var(--padding));
 
     border-radius: var(--border-radius);
-    background: var(--green-500);
-    color: var(--green-500-contrast);
+    background: var(--positive-emphasis);
+    color: var(--positive-emphasis-contrast);
     box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
 
     padding: var(--padding) var(--padding-2x);
     box-sizing: border-box;
 
     --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--green-600-shade);
+    --scrollbar-thumb: var(--positive-emphasis-shade);
 
     ::-webkit-scrollbar {
       background: var(--scrollbar-background);
@@ -101,20 +107,20 @@
     }
 
     &.error {
-      background: var(--pink);
-      color: var(--pink-contrast);
-      --scrollbar-background: #ffa3c5;
-      --scrollbar-thumb: #a9054c;
+      background: var(--negative-emphasis);
+      color: var(--negative-emphasis-light-contrast);
+      --scrollbar-background: var(--negative-emphasis-tint);
+      --scrollbar-thumb: var(--negative-emphasis);
     }
 
     &.warn {
-      background: var(--yellow-500);
-      color: var(--yellow-500-contrast);
-      --scrollbar-background: var(--yellow-400-tint);
-      --scrollbar-thumb: var(--yellow-600);
+      background: var(--warning-emphasis);
+      color: var(--warning-emphasis-contrast);
+      --scrollbar-background: var(--warning-emphasis-tint);
+      --scrollbar-thumb: var(--warning-emphasis);
 
       button.close {
-        color: var(--yellow-500-contrast);
+        color: var(--warning-emphasis-contrast);
       }
     }
   }

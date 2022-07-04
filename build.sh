@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 #
-# First the typescript shim is built and bundled into ic_agent.js, which is
-# then added to the frontend/dart codebase. This dart codebase is then built
-# into build/web. The frontend/svelte is built into public/. Both the dart
-# output (build/web/) and svelte output (public/) are bundled into a tarball,
+# The frontend/svelte is built into public/. The svelte is bundled into a tarball,
 # assets.tar.xz. This tarball is baked into the wasm binary output at build
 # time by cargo, and finally the wasm binary is read by ic-cdk-optimizer and
 # optimizer. This scripts outputs a single file, nns-dapp.wasm.
 #
-#              ic_agent.js               build/web/
-#  frontend/ts◄────────────frontend/dart ◄──────────┐
-#                                          public/  ├──assets.tar.xz
-#                          frontend/svelte◄─────────┘       ▲
+#                          frontend/svelte◄─────────── assets.tar.xz
+#                                                           ▲
 #                                                           │
 #                                                           │
 #                                                      cargo build
@@ -24,18 +19,24 @@ set -euo pipefail
 
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-DEPLOY_ENV="${DEPLOY_ENV:-${DFX_NETWORK:-}}"
-DFX_NETWORK="${DEPLOY_ENV}"
-export DEPLOY_ENV
-export DFX_NETWORK
-
-if [[ $DEPLOY_ENV = "nobuild" ]]; then
-  echo "Skipping build as requested"
+# If the WASM has been provided, there is no need to build it:
+[[ "${NNS_DAPP_WASM:-}" == "" ]] || {
+  test -f "${NNS_DAPP_WASM}" || {
+    echo "File not found, or node is not a file: NNS_DAPP_WASM='${NNS_DAPP_WASM}'"
+    exit 1
+  } >&2
+  INSTALL_LOCATION="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
+  [[ "$(realpath "${NNS_DAPP_WASM}")" == "$(realpath "${INSTALL_LOCATION}")" ]] ||
+    cp "${NNS_DAPP_WASM}" "${INSTALL_LOCATION}"
+  echo "Skipping build as the WASM file has already been provided."
   exit 0
-fi
+}
 
-DEPLOY_ENV="$DEPLOY_ENV" jq -e '.networks[env.DEPLOY_ENV]' dfx.json || {
-  echo "Which deployment environment? Set DEPLOY_ENV to one of:"
+# Need to know which deployment we are building for:
+DFX_NETWORK="${DFX_NETWORK:-}"
+export DFX_NETWORK
+jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
+  echo "Which deployment? Set DFX_NETWORK to one of:"
   jq -er '.networks | keys | join("  ")' dfx.json
   exit 1
 } >&2
@@ -54,19 +55,6 @@ export LEDGER_CANISTER_URL
 export REDIRECT_TO_LEGACY
 
 set -x
-
-###############
-# frontend/ts # (output: ic_agent.js written to frontend/dart/assets)
-###############
-
-# build typescript code. Must happen before the dart build because the dart
-# build requires "ic_agent.js" which is generated from frontend/ts.
-(cd "$TOPLEVEL/frontend/ts" && ./build.sh)
-
-#################
-# frontend/dart # (output: frontend/dart/build/web/)
-#################
-(cd "$TOPLEVEL/frontend/dart" && ./build.sh)
 
 ###################
 # frontend/svelte # (output: frontend/svelte/public/)
@@ -100,10 +88,8 @@ fi
 # assets can be inspected.
 tarball_dir="$TOPLEVEL/web-assets"
 rm -rf "$tarball_dir"
-mkdir -p "$tarball_dir"
 echo "using $tarball_dir for tarball directory"
-cp -R "$TOPLEVEL/frontend/dart/build/web/". "$tarball_dir"/
-cp -R "$TOPLEVEL/frontend/svelte/public" "$tarball_dir/v2"
+cp -R "$TOPLEVEL/frontend/svelte/public/" "$tarball_dir/"
 
 # Bundle into a tight tarball
 # On macOS you need to install gtar + xz
@@ -111,8 +97,6 @@ cp -R "$TOPLEVEL/frontend/svelte/public" "$tarball_dir/v2"
 # brew install xz
 cd "$tarball_dir"
 
-# Remove the assets/NOTICES file, as it's large in size and not used.
-rm assets/NOTICES
 "$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
 
 cd "$TOPLEVEL"
@@ -125,7 +109,7 @@ sha256sum "$TOPLEVEL/assets.tar.xz"
 ###############
 echo Compiling rust package
 cargo_args=(--target wasm32-unknown-unknown --release --package nns-dapp)
-if [[ $DEPLOY_ENV != "mainnet" ]]; then
+if [[ $DFX_NETWORK != "mainnet" ]]; then
   cargo_args+=(--features mock_conversion_rate)
 fi
 

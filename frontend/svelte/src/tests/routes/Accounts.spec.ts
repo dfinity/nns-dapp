@@ -25,18 +25,6 @@ describe("Accounts", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  it("should render title", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(Accounts);
-
-    const title = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title).toBeVisible();
-    expect(title).toHaveTextContent("Accounts");
-  });
-
   it("should render title and account icp", () => {
     accountsStoreMock = jest
       .spyOn(accountsStore, "subscribe")
@@ -46,7 +34,7 @@ describe("Accounts", () => {
     const titleRow = container.querySelector("section > div");
 
     expect(titleRow?.textContent).toEqual(
-      `Accounts ${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      `Accounts ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
     );
   });
 
@@ -71,7 +59,7 @@ describe("Accounts", () => {
     );
 
     expect(cardTitleRow?.textContent).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())} ICP`
+      `${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
     );
   });
 
@@ -127,7 +115,7 @@ describe("Accounts", () => {
       mockSubAccount.balance.toE8s() +
       mockHardwareWalletAccount.balance.toE8s();
     expect(titleRow?.textContent).toEqual(
-      `Accounts ${formatICP(totalBalance)} ICP`
+      `Accounts ${formatICP({ value: totalBalance })} ICP`
     );
   });
 

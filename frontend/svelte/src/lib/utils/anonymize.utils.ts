@@ -1,7 +1,6 @@
 import {
   ICP,
   type Ballot,
-  type BallotInfo,
   type Followees,
   type KnownNeuron,
   type Neuron,
@@ -15,7 +14,10 @@ import type {
 import type { Account } from "../types/account";
 import { digestText } from "../utils/dev.utils";
 import { mapTransaction } from "../utils/transactions.utils";
-import { isNullOrUndefined, mapPromises } from "./utils";
+import { isNullable, mapPromises, nonNullable } from "./utils";
+
+const anonymiseAvailability = (value: unknown): "yes" | "no" =>
+  nonNullable(value) ? "yes" : "no";
 
 export const anonymize = async (value: unknown): Promise<string | undefined> =>
   value === undefined ? undefined : digestText(`${value}`);
@@ -47,23 +49,6 @@ export const anonymizeICP = async (
     : icp.toE8s() === BigInt(0)
     ? ICP.fromE8s(BigInt(0))
     : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
-
-export const anonymizeRecentBallot = async (
-  ballot: BallotInfo | undefined | null
-): Promise<
-  { [key in keyof Required<BallotInfo>]: unknown } | undefined | null
-> => {
-  if (ballot === undefined || ballot === null) {
-    return ballot;
-  }
-
-  const { vote, proposalId } = ballot;
-
-  return {
-    vote,
-    proposalId,
-  };
-};
 
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
@@ -111,7 +96,7 @@ export const anonymizeAccount = async (
 
   return {
     identifier: await cutAndAnonymize(identifier),
-    principal: isNullOrUndefined(principal) ? "yes" : "no",
+    principal: anonymiseAvailability(principal),
     balance: await anonymizeICP(balance),
     name: name,
     type: type,
@@ -142,7 +127,7 @@ export const anonymizeNeuronInfo = async (
   return {
     neuronId: await cutAndAnonymize(neuronId),
     dissolveDelaySeconds,
-    recentBallots: await mapPromises(recentBallots, anonymizeRecentBallot),
+    recentBallots,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -181,8 +166,8 @@ export const anonymizeFullNeuron = async (
   return {
     id: await cutAndAnonymize(id),
     // principal string
-    controller: isNullOrUndefined(controller) ? "yes" : "no",
-    recentBallots: await mapPromises(recentBallots, anonymizeRecentBallot),
+    controller: anonymiseAvailability(controller),
+    recentBallots,
     kycVerified: kycVerified,
     notForProfit,
     cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
@@ -220,7 +205,7 @@ export const anonymizeCanister = async (
 ): Promise<
   undefined | { [key in keyof Required<CanisterDetails>]: unknown }
 > => {
-  if (canister === undefined || canister === null) {
+  if (isNullable(canister)) {
     return canister;
   }
 
@@ -230,7 +215,7 @@ export const anonymizeCanister = async (
     name,
     // TODO: what to do with principals
     // canister_id: await anonymize(canister_id),
-    canister_id: isNullOrUndefined(canister_id) ? "yes" : "no",
+    canister_id: anonymiseAvailability(canister_id),
   };
 };
 
@@ -243,7 +228,7 @@ export const anonymizeTransaction = async ({
 }): Promise<
   undefined | { [key in keyof Required<Transaction>]: unknown } | "no account"
 > => {
-  if (transaction === undefined || transaction === null) {
+  if (isNullable(transaction)) {
     return transaction;
   }
 

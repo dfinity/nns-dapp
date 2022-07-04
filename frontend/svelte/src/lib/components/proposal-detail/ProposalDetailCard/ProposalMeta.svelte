@@ -56,9 +56,7 @@
       padding: 0;
 
       font-size: var(--font-size-h5);
-      line-height: var(--line-height-standard);
       text-align: start;
-      color: var(--gray-100);
       overflow-wrap: anywhere;
 
       @include media.min-width(medium) {

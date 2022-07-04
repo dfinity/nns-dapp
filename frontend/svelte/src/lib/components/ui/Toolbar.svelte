@@ -1,44 +1,47 @@
 <div class="toolbar" role="toolbar">
-  <slot />
+  <slot name="start" />
+
+  <div class="main">
+    <slot />
+  </div>
+
+  <slot name="end" />
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/display";
 
   .toolbar {
     position: absolute;
-    inset: 0;
+    @include display.inset;
+
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+
+    justify-content: center;
+    align-items: center;
 
     // enable scrolling
-    pointer-events: none;
+    pointer-events: var(--toolbar-pointer-events, none);
 
-    margin: 0 auto var(--padding-2x);
+    --tooltip-width: fit-content;
+
+    // buttons
+    :global(button),
+    :global(.tooltip-wrapper) {
+      pointer-events: all;
+    }
+  }
+
+  .main {
+    grid-column: 2 / 3;
 
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: stretch;
 
-    @include media.min-width(xsmall) {
-      min-width: 280px;
-      width: 70%;
-    }
+    justify-self: center;
 
-    @include media.min-width(medium) {
-      margin-bottom: var(--padding-3x);
-    }
-
-    // buttons
-    :global(button) {
-      pointer-events: all;
-
-      flex: 1 1;
-      margin: 0 var(--padding-0_5x);
-      max-width: 60%;
-
-      @include media.min-width(medium) {
-        margin: 0 var(--padding-2x);
-        max-width: 406px;
-      }
-    }
+    gap: var(--padding);
   }
 </style>

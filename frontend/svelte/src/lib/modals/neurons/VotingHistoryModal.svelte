@@ -25,7 +25,6 @@
     // The fetched neuron doesn't belong to a user so it should not be added to the neuronsStore
     await loadNeuron({
       neuronId,
-      skipCheck: true,
       setNeuron: ({ neuron: neuronInfo }) => (neuron = neuronInfo),
       handleError: () => {
         neuron = undefined;
@@ -35,7 +34,7 @@
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose theme="dark" size="big">
+<Modal testId="voting-history-modal" on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}

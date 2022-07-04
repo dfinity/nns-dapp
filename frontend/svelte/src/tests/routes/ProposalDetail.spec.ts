@@ -57,12 +57,6 @@ describe("ProposalDetail", () => {
       .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
   });
 
-  it("should render title", async () => {
-    const { getAllByText } = render(ProposalDetail);
-
-    expect(getAllByText(en.proposal_detail.title).length).toBeGreaterThan(0);
-  });
-
   it("should render loading neurons", async () => {
     const { getByText } = render(ProposalDetail);
 

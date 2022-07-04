@@ -13,13 +13,13 @@ import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
 import LedgerApp, { type ResponseSign } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
 import { LEDGER_DEFAULT_DERIVE_PATH } from "../constants/ledger.constants";
+import type { Secp256k1PublicKey } from "../keys/secp256k1";
+import { i18n } from "../stores/i18n";
 import {
   LedgerErrorKey,
   LedgerErrorMessage,
   type LedgerHQTransportError,
-} from "../errors/ledger.errors";
-import type { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
+} from "../types/ledger.errors";
 import { replacePlaceholders } from "../utils/i18n.utils";
 import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
 
@@ -122,6 +122,11 @@ export class LedgerIdentity extends SignIdentity {
       if (
         (err as LedgerHQTransportError)?.name === "TransportOpenUserCancelled"
       ) {
+        if (
+          (err as LedgerHQTransportError)?.message.includes("not supported")
+        ) {
+          throw new LedgerErrorKey("error__ledger.browser_not_supported");
+        }
         throw new LedgerErrorKey("error__ledger.user_cancel");
       }
 

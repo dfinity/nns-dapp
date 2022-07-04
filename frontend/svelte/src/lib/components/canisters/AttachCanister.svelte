@@ -20,13 +20,17 @@
     }
     startBusy({ initiator: "attach-canister" });
     const { success } = await attachCanister(principal);
+    stopBusy("attach-canister");
     if (success) {
       toastsStore.success({
         labelKey: "canisters.link_canister_success",
+        substitutions: {
+          $canisterId: principal.toText(),
+        },
       });
+      // Leave modal open if not successful in case the error can be fixed.
+      dispatcher("nnsClose");
     }
-    stopBusy("attach-canister");
-    dispatcher("nnsClose");
   };
 </script>
 
@@ -51,7 +55,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   h5 {
     text-align: center;

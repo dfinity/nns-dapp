@@ -24,7 +24,7 @@ help_text() {
 
 case "$(basename "${SHELL:-}")" in
 bash) DEFAULT_USER_PROFILE="$HOME/.bashrc" ;;
-zsh) DEFAULT_USER_PROFILE="$HOME/.zshenv" ;;
+zsh) DEFAULT_USER_PROFILE="$HOME/.zshrc" ;;
 ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
 *) # dash, ash, tsh, tcsh
   DEFAULT_USER_PROFILE="$HOME/.profile" ;;
@@ -68,9 +68,12 @@ append_to_profile() {
 }
 
 have_correct_dfx() {
-  expected="$(jq -r .dfx dfx.json)"
-  actual="$(dfx --version | awk '{print $2}')"
-  [[ "$expected" == "$actual" ]]
+  # Sadly `command -V dfx` just gives the path to `dfx` so we need both `command` and `dfx --version`.
+  command -v dfx >/dev/null && {
+    expected="$(jq -r .dfx dfx.json)"
+    actual="$(dfx --version | awk '{print $2}')"
+    [[ "$expected" == "$actual" ]]
+  }
 }
 install_dfx() {
   DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -143,36 +146,6 @@ install_tar_linux() {
   sudo apt-get install tar
 }
 
-install_flutter() {
-  FLUTTER_VERSION=2.2.3
-  rm -fr flutter
-  case "$(uname)" in
-  Darwin)
-    FLUTTER_ZIP="flutter_macos_${FLUTTER_VERSION}-stable.zip"
-    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/${FLUTTER_ZIP}"
-    wget -c "$FLUTTER_URL"
-    rm -fr flutter
-    unzip "$FLUTTER_ZIP"
-    ;;
-  Linux)
-    FLUTTER_ZIP="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
-    FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_ZIP"
-    if test -t; then
-      wget -c "$FLUTTER_URL"
-    else
-      wget -c "$FLUTTER_URL" --quiet
-    fi
-    rm -fr flutter
-    tar xJf "$FLUTTER_ZIP"
-    ;;
-  esac
-  mkdir -p "${HOME}/.cache/flutter"
-  rm -fr "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
-  mv flutter "${HOME}/.cache/flutter/${FLUTTER_VERSION}"
-  # shellcheck disable=SC2016
-  append_to_profile "export PATH=\"\$PATH:${HOME}/.cache/flutter/${FLUTTER_VERSION}/bin\""
-}
-
 install_ic_cdk_optimizer() {
   # Nit: Needs rust to be in a working state.
   cargo install --version 0.3.2 ic-cdk-optimizer
@@ -200,7 +173,7 @@ install_cmake_linux() {
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-IC_COMMIT=6dc5e2dcb50569e20891af02b846a7d9a58e3489
+IC_COMMIT=7fcae4939dc6fac179ce3dd25ded6e6b650e2293
 install_ic_admin_linux() {
   local USER_BIN="$HOME/.local/bin"
   mkdir -p "$USER_BIN"
@@ -213,7 +186,23 @@ install_ic_admin_darwin() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
-  which ic-admin ||
+  command -v ic-admin ||
+    append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
+install_sns_linux() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+}
+install_sns_darwin() {
+  local USER_BIN="$HOME/.local/bin"
+  mkdir -p "$USER_BIN"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
+  chmod +x "$USER_BIN/sns"
+  # shellcheck disable=SC2016
+  command -v sns ||
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
@@ -235,10 +224,10 @@ command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
-command -v flutter || "install_flutter"
 command -v cmake || "install_cmake_$OS"
-command -v ic-cdk-optimizer || install_ic_cdk_optimizer
-command -v ic-admin || "install_ic_admin_$OS"
+command -V ic-cdk-optimizer || install_ic_cdk_optimizer
+command -V ic-admin || "install_ic_admin_$OS"
+command -v sns || "install_sns_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

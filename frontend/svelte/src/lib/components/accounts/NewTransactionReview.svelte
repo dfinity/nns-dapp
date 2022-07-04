@@ -21,7 +21,12 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    startBusy({ initiator: "accounts" });
+    startBusy({
+      initiator: "accounts",
+      ...(isAccountHardwareWallet($store.selectedAccount) && {
+        labelKey: "busy_screen.pending_approval_hw",
+      }),
+    });
 
     const { success } = await transferICP($store);
 
@@ -42,7 +47,7 @@
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
-    <ICP inline={true} icp={amount} />
+    <ICP inline={true} icp={amount} detailed />
   </div>
 
   <NewTransactionInfo />

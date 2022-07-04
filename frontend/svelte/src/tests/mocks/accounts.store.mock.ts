@@ -21,6 +21,10 @@ export const mockSubAccount: Account = {
   identifier:
     "aaaa5b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
   balance: ICP.fromString("1234567.8901") as ICP,
+  subAccount: [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1,
+  ],
   name: "test subaccount",
   type: "subAccount",
 };

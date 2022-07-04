@@ -1,5 +1,56 @@
 # Changelog
 
+## Proposal 67969
+* Polyfill CSS to support older browsers
+* Buttons realignment in Neuron Detail Page
+* UI improvements
+
+## Proposal 67799
+* Add light theme
+* Review dark theme
+* Enable theming
+* Upgrade agent-js
+* Improve signout flow
+* Improvements in error management
+* No tooltip when not needed. It had problems with Android devices
+* Lazy load routes to improve performance
+
+## Proposal 66831
+* Update canister payment flow
+* New Navigation menu
+* Improvements getting the Proposal payload
+* Other UI improvements
+* Removal of now unused flutter code
+
+## Proposal 65319
+* New Canisters Tab built on Svelte
+* Fix minor UI issues in the Neurons tab for smaller devices
+* Add tooltip to Wallet page to display all ICP
+* Fix voting power amount in the Proposal page
+
+## Proposal 63234
+* Provide more detailed values for neuron ICP
+* Improve support for earlier versions of iPhone
+
+## Proposal 63105
+* Truncate ICP per request
+
+## Proposal 62937
+* Fix styling of modals on Safari
+
+## Proposal 62896
+* Display the svelte version of the accounts and neurons tabs.
+* Move the hardware wallet CLI out into a separate repository.
+* Improvements to the UI.
+* More tests
+
+## Proposal 61859
+* Do not offer merging hardware wallet controlled neurons in the UI, as it is currently not supported.
+* Add the ability to dump debug info.
+* Prepare for more tabs to be released as svelte.
+* Improve the infrastructure for third party contributions.
+* More tests.
+
 ## Proposal 60694
 - Update mechanics for creating canisters
 - Prepare to release the neuron and accounts tabs in svelte

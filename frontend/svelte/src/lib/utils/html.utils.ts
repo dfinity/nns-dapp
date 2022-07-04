@@ -56,7 +56,7 @@ export const renderer = (marked: Marked): Renderer => {
  * @see {@link https://github.com/markedjs/marked}
  */
 export const markdownToHTML = async (): Promise<(text: string) => string> => {
-  const url = "/assets/assets/libs/marked.min.js";
+  const url = "/assets/libs/marked.min.js";
   const { marked }: { marked: Marked } = await import(url);
   return (text: string) =>
     marked(text, {
@@ -69,7 +69,7 @@ export const markdownToHTML = async (): Promise<(text: string) => string> => {
  * @see {@link https://github.com/cure53/DOMPurify}
  */
 export const sanitize = async (): Promise<(text: string) => string> => {
-  const url = "/assets/assets/libs/purify.min.js";
+  const url = "/assets/libs/purify.min.js";
   const { sanitize: purify } = (await import(url)).default;
   return purify;
 };

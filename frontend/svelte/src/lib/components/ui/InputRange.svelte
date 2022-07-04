@@ -5,13 +5,8 @@
   export let ariaLabel: string;
   export let handleInput: (() => void) | undefined = undefined;
 
-  let backgroundStyle: string;
-  $: {
-    const firstHalf: number = Math.round(((value - min) / (max - min)) * 100);
-    backgroundStyle = `linear-gradient(90deg, var(--background-contrast) ${firstHalf}%, var(--gray-200) ${
-      1 - firstHalf
-    }%)`;
-  }
+  let progression: number;
+  $: progression = Math.round(((value - min) / (max - min)) * 100);
 </script>
 
 <!-- Order of on:input and bind:value matters: https://svelte.dev/docs#template-syntax-element-directives-bind-property -->
@@ -23,17 +18,39 @@
   type="range"
   bind:value
   on:input={handleInput}
-  style={`background-image: ${backgroundStyle};`}
+  style={`--range-progression: ${progression}%; --range-end: ${
+    1 - progression
+  }%;`}
 />
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
+  @use "../../themes/mixins/media";
 
   input {
     appearance: none;
     border-radius: 5px;
     height: 5px;
     width: 100%;
+
+    /** Declaring this value as a CSS variable in dark.scss and light.scss was not interpreted correctly, therefore we implement these here */
+    background: linear-gradient(
+      99.27deg,
+      var(--primary) -0.11%,
+      #4e48d2 var(--range-progression),
+      var(--background) var(--range-end)
+    );
+  }
+
+  @include media.light-theme() {
+    input {
+      background: linear-gradient(
+        99.27deg,
+        var(--primary) -0.11%,
+        #4e48d2 var(--range-progression),
+        var(--background-shade) var(--range-end)
+      );
+    }
   }
 
   input:focus {
@@ -48,7 +65,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
     appearance: none;
   }
@@ -57,7 +74,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
   }
 
@@ -65,7 +82,7 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--background-contrast);
+    background: var(--card-background-contrast);
     @include interaction.tappable;
   }
 

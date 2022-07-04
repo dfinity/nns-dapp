@@ -1,9 +1,12 @@
 import { GovernanceCanister, Vote } from "@dfinity/nns";
+import { mock } from "jest-mock-extended";
 import {
   queryProposal,
+  queryProposalPayload,
   queryProposals,
   registerVote,
 } from "../../../lib/api/proposals.api";
+import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
@@ -14,7 +17,6 @@ describe("proposals-api", () => {
     new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
-  let spyGetProposal;
   let spyRegisterVote;
 
   beforeEach(() => {
@@ -23,7 +25,6 @@ describe("proposals-api", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyGetProposal = jest.spyOn(mockGovernanceCanister, "getProposal");
     spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
@@ -62,10 +63,17 @@ describe("proposals-api", () => {
       });
 
       expect(proposal?.id).toBe(BigInt(404));
-      expect(spyGetProposal).toBeCalledTimes(1);
-      expect(spyGetProposal).toBeCalledWith({
-        proposalId: BigInt(404),
+      expect(spyListProposals).toBeCalledTimes(1);
+      expect(spyListProposals).toBeCalledWith({
         certified: false,
+        request: {
+          beforeProposal: BigInt(404 + 1),
+          // TODO: check filters
+          excludeTopic: [],
+          includeRewardStatus: [],
+          includeStatus: [],
+          limit: 1,
+        },
       });
     });
   });
@@ -83,6 +91,28 @@ describe("proposals-api", () => {
         identity,
       });
       expect(spyRegisterVote).toHaveBeenCalled();
+    });
+  });
+
+  describe("queryProposalPayload", () => {
+    const nnsDappMock = mock<NNSDappCanister>();
+    nnsDappMock.getProposalPayload.mockResolvedValue({});
+    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+    afterAll(jest.clearAllMocks);
+
+    it("should call the canister to get proposal payload", async () => {
+      const spyGetProposalPayload = jest.spyOn(
+        nnsDappMock,
+        "getProposalPayload"
+      );
+
+      await queryProposalPayload({
+        proposalId: BigInt(0),
+        identity: mockIdentity,
+      });
+
+      expect(spyGetProposalPayload).toBeCalledTimes(1);
     });
   });
 });

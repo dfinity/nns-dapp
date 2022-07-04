@@ -1,4 +1,5 @@
 import type { Principal } from "@dfinity/principal";
+import { errorToString } from "./error.utils";
 
 /* eslint-disable-next-line @typescript-eslint/ban-types */
 export const debounce = (func: Function, timeout?: number) => {
@@ -50,6 +51,10 @@ export const stringifyJson = (
 
           if (value instanceof Promise) {
             return "Promise(...)";
+          }
+
+          if (value instanceof ArrayBuffer) {
+            return new Uint8Array(value).toString();
           }
 
           break;
@@ -126,8 +131,15 @@ export const bytesToHexString = (bytes: number[]): string =>
     ""
   );
 
-export const isNullOrUndefined = (value: unknown): boolean =>
-  value === undefined || value === null;
+/** Is null or undefined */
+export const isNullable = <T>(
+  argument: T | undefined | null
+): argument is undefined | null => argument === null || argument === undefined;
+
+/** Not null and not undefined */
+export const nonNullable = <T>(
+  argument: T | undefined | null
+): argument is NonNullable<T> => !isNullable(argument);
 
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,
@@ -138,4 +150,94 @@ export const mapPromises = async <T, R>(
   }
 
   return Promise.all(items.map(async (item) => await fun(item)));
+};
+
+export const isArrayEmpty = <T>({ length }: T[]): boolean => length === 0;
+
+const AMOUNT_VERSION_PARTS = 3;
+const addZeros = (nums: number[], amountZeros: number): number[] =>
+  amountZeros > nums.length
+    ? [...nums, ...[...Array(amountZeros - nums.length).keys()].map(() => 0)]
+    : nums;
+/**
+ * Returns true if the current version is smaller than the minVersion, false if equal or bigger.
+ *
+ * @param {Object} params
+ * @param {string} params.minVersion Ex: "1.0.0"
+ * @param {string} params.currentVersion Ex: "2.0.0"
+ * @returns boolean
+ */
+export const smallerVersion = ({
+  minVersion,
+  currentVersion,
+}: {
+  minVersion: string;
+  currentVersion: string;
+}): boolean => {
+  const minVersionStandarized = addZeros(
+    minVersion.split(".").map(Number),
+    AMOUNT_VERSION_PARTS
+  ).join(".");
+  const currentVersionStandarized = addZeros(
+    currentVersion.split(".").map(Number),
+    AMOUNT_VERSION_PARTS
+  ).join(".");
+  // Versions need to have the same number of parts to be comparable
+  // Source: https://stackoverflow.com/a/65687141
+  return (
+    currentVersionStandarized.localeCompare(minVersionStandarized, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    }) < 0
+  );
+};
+
+const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
+export class PollingLimitExceededError extends Error {}
+const DEFAUL_MAX_POLLING_ATTEMPTS = 10;
+/**
+ * Function that polls a specific function, checking error with passed argument to recall or not.
+ *
+ * @param {Object} params
+ * @param {fn} params.fn Function to call
+ * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
+ * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
+ * @param {counter} params.counter Param to check how many times it has polled.
+ *
+ * @returns
+ */
+export const poll = async <T>({
+  fn,
+  shouldExit,
+  maxAttempts = DEFAUL_MAX_POLLING_ATTEMPTS,
+  counter = 0,
+}: {
+  fn: () => Promise<T>;
+  shouldExit: (err: Error) => boolean;
+  maxAttempts?: number;
+  counter?: number;
+}): Promise<T> => {
+  if (counter >= maxAttempts) {
+    throw new PollingLimitExceededError();
+  }
+  try {
+    return await fn();
+  } catch (error) {
+    if (shouldExit(error)) {
+      throw error;
+    }
+    // Log swallowed errors
+    console.log(`Error polling: ${errorToString(error)}`);
+  }
+  await waitForMilliseconds(500);
+  return poll({
+    fn,
+    shouldExit,
+    maxAttempts,
+    counter: counter + 1,
+  });
 };

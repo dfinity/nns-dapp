@@ -7,8 +7,8 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NewTransactionAmount from "../../../../lib/components/accounts/NewTransactionAmount.svelte";
 import {
+  DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-  TRANSACTION_FEE_E8S,
 } from "../../../../lib/constants/icp.constants";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import {
@@ -50,7 +50,7 @@ describe("NewTransactionAmount", () => {
     const icp: HTMLSpanElement | null = queryByTestId("icp-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP(mockMainAccount.balance.toE8s())}`
+      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
     );
   });
 
@@ -67,7 +67,8 @@ describe("NewTransactionAmount", () => {
     const input: HTMLInputElement | null = container.querySelector("input");
     expect(input?.getAttribute("max")).toEqual(
       `${
-        (Number(mockMainAccount.balance.toE8s()) - TRANSACTION_FEE_E8S) /
+        (Number(mockMainAccount.balance.toE8s()) -
+          DEFAULT_TRANSACTION_FEE_E8S) /
         E8S_PER_ICP
       }`
     );

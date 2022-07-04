@@ -1,13 +1,14 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import { i18n } from "../../stores/i18n";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
 
   export let id: string | undefined = undefined;
   export let initiallyExpanded: boolean = false;
-  export let headerAlign: "left" | "center" = "left";
   export let maxContentHeight: number | undefined = undefined;
 
-  export let iconSize: "small" | "medium" = "small";
+  export let iconSize: "small" | "medium" | "none" = "small";
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
@@ -50,6 +51,8 @@
 
   // recalculate max-height after DOM update
   afterUpdate(updateMaxHeight);
+  let toggleView: string;
+  $: toggleView = expanded ? "collpase" : "expand";
 </script>
 
 <div
@@ -58,21 +61,25 @@
   role="term"
   class="header"
   on:click={toggleContent}
-  class:align-center={headerAlign === "center"}
 >
   <div class="header-content">
     <slot name="header" />
   </div>
-  <button
-    class="collapsible-expand-icon"
-    class:size-medium={iconSize === "medium"}
-    class:expanded
-    data-tid="collapsible-expand-button"
-    aria-expanded={expanded}
-    aria-controls={id}
-  >
-    <IconExpandMore />
-  </button>
+  {#if iconSize !== "none"}
+    <button
+      class="collapsible-expand-icon"
+      class:size-medium={iconSize === "medium"}
+      class:expanded
+      data-tid="collapsible-expand-button"
+      aria-expanded={expanded}
+      aria-controls={id}
+      title={replacePlaceholders($i18n.proposal_detail.summary_toggle_view, {
+        $toggleView: toggleView,
+      })}
+    >
+      <IconExpandMore />
+    </button>
+  {/if}
 </div>
 <div
   data-tid="collapsible-content"
@@ -99,10 +106,6 @@
     @include interaction.tappable;
     user-select: none;
 
-    // increase click area
-    margin: calc(-1 * var(--padding));
-    padding: var(--padding);
-
     position: relative;
 
     display: flex;
@@ -110,20 +113,9 @@
 
     .header-content {
       flex: 1;
-      margin-right: var(--padding-3x);
-    }
-
-    @include media.min-width(medium) {
-      &.align-center {
-        justify-content: center;
-
-        .header-content {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-left: var(--padding-3x);
-        }
-      }
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
     }
   }
 
@@ -141,7 +133,7 @@
     align-items: center;
 
     :global(svg) {
-      width: var(--padding-2_5x);
+      width: var(--padding-2x);
       transition: transform var(--animation-time-normal);
     }
 

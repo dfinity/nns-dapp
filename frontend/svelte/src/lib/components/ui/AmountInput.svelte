@@ -15,13 +15,12 @@
   name="amount"
   bind:value={amount}
   {max}
-  theme="dark"
   inputType="icp"
 >
   <button
     type="button"
     on:click|preventDefault={setMax}
-    class="secondary small"
+    class="primary small"
     slot="button">{$i18n.core.max}</button
   >
 </Input>

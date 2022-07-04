@@ -1,15 +1,23 @@
 <script lang="ts">
+  import type { ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import {
+    getVotingPower,
+    selectedNeuronsVotingPower,
+  } from "../../../utils/proposals.utils";
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
+  import { replacePlaceholders } from "../../../utils/i18n.utils";
+
+  export let proposalInfo: ProposalInfo;
 
   let total: bigint;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
+    proposal: proposalInfo,
   });
 
   const toggleSelection = (neuronId: bigint) =>
@@ -22,19 +30,37 @@
 </p>
 
 <ul>
-  {#each $votingNeuronSelectStore.neurons as { neuronId, votingPower }}
+  {#each $votingNeuronSelectStore.neurons as neuron}
     <li>
       <Checkbox
-        inputId={`${neuronId}`}
-        checked={$votingNeuronSelectStore.selectedIds.includes(neuronId)}
-        on:nnsChange={() => toggleSelection(neuronId)}
-        theme="dark"
+        inputId={`${neuron.neuronId}`}
+        checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
+        on:nnsChange={() => toggleSelection(neuron.neuronId)}
         text="block"
         selector="neuron-checkbox"
       >
-        <span class="neuron-id">{`${neuronId}`}</span>
-        <span class="neuron-voting-power"
-          >{`${formatVotingPower(votingPower)}`}</span
+        <span
+          class="neuron-id"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_neuronId,
+            {
+              $neuronId: `${neuron.neuronId}`,
+            }
+          )}>{`${neuron.neuronId}`}</span
+        >
+        <span
+          class="neuron-voting-power"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_votingPower,
+            {
+              $votingPower: formatVotingPower(
+                getVotingPower({ neuron, proposal: proposalInfo })
+              ),
+            }
+          )}
+          >{`${formatVotingPower(
+            getVotingPower({ neuron, proposal: proposalInfo })
+          )}`}</span
         >
       </Checkbox>
     </li>
@@ -56,8 +82,7 @@
     justify-content: space-between;
 
     font-size: var(--font-size-h4);
-    color: var(--gray-200);
-    background: var(--gray-100-background);
+    border-bottom: 1px solid currentColor;
 
     // hide voting-power-headline because of the layout
     :last-child {
@@ -121,7 +146,6 @@
 
     border-top: 1px solid currentColor;
 
-    color: var(--gray-200);
     text-align: right;
     font-size: var(--font-size-h5);
 

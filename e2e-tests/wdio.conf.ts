@@ -1,6 +1,50 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { NNS_DAPP_URL } from "./common/constants";
-import { Options as WebDriverOptions } from "@wdio/types";
+import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
+
+/**
+ * Provides the list of browsers to test.
+ * Note: wdio refers to browsers as 'capabilities'.
+ * Note: The set of browsers can be chosen by setting the environment
+ *       variable 'WDIO_BROWSER` to one of:
+ *       - chrome  (default)
+ *       - firefox
+ *       - all
+ */
+function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
+  const browsers = process.env.WDIO_BROWSER ?? "all";
+  const useChrome = ["all", "chrome"].includes(browsers);
+  const useFirefox = ["all", "firefox"].includes(browsers);
+  const capabilities: Capabilities.RemoteCapabilities = [];
+  if (useChrome) {
+    const chrome = {
+      browserName: "chrome",
+      "goog:chromeOptions": {
+        args: ["headless", "disable-gpu"],
+      },
+      acceptInsecureCerts: true,
+    };
+    capabilities.push(chrome);
+  }
+  if (useFirefox) {
+    const firefoxPath = process.env.FIREFOX_NIGHTLY_PATH;
+    if (firefoxPath === undefined) {
+      console.warn(
+        "Environment variable 'FIREFOX_NIGHTLY_PATH' is undefined.  Using the firefox from your path but this may not work."
+      );
+    }
+    const firefoxCapability = {
+      maxInstances: 5,
+      browserName: "firefox",
+      "moz:firefoxOptions": {
+        args: ["-headless"],
+        binary: firefoxPath,
+      },
+    };
+    capabilities.push(firefoxCapability);
+  }
+  return capabilities;
+}
 
 export const config: WebdriverIO.Config = {
   baseUrl: NNS_DAPP_URL,
@@ -16,7 +60,7 @@ export const config: WebdriverIO.Config = {
         // Safe increment.  If you see screenshot counts this high, think why.
         browser["screenshot-count"] =
           (Number.isNaN(browser["screenshot-count"])
-            ? 1000
+            ? 1500
             : Number(browser["screenshot-count"])) + 1;
         const countStr: string = browser["screenshot-count"]
           .toFixed()
@@ -58,9 +102,10 @@ export const config: WebdriverIO.Config = {
     );
   },
 
-  beforeSuite: (suite) => {
+  beforeSuite: async (suite) => {
     browser["screenshot-prefix"] = suite.fullTitle;
     browser["screenshot-count"] = 0;
+    await browser.setWindowSize(800, 1000);
   },
 
   afterTest: async function (test, context, { error }) {
@@ -83,20 +128,13 @@ export const config: WebdriverIO.Config = {
       project: "tsconfig.json",
     },
   },
-  specs: ["./specs/**/*.e2e.ts"],
+  // Execute each test N times.
+  specs: Array(1).fill("./specs/**/*.e2e.ts"),
   exclude: [],
-  capabilities: [
-    {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: ["headless", "disable-gpu"],
-      },
-      acceptInsecureCerts: true,
-    },
-  ],
+  capabilities: capabilitiesFromEnv(),
   logLevel: (process.env.LOG_LEVEL ??
     "warn") as WebDriverOptions.WebDriverLogTypes,
-  services: ["chromedriver"],
+  services: ["chromedriver", "geckodriver"],
 
   framework: "mocha",
   reporters: ["spec"],
@@ -104,7 +142,8 @@ export const config: WebdriverIO.Config = {
   mochaOpts: {
     ui: "bdd",
     timeout: 60000,
+    retries: 1,
   },
 
-  maxInstances: 1,
+  maxInstances: 2,
 };

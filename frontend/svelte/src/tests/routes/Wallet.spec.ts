@@ -41,7 +41,7 @@ describe("Wallet", () => {
     container: HTMLElement;
     disabled: boolean;
   }) => {
-    const button = container.querySelector("div.toolbar button");
+    const button = container.querySelector("footer div.toolbar button");
 
     expect(button).not.toBeNull();
     expect((button as HTMLButtonElement).hasAttribute("disabled")).toEqual(
@@ -50,12 +50,6 @@ describe("Wallet", () => {
   };
 
   describe("loading", () => {
-    it("should render title", async () => {
-      const { getAllByText } = render(Wallet);
-
-      expect(getAllByText(en.wallet.title).length).toBeGreaterThan(0);
-    });
-
     it("should render a spinner while loading", () => {
       const { getByTestId } = render(Wallet);
 
@@ -124,7 +118,7 @@ describe("Wallet", () => {
 
     const testModal = async (container: HTMLElement) => {
       const button = container.querySelector(
-        "div.toolbar button"
+        "footer div.toolbar button"
       ) as HTMLButtonElement;
       await fireEvent.click(button);
 

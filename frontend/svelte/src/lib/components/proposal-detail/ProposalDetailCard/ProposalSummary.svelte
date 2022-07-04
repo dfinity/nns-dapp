@@ -17,7 +17,6 @@
 
   .markdown {
     font-size: var(--font-size-small);
-    color: var(--gray-100);
     overflow-wrap: break-word;
 
     @include media.min-width(medium) {
@@ -26,8 +25,7 @@
 
     :global(a) {
       font-size: var(--font-size-small);
-      color: var(--blue-400);
-      line-height: var(--line-height-standard);
+      color: var(--primary-tint);
       text-decoration: none;
     }
 

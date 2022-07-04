@@ -1,3 +1,5 @@
+import { MENU_CLOSE_SELECTOR, MENU_SELECTOR } from "../components/nav";
+
 /**
  * Additional functionality for the wdio "browser".
  */
@@ -41,14 +43,43 @@ export class MyNavigator {
     if (undefined === selector) {
       throw new Error(`Cannot click undefined selector for "${description}".`);
     }
+    await this.browser.pause(100);
     const button = await this.browser.$(selector);
-    const timeout = options?.timeout ?? 5_000;
+    const timeout = options?.timeout ?? 50_000;
     const timeoutMsg = `Timeout after ${timeout.toLocaleString()}ms waiting to click "${description}" with selector "${selector}".`;
     await button.waitForEnabled({ timeout, timeoutMsg });
+    await button.scrollIntoView();
+    await button.waitForClickable({ timeout, timeoutMsg });
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
       await this.browser["screenshot"](description);
     }
     await button.click();
+  }
+
+  async openMenu(): Promise<void> {
+    await this.click(MENU_SELECTOR, "Open the menu");
+
+    // Small delay for menu animation
+    await this.browser.pause(500);
+  }
+
+  async closeMenu(): Promise<void> {
+    await this.click(MENU_CLOSE_SELECTOR, "Close the menu");
+
+    // Small delay for menu animation
+    await this.browser.pause(500);
+  }
+
+  async navigate({
+    selector,
+    description,
+  }: {
+    selector: string;
+    description: string;
+  }): Promise<void> {
+    await this.openMenu();
+
+    await this.click(selector, description);
   }
 
   /**

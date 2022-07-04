@@ -12,6 +12,10 @@ describe("routes", () => {
       expect(isAppPath("/")).toBeTruthy();
       expect(isAppPath(AppPath.Accounts)).toBeTruthy();
       expect(isAppPath(`${AppPath.Wallet}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.NeuronDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.Launchpad}`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.ProjectDetail}/123`)).toBeTruthy();
     });
 
     it("should return null for invalid urls", () => {

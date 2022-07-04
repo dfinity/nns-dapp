@@ -7,7 +7,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal theme="dark" size="small" on:nnsClose>
+<Modal size="small" on:nnsClose>
   <article>
     <slot />
     <div role="toolbar">
@@ -15,7 +15,7 @@
         data-tid="confirm-no"
         disabled={$busy}
         on:click={() => dispatch("nnsClose")}
-        class="secondary full-width">{$i18n.core.confirm_no}</button
+        class="primary full-width">{$i18n.core.confirm_no}</button
       >
       <button
         data-tid="confirm-yes"

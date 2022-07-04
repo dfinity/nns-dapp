@@ -66,6 +66,10 @@ export const idlFactory = ({ IDL }) => {
     PendingSync: IDL.Null,
     ErrorWithRefundPending: IDL.Text,
   });
+  const GetProposalPayloadResponse = IDL.Variant({
+    Ok: IDL.Text,
+    Err: IDL.Text,
+  });
   const Stats = IDL.Record({
     latest_transaction_block_height: BlockHeight,
     seconds_since_last_ledger_sync: IDL.Nat64,
@@ -89,10 +93,10 @@ export const idlFactory = ({ IDL }) => {
   const TransactionType = IDL.Variant({
     Burn: IDL.Null,
     Mint: IDL.Null,
-    Transfer: IDL.Null,
     StakeNeuronNotification: IDL.Null,
     TopUpCanister: CanisterId,
     CreateCanister: IDL.Null,
+    Transfer: IDL.Null,
     TopUpNeuron: IDL.Null,
     StakeNeuron: IDL.Null,
   });
@@ -185,6 +189,11 @@ export const idlFactory = ({ IDL }) => {
       ["query"]
     ),
     get_stats: IDL.Func([], [Stats], ["query"]),
+    get_proposal_payload: IDL.Func(
+      [IDL.Nat64],
+      [GetProposalPayloadResponse],
+      []
+    ),
     get_transactions: IDL.Func(
       [GetTransactionsRequest],
       [GetTransactionsResponse],

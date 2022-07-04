@@ -1,10 +1,8 @@
 <script lang="ts">
-  import Layout from "../lib/components/common/Layout.svelte";
   import { onDestroy, onMount } from "svelte";
   import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
   import { i18n } from "../lib/stores/i18n";
   import {
-    emptyProposals,
     hasMatchingProposals,
     lastProposalId,
   } from "../lib/utils/proposals.utils";
@@ -16,18 +14,20 @@
   import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
-  import {
-    AppPath,
-    SHOW_PROPOSALS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import { AppPath } from "../lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
-  import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import {
+    definedNeuronsStore,
+    neuronsStore,
+  } from "../lib/stores/neurons.store";
+  import { reloadRouteData } from "../lib/utils/navigation.utils";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -73,22 +73,13 @@
   };
 
   onMount(async () => {
-    // TODO: To be removed once this page has been implemented
-    if (!SHOW_PROPOSALS_ROUTE) {
-      window.location.replace(AppPath.Proposals);
-    }
-
-    const isReferrerProposalDetail: boolean = isRoutePath({
-      path: AppPath.ProposalDetail,
-      routePath: $routeStore.referrerPath,
+    const reload: boolean = reloadRouteData({
+      expectedPreviousPath: AppPath.ProposalDetail,
+      effectivePreviousPath: $routeStore.referrerPath,
+      currentData: $proposalsStore.proposals,
     });
 
-    // If the previous page is the proposal detail page and if we have proposals in store, we don't reset and query the proposals after mount.
-    // We do this to smoothness the back and forth navigation between this page and the detail page.
-    if (
-      !emptyProposals($proposalsStore.proposals) &&
-      isReferrerProposalDetail
-    ) {
+    if (!reload) {
       initDebounceFindProposals();
       initialized = true;
       return;
@@ -140,20 +131,28 @@
       !hasMatchingProposals({
         proposals: $proposalsStore.proposals,
         filters: $proposalsFiltersStore,
+        neurons: $definedNeuronsStore,
       });
   };
 
   let nothingFound: boolean;
-  $: initialized, loading, $proposalsStore, (() => updateNothingFound())();
+  $: initialized,
+    loading,
+    neuronsLoaded,
+    $proposalsStore,
+    (() => updateNothingFound())();
+
+  let neuronsLoaded: boolean;
+  $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-{#if SHOW_PROPOSALS_ROUTE}
-  <Layout>
-    <section data-tid="proposals-tab">
-      <p>{$i18n.voting.text}</p>
+<MainContentWrapper>
+  <section data-tid="proposals-tab">
+    <p>{$i18n.voting.text}</p>
 
-      <ProposalsFilters />
+    <ProposalsFilters />
 
+    {#if neuronsLoaded}
       <InfiniteScroll on:nnsIntersect={findNextProposals}>
         {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
           <ProposalCard {hidden} {proposalInfo} />
@@ -163,16 +162,16 @@
       {#if nothingFound}
         <p class="no-proposals">{$i18n.voting.nothing_found}</p>
       {/if}
+    {/if}
 
-      {#if loading}
-        <div class="spinner">
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      {/if}
-    </section>
-  </Layout>
-{/if}
+    {#if loading || !neuronsLoaded}
+      <div class="spinner">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    {/if}
+  </section>
+</MainContentWrapper>
 
 <style lang="scss">
   .spinner {

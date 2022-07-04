@@ -54,7 +54,7 @@
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: formatICP(neuronICP),
+        $amount: formatICP({ value: neuronICP, detailed: true }),
       })}
     </p>
 
@@ -111,7 +111,7 @@
       <button
         on:click={cancel}
         data-tid="cancel-neuron-delay"
-        class="secondary full-width">{cancelButtonText}</button
+        class="primary full-width">{cancelButtonText}</button
       >
     {/if}
     <button

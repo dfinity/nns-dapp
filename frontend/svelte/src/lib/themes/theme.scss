@@ -16,26 +16,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background: var(--black);
-  color: var(--black-contrast);
+  background: var(--background);
+  color: var(--background-contrast);
 
   box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
-  background: var(--gray-600);
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-50-background);
+  background: var(--background-shade);
   height: 200px;
-  border: solid 2.5px var(--gray-600);
+  border: solid 2.5px var(--background);
   border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
 
 ::-webkit-scrollbar-corner {
-  background: var(--gray-600);
+  background: var(--background-shade);
 }
 
 a,
@@ -61,22 +61,15 @@ button {
 }
 
 main {
-  background: var(--gray-50-background);
-  color: var(--gray-200);
+  background: var(--background);
+  color: var(--background-contrast);
+  transition: background 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
 }
 
 section {
-  padding: var(--padding-2x) var(--padding-2_5x) var(--footer-height);
+  padding: var(--padding-2x) var(--padding-2x) var(--footer-height);
   max-width: var(--section-max-width);
   margin: 0 auto;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-  color: var(--gray-50);
 }
 
 p {
@@ -100,4 +93,10 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  margin-bottom: var(--padding);
 }

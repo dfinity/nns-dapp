@@ -9,7 +9,7 @@
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import Card from "../../ui/Card.svelte";
+  import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
 
@@ -52,9 +52,9 @@
 </script>
 
 {#if visible}
-  <Card>
+  <CardInfo>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect />
+    <CastVoteCardNeuronSelect {proposalInfo} />
     <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
-  </Card>
+  </CardInfo>
 {/if}

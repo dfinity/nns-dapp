@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { makeDummyProposals } from "../../services/neurons.services";
-  import Card from "../ui/Card.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
   import Spinner from "../ui/Spinner.svelte";
 
   export let neuron: NeuronInfo;
@@ -16,7 +16,7 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<Card>
+<CardInfo>
   <h3 slot="start">Proposals</h3>
 
   <div>
@@ -32,11 +32,11 @@
       {/if}
     </button>
   </div>
-</Card>
+</CardInfo>
 
 <style lang="scss">
   div {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 </style>

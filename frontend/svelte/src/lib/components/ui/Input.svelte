@@ -21,8 +21,6 @@
 
   export let placeholderLabelKey: string;
 
-  export let theme: "dark" | "light" = "light";
-
   let inputElement: HTMLInputElement | undefined;
 
   let selectionStart: number | null = 0;
@@ -117,7 +115,7 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class={`input-block ${theme} `} class:disabled>
+<div class="input-block" class:disabled>
   <input
     data-tid="input-ui-element"
     type={inputType === "icp" ? "text" : inputType}
@@ -133,6 +131,7 @@
     {max}
     {autocomplete}
     on:blur
+    on:focus
     on:input={handleInput}
     on:keydown={handleKeyDown}
   />
@@ -145,15 +144,12 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .input-block {
     position: relative;
 
-    margin-top: var(--padding-2x);
-    margin-bottom: var(--input-margin-bottom, var(--padding-2x));
-    margin-left: 0;
-    margin-right: 0;
+    margin: var(--padding-2x) 0 var(--input-margin-bottom, var(--padding-2x));
 
     display: flex;
     align-items: center;
@@ -165,7 +161,7 @@
       right: var(--padding-2x);
     }
 
-    --disabled-color: var(--gray-100);
+    --disabled-color: var(--disable-contrast);
 
     &.disabled {
       color: var(--disabled-color);
@@ -173,37 +169,17 @@
       .placeholder {
         color: var(--disabled-color);
       }
-    }
-
-    &.dark {
-      color: var(--background-contrast);
-      background: none;
-
-      --disabled-color: var(--gray-600);
-
-      &.disabled {
-        input {
-          border: 1px solid var(--disabled-color);
-        }
-
-        .placeholder {
-          color: var(--disabled-color);
-        }
-      }
 
       input {
-        background-color: var(--gray-50-background);
-        border: 1px solid var(--input-error-color, var(--black));
-
-        &:not(:placeholder-shown) + span.placeholder {
-          background-color: var(--gray-50-background);
-          color: var(--input-error-color, currentColor);
-        }
+        border: 1px solid var(--disabled-color);
       }
+    }
 
-      .placeholder {
-        color: var(--gray-400);
-      }
+    color: var(--background-contrast);
+    background: none;
+
+    .placeholder {
+      color: rgba(var(--background-contrast-rgb), 0.4);
     }
   }
 
@@ -215,8 +191,15 @@
 
     border-radius: calc(4 * var(--border-radius));
 
-    border: 1px solid var(--input-error-color, currentColor);
+    background-color: var(--background);
+
+    border: 1px solid var(--input-error-color, var(--background-contrast));
     outline: none;
+
+    &:not(:placeholder-shown) + span.placeholder {
+      background-color: var(--background);
+      color: var(--input-error-color, currentColor);
+    }
 
     @include media.min-width(medium) {
       padding: var(--padding-2x);
@@ -236,7 +219,7 @@
     pointer-events: none;
 
     font-size: var(--font-size-h4);
-    color: var(--gray-600);
+    color: rgba(var(--background-contrast-rgb), 0.4);
 
     /** Space to display fully the caret if field is focused and empty */
     margin-left: 4px;
@@ -244,7 +227,7 @@
 
   .input-block input:not(:placeholder-shown) + span.placeholder {
     transform: scale(0.8) translate(0, calc(-50% - 30px));
-    background: #ffffff;
+    background-color: var(--background);
 
     padding: 0 var(--padding-0_5x);
 
@@ -254,7 +237,7 @@
   }
 
   input:focus {
-    border: 1px solid var(--blue-500);
+    border: 1px solid var(--primary);
   }
 
   input[disabled] {
@@ -263,5 +246,6 @@
 
   input::placeholder {
     visibility: hidden;
+    opacity: 0;
   }
 </style>

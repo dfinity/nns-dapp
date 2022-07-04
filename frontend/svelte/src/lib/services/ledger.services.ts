@@ -4,13 +4,14 @@ import { get } from "svelte/store";
 import { queryNeurons } from "../api/governance.api";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { LedgerConnectionState } from "../constants/ledger.constants";
-import { LedgerErrorKey, LedgerErrorMessage } from "../errors/ledger.errors";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { i18n } from "../stores/i18n";
 import { toastsStore } from "../stores/toasts.store";
+import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { toToastError } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
+import { smallerVersion } from "../utils/utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 
@@ -169,5 +170,30 @@ export const listNeuronsHardwareWallet = async (): Promise<{
       fallbackErrorLabelKey,
     });
     return { neurons: [], err: fallbackErrorLabelKey };
+  }
+};
+
+export const assertLedgerVersion = async ({
+  identity,
+  minVersion,
+}: {
+  identity: Identity | LedgerIdentity;
+  minVersion: string;
+}): Promise<void> => {
+  // Ignore when identity not LedgerIdentity
+  if (!(identity instanceof LedgerIdentity)) {
+    return;
+  }
+
+  const { major, minor, patch } = await identity.getVersion();
+  const currentVersion = `${major}.${minor}.${patch}`;
+  if (smallerVersion({ currentVersion, minVersion })) {
+    const labels = get(i18n);
+    throw new LedgerErrorMessage(
+      replacePlaceholders(labels.error__ledger.version_not_supported, {
+        $minVersion: minVersion,
+        $currentVersion: currentVersion,
+      })
+    );
   }
 };

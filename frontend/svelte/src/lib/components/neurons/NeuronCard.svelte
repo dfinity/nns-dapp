@@ -12,9 +12,10 @@
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
-  import Card from "../ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { authStore } from "../../stores/auth.store";
+  import type { CardType } from "../../types/card";
+  import NeuronCardContainer from "./NeuronCardContainer.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -38,9 +39,18 @@
   });
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
+
+  export let cardType: CardType = "card";
 </script>
 
-<Card {role} {selected} {disabled} on:click {ariaLabel} testId="neuron-card">
+<NeuronCardContainer
+  {role}
+  {selected}
+  {disabled}
+  {ariaLabel}
+  on:click
+  {cardType}
+>
   <div slot="start" class="lock" data-tid="neuron-card-title">
     <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
@@ -57,14 +67,20 @@
       <ICPComponent
         label={$i18n.neurons.voting_power}
         icp={ICP.fromE8s(neuron.votingPower)}
+        detailed
       />
     {:else if neuronICP}
-      <ICPComponent icp={neuronICP} />
+      <ICPComponent icp={neuronICP} detailed />
     {/if}
   </div>
 
   <div class="info">
-    <p style={`color: var(${stateInfo.colorVar});`} class="status">
+    <p
+      style={stateInfo.status === "warn"
+        ? `color: var(--warning-emphasis);`
+        : ""}
+      class="status"
+    >
       {$i18n.neurons[`status_${stateInfo.textKey}`]}
       <svelte:component this={stateInfo.Icon} />
     </p>
@@ -86,7 +102,7 @@
   {/if}
 
   <slot />
-</Card>
+</NeuronCardContainer>
 
 <style lang="scss">
   @use "../../themes/mixins/display";

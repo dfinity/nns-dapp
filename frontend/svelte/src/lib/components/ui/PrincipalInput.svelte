@@ -8,7 +8,7 @@
   export let name: string;
   export let principal: Principal | undefined = undefined;
 
-  let address: string = "";
+  let address: string = principal?.toText() ?? "";
   $: principal = getPrincipalFromString(address);
   let showError: boolean = false;
 
@@ -24,7 +24,6 @@
   {placeholderLabelKey}
   {name}
   bind:value={address}
-  theme="dark"
   errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
   on:blur={showErrorIfAny}
 />

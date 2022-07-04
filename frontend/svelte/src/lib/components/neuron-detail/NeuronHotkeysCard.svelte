@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
+  import IconClose from "../../icons/IconClose.svelte";
   import { getIdentity } from "../../services/auth.services";
   import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";
@@ -11,7 +12,7 @@
   import { routeStore } from "../../stores/route.store";
   import { toastsStore } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
-  import Card from "../ui/Card.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
 
   export let neuron: NeuronInfo;
@@ -49,8 +50,8 @@
   };
 </script>
 
-<Card>
-  <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+<CardInfo>
+  <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     <p>{$i18n.neuron_detail.no_notkeys}</p>
   {:else}
@@ -61,9 +62,9 @@
           {#if isControllable}
             <button
               class="text"
-              aria-label={$i18n.core.close}
+              aria-label={$i18n.core.remove}
               on:click={() => remove(hotkey)}
-              data-tid="remove-hotkey-button">x</button
+              data-tid="remove-hotkey-button"><IconClose size="18px" /></button
             >
           {/if}
         </li>
@@ -75,26 +76,29 @@
       <AddHotkeyButton neuronId={neuron.neuronId} />
     </div>
   {/if}
-</Card>
+</CardInfo>
 
 <style lang="scss">
+  @use "../../themes/mixins/card";
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: var(--padding-2x);
   }
 
   ul {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: var(--padding-2x);
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-0_5x);
+    @include card.list;
   }
 
   li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include card.list-item;
+
+    button {
+      display: flex;
+    }
   }
 </style>

@@ -1,4 +1,5 @@
 import { ICP, NeuronState, Topic, Vote, type BallotInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -6,14 +7,16 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
 } from "../../../lib/constants/constants";
-import { TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import {
+  DEFAULT_TRANSACTION_FEE_E8S,
+  E8S_PER_ICP,
+} from "../../../lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
-  MIN_MATURITY_MERGE,
   MIN_NEURON_STAKE,
 } from "../../../lib/constants/neurons.constants";
+import { neuronsStore } from "../../../lib/stores/neurons.store";
 import type { Step } from "../../../lib/stores/steps.state";
-import { InvalidAmountError } from "../../../lib/types/errors";
 import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
@@ -21,12 +24,12 @@ import {
   ballotsWithDefinedProposal,
   canBeMerged,
   checkInvalidState,
-  convertNumberToICP,
   dissolveDelayMultiplier,
   followeesByTopic,
   followeesNeurons,
   formatVotingPower,
   getDissolvingTimeInSeconds,
+  getNeuronById,
   hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -41,11 +44,14 @@ import {
   mapMergeableNeurons,
   mapNeuronIds,
   maturityByStake,
+  minMaturityMerge,
+  minNeuronSplittable,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
+  votedNeuronDetails,
   votingPower,
   type InvalidState,
 } from "../../../lib/utils/neuron.utils";
@@ -60,6 +66,7 @@ import {
   mockNeuronControlled,
   mockNeuronNotControlled,
 } from "../../mocks/neurons.mock";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 
 describe("neuron-utils", () => {
   describe("votingPower", () => {
@@ -188,8 +195,8 @@ describe("neuron-utils", () => {
 
       const fullNeuronWithoutEnoughStake = {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(TRANSACTION_FEE_E8S / 4),
-        maturityE8sEquivalent: BigInt(TRANSACTION_FEE_E8S / 4),
+        cachedNeuronStake: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
+        maturityE8sEquivalent: BigInt(DEFAULT_TRANSACTION_FEE_E8S / 4),
       };
       const neuronWithoutEnoughStake = {
         ...mockNeuron,
@@ -305,49 +312,6 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
-    });
-  });
-
-  describe("hasEnoughMaturityToMerge", () => {
-    it("returns false when no full neuron", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: undefined,
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
-    });
-
-    it("returns false if neuron maturity is 0", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(0),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
-    });
-
-    it("returns true if maturity larger than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) + BigInt(1000),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(true);
-    });
-
-    it("returns false if maturity smaller than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_MATURITY_MERGE) - BigInt(100),
-        },
-      };
-      expect(hasEnoughMaturityToMerge(neuron)).toBe(false);
     });
   });
 
@@ -607,32 +571,6 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("neuronCanBeSplit", () => {
-    it("should return true if neuron has enough stake to be splitted", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(1_000_000_000),
-          neuronFees: BigInt(10),
-        },
-      };
-      expect(neuronCanBeSplit(neuron)).toBe(true);
-    });
-
-    it("should return false if neuron has not enough stake to be splitted", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(100),
-          neuronFees: BigInt(10),
-        },
-      };
-      expect(neuronCanBeSplit(neuron)).toBe(false);
-    });
-  });
-
   describe("isValidInputAmount", () => {
     it("return false if amount is undefined", () => {
       expect(isValidInputAmount({ amount: undefined, max: 10 })).toBe(false);
@@ -644,20 +582,6 @@ describe("neuron-utils", () => {
 
     it("return false if amount is higher than max", () => {
       expect(isValidInputAmount({ amount: 40, max: 10 })).toBe(false);
-    });
-  });
-
-  describe("convertNumberToICP", () => {
-    it("returns ICP from number", () => {
-      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
-      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
-      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
-      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
-    });
-
-    it("raises error on negative numbers", () => {
-      const call = () => convertNumberToICP(-10);
-      expect(call).toThrow(InvalidAmountError);
     });
   });
 
@@ -1404,6 +1328,199 @@ describe("neuron-utils", () => {
     });
     it("should return true if no fullNeuron", () => {
       expect(userAuthorizedNeuron(mockNeuron)).toBe(true);
+    });
+  });
+
+  describe("votedNeuronDetails", () => {
+    it("should return array of CompactNeuronInfo", () => {
+      const neuronId1 = BigInt(10_000);
+      const neuronId2 = BigInt(20_000);
+      const proposalId = BigInt(1111);
+      const ballot1 = {
+        neuronId: neuronId1,
+        votingPower: BigInt(40),
+        vote: Vote.NO,
+      };
+      const ballot2 = {
+        neuronId: neuronId2,
+        votingPower: BigInt(50),
+        vote: Vote.YES,
+      };
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: neuronId1,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: neuronId2,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        id: proposalId,
+        ballots: [ballot1, ballot2],
+      };
+      const expected = votedNeuronDetails({
+        neurons: [neuron1, neuron2],
+        proposal,
+      });
+      expect(expected).toHaveLength(2);
+      const compactNeuron1 = expected.find(({ id }) => id === neuronId1);
+      expect(compactNeuron1).toBeDefined();
+      compactNeuron1 &&
+        expect(compactNeuron1.votingPower).toBe(ballot1.votingPower);
+    });
+
+    it("should filters out neurons without vote", () => {
+      const neuronId1 = BigInt(10_000);
+      const neuronId2 = BigInt(20_000);
+      const proposalId = BigInt(1111);
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: neuronId1,
+        recentBallots: [{ vote: Vote.NO, proposalId }],
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: neuronId2,
+        recentBallots: [],
+      };
+      const ballot1 = {
+        neuronId: neuronId1,
+        votingPower: BigInt(40),
+        vote: Vote.NO,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        id: proposalId,
+        ballots: [ballot1],
+      };
+      const expected = votedNeuronDetails({
+        neurons: [neuron1, neuron2],
+        proposal,
+      });
+      expect(expected).toHaveLength(1);
+    });
+  });
+
+  describe("neuronCanBeSplit", () => {
+    it("should return true if neuron has enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(1_000_000_000),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(true);
+    });
+
+    it("should return false if neuron has not enough stake to be splitted", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(100),
+          neuronFees: BigInt(10),
+        },
+      };
+      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("hasEnoughMaturityToMerge", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent:
+            BigInt(DEFAULT_TRANSACTION_FEE_E8S) + BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent:
+            BigInt(DEFAULT_TRANSACTION_FEE_E8S) - BigInt(100),
+        },
+      };
+      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("minNeuronSplittable", () => {
+    it("returns fee plus two ICPs", () => {
+      const received = minNeuronSplittable(10_000);
+      expect(received).toBe(10_000 + 2 * E8S_PER_ICP);
+    });
+  });
+
+  describe("minMaturityMerge", () => {
+    it("returns value of fee", () => {
+      const fee = 10_000;
+      const received = minMaturityMerge(10_000);
+      expect(received).toBe(fee);
+    });
+  });
+
+  describe("getNeuronById", () => {
+    afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
+    it("returns neuron when present in store", () => {
+      const neuronId = BigInt(1234);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBe(neuron);
+    });
+
+    it("returns undefined when not present in store", () => {
+      const neuronId = BigInt(1234);
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(1235),
+      };
+      neuronsStore.setNeurons({ neurons: [neuron], certified: true });
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBeUndefined();
+    });
+
+    it("returns undefined if no neurons in store", () => {
+      const neuronId = BigInt(1234);
+      const store = get(neuronsStore);
+      const received = getNeuronById({ neuronsStore: store, neuronId });
+      expect(received).toBeUndefined();
     });
   });
 });

@@ -34,6 +34,6 @@ unzip "$DOWNLOAD_FILENAME"
 popd
 mv "$UNZIP_TMPDIR/$WASM_FILENAME" "$WASM_PATH"
 rm -fr "${UNZIP_TMPDIR}"
-DEPLOY_ENV=nobuild dfx deploy --network testnet
+NNS_DAPP_WASM="${PWD}/nns-dapp.wasm" dfx deploy --network testnet
 
 echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"

@@ -11,6 +11,7 @@
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -41,13 +42,14 @@
   $: hide = hideProposal({
     filters: $proposalsFiltersStore,
     proposalInfo,
+    neurons: $definedNeuronsStore,
   });
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <li class:hidden>
   {#if !hide}
-    <Card role="link" on:click={showProposal}>
+    <Card role="link" on:click={showProposal} testId="proposal-card">
       <div slot="start" class="title-container">
         <p class="title" {title}>{title}</p>
       </div>
@@ -63,7 +65,7 @@
 <style lang="scss">
   @use "../../themes/mixins/text";
   @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   li.hidden {
     visibility: hidden;

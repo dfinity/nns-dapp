@@ -28,6 +28,7 @@
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
+    proposal: proposalInfo,
   });
   $: disabled = $votingNeuronSelectStore.selectedIds.length === 0 || $busy;
 
@@ -90,5 +91,6 @@
 
   .question {
     margin: 0 0 var(--padding-2x);
+    word-break: break-word;
   }
 </style>
