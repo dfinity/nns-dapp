@@ -12,7 +12,7 @@
   let selectableAccounts: Account[] | undefined;
   const unsubscribe = accountsStore.subscribe((accounts) => {
     if (accounts.main !== undefined) {
-      selectedAccount = accounts.main;
+      selectedAccount = selectedAccount ?? accounts.main;
       selectableAccounts = [
         accounts.main,
         ...(accounts.subAccounts ?? []),
