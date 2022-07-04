@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import ProjectInfoSection from "../lib/components/sns-project-detail/ProjectInfoSection.svelte";
-  import ProjectStatusSection from "../lib/components/sns-project-detail/ProjectStatusSection.svelte";
+  import ProjectInfoSection from "../lib/components/project-detail/ProjectInfoSection.svelte";
+  import ProjectStatusSection from "../lib/components/project-detail/ProjectStatusSection.svelte";
   import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -19,7 +19,7 @@
   import {
     type SnsFullProject,
     snsFullProjectStore,
-  } from "../lib/stores/snsProjects.store";
+  } from "../lib/stores/projects.store";
   import { getSnsProjectById } from "../lib/utils/sns.utils";
   import Spinner from "../lib/components/ui/Spinner.svelte";
 
@@ -37,14 +37,14 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ path: AppPath.SNSProjectDetail, routePath: path })) {
+    if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathRootCanisterId(path);
 
     if (rootCanisterIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.SNSLaunchpad });
+      routeStore.replace({ path: AppPath.Launchpad });
       return;
     }
     rootCanisterIdString = rootCanisterIdMaybe;
@@ -56,7 +56,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.SNSLaunchpad,
+      path: AppPath.Launchpad,
     });
 
   layoutBackStore.set(goBack);

@@ -5,7 +5,7 @@
 
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
-  import type { SnsFullProject } from "../../stores/snsProjects.store";
+  import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
@@ -40,7 +40,7 @@
 
   const showProject = () => {
     routeStore.navigate({
-      path: `${AppPath.SNSProjectDetail}/${project.rootCanisterId.toText()}`,
+      path: `${AppPath.ProjectDetail}/${project.rootCanisterId.toText()}`,
     });
   };
 </script>

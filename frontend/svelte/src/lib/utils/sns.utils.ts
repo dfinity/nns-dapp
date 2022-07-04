@@ -1,4 +1,4 @@
-import type { SnsFullProject } from "../stores/snsProjects.store";
+import type { SnsFullProject } from "../stores/projects.store";
 
 export const getSnsProjectById = ({
   id,
