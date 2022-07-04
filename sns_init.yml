@@ -1,0 +1,19 @@
+transaction_fee_e8s: 10000
+token_name: FreeUpMyTime
+
+token_symbol: FUT
+proposal_reject_cost_e8s: 100000000
+neuron_minimum_stake_e8s: 100000000
+initial_token_distribution:
+  developers:
+    total_e8s: 3000000000
+    distributions:
+      fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1000000000
+  swap: 1
+
+max_icp_e8s: 50
+min_participants: 1
+min_participant_icp_e8s: 1
+max_participant_icp_e8s: 5
+min_icp_e8s: 50
+fallback_controller_principal_ids: ["fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe"]

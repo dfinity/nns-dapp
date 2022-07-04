@@ -212,11 +212,12 @@ fi
 # adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if [[ "$DEPLOY_SNS" == "true" ]]; then
-  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --init-config-file sns_init.yml
+  #dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
+  #dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
+  #dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
+  #dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
+  #./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
