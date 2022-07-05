@@ -36,6 +36,7 @@ button {
 
     color: var(--primary);
 
+    &:hover,
     &:focus {
       color: var(--primary-tint);
     }
