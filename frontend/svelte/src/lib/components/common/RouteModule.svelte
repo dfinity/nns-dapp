@@ -31,11 +31,10 @@
         return (await import("../../../routes/NeuronDetail.svelte")).default;
       case AppPath.CanisterDetail:
         return (await import("../../../routes/CanisterDetail.svelte")).default;
-      case AppPath.SNSLaunchpad:
-        return (await import("../../../routes/SNSLaunchpad.svelte")).default;
-      case AppPath.SNSProjectDetail:
-        return (await import("../../../routes/SNSProjectDetail.svelte"))
-          .default;
+      case AppPath.Launchpad:
+        return (await import("../../../routes/Launchpad.svelte")).default;
+      case AppPath.ProjectDetail:
+        return (await import("../../../routes/ProjectDetail.svelte")).default;
       default:
         return (await import("../../../routes/Auth.svelte")).default;
     }
@@ -51,8 +50,8 @@
     [AppPath.ProposalDetail]: $i18n.proposal_detail.title,
     [AppPath.NeuronDetail]: $i18n.neuron_detail.title,
     [AppPath.CanisterDetail]: $i18n.canister_detail.title,
-    [AppPath.SNSLaunchpad]: $i18n.sns_launchpad.header,
-    [AppPath.SNSProjectDetail]: "",
+    [AppPath.Launchpad]: $i18n.sns_launchpad.header,
+    [AppPath.ProjectDetail]: "",
   };
 
   onMount(async () => {
@@ -87,9 +86,11 @@
 </svelte:component>
 
 <style lang="scss">
+  @use "../../themes/mixins/display";
+
   section {
     position: absolute;
-    inset: 0;
+    @include display.inset;
 
     color: rgba(var(--background-contrast-rgb), 0.2);
   }

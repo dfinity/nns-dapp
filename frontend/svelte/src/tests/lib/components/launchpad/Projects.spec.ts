@@ -3,12 +3,12 @@
  */
 
 import { render } from "@testing-library/svelte";
-import SNSProjects from "../../../../lib/components/sns-launchpad/SNSProjects.svelte";
+import Projects from "../../../../lib/components/launchpad/Projects.svelte";
 import { loadSnsFullProjects } from "../../../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
-} from "../../../../lib/stores/snsProjects.store";
+} from "../../../../lib/stores/projects.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,
@@ -21,11 +21,11 @@ jest.mock("../../../../lib/services/sns.services", () => {
   };
 });
 
-describe("SNSProjects", () => {
+describe("Projects", () => {
   beforeEach(snsSummariesStore.reset);
 
   it("should trigger loadSnsFullProjects", () => {
-    render(SNSProjects);
+    render(Projects);
 
     expect(loadSnsFullProjects).toBeCalled();
   });
@@ -42,7 +42,7 @@ describe("SNSProjects", () => {
       certified: true,
     });
 
-    const { getAllByTestId } = render(SNSProjects);
+    const { getAllByTestId } = render(Projects);
 
     expect(getAllByTestId("card").length).toBe(mockSnsSummaryList.length);
   });
@@ -53,13 +53,13 @@ describe("SNSProjects", () => {
       certified: false,
     });
 
-    const { queryByText } = render(SNSProjects);
+    const { queryByText } = render(Projects);
 
     expect(queryByText(en.sns_launchpad.no_projects)).toBeInTheDocument();
   });
 
   it("should render skeletons on loading", () => {
-    const { queryAllByTestId } = render(SNSProjects);
+    const { queryAllByTestId } = render(Projects);
     expect(queryAllByTestId("skeleton-card").length).toBeGreaterThanOrEqual(1);
   });
 });

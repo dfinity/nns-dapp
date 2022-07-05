@@ -23,6 +23,7 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
+  badgeNew: string;
 }
 
 interface I18nError {
@@ -106,6 +107,7 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   canisters: string;
+  launchpad: string;
 }
 
 interface I18nHeader {
@@ -403,12 +405,14 @@ interface I18nProposal_detail {
   unknown_nns_function: string;
   nns_function_name: string;
   payload: string;
+  summary_toggle_view: string;
 }
 
 interface I18nProposal_detail__vote {
   headline: string;
   neurons: string;
   voting_power: string;
+  vote_progress: string;
   total: string;
   adopt: string;
   reject: string;
@@ -418,6 +422,8 @@ interface I18nProposal_detail__vote {
   confirm_reject_text: string;
   vote_status: string;
   accept_or_reject: string;
+  cast_vote_neuronId: string;
+  cast_vote_votingPower: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -525,6 +531,7 @@ interface I18nSns_launchpad {
   projects: string;
   no_projects: string;
   proposals: string;
+  project_logo: string;
   no_proposals: string;
 }
 

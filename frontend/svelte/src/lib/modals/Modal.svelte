@@ -75,12 +75,13 @@
 <style lang="scss">
   @use "../themes/mixins/interaction";
   @use "../themes/mixins/text";
+  @use "../themes/mixins/display";
 
   .modal {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
   }
@@ -94,20 +95,6 @@
     display: flex;
     flex-direction: column;
 
-    width: var(--modal-small-width);
-
-    &.big {
-      width: var(--modal-big-width);
-    }
-
-    --modal-wrapper-height: min(
-      calc(100vh - var(--padding-4x)),
-      var(--modal-max-height)
-    );
-
-    height: var(--modal-wrapper-height);
-    max-width: calc(100vw - var(--padding-4x));
-
     --modal-toolbar-height: 35px;
 
     background: var(--background);
@@ -115,9 +102,26 @@
     --select-color: var(--background-contrast);
     --select-border-radius: 0;
 
-    border-radius: calc(2 * var(--border-radius));
-
     overflow: hidden;
+
+    &.small {
+      width: var(--modal-small-width);
+      max-width: var(--modal-small-max-width);
+
+      max-height: var(--modal-small-max-height);
+
+      border-radius: var(--modal-small-border-radius);
+    }
+
+    &.big {
+      width: var(--modal-big-width);
+      max-width: var(--modal-big-max-width);
+
+      height: var(--modal-big-height);
+      max-height: var(--modal-big-max-height);
+
+      border-radius: var(--modal-big-border-radius);
+    }
   }
 
   .toolbar {
@@ -172,6 +176,6 @@
 
   .small {
     height: fit-content;
-    max-height: var(--modal-wrapper-height);
+    max-height: var(--modal-small-max-height);
   }
 </style>

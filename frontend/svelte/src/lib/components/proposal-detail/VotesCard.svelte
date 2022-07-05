@@ -62,6 +62,7 @@
     <div
       class="progressbar"
       role="progressbar"
+      aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}
       aria-valuemax={sum}
