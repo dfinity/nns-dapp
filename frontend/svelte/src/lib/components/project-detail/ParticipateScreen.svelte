@@ -91,7 +91,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "../../themes/mixins/modal";
 
   .wrapper {
     display: flex;
@@ -106,18 +106,6 @@
   }
 
   .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--padding-2x);
-
-    padding-top: var(--padding-4x);
-
-    & > button {
-      flex: 1;
-
-      @include media.min-width(medium) {
-        flex: none;
-      }
-    }
+    @include modal.bottom-buttons;
   }
 </style>

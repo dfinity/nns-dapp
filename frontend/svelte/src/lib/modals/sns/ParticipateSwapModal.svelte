@@ -32,6 +32,9 @@
   const goNext = () => {
     modal.next();
   };
+  const goBack = () => {
+    modal.back();
+  };
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -46,7 +49,12 @@
       maxAmount={ICP.fromE8s(project.summary.maxParticipationCommitment)}
     />
   {/if}
-  {#if currentStep.name === "ReviewTransaction"}
-    <ReviewParticipate />
+  {#if currentStep.name === "ReviewTransaction" && selectedAccount !== undefined && amount !== undefined}
+    <ReviewParticipate
+      account={selectedAccount}
+      {amount}
+      on:nnsBack={goBack}
+      on:nnsClose
+    />
   {/if}
 </WizardModal>

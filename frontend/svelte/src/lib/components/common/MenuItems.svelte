@@ -81,10 +81,3 @@
     <svelte:component this={statusIcon} slot="statusIcon" />
   </MenuItem>
 {/each}
-
-<style lang="scss">
-  :global(svg) {
-    width: var(--padding-3x);
-    height: var(--padding-3x);
-  }
-</style>

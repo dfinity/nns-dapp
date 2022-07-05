@@ -557,6 +557,13 @@ interface I18nSns_project_detail {
   enter_amount: string;
   closed: string;
   pending: string;
+  transaction_fee: string;
+  description: string;
+  participate_swap_description: string;
+  participate_swap_warning: string;
+  understand_agree: string;
+  edit_transaction: string;
+  execute: string;
   participate: string;
 }
 
