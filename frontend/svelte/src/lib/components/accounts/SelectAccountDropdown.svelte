@@ -16,17 +16,19 @@
   });
 
   let selectableAccounts: Account[] | undefined;
-  const unsubscribe = accountsStore.subscribe((accounts) => {
-    if (accounts.main !== undefined) {
-      selectedAccountIdentifier =
-        selectedAccountIdentifier ?? accounts.main.identifier;
-      selectableAccounts = [
-        accounts.main,
-        ...(accounts.subAccounts ?? []),
-        ...(skipHardwareWallets ? [] : accounts.hardwareWallets ?? []),
-      ];
+  const unsubscribe = accountsStore.subscribe(
+    ({ main, subAccounts, hardwareWallets }) => {
+      if (main !== undefined) {
+        selectedAccountIdentifier =
+          selectedAccountIdentifier ?? main.identifier;
+        selectableAccounts = [
+          main,
+          ...(subAccounts ?? []),
+          ...(skipHardwareWallets ? [] : hardwareWallets ?? []),
+        ];
+      }
     }
-  });
+  );
 
   onDestroy(unsubscribe);
 </script>

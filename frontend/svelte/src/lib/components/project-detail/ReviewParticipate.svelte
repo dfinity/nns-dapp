@@ -5,6 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import { mainTransactionFeeStoreAsIcp } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
   import { convertNumberToICP } from "../../utils/icp.utils";
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
@@ -36,7 +37,11 @@
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>
-      <p>{`${$i18n.accounts.main_account} ${account.identifier}`}</p>
+      <p>
+        {replacePlaceholders($i18n.accounts.main_account, {
+          $identifier: account.identifier,
+        })}
+      </p>
     </div>
     <div class="highlight">
       <div class="align-right">

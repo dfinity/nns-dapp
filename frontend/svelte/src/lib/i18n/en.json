@@ -120,7 +120,7 @@
   "accounts": {
     "title": "Accounts",
     "main": "Main",
-    "main_account": "Main Account",
+    "main_account": "Main Account $identifier",
     "new_transaction": "New Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
