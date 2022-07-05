@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import type { SnsSwapState } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/projects.store";
@@ -36,6 +37,10 @@
   let durationTillDeadline: bigint;
   $: durationTillDeadline =
     project.summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
+
+  let showModal: boolean = false;
+  const openModal = () => (showModal = true);
+  const closeModal = () => (showModal = false);
 </script>
 
 {#if swapState === undefined}
@@ -96,11 +101,18 @@
           </KeyValuePair>
         </div>
       {/if}
-      <button class="primary small" data-tid="sns-project-participate-button"
+      <button
+        on:click={openModal}
+        class="primary small"
+        data-tid="sns-project-participate-button"
         >{$i18n.sns_project_detail.participate}</button
       >
     </div>
   </div>
+{/if}
+
+{#if showModal}
+  <ParticipateSwapModal {project} on:nnsClose={closeModal} />
 {/if}
 
 <style lang="scss">

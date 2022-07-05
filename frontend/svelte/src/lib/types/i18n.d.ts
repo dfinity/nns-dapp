@@ -12,6 +12,7 @@ interface I18nCore {
   confirm_yes: string;
   confirm_no: string;
   confirm: string;
+  cancel: string;
   yes: string;
   no: string;
   unspecified: string;
@@ -128,6 +129,7 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
+  main_account: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;
@@ -552,6 +554,7 @@ interface I18nSns_project_detail {
   user_commitment: string;
   status: string;
   accepting: string;
+  enter_amount: string;
   participate: string;
 }
 
