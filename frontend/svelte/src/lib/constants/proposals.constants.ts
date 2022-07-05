@@ -1,4 +1,5 @@
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { Color } from "../types/theme";
 
 // TODO: suggest to move into the store and add typing
 export const DEFAULT_PROPOSALS_FILTERS = {
@@ -22,10 +23,9 @@ export const DEFAULT_PROPOSALS_FILTERS = {
   lastAppliedFilter: undefined,
 };
 
-export type ProposalColor = "warning" | "success" | undefined;
-export const PROPOSAL_COLOR: Record<ProposalStatus, ProposalColor> = {
-  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: "success",
-  [ProposalStatus.PROPOSAL_STATUS_OPEN]: "warning",
+export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
+  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: Color.SUCCESS,
+  [ProposalStatus.PROPOSAL_STATUS_OPEN]: Color.WARNING,
   [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
   [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
   [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,

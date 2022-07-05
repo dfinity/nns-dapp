@@ -555,6 +555,8 @@ interface I18nSns_project_detail {
   status: string;
   accepting: string;
   enter_amount: string;
+  closed: string;
+  pending: string;
   participate: string;
 }
 

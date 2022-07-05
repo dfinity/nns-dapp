@@ -8,12 +8,10 @@ import type {
 } from "@dfinity/nns";
 import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  PROPOSAL_COLOR,
-  type ProposalColor,
-} from "../constants/proposals.constants";
+import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
+import type { Color } from "../types/theme";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -302,7 +300,7 @@ export const mapProposalInfo = (
   title: string | undefined;
   url: string | undefined;
   topic: string | undefined;
-  color: ProposalColor | undefined;
+  color: Color | undefined;
   status: ProposalStatus;
 } => {
   const { proposal, proposer, id, status } = proposalInfo;
