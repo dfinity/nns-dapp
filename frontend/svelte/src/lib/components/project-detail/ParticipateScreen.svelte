@@ -55,12 +55,11 @@
   <div>
     <KeyValuePair>
       <span slot="key">Amount</span>
-      <!-- TODO: None of the current button classes matches style needed here -->
-      <button on:click|preventDefault={addMax} slot="value" class="text"
+      <button on:click|preventDefault={addMax} slot="value" class="ghost"
         >{$i18n.core.max}</button
       >
     </KeyValuePair>
-    <!-- TODO: ParticipateScreen -->
+    <!-- TODO: input style https://dfinity.atlassian.net/browse/L2-804 -->
     <Input
       inputType="icp"
       name="amount"

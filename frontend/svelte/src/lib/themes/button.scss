@@ -22,6 +22,21 @@ button {
     }
   }
 
+  &.ghost {
+    z-index: var(--z-index);
+
+    width: fit-content;
+
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-standard);
+
+    @include media.min-width(medium) {
+      font-size: inherit;
+    }
+
+    color: var(--primary);
+  }
+
   &.full-width {
     width: 100%;
   }
