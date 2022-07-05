@@ -35,6 +35,14 @@ button {
     }
 
     color: var(--primary);
+
+    &:focus {
+      color: var(--primary-tint);
+    }
+
+    &[disabled] {
+      color: var(--disable-contrast);
+    }
   }
 
   &.full-width {
