@@ -69,6 +69,9 @@ help_text() {
 	--open
 	  Open the NNS dapp in a browser.
 
+	--ctl-nobuild-nns
+	  Use the existing NNS and SNS wasm canisters.
+
 	EOF
 }
 
@@ -86,6 +89,7 @@ DEPLOY_SNS="false"
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
+CTL_NOBUILD_NNS="false"
 
 while (($# > 0)); do
   env="$1"
@@ -126,8 +130,16 @@ while (($# > 0)); do
   --dry-run)
     DRY_RUN="true"
     ;;
+  --ctl-nobuild-nns)
+    CTL_NOBUILD_NNS="true"
+    ;;
   *)
     DFX_NETWORK="$env"
+    # Check that the network is valid.
+    DFX_NETWORK="$env" jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
+      echo "ERROR: Network '$env' is not listed in dfx.json"
+      exit 1
+    } >&2
     ;;
   esac
 done
@@ -191,10 +203,15 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-#if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
-#  ./e2e-tests/scripts/nns-canister-download
-#  ./e2e-tests/scripts/nns-canister-build
-#fi
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
+  if [[ "$CTL_NOBUILD_NNS" == "true" ]]
+  then
+    echo "Using exising NNS and SNS canisters"
+  else
+    ./e2e-tests/scripts/nns-canister-download
+    ./e2e-tests/scripts/nns-canister-build
+  fi
+fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
@@ -215,16 +232,16 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   # If the wasm canister has not been installed already, install it.
   # TODO: Maybe put this behind a flag?
 echo Checking whether sns wasm is installed
-  SNS_WASM_CANISTER_ID="$(dfx canister --network local id wasm_canister 2>/dev/null)"
-  if test -n "${SNS_WASM_CANISTER_ID}"
+  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
+  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]
   then
     echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
   else
     echo "Creating SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
-    dfx deploy wasm_canister  --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )'
-    SNS_WASM_CANISTER_ID="$(dfx canister --network local id wasm_canister)"
+    dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )'
+    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
   fi
 
