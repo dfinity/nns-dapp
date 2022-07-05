@@ -1,23 +1,99 @@
+# 100_000_000 e8s = 1 token.#
+# Fee of a transaction.
+# Default value = 10000
+#
 transaction_fee_e8s: 10000
-token_name: FreeUpMyTime
+#
+# The name of the token issued by an SNS Ledger.
+# This field has no default, a value must be provided by the user.
+# Must be a string length between 4 and 255 characters
+#
+# Example: Bitcoin
 
-token_symbol: FUT
+#
+token_name: Bitcoin
+#
+# The symbol of the token issued by an SNS Ledger.
+# This field has no default, a value must be provided by the user.
+# Must be a string length between 3 and 10 characters
+#
+# Example: BTC
+
+#
+token_symbol: BTC
+#
+# Cost of making a proposal that doesnt pass.
+# Default value = 100000000
+#
 proposal_reject_cost_e8s: 100000000
+#
+# The minimum amount a neuron needs to have staked.
+# Default value = 100000000
+#
 neuron_minimum_stake_e8s: 100000000
-initial_token_distribution:
-  developers:
-    total_e8s: 3000000000
-    distributions:
-      fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1000000000
-  treasury:
-    total_e8s: 5000000000
-    distributions:
-        "fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe": 500000000
-  swap: 10000
-
-max_icp_e8s: 50
-min_participants: 1
+#
+# This field has no default, a value must be provided by the user.
+# Amount targeted by the sale, if the amount is reached the sale is triggered.
+# Must be at least min_participants * min_participant_icp_e8.
+#
+max_icp_e8s: 100000000
+#
+# This field has no default, a value must be provided by the user.
+# Minimum number of participants for the sale to take place. Must be greater than zero.
+#
+min_participants: 10
+#
+# This field has no default, a value must be provided by the user.
+# Minimum number of participants for the sale to take place. Must be greater than zero.
+#
 min_participant_icp_e8s: 1
-max_participant_icp_e8s: 5
-min_icp_e8s: 50
-fallback_controller_principal_ids: ["fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe"]
+max_participant_icp_e8s: 1000
+min_icp_e8s: 100
+#
+# This field sets the initial token distribution. Initially, there is only support for
+# the FractionalDeveloperVotingPower strategy.
+#
+# - developer_distribution has one field:
+#    - developer_neurons: A map between PrincipalId and u64, it specifies the neuron stake and
+#      controlling principal of developer neurons available at genesis.
+#
+# - treasury_distribution has two fields:
+#    - total_e8s: The total amount of tokens in the treasury bucket. Airdrops will be deducted from
+#      this total.
+#    - airdrop_neurons: A map between PrincipalId and u64, it specifies the neuron stake and
+#      controlling principal of airdropped neurons available at genesis.
+#
+# - swap_distribution has two fields:
+#    - total_e8s: The total amount of tokens in the swap bucket. initial_swap_amount_e8s will be
+#      deducted from this total.
+#    - initial_swap_amount_e8s: The initial amount of tokens deposited in the swap canister for
+#      the initial token swap.
+#
+# Example:
+# initial_token_distribution:
+#   FractionalDeveloperVotingPower:
+#     developer_distribution:
+#       developer_neurons:
+#         x4vjn-rrapj-c2kqe-a6m2b-7pzdl-ntmc4-riutz-5bylw-2q2bh-ds5h2-lae: 1500000000
+#         fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1500000000
+#     treasury_distribution:
+#       total_e8s: 5000000000
+#       airdrop_neurons:
+#         fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 500000000
+#     swap_distribution:
+#       total_e8s: 6000000000
+#       initial_swap_amount_e8s: 3000000000
+
+#
+fallback_controller_principal_ids: [fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe]
+initial_token_distribution:
+   developers:
+     total_e8s: 3000000000
+     distributions:
+       fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1000000000
+       x4vjn-rrapj-c2kqe-a6m2b-7pzdl-ntmc4-riutz-5bylw-2q2bh-ds5h2-lae: 1500000000
+   treasury:
+     total_e8s: 5000000000
+     distributions:
+       fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 500000000
+   swap: 6000000000
