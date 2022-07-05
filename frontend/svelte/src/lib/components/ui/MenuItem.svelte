@@ -51,6 +51,11 @@
       // preserve icon size
       flex: none;
     }
+
+    :global(svg) {
+      width: var(--padding-3x);
+      height: var(--padding-3x);
+    }
   }
 
   span {

@@ -74,7 +74,65 @@ describe("ParticipateSwapModal", () => {
       );
     });
 
-    it("should move to the last step", async () => {
+    it("should move to the last step with ICP and disabled button", async () => {
+      const { queryByTestId, queryByText, getByTestId, container } =
+        await renderSwapModal();
+
+      const participateButton = queryByTestId(
+        "sns-swap-participate-button-next"
+      );
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const icpAmount = "10";
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: icpAmount } });
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+
+      participateButton && fireEvent.click(participateButton);
+      await waitFor(() =>
+        expect(queryByTestId("sns-swap-participate-step-2")).toBeTruthy()
+      );
+      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+      const confirmButton = getByTestId("sns-swap-participate-button-execute");
+      expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+    });
+
+    it("should move to the last step and enable button when accepting terms", async () => {
+      const { queryByTestId, queryByText, getByTestId, container } =
+        await renderSwapModal();
+
+      const participateButton = queryByTestId(
+        "sns-swap-participate-button-next"
+      );
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const icpAmount = "10";
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: icpAmount } });
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+
+      participateButton && fireEvent.click(participateButton);
+      await waitFor(() =>
+        expect(queryByTestId("sns-swap-participate-step-2")).toBeTruthy()
+      );
+      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+      const confirmButton = getByTestId("sns-swap-participate-button-execute");
+      expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const acceptInput = container.querySelector("[type='checkbox']");
+      acceptInput && (await fireEvent.click(acceptInput));
+      await waitFor(() =>
+        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+    });
+
+    it("should move to the last step and go back", async () => {
       const { queryByTestId, container } = await renderSwapModal();
 
       const participateButton = queryByTestId(
@@ -90,7 +148,12 @@ describe("ParticipateSwapModal", () => {
 
       participateButton && fireEvent.click(participateButton);
       await waitFor(() =>
-        expect(queryByTestId("sns-swap-participate-step-2")).toBeFalsy()
+        expect(queryByTestId("sns-swap-participate-step-2")).toBeTruthy()
+      );
+
+      await clickByTestId(queryByTestId, "sns-swap-participate-button-back");
+      await waitFor(() =>
+        expect(queryByTestId("sns-swap-participate-step-1")).toBeTruthy()
       );
     });
   });
