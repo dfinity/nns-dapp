@@ -559,7 +559,7 @@
     "connect_many_apps": "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.",
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
-    "user_cancel": "User denied the access to use the ledger device.",
+    "access_denied": "Access denied to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
     "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
