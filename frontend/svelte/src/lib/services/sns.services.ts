@@ -6,12 +6,14 @@ import {
   mockSnsSwapState,
 } from "../../tests/mocks/sns-projects.mock";
 import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import { loadSnses } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/projects.store";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
+import { getIdentity } from "./auth.services";
 import { loadSnsProposals } from "./proposals.services";
 import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
@@ -19,6 +21,11 @@ import type { SnsSummary, SnsSwapState } from "./sns.mock";
  * Loads summaries with swapStates
  */
 export const loadSnsFullProjects = async () => {
+  const identity = await getIdentity();
+
+  await loadSnses({ identity });
+
+  // TODO: mock data to be removed and replaced
   const summaries = await listSnsSummary();
 
   snsSummariesStore.setSummaries({
