@@ -3,8 +3,9 @@
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
+  import type { SelectOption } from "../../types/common";
   import { getAccountFromStore } from "../../utils/accounts.utils";
-  import Spinner from "../ui/Spinner.svelte";
+  import Dropdown from "../ui/Dropdown.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let skipHardwareWallets: boolean = false;
@@ -15,16 +16,22 @@
     accountsStore: $accountsStore,
   });
 
-  let selectableAccounts: Account[] | undefined;
+  let selectableAccounts: SelectOption[] = [];
+  const convertAccountToSelectOption = (account: Account): SelectOption => ({
+    value: account.identifier,
+    label: account.name ?? $i18n.accounts.main,
+  });
   const unsubscribe = accountsStore.subscribe(
     ({ main, subAccounts, hardwareWallets }) => {
       if (main !== undefined) {
         selectedAccountIdentifier =
           selectedAccountIdentifier ?? main.identifier;
         selectableAccounts = [
-          main,
-          ...(subAccounts ?? []),
-          ...(skipHardwareWallets ? [] : hardwareWallets ?? []),
+          convertAccountToSelectOption(main),
+          ...(subAccounts?.map(convertAccountToSelectOption) ?? []),
+          ...(skipHardwareWallets
+            ? []
+            : hardwareWallets?.map(convertAccountToSelectOption) ?? []),
         ];
       }
     }
@@ -33,19 +40,9 @@
   onDestroy(unsubscribe);
 </script>
 
-<!-- TODO: Implement https://dfinity.atlassian.net/browse/L2-800 -->
-{#if selectableAccounts !== undefined}
-  <select
-    bind:value={selectedAccountIdentifier}
-    name="account"
-    data-tid="select-account-dropdown"
-  >
-    {#each selectableAccounts as account}
-      <option value={account.identifier}>
-        {account.name ?? $i18n.accounts.main_account}</option
-      >
-    {/each}
-  </select>
-{:else}
-  <Spinner />
-{/if}
+<Dropdown
+  name="account"
+  bind:value={selectedAccountIdentifier}
+  testId="select-account-dropdown"
+  options={selectableAccounts}
+/>
