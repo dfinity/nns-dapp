@@ -1,6 +1,9 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { DeployedSns } from "@dfinity/nns";
-import type { SnsWasmCanister } from "@dfinity/nns/dist/esm/sns_wasm";
+import type {
+  DeployedSns,
+  SnsWasmCanister,
+  SnsWasmCanisterOptions,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSns, SnsCanisters } from "@dfinity/sns";
 import { HOST } from "../constants/environment.constants";
@@ -11,15 +14,19 @@ const listSnses = async ({
 }: {
   agent: HttpAgent;
 }): Promise<Principal[]> => {
-  const { SnsWasmCanister }: { SnsWasmCanister: SnsWasmCanister } =
-    await import("@dfinity/nns/dist/esm/sns_wasm");
+  const {
+    SnsWasmCanister,
+  }: {
+    SnsWasmCanister: {
+      create: (options: SnsWasmCanisterOptions) => SnsWasmCanister;
+    };
+  } = await import("@dfinity/nns/dist/esm/sns_wasm");
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText("zeke2-yaaaa-aaaaa-aabvq-cai"),
     agent,
   });
 
-  // TODO: typescript definition does not work
   const snses: DeployedSns[] = await listSnses({});
 
   return snses.reduce(
