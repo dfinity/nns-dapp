@@ -252,7 +252,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -264,7 +264,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
 
       resetAccountIdentity();
     });

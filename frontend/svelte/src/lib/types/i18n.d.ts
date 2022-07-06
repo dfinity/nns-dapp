@@ -590,7 +590,7 @@ interface I18nError__ledger {
   connect_many_apps: string;
   connect_not_supported: string;
   unexpected_wallet: string;
-  user_cancel: string;
+  access_denied: string;
   user_rejected_transaction: string;
   version_not_supported: string;
   browser_not_supported: string;
