@@ -173,7 +173,7 @@ install_cmake_linux() {
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-IC_COMMIT=8662d46f0ea81d04abaf6e597a99e67c576fc73e
+IC_COMMIT=efa65b94c4a09975c3c2f2b96a03196273b689f7
 install_ic_admin_linux() {
   local USER_BIN="$HOME/.local/bin"
   mkdir -p "$USER_BIN"

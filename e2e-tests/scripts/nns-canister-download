@@ -8,7 +8,7 @@ cd "$(dirname "$0")/../.."
 #   then, a commit from master is a safe choice.
 # - We apply a patch to customise the code; if you change the hash, please check on the
 #   first run that the patch applies cleanly.  Docker SHOULD fail if it doesn't.
-IC_COMMIT=8662d46f0ea81d04abaf6e597a99e67c576fc73e
+IC_COMMIT=efa65b94c4a09975c3c2f2b96a03196273b689f7
 DOWNLOAD_DIR="$PWD/target/ic"
 NO_CLOBBER=""
 
