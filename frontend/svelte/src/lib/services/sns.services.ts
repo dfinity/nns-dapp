@@ -23,6 +23,10 @@ import type { SnsSummary, SnsSwapState } from "./sns.mock";
 export const loadSnsFullProjects = async () => {
   const identity = await getIdentity();
 
+  // TODO:
+  // - load snses with nns-js
+  // - init Sns - i.e all actors - with sns-js
+  // - load summary and swap data
   await loadSnses({ identity });
 
   // TODO: mock data to be removed and replaced
