@@ -151,6 +151,11 @@ install_ic_cdk_optimizer() {
   cargo install --version 0.3.2 ic-cdk-optimizer
 }
 
+is_docker_installed() {
+  command -v docker >/dev/null 2>&1 || return 1
+  local major_version="$(docker --version | sed -E 's/(^|.*[^0-9])([0-9]+)[.][0-9]+[.][0-9]+.*/\2/g')"
+  (( major_version >= 10 ))
+}
 install_docker() {
   while ! command -v docker; do
     echo "Please install docker from: https://docs.docker.com/get-docker/"
@@ -216,7 +221,7 @@ sudo echo I have superpowers || {
 install_rosetta_maybe
 install_brew_maybe
 command -v wget || "install_wget_$OS"
-command -v docker || install_docker
+is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"
