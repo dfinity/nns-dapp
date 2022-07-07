@@ -3,9 +3,9 @@
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import type { SelectOption } from "../../types/common";
   import { getAccountFromStore } from "../../utils/accounts.utils";
   import Dropdown from "../ui/Dropdown.svelte";
+  import DropdownItem from "../ui/DropdownItem.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let skipHardwareWallets: boolean = false;
@@ -16,25 +16,16 @@
     accountsStore: $accountsStore,
   });
 
-  let selectableAccounts: SelectOption[] = [];
-  const convertAccountToSelectOption = ({
-    identifier,
-    name,
-  }: Account): SelectOption => ({
-    value: identifier,
-    label: name ?? $i18n.accounts.main,
-  });
+  let selectableAccounts: Account[] = [];
   const unsubscribe = accountsStore.subscribe(
     ({ main, subAccounts, hardwareWallets }) => {
       if (main !== undefined) {
         selectedAccountIdentifier =
           selectedAccountIdentifier ?? main.identifier;
         selectableAccounts = [
-          convertAccountToSelectOption(main),
-          ...(subAccounts?.map(convertAccountToSelectOption) ?? []),
-          ...(skipHardwareWallets
-            ? []
-            : hardwareWallets?.map(convertAccountToSelectOption) ?? []),
+          main,
+          ...(subAccounts ?? []),
+          ...(skipHardwareWallets ? [] : hardwareWallets ?? []),
         ];
       }
     }
@@ -45,7 +36,12 @@
 
 <Dropdown
   name="account"
-  bind:value={selectedAccountIdentifier}
+  bind:selectedValue={selectedAccountIdentifier}
   testId="select-account-dropdown"
-  options={selectableAccounts}
-/>
+>
+  {#each selectableAccounts as { identifier, name } (identifier)}
+    <DropdownItem value={identifier}>
+      {name ?? $i18n.accounts.main}
+    </DropdownItem>
+  {/each}
+</Dropdown>
