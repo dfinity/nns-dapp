@@ -17,10 +17,11 @@
   {max}
   inputType="icp"
 >
+  <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
   <button
     type="button"
     on:click|preventDefault={setMax}
-    class="primary small"
+    class="ghost"
     slot="button">{$i18n.core.max}</button
   >
 </Input>

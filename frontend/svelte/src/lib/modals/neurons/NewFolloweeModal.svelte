@@ -97,7 +97,11 @@
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
-        />
+        >
+          <svelte:fragment slot="label"
+            >{$i18n.new_followee.address_placeholder}</svelte:fragment
+          >
+        </Input>
         <button
           class="primary small"
           type="submit"
@@ -147,6 +151,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: var(--padding-2x);
   }
 
   ul {

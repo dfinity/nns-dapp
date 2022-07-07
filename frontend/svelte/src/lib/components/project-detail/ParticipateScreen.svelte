@@ -52,20 +52,18 @@
     {/if}
     <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
   </div>
-  <div>
-    <KeyValuePair>
-      <span slot="key">Amount</span>
-      <button on:click|preventDefault={addMax} slot="value" class="ghost"
-        >{$i18n.core.max}</button
-      >
-    </KeyValuePair>
-    <!-- TODO: input style https://dfinity.atlassian.net/browse/L2-804 -->
+  <div class="wrapper">
     <Input
       inputType="icp"
       name="amount"
       placeholderLabelKey="sns_project_detail.enter_amount"
       bind:value={amount}
-    />
+    >
+      <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
+      <button on:click|preventDefault={addMax} slot="button" class="ghost"
+        >{$i18n.core.max}</button
+      >
+    </Input>
     <KeyValuePair>
       <span slot="key">Min <IcpComponent singleLine icp={minAmount} /></span>
       <span slot="value">max <IcpComponent singleLine icp={maxAmount} /></span>
@@ -105,6 +103,10 @@
     align-items: stretch;
     justify-content: center;
     gap: var(--padding-2x);
+  }
+
+  p {
+    margin: 0;
   }
 
   .right {

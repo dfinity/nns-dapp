@@ -127,6 +127,7 @@
     {required}
     {spellcheck}
     {name}
+    id={name}
     {step}
     {disabled}
     value={inputType === "icp" ? icpValue : value}
