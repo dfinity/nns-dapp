@@ -117,6 +117,9 @@
     }
   },
   "defaults": {
+    "replica": {
+      "subnet_type": "system"
+    },
     "network": {
       "config": {
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
