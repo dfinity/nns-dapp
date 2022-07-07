@@ -116,6 +116,10 @@
 </script>
 
 <div class="input-block" class:disabled>
+  <div class="info">
+    <label for={name}><slot name="label" /></label>
+    <slot name="button" />
+  </div>
   <input
     data-tid="input-ui-element"
     type={inputType === "icp" ? "text" : inputType}
@@ -135,12 +139,6 @@
     on:input={handleInput}
     on:keydown={handleKeyDown}
   />
-
-  <span class="placeholder">
-    {placeholder}
-  </span>
-
-  <slot name="button" />
 </div>
 
 <style lang="scss">
@@ -149,26 +147,17 @@
   .input-block {
     position: relative;
 
-    margin: var(--padding-2x) 0 var(--input-margin-bottom, var(--padding-2x));
-
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--padding);
 
     width: var(--input-width);
-
-    :global(button) {
-      position: absolute;
-      right: var(--padding-2x);
-    }
 
     --disabled-color: var(--disable-contrast);
 
     &.disabled {
       color: var(--disabled-color);
-
-      .placeholder {
-        color: var(--disabled-color);
-      }
 
       input {
         border: 1px solid var(--disabled-color);
@@ -177,63 +166,29 @@
 
     color: var(--background-contrast);
     background: none;
+  }
 
-    .placeholder {
-      color: rgba(var(--background-contrast-rgb), 0.4);
-    }
+  .info {
+    display: flex;
+    justify-content: space-between;
   }
 
   input {
     width: 100%;
 
-    padding: var(--padding) var(--padding-2x);
+    font-size: inherit;
+
+    padding: var(--padding-2x);
     box-sizing: border-box;
 
-    border-radius: calc(4 * var(--border-radius));
+    box-shadow: var(--current-box-inset-shadow);
 
-    background-color: var(--background);
+    border-radius: var(--border-radius-5x);
 
-    border: 1px solid var(--input-error-color, var(--background-contrast));
+    background: var(--card-background);
+
+    border: 1px solid var(--input-error-color, transparent);
     outline: none;
-
-    &:not(:placeholder-shown) + span.placeholder {
-      background-color: var(--background);
-      color: var(--input-error-color, currentColor);
-    }
-
-    @include media.min-width(medium) {
-      padding: var(--padding-2x);
-      font-size: var(--font-size-h3);
-    }
-  }
-
-  .placeholder {
-    position: absolute;
-    top: 50%;
-    left: var(--padding-2x);
-    transform: translate(0, -50%);
-
-    transition: transform var(--animation-time-normal);
-    transform-origin: top left;
-
-    pointer-events: none;
-
-    font-size: var(--font-size-h4);
-    color: rgba(var(--background-contrast-rgb), 0.4);
-
-    /** Space to display fully the caret if field is focused and empty */
-    margin-left: 4px;
-  }
-
-  .input-block input:not(:placeholder-shown) + span.placeholder {
-    transform: scale(0.8) translate(0, calc(-50% - 30px));
-    background-color: var(--background);
-
-    padding: 0 var(--padding-0_5x);
-
-    @include media.min-width(medium) {
-      transform: scale(0.8) translate(0, calc(-50% - 43px));
-    }
   }
 
   input:focus {
@@ -242,10 +197,5 @@
 
   input[disabled] {
     cursor: text;
-  }
-
-  input::placeholder {
-    visibility: hidden;
-    opacity: 0;
   }
 </style>
