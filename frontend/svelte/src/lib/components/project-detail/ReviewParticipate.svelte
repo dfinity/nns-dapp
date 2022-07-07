@@ -112,6 +112,13 @@
 
   .actions {
     margin-top: var(--padding-4x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    --select-padding: var(--padding-2x) 0;
+
     .warning {
       display: grid;
       grid-template-columns: 44px 1fr;

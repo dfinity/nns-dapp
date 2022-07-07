@@ -83,12 +83,14 @@
 
   {#if filters}
     {#each filtersValues as key (key)}
-      <Checkbox
-        inputId={`${key}`}
-        checked={selectedFilters.includes(key)}
-        on:nnsChange={() => onChange(key)}
-        >{$i18n[category][filters[key]]}</Checkbox
-      >
+      <div>
+        <Checkbox
+          inputId={`${key}`}
+          checked={selectedFilters.includes(key)}
+          on:nnsChange={() => onChange(key)}
+          >{$i18n[category][filters[key]]}</Checkbox
+        >
+      </div>
     {/each}
   {/if}
 
@@ -105,6 +107,9 @@
 </Modal>
 
 <style lang="scss">
+  div {
+    --select-padding: var(--padding-2x);
+  }
   button {
     margin: var(--padding);
   }

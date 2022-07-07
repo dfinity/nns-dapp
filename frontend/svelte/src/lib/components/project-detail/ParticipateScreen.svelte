@@ -113,5 +113,6 @@
 
   .actions {
     @include modal.bottom-buttons;
+    padding-top: var(--padding-4x);
   }
 </style>
