@@ -19,6 +19,7 @@
 <div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
   <label for={inputId} class={text}><slot /></label>
   <input
+    data-tid="checkbox"
     type="checkbox"
     id={inputId}
     {checked}
