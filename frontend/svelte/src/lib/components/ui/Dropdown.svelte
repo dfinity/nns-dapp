@@ -2,7 +2,8 @@
   import IconExpandMore from "../../icons/IconExpandMore.svelte";
   import type { SelectOption } from "../../types/common";
 
-  // Do not allow to bind objects, since they are mutable.
+  // Do not allow to use objects as values.
+  // Ex: in the query/update calls we do, when the object changes, the value is pointing to the old object.
   export let value: string;
   export let name: string;
   export let options: SelectOption[];
@@ -11,8 +12,8 @@
 
 <div>
   <select bind:value {name} data-tid={testId}>
-    {#each options as option}
-      <option value={option.value}>{option.label}</option>
+    {#each options as { value, label }}
+      <option {value}>{label}</option>
     {/each}
   </select>
   <span class="icon">
@@ -27,11 +28,15 @@
 
     select {
       padding: var(--padding-2x) var(--padding-3x);
+      width: 100%;
+
       border-radius: var(--element-border-radius);
+      border-style: none;
+      box-shadow: var(--box-shadow);
 
       appearance: none;
 
-      width: 100%;
+      background: var(--card-background);
     }
 
     .icon {
@@ -42,6 +47,8 @@
       display: flex;
       height: 100%;
       align-items: center;
+
+      pointer-events: none;
 
       :global(svg) {
         width: 24px;

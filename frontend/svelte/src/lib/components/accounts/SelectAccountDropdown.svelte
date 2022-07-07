@@ -17,9 +17,12 @@
   });
 
   let selectableAccounts: SelectOption[] = [];
-  const convertAccountToSelectOption = (account: Account): SelectOption => ({
-    value: account.identifier,
-    label: account.name ?? $i18n.accounts.main,
+  const convertAccountToSelectOption = ({
+    identifier,
+    name,
+  }: Account): SelectOption => ({
+    value: identifier,
+    label: name ?? $i18n.accounts.main,
   });
   const unsubscribe = accountsStore.subscribe(
     ({ main, subAccounts, hardwareWallets }) => {
