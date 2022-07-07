@@ -22,6 +22,6 @@
     type="button"
     on:click|preventDefault={setMax}
     class="ghost"
-    slot="button">{$i18n.core.max}</button
+    slot="additional">{$i18n.core.max}</button
   >
 </Input>

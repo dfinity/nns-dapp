@@ -118,7 +118,7 @@
 <div class="input-block" class:disabled>
   <div class="info">
     <label for={name}><slot name="label" /></label>
-    <slot name="button" />
+    <slot name="additional" />
   </div>
   <input
     data-tid="input-ui-element"
@@ -184,7 +184,7 @@
 
     box-shadow: var(--current-box-inset-shadow);
 
-    border-radius: var(--border-radius-5x);
+    border-radius: var(--element-border-radius);
 
     background: var(--card-background);
 

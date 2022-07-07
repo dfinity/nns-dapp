@@ -52,7 +52,7 @@
     {/if}
     <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
   </div>
-  <div class="wrapper">
+  <div class="wrapper info">
     <Input
       inputType="icp"
       name="amount"
@@ -60,7 +60,7 @@
       bind:value={amount}
     >
       <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
-      <button on:click|preventDefault={addMax} slot="button" class="ghost"
+      <button on:click|preventDefault={addMax} slot="additional" class="ghost"
         >{$i18n.core.max}</button
       >
     </Input>
@@ -102,7 +102,11 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
-    gap: var(--padding-2x);
+    gap: var(--padding-3x);
+
+    &.info {
+      gap: var(--padding-2x);
+    }
   }
 
   p {
