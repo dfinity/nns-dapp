@@ -219,10 +219,8 @@ export const stakeNeuron = async ({
 
     return newNeuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: "error.stake_neuron",
-      err,
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    return;
   }
 };
 

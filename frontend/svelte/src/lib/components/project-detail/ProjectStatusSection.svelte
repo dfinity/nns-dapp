@@ -1,19 +1,23 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
+  import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import type { SnsSwapState } from "../../services/sns.mock";
   import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";
+  import { nowInSeconds } from "../../utils/neuron.utils";
+  import { getProjectStatus, ProjectStatus } from "../../utils/sns.utils";
   import Icp from "../ic/ICP.svelte";
-  import Badge from "../ui/Badge.svelte";
   import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
+  import Tag from "../ui/Tag.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
 
   export let project: SnsFullProject;
 
+  const nowSeconds: number = nowInSeconds();
   let swapState: SnsSwapState | undefined;
   $: ({ swapState } = project);
   let currentCommitment: bigint;
@@ -27,7 +31,7 @@
       : undefined;
   let currentDateTillStartSeconds: number;
   $: currentDateTillStartSeconds = Number(
-    BigInt(Math.round(Date.now() / 1000)) - project.summary.swapStart
+    BigInt(nowSeconds) - project.summary.swapStart
   );
   let deadlineTillStartSeconds: number;
   $: deadlineTillStartSeconds = Number(
@@ -36,6 +40,21 @@
   let durationTillDeadline: bigint;
   $: durationTillDeadline =
     project.summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
+
+  let showModal: boolean = false;
+  const openModal = () => (showModal = true);
+  const closeModal = () => (showModal = false);
+  $: durationTillDeadline = project.summary.swapDeadline - BigInt(nowSeconds);
+  const statusTextMapper = {
+    [ProjectStatus.Accepting]: $i18n.sns_project_detail.accepting,
+    [ProjectStatus.Closed]: $i18n.sns_project_detail.closed,
+    [ProjectStatus.Pending]: $i18n.sns_project_detail.pending,
+  };
+  let projectStatus: ProjectStatus;
+  $: projectStatus = getProjectStatus({
+    summary: project.summary,
+    nowInSeconds: nowSeconds,
+  });
 </script>
 
 {#if swapState === undefined}
@@ -46,8 +65,7 @@
   <div class="wrapper" data-tid="sns-project-detail-status">
     <div class="title">
       <h2>{$i18n.sns_project_detail.status}</h2>
-      <!-- TODO: Create another Badge for SNS? -->
-      <Badge>{$i18n.sns_project_detail.accepting}</Badge>
+      <Tag>{statusTextMapper[projectStatus]}</Tag>
     </div>
     <div class="content">
       <KeyValuePair testId="sns-project-current-commitment">
@@ -66,22 +84,24 @@
           minimumIndicator={project.summary.minCommitment}
         />
       </div>
-      <div>
-        <ProgressBar
-          value={currentDateTillStartSeconds}
-          max={deadlineTillStartSeconds}
-          color="blue"
-        >
-          <p slot="top" class="push-apart">
-            <span>
-              {$i18n.sns_project_detail.deadline}
-            </span>
-            <span>
-              {secondsToDuration(durationTillDeadline)}
-            </span>
-          </p>
-        </ProgressBar>
-      </div>
+      {#if durationTillDeadline > 0}
+        <div>
+          <ProgressBar
+            value={currentDateTillStartSeconds}
+            max={deadlineTillStartSeconds}
+            color="blue"
+          >
+            <p slot="top" class="push-apart">
+              <span>
+                {$i18n.sns_project_detail.deadline}
+              </span>
+              <span>
+                {secondsToDuration(durationTillDeadline)}
+              </span>
+            </p>
+          </ProgressBar>
+        </div>
+      {/if}
     </div>
     <div class="actions">
       {#if myCommitmentIcp !== undefined}
@@ -96,11 +116,18 @@
           </KeyValuePair>
         </div>
       {/if}
-      <button class="primary small" data-tid="sns-project-participate-button"
+      <button
+        on:click={openModal}
+        class="primary small"
+        data-tid="sns-project-participate-button"
         >{$i18n.sns_project_detail.participate}</button
       >
     </div>
   </div>
+{/if}
+
+{#if showModal}
+  <ParticipateSwapModal {project} on:nnsClose={closeModal} />
 {/if}
 
 <style lang="scss">

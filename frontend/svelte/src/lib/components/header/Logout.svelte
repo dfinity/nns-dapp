@@ -4,25 +4,22 @@
   import IconExit from "../../icons/IconExit.svelte";
 </script>
 
-<button data-tid="logout" on:click={() => logout({})} class="text"
-  ><span>
-    <IconExit />
-    {$i18n.header.logout}
-  </span>
+<button data-tid="logout" on:click={() => logout({})} class="text">
+  <IconExit />
+  {$i18n.header.logout}
 </button>
 
 <style lang="scss">
   button {
     margin: 0;
 
-    :global(svg) {
-      width: var(--padding-2_5x);
-    }
-  }
-
-  span {
     display: flex;
     align-items: center;
     gap: var(--padding);
+
+    :global(svg) {
+      width: var(--padding-3x);
+      height: var(--padding-3x);
+    }
   }
 </style>

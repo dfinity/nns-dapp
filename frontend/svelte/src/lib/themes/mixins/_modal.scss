@@ -1,3 +1,5 @@
+@use "./media";
+
 @mixin section {
   margin: 0;
   padding: var(--padding-2x);
@@ -23,5 +25,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@mixin bottom-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--padding-2x);
+
+  padding-top: var(--padding-4x);
+
+  & > button {
+    flex: 1;
+
+    @include media.min-width(medium) {
+      flex: none;
+    }
   }
 }

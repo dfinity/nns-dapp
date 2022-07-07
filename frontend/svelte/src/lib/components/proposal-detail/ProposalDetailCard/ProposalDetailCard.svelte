@@ -1,14 +1,14 @@
 <script lang="ts">
   import { type ProposalId, ProposalStatus } from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
-  import Badge from "../../ui/Badge.svelte";
   import CardInfo from "../../ui/CardInfo.svelte";
-  import type { ProposalColor } from "../../../../lib/constants/proposals.constants";
   import { i18n } from "../../../../lib/stores/i18n";
   import ProposalMeta from "../../proposals/ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
   import { mapProposalInfo } from "../../../utils/proposals.utils";
+  import type { Color } from "../../../types/theme";
+  import Tag from "../../ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -16,16 +16,16 @@
   let id: ProposalId | undefined;
   let title: string | undefined;
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
-  let color: ProposalColor;
+  let color: Color | undefined;
 
   $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));
 </script>
 
 <CardInfo>
   <h2 class="title" slot="start" {title}>{title}</h2>
-  <Badge slot="end" {color}
-    ><h2 class="status">{$i18n.status[ProposalStatus[status]]}</h2></Badge
-  >
+  <Tag tagName="h3" slot="end" {color}>
+    {$i18n.status[ProposalStatus[status]]}
+  </Tag>
   <ProposalSummaryCardBlock {proposal} />
 
   <div class="detail">
@@ -48,12 +48,6 @@
       margin-top: var(--padding-0_5x);
       padding-right: var(--padding);
     }
-  }
-
-  .status {
-    min-width: fit-content;
-    font-size: var(--font-size-h3);
-    color: inherit;
   }
 
   .detail {

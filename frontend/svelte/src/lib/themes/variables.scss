@@ -37,14 +37,29 @@
 
   --button-min-height: 45px;
 
-  --modal-small-width: calc(100% - var(--padding-8x));
-  --modal-big-width: calc(100% - var(--padding-2x));
-  --modal-max-height: 630px;
+  // Modal
 
-  --current-box-inset-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4) inset;
+  --modal-small-width: calc(100% - var(--padding-8x));
+  --modal-small-max-width: calc(100vw - var(--padding-4x));
+  --modal-small-max-height: calc(100vh - var(--padding-4x));
+  --modal-small-border-radius: calc(2 * var(--border-radius));
+
+  --modal-big-width: 100vw;
+  --modal-big-max-width: 100vw;
+  --modal-big-height: 100vh;
+  --modal-big-border-radius: 0;
+
+  @supports (-webkit-touch-callout: none) {
+    --modal-big-height: -webkit-fill-available;
+  }
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
+
     --modal-big-width: 600px;
+    --modal-big-max-width: var(--modal-small-max-width);
+    --modal-big-height: var(--modal-small-max-height);
+    --modal-big-max-height: 630px;
+    --modal-big-border-radius: var(--modal-small-border-radius);
   }
 }

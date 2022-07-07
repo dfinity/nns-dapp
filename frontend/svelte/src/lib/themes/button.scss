@@ -22,6 +22,30 @@ button {
     }
   }
 
+  &.ghost {
+    z-index: var(--z-index);
+
+    width: fit-content;
+
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-standard);
+
+    @include media.min-width(medium) {
+      font-size: inherit;
+    }
+
+    color: var(--primary);
+
+    &:hover,
+    &:focus {
+      color: var(--primary-tint);
+    }
+
+    &[disabled] {
+      color: var(--disable-contrast);
+    }
+  }
+
   &.full-width {
     width: 100%;
   }
@@ -41,6 +65,7 @@ button {
   }
 
   &.primary,
+  &.secondary,
   &.danger,
   &.warning {
     border-radius: 50px;
@@ -80,6 +105,26 @@ button {
     &:focus {
       background: var(--primary-tint);
       @include effect.ripple-effect(--primary-tint);
+    }
+  }
+
+  &.secondary {
+    &[disabled],
+    &[disabled]:hover {
+      background: var(--disable);
+      color: var(--disable-contrast);
+      cursor: default;
+    }
+
+    // Same colors as primary but reversed
+    background: var(--primary-contrast);
+    color: var(--primary);
+
+    @include effect.ripple-effect(--primary-contrast);
+
+    &:focus {
+      background: var(--primary-contrast);
+      @include effect.ripple-effect(--primary-contrast);
     }
   }
 
