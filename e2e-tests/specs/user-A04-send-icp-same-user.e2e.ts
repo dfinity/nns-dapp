@@ -4,7 +4,7 @@
 import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
 import { AccountsTab } from "../components/accounts-tab";
-import { Header } from "../components/header";
+import { Icp } from "../components/icp";
 
 /**
  * Verifies that new users get a main account.
@@ -32,7 +32,7 @@ describe("Users can send ICP between accounts", () => {
   });
 
   it("Setup: Get ICP", async () => {
-    await new Header(browser).getIcp(10);
+    await new Icp(browser).getIcp(10);
   });
 
   it(`Setup: Create a linked account '${linkedAccountName}'`, async () => {
