@@ -36,7 +36,6 @@ describe("Users can send ICP between accounts", () => {
   });
 
   it(`Setup: Create a linked account '${linkedAccountName}'`, async () => {
-    await browser.setWindowSize(800, 1000);
     await new AccountsTab(browser).createLinkedAccount(linkedAccountName);
   });
 
