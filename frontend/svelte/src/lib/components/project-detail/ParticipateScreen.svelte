@@ -43,7 +43,7 @@
 </script>
 
 <div class="wrapper" data-tid="sns-swap-participate-step-1">
-  <div>
+  <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
         <span slot="key">Source</span>
@@ -92,6 +92,12 @@
 
 <style lang="scss">
   @use "../../themes/mixins/modal";
+
+  .select-account {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
 
   .wrapper {
     display: flex;

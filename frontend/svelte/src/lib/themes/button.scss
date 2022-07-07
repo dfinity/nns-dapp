@@ -68,7 +68,7 @@ button {
   &.secondary,
   &.danger,
   &.warning {
-    border-radius: 50px;
+    border-radius: var(--element-border-radius);
     box-shadow: var(--interaction-box-shadow);
 
     position: relative;
