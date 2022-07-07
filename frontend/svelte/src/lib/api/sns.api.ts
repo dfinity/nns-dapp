@@ -77,7 +77,7 @@ const initSns = async ({
     rootOptions: {
       canisterId: rootCanisterId,
     },
-    agent
+    agent,
   });
 };
 
@@ -108,5 +108,5 @@ export const loadSnses = async ({ identity }: { identity: Identity }) => {
       )
   );
 
-  console.log('Sns neurons', result);
+  console.log("Sns neurons", result);
 };
