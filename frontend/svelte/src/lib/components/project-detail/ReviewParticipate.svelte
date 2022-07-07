@@ -68,7 +68,6 @@
       <span class="icon"><IconWarning size="48px" /></span>
       <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
     </div>
-    <!-- TODO: New checkbox https://dfinity.atlassian.net/browse/L2-811 -->
     <Checkbox
       text="block"
       inputId="agree"

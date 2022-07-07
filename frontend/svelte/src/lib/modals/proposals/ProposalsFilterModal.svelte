@@ -83,33 +83,27 @@
 
   {#if filters}
     {#each filtersValues as key (key)}
-      <div>
-        <Checkbox
-          inputId={`${key}`}
-          checked={selectedFilters.includes(key)}
-          on:nnsChange={() => onChange(key)}
-          >{$i18n[category][filters[key]]}</Checkbox
-        >
-      </div>
+      <Checkbox
+        inputId={`${key}`}
+        checked={selectedFilters.includes(key)}
+        on:nnsChange={() => onChange(key)}
+        >{$i18n[category][filters[key]]}</Checkbox
+      >
     {/each}
   {/if}
 
-  <svelte:fragment slot="footer">
-    <button
-      class="primary"
-      type="button"
-      on:click={filter}
-      data-tid="apply-proposals-filter"
-    >
-      {$i18n.core.filter}
-    </button>
-  </svelte:fragment>
+  <button
+    slot="footer"
+    class="primary"
+    type="button"
+    on:click={filter}
+    data-tid="apply-proposals-filter"
+  >
+    {$i18n.core.filter}
+  </button>
 </Modal>
 
 <style lang="scss">
-  div {
-    --select-padding: var(--padding-2x);
-  }
   button {
     margin: var(--padding);
   }

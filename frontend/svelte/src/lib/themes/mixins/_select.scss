@@ -7,7 +7,7 @@
   flex-direction: var(--select-flex-direction);
   gap: var(--padding-2x);
 
-  padding: var(--select-padding, 0);
+  padding: var(--select-padding, var(--padding-2x));
 
   color: var(--select-color);
 
