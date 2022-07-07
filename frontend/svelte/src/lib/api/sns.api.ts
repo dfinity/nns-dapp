@@ -23,7 +23,7 @@ const listSnses = async ({
   } = await import("@dfinity/nns/dist/esm/sns_wasm");
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText("zeke2-yaaaa-aaaaa-aabvq-cai"),
+    canisterId: Principal.fromText("nsrxe-iiaaa-aaaaa-aacaa-cai"),
     agent,
   });
 
@@ -38,6 +38,30 @@ const listSnses = async ({
   );
 };
 
+/**
+ * Current deployed canisters:
+ * {
+ *   "__Candid_UI": {
+ *     "testnet": "nvqrq-fqaaa-aaaaa-aacaq-cai"
+ *   },
+ *   "sns_governance": {
+ *     "testnet": "md3j3-qaaaa-aaaaa-aacfq-cai"
+ *   },
+ *   "sns_ledger": {
+ *     "testnet": "mw4yw-riaaa-aaaaa-aacga-cai"
+ *   },
+ *   "sns_root": {
+ *     "testnet": "me2pp-5yaaa-aaaaa-aacfa-cai"
+ *   },
+ *   "sns_swap": {
+ *     "testnet": "mr56c-4qaaa-aaaaa-aacgq-cai"
+ *   },
+ *   "wasm_canister": {
+ *     "testnet": "nsrxe-iiaaa-aaaaa-aacaa-cai"
+ *   }
+ * }
+ */
+
 const initSns = async ({
   agent,
   rootCanisterId,
@@ -51,9 +75,9 @@ const initSns = async ({
 
   return initSns({
     rootOptions: {
-      canisterId: rootCanisterId, // Currently deployed Principal.fromText("zdlco-vyaaa-aaaaa-aabva-cai"),
-      agent,
+      canisterId: rootCanisterId,
     },
+    agent
   });
 };
 
@@ -73,13 +97,16 @@ export const loadSnses = async ({ identity }: { identity: Identity }) => {
 
   // TODO: filter errors
   // TODO: save somewhere the initialized sns - i.e. module variable
+  // TODO: query and update calls
 
   // TODO: remove, test, list neurons of each Sns
-  await Promise.all(
+  const result = await Promise.all(
     sns
       .filter(({ status }) => status === "fulfilled")
       .map(({ value: { listNeurons } }: PromiseFulfilledResult<SnsCanisters>) =>
         listNeurons({})
       )
   );
+
+  console.log('Sns neurons', result);
 };
