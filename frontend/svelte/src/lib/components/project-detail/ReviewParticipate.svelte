@@ -68,7 +68,6 @@
       <span class="icon"><IconWarning size="48px" /></span>
       <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
     </div>
-    <!-- TODO: New checkbox https://dfinity.atlassian.net/browse/L2-811 -->
     <Checkbox
       text="block"
       inputId="agree"
@@ -112,6 +111,13 @@
 
   .actions {
     margin-top: var(--padding-4x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    --select-padding: var(--padding-2x) 0;
+
     .warning {
       display: grid;
       grid-template-columns: 44px 1fr;

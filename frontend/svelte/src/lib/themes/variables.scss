@@ -23,6 +23,7 @@
   --border-radius: 10px;
   --border-radius-5x: calc(5 * var(--border-radius));
   --element-border-radius: 50px;
+  --border-radius-0_5x: calc(0.5 * var(--border-radius));
 
   --z-index: 1;
   --menu-z-index: calc(var(--z-index) + 996);
