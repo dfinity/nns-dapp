@@ -33,6 +33,10 @@
     flex-direction: column;
     justify-content: flex-start;
 
+    p {
+      margin: var(--padding) 0 0 0;
+    }
+
     // For the link inside "i18n.neuron_detail.community_fund_more_info"
     :global(a) {
       color: var(--primary);
@@ -46,6 +50,6 @@
     }
 
     // Changes padding of checkbox wrapper
-    --select-padding: var(--padding-2x) 0;
+    --select-padding: var(--padding) 0;
   }
 </style>

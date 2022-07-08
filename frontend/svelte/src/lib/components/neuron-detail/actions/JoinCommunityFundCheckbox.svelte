@@ -37,6 +37,7 @@
   preventDefault
   inputId="join-community-fund-checkbox"
   checked={isCommunityFund}
+  disabled={isCommunityFund}
   on:nnsChange={showModal}
 >
   <span>{$i18n.neuron_detail.participate_community_fund}</span>
@@ -47,9 +48,9 @@
     <div data-tid="join-community-fund-modal">
       <h4>{$i18n.core.confirm}</h4>
       {#if isCommunityFund}
-        <p>{$i18n.neuron_detail.leave_community_fund_description}</p>
+        <p>{@html $i18n.neuron_detail.leave_community_fund_description}</p>
       {:else}
-        <p>{$i18n.neuron_detail.join_community_fund_description}</p>
+        <p>{@html $i18n.neuron_detail.join_community_fund_description}</p>
       {/if}
     </div>
   </ConfirmationModal>

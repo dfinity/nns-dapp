@@ -59,6 +59,16 @@
     background: var(--primary);
   }
 
+  &[disabled],
+  &[disabled]:hover {
+    background: var(--disable);
+    cursor: default;
+
+    &:checked:after {
+      border-color: var(--disable-contrast);
+    }
+  }
+
   &:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px;

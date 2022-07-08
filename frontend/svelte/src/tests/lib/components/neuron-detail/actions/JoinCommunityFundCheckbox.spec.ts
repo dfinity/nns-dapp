@@ -32,7 +32,7 @@ describe("JoinCommunityFundCheckbox", () => {
     expect(queryByTestId("checkbox")).toBeInTheDocument();
   });
 
-  it("renders checked checkbox if neuron is part of the fund", () => {
+  it("renders checked and disabled checkbox if neuron is part of the fund", () => {
     const neuron = {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: BigInt(1200),
@@ -45,6 +45,7 @@ describe("JoinCommunityFundCheckbox", () => {
 
     const inputElement = queryByTestId("checkbox") as HTMLInputElement;
     expect(inputElement.checked).toBeTruthy();
+    expect(inputElement.hasAttribute("disabled")).toBeTruthy();
   });
 
   it("renders unchecked checkbox if neuron is not part of the fund", () => {

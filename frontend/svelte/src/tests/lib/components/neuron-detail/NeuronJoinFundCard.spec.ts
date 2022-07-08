@@ -38,7 +38,7 @@ describe("NeuronJoinFundCard", () => {
       );
   });
 
-  it.only("renders join community fund checkbox", () => {
+  it("renders join community fund checkbox", () => {
     // Checkbox is tested separately
     const { queryByTestId } = render(NeuronJoinFundCard, {
       props,

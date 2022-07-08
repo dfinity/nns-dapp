@@ -4,6 +4,7 @@
   export let inputId: string;
   export let checked: boolean;
   export let preventDefault: boolean = false;
+  export let disabled: boolean = false;
 
   export let text: "block" | "inline" = "inline";
 
@@ -22,12 +23,17 @@
   };
 </script>
 
-<div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
+<div
+  on:click|preventDefault={onClick}
+  class={`checkbox ${selector ?? ""}`}
+  class:disabled
+>
   <label for={inputId} class={text}><slot /></label>
   <input
     data-tid="checkbox"
     type="checkbox"
     id={inputId}
+    {disabled}
     {checked}
     on:click|stopPropagation={onClick}
   />
@@ -41,6 +47,10 @@
     @include select.group;
 
     --select-background-hover: var(--background-shade);
+
+    &.disabled {
+      pointer-events: none;
+    }
   }
 
   label {
