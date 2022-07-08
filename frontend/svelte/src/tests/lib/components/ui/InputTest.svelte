@@ -5,7 +5,7 @@
 </script>
 
 <Input {...props}>
-  <svelte:fragment slot="button">
+  <svelte:fragment slot="additional">
     <button>Test Button</button>
   </svelte:fragment>
 </Input>
