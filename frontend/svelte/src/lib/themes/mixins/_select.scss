@@ -23,7 +23,6 @@
 
   --select-input-size: 20px;
   --select-input-border: 0;
-  --select-input-margin: var(--padding-0_5x);
 }
 
 @mixin label {
@@ -39,7 +38,7 @@
 @mixin input {
   appearance: none;
   background: white;
-  margin: 0 var(--select-input-margin);
+  margin: 0;
 
   width: var(--select-input-size);
   height: var(--select-input-size);
@@ -57,6 +56,16 @@
 
   &:checked {
     background: var(--primary);
+  }
+
+  &[disabled],
+  &[disabled]:hover {
+    background: var(--disable);
+    cursor: default;
+
+    &:checked:after {
+      border-color: var(--disable-contrast);
+    }
   }
 
   &:focus {
