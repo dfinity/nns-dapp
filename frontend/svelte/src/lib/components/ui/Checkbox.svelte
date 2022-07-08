@@ -27,6 +27,7 @@
   on:click|preventDefault={onClick}
   class={`checkbox ${selector ?? ""}`}
   class:disabled
+  role="button"
 >
   <label for={inputId} class={text}><slot /></label>
   <input
