@@ -12,7 +12,6 @@ import {
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 describe("NeuronJoinFundCard", () => {
@@ -39,18 +38,16 @@ describe("NeuronJoinFundCard", () => {
       );
   });
 
-  it("renders join community fund button", () => {
-    // Button is tested separately
-    const { queryByText } = render(NeuronJoinFundCard, {
+  it.only("renders join community fund checkbox", () => {
+    // Checkbox is tested separately
+    const { queryByTestId } = render(NeuronJoinFundCard, {
       props,
     });
 
-    expect(
-      queryByText(en.neuron_detail.join_community_fund)
-    ).toBeInTheDocument();
+    expect(queryByTestId("checkbox")).toBeInTheDocument();
   });
 
-  it("renders no button if user is not controller", () => {
+  it("renders no checkbox if user is not controller", () => {
     const props = {
       neuron: {
         ...mockNeuron,
@@ -61,29 +58,10 @@ describe("NeuronJoinFundCard", () => {
       },
     };
 
-    const { queryByText } = render(NeuronJoinFundCard, {
+    const { queryByTestId } = render(NeuronJoinFundCard, {
       props,
     });
 
-    expect(
-      queryByText(en.neuron_detail.join_community_fund)
-    ).not.toBeInTheDocument();
-  });
-
-  it("renders no button if neuron already part of the fund", () => {
-    const props = {
-      neuron: {
-        ...neuron,
-        joinedCommunityFundTimestampSeconds: BigInt(200),
-      },
-    };
-
-    const { queryByText } = render(NeuronJoinFundCard, {
-      props,
-    });
-
-    expect(
-      queryByText(en.neuron_detail.join_community_fund)
-    ).not.toBeInTheDocument();
+    expect(queryByTestId("checkbox")).not.toBeInTheDocument();
   });
 });

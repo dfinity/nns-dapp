@@ -1,17 +1,13 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { accountsStore } from "../../stores/accounts.store";
-  import {
-    hasJoinedCommunityFund,
-    isNeuronControllableByUser,
-  } from "../../utils/neuron.utils";
+  import { i18n } from "../../stores/i18n";
+  import { isNeuronControllableByUser } from "../../utils/neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
-  import JoinCommunityFundButton from "./actions/JoinCommunityFundButton.svelte";
+  import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
 
   export let neuron: NeuronInfo;
 
-  let isCommunityFund: boolean;
-  $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let isControlledByUser: boolean;
   $: isControlledByUser = isNeuronControllableByUser({
     neuron,
@@ -19,10 +15,14 @@
   });
 </script>
 
-{#if !isCommunityFund && isControlledByUser}
+{#if isControlledByUser}
   <CardInfo>
+    <h3 slot="start">{$i18n.neuron_detail.community_fund}</h3>
     <div>
-      <JoinCommunityFundButton neuronId={neuron.neuronId} />
+      <JoinCommunityFundCheckbox {neuron} />
+      <p>
+        {@html $i18n.neuron_detail.community_fund_more_info}
+      </p>
     </div>
   </CardInfo>
 {/if}
@@ -30,6 +30,22 @@
 <style lang="scss">
   div {
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
+
+    // For the link inside "i18n.neuron_detail.community_fund_more_info"
+    :global(a) {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: inherit;
+    }
+
+    // Changes order of the label of the JoinCommunityFundCheckbox
+    :global(label) {
+      order: 1;
+    }
+
+    // Changes padding of checkbox wrapper
+    --select-padding: var(--padding-2x) 0;
   }
 </style>

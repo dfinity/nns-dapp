@@ -11,7 +11,7 @@ export type BusyStateInitiatorType =
   | "add-controller-canister"
   | "remove-controller-canister"
   | "accounts"
-  | "join-community-fund"
+  | "toggle-community-fund"
   | "split-neuron"
   | "dissolve-action"
   | "add-followee"

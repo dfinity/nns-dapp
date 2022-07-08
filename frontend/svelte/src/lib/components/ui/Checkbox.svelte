@@ -3,6 +3,7 @@
 
   export let inputId: string;
   export let checked: boolean;
+  export let preventDefault: boolean = false;
 
   export let text: "block" | "inline" = "inline";
 
@@ -13,7 +14,12 @@
   /**
    * Emit an event when the checkbox or container is clicked. The state should be updated by consumer.
    */
-  const onClick = () => dispatch("nnsChange");
+  const onClick = (event) => {
+    if (preventDefault) {
+      event.preventDefault();
+    }
+    dispatch("nnsChange");
+  };
 </script>
 
 <div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
