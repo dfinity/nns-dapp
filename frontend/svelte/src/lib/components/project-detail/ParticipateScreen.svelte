@@ -60,8 +60,11 @@
       bind:value={amount}
     >
       <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
-      <button on:click|preventDefault={addMax} slot="additional" class="ghost"
-        >{$i18n.core.max}</button
+      <button
+        on:click|preventDefault={addMax}
+        slot="additional"
+        class="ghost"
+        type="button">{$i18n.core.max}</button
       >
     </Input>
     <KeyValuePair>
