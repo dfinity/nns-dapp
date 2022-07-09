@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* e2e tests: Update the way SNS is deployed to the current standard, which is via the wasm canister.
+
 ## Proposal 67969
 * Polyfill CSS to support older browsers
 * Buttons realignment in Neuron Detail Page
