@@ -243,12 +243,12 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )' --no-wallet
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
+    echo "Uploading wasms to the wasm canister"
+    sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-root-canister.wasm root
+    sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-governance-canister.wasm governance
+    sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/ledger-canister_notify-method.wasm ledger
   fi
-
-  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
+  echo "Creating SNS"
   ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml
 fi
 
