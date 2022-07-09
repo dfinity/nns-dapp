@@ -37,7 +37,7 @@ const {
   addFollowee,
   routePathNeuronId,
   getIdentityOfControllerByNeuronId,
-  joinCommunityFund,
+  toggleCommunityFund,
   listNeurons,
   loadNeuron,
   removeFollowee,
@@ -140,6 +140,10 @@ describe("neurons-services", () => {
 
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyLeaveCommunityFund = jest
+    .spyOn(api, "leaveCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
   const spyDisburse = jest
@@ -252,7 +256,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -264,7 +268,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsStore.show).toBeCalled();
 
       resetAccountIdentity();
     });
@@ -341,25 +345,45 @@ describe("neurons-services", () => {
     });
   });
 
-  describe("joinCommunityFund", () => {
+  describe("toggleCommunityFund", () => {
     afterEach(() => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
     });
-    it("should update neuron", async () => {
-      neuronsStore.pushNeurons({ neurons, certified: true });
-      await joinCommunityFund(controlledNeuron.neuronId);
+    it("should call joinCommunity find if neuron is not part yet", async () => {
+      const neuron = {
+        ...controlledNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleCommunityFund(neuron);
 
       expect(spyJoinCommunityFund).toHaveBeenCalled();
     });
 
+    it("should call leaveCommunity find if neuron is in the fund already", async () => {
+      const neuron = {
+        ...controlledNeuron,
+        joinedCommunityFundTimestampSeconds: BigInt(2000),
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleCommunityFund(neuron);
+
+      expect(spyLeaveCommunityFund).toHaveBeenCalled();
+    });
+
     it("should not update neuron if no identity", async () => {
+      const neuron = {
+        ...controlledNeuron,
+        joinedCommunityFundTimestampSeconds: BigInt(2000),
+      };
       setNoIdentity();
 
-      await joinCommunityFund(BigInt(10));
+      await toggleCommunityFund(neuron);
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
+      expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
 
       resetIdentity();
     });
@@ -370,10 +394,11 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      await joinCommunityFund(notControlledNeuron.neuronId);
+      await toggleCommunityFund(notControlledNeuron);
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
+      expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
   });
 

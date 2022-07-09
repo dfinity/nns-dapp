@@ -12,6 +12,7 @@ interface I18nCore {
   confirm_yes: string;
   confirm_no: string;
   confirm: string;
+  cancel: string;
   yes: string;
   no: string;
   unspecified: string;
@@ -128,6 +129,7 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
+  main_account: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;
@@ -470,6 +472,7 @@ interface I18nNeuron_detail {
   voting_history: string;
   vote: string;
   join_community_fund: string;
+  community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
   stop_dissolving: string;
@@ -478,6 +481,9 @@ interface I18nNeuron_detail {
   split_neuron: string;
   voting_power_tooltip: string;
   join_community_fund_description: string;
+  leave_community_fund_description: string;
+  participate_community_fund: string;
+  community_fund_more_info: string;
   maturity_title: string;
   merge_maturity: string;
   merge: string;
@@ -487,6 +493,7 @@ interface I18nNeuron_detail {
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
+  leave_community_fund_success: string;
   dummy_proposal_success: string;
   following_title: string;
   following_description: string;
@@ -552,6 +559,16 @@ interface I18nSns_project_detail {
   user_commitment: string;
   status: string;
   accepting: string;
+  enter_amount: string;
+  closed: string;
+  pending: string;
+  transaction_fee: string;
+  description: string;
+  participate_swap_description: string;
+  participate_swap_warning: string;
+  understand_agree: string;
+  edit_transaction: string;
+  execute: string;
   participate: string;
 }
 
@@ -578,7 +595,7 @@ interface I18nError__ledger {
   connect_many_apps: string;
   connect_not_supported: string;
   unexpected_wallet: string;
-  user_cancel: string;
+  access_denied: string;
   user_rejected_transaction: string;
   version_not_supported: string;
   browser_not_supported: string;

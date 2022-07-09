@@ -7,6 +7,7 @@ export class AccountsTab extends MyNavigator {
   static readonly MAKE_ACCOUNT_HARDWARE_SELECTOR: string = `[data-tid="choose-hardware-wallet-as-account-type"]`;
   static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `#modalContent [data-tid="input-ui-element"]`;
   static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `#modalContent [type="submit"]`;
+  static readonly ICP_VALUE_SELECTOR: string = `[data-tid="icp-value"]`;
 
   /**
    * Creates a browser controller for the accounts tab.
@@ -39,7 +40,7 @@ export class AccountsTab extends MyNavigator {
     const timeoutMsg = `Could not get value from element: ${await element.getHTML(
       true
     )}`;
-    const icpField = element.$(`[data-tid="icp-value"]`);
+    const icpField = element.$(AccountsTab.ICP_VALUE_SELECTOR);
     await icpField.waitForExist({ timeoutMsg });
     const icpValue = await icpField.getText();
     const icpNumber = Number(icpValue);
@@ -82,5 +83,60 @@ export class AccountsTab extends MyNavigator {
       { timeout: 30_000 }
     );
     console.warn(`Created account '${linkedAccountName}'`);
+  }
+
+  /**
+   * Sends ICP from one account to another named account.
+   */
+  async sendIcpToAccountName({
+    sender,
+    recipient,
+    icp,
+  }: {
+    sender: string;
+    recipient: string;
+    icp: number;
+  }): Promise<void> {
+    await this.getElement(
+      AccountsTab.SELECTOR,
+      "Waiting to be on the accounts tab"
+    );
+    const senderElement = await this.getAccountByName(
+      sender,
+      "Sender's account in accounts tab"
+    );
+    await senderElement.waitForEnabled({
+      timeout: 1_000,
+      timeoutMsg: "Waiting for the source account to be selectable",
+    });
+    senderElement.click();
+    await this.click(
+      `[data-tid="new-transaction"]`,
+      "Click to start new transaction"
+    );
+    const recipientElement = await this.getAccountByName(
+      recipient,
+      "Receivers account in modal"
+    );
+    await recipientElement.waitForEnabled({
+      timeout: 1_000,
+      timeoutMsg: "Waiting for the destination account to be selectable",
+    });
+    await recipientElement.click();
+    const valueElement = await this.getElement(
+      `[data-tid="input-ui-element"]`,
+      "ICP input field"
+    );
+    await valueElement.waitForEnabled({
+      timeout: 1_000,
+      timeoutMsg: "Waiting to be able to enter value to be transferred",
+    });
+    await valueElement.setValue(icp);
+    await this.click(`[data-tid="review-transaction"]`, "Click Review");
+    await this.click(`[data-tid="confirm-and-send"]`, "Click confirm");
+    await this.waitForGone(`div.modal`, "Wait for modal to disappear", {
+      timeout: 30_000,
+    });
+    await this.click(`button.back`, "Return to the accounts page");
   }
 }

@@ -74,19 +74,16 @@ describe("ProposalsFilterModal", () => {
   });
 
   it("should filter filters", async () => {
-    const { container } = render(ProposalsFilterModal, {
+    const { container, queryAllByTestId } = render(ProposalsFilterModal, {
       props,
     });
 
-    const firstInput = container.querySelector(
-      "div.content div.checkbox:first-of-type input"
-    ) as HTMLInputElement;
+    const inputs = queryAllByTestId("checkbox") as HTMLInputElement[];
+    const firstInput = inputs[0];
     fireEvent.click(firstInput);
     await waitFor(() => expect(firstInput.checked).toBeTruthy());
 
-    const secondInput = container.querySelector(
-      "div.content div.checkbox:nth-child(2) input"
-    ) as HTMLInputElement;
+    const secondInput = inputs[1];
     fireEvent.click(secondInput);
     await waitFor(() => expect(secondInput.checked).toBeTruthy());
 

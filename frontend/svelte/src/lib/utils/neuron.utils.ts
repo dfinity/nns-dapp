@@ -111,6 +111,8 @@ export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
   1 *
     (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
 
+export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
+
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
@@ -118,7 +120,7 @@ export const getDissolvingTimeInSeconds = (
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-      BigInt(Math.round(Date.now() / 1000))
+      BigInt(nowInSeconds())
     : undefined;
 
 export const ageMultiplier = (ageSeconds: number): number =>

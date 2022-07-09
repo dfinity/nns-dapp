@@ -11,6 +11,7 @@
   import Card from "../ui/Card.svelte";
   import Logo from "../ui/Logo.svelte";
   import Spinner from "../ui/Spinner.svelte";
+  import { nowInSeconds } from "../../utils/neuron.utils";
 
   export let project: SnsFullProject;
 
@@ -27,8 +28,7 @@
   $: title = `${$i18n.sns_project.project} ${name}`;
 
   let durationTillDeadline: bigint;
-  $: durationTillDeadline =
-    swapDeadline - BigInt(Math.round(Date.now() / 1000));
+  $: durationTillDeadline = swapDeadline - BigInt(nowInSeconds());
 
   let myCommitment: ICP | undefined;
   $: myCommitment =

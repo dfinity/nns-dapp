@@ -127,7 +127,7 @@ export class LedgerIdentity extends SignIdentity {
         ) {
           throw new LedgerErrorKey("error__ledger.browser_not_supported");
         }
-        throw new LedgerErrorKey("error__ledger.user_cancel");
+        throw new LedgerErrorKey("error__ledger.access_denied");
       }
 
       if ((err as LedgerHQTransportError)?.id === "NoDeviceFound") {
