@@ -92,16 +92,15 @@
     {/each}
   {/if}
 
-  <svelte:fragment slot="footer">
-    <button
-      class="primary"
-      type="button"
-      on:click={filter}
-      data-tid="apply-proposals-filter"
-    >
-      {$i18n.core.filter}
-    </button>
-  </svelte:fragment>
+  <button
+    slot="footer"
+    class="primary"
+    type="button"
+    on:click={filter}
+    data-tid="apply-proposals-filter"
+  >
+    {$i18n.core.filter}
+  </button>
 </Modal>
 
 <style lang="scss">
