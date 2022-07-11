@@ -12,9 +12,10 @@
   import CanisterCard from "../lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "../lib/canisters/nns-dapp/nns-dapp.types";
   import { routeStore } from "../lib/stores/route.store";
-  import CreateOrLinkCanisterModal from "../lib/modals/canisters/CreateOrLinkCanisterModal.svelte";
+  import CreateCanisterModal from "../lib/modals/canisters/CreateCanisterModal.svelte";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import LinkCanisterModal from "../lib/modals/canisters/LinkCanisterModal.svelte";
 
   const loadCanisters = async () => {
     try {
@@ -54,8 +55,9 @@
   let noCanisters: boolean;
   $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
 
-  let modal: "CreateOrLinkCanister" | undefined = undefined;
-  const openModal = () => (modal = "CreateOrLinkCanister");
+  type ModalKey = "CreateCanister" | "LinkCanister";
+  let modal: ModalKey | undefined = undefined;
+  const openModal = (key: ModalKey) => (modal = key);
   const closeModal = () => (modal = undefined);
 </script>
 
@@ -86,16 +88,26 @@
     {/if}
   </section>
 
-  {#if modal === "CreateOrLinkCanister"}
-    <CreateOrLinkCanisterModal on:nnsClose={closeModal} />
+  {#if modal === "CreateCanister"}
+    <CreateCanisterModal on:nnsClose={closeModal} />
+  {/if}
+  {#if modal === "LinkCanister"}
+    <LinkCanisterModal on:nnsClose={closeModal} />
   {/if}
 
   <Footer>
     <Toolbar>
       <button
-        data-tid="create-link-canister-button"
+        data-tid="create-canister-button"
         class="primary"
-        on:click={openModal}>{$i18n.canisters.create_or_link}</button
+        on:click={() => openModal("CreateCanister")}
+        >{$i18n.canisters.create_canister}</button
+      >
+      <button
+        data-tid="link-canister-button"
+        class="primary"
+        on:click={() => openModal("LinkCanister")}
+        >{$i18n.canisters.link_canister}</button
       >
     </Toolbar>
   </Footer>
