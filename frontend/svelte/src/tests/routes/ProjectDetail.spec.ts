@@ -3,13 +3,13 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import type { SnsSwapState } from "../../lib/types/sns";
 import { loadSnsFullProject } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../../lib/stores/projects.store";
 import { routeStore } from "../../lib/stores/route.store";
+import type { SnsSwapState } from "../../lib/types/sns";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 import { mockSnsFullProject } from "../mocks/sns-projects.mock";
