@@ -51,7 +51,7 @@ const initSnsSummariesStore = () => {
 };
 
 const initSnsSwapStatesStore = () => {
-  const { subscribe, update } = writable<SnsSwapStatesStore>(undefined);
+  const { subscribe, update, set } = writable<SnsSwapStatesStore>(undefined);
 
   return {
     subscribe,
@@ -74,6 +74,10 @@ const initSnsSwapStatesStore = () => {
         },
       ]);
     },
+
+    reset() {
+      set(undefined)
+    }
   };
 };
 

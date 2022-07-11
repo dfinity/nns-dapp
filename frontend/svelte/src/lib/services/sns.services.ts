@@ -11,26 +11,95 @@ import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
+  type SnsFullProject,
 } from "../stores/projects.store";
-import type { SnsSwapState } from "../types/sns";
+import { toastsStore } from "../stores/toasts.store";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { getIdentity } from "./auth.services";
+import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
+import { queryAndUpdate } from "./utils.services";
 
 /**
  * Loads summaries with swapStates
  */
-export const loadSnsFullProjects = async () => {
-  const identity = await getIdentity();
+export const loadSnsFullProjects = (): Promise<void> =>
+  queryAndUpdate<SnsSummary[], unknown>({
+    request: ({ certified, identity }) =>
+      listSnsSummaries({ certified, identity }),
+    onLoad: ({ response: summaries, certified }) =>
+      snsSummariesStore.setSummaries({
+        summaries,
+        certified,
+      }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
 
-  const summaries = await listSnsSummaries({ identity });
+      if (certified !== true) {
+        return;
+      }
 
-  snsSummariesStore.setSummaries({
-    summaries,
-    certified: true,
+      // TODO: reset and clear
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found",
+        })
+      );
+    },
+    logMessage: "Syncing Sns summaries",
   });
 
+/**
+ * Loads summaries with swapStates
+ */
+export const loadSnsFullProject = async (canisterId: string) => {
+  // TODO: load only if not yet in store
+
+  return queryAndUpdate<SnsSummary | undefined, unknown>({
+    request: ({ certified, identity }) =>
+      listSnsSummary({
+        rootCanisterId: Principal.fromText(canisterId),
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: summary, certified }) =>
+      // TODO: detail page should probably not use that store?
+      snsSummariesStore.setSummaries({
+        summaries: [...(summary ? [summary] : [])],
+        certified,
+      }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // TODO: reset and clear
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found",
+        })
+      );
+    },
+    logMessage: "Syncing Sns summary",
+  });
+};
+
+export const loadSnsSwapStates = async (
+  summaries: SnsFullProject[] | undefined
+) => {
+  if (summaries === undefined) {
+    snsSwapStatesStore.reset();
+    return;
+  }
+
   // TODO: remove and replace with effective data
+  // TODO: query and update calls
   for (const { rootCanisterId } of summaries) {
     loadSnsSwapState(rootCanisterId).then((swapState) =>
       snsSwapStatesStore.setSwapState({
@@ -41,37 +110,29 @@ export const loadSnsFullProjects = async () => {
   }
 };
 
-/**
- * Loads summaries with swapStates
- */
-export const loadSnsFullProject = async (canisterId: string) => {
-  const identity = await getIdentity();
+// TODO: query and update calls
+// TODO: remove and replace with effective data
+const loadSnsSwapState = async (
+  rootCanisterId: Principal
+): Promise<SnsSwapState> =>
+  mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
 
-  // TODO: load only if not yet in store
+export const loadSnsSwapStateStore = async (
+  rootCanisterId: string | undefined
+): Promise<void> => {
+  // TODO: we probably do not want to use this store in the detail page and do not want to reset everything
+  if (rootCanisterId === undefined) {
+    snsSwapStatesStore.reset();
+    return;
+  }
 
-  const [summary, swapState] = await Promise.all([
-    listSnsSummary({
-      rootCanisterId: Principal.fromText(canisterId),
-      identity,
-    }),
-    loadSnsSwapState(Principal.fromText(canisterId)),
-  ]);
+  const swapState = await loadSnsSwapState(Principal.fromText(rootCanisterId));
 
-  // TODO: detail page should not use these store
-  snsSummariesStore.setSummaries({
-    summaries: [...(summary ? [summary] : [])],
-    certified: true,
-  });
   snsSwapStatesStore.setSwapState({
     swapState,
     certified: true,
   });
 };
-
-export const loadSnsSwapState = async (
-  rootCanisterId: Principal
-): Promise<SnsSwapState> =>
-  mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
 
 export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   mockAbout5SecondsWaiting(async () => {

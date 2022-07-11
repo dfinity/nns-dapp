@@ -12,7 +12,8 @@ import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 
 type RootCanisterId = Principal;
-let snsWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
+let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
+let snsUpdateWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 
 // TODO(L2-829): to be deleted
 export const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
@@ -25,13 +26,18 @@ export const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
 
 /**
  * List all deployed Snses - i.e list all Sns projects
- * @param agent
+ *
+ * @param {Object} params
+ * @param params.agent
+ * @param params.certified
  * @return The list of root canister id of each deployed Sns project
  */
 const listSnses = async ({
   agent,
+  certified,
 }: {
   agent: HttpAgent;
+  certified: boolean;
 }): Promise<Principal[]> => {
   const {
     SnsWasmCanister,
@@ -48,7 +54,7 @@ const listSnses = async ({
     agent,
   });
 
-  const snses: DeployedSns[] = await listSnses({});
+  const snses: DeployedSns[] = await listSnses({ certified });
 
   return snses.reduce(
     (acc: Principal[], { root_canister_id }: DeployedSns) => [
@@ -62,9 +68,11 @@ const listSnses = async ({
 const initSns = async ({
   agent,
   rootCanisterId,
+  certified,
 }: {
   agent: HttpAgent;
   rootCanisterId: Principal;
+  certified: boolean;
 }): Promise<SnsWrapper> => {
   const { initSns }: { initSns: InitSns } = await import(
     "@dfinity/sns/dist/esm/sns"
@@ -75,12 +83,15 @@ const initSns = async ({
       canisterId: rootCanisterId,
     },
     agent,
+    certified,
   });
 };
 
 const loadSnsWrappers = async ({
   identity,
+  certified,
 }: {
+  certified: boolean;
   identity: Identity;
 }): Promise<SnsWrapper[]> => {
   const agent = await createAgent({
@@ -88,11 +99,11 @@ const loadSnsWrappers = async ({
     host: HOST,
   });
 
-  const rootCanisterIds: Principal[] = await listSnses({ agent });
+  const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
 
   const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
     rootCanisterIds.map((rootCanisterId: Principal) =>
-      initSns({ agent, rootCanisterId })
+      initSns({ agent, rootCanisterId, certified })
     )
   );
 
@@ -103,33 +114,53 @@ const loadSnsWrappers = async ({
     .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
 };
 
+const initWrappers = async ({
+  identity,
+  certified,
+}: {
+  certified: boolean;
+  identity: Identity;
+}): Promise<Map<RootCanisterId, SnsWrapper>> =>
+  new Map(
+    (await loadSnsWrappers({ identity, certified })).map(
+      (wrapper: SnsWrapper) => [wrapper.canisterIds.rootCanisterId, wrapper]
+    )
+  );
+
 const wrappers = async ({
   identity,
+  certified,
 }: {
+  certified: boolean;
   identity: Identity;
 }): Promise<Map<RootCanisterId, SnsWrapper>> => {
-  if (!snsWrappers) {
-    snsWrappers = new Map(
-      (await loadSnsWrappers({ identity })).map((wrapper: SnsWrapper) => [
-        wrapper.canisterIds.rootCanisterId,
-        wrapper,
-      ])
-    );
+  // TODO: there is probably a better solution
+  switch (certified) {
+    case false:
+      if (!snsQueryWrappers) {
+        snsQueryWrappers = await initWrappers({ identity, certified: false });
+      }
+      return snsQueryWrappers;
+    default:
+      if (!snsUpdateWrappers) {
+        snsUpdateWrappers = await initWrappers({ identity, certified: true });
+      }
+      return snsUpdateWrappers;
   }
-
-  return snsWrappers;
 };
 
 const wrapper = async ({
   identity,
   rootCanisterId,
+  certified,
 }: {
   identity: Identity;
   rootCanisterId: RootCanisterId;
+  certified: boolean;
 }): Promise<SnsWrapper> => {
-  const snsWrapper: SnsWrapper | undefined = (await wrappers({ identity })).get(
-    rootCanisterId
-  );
+  const snsWrapper: SnsWrapper | undefined = (
+    await wrappers({ identity, certified })
+  ).get(rootCanisterId);
 
   // TODO: proper error and docs
   if (snsWrapper === undefined) {
@@ -141,23 +172,24 @@ const wrapper = async ({
 
 export const listSnsSummaries = async ({
   identity,
+  certified,
 }: {
+  certified: boolean;
   identity: Identity;
 }): Promise<SnsSummary[]> => {
   // TODO: query and update calls
 
   const snsWrappers: SnsWrapper[] = [
     ...(
-      (await wrappers({ identity })) ?? new Map<RootCanisterId, SnsWrapper>()
+      (await wrappers({ identity, certified })) ??
+      new Map<RootCanisterId, SnsWrapper>()
     ).values(),
   ];
 
   // TODO(L2-751): replace with effective implementation and types to get the metadata / summary
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
   const result = await Promise.all(
-    snsWrappers.map(({ metadata }: SnsWrapper) =>
-      metadata({ certified: false })
-    )
+    snsWrappers.map(({ metadata }: SnsWrapper) => metadata({ certified }))
   );
 
   // TODO(L2-829): mock data to be removed and replaced
@@ -168,18 +200,21 @@ export const listSnsSummaries = async ({
 export const listSnsSummary = async ({
   rootCanisterId,
   identity,
+  certified,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
+  certified: boolean;
 }): Promise<SnsSummary | undefined> => {
   // TODO: query and update calls
 
   const { metadata }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
+    certified,
   });
 
-  const summary = await metadata({ certified: false });
+  const summary = await metadata({ certified });
 
   // TODO(L2-829, L2-751): remove and replace with effective data
   console.log("Sns metadata", summary);

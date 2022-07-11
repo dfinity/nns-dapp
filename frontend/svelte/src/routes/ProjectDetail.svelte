@@ -13,6 +13,7 @@
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsFullProject,
+    loadSnsSwapStateStore,
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
@@ -62,6 +63,9 @@
   layoutBackStore.set(goBack);
 
   $: layoutTitleStore.set(fullProject?.summary.name ?? "");
+  // TODO: do we want such subscribe in the component?
+  $: $snsFullProjectStore,
+    (() => loadSnsSwapStateStore(rootCanisterIdString))();
 </script>
 
 {#if fullProject === undefined}
