@@ -5,7 +5,6 @@ import { IICaptchaPage } from "../components/ii-captcha-page";
 import { IICongratulationsPage } from "../components/ii-congratulations-page";
 import { IIRecoveryMechanismPage } from "../components/ii-recovery-mechanism";
 import { IIRecoveryMissingWarningPage } from "../components/ii-recovery-warning";
-import { IIConfirmRedirectPage } from "../components/ii-confirm-redirect";
 import { IIAddDevicePage } from "../components/ii-add-device-page";
 import { MyNavigator } from "./navigator";
 import { Header } from "../components/header";
