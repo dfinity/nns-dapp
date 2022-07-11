@@ -93,7 +93,7 @@ describe("ProposalCard", () => {
       ProposalStatus.PROPOSAL_STATUS_EXECUTED,
     ]);
 
-    const { container } = render(ProposalCard, {
+    const { queryByTestId } = render(ProposalCard, {
       props: {
         proposalInfo: {
           ...mockProposals[1],
@@ -102,7 +102,9 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(container.querySelector("div.success")).not.toBeNull();
+    const tag = queryByTestId("tag");
+    expect(tag).not.toBeNull();
+    expect(tag?.classList.contains("success")).toBe(true);
 
     proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
   });

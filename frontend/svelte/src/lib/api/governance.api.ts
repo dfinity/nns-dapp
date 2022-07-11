@@ -82,6 +82,20 @@ export const joinCommunityFund = async ({
   logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
+export const leaveCommunityFund = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) call...`);
+  await governanceCanister({ identity });
+
+  // TODO: Implement leaveCommunityFund https://dfinity.atlassian.net/browse/L2-819
+  logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
+};
+
 export const disburse = async ({
   neuronId,
   toAccountId,

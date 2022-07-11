@@ -1,3 +1,4 @@
+import { ICP } from "@dfinity/nns";
 import { derived, writable } from "svelte/store";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 
@@ -37,4 +38,9 @@ export const transactionsFeesStore = initTransactionFeesStore();
 export const mainTransactionFeeStore = derived(
   transactionsFeesStore,
   ($store) => Number($store.main)
+);
+
+export const mainTransactionFeeStoreAsIcp = derived(
+  transactionsFeesStore,
+  ($store) => ICP.fromE8s($store.main)
 );

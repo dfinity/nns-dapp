@@ -38,6 +38,17 @@ describe("Checkbox", () => {
 
     expect(input?.getAttribute("type")).toEqual("checkbox");
     expect(input?.getAttribute("id")).toEqual(props.inputId);
+    expect(input?.hasAttribute("disabled")).toBeFalsy();
+  });
+
+  it("should render a disabled input", () => {
+    const { container } = render(Checkbox, {
+      props: { ...props, disabled: true },
+    });
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+
+    expect(input?.hasAttribute("disabled")).toBeTruthy();
   });
 
   it("should react to checked", () => {

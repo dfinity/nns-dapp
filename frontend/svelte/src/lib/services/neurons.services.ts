@@ -8,7 +8,8 @@ import {
   claimOrRefreshNeuron,
   disburse as disburseApi,
   increaseDissolveDelay,
-  joinCommunityFund as joinCommunityFundApi,
+  joinCommunityFund,
+  leaveCommunityFund,
   mergeMaturity as mergeMaturityApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
@@ -47,6 +48,7 @@ import { convertNumberToICP } from "../utils/icp.utils";
 import {
   canBeMerged,
   followeesByTopic,
+  hasJoinedCommunityFund,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
@@ -219,10 +221,8 @@ export const stakeNeuron = async ({
 
     return newNeuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: "error.stake_neuron",
-      err,
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    return;
   }
 };
 
@@ -308,19 +308,26 @@ export const updateDelay = async ({
   }
 };
 
-export const joinCommunityFund = async (
-  neuronId: NeuronId
+export const toggleCommunityFund = async (
+  neuron: NeuronInfo
 ): Promise<NeuronId | undefined> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
+      neuron.neuronId
     );
 
-    await joinCommunityFundApi({ neuronId, identity });
+    if (hasJoinedCommunityFund(neuron)) {
+      await leaveCommunityFund({
+        neuronId: neuron.neuronId,
+        identity,
+      });
+    } else {
+      await joinCommunityFund({ neuronId: neuron.neuronId, identity });
+    }
 
-    await getAndLoadNeuron(neuronId);
+    await getAndLoadNeuron(neuron.neuronId);
 
-    return neuronId;
+    return neuron.neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
