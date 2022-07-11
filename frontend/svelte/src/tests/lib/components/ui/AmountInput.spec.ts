@@ -18,11 +18,11 @@ describe("AmountInput", () => {
   });
 
   it("should render a max button", () => {
-    const { container } = render(AmountInput, { props });
+    const { container, getByText } = render(AmountInput, { props });
 
     const button: HTMLButtonElement | null = container.querySelector("button");
     expect(button).not.toBeNull();
-    expect(button?.innerHTML).toEqual(en.core.max);
+    expect(getByText(en.core.max)).toBeInTheDocument();
   });
 
   it("should trigger max value", (done) => {

@@ -9,6 +9,7 @@
   import type { Account } from "../../types/account";
   import { maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
+  import MaxButton from "../common/MaxButton.svelte";
   import IcpComponent from "../ic/ICP.svelte";
   import Input from "../ui/Input.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -60,12 +61,7 @@
       bind:value={amount}
     >
       <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
-      <button
-        on:click|preventDefault={addMax}
-        slot="additional"
-        class="ghost"
-        type="button">{$i18n.core.max}</button
-      >
+      <MaxButton on:click={addMax} slot="additional" />
     </Input>
     <KeyValuePair>
       <span slot="key">Min <IcpComponent singleLine icp={minAmount} /></span>
