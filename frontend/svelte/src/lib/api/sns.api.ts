@@ -14,7 +14,7 @@ import { createAgent } from "../utils/agent.utils";
 type RootCanisterId = Principal;
 let snsWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 
-// TODO: to be delete
+// TODO(L2-829): to be deleted
 export const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
   new Promise((resolve) =>
     setTimeout(
@@ -41,7 +41,7 @@ const listSnses = async ({
     };
   } = await import("@dfinity/nns/dist/esm/sns_wasm");
 
-  // TODO: extract property for wasm canister id
+  // TODO(L2-828): extract property for wasm canister id
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText("nsrxe-iiaaa-aaaaa-aacaa-cai"),
@@ -58,30 +58,6 @@ const listSnses = async ({
     []
   );
 };
-
-/**
- * Current deployed canisters:
- * {
- *   "__Candid_UI": {
- *     "testnet": "nvqrq-fqaaa-aaaaa-aacaq-cai"
- *   },
- *   "sns_governance": {
- *     "testnet": "md3j3-qaaaa-aaaaa-aacfq-cai"
- *   },
- *   "sns_ledger": {
- *     "testnet": "mw4yw-riaaa-aaaaa-aacga-cai"
- *   },
- *   "sns_root": {
- *     "testnet": "me2pp-5yaaa-aaaaa-aacfa-cai"
- *   },
- *   "sns_swap": {
- *     "testnet": "mr56c-4qaaa-aaaaa-aacgq-cai"
- *   },
- *   "wasm_canister": {
- *     "testnet": "nsrxe-iiaaa-aaaaa-aacaa-cai"
- *   }
- * }
- */
 
 const initSns = async ({
   agent,
@@ -176,17 +152,16 @@ export const listSnsSummaries = async ({
     ).values(),
   ];
 
-  // TODO: replace with effective implementation and types to get the metadata / summary
-  // TODO: do we want to have a status within each summary to display the information progressively?
+  // TODO(L2-751): replace with effective implementation and types to get the metadata / summary
+  // TODO(L2-830): we also want to have a status within each summary to display the information progressively
   const result = await Promise.all(
     snsWrappers.map(({ metadata }: SnsWrapper) =>
       metadata({ certified: false })
     )
   );
 
+  // TODO(L2-829): mock data to be removed and replaced
   console.log("Sns metadatas", result);
-
-  // TODO: mock data to be removed and replaced
   return mockSnsSummaryList;
 };
 
@@ -206,33 +181,12 @@ export const listSnsSummary = async ({
 
   const summary = await metadata({ certified: false });
 
+  // TODO(L2-829, L2-751): remove and replace with effective data
   console.log("Sns metadata", summary);
-
-  // TODO: remove and replace with effective data
   return mockAbout5SecondsWaiting(() =>
     mockSnsSummaryList.find(
       ({ rootCanisterId: canisterId }: SnsSummary) =>
         canisterId.toText() === rootCanisterId.toText()
     )
   );
-};
-
-export const listNeurons = async ({
-  rootCanisterId,
-  identity,
-}: {
-  rootCanisterId: Principal;
-  identity: Identity;
-}) => {
-  // TODO: query and update calls
-
-  const { listNeurons }: SnsWrapper = await wrapper({
-    rootCanisterId,
-    identity,
-  });
-
-  // TODO: remove, test, list neurons of each Sns
-  const result = await listNeurons({ certified: false });
-
-  console.log("Sns neurons", result);
 };
