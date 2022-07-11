@@ -203,12 +203,15 @@ install_sns_darwin() {
 
 install_idl2json() {
   (
+    set -euo pipefail # These are not inherited in a subsell.
     build_dir="$(mktemp -d)"
     cd "$build_dir"
     git clone https://github.com/dfinity/idl2json.git
     cd idl2json
     cargo build --release
     mv target/release/idl2json "$USER_BIN"
+    cd /tmp
+    rm -fr "${build_dir:-this-is-not-the-dir-you-are-looking-for}" # This is defensive code; build_dir SHOULD be defined.
   )
 }
 
