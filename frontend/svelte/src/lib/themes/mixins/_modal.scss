@@ -12,6 +12,10 @@
   min-height: 182px;
   max-height: 182px;
   padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-2x);
 }
 
 @mixin wizard-single-input-form {
@@ -32,8 +36,6 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--padding-2x);
-
-  padding-top: var(--padding-4x);
 
   & > button {
     flex: 1;

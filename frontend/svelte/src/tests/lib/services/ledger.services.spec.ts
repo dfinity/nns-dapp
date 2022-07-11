@@ -94,7 +94,7 @@ describe("ledger-services", () => {
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.user_cancel",
+          labelKey: "error__ledger.access_denied",
         });
 
         spyToastError.mockRestore();

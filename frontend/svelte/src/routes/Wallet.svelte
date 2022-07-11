@@ -138,7 +138,7 @@
         class="primary"
         on:click={() => (showNewTransactionModal = true)}
         disabled={$selectedAccountStore.account === undefined || $busy}
-        >{$i18n.accounts.new_transaction}</button
+        data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
       >
     </Toolbar>
   </Footer>

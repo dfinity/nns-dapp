@@ -124,10 +124,6 @@
     }
   }
 
-  .how-much {
-    margin-bottom: var(--padding-0_5x);
-  }
-
   @include media.light-theme() {
     .how-much {
       color: var(--background-contrast);
@@ -137,6 +133,7 @@
   form {
     display: flex;
     flex-direction: column;
+    gap: var(--padding-2x);
 
     padding: var(--padding-2x);
 
