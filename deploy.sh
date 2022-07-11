@@ -261,7 +261,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
-  dfx deploy --network "$DFX_NETWORK" nns-dapp
+  dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
   OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi

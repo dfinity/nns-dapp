@@ -25,7 +25,7 @@ print_help() {
 }
 
 DFX_NETWORK=""
-RATE=10000
+RATE=775783
 while (($# > 0)); do
   env="$1"
   shift 1

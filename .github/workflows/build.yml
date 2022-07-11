@@ -14,7 +14,7 @@ on:
 
 
 env:
-      DFX_VERSION: 0.9.2
+      DFX_VERSION: 0.10.1
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
