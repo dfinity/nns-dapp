@@ -1,5 +1,8 @@
 <script lang="ts">
-  import {loadSnsFullProjects, loadSnsSwapStates} from "../../services/sns.services";
+  import {
+    loadSnsFullProjects,
+    loadSnsSwapStates,
+  } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,
@@ -27,7 +30,7 @@
   onMount(load);
 
   // TODO: do we want such subscribe in the component?
-  $: loadSnsSwapStates($snsFullProjectStore)
+  $: loadSnsSwapStates($snsFullProjectStore);
 </script>
 
 {#if loading}
