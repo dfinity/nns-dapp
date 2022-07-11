@@ -204,8 +204,7 @@ if [[ "$START_DFX" == "true" ]]; then
 fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
-  if [[ "$CTL_NOBUILD_NNS" == "true" ]]
-  then
+  if [[ "$CTL_NOBUILD_NNS" == "true" ]]; then
     echo "Using exising NNS and SNS canisters"
   else
     ./e2e-tests/scripts/nns-canister-download
@@ -233,8 +232,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   # TODO: Maybe put this behind a flag?
   echo Checking whether sns wasm is installed
   SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
-  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]
-  then
+  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]; then
     echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
   else
     echo "Creating SNS wasm canister..."
