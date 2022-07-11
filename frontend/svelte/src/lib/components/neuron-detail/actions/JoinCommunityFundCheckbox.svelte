@@ -20,12 +20,13 @@
 
   const joinFund = async () => {
     startBusy({ initiator: "toggle-community-fund" });
+    const successMessageKey = isCommunityFund
+      ? "neuron_detail.leave_community_fund_success"
+      : "neuron_detail.join_community_fund_success";
     const id = await toggleCommunityFund(neuron);
     if (id !== undefined) {
       toastsStore.success({
-        labelKey: isCommunityFund
-          ? "neuron_detail.leave_community_fund_success"
-          : "neuron_detail.join_community_fund_success",
+        labelKey: successMessageKey,
       });
     }
     closeModal();
