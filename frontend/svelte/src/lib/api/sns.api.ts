@@ -41,6 +41,8 @@ const listSnses = async ({
     };
   } = await import("@dfinity/nns/dist/esm/sns_wasm");
 
+  // TODO: extract property for wasm canister id
+
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText("nsrxe-iiaaa-aaaaa-aacaa-cai"),
     agent,
