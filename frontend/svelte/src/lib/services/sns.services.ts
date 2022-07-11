@@ -1,21 +1,21 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
+import { mockSnsSwapState } from "../../tests/mocks/sns-projects.mock";
 import {
-  mockSnsSummaryList,
-  mockSnsSwapState,
-} from "../../tests/mocks/sns-projects.mock";
-import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
-import { loadSnses } from "../api/sns.api";
+  listSnsSummaries,
+  listSnsSummary,
+  mockAbout5SecondsWaiting,
+} from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/projects.store";
+import type { SnsSwapState } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { getIdentity } from "./auth.services";
 import { loadSnsProposals } from "./proposals.services";
-import type { SnsSummary, SnsSwapState } from "./sns.mock";
 
 /**
  * Loads summaries with swapStates
@@ -23,20 +23,14 @@ import type { SnsSummary, SnsSwapState } from "./sns.mock";
 export const loadSnsFullProjects = async () => {
   const identity = await getIdentity();
 
-  // TODO:
-  // - load snses with nns-js
-  // - init Sns - i.e all actors - with sns-js
-  // - load summary and swap data
-  await loadSnses({ identity });
-
-  // TODO: mock data to be removed and replaced
-  const summaries = await listSnsSummary();
+  const summaries = await listSnsSummaries({ identity });
 
   snsSummariesStore.setSummaries({
     summaries,
     certified: true,
   });
 
+  // TODO: remove and replace with effective data
   for (const { rootCanisterId } of summaries) {
     loadSnsSwapState(rootCanisterId).then((swapState) =>
       snsSwapStatesStore.setSwapState({
@@ -51,12 +45,21 @@ export const loadSnsFullProjects = async () => {
  * Loads summaries with swapStates
  */
 export const loadSnsFullProject = async (canisterId: string) => {
-  const [summaries, swapState] = await Promise.all([
-    listSnsSummary(),
+  const identity = await getIdentity();
+
+  // TODO: load only if not yet in store
+
+  const [summary, swapState] = await Promise.all([
+    listSnsSummary({
+      rootCanisterId: Principal.fromText(canisterId),
+      identity,
+    }),
     loadSnsSwapState(Principal.fromText(canisterId)),
   ]);
+
+  // TODO: detail page should not use these store
   snsSummariesStore.setSummaries({
-    summaries,
+    summaries: [...(summary ? [summary] : [])],
     certified: true,
   });
   snsSwapStatesStore.setSwapState({
@@ -69,9 +72,6 @@ export const loadSnsSwapState = async (
   rootCanisterId: Principal
 ): Promise<SnsSwapState> =>
   mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
-
-export const listSnsSummary = async (): Promise<SnsSummary[]> =>
-  mockAbout5SecondsWaiting(() => mockSnsSummaryList);
 
 export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   mockAbout5SecondsWaiting(async () => {

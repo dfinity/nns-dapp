@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
-import type { SnsSummary, SnsSwapState } from "../services/sns.mock";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 
 export interface SnsSummariesStore {
   summaries: SnsSummary[] | undefined;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSwapState } from "../../services/sns.mock";
+  import type { SnsSwapState } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";

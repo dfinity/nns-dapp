@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import type { SnsSwapState } from "../../../lib/services/sns.mock";
+import type { SnsSwapState } from "../../../lib/types/sns";
 import {
   snsFullProjectStore,
   snsSummariesStore,

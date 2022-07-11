@@ -3,7 +3,7 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import type { SnsSwapState } from "../../lib/services/sns.mock";
+import type { SnsSwapState } from "../../lib/types/sns";
 import { loadSnsFullProject } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,

@@ -18,7 +18,9 @@
     // show loading state only when store is empty
     loading = $snsFullProjectStore === undefined;
 
+    // TODO: reload store only if needed
     await loadSnsFullProjects();
+
     loading = false;
   };
 
