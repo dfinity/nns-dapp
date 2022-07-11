@@ -1,4 +1,6 @@
-# 100_000_000 e8s = 1 token.#
+---
+# 100000000 e8s = 1 token.
+#
 # Fee of a transaction.
 # Default value = 10000
 #
@@ -8,21 +10,20 @@ transaction_fee_e8s: 10000
 # This field has no default, a value must be provided by the user.
 # Must be a string length between 4 and 255 characters
 #
-# Example: Bitcoin
-
+# Example: InternetComputerProtocol
 #
-token_name: Bitcoin
+token_name: "ServiceNervousSystem-Testnet"
 #
 # The symbol of the token issued by an SNS Ledger.
 # This field has no default, a value must be provided by the user.
 # Must be a string length between 3 and 10 characters
 #
-# Example: BTC
-
+# Example: ICP
 #
-token_symbol: BTC
 #
-# Cost of making a proposal that doesnt pass.
+token_symbol: "SNST"
+#
+# Cost of making a proposal that is not adopted.
 # Default value = 100000000
 #
 proposal_reject_cost_e8s: 100000000
@@ -33,35 +34,68 @@ proposal_reject_cost_e8s: 100000000
 neuron_minimum_stake_e8s: 100000000
 #
 # This field has no default, a value must be provided by the user.
-# Amount targeted by the sale, if the amount is reached the sale is triggered.
+# Amount targeted by the swap, if the amount is reached the swap is triggered.
 # Must be at least min_participants * min_participant_icp_e8.
 #
-max_icp_e8s: 100000000
+max_icp_e8s: 500000000
 #
 # This field has no default, a value must be provided by the user.
-# Minimum number of participants for the sale to take place. Must be greater than zero.
+# The minimum number of participants for the swap to take place. Must be greater than zero.
 #
-min_participants: 10
+min_participants: 1
+#
+# The minimum amount of ICP that each buyer must contribute to participate in the swap.
+# Default value = 1
+#
+min_participant_icp_e8s: 100000000
 #
 # This field has no default, a value must be provided by the user.
-# Minimum number of participants for the sale to take place. Must be greater than zero.
+# The maximum amount of ICP that each buyer can contribute. Must be greater than
+# or equal to `min_participant_icp_e8s` and less than or equal to
+# `max_icp_e8s`. Can effectively be disabled by setting it to `max_icp_e8s`.
 #
-min_participant_icp_e8s: 1
-max_participant_icp_e8s: 1000
-min_icp_e8s: 100
+max_participant_icp_e8s: 100000000
+#
+# This field has no default, a value must be provided by the user.
+# The minimum amount of ICP that is required for this token swap to take
+# place. This amount divided by the amount of SNS tokens for swap gives the
+# seller's reserve price for the swap, i.e., the minimum number of ICP per SNS
+# tokens that the seller of SNS tokens is willing to accept. If this amount is
+# not achieved, the swap will be aborted (instead of committed) when the due
+# date/time occurs. Must be smaller than or equal to `max_icp_e8s`.
+#
+min_icp_e8s: 100000000
+#
+# If the swap fails, control of the dapp canister(s) will be set to these
+# principal IDs. In most use-cases, this would be the same as the original set
+# of controller(s). Must not be empty.
+#
+fallback_controller_principal_ids: [hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe]
 #
 # This field sets the initial token distribution. Initially, there is only support for
-# the FractionalDeveloperVotingPower strategy.
+# the FractionalDeveloperVotingPower strategy. The FractionalDeveloperVotingPower token
+# distribution strategy configures how tokens and neurons are distributed via four
+# "buckets": developers, treasury, swap, and airdrops. This strategy will distribute
+# all developer tokens at genesis in restricted neurons with an additional voting power
+# multiplier applied. This voting power multiplier is calculated as
+# `swap_distribution.initial_swap_amount_e8s / swap_distribution.total_e8s`.
+# As more of the swap funds are swapped in future rounds, the voting power
+# multiplier will approach 1.0. The following preconditions must be met for
+# it to be a valid distribution:
+#    - developer_distribution.developer_neurons.stake_e8s.sum <= u64:MAX
+#    - developer_neurons.developer_neurons.stake_e8s.sum <= swap_distribution.total_e8s
+#    - airdrop_distribution.airdrop_neurons.stake_e8s.sum <= u64:MAX
+#    - swap_distribution.initial_swap_amount_e8s > 0
+#    - swap_distribution.initial_swap_amount_e8s <= swap_distribution.total_e8s
+#    - swap_distribution.total_e8s >= developer_distribution.developer_neurons.stake_e8s.sum
 #
 # - developer_distribution has one field:
-#    - developer_neurons: A map between PrincipalId and u64, it specifies the neuron stake and
-#      controlling principal of developer neurons available at genesis.
+#    - developer_neurons: A list of NeuronDistributions that specifiy the neuron's stake and
+#      controlling principal. These neurons will be available at genesis in PreInitializationSwap
+#      mode. The voting power mutlipler will be applied to these neurons.
 #
-# - treasury_distribution has two fields:
-#    - total_e8s: The total amount of tokens in the treasury bucket. Airdrops will be deducted from
-#      this total.
-#    - airdrop_neurons: A map between PrincipalId and u64, it specifies the neuron stake and
-#      controlling principal of airdropped neurons available at genesis.
+# - treasury_distribution has one field:
+#    - total_e8s: The total amount of tokens in the treasury bucket.
 #
 # - swap_distribution has two fields:
 #    - total_e8s: The total amount of tokens in the swap bucket. initial_swap_amount_e8s will be
@@ -69,31 +103,42 @@ min_icp_e8s: 100
 #    - initial_swap_amount_e8s: The initial amount of tokens deposited in the swap canister for
 #      the initial token swap.
 #
+# - aidrop_distribution has one field:
+#    - airdrop_neurons: A list of NeuronDistributions that specifiy the neuron's stake and
+#      controlling principal. These neurons will be available at genesis in PreInitializationSwap
+#      mode. No voting power mutlipler will be applied to these neurons.
+#
 # Example:
 # initial_token_distribution:
 #   FractionalDeveloperVotingPower:
 #     developer_distribution:
 #       developer_neurons:
-#         x4vjn-rrapj-c2kqe-a6m2b-7pzdl-ntmc4-riutz-5bylw-2q2bh-ds5h2-lae: 1500000000
-#         fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1500000000
+#         - controller: x4vjn-rrapj-c2kqe-a6m2b-7pzdl-ntmc4-riutz-5bylw-2q2bh-ds5h2-lae
+#           stake_e8s: 1500000000
+#         - controller: fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe
+#           stake_e8s: 1500000000
 #     treasury_distribution:
 #       total_e8s: 5000000000
-#       airdrop_neurons:
-#         fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 500000000
 #     swap_distribution:
 #       total_e8s: 6000000000
 #       initial_swap_amount_e8s: 3000000000
-
+#     airdrop_distribution:
+#       airdrop_neurons:
+#         - controller: fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe
+#           stake_e8s: 500000000
 #
-fallback_controller_principal_ids: [fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe]
 initial_token_distribution:
-   developers:
-     total_e8s: 3000000000
-     distributions:
-       fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 1000000000
-       x4vjn-rrapj-c2kqe-a6m2b-7pzdl-ntmc4-riutz-5bylw-2q2bh-ds5h2-lae: 1500000000
-   treasury:
-     total_e8s: 5000000000
-     distributions:
-       fod6j-klqsi-ljm4t-7v54x-2wd6s-6yduy-spdkk-d2vd4-iet7k-nakfi-qqe: 500000000
-   swap: 6000000000
+  FractionalDeveloperVotingPower:
+    developer_distribution:
+      developer_neurons:
+        - controller: dktcs-d43lz-rosn2-wnwsj-kef34-6kl3i-ux7qb-ka6xr-biref-ykeaj-sqe
+          stake_e8s: 100000000
+    treasury_distribution:
+      total_e8s: 1000000000
+    swap_distribution:
+      total_e8s: 1000000000
+      initial_swap_amount_e8s: 200000000
+    airdrop_distribution:
+      airdrop_neurons:
+        - controller: w3i5o-5ylvd-cmm42-pw66i-n6qcw-fw3q7-kk5la-4edui-ozozq-5qq3j-dae
+          stake_e8s: 100000000

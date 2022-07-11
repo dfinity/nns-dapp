@@ -252,7 +252,9 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   echo "Populate canister_ids.json"
   EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
   cp canister_ids.json "$EXISTING_CANISTER_IDS"
-  <sns_creation.idl idl2json  | DFX_NETWORK=testnet jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value)} }) | add'
+  <sns_creation.idl idl2json  |\
+   jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |\
+   jq -s '.[0] * .[1]' - "$EXISTING_CANISTER_IDS" > canister_ids.json
 
 fi
 
