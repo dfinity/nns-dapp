@@ -112,7 +112,7 @@ const loadSnsWrappers = async ({
 
   const rootCanisterIds: Principal[] = await listSnses({ agent });
 
-  const sns: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
+  const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
     rootCanisterIds.map((rootCanisterId: Principal) =>
       initSns({ agent, rootCanisterId })
     )
@@ -120,7 +120,7 @@ const loadSnsWrappers = async ({
 
   // TODO: filter errors
 
-  return sns
+  return results
     .filter(({ status }) => status === "fulfilled")
     .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
 };
@@ -175,6 +175,7 @@ export const listSnsSummaries = async ({
   ];
 
   // TODO: replace with effective implementation and types to get the metadata / summary
+  // TODO: do we want to have a status within each summary to display the information progressively?
   const result = await Promise.all(
     snsWrappers.map(({ metadata }: SnsWrapper) =>
       metadata({ certified: false })
@@ -184,7 +185,7 @@ export const listSnsSummaries = async ({
   console.log("Sns metadatas", result);
 
   // TODO: mock data to be removed and replaced
-  return mockAbout5SecondsWaiting(() => mockSnsSummaryList);
+  return mockSnsSummaryList;
 };
 
 export const listSnsSummary = async ({
