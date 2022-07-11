@@ -114,12 +114,6 @@ export const register = async (
     "registration-ii-recovery-warning"
   );
 
-  // Confirm Redirect Page
-  await navigator.click(
-    IIConfirmRedirectPage.CONFIRM_REDIRECT_BUTTON_SELECTOR,
-    "registration-ii-confirm-redirect"
-  );
-
   // Switch back to original window
   await browser.switchToWindow(originalTabId);
   await navigator.getElement(
