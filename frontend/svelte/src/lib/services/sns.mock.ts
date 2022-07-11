@@ -15,6 +15,9 @@ export interface SnsSummary {
   swapStart: bigint; // seconds
   minCommitment: bigint; // e8s
   maxCommitment: bigint; // e8s
+
+  minParticipationCommitment: bigint; // e8s
+  maxParticipationCommitment: bigint; // e8s
 }
 
 export interface SnsSwapState {

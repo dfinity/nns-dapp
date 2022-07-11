@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Update dfx to version 10.1
+
 ## Proposal 67969
 * Polyfill CSS to support older browsers
 * Buttons realignment in Neuron Detail Page

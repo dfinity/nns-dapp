@@ -3,6 +3,8 @@
 
   export let inputId: string;
   export let checked: boolean;
+  export let preventDefault: boolean = false;
+  export let disabled: boolean = false;
 
   export let text: "block" | "inline" = "inline";
 
@@ -13,14 +15,26 @@
   /**
    * Emit an event when the checkbox or container is clicked. The state should be updated by consumer.
    */
-  const onClick = () => dispatch("nnsChange");
+  const onClick = (event) => {
+    if (preventDefault) {
+      event.preventDefault();
+    }
+    dispatch("nnsChange");
+  };
 </script>
 
-<div on:click|preventDefault={onClick} class={`checkbox ${selector ?? ""}`}>
+<div
+  on:click|preventDefault={onClick}
+  class={`checkbox ${selector ?? ""}`}
+  class:disabled
+  role="button"
+>
   <label for={inputId} class={text}><slot /></label>
   <input
+    data-tid="checkbox"
     type="checkbox"
     id={inputId}
+    {disabled}
     {checked}
     on:click|stopPropagation={onClick}
   />
@@ -34,6 +48,10 @@
     @include select.group;
 
     --select-background-hover: var(--background-shade);
+
+    &.disabled {
+      pointer-events: none;
+    }
   }
 
   label {

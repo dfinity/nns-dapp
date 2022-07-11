@@ -75,7 +75,12 @@
 
   <NewTransactionInfo feeOnly={true} />
 
-  <button class="primary full-width" type="submit" disabled={!validForm}>
+  <button
+    class="primary full-width"
+    type="submit"
+    disabled={!validForm}
+    data-tid="review-transaction"
+  >
     {$i18n.accounts.review_transaction}
   </button>
 </form>

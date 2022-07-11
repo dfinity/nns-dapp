@@ -216,7 +216,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
   dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
   dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
-  sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
@@ -224,7 +224,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
-  dfx deploy --network "$DFX_NETWORK" nns-dapp
+  dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
   OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi

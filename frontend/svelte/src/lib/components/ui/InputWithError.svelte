@@ -36,7 +36,7 @@
     on:blur
     on:input
   >
-    <slot name="button" slot="button" />
+    <slot name="additional" slot="additional" />
   </Input>
 
   {#if error}
