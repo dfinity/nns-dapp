@@ -249,7 +249,13 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/ledger-canister_notify-method.wasm ledger
   fi
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml > sns_creation.idl
+
+  echo "Populate canister_ids.json"
+  EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
+  cp canister_ids.json "$EXISTING_CANISTER_IDS"
+  <sns_creation.idl idl2json  | DFX_NETWORK=testnet jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value)} }) | add'
+
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
