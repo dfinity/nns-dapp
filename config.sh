@@ -16,18 +16,14 @@ set -euo pipefail
 # - Verify that the constant appears in config.json if you run this script.
 # - Add an export clause to the bottom of this file, if you will need the constant in bash.
 #
-# Note: After flutter has been removed, move JSON_CONFIG_FILE to the root of the repo.
-JSON_CONFIG_FILE="frontend/ts/src/config.json"
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
+JSON_CONFIG_FILE="$PWD/deployment-config.json"
 
 : "Scan environment:"
-DFX_NETWORK="${DFX_NETWORK:-$DEPLOY_ENV}"
-DEPLOY_ENV="${DFX_NETWORK}"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
-export DEPLOY_ENV
 
 local_deployment_data="$(
   set -euo pipefail
@@ -65,7 +61,6 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 jq -s '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
-  .DEPLOY_ENV = env.DEPLOY_ENV |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
@@ -73,7 +68,7 @@ jq -s '
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
-echo "Config has been defined.  Let it never be changed." >&2
+echo "Config has been defined in '${JSON_CONFIG_FILE}'" >&2
 
 : "Export values used by bash:"
 get_var() {

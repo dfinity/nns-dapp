@@ -1,12 +1,15 @@
 <script lang="ts">
-  import type { Proposal } from "@dfinity/nns";
+  import type { Proposal, ProposalId } from "@dfinity/nns";
   import CardBlock from "../../ui/CardBlock.svelte";
   import {
     proposalFirstActionKey,
     proposalActionFields,
+    getNnsFunctionIndex,
   } from "../../../../lib/utils/proposals.utils";
   import Json from "../../common/Json.svelte";
+  import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
 
+  export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
@@ -15,6 +18,9 @@
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
   $: actionFields =
     (proposal !== undefined && proposalActionFields(proposal)) || [];
+
+  let nnsFunctionId: number | undefined;
+  $: nnsFunctionId = proposal && getNnsFunctionIndex(proposal);
 </script>
 
 <CardBlock limitHeight={false}>
@@ -28,6 +34,10 @@
         <dd>{value}</dd>
       {/if}
     {/each}
+
+    {#if nnsFunctionId !== undefined && proposalId !== undefined}
+      <NnsFunctionDetails {proposalId} {nnsFunctionId} />
+    {/if}
   </dl>
 </CardBlock>
 
@@ -37,7 +47,7 @@
   dl {
     margin: 0;
 
-    dt {
+    :global(dt) {
       font-size: var(--font-size-ultra-small);
       color: var(--background-contrast);
       line-height: 1;
@@ -47,14 +57,13 @@
         font-size: var(--font-size-small);
       }
     }
-    dd {
+    :global(dd) {
       margin: 0 0 var(--padding);
       &:last-child {
         margin: 0;
       }
 
       font-size: var(--font-size-ultra-small);
-      color: var(--gray-200);
       overflow-wrap: break-word;
       white-space: pre-wrap;
 

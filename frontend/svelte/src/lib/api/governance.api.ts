@@ -6,19 +6,16 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister, ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import {
-  GOVERNANCE_CANISTER_ID,
-  LEDGER_CANISTER_ID,
-} from "../constants/canister-ids.constants";
+import { GOVERNANCE_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { dfinityNeuron, icNeuron } from "./constants.api";
-import { toSubAccountId } from "./utils.api";
+import { ledgerCanister as getLedgerCanister } from "./ledger.api";
 
 export const queryNeuron = async ({
   neuronId,
@@ -83,6 +80,20 @@ export const joinCommunityFund = async ({
 
   await canister.joinCommunityFund(neuronId);
   logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) complete.`);
+};
+
+export const leaveCommunityFund = async ({
+  neuronId,
+  identity,
+}: {
+  neuronId: NeuronId;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) call...`);
+  await governanceCanister({ identity });
+
+  // TODO: Implement leaveCommunityFund https://dfinity.atlassian.net/browse/L2-819
+  logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
 export const disburse = async ({
@@ -304,18 +315,14 @@ export const stakeNeuron = async ({
   const { canister } = await governanceCanister({ identity });
 
   // The use case of staking from Hardware wallet uses a different agent for governance and ledger canister.
-  const ledgerCanister: LedgerCanister = LedgerCanister.create({
-    agent: await createAgent({ identity: ledgerCanisterIdentity, host: HOST }),
-    canisterId: LEDGER_CANISTER_ID,
+  const { canister: ledgerCanister } = await getLedgerCanister({
+    identity: ledgerCanisterIdentity,
   });
-
-  const fromSubAccountId =
-    fromSubAccount !== undefined ? toSubAccountId(fromSubAccount) : undefined;
 
   const response = await canister.stakeNeuron({
     stake,
     principal: controller,
-    fromSubAccountId,
+    fromSubAccount,
     ledgerCanister,
   });
   logWithTimestamp(`Staking Neuron complete.`);

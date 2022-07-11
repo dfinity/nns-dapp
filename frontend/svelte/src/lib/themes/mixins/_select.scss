@@ -5,8 +5,9 @@
   justify-content: space-between;
   align-items: center;
   flex-direction: var(--select-flex-direction);
+  gap: var(--padding-2x);
 
-  padding: var(--padding-2x);
+  padding: var(--select-padding, var(--padding-2x));
 
   color: var(--select-color);
 
@@ -18,21 +19,17 @@
     background: var(--select-background-hover);
   }
 
-  border-radius: var(--select-border-radius);
+  border-radius: var(--select-border-radius, var(--border-radius));
 
   --select-input-size: 20px;
-  --select-input-border: 2px;
-  --select-input-margin: var(--padding-0_5x);
+  --select-input-border: 0;
 }
 
 @mixin label {
   user-select: none;
   cursor: pointer;
 
-  width: calc(
-    100% - var(--select-input-size) - (2 * var(--select-input-border)) -
-      (2 * var(--select-input-margin))
-  );
+  flex: 1;
 }
 
 /** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/
@@ -40,15 +37,15 @@
 
 @mixin input {
   appearance: none;
-  background: transparent;
-  margin: 0 var(--select-input-margin);
+  background: white;
+  margin: 0;
 
   width: var(--select-input-size);
   height: var(--select-input-size);
 
   border: var(--select-input-border) solid currentColor;
-
-  border-radius: 2px;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-0_5x);
 
   transition: background var(--animation-time-normal),
     border var(--animation-time-normal);
@@ -58,18 +55,27 @@
   position: relative;
 
   &:checked {
-    background: var(--blue-500);
-    border: 2px solid var(--blue-500);
+    background: var(--primary);
+  }
+
+  &[disabled],
+  &[disabled]:hover {
+    background: var(--disable);
+    cursor: default;
+
+    &:checked:after {
+      border-color: var(--disable-contrast);
+    }
   }
 
   &:focus {
-    outline: 2px solid var(--blue-500);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 
   &:checked:after {
-    left: 4px;
-    top: 0;
+    left: 6px;
+    top: 2px;
     width: 6px;
     height: 10px;
     border: solid white;

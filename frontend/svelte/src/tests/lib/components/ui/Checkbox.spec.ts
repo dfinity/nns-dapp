@@ -38,6 +38,17 @@ describe("Checkbox", () => {
 
     expect(input?.getAttribute("type")).toEqual("checkbox");
     expect(input?.getAttribute("id")).toEqual(props.inputId);
+    expect(input?.hasAttribute("disabled")).toBeFalsy();
+  });
+
+  it("should render a disabled input", () => {
+    const { container } = render(Checkbox, {
+      props: { ...props, disabled: true },
+    });
+
+    const input: HTMLInputElement | null = container.querySelector("input");
+
+    expect(input?.hasAttribute("disabled")).toBeTruthy();
   });
 
   it("should react to checked", () => {
@@ -89,23 +100,9 @@ describe("Checkbox", () => {
       props,
     });
 
-    const div: HTMLDivElement | null = container.querySelector("div.checkbox");
-
-    expect(div?.classList.contains("light")).toBeTruthy();
-
     const label: HTMLLabelElement | null = container.querySelector("label");
 
     expect(label?.classList.contains("inline")).toBeTruthy();
-  });
-
-  it("should render a dark container", () => {
-    const { container } = render(Checkbox, {
-      props: { ...props, theme: "dark" },
-    });
-
-    const div: HTMLDivElement | null = container.querySelector("div.checkbox");
-
-    expect(div?.classList.contains("dark")).toBeTruthy();
   });
 
   it("should render block label", () => {

@@ -15,13 +15,13 @@
   name="amount"
   bind:value={amount}
   {max}
-  theme="dark"
   inputType="icp"
 >
+  <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
   <button
     type="button"
     on:click|preventDefault={setMax}
-    class="secondary small"
-    slot="button">{$i18n.core.max}</button
+    class="ghost"
+    slot="additional">{$i18n.core.max}</button
   >
 </Input>

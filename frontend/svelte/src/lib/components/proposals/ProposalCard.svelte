@@ -2,16 +2,16 @@
   import Card from "../ui/Card.svelte";
   import type { ProposalInfo } from "@dfinity/nns";
   import { ProposalStatus } from "@dfinity/nns";
-  import Badge from "../ui/Badge.svelte";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import type { ProposalColor } from "../../constants/proposals.constants";
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
   import { definedNeuronsStore } from "../../stores/neurons.store";
+  import type { Color } from "../../types/theme";
+  import Tag from "../ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -19,7 +19,7 @@
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let id: ProposalId | undefined;
   let title: string | undefined;
-  let color: ProposalColor | undefined;
+  let color: Color | undefined;
 
   $: ({ status, id, title, color } = mapProposalInfo(proposalInfo));
 
@@ -53,9 +53,7 @@
       <div slot="start" class="title-container">
         <p class="title" {title}>{title}</p>
       </div>
-      <Badge slot="end" {color}
-        ><span>{$i18n.status[ProposalStatus[status]] ?? ""}</span></Badge
-      >
+      <Tag slot="end" {color}>{$i18n.status[ProposalStatus[status]] ?? ""}</Tag>
 
       <ProposalMeta {proposalInfo} size="small" link={false} />
     </Card>
@@ -65,7 +63,7 @@
 <style lang="scss">
   @use "../../themes/mixins/text";
   @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   li.hidden {
     visibility: hidden;

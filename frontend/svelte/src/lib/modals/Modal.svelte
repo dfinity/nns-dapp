@@ -7,9 +7,9 @@
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
   import { triggerDebugReport } from "../utils/dev.utils";
+  import Backdrop from "../components/ui/Backdrop.svelte";
 
   export let visible: boolean = true;
-  export let theme: "dark" | "light" = "light";
   export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
@@ -28,7 +28,7 @@
 
 {#if visible}
   <div
-    class={`modal ${theme}`}
+    class="modal"
     transition:fade
     role="dialog"
     data-tid={testId}
@@ -37,11 +37,7 @@
     on:click|stopPropagation
     on:introend
   >
-    <div
-      class="backdrop"
-      on:click|stopPropagation={close}
-      class:disabledActions={$busy}
-    />
+    <Backdrop disablePointerEvents={$busy} on:nnsClose />
     <div
       transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
       class={`wrapper ${size}`}
@@ -79,57 +75,15 @@
 <style lang="scss">
   @use "../themes/mixins/interaction";
   @use "../themes/mixins/text";
+  @use "../themes/mixins/display";
 
   .modal {
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
-    z-index: calc(var(--z-index) + 998);
+    z-index: var(--modal-z-index);
 
     @include interaction.initial;
-
-    &.dark {
-      color: var(--background-contrast);
-
-      .wrapper {
-        background: none;
-      }
-
-      .toolbar {
-        background: var(--gray-50-background);
-        box-shadow: 0 2px 8px var(--background);
-
-        h3,
-        button {
-          color: var(--background-contrast);
-        }
-
-        button {
-          &[disabled] {
-            color: var(--gray-600);
-          }
-        }
-      }
-
-      .content {
-        background: var(--gray-50-background);
-        color: var(--gray-200);
-      }
-    }
-  }
-
-  .backdrop {
-    position: absolute;
-    inset: 0;
-
-    background: rgba(var(--background-rgb), 0.8);
-
-    @include interaction.tappable;
-
-    &.disabledActions {
-      cursor: inherit;
-      pointer-events: none;
-    }
   }
 
   .wrapper {
@@ -141,48 +95,37 @@
     display: flex;
     flex-direction: column;
 
-    width: var(--modal-small-width);
+    --modal-toolbar-height: 35px;
+
+    background: var(--background);
+    color: var(--background-contrast);
+    --select-color: var(--background-contrast);
+    --select-border-radius: 0;
+
+    overflow: hidden;
+
+    &.small {
+      width: var(--modal-small-width);
+      max-width: var(--modal-small-max-width);
+
+      max-height: var(--modal-small-max-height);
+
+      border-radius: var(--modal-small-border-radius);
+    }
 
     &.big {
       width: var(--modal-big-width);
-    }
+      max-width: var(--modal-big-max-width);
 
-    --modal-wrapper-height: min(
-      calc(100vh - var(--padding-6x)),
-      var(--modal-max-height)
-    );
+      height: var(--modal-big-height);
+      max-height: var(--modal-big-max-height);
 
-    height: var(--modal-wrapper-height);
-    max-width: calc(100vw - var(--padding-4x));
-
-    --modal-toolbar-height: 35px;
-
-    background: white;
-
-    border-radius: calc(2 * var(--border-radius));
-
-    overflow: hidden;
-  }
-
-  .light > div.wrapper {
-    --scrollbar-light-background: var(--gray-50-background-contrast);
-    ::-webkit-scrollbar {
-      background: var(--scrollbar-light-background);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--light-background-shade);
-      border: solid 2.5px var(--scrollbar-light-background);
-    }
-    ::-webkit-scrollbar-corner {
-      background: var(--light-background);
+      border-radius: var(--modal-big-border-radius);
     }
   }
 
   .toolbar {
     padding: var(--padding) var(--padding-2x);
-
-    background: var(--gray-50);
-    color: var(--gray-50-background);
 
     display: grid;
     --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
@@ -214,7 +157,7 @@
       &:active,
       &:focus,
       &:hover {
-        background: rgba(var(--light-background-rgb), 0.3);
+        background: var(--background-shade);
         border-radius: var(--border-radius);
       }
     }
@@ -229,12 +172,10 @@
     height: calc(100% - var(--modal-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
-
-    color: var(--gray-50-background);
   }
 
   .small {
     height: fit-content;
-    max-height: var(--modal-wrapper-height);
+    max-height: var(--modal-small-max-height);
   }
 </style>

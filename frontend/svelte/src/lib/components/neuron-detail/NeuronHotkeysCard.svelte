@@ -12,7 +12,7 @@
   import { routeStore } from "../../stores/route.store";
   import { toastsStore } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
-  import Card from "../ui/Card.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
 
   export let neuron: NeuronInfo;
@@ -50,7 +50,7 @@
   };
 </script>
 
-<Card>
+<CardInfo>
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     <p>{$i18n.neuron_detail.no_notkeys}</p>
@@ -76,13 +76,18 @@
       <AddHotkeyButton neuronId={neuron.neuronId} />
     </div>
   {/if}
-</Card>
+</CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card.scss";
+  @use "../../themes/mixins/card";
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: var(--padding-2x);
   }
 
   ul {

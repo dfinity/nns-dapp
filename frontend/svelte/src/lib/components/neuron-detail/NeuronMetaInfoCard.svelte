@@ -10,7 +10,6 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
-  import JoinCommunityFundButton from "./actions/JoinCommunityFundButton.svelte";
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
@@ -19,7 +18,6 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
-    hasJoinedCommunityFund,
     isHotKeyControllable,
     isNeuronControllable,
     isNeuronControllableByUser,
@@ -28,8 +26,6 @@
 
   export let neuron: NeuronInfo;
 
-  let isCommunityFund: boolean;
-  $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let isControlledByUser: boolean;
   $: isControlledByUser = isNeuronControllableByUser({
     neuron,
@@ -48,65 +44,60 @@
   });
 </script>
 
-<NeuronCard {neuron}>
+<NeuronCard {neuron} cardType="info">
   <section>
-    <div class="space-between">
+    <div>
       <p>
         {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
           .staked}
       </p>
-      {#if !isCommunityFund && isControlledByUser}
-        <JoinCommunityFundButton neuronId={neuron.neuronId} />
+    </div>
+    <p class="voting-power">
+      {#if neuron.votingPower}
+        {`${$i18n.neurons.voting_power}:`}
+        <span class="amount">
+          {formatVotingPower(neuron.votingPower)}
+        </span>
+        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+          <Tooltip
+            id="voting-power-info"
+            text={replacePlaceholders(
+              $i18n.neuron_detail.voting_power_tooltip,
+              {
+                $stake: formatICP({
+                  value: neuron.fullNeuron.cachedNeuronStake,
+                  detailed: true,
+                }),
+                $delayMultiplier: dissolveDelayMultiplier(
+                  Number(neuron.dissolveDelaySeconds)
+                ).toFixed(2),
+                $ageMultiplier: ageMultiplier(
+                  Number(neuron.ageSeconds)
+                ).toFixed(2),
+              }
+            )}
+          >
+            <span>
+              <IconInfo />
+            </span>
+          </Tooltip>
+        {/if}
+      {/if}
+    </p>
+    <div class="buttons">
+      {#if isControllable}
+        <IncreaseDissolveDelayButton {neuron} />
+        {#if neuron.state === NeuronState.DISSOLVED}
+          <DisburseButton {neuron} />
+        {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
+          <DissolveActionButton
+            neuronState={neuron.state}
+            neuronId={neuron.neuronId}
+          />
+        {/if}
       {/if}
     </div>
-    <div class="space-between">
-      <p class="voting-power">
-        {#if neuron.votingPower}
-          {`${$i18n.neurons.voting_power}:`}
-          <span class="amount">
-            {formatVotingPower(neuron.votingPower)}
-          </span>
-          {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-            <Tooltip
-              id="voting-power-info"
-              text={replacePlaceholders(
-                $i18n.neuron_detail.voting_power_tooltip,
-                {
-                  $stake: formatICP({
-                    value: neuron.fullNeuron.cachedNeuronStake,
-                    detailed: true,
-                  }),
-                  $delayMultiplier: dissolveDelayMultiplier(
-                    Number(neuron.dissolveDelaySeconds)
-                  ).toFixed(2),
-                  $ageMultiplier: ageMultiplier(
-                    Number(neuron.ageSeconds)
-                  ).toFixed(2),
-                }
-              )}
-            >
-              <span>
-                <IconInfo />
-              </span>
-            </Tooltip>
-          {/if}
-        {/if}
-      </p>
-      <div class="buttons">
-        {#if isControllable}
-          <IncreaseDissolveDelayButton {neuron} />
-          {#if neuron.state === NeuronState.DISSOLVED}
-            <DisburseButton {neuron} />
-          {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
-            <DissolveActionButton
-              neuronState={neuron.state}
-              neuronId={neuron.neuronId}
-            />
-          {/if}
-        {/if}
-      </div>
-    </div>
-    <div class="only-buttons">
+    <div class="buttons">
       {#if isControllable || hotkeyControlled}
         <IncreaseStakeButton {neuron} />
       {/if}
@@ -125,16 +116,6 @@
     flex-direction: column;
     gap: var(--padding);
   }
-  .space-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-
-    @include media.min-width(small) {
-      flex-wrap: nowrap;
-    }
-  }
 
   .voting-power {
     display: flex;
@@ -151,17 +132,10 @@
     }
   }
 
-  .only-buttons {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    gap: var(--padding);
-  }
-
   .buttons {
     display: flex;
     gap: var(--padding);
-    flex-grow: 1;
-    justify-content: end;
+    align-items: center;
+    justify-content: flex-start;
   }
 </style>

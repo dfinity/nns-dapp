@@ -11,6 +11,7 @@
   import { ICP } from "@dfinity/nns";
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
+  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
@@ -22,7 +23,10 @@
     : undefined;
 
   let max: number = 0;
-  $: max = maxICP($store.selectedAccount?.balance);
+  $: max = maxICP({
+    icp: $store.selectedAccount?.balance,
+    fee: $mainTransactionFeeStore,
+  });
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -71,7 +75,12 @@
 
   <NewTransactionInfo feeOnly={true} />
 
-  <button class="primary full-width" type="submit" disabled={!validForm}>
+  <button
+    class="primary full-width"
+    type="submit"
+    disabled={!validForm}
+    data-tid="review-transaction"
+  >
     {$i18n.accounts.review_transaction}
   </button>
 </form>

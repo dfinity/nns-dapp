@@ -12,6 +12,7 @@ interface I18nCore {
   confirm_yes: string;
   confirm_no: string;
   confirm: string;
+  cancel: string;
   yes: string;
   no: string;
   unspecified: string;
@@ -23,12 +24,15 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
+  badgeNew: string;
 }
 
 interface I18nError {
   auth_sync: string;
   sign_in: string;
   proposal_not_found: string;
+  proposal_payload: string;
+  proposal_payload_not_found: string;
   neuron_not_found: string;
   neuron_load: string;
   list_proposals: string;
@@ -90,6 +94,8 @@ interface I18nError {
   canister_top_up_unknown: string;
   canister_update_settings: string;
   not_canister_controller_to_update: string;
+  limit_exceeded_topping_up_canister: string;
+  limit_exceeded_creating_canister: string;
   canister_invalid_transaction: string;
 }
 
@@ -98,15 +104,18 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  icp: string;
+  accounts: string;
   neurons: string;
   voting: string;
   canisters: string;
+  launchpad: string;
 }
 
 interface I18nHeader {
+  menu: string;
   title: string;
   logout: string;
+  account_menu: string;
 }
 
 interface I18nAuth {
@@ -120,6 +129,7 @@ interface I18nAuth {
 interface I18nAccounts {
   title: string;
   main: string;
+  main_account: string;
   new_transaction: string;
   add_account: string;
   new_linked_title: string;
@@ -394,12 +404,17 @@ interface I18nProposal_detail {
   reject: string;
   my_votes: string;
   loading_neurons: string;
+  unknown_nns_function: string;
+  nns_function_name: string;
+  payload: string;
+  summary_toggle_view: string;
 }
 
 interface I18nProposal_detail__vote {
   headline: string;
   neurons: string;
   voting_power: string;
+  vote_progress: string;
   total: string;
   adopt: string;
   reject: string;
@@ -409,6 +424,8 @@ interface I18nProposal_detail__vote {
   confirm_reject_text: string;
   vote_status: string;
   accept_or_reject: string;
+  cast_vote_neuronId: string;
+  cast_vote_votingPower: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -418,11 +435,44 @@ interface I18nProposal_detail__ineligible {
   reason_short: string;
 }
 
+interface I18nNns_function_names {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+  7: string;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+  12: string;
+  13: string;
+  14: string;
+  15: string;
+  16: string;
+  17: string;
+  18: string;
+  19: string;
+  20: string;
+  21: string;
+  22: string;
+  23: string;
+  24: string;
+  25: string;
+  26: string;
+  27: string;
+  28: string;
+  29: string;
+}
+
 interface I18nNeuron_detail {
   title: string;
   voting_history: string;
   vote: string;
   join_community_fund: string;
+  community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
   stop_dissolving: string;
@@ -431,6 +481,9 @@ interface I18nNeuron_detail {
   split_neuron: string;
   voting_power_tooltip: string;
   join_community_fund_description: string;
+  leave_community_fund_description: string;
+  participate_community_fund: string;
+  community_fund_more_info: string;
   maturity_title: string;
   merge_maturity: string;
   merge: string;
@@ -440,6 +493,7 @@ interface I18nNeuron_detail {
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
+  leave_community_fund_success: string;
   dummy_proposal_success: string;
   following_title: string;
   following_description: string;
@@ -479,6 +533,45 @@ interface I18nNeuron_detail {
   maturity_percentage: string;
 }
 
+interface I18nSns_launchpad {
+  header: string;
+  projects: string;
+  no_projects: string;
+  proposals: string;
+  project_logo: string;
+  no_proposals: string;
+}
+
+interface I18nSns_project {
+  project: string;
+  deadline: string;
+  your_commitment: string;
+}
+
+interface I18nSns_project_detail {
+  token_name: string;
+  token_symbol: string;
+  min_commitment: string;
+  max_commitment: string;
+  current_commitment: string;
+  min_commitment_goal: string;
+  deadline: string;
+  user_commitment: string;
+  status: string;
+  accepting: string;
+  enter_amount: string;
+  closed: string;
+  pending: string;
+  transaction_fee: string;
+  description: string;
+  participate_swap_description: string;
+  participate_swap_warning: string;
+  understand_agree: string;
+  edit_transaction: string;
+  execute: string;
+  participate: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -502,9 +595,10 @@ interface I18nError__ledger {
   connect_many_apps: string;
   connect_not_supported: string;
   unexpected_wallet: string;
-  user_cancel: string;
+  access_denied: string;
   user_rejected_transaction: string;
   version_not_supported: string;
+  browser_not_supported: string;
   incorrect_identifier: string;
 }
 
@@ -540,6 +634,11 @@ interface I18nError__canister {
   get_exchange_rate: string;
 }
 
+interface I18nTheme {
+  theme: string;
+  switch_theme: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -564,10 +663,15 @@ interface I18n {
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
+  nns_function_names: I18nNns_function_names;
   neuron_detail: I18nNeuron_detail;
+  sns_launchpad: I18nSns_launchpad;
+  sns_project: I18nSns_project;
+  sns_project_detail: I18nSns_project_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
   error__canister: I18nError__canister;
+  theme: I18nTheme;
 }

@@ -1,13 +1,10 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import Footer from "../lib/components/common/Footer.svelte";
   import { routeStore } from "../lib/stores/route.store";
-  import {
-    AppPath,
-    SHOW_ACCOUNTS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import { AppPath } from "../lib/constants/routes.constants";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import {
     getAccountTransactions,
@@ -31,17 +28,15 @@
   } from "../lib/types/selected-account.context";
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
-
-  onMount(() => {
-    if (!SHOW_ACCOUNTS_ROUTE) {
-      window.location.replace(`/${window.location.hash}`);
-    }
-  });
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   const goBack = () =>
     routeStore.navigate({
       path: AppPath.Accounts,
     });
+
+  layoutBackStore.set(goBack);
 
   const reloadTransactions = async (accountIdentifier: AccountIdentifier) =>
     await getAccountTransactions({
@@ -66,18 +61,25 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier: string | undefined;
+  let routeAccountIdentifier:
+    | { accountIdentifier: string | undefined }
+    | undefined;
   $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
 
   let selectedAccount: Account | undefined;
   $: selectedAccount = getAccountFromStore({
-    identifier: routeAccountIdentifier,
+    identifier: routeAccountIdentifier?.accountIdentifier,
     accountsStore: $accountsStore,
   });
 
   $: routeAccountIdentifier,
     selectedAccount,
     (() => {
+      // Not /wallet route
+      if (routeAccountIdentifier === undefined) {
+        return;
+      }
+
       const storeAccount = $selectedAccountStore.account;
 
       if (storeAccount !== selectedAccount) {
@@ -104,7 +106,8 @@
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
         toastsStore.error({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            $account_identifier: routeAccountIdentifier ?? "",
+            $account_identifier:
+              routeAccountIdentifier?.accountIdentifier ?? "",
           }),
         });
         goBack();
@@ -116,33 +119,29 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-{#if SHOW_ACCOUNTS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack}>
-    <svelte:fragment slot="header">{$i18n.wallet.title}</svelte:fragment>
+<MainContentWrapper>
+  <section>
+    {#if $selectedAccountStore.account !== undefined}
+      <WalletSummary />
+      <div class="actions">
+        <WalletActions />
+      </div>
+      <TransactionList />
+    {:else}
+      <Spinner />
+    {/if}
+  </section>
 
-    <section>
-      {#if $selectedAccountStore.account !== undefined}
-        <WalletSummary />
-        <div class="actions">
-          <WalletActions />
-        </div>
-        <TransactionList />
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-
-    <svelte:fragment slot="footer">
-      <Toolbar>
-        <button
-          class="primary"
-          on:click={() => (showNewTransactionModal = true)}
-          disabled={$selectedAccountStore.account === undefined || $busy}
-          >{$i18n.accounts.new_transaction}</button
-        >
-      </Toolbar>
-    </svelte:fragment>
-  </HeadlessLayout>
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary"
+        on:click={() => (showNewTransactionModal = true)}
+        disabled={$selectedAccountStore.account === undefined || $busy}
+        data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+      >
+    </Toolbar>
+  </Footer>
 
   {#if showNewTransactionModal}
     <NewTransactionModal
@@ -150,7 +149,7 @@
       selectedAccount={$selectedAccountStore.account}
     />
   {/if}
-{/if}
+</MainContentWrapper>
 
 <style lang="scss">
   .actions {

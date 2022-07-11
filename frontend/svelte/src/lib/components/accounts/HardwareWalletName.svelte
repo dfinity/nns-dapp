@@ -47,7 +47,6 @@
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
       name="walletName"
       bind:value={hardwareWalletName}
-      theme="dark"
       on:blur={showInvalidInputLength}
       errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {
@@ -62,7 +61,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal.scss";
+  @use "../../themes/mixins/modal";
 
   form {
     @include modal.wizard-single-input-form;

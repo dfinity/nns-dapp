@@ -8,7 +8,8 @@ import {
   claimOrRefreshNeuron,
   disburse as disburseApi,
   increaseDissolveDelay,
-  joinCommunityFund as joinCommunityFundApi,
+  joinCommunityFund,
+  leaveCommunityFund,
   mergeMaturity as mergeMaturityApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
@@ -23,13 +24,15 @@ import {
 } from "../api/governance.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
-import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import { E8S_PER_ICP } from "../constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
+import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
+import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import {
@@ -38,13 +41,14 @@ import {
   NotFoundError,
 } from "../types/neurons.errors";
 import { isAccountHardwareWallet } from "../utils/accounts.utils";
-import { getLastPathDetailId } from "../utils/app-path.utils";
+import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
 import { convertNumberToICP } from "../utils/icp.utils";
 import {
   canBeMerged,
   followeesByTopic,
+  hasJoinedCommunityFund,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
@@ -171,8 +175,8 @@ const getStakeNeuronPropsByAccount = ({
  *
  * @param {Object} params
  * @param {amount} params.amount the new neuron value. a number that will be converted to ICP.
- * @param {amount} params.amount the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
- * @param {amount} [params.amount=true] load the neuron and update the neurons store once created - i.e. certified=true query to load neuron and push to store.
+ * @param {account} params.account the source account for the neuron - i.e. the account that will be linked with the neuron and that provides the ICP.
+ * @param {loadNeuron} [params.loadNeuron=true] load the neuron and update the neurons store once created.
  */
 export const stakeNeuron = async ({
   amount,
@@ -217,10 +221,8 @@ export const stakeNeuron = async ({
 
     return newNeuronId;
   } catch (err) {
-    toastsStore.error({
-      labelKey: "error.stake_neuron",
-      err,
-    });
+    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    return;
   }
 };
 
@@ -306,19 +308,26 @@ export const updateDelay = async ({
   }
 };
 
-export const joinCommunityFund = async (
-  neuronId: NeuronId
+export const toggleCommunityFund = async (
+  neuron: NeuronInfo
 ): Promise<NeuronId | undefined> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
+      neuron.neuronId
     );
 
-    await joinCommunityFundApi({ neuronId, identity });
+    if (hasJoinedCommunityFund(neuron)) {
+      await leaveCommunityFund({
+        neuronId: neuron.neuronId,
+        identity,
+      });
+    } else {
+      await joinCommunityFund({ neuronId: neuron.neuronId, identity });
+    }
 
-    await getAndLoadNeuron(neuronId);
+    await getAndLoadNeuron(neuron.neuronId);
 
-    return neuronId;
+    return neuron.neuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
@@ -500,10 +509,11 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const transactionFeeAmount = TRANSACTION_FEE_E8S / E8S_PER_ICP;
+    const fee = get(mainTransactionFeeStore);
+    const transactionFeeAmount = fee / E8S_PER_ICP;
     const stake = convertNumberToICP(amount + transactionFeeAmount);
 
-    if (!isEnoughToStakeNeuron({ stake, withTransactionFee: true })) {
+    if (!isEnoughToStakeNeuron({ stake, fee })) {
       throw new InsufficientAmountError();
     }
 
@@ -845,5 +855,9 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   }
 };
 
-export const routePathNeuronId = (path: string): NeuronId | undefined =>
-  getLastPathDetailId(path);
+export const routePathNeuronId = (path: string): NeuronId | undefined => {
+  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+    return undefined;
+  }
+  return getLastPathDetailId(path);
+};

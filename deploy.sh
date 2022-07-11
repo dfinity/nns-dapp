@@ -57,6 +57,9 @@ help_text() {
 	--ii
 	  Create the internet_identity canister.
 
+	--sns
+	  Create an SNS canister set.
+
 	--nns-dapp
 	  Depoy the NNS dapp.
 
@@ -70,14 +73,16 @@ help_text() {
 }
 
 #
-GUESS="true"      # figure out which steps to run, as opposed to just performing the requested steps.
-DRY_RUN="false"   # print what would be done but don't do anything
-DFX_NETWORK=local # which network to deploy to
+GUESS="true"                           # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false"                        # print what would be done but don't do anything
+DFX_NETWORK=local                      # which network to deploy to
+CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
+DEPLOY_SNS="false"
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
@@ -97,6 +102,10 @@ while (($# > 0)); do
   --ii)
     GUESS="false"
     DEPLOY_II="true"
+    ;;
+  --sns)
+    GUESS="false"
+    DEPLOY_SNS="true"
     ;;
   --nns-backend)
     GUESS="false"
@@ -182,9 +191,12 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-download
   ./e2e-tests/scripts/nns-canister-build
+fi
+
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
 fi
 
@@ -194,13 +206,26 @@ if [[ "$DEPLOY_II" == "true" ]]; then
   sleep 4
 fi
 
+# Note: On mainnet SNS are created much later and have unpredictable canister IDs, however
+# until an index canister exists we need the SNS to exist at a predictable address, so we install it now.
+# Note: There may be multiple SNS canister sets; at present this can be done in a somewhat clunky way by
+# adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
+# several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
+if [[ "$DEPLOY_SNS" == "true" ]]; then
+  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
+  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
+fi
+
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
-  dfx deploy --network "$DFX_NETWORK" nns-dapp
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL ./frontend/ts/src/config.json)"
+  dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
+  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
@@ -219,7 +244,7 @@ if [[ "$POPULATE" == "true" ]]; then
 
   # Create users and neurons
   # Note: Cannot be used with flutter.
-  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY frontend/ts/src/config.json)"
+  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY "$CONFIG_FILE")"
   [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
     echo Creating users and neurons...
     pushd e2e-tests
@@ -231,7 +256,7 @@ if [[ "$POPULATE" == "true" ]]; then
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL ./frontend/ts/src/config.json)"
+  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Opening: $OWN_CANISTER_URL"
   case "$(uname)" in
   Linux) xdg-open "$OWN_CANISTER_URL" ;;

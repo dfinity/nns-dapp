@@ -62,13 +62,13 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   .title {
     display: block;
     width: 100%;
 
-    margin: var(--padding-2x) 0;
+    margin: 0 0 var(--padding-2x);
 
     --icp-font-size: var(--font-size-h1);
     --tooltip-display: inline-block;
@@ -88,7 +88,6 @@
   .address {
     margin-bottom: var(--padding-4x);
     :global(p:first-of-type) {
-      color: var(--gray-50);
       margin-bottom: var(--padding);
     }
   }

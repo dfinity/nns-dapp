@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
-  import Card from "../ui/Card.svelte";
+  import CardInfo from "../ui/CardInfo.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
@@ -53,27 +53,29 @@
   }
 </script>
 
-<Card>
+<CardInfo>
+  <h3 slot="start" class="title">Voting Results</h3>
   <div class="latest-tally">
-    <h3>
+    <h4>
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
-    </h3>
+    </h4>
     <div
       class="progressbar"
       role="progressbar"
+      aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}
       aria-valuemax={sum}
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
-    <h3>
+    <h4>
       {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
-    </h3>
+    </h4>
   </div>
 
   {#if neuronsVotedForProposal.length}
-    <h3 class="my-votes">{$i18n.proposal_detail.my_votes}</h3>
+    <h4 class="my-votes">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li
@@ -92,7 +94,7 @@
       {/each}
     </ul>
   {/if}
-</Card>
+</CardInfo>
 
 <style lang="scss">
   @use "../../themes/mixins/media";
@@ -102,25 +104,21 @@
 
     grid-template-columns: 110px 1fr 110px;
     align-items: center;
-    height: var(--headless-layout-header-height);
+    height: var(--header-height);
 
     @include media.min-width(medium) {
       grid-template-columns: 130px 1fr 130px;
     }
 
-    h3 {
-      font-size: var(--font-size-h4);
+    h4 {
       line-height: var(--line-height-standard);
       text-align: center;
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-h3);
-      }
 
       span {
         display: block;
         text-align: center;
         font-size: var(--font-size-small);
+        font-weight: initial;
 
         @include media.min-width(medium) {
           font-size: var(--font-size-h5);
@@ -131,7 +129,7 @@
     .progressbar {
       position: relative;
       height: 10px;
-      background: var(--pink);
+      background: var(--negative-emphasis-light);
 
       .progressbar-value {
         position: absolute;
@@ -139,7 +137,8 @@
         bottom: 0;
         left: 0;
 
-        background: var(--blue-200-shade);
+        background: var(--primary-gradient-fallback);
+        background: var(--primary-gradient);
       }
     }
   }
@@ -162,5 +161,9 @@
       align-items: center;
       gap: var(--padding);
     }
+  }
+
+  .title {
+    padding-bottom: var(--padding);
   }
 </style>

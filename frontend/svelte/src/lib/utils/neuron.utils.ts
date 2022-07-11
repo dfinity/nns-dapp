@@ -18,17 +18,19 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
 } from "../constants/constants";
-import { E8S_PER_ICP, TRANSACTION_FEE_E8S } from "../constants/icp.constants";
+import {
+  DEFAULT_TRANSACTION_FEE_E8S,
+  E8S_PER_ICP,
+} from "../constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
-  MIN_MATURITY_MERGE,
   MIN_NEURON_STAKE,
-  MIN_NEURON_STAKE_SPLITTABLE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
 import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
+import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
 import type { Account } from "../types/account";
 import {
@@ -43,7 +45,7 @@ import { isDefined } from "./utils";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  colorVar: "--gray-50" | "--yellow-500" | "--gray-200";
+  status: "ok" | "warn";
 };
 
 type StateMapper = {
@@ -53,21 +55,21 @@ const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.UNSPECIFIED]: {
     textKey: "unspecified",
-    colorVar: "--gray-50",
+    status: "ok",
   },
   [NeuronState.DISSOLVED]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
-    colorVar: "--gray-200",
+    status: "ok",
   },
   [NeuronState.DISSOLVING]: {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
-    colorVar: "--yellow-500",
+    status: "warn",
   },
 };
 
@@ -94,18 +96,22 @@ export const votingPower = ({
       )
     : BigInt(0);
 
+// TODO: Do we need this? What does it mean to have a valid stake?
+// TODO: https://dfinity.atlassian.net/browse/L2-507
 export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
   neuron.fullNeuron
     ? neuron.fullNeuron.cachedNeuronStake +
         neuron.fullNeuron.maturityE8sEquivalent >
-      BigInt(TRANSACTION_FEE_E8S)
+      BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
 export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
   1 +
   1 *
     (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
+
+export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
 
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo
@@ -114,7 +120,7 @@ export const getDissolvingTimeInSeconds = (
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-      BigInt(Math.round(Date.now() / 1000))
+      BigInt(nowInSeconds())
     : undefined;
 
 export const ageMultiplier = (ageSeconds: number): number =>
@@ -268,9 +274,6 @@ export const ballotsWithDefinedProposal = ({
     ({ proposalId }: BallotInfo) => proposalId !== undefined
   );
 
-export const neuronCanBeSplit = (neuron: NeuronInfo): boolean =>
-  neuronStake(neuron) >= BigInt(MIN_NEURON_STAKE_SPLITTABLE);
-
 export const isValidInputAmount = ({
   amount,
   max,
@@ -281,13 +284,11 @@ export const isValidInputAmount = ({
 
 export const isEnoughToStakeNeuron = ({
   stake,
-  withTransactionFee = false,
+  fee = 0,
 }: {
   stake: ICP;
-  withTransactionFee?: boolean;
-}): boolean =>
-  stake.toE8s() >=
-  MIN_NEURON_STAKE + (withTransactionFee ? TRANSACTION_FEE_E8S : 0);
+  fee?: number;
+}): boolean => stake.toE8s() >= MIN_NEURON_STAKE + fee;
 
 export const isEnoughMaturityToSpawn = ({
   neuron: { fullNeuron },
@@ -547,10 +548,6 @@ export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
     ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
     : enumValues(Topic);
 
-export const hasEnoughMaturityToMerge = (neuron: NeuronInfo): boolean =>
-  neuron.fullNeuron !== undefined &&
-  neuron.fullNeuron.maturityE8sEquivalent > MIN_MATURITY_MERGE;
-
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
 export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
@@ -604,3 +601,35 @@ export const votedNeuronDetails = ({
     .filter(
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
+
+export const minMaturityMerge = (fee: number): number => fee;
+
+export const hasEnoughMaturityToMerge = ({
+  neuron: { fullNeuron },
+  fee,
+}: {
+  neuron: NeuronInfo;
+  fee: number;
+}): boolean =>
+  fullNeuron !== undefined &&
+  fullNeuron.maturityE8sEquivalent > minMaturityMerge(fee);
+
+export const minNeuronSplittable = (fee: number): number =>
+  2 * E8S_PER_ICP + fee;
+
+export const neuronCanBeSplit = ({
+  neuron,
+  fee,
+}: {
+  neuron: NeuronInfo;
+  fee: number;
+}): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+
+export const getNeuronById = ({
+  neuronsStore,
+  neuronId,
+}: {
+  neuronsStore: NeuronsStore;
+  neuronId: NeuronId;
+}): NeuronInfo | undefined =>
+  neuronsStore.neurons?.find((n) => n.neuronId === neuronId);

@@ -86,7 +86,7 @@
   };
 </script>
 
-<Modal theme="dark" size="big" on:nnsClose>
+<Modal size="big" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
@@ -97,8 +97,11 @@
           placeholderLabelKey="new_followee.address_placeholder"
           name="new-followee-address"
           bind:value={followeeAddress}
-          theme="dark"
-        />
+        >
+          <svelte:fragment slot="label"
+            >{$i18n.new_followee.address_placeholder}</svelte:fragment
+          >
+        </Input>
         <button
           class="primary small"
           type="submit"
@@ -148,6 +151,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: var(--padding-2x);
   }
 
   ul {

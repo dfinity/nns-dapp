@@ -9,9 +9,9 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "$SCRIPTS_DIR/.."
 
-DEPLOY_ENV=${DEPLOY_ENV:-mainnet}
+DFX_NETWORK=${DFX_NETWORK:-mainnet}
 
-case "$DEPLOY_ENV" in
+case "$DFX_NETWORK" in
 mainnet)
   OWN_CANISTER_ID=""
   ;;
@@ -19,7 +19,7 @@ mainnet)
   OWN_CANISTER_ID=${OWN_CANISTER_ID:-rwlgt-iiaaa-aaaaa-aaaaa-cai}
   ;;
 *)
-  echo "don't know how to set OWN_CANISTER_ID for DEPLOY_ENV $DEPLOY_ENV"
+  echo "don't know how to set OWN_CANISTER_ID for DFX_NETWORK $DFX_NETWORK"
   echo "please set the environment variable OWN_CANISTER_ID"
   exit 1
   ;;
@@ -27,12 +27,12 @@ esac
 
 REDIRECT_TO_LEGACY=${REDIRECT_TO_LEGACY:-prod}
 
-echo "DEPLOY_ENV: $DEPLOY_ENV"
+echo "DFX_NETWORK: $DFX_NETWORK"
 echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
 echo "REDIRECT_TO_LEGACY: $REDIRECT_TO_LEGACY"
 echo "PWD: $PWD"
 
-image_name="nns-dapp-$DEPLOY_ENV"
+image_name="nns-dapp-$DFX_NETWORK"
 
 echo "The following image name will be used: $image_name"
 
@@ -48,7 +48,7 @@ assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt)
 set -x
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
-  --build-arg DEPLOY_ENV="$DEPLOY_ENV" \
+  --build-arg DFX_NETWORK="$DFX_NETWORK" \
   --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
   -t "$image_name" \
   -o "$OUTDIR" .

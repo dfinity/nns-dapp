@@ -59,19 +59,17 @@
 
 <article data-tid={`follow-topic-${topic}-section`}>
   <Collapsible {id} iconSize="medium">
-    <svelte:fragment slot="header">
-      <div class="wrapper">
-        <div>
-          <h3>{title}</h3>
-          <p class="subtitle">{subtitle}</p>
-        </div>
-        <div class="toolbar">
-          <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
-            {followees.length}
-          </h3>
-        </div>
+    <div class="wrapper" slot="header">
+      <div>
+        <h3>{title}</h3>
+        <p class="subtitle">{subtitle}</p>
       </div>
-    </svelte:fragment>
+      <div class="toolbar">
+        <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
+          {followees.length}
+        </h3>
+      </div>
+    </div>
     <div class="content" data-tid="follow-topic-section-current">
       <h5>{$i18n.follow_neurons.current_followees}</h5>
       <ul>
@@ -86,7 +84,7 @@
       </ul>
       <div class="button-wrapper">
         <button
-          class="secondary small"
+          class="primary small"
           data-tid="open-new-followee-modal"
           on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
         >
@@ -105,7 +103,6 @@
     :global(.collapsible-expand-icon) {
       align-items: start;
       padding-top: var(--padding-3x);
-      color: var(--background-contrast);
     }
   }
 
@@ -114,6 +111,7 @@
     align-items: start;
     justify-content: space-between;
     gap: var(--padding-2x);
+    width: 100%;
   }
 
   .subtitle {
@@ -124,7 +122,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: var(--padding-2x);
+    padding-right: var(--padding-2x);
     margin-top: var(--padding-2x);
     margin-right: var(--padding-2x);
   }

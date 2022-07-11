@@ -21,13 +21,16 @@
 {/if}
 
 <style lang="scss">
+  @use "../../themes/mixins/display";
+
   div {
     z-index: calc(var(--z-index) + 1000);
 
     position: fixed;
-    inset: 0;
+    @include display.inset;
 
-    background-color: rgba(var(--background-rgb), 0.75);
+    background: var(--backdrop);
+    color: var(--backdrop-contrast);
   }
 
   .content {

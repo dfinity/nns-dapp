@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased
+* Update dfx to version 10.1
+
+## Proposal 67969
+* Polyfill CSS to support older browsers
+* Buttons realignment in Neuron Detail Page
+* UI improvements
+
+## Proposal 67799
+* Add light theme
+* Review dark theme
+* Enable theming
+* Upgrade agent-js
+* Improve signout flow
+* Improvements in error management
+* No tooltip when not needed. It had problems with Android devices
+* Lazy load routes to improve performance
+
+## Proposal 66831
+* Update canister payment flow
+* New Navigation menu
+* Improvements getting the Proposal payload
+* Other UI improvements
+* Removal of now unused flutter code
+
+## Proposal 65319
+* New Canisters Tab built on Svelte
+* Fix minor UI issues in the Neurons tab for smaller devices
+* Add tooltip to Wallet page to display all ICP
+* Fix voting power amount in the Proposal page
+
 ## Proposal 63234
 * Provide more detailed values for neuron ICP
 * Improve support for earlier versions of iPhone

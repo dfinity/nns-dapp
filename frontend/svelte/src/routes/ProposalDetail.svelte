@@ -1,22 +1,17 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import HeadlessLayout from "../lib/components/common/HeadlessLayout.svelte";
+  import { onDestroy } from "svelte";
   import {
     routePathProposalId,
     loadProposal,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
-  import {
-    AppPath,
-    SHOW_PROPOSALS_ROUTE,
-  } from "../lib/constants/routes.constants";
+  import { AppPath } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
   import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
   import VotingCard from "../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
   import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import { listNeurons } from "../lib/services/neurons.services";
   import {
     definedNeuronsStore,
     neuronsStore,
@@ -27,6 +22,11 @@
   } from "../lib/stores/proposals.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { layoutBackStore } from "../lib/stores/layout.store";
+  import { get } from "svelte/store";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+
+  // Neurons are fetch on page load. No need to do it in the route.
 
   const neuronsStoreReady = (): boolean => {
     // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
@@ -42,20 +42,6 @@
 
   let neuronsReady = false;
   $: $neuronsStore, (neuronsReady = neuronsStoreReady());
-
-  onMount(async () => {
-    if (!SHOW_PROPOSALS_ROUTE) {
-      window.location.replace(`/${window.location.hash}`);
-      return;
-    }
-
-    // We query the neurons only if they were not yet fully fetched - i.e. never initialized
-    if (neuronsStoreReady()) {
-      return;
-    }
-
-    await listNeurons();
-  });
 
   const unsubscribeRouteStore = routeStore.subscribe(
     async ({ path: routePath }) => {
@@ -96,10 +82,16 @@
   });
 
   const goBack = () => {
+    const { referrerPath } = get(routeStore);
     routeStore.navigate({
-      path: AppPath.Proposals,
+      path:
+        referrerPath === AppPath.Launchpad
+          ? AppPath.Launchpad
+          : AppPath.Proposals,
     });
   };
+
+  layoutBackStore.set(goBack);
 
   onDestroy(() => {
     unsubscribeRouteStore();
@@ -108,38 +100,32 @@
   });
 </script>
 
-{#if SHOW_PROPOSALS_ROUTE}
-  <HeadlessLayout on:nnsBack={goBack} showFooter={false}>
-    <svelte:fragment slot="header"
-      >{$i18n.proposal_detail.title}</svelte:fragment
-    >
+<MainContentWrapper>
+  <section>
+    {#if $proposalInfoStore}
+      <ProposalDetailCard proposalInfo={$proposalInfoStore} />
 
-    <section>
-      {#if $proposalInfoStore}
-        <ProposalDetailCard proposalInfo={$proposalInfoStore} />
-
-        {#if neuronsReady}
-          <VotesCard proposalInfo={$proposalInfoStore} />
-          <VotingCard proposalInfo={$proposalInfoStore} />
-          <IneligibleNeuronsCard
-            proposalInfo={$proposalInfoStore}
-            neurons={$definedNeuronsStore}
-          />
-        {:else}
-          <div class="loader">
-            <SkeletonCard />
-            <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-          </div>
-        {/if}
+      {#if neuronsReady}
+        <VotesCard proposalInfo={$proposalInfoStore} />
+        <VotingCard proposalInfo={$proposalInfoStore} />
+        <IneligibleNeuronsCard
+          proposalInfo={$proposalInfoStore}
+          neurons={$definedNeuronsStore}
+        />
       {:else}
-        <SkeletonCard size="large" />
-        <SkeletonCard />
-        <SkeletonCard />
-        <SkeletonCard />
+        <div class="loader">
+          <SkeletonCard cardType="info" />
+          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+        </div>
       {/if}
-    </section>
-  </HeadlessLayout>
-{/if}
+    {:else}
+      <div class="loader">
+        <SkeletonCard cardType="info" />
+        <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+      </div>
+    {/if}
+  </section>
+</MainContentWrapper>
 
 <style lang="scss">
   .loader {

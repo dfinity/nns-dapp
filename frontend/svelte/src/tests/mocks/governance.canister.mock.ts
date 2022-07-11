@@ -30,6 +30,15 @@ export class MockGovernanceCanister extends GovernanceCanister {
     request: ListProposalsRequest;
     certified?: boolean;
   }): Promise<ListProposalsResponse> => {
+    if (request.limit === 1) {
+      // mock getProposal call
+      return {
+        proposals: this.proposals.filter(
+          ({ id }) => id === (request.beforeProposal as bigint) - BigInt(1)
+        ),
+      };
+    }
+
     return {
       proposals: this.proposals,
     };

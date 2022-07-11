@@ -7,6 +7,7 @@
   import { getICPs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
+  import IconAccountBalance from "../../icons/IconAccountBalance.svelte";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -53,10 +54,14 @@
 </script>
 
 <button
+  role="menuitem"
   data-tid="get-icp-button"
   on:click={() => (visible = true)}
-  class="open text">Get ICPs</button
+  class="open"
 >
+  <IconAccountBalance />
+  <span>Get ICPs</span>
+</button>
 
 <Modal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
@@ -88,17 +93,47 @@
 </Modal>
 
 <style lang="scss">
+  @use "../../themes/mixins/media";
+
   .open {
-    justify-self: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    font-size: var(--font-size-h4);
+    font-weight: 700;
+
+    padding: var(--padding-2x);
+
+    &:focus,
+    &:hover {
+      background: var(--background-tint);
+    }
+
+    span {
+      margin: 0 0 0 var(--padding);
+    }
   }
 
-  .how-much {
-    margin-bottom: var(--padding-0_5x);
+  @include media.light-theme() {
+    .open {
+      &:focus,
+      &:hover {
+        background: var(--background-shade);
+      }
+    }
+  }
+
+  @include media.light-theme() {
+    .how-much {
+      color: var(--background-contrast);
+    }
   }
 
   form {
     display: flex;
     flex-direction: column;
+    gap: var(--padding-2x);
 
     padding: var(--padding-2x);
 

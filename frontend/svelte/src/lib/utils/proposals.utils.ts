@@ -8,12 +8,10 @@ import type {
 } from "@dfinity/nns";
 import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  PROPOSAL_COLOR,
-  type ProposalColor,
-} from "../constants/proposals.constants";
+import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
+import type { Color } from "../types/theme";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -34,10 +32,7 @@ export const proposalActionFields = (
   if (key === undefined) {
     return [];
   }
-  return Object.entries(proposal.action?.[key] ?? {}).filter(([key, value]) => {
-    if (key === "payloadBytes") {
-      return false;
-    }
+  return Object.entries(proposal.action?.[key] ?? {}).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
@@ -49,6 +44,16 @@ export const proposalActionFields = (
     }
     return false;
   });
+};
+
+export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
+  const key = proposalFirstActionKey(proposal);
+
+  if (key !== "ExecuteNnsFunction") {
+    return undefined;
+  }
+
+  return Object.values(proposal.action?.[key])?.[0] as number;
 };
 
 export const hideProposal = ({
@@ -295,7 +300,7 @@ export const mapProposalInfo = (
   title: string | undefined;
   url: string | undefined;
   topic: string | undefined;
-  color: ProposalColor | undefined;
+  color: Color | undefined;
   status: ProposalStatus;
 } => {
   const { proposal, proposer, id, status } = proposalInfo;

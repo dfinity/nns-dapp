@@ -57,7 +57,6 @@
 
       font-size: var(--font-size-h5);
       text-align: start;
-      color: var(--gray-200);
       overflow-wrap: anywhere;
 
       @include media.min-width(medium) {

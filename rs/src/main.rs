@@ -10,7 +10,7 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, stable};
+use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
 use ledger_canister::{AccountIdentifier, BlockHeight};
 
@@ -22,6 +22,7 @@ mod ledger_sync;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
+mod proposals;
 mod state;
 
 type Cycles = u128;
@@ -188,6 +189,11 @@ pub fn detach_canister() {
 fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
+}
+
+#[export_name = "canister_update get_proposal_payload"]
+pub fn get_proposal_payload() {
+    over_async(candid_one, proposals::get_proposal_payload)
 }
 
 /// Gets the current status of a 'multi-part' action.

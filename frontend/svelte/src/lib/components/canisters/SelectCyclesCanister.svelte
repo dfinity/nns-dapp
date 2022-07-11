@@ -73,22 +73,26 @@
         placeholderLabelKey="core.icp"
         inputType="icp"
         name="icp-amount"
-        theme="dark"
         bind:value={amount}
         on:focus={() => (isChanging = "icp")}
         on:blur={() => (isChanging = undefined)}
         disabled={icpToCyclesExchangeRate === undefined}
-      />
+      >
+        <svelte:fragment slot="label">{$i18n.core.icp}</svelte:fragment>
+      </Input>
       <Input
         placeholderLabelKey="canisters.t_cycles"
         inputType="icp"
         name="t-cycles-amount"
-        theme="dark"
         bind:value={amountCycles}
         on:focus={() => (isChanging = "tCycles")}
         on:blur={() => (isChanging = undefined)}
         disabled={icpToCyclesExchangeRate === undefined}
-      />
+      >
+        <svelte:fragment slot="label">
+          {$i18n.canisters.t_cycles}
+        </svelte:fragment>
+      </Input>
     </div>
     <slot />
   </div>
@@ -109,6 +113,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: var(--padding-2x);
+
     flex: 1;
   }
 

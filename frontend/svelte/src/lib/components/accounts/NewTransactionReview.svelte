@@ -21,7 +21,12 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    startBusy({ initiator: "accounts" });
+    startBusy({
+      initiator: "accounts",
+      ...(isAccountHardwareWallet($store.selectedAccount) && {
+        labelKey: "busy_screen.pending_approval_hw",
+      }),
+    });
 
     const { success } = await transferICP($store);
 
@@ -47,7 +52,12 @@
 
   <NewTransactionInfo />
 
-  <button class="primary full-width" type="submit" disabled={$busy}>
+  <button
+    class="primary full-width"
+    type="submit"
+    disabled={$busy}
+    data-tid="confirm-and-send"
+  >
     {$i18n.accounts.confirm_and_send}
   </button>
 </form>

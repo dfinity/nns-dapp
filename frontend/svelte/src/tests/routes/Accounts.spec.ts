@@ -25,18 +25,6 @@ describe("Accounts", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  it("should render title", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(Accounts);
-
-    const title = container.querySelector("h1");
-    expect(title).not.toBeNull();
-    expect(title).toBeVisible();
-    expect(title).toHaveTextContent("Accounts");
-  });
-
   it("should render title and account icp", () => {
     accountsStoreMock = jest
       .spyOn(accountsStore, "subscribe")

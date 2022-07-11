@@ -1,9 +1,13 @@
 <script lang="ts">
+  import IconArrowRight from "../../icons/IconArrowRight.svelte";
+
   export let role: "link" | "button" | "checkbox" | undefined = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
   export let disabled: boolean | undefined = undefined;
   export let testId: string = "card";
+  export let highlighted: boolean | undefined = undefined;
+  export let withArrow: boolean | undefined = undefined;
 
   let clickable: boolean = false;
 
@@ -22,12 +26,18 @@
   {role}
   on:click
   class:clickable
+  class:withArrow
   class:selected
   class:disabled
+  class:highlighted
   aria-disabled={disabled}
   aria-checked={ariaChecked}
   aria-label={ariaLabel}
 >
+  {#if withArrow === true}
+    <IconArrowRight />
+  {/if}
+
   {#if showHeadline}
     <div>
       <slot name="start" />
@@ -40,28 +50,53 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
   @use "../../themes/mixins/display";
 
   article {
     text-decoration: none;
 
-    background: var(--background);
-    color: var(--gray-50);
+    background: var(--card-background);
+    color: var(--card-background-contrast);
+    box-shadow: var(--box-shadow);
 
-    padding: var(--padding-2_5x);
+    transition: color var(--animation-time-normal);
+
+    padding: var(--padding-2x);
     margin: var(--padding-2x) 0;
     border-radius: var(--border-radius);
 
-    box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
-
-    border: 2px solid transparent;
+    outline: 2px solid transparent;
     &.selected {
-      border: 2px solid var(--blue-500);
+      outline: 2px solid var(--primary);
     }
 
     &.disabled {
-      background: var(--background-hover);
+      background: var(--background-shade);
+    }
+
+    &.highlighted {
+      background: var(--primary-gradient-fallback);
+      background: var(--primary-gradient);
+      color: var(--primary-gradient-contrast);
+    }
+
+    &.withArrow {
+      position: relative;
+      padding-right: var(--padding-6x);
+
+      :global(svg:first-child) {
+        position: absolute;
+
+        height: var(--padding-3x);
+        width: auto;
+
+        right: var(--padding-2x);
+        top: 50%;
+        margin-top: calc(-1 * var(--padding-1_5x));
+
+        opacity: var(--light-opacity);
+      }
     }
   }
 
@@ -70,11 +105,6 @@
 
     &.disabled {
       @include interaction.disabled;
-    }
-
-    &:focus,
-    &:hover {
-      background: var(--background-hover);
     }
   }
 

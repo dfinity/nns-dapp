@@ -4,6 +4,7 @@
   import { i18n } from "../../../stores/i18n";
   import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
   import { knownNeuronsStore } from "../../../stores/knownNeurons.store";
+  import Tag from "../../ui/Tag.svelte";
 
   export let followee: FolloweesNeuron;
 
@@ -25,7 +26,7 @@
 
 <ul aria-labelledby={id}>
   {#each followee.topics as topic}
-    <li>{topicTitle(topic)}</li>
+    <Tag tagName="li">{topicTitle(topic)}</Tag>
   {/each}
 </ul>
 
@@ -51,21 +52,6 @@
 
     margin-bottom: var(--padding);
     padding: 0 0 calc(2 * var(--padding));
-    border-bottom: 1px solid var(--gray-600);
-
-    &:last-of-type {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-  }
-
-  li {
-    display: inline-block;
-    padding: calc(0.5 * var(--padding)) var(--padding);
-
-    color: var(--gray-200);
-    border: 1px solid var(--gray-400-shade);
-    border-radius: var(--border-radius);
+    border-bottom: 1px solid currentColor;
   }
 </style>

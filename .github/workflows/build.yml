@@ -14,11 +14,11 @@ on:
 
 
 env:
-      DFX_VERSION: 0.9.2
+      DFX_VERSION: 0.10.1
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
-      IC_COMMIT: 6dc5e2dcb50569e20891af02b846a7d9a58e3489
+      IC_COMMIT: 7fcae4939dc6fac179ce3dd25ded6e6b650e2293
       NNS_CACHING_KEY: dv-0004
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
 
       - name: Download prebuilt nns canisters
         if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
@@ -88,7 +88,6 @@ jobs:
       - name: Install Software
         run: |
           ./scripts/setup --profile ~/.bashrc
-          echo "$HOME/.cache/flutter/2.2.3/bin" >> $GITHUB_PATH
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # Helps with debugging
@@ -101,7 +100,6 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
-          command -v flutter
 
       - name: Start replica
         run: |
@@ -113,7 +111,7 @@ jobs:
         with:
           path: |
             target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister.*' )}}-${{ env.NNS_CACHING_KEY }}"
+          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
       - name: Show canister versions
         run: sha256sum target/ic/*.wasm
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
@@ -124,11 +122,11 @@ jobs:
 
       - name: Deploy
         run: |
-          ./e2e-tests/scripts/deploy-local-canisters
+          ./deploy.sh --ii --nns-dapp local
 
       - name: Create initial state
         run: |
-          ./deploy.sh --populate
+          ./deploy.sh --populate local
 
       - name: Build proxy
         working-directory: proxy
@@ -144,7 +142,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log
+          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log || true
 
       - name: Stop replica
         run: dfx stop

@@ -22,16 +22,12 @@
     @include interaction.tappable;
 
     &:hover {
-      background: var(--background-hover);
+      background: var(--background-shade);
     }
 
     h4 {
       line-height: 1;
       margin-bottom: var(--padding);
-    }
-
-    span {
-      color: var(--gray-200);
     }
   }
 </style>

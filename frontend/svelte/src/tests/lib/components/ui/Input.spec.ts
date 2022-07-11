@@ -19,22 +19,14 @@ describe("Input", () => {
     expect(input).not.toBeNull();
   });
 
-  it("should render a dark input", () => {
-    const { container } = render(Input, {
-      props: { ...props, theme: "dark" },
-    });
-
-    const inputContainer: HTMLDivElement | null =
-      container.querySelector(".input-block.dark");
-    expect(inputContainer).not.toBeNull();
-  });
-
   it("should render a placeholder", () => {
-    const { getByText } = render(Input, {
+    const { container } = render(Input, {
       props,
     });
 
-    expect(getByText("test.placeholder")).toBeInTheDocument();
+    expect(container.querySelector("input")?.getAttribute("placeholder")).toBe(
+      "test.placeholder"
+    );
   });
 
   const testGetAttribute = ({

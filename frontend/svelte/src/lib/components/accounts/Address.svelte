@@ -22,7 +22,6 @@
       name="accounts-address"
       bind:value={address}
       minLength={ACCOUNT_ADDRESS_MIN_LENGTH}
-      theme="dark"
       errorMessage={showError ? $i18n.error.address_not_valid : undefined}
       on:blur={showErrorIfAny}
     />
@@ -46,5 +45,6 @@
   form {
     display: flex;
     flex-direction: column;
+    gap: var(--padding);
   }
 </style>

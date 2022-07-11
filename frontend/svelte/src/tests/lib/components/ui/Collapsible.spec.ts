@@ -15,10 +15,21 @@ const props = (props) => ({
 });
 
 describe("Collapsible", () => {
-  it("should render header and content", () => {
-    const { getByText } = render(CollapsibleTest);
+  it("should render header, content and button", () => {
+    const { getByText, queryByTestId } = render(CollapsibleTest);
     expect(getByText("Jack")).toBeInTheDocument();
     expect(getByText("Sparrow")).toBeInTheDocument();
+    expect(queryByTestId("collapsible-expand-button")).toBeInTheDocument();
+  });
+
+  it("should not render button", () => {
+    const { getByText, queryByTestId } = render(
+      CollapsibleTest,
+      props({ iconSize: "none" })
+    );
+    expect(getByText("Jack")).toBeInTheDocument();
+    expect(getByText("Sparrow")).toBeInTheDocument();
+    expect(queryByTestId("collapsible-expand-button")).not.toBeInTheDocument();
   });
 
   it("should render ids", () => {

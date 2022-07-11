@@ -3,8 +3,9 @@
 
   export let inputId: string;
   export let checked: boolean;
+  export let preventDefault: boolean = false;
+  export let disabled: boolean = false;
 
-  export let theme: "dark" | "light" = "light";
   export let text: "block" | "inline" = "inline";
 
   export let selector: string | undefined = undefined;
@@ -14,17 +15,26 @@
   /**
    * Emit an event when the checkbox or container is clicked. The state should be updated by consumer.
    */
-  const onClick = () => dispatch("nnsChange");
+  const onClick = (event) => {
+    if (preventDefault) {
+      event.preventDefault();
+    }
+    dispatch("nnsChange");
+  };
 </script>
 
 <div
   on:click|preventDefault={onClick}
-  class={`checkbox ${theme} ${selector ?? ""}`}
+  class={`checkbox ${selector ?? ""}`}
+  class:disabled
+  role="button"
 >
   <label for={inputId} class={text}><slot /></label>
   <input
+    data-tid="checkbox"
     type="checkbox"
     id={inputId}
+    {disabled}
     {checked}
     on:click|stopPropagation={onClick}
   />
@@ -37,15 +47,10 @@
   .checkbox {
     @include select.group;
 
-    &.light {
-      --select-color: var(--gray-600);
-      --select-background-hover: var(--light-background);
-    }
+    --select-background-hover: var(--background-shade);
 
-    &.dark {
-      --select-color: var(--gray-200);
-      --select-background-hover: rgba(var(--light-background-rgb), 0.1);
-      --select-border-radius: var(--border-radius);
+    &.disabled {
+      pointer-events: none;
     }
   }
 

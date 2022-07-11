@@ -12,12 +12,7 @@
 
 <article data-tid="card-block" class:expanded>
   {#if expandable}
-    <Collapsible
-      maxContentHeight={300}
-      headerAlign="center"
-      initiallyExpanded
-      on:nnsToggle={toggle}
-    >
+    <Collapsible maxContentHeight={300} initiallyExpanded on:nnsToggle={toggle}>
       <h3 slot="header"><slot name="title" /></h3>
       <div class="content">
         <slot />
@@ -33,41 +28,26 @@
 
 <style lang="scss">
   @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media.scss";
+  @use "../../themes/mixins/media";
 
   article {
     text-decoration: none;
 
-    background: var(--gray-50-background);
-    color: var(--gray50-background-contrast);
+    background: var(--card-background);
+    color: var(--card-background-contrast);
+    box-shadow: var(--box-shadow);
 
-    padding: var(--padding-1_5x);
-    margin: var(--padding-1_5x) 0;
+    padding: var(--padding-2x);
+
     border-radius: var(--border-radius);
 
-    // TODO: move to variables
-    box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
-
     transition: all var(--animation-time-normal);
-
-    &.expanded {
-      padding-bottom: 0;
-      margin-bottom: 0;
-    }
   }
 
   h3 {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    line-height: var(--line-height-standard);
-    font-size: var(--font-size-h5);
-
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h3);
-    }
+    // increase click area
+    margin: calc(-1 * var(--padding));
+    padding: var(--padding);
   }
 
   .content {

@@ -1,173 +1,67 @@
 @use "./mixins/media";
+
 :root {
-  --header-height: 76px;
-  --nav-height: 64px;
+  --header-height: 56px;
+  --menu-width: 304px;
+  --max-main-content-width: 1450px;
+
   --icon-width: 24px;
 
-  --padding: 10px;
+  --padding: 8px;
 
   --padding-0_5x: calc(var(--padding) / 2);
   --padding-1_5x: calc(1.5 * var(--padding));
   --padding-2x: calc(2 * var(--padding));
-  --padding-2_5x: calc(2.5 * var(--padding));
   --padding-3x: calc(3 * var(--padding));
   --padding-4x: calc(4 * var(--padding));
-  --padding-6x: calc(4 * var(--padding));
+  --padding-6x: calc(6 * var(--padding));
   --padding-8x: calc(8 * var(--padding));
 
+  --column-gap: var(--padding-2x);
+  --row-gap: var(--padding-4x);
+
   --border-radius: 10px;
+  --border-radius-5x: calc(5 * var(--border-radius));
+  --border-radius-0_5x: calc(0.5 * var(--border-radius));
+  --element-border-radius: var(--border-radius-5x);
 
   --z-index: 1;
-
-  --headless-layout-header-height: 56px;
+  --menu-z-index: calc(var(--z-index) + 996);
+  --header-z-index: calc(var(--menu-z-index) + 1);
+  --overlay-z-index: calc(var(--header-z-index) + 1);
+  --modal-z-index: calc(var(--overlay-z-index) + 1);
+  --toast-z-index: calc(var(--modal-z-index) + 1);
 
   --section-max-width: 800px;
   --footer-height: 20vh;
 
   --animation-time-normal: 0.2s;
 
-  --button-min-height: 60px;
+  --button-min-height: 45px;
+
+  // Modal
 
   --modal-small-width: calc(100% - var(--padding-8x));
-  --modal-big-width: calc(100% - var(--padding-2x));
-  --modal-max-height: 630px;
+  --modal-small-max-width: calc(100vw - var(--padding-4x));
+  --modal-small-max-height: calc(100vh - var(--padding-4x));
+  --modal-small-border-radius: calc(2 * var(--border-radius));
+
+  --modal-big-width: 100vw;
+  --modal-big-max-width: 100vw;
+  --modal-big-height: 100vh;
+  --modal-big-border-radius: 0;
+
+  @supports (-webkit-touch-callout: none) {
+    --modal-big-height: -webkit-fill-available;
+  }
 
   @include media.min-width(medium) {
     --modal-small-width: 500px;
+
     --modal-big-width: 600px;
+    --modal-big-max-width: var(--modal-small-max-width);
+    --modal-big-height: var(--modal-small-max-height);
+    --modal-big-max-height: 630px;
+    --modal-big-border-radius: var(--modal-small-border-radius);
   }
-
-  // Json colors
-  --json-bracket-color: var(--gray-400);
-  --json-value-color: var(--gray-200);
-  --json-string-color: var(--brand-sea-buckthorn);
-  --json-number-color: var(--brand-picton-blue);
-  --json-null-color: var(--gray-400);
-  --json-principal-color: var(--yellow-400);
-  --json-hash-color: var(--yellow-400);
-  --json-bigint-color: var(--brand-picton-blue);
-  --json-boolean-color: var(--brand-picton-blue);
-
-  // BRAND COLORS
-  --brand-picton-blue: #29abe2;
-  --brand-black: #000000;
-  --brand-flamingo: #f15a24;
-  --brand-sea-buckthorn: #fbb03b;
-  --brand-razzmatazz: #ed1e79;
-  --brand-meteorite: #522785;
-
-  --error: #ed254e;
-  --error-rgb: 237, 37, 78;
-  --error-contrast: #ffffff;
-  --error-contrast-rgb: 255, 255, 255;
-  --error-shade: #d12145;
-  --error-tint: #ef3b60;
-
-  /** Default theme: dark */
-
-  --background: #272929;
-  --background-rgb: 39, 41, 41;
-  --background-contrast: #ffffff;
-  --background-contrast-rgb: 255, 255, 255;
-  --background-hover: #2f3131;
-  --background-shade: #222424;
-  --background-tint: #3d3e3e;
-
-  --light-background: #ebebeb;
-  --light-background-rgb: 235, 235, 235;
-  --light-background-contrast: #000000;
-  --light-background-contrast-rgb: 0, 0, 0;
-  --light-background-shade: #cfcfcf;
-  --light-background-tint: #ededed;
-
-  --gray-50-background: #383c3c;
-  --gray-50-background-rgb: 56, 60, 60;
-  --gray-50-background-contrast: #ffffff;
-  --gray-50-background-contrast-rgb: 255, 255, 255;
-  --gray-50-background-shade: #313535;
-  --gray-50-background-tint: #4c5050;
-
-  --black: #0b0c0c;
-  --black-rgb: 11, 12, 12;
-  --black-contrast: #ffffff;
-  --black-contrast-rgb: 255, 255, 255;
-  --black-shade: #0a0b0b;
-  --black-tint: #232424;
-
-  --blue-500: #0081ff;
-  --blue-500-rgb: 0, 129, 255;
-  --blue-500-contrast: #ffffff;
-  --blue-500-contrast-rgb: 255, 255, 255;
-  --blue-500-shade: #0072e0;
-  --blue-500-tint: #1a8eff;
-
-  --blue-200: #99ceff;
-  --blue-200-rgb: 153, 206, 255;
-  --blue-200-contrast: #000000;
-  --blue-200-contrast-rgb: 0, 0, 0;
-  --blue-200-shade: #87b5e0;
-  --blue-200-tint: #a3d3ff;
-
-  --blue-50: #ebf5ff;
-  --blue-50-rgb: 235, 245, 255;
-  --blue-50-contrast: #000000;
-  --blue-50-contrast-rgb: 0, 0, 0;
-  --blue-50-shade: #cfd8e0;
-  --blue-50-tint: #edf6ff;
-
-  --gray-600: #545858;
-  --gray-600-rgb: 84, 88, 88;
-  --gray-600-contrast: #ffffff;
-  --gray-600-contrast-rgb: 255, 255, 255;
-  --gray-600-shade: #4a4d4d;
-  --gray-600-tint: #656969;
-
-  --gray-400: #909898;
-  --gray-400-rgb: 144, 152, 152;
-  --gray-400-contrast: #000000;
-  --gray-400-contrast-rgb: 0, 0, 0;
-  --gray-400-shade: #7f8686;
-  --gray-400-tint: #9ba2a2;
-
-  --gray-200: #aeb7b7;
-  --gray-200-rgb: 174, 183, 183;
-  --gray-200-contrast: #000000;
-  --gray-200-contrast-rgb: 0, 0, 0;
-  --gray-200-shade: #99a1a1;
-  --gray-200-tint: #b6bebe;
-
-  --gray-50: #e4f0f0;
-  --gray-50-rgb: 228, 240, 240;
-  --gray-50-contrast: #000000;
-  --gray-50-contrast-rgb: 0, 0, 0;
-  --gray-50-shade: #c9d3d3;
-  --gray-50-tint: #e7f2f2;
-
-  --yellow-500: #ec9509;
-  --yellow-500-rgb: 236, 149, 9;
-  --yellow-500-contrast: #000000;
-  --yellow-500-contrast-rgb: 0, 0, 0;
-  --yellow-500-shade: #d08308;
-  --yellow-500-tint: #eea022;
-
-  --yellow-400: #f9b74d;
-  --yellow-400-rgb: 249, 183, 77;
-  --yellow-400-contrast: #000000;
-  --yellow-400-contrast-rgb: 0, 0, 0;
-  --yellow-400-shade: #dba144;
-  --yellow-400-tint: #fabe5f;
-
-  --green-500: #39a831;
-  --green-500-rgb: 57, 168, 49;
-  --green-500-contrast: #ffffff;
-  --green-500-contrast-rgb: 255, 255, 255;
-  --green-500-shade: #32942b;
-  --green-500-tint: #4db146;
-
-  --pink: #ed1e79;
-  --pink-rgb: 237, 30, 121;
-  --pink-contrast: #ffffff;
-  --pink-contrast-rgb: 255, 255, 255;
-  --pink-shade: #d11a6a;
-  --pink-tint: #ef3586;
 }

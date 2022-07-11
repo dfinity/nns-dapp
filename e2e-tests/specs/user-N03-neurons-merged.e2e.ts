@@ -1,11 +1,12 @@
 /**
  * Creates a standard set of users.
  */
-import { register } from "../common/register";
 import { MyNavigator } from "../common/navigator";
-import { Header } from "../components/header";
-import { NeuronsTab } from "../components/neurons-tab";
+import { register } from "../common/register";
 import { skipUnlessBrowserIs } from "../common/test";
+import { Icp } from "../components/icp";
+import { NAV_NEURONS_SELECTOR } from "../components/nav";
+import { NeuronsTab } from "../components/neurons-tab";
 
 describe("Verifies that neurons can be merged", () => {
   let neuronId1: string = "";
@@ -33,15 +34,15 @@ describe("Verifies that neurons can be merged", () => {
   });
 
   it("Setup: Give user ICP", async () => {
-    await new Header(browser).getIcp(10);
+    await new Icp(browser).getIcp(10);
   });
 
   it("Setup: Buy two neurons", async () => {
     const navigator = new MyNavigator(browser);
-    await navigator.click(
-      Header.TAB_TO_NEURONS_SELECTOR,
-      "Go to the neurons tab"
-    );
+    await navigator.navigate({
+      selector: NAV_NEURONS_SELECTOR,
+      description: "Go to the neurons view",
+    });
     const neuronsTab = new NeuronsTab(browser);
     neuronId1 = (
       await neuronsTab.stakeNeuron({
