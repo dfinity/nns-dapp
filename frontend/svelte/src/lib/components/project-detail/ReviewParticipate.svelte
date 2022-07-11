@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import { i18n } from "../../stores/i18n";
   import { mainTransactionFeeStoreAsIcp } from "../../stores/transaction-fees.store";
@@ -44,8 +45,10 @@
       </p>
     </div>
     <div class="highlight">
+      <span class="icon">
+        <IconSouth />
+      </span>
       <div class="align-right">
-        <!-- TODO: Icon https://dfinity.atlassian.net/browse/L2-814 -->
         <Icp icp={icpAmount} inline />
         <span>
           <Icp icp={$mainTransactionFeeStoreAsIcp} singleLine />
@@ -68,7 +71,6 @@
       <span class="icon"><IconWarning size="48px" /></span>
       <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
     </div>
-    <!-- TODO: New checkbox https://dfinity.atlassian.net/browse/L2-811 -->
     <Checkbox
       text="block"
       inputId="agree"
@@ -101,6 +103,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: var(--padding);
+
+    .icon {
+      color: var(--primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
     .align-right {
       display: flex;
@@ -112,6 +122,13 @@
 
   .actions {
     margin-top: var(--padding-4x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    --select-padding: var(--padding-2x) 0;
+
     .warning {
       display: grid;
       grid-template-columns: 44px 1fr;
