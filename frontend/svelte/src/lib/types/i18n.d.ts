@@ -290,7 +290,8 @@ interface I18nCanisters {
   title: string;
   text: string;
   principal_is: string;
-  create_or_link: string;
+  create_canister: string;
+  link_canister: string;
   empty: string;
   add_canister: string;
   create_canister_title: string;

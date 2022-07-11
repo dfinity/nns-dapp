@@ -60,18 +60,29 @@ describe("Canisters", () => {
     expect(queryAllByTestId("canister-card").length).toBe(2);
   });
 
-  it("should open the CreateOrLinkCanisterModal on click to Create Or Link Canister", async () => {
+  it("should open the LinkCanisterModal on click to Link Canister", async () => {
     const { queryByTestId } = render(Canisters);
 
-    const toolbarButton = queryByTestId("create-link-canister-button");
+    const toolbarButton = queryByTestId("link-canister-button");
     expect(toolbarButton).not.toBeNull();
 
     toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
     await waitFor(() =>
-      expect(
-        queryByTestId("create-link-canister-modal-title")
-      ).toBeInTheDocument()
+      expect(queryByTestId("link-canister-modal-title")).toBeInTheDocument()
+    );
+  });
+
+  it("should open the CreateCanisterModal on click to Create Canister", async () => {
+    const { queryByTestId } = render(Canisters);
+
+    const toolbarButton = queryByTestId("create-canister-button");
+    expect(toolbarButton).not.toBeNull();
+
+    toolbarButton !== null && (await fireEvent.click(toolbarButton));
+
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-modal-title")).toBeInTheDocument()
     );
   });
 });
