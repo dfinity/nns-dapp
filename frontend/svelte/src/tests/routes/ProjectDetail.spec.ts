@@ -3,7 +3,7 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import {loadSnsSummary, loadSnsSwapStateStore} from "../../lib/services/sns.services";
+import { loadSnsSummary } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,

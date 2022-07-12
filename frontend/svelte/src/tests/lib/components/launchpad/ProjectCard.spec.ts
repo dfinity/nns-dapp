@@ -8,12 +8,6 @@ import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import {
-  loadSnsSummaries,
-  loadSnsSummary,
-  loadSnsSwapStates,
-  loadSnsSwapStateStore
-} from '../../../../lib/services/sns.services';
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
