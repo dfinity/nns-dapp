@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount, tick } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import SelectAccount from "../../components/accounts/SelectAccount.svelte";
-  import AttachCanister from "../../components/canisters/AttachCanister.svelte";
   import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
-  import SelectNewCanisterType from "../../components/canisters/SelectNewCanisterType.svelte";
   import { NEW_CANISTER_MIN_T_CYCLES } from "../../constants/canisters.constants";
   import {
     createCanister,
@@ -16,7 +14,6 @@
   import { toastsStore } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
-  import type { CreateOrLinkType } from "../../types/canisters";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import WizardModal from "../WizardModal.svelte";
@@ -27,20 +24,6 @@
   });
 
   const steps: Steps = [
-    {
-      name: "SelectNewCanisterType",
-      title: $i18n.canisters.add_canister,
-      showBackButton: false,
-    },
-  ];
-  const attachCanisterSteps = [
-    {
-      name: "AttachCanister",
-      title: $i18n.canisters.attach_canister,
-      showBackButton: true,
-    },
-  ];
-  const createCanisterSteps = [
     {
       name: "SelectAccount",
       title: $i18n.accounts.select_source,
@@ -62,21 +45,6 @@
   let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
-
-  const selectType = async ({
-    detail,
-  }: CustomEvent<{ type: CreateOrLinkType }>) => {
-    // We preserve the first step in the array because we want the current first step to *not* be re-rendered. It would cause a flickering of the content of the modal.
-    steps.splice(1, steps.length);
-    steps.push(
-      ...(detail.type === "newCanisterAttach"
-        ? attachCanisterSteps
-        : createCanisterSteps)
-    );
-    // Wait steps to be applied - components to be updated - before being able to navigate to next step
-    await tick();
-    modal.next();
-  };
 
   const onSelectAccount = ({
     detail,
@@ -122,22 +90,16 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
-    ><span data-tid="create-link-canister-modal-title"
+    ><span data-tid="create-canister-modal-title"
       >{currentStep?.title ?? $i18n.canisters.add_canister}</span
     ></svelte:fragment
   >
   <svelte:fragment>
-    {#if currentStep?.name === "SelectNewCanisterType"}
-      <SelectNewCanisterType on:nnsSelect={selectType} />
-    {/if}
     {#if currentStep?.name === "SelectAccount"}
       <SelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
-    {/if}
-    {#if currentStep?.name === "AttachCanister"}
-      <AttachCanister on:nnsClose />
     {/if}
     {#if currentStep?.name === "SelectCycles"}
       <SelectCyclesCanister

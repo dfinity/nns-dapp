@@ -59,7 +59,7 @@ export const transactionFee = async ({
   logWithTimestamp(`Getting transaction fee call...`);
   const { canister } = await ledgerCanister({ identity });
   const fee = await canister.transactionFee();
-  logWithTimestamp(`Getting transactoin fee complete.`);
+  logWithTimestamp(`Getting transaction fee complete.`);
   return fee;
 };
 

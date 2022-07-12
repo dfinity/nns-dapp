@@ -174,6 +174,7 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
+  current_balance_total: string;
   current_balance_detail: string;
 }
 
@@ -290,7 +291,8 @@ interface I18nCanisters {
   title: string;
   text: string;
   principal_is: string;
-  create_or_link: string;
+  create_canister: string;
+  link_canister: string;
   empty: string;
   add_canister: string;
   create_canister_title: string;

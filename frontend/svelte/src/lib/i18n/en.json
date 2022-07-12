@@ -165,6 +165,7 @@
     "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
     "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
     "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?",
+    "current_balance_total": "Total balance: $amount ICP",
     "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {
@@ -276,7 +277,8 @@
     "title": "Canisters",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "principal_is": "Your principal id is",
-    "create_or_link": "Create or Link Canister",
+    "create_canister": "Create Canister",
+    "link_canister": "Link Canister",
     "empty": "No canisters yet.",
     "add_canister": "Add Canister",
     "create_canister_title": "Create New Canister",

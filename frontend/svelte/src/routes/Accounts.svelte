@@ -11,11 +11,13 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { ICP } from "@dfinity/nns";
-  import { sumICPs } from "../lib/utils/icp.utils";
+  import { formatICP, sumICPs } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import Tooltip from "../lib/components/ui/Tooltip.svelte";
+  import { replacePlaceholders } from "../lib/utils/i18n.utils";
 
   let accounts: AccountsStore | undefined;
 
@@ -34,6 +36,7 @@
   const closeModal = () => (modal = undefined);
 
   let totalBalance: ICP;
+  let totalICP: string;
   const zeroICPs = ICP.fromE8s(BigInt(0));
   $: {
     totalBalance = sumICPs(
@@ -41,6 +44,10 @@
       ...(accounts?.subAccounts || []).map(({ balance }) => balance),
       ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
     );
+    totalICP = formatICP({
+      value: totalBalance.toE8s(),
+      detailed: true,
+    });
   }
 </script>
 
@@ -50,7 +57,14 @@
       <h1>{$i18n.accounts.title}</h1>
 
       {#if accounts?.main}
-        <ICPComponent icp={totalBalance} />
+        <Tooltip
+          id="wallet-total-icp"
+          text={replacePlaceholders($i18n.accounts.current_balance_total, {
+            $amount: totalICP,
+          })}
+        >
+          <ICPComponent icp={totalBalance} />
+        </Tooltip>
       {/if}
     </div>
 
@@ -127,7 +141,7 @@
     @include media.min-width(medium) {
       display: inline-flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
     }
   }
 </style>
