@@ -10,7 +10,7 @@
   import { maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
-  import Input from "../ui/Input.svelte";
+  import AmountInput from "../ui/AmountInput.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
 
   // Tested in the ParticipateSwapModal
@@ -53,20 +53,7 @@
     <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
   </div>
   <div class="wrapper info">
-    <Input
-      inputType="icp"
-      name="amount"
-      placeholderLabelKey="sns_project_detail.enter_amount"
-      bind:value={amount}
-    >
-      <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
-      <button
-        on:click|preventDefault={addMax}
-        slot="additional"
-        class="ghost"
-        type="button">{$i18n.core.max}</button
-      >
-    </Input>
+    <AmountInput bind:amount on:nnsMax={addMax} {max} />
     <KeyValuePair>
       <span slot="key">Min <IcpComponent singleLine icp={minAmount} /></span>
       <span slot="value">max <IcpComponent singleLine icp={maxAmount} /></span>

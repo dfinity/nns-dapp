@@ -2,6 +2,7 @@
   import Input from "./Input.svelte";
   import { i18n } from "../../stores/i18n";
   import { createEventDispatcher } from "svelte";
+  import MaxButton from "../common/MaxButton.svelte";
 
   export let amount: number | undefined = undefined;
   export let max: number | undefined = undefined;
@@ -18,10 +19,5 @@
   inputType="icp"
 >
   <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
-  <button
-    type="button"
-    on:click|preventDefault={setMax}
-    class="ghost"
-    slot="additional">{$i18n.core.max}</button
-  >
+  <MaxButton on:click={setMax} slot="additional" />
 </Input>
