@@ -69,6 +69,9 @@ help_text() {
 	--open
 	  Open the NNS dapp in a browser.
 
+	--ctl-nobuild-nns
+	  Use the existing NNS and SNS wasm canisters.
+
 	EOF
 }
 
@@ -86,6 +89,7 @@ DEPLOY_SNS="false"
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
+CTL_NOBUILD_NNS="false"
 
 while (($# > 0)); do
   env="$1"
@@ -126,8 +130,16 @@ while (($# > 0)); do
   --dry-run)
     DRY_RUN="true"
     ;;
+  --ctl-nobuild-nns)
+    CTL_NOBUILD_NNS="true"
+    ;;
   *)
     DFX_NETWORK="$env"
+    # Check that the network is valid.
+    DFX_NETWORK="$env" jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
+      echo "ERROR: Network '$env' is not listed in dfx.json"
+      exit 1
+    } >&2
     ;;
   esac
 done
@@ -192,8 +204,12 @@ if [[ "$START_DFX" == "true" ]]; then
 fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
-  ./e2e-tests/scripts/nns-canister-download
-  ./e2e-tests/scripts/nns-canister-build
+  if [[ "$CTL_NOBUILD_NNS" == "true" ]]; then
+    echo "Using exising NNS and SNS canisters"
+  else
+    ./e2e-tests/scripts/nns-canister-download
+    ./e2e-tests/scripts/nns-canister-build
+  fi
 fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
@@ -224,7 +240,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
-  dfx deploy --network "$DFX_NETWORK" nns-dapp
+  dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
   OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi

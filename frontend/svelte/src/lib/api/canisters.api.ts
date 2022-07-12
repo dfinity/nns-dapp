@@ -16,13 +16,16 @@ import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
 } from "../canisters/nns-dapp/nns-dapp.types";
+import {
+  CREATE_CANISTER_MEMO,
+  TOP_UP_CANISTER_MEMO,
+} from "../constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
+import { ApiErrorKey } from "../types/api.errors";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { poll, PollingLimitExceededError } from "../utils/utils";
-import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
-import { ApiErrorKey } from "./errors.api";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 

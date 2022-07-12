@@ -14,11 +14,11 @@ on:
 
 
 env:
-      DFX_VERSION: 0.9.2
+      DFX_VERSION: 0.10.1
       RUSTC_VERSION: 1.58.1
       FLUTTER_VERSION: 2.2.3
       IC_CDK_OPTIMIZER_VERSION: 0.3.1
-      IC_COMMIT: 7fcae4939dc6fac179ce3dd25ded6e6b650e2293
+      IC_COMMIT: 28ea02bad62dc777378a53602b8cd3a515ab23a3
       NNS_CACHING_KEY: dv-0004
 
 jobs:

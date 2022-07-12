@@ -60,6 +60,9 @@ if test -z "${USER_PROFILE:-}"; then
   }
 fi
 
+USER_BIN="$HOME/.local/bin"
+mkdir -p "$USER_BIN"
+
 NEW_TERMINAL_NEEDED=false
 append_to_profile() {
   printf '\n%s\n' "$1" >>"$USER_PROFILE"
@@ -151,6 +154,12 @@ install_ic_cdk_optimizer() {
   cargo install --version 0.3.2 ic-cdk-optimizer
 }
 
+is_docker_installed() {
+  command -v docker >/dev/null 2>&1 || return 1
+  local major_version
+  major_version="$(docker --version | sed -E 's/(^|.*[^0-9])([0-9]+)[.][0-9]+[.][0-9]+.*/\2/g')"
+  ((major_version >= 10))
+}
 install_docker() {
   while ! command -v docker; do
     echo "Please install docker from: https://docs.docker.com/get-docker/"
@@ -173,16 +182,12 @@ install_cmake_linux() {
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-IC_COMMIT=7fcae4939dc6fac179ce3dd25ded6e6b650e2293
+IC_COMMIT=28ea02bad62dc777378a53602b8cd3a515ab23a3
 install_ic_admin_linux() {
-  local USER_BIN="$HOME/.local/bin"
-  mkdir -p "$USER_BIN"
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
 }
 install_ic_admin_darwin() {
-  local USER_BIN="$HOME/.local/bin"
-  mkdir -p "$USER_BIN"
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
@@ -191,19 +196,29 @@ install_ic_admin_darwin() {
 }
 
 install_sns_linux() {
-  local USER_BIN="$HOME/.local/bin"
-  mkdir -p "$USER_BIN"
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
 }
 install_sns_darwin() {
-  local USER_BIN="$HOME/.local/bin"
-  mkdir -p "$USER_BIN"
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
   # shellcheck disable=SC2016
   command -v sns ||
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
+}
+
+install_idl2json() {
+  (
+    set -euo pipefail # These are not inherited in a subsell.
+    build_dir="$(mktemp -d)"
+    cd "$build_dir"
+    git clone https://github.com/dfinity/idl2json.git
+    cd idl2json
+    cargo build --release
+    mv target/release/idl2json "$USER_BIN"
+    cd /tmp
+    rm -fr "${build_dir:-this-is-not-the-dir-you-are-looking-for}" # This is defensive code; build_dir SHOULD be defined.
+  )
 }
 
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
@@ -216,7 +231,7 @@ sudo echo I have superpowers || {
 install_rosetta_maybe
 install_brew_maybe
 command -v wget || "install_wget_$OS"
-command -v docker || install_docker
+is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"
@@ -228,6 +243,7 @@ command -v cmake || "install_cmake_$OS"
 command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
+command -v idl2json || install_idl2json
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
