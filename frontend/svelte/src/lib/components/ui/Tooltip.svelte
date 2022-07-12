@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
 
   /** Used in aria-describedby */
-  import { debounce, isNullable } from "../../utils/utils";
+  import { debounce } from "../../utils/utils";
 
   export let id: string;
   export let text = "";
