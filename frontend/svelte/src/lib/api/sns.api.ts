@@ -10,6 +10,7 @@ import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 import { ApiErrorKey } from "./errors.api";
 
 type RootCanisterId = string;
@@ -40,6 +41,8 @@ const listSnses = async ({
   agent: HttpAgent;
   certified: boolean;
 }): Promise<Principal[]> => {
+  logWithTimestamp(`Loading list of Snses certified:${certified} call...`);
+
   const {
     SnsWasmCanister,
   }: {
@@ -56,6 +59,8 @@ const listSnses = async ({
   });
 
   const snses: DeployedSns[] = await listSnses({ certified });
+
+  logWithTimestamp(`Loading list of Snses certified:${certified} complete.`);
 
   return snses.reduce(
     (acc: Principal[], { root_canister_id }: DeployedSns) => [
@@ -75,17 +80,23 @@ const initSns = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsWrapper> => {
+  logWithTimestamp(`Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`);
+
   const { initSns }: { initSns: InitSns } = await import(
     "@dfinity/sns/dist/esm/sns"
   );
 
-  return initSns({
+  const snsWrapper: SnsWrapper = await initSns({
     rootOptions: {
       canisterId: rootCanisterId,
     },
     agent,
     certified,
   });
+
+  logWithTimestamp(`Initializing Sns ${rootCanisterId.toText()} certified:${certified} complete.`);
+
+  return snsWrapper;
 };
 
 const loadSnsWrappers = async ({
@@ -188,6 +199,8 @@ export const querySnsSummaries = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<SnsSummary[]> => {
+  logWithTimestamp(`Listing all deployed Sns summaries certified:${certified} call...`);
+
   const snsWrappers: SnsWrapper[] = [
     ...(
       (await wrappers({ identity, certified })) ??
@@ -215,6 +228,8 @@ export const querySnsSummaries = async ({
     );
   }
 
+  logWithTimestamp(`Listing all deployed Sns summaries certified:${certified} done.`);
+
   return mockSnsSummaries;
 };
 
@@ -227,6 +242,8 @@ export const querySnsSummary = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<SnsSummary | undefined> => {
+  logWithTimestamp(`Getting Sns ${rootCanisterId} summary certified:${certified} call...`);
+
   const { metadata }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
@@ -234,6 +251,8 @@ export const querySnsSummary = async ({
   });
 
   const summary = await metadata({ certified });
+
+  logWithTimestamp(`Getting Sns ${rootCanisterId} summary certified:${certified} done.`);
 
   // TODO(L2-829, L2-751): remove and replace with effective data
   console.log("Sns metadata", summary);
