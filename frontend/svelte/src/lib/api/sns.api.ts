@@ -49,7 +49,7 @@ const listSnses = async ({
     SnsWasmCanister: {
       create: (options: SnsWasmCanisterOptions) => SnsWasmCanister;
     };
-  } = await import("@dfinity/nns/dist/esm/sns_wasm");
+  } = await import("@dfinity/nns/dist/esm/sns_wasm.canister");
 
   // TODO(L2-828): extract property for wasm canister id
 
