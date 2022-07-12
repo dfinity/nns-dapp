@@ -168,9 +168,8 @@ const wrapper = async ({
     await wrappers({ identity, certified })
   ).get(rootCanisterId);
 
-  // TODO: proper error and docs
   if (snsWrapper === undefined) {
-    throw new Error("Undefined sns wrapper");
+    throw new ApiErrorKey("error__sns.undefined_project");
   }
 
   return snsWrapper;

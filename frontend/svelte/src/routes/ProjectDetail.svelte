@@ -65,6 +65,8 @@
 
   $: layoutTitleStore.set(fullProject?.summary.name ?? "");
 
+  // TODO(L2-838): if error redirect to launchpad and display error there
+
   // TODO: do we want such subscribe in the component?
   $: $snsSummariesStore, (() => loadSnsSwapStateStore(rootCanisterIdString))();
 </script>

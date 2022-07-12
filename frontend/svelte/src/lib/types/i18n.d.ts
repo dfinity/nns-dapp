@@ -641,6 +641,7 @@ interface I18nTheme {
 
 interface I18nError__sns {
   init: string;
+  undefined_project: string;
 }
 
 interface I18n {

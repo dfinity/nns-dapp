@@ -604,6 +604,7 @@
     "switch_theme": "Switch theme"
   },
   "error__sns": {
-    "init": "There was an error initializing some projects."
+    "init": "There was an error initializing some projects.",
+    "undefined_project": "The requested project is invalid or throws an error."
   }
 }

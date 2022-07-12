@@ -85,7 +85,7 @@ export const loadSnsSummaries = (): Promise<void> =>
   });
 
 export const loadSnsSummary = async (canisterId: string) => {
-  // TODO: load only if not yet in store
+  // TODO(L2-838): load only if not yet in store
 
   return queryAndUpdate<SnsSummary | undefined, unknown>({
     request: ({ certified, identity }) =>

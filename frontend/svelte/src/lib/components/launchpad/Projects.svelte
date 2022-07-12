@@ -22,7 +22,7 @@
     // show loading state only when store is empty
     loading = $snsFullProjectStore === undefined;
 
-    // TODO: reload store only if needed
+    // TODO(L2-838): reload store only if needed
     await loadSnsSummaries();
 
     loading = false;
