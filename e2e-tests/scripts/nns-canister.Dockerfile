@@ -57,10 +57,12 @@ RUN binary="cycles-minting-canister" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
 FROM scratch AS scratch
-COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
-COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.public.did
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
-COPY --from=builder /ic/rs/sns/swap/canister/swap.did /swap.did
-COPY --from=builder /ic/rs/sns/root/canister/root.did /root.did
-COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns-wasm.did
+COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
+COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.did
+COPY --from=builder /ic/rs/nns/gtc/canister/gtc.did /genesis_token.did
+COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns_wasm.did
+COPY --from=builder /ic/rs/sns/swap/canister/swap.did sns_swap.did
+COPY --from=builder /ic/rs/sns/root/canister/root.did sns_root.did
+COPY --from=builder /ic/rs/sns/governance/canister/governance.did sns_governance.did
 COPY --from=builder /ic/rs/target/*.wasm /

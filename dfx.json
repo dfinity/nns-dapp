@@ -17,7 +17,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns-wasm.did",
+      "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
@@ -25,7 +25,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/governance.did",
+      "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
@@ -41,15 +41,15 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/swap.did",
-      "wasm": "target/ic/sns-sale-canister.wasm",
+      "candid": "target/ic/sns_swap.did",
+      "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
       "build": [
         "true"
       ],
-      "candid": "target/ic/root.did",
+      "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     }
