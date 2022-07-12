@@ -207,9 +207,9 @@ if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
   if [[ "$CTL_NOBUILD_NNS" == "true" ]]; then
     echo "Using exising NNS and SNS canisters"
   else
-  ./e2e-tests/scripts/nns-canister-download
-  ./e2e-tests/scripts/nns-canister-build
-fi
+    ./e2e-tests/scripts/nns-canister-download
+    ./e2e-tests/scripts/nns-canister-build
+  fi
 fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
