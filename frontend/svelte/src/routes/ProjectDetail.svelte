@@ -19,7 +19,8 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
     type SnsFullProject,
-    snsFullProjectStore, snsSummariesStore,
+    snsFullProjectStore,
+    snsSummariesStore,
   } from "../lib/stores/projects.store";
   import { getSnsProjectById } from "../lib/utils/sns.utils";
   import Spinner from "../lib/components/ui/Spinner.svelte";
@@ -65,8 +66,7 @@
   $: layoutTitleStore.set(fullProject?.summary.name ?? "");
 
   // TODO: do we want such subscribe in the component?
-  $: $snsSummariesStore,
-    (() => loadSnsSwapStateStore(rootCanisterIdString))();
+  $: $snsSummariesStore, (() => loadSnsSwapStateStore(rootCanisterIdString))();
 </script>
 
 {#if fullProject === undefined}

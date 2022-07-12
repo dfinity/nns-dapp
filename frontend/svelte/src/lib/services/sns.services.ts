@@ -11,7 +11,6 @@ import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
-  type SnsFullProject,
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { SnsSummary, SnsSwapState } from "../types/sns";
@@ -87,9 +86,7 @@ export const loadSnsSummary = async (canisterId: string) => {
 export const loadSnsSwapStates = async (
   summaries: SnsSummary[] | undefined
 ) => {
-
-
-  console.log('here', summaries)
+  console.log("here", summaries);
 
   if (summaries === undefined) {
     snsSwapStatesStore.reset();

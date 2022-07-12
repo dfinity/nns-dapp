@@ -6,7 +6,8 @@
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,
-    type SnsFullProject, snsSummariesStore,
+    type SnsFullProject,
+    snsSummariesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
