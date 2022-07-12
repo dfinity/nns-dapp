@@ -1,6 +1,6 @@
 <script lang="ts">
   /** Used in aria-describedby */
-  import { debounce } from "../../utils/utils";
+  import { debounce, isNullable } from "../../utils/utils";
 
   export let id: string;
   export let text = "";
@@ -15,11 +15,7 @@
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
     const main: HTMLElement | null = document.querySelector("main");
 
-    if (
-      main === null ||
-      tooltipComponent === undefined ||
-      target === undefined
-    ) {
+    if (main === null || tooltipComponent === undefined || isNullable(target)) {
       // Do nothing, we need the elements to be rendered in order to get their size and position to fix the tooltip
       return;
     }
