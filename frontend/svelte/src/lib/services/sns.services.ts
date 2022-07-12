@@ -77,7 +77,7 @@ export const loadSnsSummaries = (): Promise<void> =>
       toastsStore.error(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
+          fallbackErrorLabelKey: "error__sns.list_summaries",
         })
       );
     },
@@ -112,7 +112,7 @@ export const loadSnsSummary = async (canisterId: string) => {
       toastsStore.error(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
+          fallbackErrorLabelKey: "error__sns.load_summary",
         })
       );
     },
