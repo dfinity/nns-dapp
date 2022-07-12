@@ -9,12 +9,12 @@ import type {
 import { GovernanceCanister, ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { DFINITY_NEURON, IC_NEURON } from "../constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";
 import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { createAgent } from "../utils/agent.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { dfinityNeuron, icNeuron } from "./constants.api";
 import { ledgerCanister as getLedgerCanister } from "./ledger.api";
 
 export const queryNeuron = async ({
@@ -341,12 +341,12 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (knownNeurons.find(({ id }) => id === dfinityNeuron.id) === undefined) {
-    knownNeurons.push(dfinityNeuron);
+  if (knownNeurons.find(({ id }) => id === DFINITY_NEURON.id) === undefined) {
+    knownNeurons.push(DFINITY_NEURON);
   }
 
-  if (knownNeurons.find(({ id }) => id === icNeuron.id) === undefined) {
-    knownNeurons.push(icNeuron);
+  if (knownNeurons.find(({ id }) => id === IC_NEURON.id) === undefined) {
+    knownNeurons.push(IC_NEURON);
   }
 
   logWithTimestamp(`Querying Known Neurons certified:${certified} complete.`);
