@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
+
   /** Used in aria-describedby */
   import { debounce } from "../../utils/utils";
 
@@ -16,6 +18,7 @@
     const main: HTMLElement | null = document.querySelector("main");
 
     if (
+      destroyed ||
       main === null ||
       tooltipComponent === undefined ||
       target === undefined
@@ -52,6 +55,9 @@
   });
 
   $: innerWidth, tooltipComponent, target, setPosition();
+
+  let destroyed: boolean = false;
+  onDestroy(() => (destroyed = true));
 </script>
 
 <svelte:window bind:innerWidth />
