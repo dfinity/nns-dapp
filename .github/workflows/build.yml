@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: set-env
-        run: jq -r '. | to_entries | .[] | .key+"="+(.value|tostring)' build-config.json >> $GITHUB_ENV
+        run: ./build-config.sh >> $GITHUB_ENV
 
       - name: Get cached nns canisters
         id: create_nns_canister_cache
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: set-env
-        run: jq -r '. | to_entries | .[] | .key+"="+(.value|tostring)' build-config.json >> $GITHUB_ENV
+        run: ./build-config.sh >> $GITHUB_ENV
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
