@@ -76,8 +76,8 @@ const initSnsSwapStatesStore = () => {
     },
 
     reset() {
-      set(undefined)
-    }
+      set(undefined);
+    },
   };
 };
 
