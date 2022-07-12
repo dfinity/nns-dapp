@@ -229,7 +229,6 @@ fi
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if [[ "$DEPLOY_SNS" == "true" ]]; then
   # If the wasm canister has not been installed already, install it.
-  # TODO: Maybe put this behind a flag?
   echo Checking whether sns wasm is installed
   SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
   if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]; then
