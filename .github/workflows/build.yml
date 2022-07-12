@@ -14,11 +14,6 @@ on:
 
 
 env:
-      DFX_VERSION: 0.10.1
-      RUSTC_VERSION: 1.58.1
-      FLUTTER_VERSION: 2.2.3
-      IC_CDK_OPTIMIZER_VERSION: 0.3.1
-      IC_COMMIT: 28ea02bad62dc777378a53602b8cd3a515ab23a3
       NNS_CACHING_KEY: dv-0004
 
 jobs:
@@ -26,6 +21,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: set-env
+        run: jq -r '. | to_entries | .[] | .key+"="+(.value|tostring)' build-config.json >> $GITHUB_ENV
 
       - name: Get cached nns canisters
         id: create_nns_canister_cache
@@ -64,6 +61,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
+      - name: set-env
+        run: jq -r '. | to_entries | .[] | .key+"="+(.value|tostring)' build-config.json >> $GITHUB_ENV
 
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
