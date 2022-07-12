@@ -20,6 +20,10 @@
     --json-principal-color: var(--warning-emphasis);
     --json-hash-color: var(--warning-emphasis);
 
+    // Inputs
+    --input-border-color: transparent;
+    --input-checked-background: var(--primary);
+
     // Menu
     --menu-background: #fafbfc;
     --menu-background-contrast: #333333;
@@ -29,6 +33,8 @@
     --disable-contrast: #858585;
 
     // Palette
+    --secondary-text-color: var(--primary);
+
     --background: #f4f5f6;
     --background-rgb: 244, 245, 246;
     --background-contrast: #333333;

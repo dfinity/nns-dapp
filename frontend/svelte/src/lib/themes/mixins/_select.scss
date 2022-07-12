@@ -1,4 +1,5 @@
 @use "./interaction";
+@use "./form";
 
 @mixin group {
   display: flex;
@@ -22,7 +23,6 @@
   border-radius: var(--select-border-radius, var(--border-radius));
 
   --select-input-size: 20px;
-  --select-input-border: 0;
 }
 
 @mixin label {
@@ -36,14 +36,13 @@
 /** accent-color not supported yet on Safari 😩 **/
 
 @mixin input {
+  @include form.input;
   appearance: none;
-  background: white;
   margin: 0;
 
   width: var(--select-input-size);
   height: var(--select-input-size);
 
-  border: var(--select-input-border) solid currentColor;
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius-0_5x);
 
@@ -55,7 +54,7 @@
   position: relative;
 
   &:checked {
-    background: var(--primary);
+    background: var(--input-checked-background);
   }
 
   &[disabled],

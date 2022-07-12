@@ -37,6 +37,10 @@
   --json-bigint-color: var(--brand-picton-blue);
   --json-boolean-color: var(--brand-picton-blue);
 
+  // Inputs
+  --input-border-color: #ffffff;
+  --input-checked-background: var(--card-background);
+
   // Menu
   --menu-background: var(--card-background);
   --menu-background-contrast: var(--card-background-contrast);
@@ -52,6 +56,8 @@
   --disable-contrast: #969696;
 
   // Palette
+  --secondary-text-color: #ffffff;
+
   --background: #383c3c;
   --background-rgb: 56, 60, 60;
   --background-contrast: #ffffff;

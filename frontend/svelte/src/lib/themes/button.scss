@@ -116,15 +116,16 @@ button {
       cursor: default;
     }
 
-    // Same colors as primary but reversed
-    background: var(--primary-contrast);
-    color: var(--primary);
+    background: var(--card-background);
+    // Use inset border to avoid messing up with size.
+    border: 1px inset var(--input-error-color, var(--input-border-color));
+    color: var(--secondary-text-color);
 
     @include effect.ripple-effect(--primary-contrast);
 
     &:focus {
-      background: var(--primary-contrast);
-      @include effect.ripple-effect(--primary-contrast);
+      background: var(--card-background-tint);
+      @include effect.ripple-effect(--card-background-tint);
     }
   }
 
