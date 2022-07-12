@@ -3,7 +3,7 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import { loadSnsSummary } from "../../lib/services/sns.services";
+import {loadSnsSummary, loadSnsSwapStateStore} from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
@@ -16,7 +16,8 @@ import { mockSnsFullProject } from "../mocks/sns-projects.mock";
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
-    loadSnsFullProject: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve()),
     routePathRootCanisterId: jest
       .fn()
       .mockImplementation(() => mockSnsFullProject.rootCanisterId.toText()),

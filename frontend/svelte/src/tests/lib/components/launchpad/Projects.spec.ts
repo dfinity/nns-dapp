@@ -17,7 +17,8 @@ import {
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
-    loadSnsFullProjects: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
