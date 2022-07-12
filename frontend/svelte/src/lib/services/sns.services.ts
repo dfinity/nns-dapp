@@ -2,9 +2,9 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
+  mockAbout5SecondsWaiting,
   querySnsSummaries,
   querySnsSummary,
-  mockAbout5SecondsWaiting,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
