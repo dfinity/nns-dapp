@@ -1,10 +1,10 @@
-export const dfinityNeuron = {
+export const DFINITY_NEURON = {
   id: BigInt(27),
   name: "DFINITY Foundation",
   description: undefined,
 };
 
-export const icNeuron = {
+export const IC_NEURON = {
   id: BigInt(28),
   name: "Internet Computer Association",
   description: undefined,
