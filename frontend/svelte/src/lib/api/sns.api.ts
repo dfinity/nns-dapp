@@ -12,7 +12,7 @@ import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { ApiErrorKey } from "./errors.api";
 
-type RootCanisterId = Principal;
+type RootCanisterId = string;
 let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 let snsUpdateWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 
@@ -129,7 +129,10 @@ const initWrappers = async ({
 }): Promise<Map<RootCanisterId, SnsWrapper>> =>
   new Map(
     (await loadSnsWrappers({ identity, certified })).map(
-      (wrapper: SnsWrapper) => [wrapper.canisterIds.rootCanisterId, wrapper]
+      (wrapper: SnsWrapper) => [
+        wrapper.canisterIds.rootCanisterId.toText(),
+        wrapper,
+      ]
     )
   );
 
@@ -175,6 +178,9 @@ const wrapper = async ({
   return snsWrapper;
 };
 
+// TODO(L2-751): remove mock data
+let mockSnsSummaries: SnsSummary[] = [];
+
 export const querySnsSummaries = async ({
   identity,
   certified,
@@ -197,12 +203,19 @@ export const querySnsSummaries = async ({
 
   // TODO(L2-829): mock data to be removed and replaced
   console.log("Sns metadatas", metadatas);
-  return snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
-    ...mockSnsSummaryList[
-      Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
-    ],
-    rootCanisterId,
-  }));
+
+  if (mockSnsSummaries.length === 0) {
+    mockSnsSummaries = snsWrappers.map(
+      ({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
+        ...mockSnsSummaryList[
+          Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
+        ],
+        rootCanisterId,
+      })
+    );
+  }
+
+  return mockSnsSummaries;
 };
 
 export const querySnsSummary = async ({
@@ -210,7 +223,7 @@ export const querySnsSummary = async ({
   identity,
   certified,
 }: {
-  rootCanisterId: Principal;
+  rootCanisterId: RootCanisterId;
   identity: Identity;
   certified: boolean;
 }): Promise<SnsSummary | undefined> => {
@@ -225,9 +238,9 @@ export const querySnsSummary = async ({
   // TODO(L2-829, L2-751): remove and replace with effective data
   console.log("Sns metadata", summary);
   return mockAbout5SecondsWaiting(() =>
-    mockSnsSummaryList.find(
+    mockSnsSummaries.find(
       ({ rootCanisterId: canisterId }: SnsSummary) =>
-        canisterId.toText() === rootCanisterId.toText()
+        canisterId.toText() === rootCanisterId
     )
   );
 };

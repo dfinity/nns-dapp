@@ -50,7 +50,7 @@ export const loadSnsSummaries = (): Promise<void> =>
       });
 
       // TODO(L2-751): remove mock data
-      if (certified === true) {
+      if (mockSwapStates.length > 0) {
         return;
       }
 
@@ -90,7 +90,7 @@ export const loadSnsSummary = async (canisterId: string) => {
   return queryAndUpdate<SnsSummary | undefined, unknown>({
     request: ({ certified, identity }) =>
       querySnsSummary({
-        rootCanisterId: Principal.fromText(canisterId),
+        rootCanisterId: canisterId,
         identity,
         certified,
       }),
