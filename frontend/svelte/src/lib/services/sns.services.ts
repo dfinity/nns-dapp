@@ -2,8 +2,8 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
-  listSnsSummaries,
-  listSnsSummary,
+  querySnsSummaries,
+  querySnsSummary,
   mockAbout5SecondsWaiting,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
@@ -42,7 +42,7 @@ const mockDummySwapStates: Partial<SnsSwapState>[] = [
 export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
-      listSnsSummaries({ certified, identity }),
+      querySnsSummaries({ certified, identity }),
     onLoad: ({ response: summaries, certified }) => {
       snsSummariesStore.setSummaries({
         summaries,
@@ -89,7 +89,7 @@ export const loadSnsSummary = async (canisterId: string) => {
 
   return queryAndUpdate<SnsSummary | undefined, unknown>({
     request: ({ certified, identity }) =>
-      listSnsSummary({
+      querySnsSummary({
         rootCanisterId: Principal.fromText(canisterId),
         identity,
         certified,

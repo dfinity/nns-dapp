@@ -175,15 +175,13 @@ const wrapper = async ({
   return snsWrapper;
 };
 
-export const listSnsSummaries = async ({
+export const querySnsSummaries = async ({
   identity,
   certified,
 }: {
   certified: boolean;
   identity: Identity;
 }): Promise<SnsSummary[]> => {
-  // TODO: query and update calls
-
   const snsWrappers: SnsWrapper[] = [
     ...(
       (await wrappers({ identity, certified })) ??
@@ -207,7 +205,7 @@ export const listSnsSummaries = async ({
   }));
 };
 
-export const listSnsSummary = async ({
+export const querySnsSummary = async ({
   rootCanisterId,
   identity,
   certified,
@@ -216,8 +214,6 @@ export const listSnsSummary = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<SnsSummary | undefined> => {
-  // TODO: query and update calls
-
   const { metadata }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
