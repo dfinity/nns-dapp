@@ -260,7 +260,7 @@ export const querySnsSummary = async ({
     certified,
   });
 
-  const summary = await metadata({ certified });
+  const summary = await metadata({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} summary certified:${certified} done.`
