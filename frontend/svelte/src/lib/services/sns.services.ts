@@ -20,10 +20,7 @@ import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
 
-/**
- * Loads summaries with swapStates
- */
-export const loadSnsFullProjects = (): Promise<void> =>
+export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
       listSnsSummaries({ certified, identity }),
@@ -51,10 +48,7 @@ export const loadSnsFullProjects = (): Promise<void> =>
     logMessage: "Syncing Sns summaries",
   });
 
-/**
- * Loads summaries with swapStates
- */
-export const loadSnsFullProject = async (canisterId: string) => {
+export const loadSnsSummary = async (canisterId: string) => {
   // TODO: load only if not yet in store
 
   return queryAndUpdate<SnsSummary | undefined, unknown>({
@@ -91,8 +85,12 @@ export const loadSnsFullProject = async (canisterId: string) => {
 };
 
 export const loadSnsSwapStates = async (
-  summaries: SnsFullProject[] | undefined
+  summaries: SnsSummary[] | undefined
 ) => {
+
+
+  console.log('here', summaries)
+
   if (summaries === undefined) {
     snsSwapStatesStore.reset();
     return;

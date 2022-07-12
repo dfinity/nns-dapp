@@ -1,12 +1,12 @@
 <script lang="ts">
   import {
-    loadSnsFullProjects,
+    loadSnsSummaries,
     loadSnsSwapStates,
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,
-    type SnsFullProject,
+    type SnsFullProject, snsSummariesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
@@ -22,7 +22,7 @@
     loading = $snsFullProjectStore === undefined;
 
     // TODO: reload store only if needed
-    await loadSnsFullProjects();
+    await loadSnsSummaries();
 
     loading = false;
   };
@@ -30,7 +30,7 @@
   onMount(load);
 
   // TODO: do we want such subscribe in the component?
-  $: loadSnsSwapStates($snsFullProjectStore);
+  $: loadSnsSwapStates($snsSummariesStore.summaries);
 </script>
 
 {#if loading}

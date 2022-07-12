@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
-import { loadSnsFullProjects } from "../../../../lib/services/sns.services";
+import { loadSnsSummaries } from "../../../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
@@ -27,7 +27,7 @@ describe("Projects", () => {
   it("should trigger loadSnsFullProjects", () => {
     render(Projects);
 
-    expect(loadSnsFullProjects).toBeCalled();
+    expect(loadSnsSummaries).toBeCalled();
   });
 
   it("should render projects", () => {

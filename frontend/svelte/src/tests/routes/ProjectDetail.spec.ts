@@ -3,7 +3,7 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import { loadSnsFullProject } from "../../lib/services/sns.services";
+import { loadSnsSummary } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
@@ -50,7 +50,7 @@ describe("ProjectDetail", () => {
   it("should load project detail", () => {
     render(ProjectDetail);
 
-    waitFor(() => expect(loadSnsFullProject).toBeCalled());
+    waitFor(() => expect(loadSnsSummary).toBeCalled());
   });
 
   it("should render status section", () => {

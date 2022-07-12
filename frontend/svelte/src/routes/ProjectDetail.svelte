@@ -12,14 +12,14 @@
   } from "../lib/stores/layout.store";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
-    loadSnsFullProject,
+    loadSnsSummary,
     loadSnsSwapStateStore,
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
     type SnsFullProject,
-    snsFullProjectStore,
+    snsFullProjectStore, snsSummariesStore,
   } from "../lib/stores/projects.store";
   import { getSnsProjectById } from "../lib/utils/sns.utils";
   import Spinner from "../lib/components/ui/Spinner.svelte";
@@ -50,7 +50,7 @@
     }
     rootCanisterIdString = rootCanisterIdMaybe;
 
-    await loadSnsFullProject(rootCanisterIdString);
+    await loadSnsSummary(rootCanisterIdString);
   });
 
   onDestroy(unsubscribe);
@@ -63,8 +63,9 @@
   layoutBackStore.set(goBack);
 
   $: layoutTitleStore.set(fullProject?.summary.name ?? "");
+
   // TODO: do we want such subscribe in the component?
-  $: $snsFullProjectStore,
+  $: $snsSummariesStore,
     (() => loadSnsSwapStateStore(rootCanisterIdString))();
 </script>
 
