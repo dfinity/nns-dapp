@@ -102,6 +102,9 @@ export FETCH_ROOT_KEY
 REDIRECT_TO_LEGACY="$(get_var REDIRECT_TO_LEGACY)"
 export REDIRECT_TO_LEGACY
 
+ENABLE_XXX_FEATURE="$(get_var ENABLE_XXX_FEATURE)"
+export ENABLE_XXX_FEATURE
+
 : "Return to the original working directory."
 popd
 echo FIN >&2
