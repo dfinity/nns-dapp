@@ -10,7 +10,6 @@
   div {
     width: var(--padding-4x);
     height: var(--padding-4x);
-    flex: 0 0 var(--padding-4x);
 
     overflow: hidden;
     border-radius: var(--border-radius);

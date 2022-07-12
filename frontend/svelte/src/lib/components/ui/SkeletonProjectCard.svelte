@@ -29,6 +29,10 @@
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
+
+    :global(:first-child) {
+      flex: 0 0 var(--padding-4x);
+    }
   }
 
   .description {
