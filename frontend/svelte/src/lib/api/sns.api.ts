@@ -188,13 +188,18 @@ export const listSnsSummaries = async ({
 
   // TODO(L2-751): replace with effective implementation and types to get the metadata / summary
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
-  const result = await Promise.all(
+  const metadatas = await Promise.all(
     snsWrappers.map(({ metadata }: SnsWrapper) => metadata({ certified }))
   );
 
   // TODO(L2-829): mock data to be removed and replaced
-  console.log("Sns metadatas", result);
-  return mockSnsSummaryList;
+  console.log("Sns metadatas", metadatas);
+  return snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
+    ...mockSnsSummaryList[
+      Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
+    ],
+    rootCanisterId,
+  }));
 };
 
 export const listSnsSummary = async ({
