@@ -15,15 +15,15 @@ import {
   topUpCanister,
   updateSettings,
 } from "../../../lib/api/canisters.api";
-import {
-  CREATE_CANISTER_MEMO,
-  TOP_UP_CANISTER_MEMO,
-} from "../../../lib/constants/api.constants";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
 import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
 import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import {
+  CREATE_CANISTER_MEMO,
+  TOP_UP_CANISTER_MEMO,
+} from "../../../lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import { mockSubAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
