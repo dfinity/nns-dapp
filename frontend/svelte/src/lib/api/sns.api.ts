@@ -10,6 +10,7 @@ import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
+import { ApiErrorKey } from "./errors.api";
 
 type RootCanisterId = Principal;
 let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
@@ -107,7 +108,12 @@ const loadSnsWrappers = async ({
     )
   );
 
-  // TODO: filter errors
+  // TODO(L2-837): do no throw an error but emit or display only an error while continuing loading and displaying Sns projects that could be successfully fetched
+  const error: boolean =
+    results.find(({ status }) => status === "rejected") !== undefined;
+  if (error) {
+    throw new ApiErrorKey("error__sns.init");
+  }
 
   return results
     .filter(({ status }) => status === "fulfilled")

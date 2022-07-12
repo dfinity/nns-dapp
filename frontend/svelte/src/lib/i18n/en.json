@@ -602,5 +602,8 @@
   "theme": {
     "theme": "Theme",
     "switch_theme": "Switch theme"
+  },
+  "error__sns": {
+    "init": "There was an error initializing some projects."
   }
 }
