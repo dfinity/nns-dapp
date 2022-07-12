@@ -72,7 +72,7 @@ export const loadSnsSummaries = (): Promise<void> =>
         return;
       }
 
-      // TODO: reset and clear
+      // TODO(L2-839): reset and clear stores
 
       toastsStore.error(
         toToastError({
@@ -107,7 +107,7 @@ export const loadSnsSummary = async (canisterId: string) => {
         return;
       }
 
-      // TODO: reset and clear
+      // TODO(L2-839): reset and clear stores
 
       toastsStore.error(
         toToastError({
