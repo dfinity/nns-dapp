@@ -26,6 +26,21 @@ describe("Accounts", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
+  it("should render title and account icp", () => {
+    accountsStoreMock = jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
+    const { container } = render(Accounts);
+
+    const titleRow = container.querySelector("section > div");
+
+    expect(
+      titleRow?.textContent?.startsWith(
+        `Accounts ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+      )
+    ).toBeTruthy();
+  });
+
   it("should render a main card", () => {
     accountsStoreMock = jest
       .spyOn(accountsStore, "subscribe")
