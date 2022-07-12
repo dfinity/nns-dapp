@@ -174,6 +174,7 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
+  current_balance_total: string;
   current_balance_detail: string;
 }
 
