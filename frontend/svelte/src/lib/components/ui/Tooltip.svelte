@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
+
   /** Used in aria-describedby */
   import { debounce, isNullable } from "../../utils/utils";
 
@@ -15,7 +17,12 @@
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
     const main: HTMLElement | null = document.querySelector("main");
 
-    if (main === null || tooltipComponent === undefined || isNullable(target)) {
+    if (
+      destroyed ||
+      main === null ||
+      tooltipComponent === undefined ||
+      target === undefined
+    ) {
       // Do nothing, we need the elements to be rendered in order to get their size and position to fix the tooltip
       return;
     }
@@ -48,6 +55,9 @@
   });
 
   $: innerWidth, tooltipComponent, target, setPosition();
+
+  let destroyed: boolean = false;
+  onDestroy(() => (destroyed = true));
 </script>
 
 <svelte:window bind:innerWidth />
