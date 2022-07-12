@@ -21,8 +21,8 @@ import { HOST } from "../constants/environment.constants";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { poll, PollingLimitExceededError } from "../utils/utils";
-import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "./constants.api";
-import { ApiErrorKey } from "./errors.api";
+import { CREATE_CANISTER_MEMO, TOP_UP_CANISTER_MEMO } from "../constants/api.constants";
+import { ApiErrorKey } from "../types/api.errors";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 

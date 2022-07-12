@@ -18,7 +18,7 @@ import {
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
-} from "../../../lib/api/constants.api";
+} from "../../../lib/constants/api.constants";
 import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
 import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
 import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
