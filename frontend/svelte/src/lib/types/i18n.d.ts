@@ -528,6 +528,9 @@ interface I18nNeuron_detail {
   spawn_maturity_success: string;
   spawn_maturity_confirmation_q: string;
   spawn_maturity_confirmation_a: string;
+  spawn_maturity_choose: string;
+  spawn_maturity_explanation: string;
+  spawn_maturity_explanation_hw: string;
   current_stake: string;
   current_maturity: string;
   dissolve_delay_range: string;
