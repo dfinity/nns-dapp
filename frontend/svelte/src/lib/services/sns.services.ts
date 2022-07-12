@@ -95,7 +95,7 @@ export const loadSnsSummary = async (canisterId: string) => {
         certified,
       }),
     onLoad: ({ response: summary, certified }) =>
-      // TODO: detail page should probably not use that store?
+      // TODO(L2-840): detail page should not use that summaries store but only a dedicated state or context store
       snsSummariesStore.setSummaries({
         summaries: [...(summary ? [summary] : [])],
         certified,
