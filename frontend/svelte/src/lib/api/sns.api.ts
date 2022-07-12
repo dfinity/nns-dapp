@@ -8,10 +8,10 @@ import { Principal } from "@dfinity/principal";
 import type { InitSns, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
+import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-import { ApiErrorKey } from "./errors.api";
 
 type RootCanisterId = string;
 let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
