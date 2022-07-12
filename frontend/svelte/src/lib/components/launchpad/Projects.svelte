@@ -6,7 +6,6 @@
     type SnsFullProject,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
