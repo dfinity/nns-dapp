@@ -1,7 +1,6 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
-import { mockSnsSwapState } from "../../tests/mocks/sns-projects.mock";
 import {
   listSnsSummaries,
   listSnsSummary,
@@ -19,15 +18,53 @@ import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
 
+// TODO(L2-751): remove and replace with effective data
+let mockSwapStates: SnsSwapState[] = [];
+const mockDummySwapStates: Partial<SnsSwapState>[] = [
+  {
+    myCommitment: BigInt(25 * 100000000),
+    currentCommitment: BigInt(100 * 100000000),
+  },
+  {
+    myCommitment: BigInt(5 * 100000000),
+    currentCommitment: BigInt(775 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1000 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1500 * 100000000),
+  },
+];
+
 export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
       listSnsSummaries({ certified, identity }),
-    onLoad: ({ response: summaries, certified }) =>
+    onLoad: ({ response: summaries, certified }) => {
       snsSummariesStore.setSummaries({
         summaries,
         certified,
-      }),
+      });
+
+      // TODO(L2-751): remove mock data
+      if (certified === true) {
+        return;
+      }
+
+      // TODO(L2-751): remove mock data
+      mockSwapStates = summaries.map(
+        ({ rootCanisterId }) =>
+          ({
+            ...mockDummySwapStates[
+              Math.floor(0 + Math.random() * (mockDummySwapStates.length - 1))
+            ],
+            rootCanisterId,
+          } as SnsSwapState)
+      );
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -86,14 +123,12 @@ export const loadSnsSummary = async (canisterId: string) => {
 export const loadSnsSwapStates = async (
   summaries: SnsSummary[] | undefined
 ) => {
-  console.log("here", summaries);
-
   if (summaries === undefined) {
     snsSwapStatesStore.reset();
     return;
   }
 
-  // TODO: remove and replace with effective data
+  // TODO(L2-751): remove and replace with effective data
   // TODO: query and update calls
   for (const { rootCanisterId } of summaries) {
     loadSnsSwapState(rootCanisterId).then((swapState) =>
@@ -105,12 +140,17 @@ export const loadSnsSwapStates = async (
   }
 };
 
+// TODO(L2-751): remove and replace with effective data
 // TODO: query and update calls
-// TODO: remove and replace with effective data
 const loadSnsSwapState = async (
   rootCanisterId: Principal
 ): Promise<SnsSwapState> =>
-  mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
+  mockAbout5SecondsWaiting(
+    () =>
+      mockSwapStates.find(
+        (mock) => rootCanisterId.toText() === mock.rootCanisterId.toText()
+      ) as SnsSwapState
+  );
 
 export const loadSnsSwapStateStore = async (
   rootCanisterId: string | undefined

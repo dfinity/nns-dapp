@@ -51,7 +51,7 @@ const listSnses = async ({
   // TODO(L2-828): extract property for wasm canister id
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText("p2lib-2iaaa-aaaaa-aacma-cai"),
+    canisterId: Principal.fromText("nsrxe-iiaaa-aaaaa-aacaa-cai"),
     agent,
   });
 
