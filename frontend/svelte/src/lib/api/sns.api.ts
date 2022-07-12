@@ -80,7 +80,9 @@ const initSns = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsWrapper> => {
-  logWithTimestamp(`Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`);
+  logWithTimestamp(
+    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
+  );
 
   const { initSns }: { initSns: InitSns } = await import(
     "@dfinity/sns/dist/esm/sns"
@@ -94,7 +96,9 @@ const initSns = async ({
     certified,
   });
 
-  logWithTimestamp(`Initializing Sns ${rootCanisterId.toText()} certified:${certified} complete.`);
+  logWithTimestamp(
+    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} complete.`
+  );
 
   return snsWrapper;
 };
@@ -199,7 +203,9 @@ export const querySnsSummaries = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<SnsSummary[]> => {
-  logWithTimestamp(`Listing all deployed Sns summaries certified:${certified} call...`);
+  logWithTimestamp(
+    `Listing all deployed Sns summaries certified:${certified} call...`
+  );
 
   const snsWrappers: SnsWrapper[] = [
     ...(
@@ -228,7 +234,9 @@ export const querySnsSummaries = async ({
     );
   }
 
-  logWithTimestamp(`Listing all deployed Sns summaries certified:${certified} done.`);
+  logWithTimestamp(
+    `Listing all deployed Sns summaries certified:${certified} done.`
+  );
 
   return mockSnsSummaries;
 };
@@ -242,7 +250,9 @@ export const querySnsSummary = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<SnsSummary | undefined> => {
-  logWithTimestamp(`Getting Sns ${rootCanisterId} summary certified:${certified} call...`);
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} summary certified:${certified} call...`
+  );
 
   const { metadata }: SnsWrapper = await wrapper({
     rootCanisterId,
@@ -252,7 +262,9 @@ export const querySnsSummary = async ({
 
   const summary = await metadata({ certified });
 
-  logWithTimestamp(`Getting Sns ${rootCanisterId} summary certified:${certified} done.`);
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} summary certified:${certified} done.`
+  );
 
   // TODO(L2-829, L2-751): remove and replace with effective data
   console.log("Sns metadata", summary);
