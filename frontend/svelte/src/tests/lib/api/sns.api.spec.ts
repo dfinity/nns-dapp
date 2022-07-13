@@ -17,6 +17,7 @@ jest.mock("../../../lib/proxy/api.import.proxy");
 describe("sns-api", () => {
   beforeAll(() => {
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
       }),
