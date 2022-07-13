@@ -62,7 +62,7 @@
   "dependencies": {
     "@dfinity/agent": "^0.12.0",
     "@dfinity/auth-client": "^0.12.0",
-    "@dfinity/nns": "file:../../../ic-js/packages/nns",
+    "@dfinity/nns": "nightly",
     "@dfinity/sns": "file:../../../ic-js/packages/sns",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
