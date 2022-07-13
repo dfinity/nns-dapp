@@ -1,7 +1,7 @@
 # SNS Init Assets
 
-These identities and init files are used when interacting with an SNS deployed to a testnet. As such, these identities are 
-not for use in production, and using one in production will result in no gain. 
+These identities and init files are used when interacting with an SNS deployed to a testnet. As such, these identities are
+not for use in production, and using one in production will result in no gain.
 
 ### Contents
 
@@ -36,17 +36,17 @@ testable roles within the provisioned SNS. The SNS will be created with
 
 ### Clients
 
-`sns-quill` and the nns-dapp are the main clients of this SNS. To use the identities 
+`sns-quill` and the nns-dapp are the main clients of this SNS. To use the identities
 included in this dir, use `sns-quill`.
 
-[Download and build](https://github.com/dfinity/sns-quill) sns-quill from GitHub. Use the `IC_URL` environmental 
+[Download and build](https://github.com/dfinity/sns-quill) sns-quill from GitHub. Use the `IC_URL` environmental
 variable to point at the testnet in use. For example, using the testnet configured in the included `dfx.json`,
 
 ```bash
 IC_URL=http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080 sns-quill
 ```
 
-With the binary in your path, you can run any sns-quill command. For example, you can validate the principals in the 
+With the binary in your path, you can run any sns-quill command. For example, you can validate the principals in the
 sns_init.yaml correspond to the identities:
 
 ```bash
@@ -55,9 +55,8 @@ Principal id: hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe
 Account id: 2b8fbde99de881f695f279d2a892b1137bfe81a42d7694e064b1be58701e1138
 ```
 
-Other commands for using these identities can be found by running 
+Other commands for using these identities can be found by running
 
 ```bash
 $ sns-quill --help
 ```
-
