@@ -6,6 +6,7 @@ import {
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
+  leaveCommunityFund,
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
@@ -183,6 +184,37 @@ describe("neurons-api", () => {
 
       const call = () =>
         joinCommunityFund({
+          identity: mockIdentity,
+          neuronId: BigInt(10),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("leaveCommunityFund", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.leaveCommunityFund.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await leaveCommunityFund({
+        identity: mockIdentity,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.leaveCommunityFund).toBeCalled();
+    });
+
+    it("throws error when leaving community fund fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.leaveCommunityFund.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        leaveCommunityFund({
           identity: mockIdentity,
           neuronId: BigInt(10),
         });
