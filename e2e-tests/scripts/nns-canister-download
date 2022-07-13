@@ -2,13 +2,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-# This is the commit of the IC repo used to build the custom WASM canisters.
-# - It may be any value that is in the main gitub IC repo.  Main branch or any other.
-# - We MAY decide that we are best served by some special testing branch, however until
-#   then, a commit from master is a safe choice.
+# Notes regarding the IC_COMMIT - from the build config:
 # - We apply a patch to customise the code; if you change the hash, please check on the
 #   first run that the patch applies cleanly.  Docker SHOULD fail if it doesn't.
-IC_COMMIT=28ea02bad62dc777378a53602b8cd3a515ab23a3
+. <(./build-config.sh)
 DOWNLOAD_DIR="$PWD/target/ic"
 NO_CLOBBER=""
 
