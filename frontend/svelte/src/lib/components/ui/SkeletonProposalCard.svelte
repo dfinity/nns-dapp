@@ -1,4 +1,3 @@
-<!-- adapted source: https://github.com/ionic-team/ionic-framework/tree/main/core/src/components/skeleton-text -->
 <script lang="ts">
   import Card from "./Card.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
