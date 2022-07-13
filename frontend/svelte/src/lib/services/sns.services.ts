@@ -1,31 +1,140 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
-import {
-  mockSnsSummaryList,
-  mockSnsSwapState,
-} from "../../tests/mocks/sns-projects.mock";
-import { mockAbout5SecondsWaiting } from "../../tests/mocks/utils.mock";
+import { querySnsSummaries, querySnsSummary } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../stores/projects.store";
+import { toastsStore } from "../stores/toasts.store";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
+import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
-import type { SnsSummary, SnsSwapState } from "./sns.mock";
+import { queryAndUpdate } from "./utils.services";
 
-/**
- * Loads summaries with swapStates
- */
-export const loadSnsFullProjects = async () => {
-  const summaries = await listSnsSummary();
+// TODO(L2-829): to be deleted
+const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
+  new Promise((resolve) =>
+    setTimeout(
+      () => resolve(generator()),
+      Math.round((0.5 + Math.random() * 4.5) * 1000)
+    )
+  );
 
-  snsSummariesStore.setSummaries({
-    summaries,
-    certified: true,
+// TODO(L2-751): remove and replace with effective data
+let mockSwapStates: SnsSwapState[] = [];
+const mockDummySwapStates: Partial<SnsSwapState>[] = [
+  {
+    myCommitment: BigInt(25 * 100000000),
+    currentCommitment: BigInt(100 * 100000000),
+  },
+  {
+    myCommitment: BigInt(5 * 100000000),
+    currentCommitment: BigInt(775 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1000 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1500 * 100000000),
+  },
+];
+
+export const loadSnsSummaries = (): Promise<void> =>
+  queryAndUpdate<SnsSummary[], unknown>({
+    request: ({ certified, identity }) =>
+      querySnsSummaries({ certified, identity }),
+    onLoad: ({ response: summaries, certified }) => {
+      snsSummariesStore.setSummaries({
+        summaries,
+        certified,
+      });
+
+      // TODO(L2-751): remove mock data
+      if (mockSwapStates.length > 0) {
+        return;
+      }
+
+      // TODO(L2-751): remove mock data
+      mockSwapStates = summaries.map(
+        ({ rootCanisterId }) =>
+          ({
+            ...mockDummySwapStates[
+              Math.floor(0 + Math.random() * (mockDummySwapStates.length - 1))
+            ],
+            rootCanisterId,
+          } as SnsSwapState)
+      );
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // TODO(L2-839): reset and clear stores
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__sns.list_summaries",
+        })
+      );
+    },
+    logMessage: "Syncing Sns summaries",
   });
 
+export const loadSnsSummary = async (canisterId: string) => {
+  // TODO(L2-838): load only if not yet in store
+
+  return queryAndUpdate<SnsSummary | undefined, unknown>({
+    request: ({ certified, identity }) =>
+      querySnsSummary({
+        rootCanisterId: canisterId,
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: summary, certified }) =>
+      // TODO(L2-840): detail page should not use that summaries store but only a dedicated state or context store
+      snsSummariesStore.setSummaries({
+        summaries: [...(summary ? [summary] : [])],
+        certified,
+      }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // TODO(L2-839): reset and clear stores
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__sns.load_summary",
+        })
+      );
+    },
+    logMessage: "Syncing Sns summary",
+  });
+};
+
+export const loadSnsSwapStates = async (
+  summaries: SnsSummary[] | undefined
+) => {
+  if (summaries === undefined) {
+    snsSwapStatesStore.reset();
+    return;
+  }
+
+  // TODO(L2-751): remove and replace with effective data
+  // TODO: query and update calls
   for (const { rootCanisterId } of summaries) {
     loadSnsSwapState(rootCanisterId).then((swapState) =>
       snsSwapStatesStore.setSwapState({
@@ -36,31 +145,34 @@ export const loadSnsFullProjects = async () => {
   }
 };
 
-/**
- * Loads summaries with swapStates
- */
-export const loadSnsFullProject = async (canisterId: string) => {
-  const [summaries, swapState] = await Promise.all([
-    listSnsSummary(),
-    loadSnsSwapState(Principal.fromText(canisterId)),
-  ]);
-  snsSummariesStore.setSummaries({
-    summaries,
-    certified: true,
-  });
+// TODO(L2-751): remove and replace with effective data
+// TODO: query and update calls
+const loadSnsSwapState = async (
+  rootCanisterId: Principal
+): Promise<SnsSwapState> =>
+  mockAbout5SecondsWaiting(
+    () =>
+      mockSwapStates.find(
+        (mock) => rootCanisterId.toText() === mock.rootCanisterId.toText()
+      ) as SnsSwapState
+  );
+
+export const loadSnsSwapStateStore = async (
+  rootCanisterId: string | undefined
+): Promise<void> => {
+  // TODO: we probably do not want to use this store in the detail page and do not want to reset everything
+  if (rootCanisterId === undefined) {
+    snsSwapStatesStore.reset();
+    return;
+  }
+
+  const swapState = await loadSnsSwapState(Principal.fromText(rootCanisterId));
+
   snsSwapStatesStore.setSwapState({
     swapState,
     certified: true,
   });
 };
-
-export const loadSnsSwapState = async (
-  rootCanisterId: Principal
-): Promise<SnsSwapState> =>
-  mockAbout5SecondsWaiting(() => mockSnsSwapState(rootCanisterId));
-
-export const listSnsSummary = async (): Promise<SnsSummary[]> =>
-  mockAbout5SecondsWaiting(() => mockSnsSummaryList);
 
 export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   mockAbout5SecondsWaiting(async () => {

@@ -1,9 +1,13 @@
 <script lang="ts">
-  import { loadSnsFullProjects } from "../../services/sns.services";
+  import {
+    loadSnsSummaries,
+    loadSnsSwapStates,
+  } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,
     type SnsFullProject,
+    snsSummariesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
@@ -18,11 +22,16 @@
     // show loading state only when store is empty
     loading = $snsFullProjectStore === undefined;
 
-    await loadSnsFullProjects();
+    // TODO(L2-838): reload store only if needed
+    await loadSnsSummaries();
+
     loading = false;
   };
 
   onMount(load);
+
+  // TODO: do we want such subscribe in the component?
+  $: loadSnsSwapStates($snsSummariesStore.summaries);
 </script>
 
 {#if loading}
