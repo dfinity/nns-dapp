@@ -5,7 +5,7 @@ cd "$(dirname "$0")/../.."
 # Notes regarding the IC_COMMIT - from the build config:
 # - We apply a patch to customise the code; if you change the hash, please check on the
 #   first run that the patch applies cleanly.  Docker SHOULD fail if it doesn't.
-. <(../../build-config.sh)
+. <(./build-config.sh)
 DOWNLOAD_DIR="$PWD/target/ic"
 NO_CLOBBER=""
 
