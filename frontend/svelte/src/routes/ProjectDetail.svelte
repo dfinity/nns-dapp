@@ -13,7 +13,7 @@
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsSummary,
-    loadSnsSwapStateStore,
+    loadSnsSwapState,
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
@@ -51,7 +51,10 @@
     }
     rootCanisterIdString = rootCanisterIdMaybe;
 
-    await loadSnsSummary(rootCanisterIdString);
+    await Promise.all([
+      loadSnsSummary(rootCanisterIdString),
+      loadSnsSwapState(rootCanisterIdString),
+    ]);
   });
 
   onDestroy(unsubscribe);
@@ -66,9 +69,6 @@
   $: layoutTitleStore.set(fullProject?.summary.name ?? "");
 
   // TODO(L2-838): if error redirect to launchpad and display error there
-
-  // TODO: do we want such subscribe in the component?
-  $: $snsSummariesStore, (() => loadSnsSwapStateStore(rootCanisterIdString))();
 </script>
 
 {#if fullProject === undefined}

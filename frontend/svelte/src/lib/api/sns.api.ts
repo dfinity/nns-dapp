@@ -10,13 +10,34 @@ import {
   type SnsWasmCanisterCreate,
 } from "../proxy/api.import.proxy";
 import { ApiErrorKey } from "../types/api.errors";
-import type { SnsSummary } from "../types/sns";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 
 type RootCanisterId = string;
 let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 let snsUpdateWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
+
+// TODO(L2-751): remove and replace with effective data
+let mockSwapStates: SnsSwapState[] = [];
+const mockDummySwapStates: Partial<SnsSwapState>[] = [
+  {
+    myCommitment: BigInt(25 * 100000000),
+    currentCommitment: BigInt(100 * 100000000),
+  },
+  {
+    myCommitment: BigInt(5 * 100000000),
+    currentCommitment: BigInt(775 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1000 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1500 * 100000000),
+  },
+];
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -264,4 +285,92 @@ export const querySnsSummary = async ({
     ({ rootCanisterId: canisterId }: SnsSummary) =>
       canisterId.toText() === rootCanisterId
   );
+};
+
+export const querySnsSwapStates = async ({
+  identity,
+  certified,
+}: {
+  certified: boolean;
+  identity: Identity;
+}): Promise<SnsSwapState[]> => {
+  logWithTimestamp(
+    `Listing all deployed Sns swap states certified:${certified} call...`
+  );
+
+  const snsWrappers: SnsWrapper[] = [
+    ...(
+      (await wrappers({ identity, certified })) ??
+      new Map<RootCanisterId, SnsWrapper>()
+    ).values(),
+  ];
+
+  // TODO(L2-830): we also want to have a status within each summary to display the information progressively
+  const swapStates: (SnsSwapState | undefined)[] = await Promise.all(
+    snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
+      querySnsSwapState({
+        rootCanisterId: rootCanisterId.toText(),
+        certified,
+        identity,
+      })
+    )
+  );
+
+  logWithTimestamp(
+    `Listing all deployed Sns swap states certified:${certified} done.`
+  );
+
+  return swapStates.filter(
+    (state: SnsSwapState | undefined) => state !== undefined
+  ) as SnsSwapState[];
+};
+
+export const querySnsSwapState = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: RootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsSwapState> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
+  );
+
+  const { swapState }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const { swap } = await swapState({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
+  );
+
+  // TODO(L2-751): remove mock data
+  if (mockSwapStates.length === 0) {
+    mockSwapStates = [
+      ...(
+        (await wrappers({ identity, certified })) ??
+        new Map<RootCanisterId, SnsWrapper>()
+      ).values(),
+    ].map(
+      ({ canisterIds: { rootCanisterId } }) =>
+        ({
+          ...mockDummySwapStates[
+            Math.floor(0 + Math.random() * (mockDummySwapStates.length - 1))
+          ],
+          rootCanisterId,
+        } as SnsSwapState)
+    );
+  }
+
+  // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
+  console.log("Sns swap state", swap);
+  return mockSwapStates.find(
+    (mock) => rootCanisterId === mock.rootCanisterId.toText()
+  ) as SnsSwapState;
 };
