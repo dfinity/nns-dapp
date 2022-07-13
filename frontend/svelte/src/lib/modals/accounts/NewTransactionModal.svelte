@@ -75,6 +75,7 @@
   setContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY, {
     store: newTransactionStore,
     next: () => modal?.next(),
+    back: () => modal?.back(),
     onTransactionComplete,
   });
 

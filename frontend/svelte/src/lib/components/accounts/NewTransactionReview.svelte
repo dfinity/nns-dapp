@@ -10,11 +10,12 @@
   import { transferICP } from "../../services/accounts.services";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { toastsStore } from "../../stores/toasts.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store, onTransactionComplete }: TransactionContext = context;
+  const { store, onTransactionComplete, back }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
 
@@ -52,14 +53,19 @@
 
   <NewTransactionInfo />
 
-  <button
-    class="primary full-width"
-    type="submit"
-    disabled={$busy}
-    data-tid="confirm-and-send"
-  >
-    {$i18n.accounts.confirm_and_send}
-  </button>
+  <FooterModal>
+    <button class="secondary small" type="button" on:click={back}>
+      {$i18n.accounts.edit_amount}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      disabled={$busy}
+      data-tid="confirm-and-send"
+    >
+      {$i18n.accounts.confirm_and_send}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

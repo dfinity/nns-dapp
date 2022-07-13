@@ -34,13 +34,17 @@
   >
   <svelte:fragment>
     {#if currentStep?.name === "EnterController"}
-      <AddPrincipal bind:principal on:nnsSelectPrincipal={next}>
+      <AddPrincipal bind:principal on:nnsSelectPrincipal={next} on:nnsClose>
         <span slot="title">{$i18n.canister_detail.enter_controller}</span>
         <span slot="button">{$i18n.core.continue}</span>
       </AddPrincipal>
     {/if}
     {#if currentStep?.name === "ConfirmController" && principal !== undefined}
-      <NewControllerReview controller={principal} on:nnsClose />
+      <NewControllerReview
+        controller={principal}
+        on:nnsClose
+        on:nnsBack={() => modal.back()}
+      />
     {/if}
   </svelte:fragment>
 </WizardModal>

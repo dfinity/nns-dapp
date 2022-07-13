@@ -3,6 +3,8 @@
   import { busy } from "../../stores/busy.store";
   import PrincipalInput from "../../components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
+  import { i18n } from "../../stores/i18n";
 
   export let principal: Principal | undefined = undefined;
 
@@ -22,25 +24,35 @@
     />
   </div>
 
-  <button
-    data-tid="add-principal-button"
-    class="primary full-width"
-    type="submit"
-    disabled={principal === undefined || $busy}
-  >
-    <slot name="button" />
-  </button>
+  <FooterModal>
+    <button
+      class="secondary small"
+      type="button"
+      on:click={() => dispatcher("nnsClose")}
+    >
+      {$i18n.core.cancel}
+    </button>
+    <button
+      data-tid="add-principal-button"
+      class="primary small"
+      type="submit"
+      disabled={principal === undefined || $busy}
+    >
+      <slot name="button" />
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
   h5 {
     text-align: center;
   }
 
   form {
-    @include modal.section;
+    max-width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
     gap: var(--padding);

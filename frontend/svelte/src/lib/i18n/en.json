@@ -137,6 +137,7 @@
     "connect_hardware_wallet_text": "Connect your hardware wallet to link it to the account",
     "show_info_hardware_wallet": "Show Principal And Address On Device",
     "attach_wallet": "Attach Wallet",
+    "edit_name": "Edit Name",
     "hardware_wallet_connected": "Connected to Hardware Wallet",
     "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
@@ -153,8 +154,10 @@
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",
     "review_transaction": "Review Transaction",
+    "edit_destination": "Edit Destination",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
+    "edit_amount": "Edit Amount",
     "account_identifier": "Account Identifier",
     "transaction_success": "Transaction completed.",
     "rename": "Rename",
@@ -297,6 +300,8 @@
     "minimum_cycles_text_2": "Transaction fee of $amount is charged to the source account.",
     "transaction_fee": "The Transaction fee of $amount is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",
+    "edit_source": "Edit Source Account",
+    "edit_cycles": "Edit Cycles",
     "converted_to": "converted to"
   },
   "canister_detail": {
@@ -320,6 +325,7 @@
     "detach_success": "Canister detached successfully",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",
+    "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
     "add_controller": "Add Controller"
   },

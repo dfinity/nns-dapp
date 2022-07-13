@@ -106,6 +106,7 @@
         {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
+        on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
@@ -124,6 +125,7 @@
         {amount}
         on:nnsConfirm={create}
         on:nnsClose
+        on:nnsBack={() => modal.back()}
       />
     {/if}
   </svelte:fragment>

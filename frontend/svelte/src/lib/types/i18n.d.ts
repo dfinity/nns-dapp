@@ -146,6 +146,7 @@ interface I18nAccounts {
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
   attach_wallet: string;
+  edit_name: string;
   hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
@@ -162,8 +163,10 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
+  edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
+  edit_amount: string;
   account_identifier: string;
   transaction_success: string;
   rename: string;
@@ -311,6 +314,8 @@ interface I18nCanisters {
   minimum_cycles_text_2: string;
   transaction_fee: string;
   review_cycles_purchase: string;
+  edit_source: string;
+  edit_cycles: string;
   converted_to: string;
 }
 
@@ -335,6 +340,7 @@ interface I18nCanister_detail {
   detach_success: string;
   confirm_new_controller: string;
   enter_controller: string;
+  edit_controller: string;
   new_controller: string;
   add_controller: string;
 }
