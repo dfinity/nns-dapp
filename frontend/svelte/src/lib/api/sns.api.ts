@@ -1,13 +1,14 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type {
-  DeployedSns,
-  SnsWasmCanister,
-  SnsWasmCanisterOptions,
-} from "@dfinity/nns";
+import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSns, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
+import {
+  importInitSns,
+  importSnsWasmCanister,
+  type SnsWasmCanisterCreate,
+} from "../proxy/api.import.proxy";
 import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
@@ -43,13 +44,7 @@ const listSnses = async ({
 }): Promise<Principal[]> => {
   logWithTimestamp(`Loading list of Snses certified:${certified} call...`);
 
-  const {
-    SnsWasmCanister,
-  }: {
-    SnsWasmCanister: {
-      create: (options: SnsWasmCanisterOptions) => SnsWasmCanister;
-    };
-  } = await import("@dfinity/nns/dist/esm/sns_wasm.canister");
+  const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
   // TODO(L2-828): extract property for wasm canister id
 
@@ -84,9 +79,7 @@ const initSns = async ({
     `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
   );
 
-  const { initSns }: { initSns: InitSns } = await import(
-    "@dfinity/sns/dist/esm/sns"
-  );
+  const initSns: InitSns = await importInitSns();
 
   const snsWrapper: SnsWrapper = await initSns({
     rootOptions: {
