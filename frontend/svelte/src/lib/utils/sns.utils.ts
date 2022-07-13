@@ -1,5 +1,5 @@
-import type { SnsSummary } from "../services/sns.mock";
 import type { SnsFullProject } from "../stores/projects.store";
+import type { SnsSummary } from "../types/sns";
 
 export const getSnsProjectById = ({
   id,

@@ -1,5 +1,1 @@
-export class ApiErrorKey extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class ApiErrorKey extends Error {}

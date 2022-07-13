@@ -644,6 +644,13 @@ interface I18nTheme {
   switch_theme: string;
 }
 
+interface I18nError__sns {
+  init: string;
+  undefined_project: string;
+  list_summaries: string;
+  load_summary: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -679,4 +686,5 @@ interface I18n {
   error__account: I18nError__account;
   error__canister: I18nError__canister;
   theme: I18nTheme;
+  error__sns: I18nError__sns;
 }

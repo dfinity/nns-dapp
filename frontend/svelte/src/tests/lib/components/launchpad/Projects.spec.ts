@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
-import { loadSnsFullProjects } from "../../../../lib/services/sns.services";
+import { loadSnsSummaries } from "../../../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
@@ -17,7 +17,8 @@ import {
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
-    loadSnsFullProjects: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -27,7 +28,7 @@ describe("Projects", () => {
   it("should trigger loadSnsFullProjects", () => {
     render(Projects);
 
-    expect(loadSnsFullProjects).toBeCalled();
+    expect(loadSnsSummaries).toBeCalled();
   });
 
   it("should render projects", () => {

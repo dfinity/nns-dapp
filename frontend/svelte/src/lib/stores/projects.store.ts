@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
-import type { SnsSummary, SnsSwapState } from "../services/sns.mock";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 
 export interface SnsSummariesStore {
   summaries: SnsSummary[] | undefined;
@@ -51,7 +51,7 @@ const initSnsSummariesStore = () => {
 };
 
 const initSnsSwapStatesStore = () => {
-  const { subscribe, update } = writable<SnsSwapStatesStore>(undefined);
+  const { subscribe, update, set } = writable<SnsSwapStatesStore>(undefined);
 
   return {
     subscribe,
@@ -73,6 +73,10 @@ const initSnsSwapStatesStore = () => {
           certified,
         },
       ]);
+    },
+
+    reset() {
+      set(undefined);
     },
   };
 };
