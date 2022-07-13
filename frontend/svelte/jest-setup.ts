@@ -19,6 +19,7 @@ process.env.LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 process.env.CYCLES_MINTING_CANISTER_ID = "rkp4c-7iaaa-aaaaa-aaaca-cai";
 process.env.IDENTITY_SERVICE_URL =
   "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
+process.env.ENABLE_NEW_SPAWN_FEATURE = "true";
 
 // testing-library setup
 configure({

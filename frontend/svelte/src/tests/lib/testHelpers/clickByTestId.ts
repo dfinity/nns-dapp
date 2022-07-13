@@ -7,5 +7,5 @@ export const clickByTestId = async (
   const element = queryByTestId(testId);
   expect(element).toBeInTheDocument();
 
-  element && (await fireEvent.click(element));
+  element && fireEvent.click(element);
 };

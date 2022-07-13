@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import type { SnsSummary } from "../../services/sns.mock";
+  import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import InfoContextKey from "../ui/InfoContextKey.svelte";

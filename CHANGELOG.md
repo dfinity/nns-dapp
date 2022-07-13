@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+* e2e tests: Update the way SNS is deployed to the current standard, which is via the wasm canister.
 * Update dfx to version 10.1
 
 ## Proposal 67969

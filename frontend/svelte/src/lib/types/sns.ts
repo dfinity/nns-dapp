@@ -1,5 +1,7 @@
 import type { Principal } from "@dfinity/principal";
 
+// TODO: to be replaced with real types
+
 export interface SnsSummary {
   rootCanisterId: Principal;
 

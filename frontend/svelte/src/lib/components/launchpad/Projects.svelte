@@ -1,14 +1,18 @@
 <script lang="ts">
-  import { loadSnsFullProjects } from "../../services/sns.services";
+  import {
+    loadSnsSummaries,
+    loadSnsSwapStates,
+  } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     snsFullProjectStore,
     type SnsFullProject,
+    snsSummariesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
+  import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
 
   let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
@@ -18,18 +22,22 @@
     // show loading state only when store is empty
     loading = $snsFullProjectStore === undefined;
 
-    await loadSnsFullProjects();
+    // TODO(L2-838): reload store only if needed
+    await loadSnsSummaries();
+
     loading = false;
   };
 
   onMount(load);
+
+  // TODO: do we want such subscribe in the component?
+  $: loadSnsSwapStates($snsSummariesStore.summaries);
 </script>
 
 {#if loading}
   <CardGrid>
-    <!-- TODO L2-774: SkeletonProjectCard -->
-    <SkeletonCard />
-    <SkeletonCard />
+    <SkeletonProjectCard />
+    <SkeletonProjectCard />
   </CardGrid>
 {:else if projects !== undefined}
   <CardGrid>

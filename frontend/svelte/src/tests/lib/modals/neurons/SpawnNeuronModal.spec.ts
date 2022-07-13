@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, waitFor } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/svelte";
 import SpawnNeuronModal from "../../../../lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "../../../../lib/services/neurons.services";
 import { formatPercentage } from "../../../../lib/utils/format.utils";
@@ -101,19 +101,11 @@ describe("SpawnNeuronModal", () => {
     expect(selectMaturityButton).toBeInTheDocument();
     selectMaturityButton && (await fireEvent.click(selectMaturityButton));
 
-    await waitFor(() =>
-      expect(queryByTestId("confirm-action-screen")).toBeInTheDocument()
-    );
-
-    const confirmButton = queryByTestId("confirm-action-button");
-    expect(confirmButton).toBeInTheDocument();
-    confirmButton && (await fireEvent.click(confirmButton));
-
     expect(spawnNeuron).toBeCalled();
   });
 
   it("should show only confirm screen for hardware wallet controlled neurons", async () => {
-    const { queryByTestId, queryByText } = await renderModal({
+    const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {
         neuron,
@@ -121,14 +113,12 @@ describe("SpawnNeuronModal", () => {
       },
     });
 
-    expect(queryByTestId("confirm-action-screen")).toBeInTheDocument();
+    expect(queryByTestId("confirm-spawn-hw-screen")).toBeInTheDocument();
 
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).not.toBeInTheDocument();
 
-    expect(queryByText("100%", { exact: false })).toBeInTheDocument();
-
-    const confirmButton = queryByTestId("confirm-action-button");
+    const confirmButton = queryByTestId("confirm-spawn-button");
     expect(confirmButton).toBeInTheDocument();
     confirmButton && (await fireEvent.click(confirmButton));
 

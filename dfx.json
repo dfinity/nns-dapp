@@ -1,5 +1,5 @@
 {
-  "dfx": "0.10.1",
+  "dfx": "0.11.0-beta.1",
   "canisters": {
     "nns-dapp": {
       "type": "custom",
@@ -60,6 +60,7 @@
         "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "REDIRECT_TO_LEGACY": "prod",
+        "ENABLE_NEW_SPAWN_FEATURE": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.ic0.app",
@@ -68,11 +69,12 @@
       "providers": ["https://ic0.app/"],
       "type": "persistent"
     },
-    "testnet": {
+    "staging": {
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
+        "ENABLE_NEW_SPAWN_FEATURE": false,
         "HOST": "https://nnsdapp.dfinity.network",
         "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
@@ -80,12 +82,14 @@
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
     },
-    "nnsdapp_both": {
+    "testnet": {
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
+        "REDIRECT_TO_LEGACY": "prod",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
         "HOST": "https://nnsdapp.dfinity.network",
+        "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
@@ -96,6 +100,7 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
         "HOST": "https://small11.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small11.dfinity.network"
       },
@@ -107,6 +112,7 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
         "HOST": "https://small06.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small06.dfinity.network"
       },
@@ -118,6 +124,7 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
         "HOST": "http://localhost:8080"
       },
       "bind": "127.0.0.1:8080",

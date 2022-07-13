@@ -1,8 +1,4 @@
-export class LedgerErrorKey extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class LedgerErrorKey extends Error {}
 
 export class LedgerErrorMessage extends Error {}
 
