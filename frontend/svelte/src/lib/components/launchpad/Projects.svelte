@@ -10,9 +10,9 @@
     snsSummariesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
+  import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
 
   let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
@@ -36,9 +36,8 @@
 
 {#if loading}
   <CardGrid>
-    <!-- TODO L2-774: SkeletonProjectCard -->
-    <SkeletonCard />
-    <SkeletonCard />
+    <SkeletonProjectCard />
+    <SkeletonProjectCard />
   </CardGrid>
 {:else if projects !== undefined}
   <CardGrid>
