@@ -1,11 +1,7 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
-import {
-  mockAbout5SecondsWaiting,
-  querySnsSummaries,
-  querySnsSummary,
-} from "../api/sns.api";
+import { querySnsSummaries, querySnsSummary } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
@@ -17,6 +13,15 @@ import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
+
+// TODO(L2-829): to be deleted
+const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
+  new Promise((resolve) =>
+    setTimeout(
+      () => resolve(generator()),
+      Math.round((0.5 + Math.random() * 4.5) * 1000)
+    )
+  );
 
 // TODO(L2-751): remove and replace with effective data
 let mockSwapStates: SnsSwapState[] = [];

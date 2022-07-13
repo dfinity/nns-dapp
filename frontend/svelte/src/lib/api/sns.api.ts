@@ -18,15 +18,6 @@ type RootCanisterId = string;
 let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 let snsUpdateWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
 
-// TODO(L2-829): to be deleted
-export const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () => resolve(generator()),
-      Math.round((0.5 + Math.random() * 4.5) * 1000)
-    )
-  );
-
 /**
  * List all deployed Snses - i.e list all Sns projects
  *
@@ -269,10 +260,8 @@ export const querySnsSummary = async ({
 
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
   console.log("Sns metadata", summary);
-  return mockAbout5SecondsWaiting(() =>
-    mockSnsSummaries.find(
-      ({ rootCanisterId: canisterId }: SnsSummary) =>
-        canisterId.toText() === rootCanisterId
-    )
+  return mockSnsSummaries.find(
+    ({ rootCanisterId: canisterId }: SnsSummary) =>
+      canisterId.toText() === rootCanisterId
   );
 };
