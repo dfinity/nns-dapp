@@ -27,8 +27,6 @@
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
     <p>{formatPercentage(maturityByStake(neuron))}</p>
-  </div>
-  <div>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.icp_stake, {
@@ -36,6 +34,7 @@
       })}
     </p>
   </div>
+  <slot name="description" />
 
   <Card>
     <div slot="start">
