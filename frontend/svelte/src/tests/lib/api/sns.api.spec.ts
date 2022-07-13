@@ -23,14 +23,15 @@ describe("sns-api", () => {
     });
 
     (importInitSns as jest.Mock).mockResolvedValue(() =>
-        Promise.resolve({
-          canisterIds: {
-            rootCanisterId: rootCanisterIdMock,
-            ledgerCanisterId: ledgerCanisterIdMock,
-            governanceCanisterId: governanceCanisterIdMock,
-          },
-          metadata: () => Promise.resolve("metadata"),
-        }));
+      Promise.resolve({
+        canisterIds: {
+          rootCanisterId: rootCanisterIdMock,
+          ledgerCanisterId: ledgerCanisterIdMock,
+          governanceCanisterId: governanceCanisterIdMock,
+        },
+        metadata: () => Promise.resolve("metadata"),
+      })
+    );
   });
 
   afterEach(() => {
@@ -39,7 +40,10 @@ describe("sns-api", () => {
   });
 
   it("should list sns summaries", async () => {
-    const summaries = await querySnsSummaries({ identity: mockIdentity, certified: true });
+    const summaries = await querySnsSummaries({
+      identity: mockIdentity,
+      certified: true,
+    });
 
     // TODO: currently summaries use mock data and get the value randomly therefore we cannot test it more precisely
     expect(summaries).not.toBeNull();
