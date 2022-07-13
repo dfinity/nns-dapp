@@ -63,7 +63,7 @@
     "@dfinity/agent": "^0.12.0",
     "@dfinity/auth-client": "^0.12.0",
     "@dfinity/nns": "nightly",
-    "@dfinity/sns": "file:../../../ic-js/packages/sns",
+    "@dfinity/sns": "^0.0.1",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@zondax/ledger-icp": "^0.6.0"
