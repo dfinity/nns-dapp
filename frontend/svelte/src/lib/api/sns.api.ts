@@ -344,7 +344,9 @@ export const querySnsSwapState = async ({
     certified,
   });
 
-  const { swap } = await swapState({});
+  // TODO: current deployed swap canister on testnet is empty
+  // Error: "Message": "IC0304: Attempt to execute a message on canister mr56c-4qaaa-aaaaa-aacgq-cai which contains no Wasm module"
+  // const { swap } = await swapState({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
@@ -369,7 +371,7 @@ export const querySnsSwapState = async ({
   }
 
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
-  console.log("Sns swap state", swap);
+  // console.log("Sns swap state", swap);
   return mockSwapStates.find(
     (mock) => rootCanisterId === mock.rootCanisterId.toText()
   ) as SnsSwapState;
