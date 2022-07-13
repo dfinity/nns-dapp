@@ -116,10 +116,10 @@ button {
       cursor: default;
     }
 
-    background: var(--card-background);
+    background: var(--secondary);
+    color: var(--secondary-contrast);
     // Use inset border to avoid messing up with size.
     border: 1px inset var(--input-error-color, var(--input-border-color));
-    color: var(--secondary-text-color);
 
     @include effect.ripple-effect(--primary-contrast);
 

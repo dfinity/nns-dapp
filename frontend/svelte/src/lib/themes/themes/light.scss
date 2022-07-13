@@ -32,8 +32,6 @@
     --disable-contrast: #858585;
 
     // Palette
-    --secondary-text-color: var(--primary);
-
     --background: #f4f5f6;
     --background-rgb: 244, 245, 246;
     --background-contrast: #333333;
@@ -47,5 +45,12 @@
     --card-background-contrast-rgb: 51, 51, 51;
     --card-background-shade: #e0e0e0;
     --card-background-tint: #ffffff;
+
+    --secondary: #ffffff;
+    --secondary-rgb: 255, 255, 255;
+    --secondary-contrast: var(--primary);
+    --secondary-contrast-rgb: 0, 165, 255;
+    --secondary-shade: #e0e0e0;
+    --secondary-tint: #ffffff;
   }
 }
