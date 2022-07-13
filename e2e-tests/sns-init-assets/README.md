@@ -5,7 +5,7 @@ not for use in production, and using one in production will result in no gain.
 
 ### Contents
 
-- 8 x `.pem` files used by sns-quill (1-4 are used in the SNS Init, the other 5-8 are for undefined use)
+- 8 x `.pem` files used by sns-quill (1-4 are used in `sns_init.yaml`, the other 5-8 are for undefined use)
 - 8 x `seed.txt` files used to generate corresponding `.pem` files
 - `sns-canisters.json` used with `sns-quill` to sign messages to the specific SNS
 - `dfx.json` used to point at the deployed testnet
@@ -38,8 +38,6 @@ testable roles within the provisioned SNS. The SNS will be created with
 
 `sns-quill` and the nns-dapp are the main clients of this SNS. To use the identities 
 included in this dir, use `sns-quill`.
-
-For example, to validate that the principals in the sns_init.yaml correspond to the identities, 
 
 [Download and build](https://github.com/dfinity/sns-quill) sns-quill from GitHub. Use the `IC_URL` environmental 
 variable to point at the testnet in use. For example, using the testnet configured in the included `dfx.json`,
