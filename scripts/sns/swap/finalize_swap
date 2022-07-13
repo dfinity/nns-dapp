@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+DFX_NETWORK="${DFX_NETWORK:-$1}"
+dfx canister --network "${DFX_NETWORK}" call sns_swap finalize_swap '(record {})'
