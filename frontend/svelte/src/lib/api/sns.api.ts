@@ -207,31 +207,24 @@ export const querySnsSummaries = async ({
     ).values(),
   ];
 
-  // TODO(L2-751): replace with effective implementation and types to get the metadata / summary
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
-  const metadatas = await Promise.all(
-    snsWrappers.map(({ metadata }: SnsWrapper) => metadata({ certified }))
-  );
-
-  // TODO(L2-829): mock data to be removed and replaced
-  console.log("Sns metadatas", metadatas);
-
-  if (mockSnsSummaries.length === 0) {
-    mockSnsSummaries = snsWrappers.map(
-      ({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
-        ...mockSnsSummaryList[
-          Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
-        ],
-        rootCanisterId,
+  const summaries: (SnsSummary | undefined)[] = await Promise.all(
+    snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
+      querySnsSummary({
+        rootCanisterId: rootCanisterId.toText(),
+        certified,
+        identity,
       })
-    );
-  }
+    )
+  );
 
   logWithTimestamp(
     `Listing all deployed Sns summaries certified:${certified} done.`
   );
 
-  return mockSnsSummaries;
+  return summaries.filter(
+    (summary: SnsSummary | undefined) => summary !== undefined
+  ) as SnsSummary[];
 };
 
 export const querySnsSummary = async ({
@@ -259,7 +252,22 @@ export const querySnsSummary = async ({
     `Getting Sns ${rootCanisterId} summary certified:${certified} done.`
   );
 
-  // TODO(L2-829, L2-751): remove and replace with effective data
+  // TODO(L2-829): mock data to be removed and replaced
+  if (mockSnsSummaries.length === 0) {
+    mockSnsSummaries = [
+      ...(
+        (await wrappers({ identity, certified })) ??
+        new Map<RootCanisterId, SnsWrapper>()
+      ).values(),
+    ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
+      ...mockSnsSummaryList[
+        Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
+      ],
+      rootCanisterId,
+    }));
+  }
+
+  // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
   console.log("Sns metadata", summary);
   return mockAbout5SecondsWaiting(() =>
     mockSnsSummaries.find(
