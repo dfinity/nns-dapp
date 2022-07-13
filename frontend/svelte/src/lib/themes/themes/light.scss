@@ -20,6 +20,9 @@
     --json-principal-color: var(--warning-emphasis);
     --json-hash-color: var(--warning-emphasis);
 
+    // Inputs
+    --input-border-color: transparent;
+
     // Menu
     --menu-background: #fafbfc;
     --menu-background-contrast: #333333;
@@ -42,5 +45,12 @@
     --card-background-contrast-rgb: 51, 51, 51;
     --card-background-shade: #e0e0e0;
     --card-background-tint: #ffffff;
+
+    --secondary: #ffffff;
+    --secondary-rgb: 255, 255, 255;
+    --secondary-contrast: var(--primary);
+    --secondary-contrast-rgb: 0, 165, 255;
+    --secondary-shade: #e0e0e0;
+    --secondary-tint: #ffffff;
   }
 }
