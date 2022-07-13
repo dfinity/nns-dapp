@@ -13,11 +13,7 @@ export class AccountNotFoundError extends AccountTranslateError {
   }
 }
 
-export class SubAccountLimitExceededError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class SubAccountLimitExceededError extends Error {}
 
 export class NameTooLongError extends AccountTranslateError {
   constructor(message: string, substitutions?: I18nSubstitutions) {
@@ -27,11 +23,7 @@ export class NameTooLongError extends AccountTranslateError {
   }
 }
 
-export class HardwareWalletAttachError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class HardwareWalletAttachError extends Error {}
 
 export class CanisterAlreadyAttachedError extends AccountTranslateError {
   constructor(message: string, substitutions?: I18nSubstitutions) {

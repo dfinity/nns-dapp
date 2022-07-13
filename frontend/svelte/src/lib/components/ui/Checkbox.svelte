@@ -15,9 +15,9 @@
   /**
    * Emit an event when the checkbox or container is clicked. The state should be updated by consumer.
    */
-  const onClick = (event) => {
+  const onClick = ($event: MouseEvent | TouchEvent) => {
     if (preventDefault) {
-      event.preventDefault();
+      $event.preventDefault();
     }
     dispatch("nnsChange");
   };

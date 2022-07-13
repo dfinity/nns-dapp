@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
-  import type { SnsSummary, SnsSwapState } from "../../services/sns.mock";
+  import type { SnsSummary, SnsSwapState } from "../../types/sns";
 
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";

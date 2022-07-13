@@ -7,7 +7,7 @@
     "i18n": "node scripts/i18n.types.js",
     "import-assets": "rm -fr public && cp -R static public",
     "build": "npm run import-assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
-    "dev": "npm run import-assets && npm run i18n && CANISTER_ID=q3fc5-haaaa-aaaaa-aaahq-cai DFX_NETWORK=nnsdapp_both npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
+    "dev": "npm run import-assets && npm run i18n && CANISTER_ID=q3fc5-haaaa-aaaaa-aaahq-cai DFX_NETWORK=testnet npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "build:config": "../../config.sh",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
@@ -60,9 +60,10 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
-    "@dfinity/agent": "^0.11.3",
-    "@dfinity/auth-client": "^0.11.3",
+    "@dfinity/agent": "^0.12.0",
+    "@dfinity/auth-client": "^0.12.0",
     "@dfinity/nns": "nightly",
+    "@dfinity/sns": "^0.0.1",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@zondax/ledger-icp": "^0.6.0"

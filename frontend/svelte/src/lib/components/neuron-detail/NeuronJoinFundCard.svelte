@@ -42,6 +42,7 @@
       color: var(--primary);
       text-decoration: none;
       font-size: inherit;
+      line-height: inherit;
     }
 
     // Changes order of the label of the JoinCommunityFundCheckbox
