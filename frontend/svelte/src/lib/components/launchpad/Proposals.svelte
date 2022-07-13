@@ -4,7 +4,7 @@
   import { listSnsProposals } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import CardGrid from "../ui/CardGrid.svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
   import ProposalCard from "./ProposalCard.svelte";
 
   let loading: boolean = false;
@@ -24,8 +24,8 @@
 
 {#if loading}
   <CardGrid>
-    <SkeletonCard />
-    <SkeletonCard />
+    <SkeletonProposalCard />
+    <SkeletonProposalCard />
   </CardGrid>
 {:else if proposals !== undefined}
   {#if proposals.length === 0}
