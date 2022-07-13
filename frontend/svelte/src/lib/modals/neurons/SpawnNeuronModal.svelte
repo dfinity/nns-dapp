@@ -13,6 +13,8 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
   import { startBusyNeuron } from "../../services/busy.services";
+  import { ENABLE_NEW_SPAWN_FEATURE } from "../../constants/environment.constants";
+  import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -88,7 +90,7 @@
     >{currentStep?.title ??
       $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
   >
-  {#if currentStep.name === "SelectPercentage"}
+  {#if currentStep.name === "SelectPercentage" && !ENABLE_NEW_SPAWN_FEATURE}
     <SelectPercentage
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
@@ -101,7 +103,22 @@
         <p>{$i18n.neuron_detail.spawn_maturity_modal_description}</p>
       </svelte:fragment>
     </SelectPercentage>
-  {:else if currentStep.name === "ConfirmSpawn"}
+  {:else if currentStep.name === "SelectPercentage" && ENABLE_NEW_SPAWN_FEATURE}
+    <SelectPercentage
+      {neuron}
+      buttonText={$i18n.neuron_detail.spawn}
+      on:nnsSelectPercentage={spawnNeuronFromMaturity}
+      bind:percentage={percentageToSpawn}
+      disabled={!enoughMaturityToSpawn}
+    >
+      <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
+      <p slot="description">
+        {@html $i18n.neuron_detail.spawn_maturity_explanation}
+      </p>
+    </SelectPercentage>
+  {:else if currentStep.name === "ConfirmSpawn" && ENABLE_NEW_SPAWN_FEATURE}
+    <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
+  {:else if currentStep.name === "ConfirmSpawn" && !ENABLE_NEW_SPAWN_FEATURE}
     <ConfirmActionScreen on:nnsConfirm={spawnNeuronFromMaturity}>
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
@@ -124,6 +141,16 @@
 <style lang="scss">
   h4 {
     text-align: center;
+  }
+
+  p {
+    // For the link inside "i18n.neuron_detail.spawn_maturity_explanation"
+    :global(a) {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: inherit;
+      line-height: inherit;
+    }
   }
 
   .confirm-answer {

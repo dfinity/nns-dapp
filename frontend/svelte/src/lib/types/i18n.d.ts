@@ -174,6 +174,7 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
+  current_balance_total: string;
   current_balance_detail: string;
 }
 
@@ -527,6 +528,9 @@ interface I18nNeuron_detail {
   spawn_maturity_success: string;
   spawn_maturity_confirmation_q: string;
   spawn_maturity_confirmation_a: string;
+  spawn_maturity_choose: string;
+  spawn_maturity_explanation: string;
+  spawn_maturity_explanation_hw: string;
   current_stake: string;
   current_maturity: string;
   dissolve_delay_range: string;
