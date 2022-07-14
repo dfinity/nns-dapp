@@ -30,7 +30,7 @@ describe("Verifies that neurons can be created", () => {
     await navigator.getElement(
       AccountsTab.ACCOUNT_CARD,
       "Wait for the main account card",
-      { timeout: 50_000 },
+      { timeout: 50_000 }
     );
     await new Icp(browser).getIcp(100);
   });
