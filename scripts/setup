@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. <(../../build-config.sh)
 
 help_text() {
   cat <<-EOF
@@ -182,7 +183,6 @@ install_cmake_linux() {
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.
-IC_COMMIT=28ea02bad62dc777378a53602b8cd3a515ab23a3
 install_ic_admin_linux() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"

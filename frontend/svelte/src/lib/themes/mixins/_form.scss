@@ -1,0 +1,4 @@
+@mixin input {
+  border: 1px solid var(--input-error-color, var(--input-border-color));
+  background: var(--card-background);
+}

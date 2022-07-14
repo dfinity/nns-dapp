@@ -143,7 +143,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "../../themes/mixins/form";
 
   .input-block {
     position: relative;
@@ -175,6 +175,7 @@
   }
 
   input {
+    @include form.input;
     width: 100%;
 
     font-size: inherit;
@@ -186,9 +187,6 @@
 
     border-radius: var(--element-border-radius);
 
-    background: var(--card-background);
-
-    border: 1px solid var(--input-error-color, transparent);
     outline: none;
   }
 

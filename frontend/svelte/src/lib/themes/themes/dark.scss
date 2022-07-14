@@ -37,11 +37,15 @@
   --json-bigint-color: var(--brand-picton-blue);
   --json-boolean-color: var(--brand-picton-blue);
 
+  // Inputs
+  --input-border-color: #ffffff;
+
   // Menu
   --menu-background: var(--card-background);
   --menu-background-contrast: var(--card-background-contrast);
 
   --light-opacity: 0.6;
+  --very-light-opacity: 0.4;
 
   // Overlays - based on dark card background rgb color
   --backdrop: rgba(39, 41, 41, 0.8);
@@ -72,6 +76,13 @@
   --primary-contrast-rgb: 255, 255, 255;
   --primary-shade: #0091e0;
   --primary-tint: #1aaeff;
+
+  --secondary: #272929;
+  --secondary-rgb: 39, 41, 41;
+  --secondary-contrast: #ffffff;
+  --secondary-contrast-rgb: 255, 255, 255;
+  --secondary-shade: #222424;
+  --secondary-tint: #3d3e3e;
 
   --warning-emphasis: #ffc700;
   --warning-emphasis-rgb: 255, 199, 0;

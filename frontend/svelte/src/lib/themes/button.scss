@@ -68,6 +68,8 @@ button {
   &.secondary,
   &.danger,
   &.warning {
+    padding: var(--padding) var(--padding-2x);
+
     border-radius: var(--element-border-radius);
     box-shadow: var(--interaction-box-shadow);
 
@@ -106,6 +108,10 @@ button {
       background: var(--primary-tint);
       @include effect.ripple-effect(--primary-tint);
     }
+
+    &:hover {
+      background: var(--primary-tint);
+    }
   }
 
   &.secondary {
@@ -116,23 +122,16 @@ button {
       cursor: default;
     }
 
-    // Same colors as primary but reversed
-    background: var(--primary-contrast);
-    color: var(--primary);
+    background: var(--secondary);
+    color: var(--secondary-contrast);
+    // Use inset border to avoid messing up with size.
+    border: 1px inset var(--input-error-color, var(--input-border-color));
 
-    @include effect.ripple-effect(--primary-contrast);
+    @include effect.ripple-effect(--secondary-tint);
 
     &:focus {
-      background: var(--primary-contrast);
-      @include effect.ripple-effect(--primary-contrast);
-    }
-  }
-
-  &.primary {
-    padding: var(--padding) var(--padding-2x);
-
-    &:hover {
-      background: var(--primary-tint);
+      background: var(--secondary-tint);
+      @include effect.ripple-effect(--secondary-tint);
     }
   }
 
