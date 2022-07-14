@@ -249,11 +249,17 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
 
   echo "Populate canister_ids.json"
-  EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
-  cp canister_ids.json "$EXISTING_CANISTER_IDS"
+  if test -e canister_ids.json
+  then
+    EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
+    cp canister_ids.json "$EXISTING_CANISTER_IDS"
+  else
+    echo "{}" > canister_ids.json
+  fi
   idl2json <sns_creation.idl |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
-    jq -s '.[0] * .[1]' - "$EXISTING_CANISTER_IDS" >canister_ids.json
+    jq -s '.[0] * .[1]' - canister_ids.json > canister_ids.json.new
+  mv canister_ids.json.new canister_ids.json
 
 fi
 
