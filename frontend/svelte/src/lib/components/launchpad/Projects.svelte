@@ -8,15 +8,20 @@
     snsFullProjectStore,
     type SnsFullProject,
     snsSummariesStore,
+    snsesCountStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
+  import Spinner from "../ui/Spinner.svelte";
 
   let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
   $: projects = $snsFullProjectStore;
+
+  let projectCount: number | undefined;
+  $: projectCount = $snsesCountStore;
 
   const load = async () => {
     // show loading state only when store is empty
@@ -35,10 +40,15 @@
 </script>
 
 {#if loading}
-  <CardGrid>
-    <SkeletonProjectCard />
-    <SkeletonProjectCard />
-  </CardGrid>
+  {#if projectCount === undefined}
+    <Spinner />
+  {:else}
+    <CardGrid>
+      {#each Array(projectCount) as _}
+        <SkeletonProjectCard />
+      {/each}
+    </CardGrid>
+  {/if}
 {:else if projects !== undefined}
   <CardGrid>
     {#each projects as project (project.rootCanisterId.toText())}

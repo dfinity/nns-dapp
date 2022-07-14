@@ -9,14 +9,16 @@ import {
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
 } from "../proxy/api.import.proxy";
+import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 
 type RootCanisterId = string;
-let snsQueryWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
-let snsUpdateWrappers: Map<RootCanisterId, SnsWrapper> | undefined;
+
+let snsQueryWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
+let snsUpdateWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -100,6 +102,8 @@ const loadSnsWrappers = async ({
   });
 
   const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
+
+  snsesCountStore.set(rootCanisterIds.length);
 
   const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
     rootCanisterIds.map((rootCanisterId: Principal) =>
