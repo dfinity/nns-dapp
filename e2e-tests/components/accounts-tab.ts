@@ -8,6 +8,7 @@ export class AccountsTab extends MyNavigator {
   static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `#modalContent [data-tid="input-ui-element"]`;
   static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `#modalContent [type="submit"]`;
   static readonly ICP_VALUE_SELECTOR: string = `[data-tid="icp-value"]`;
+  static readonly ACCOUNT_CARD: string = `[data-tid="account-card"]`;
 
   /**
    * Creates a browser controller for the accounts tab.
