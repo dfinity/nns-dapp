@@ -40,6 +40,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isSpawning,
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
@@ -828,6 +829,32 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("isSpawning", () => {
+    it("returns true if neuron is spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: BigInt(123123113),
+        },
+      };
+      expect(isSpawning(neuron)).toBe(true);
+    });
+
+    it("returns false if neuron is not spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        status: NeuronState.LOCKED,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: undefined,
+        },
+      };
+      expect(isSpawning(neuron)).toBe(false);
+    });
+  });
+
   describe("mapMergeableNeurons", () => {
     const mainAccountController = mockMainAccount.principal?.toText() as string;
     it("wraps mergeable neurons with true if mergeable", () => {
@@ -889,6 +916,26 @@ describe("neuron-utils", () => {
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(false);
+    });
+
+    it("wraps mergeable neurons with false if neuron is spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron],
+        accounts: {
+          main: mockMainAccount,
+        },
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
     });
 
     it("checks current selection ManageNeuron followees to define a neuron as mergeable", () => {

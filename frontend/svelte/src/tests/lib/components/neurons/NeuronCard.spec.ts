@@ -83,6 +83,24 @@ describe("NeuronCard", () => {
     expect(getByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
   });
 
+  it("doesn't render the neuron stake but the stacked line chart icon", async () => {
+    const neuron = {
+      ...mockNeuron,
+      state: NeuronState.SPAWNING,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
+      },
+    };
+    const { queryByTestId } = render(NeuronCard, {
+      props: {
+        neuron,
+      },
+    });
+
+    expect(queryByTestId("stacked-line-chart")).toBeInTheDocument();
+  });
+
   it("renders the community fund label when neuron part of community fund", async () => {
     const { getByText } = render(NeuronCard, {
       props: {
@@ -140,6 +158,23 @@ describe("NeuronCard", () => {
     });
 
     expect(getByText(en.neurons.status_dissolved)).toBeInTheDocument();
+  });
+
+  it("renders proper text when status is SPAWNING", async () => {
+    const { getByText } = render(NeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          state: NeuronState.SPAWNING,
+          fullNeuron: {
+            ...mockFullNeuron,
+            spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
+          },
+        },
+      },
+    });
+
+    expect(getByText(en.neurons.status_spawning)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {

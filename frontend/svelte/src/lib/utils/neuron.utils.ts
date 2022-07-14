@@ -45,7 +45,7 @@ import { isDefined } from "./utils";
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  status: "ok" | "warn";
+  status: "ok" | "warn" | "spawning";
 };
 
 type StateMapper = {
@@ -70,6 +70,11 @@ const stateTextMapper: StateMapper = {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
+  },
+  [NeuronState.SPAWNING]: {
+    textKey: "spawning",
+    Icon: IconHistoryToggleOff,
+    status: "spawning",
   },
 };
 
@@ -121,6 +126,13 @@ export const getDissolvingTimeInSeconds = (
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
       BigInt(nowInSeconds())
+    : undefined;
+
+export const getSpawningTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined =>
+  isSpawning(neuron) && neuron.fullNeuron?.spawnAtTimesSeconds !== undefined
+    ? neuron.fullNeuron.spawnAtTimesSeconds - BigInt(nowInSeconds())
     : undefined;
 
 export const ageMultiplier = (ageSeconds: number): number =>
@@ -308,6 +320,9 @@ export const isEnoughMaturityToSpawn = ({
   });
 };
 
+export const isSpawning = (neuron: NeuronInfo): boolean =>
+  neuron.state === NeuronState.SPAWNING;
+
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
   neuron,
@@ -317,6 +332,7 @@ const isMergeableNeuron = ({
   accounts: AccountsStore;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
+  !isSpawning(neuron) &&
   // Merging hardware wallet neurons is not yet supported
   isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
 
@@ -329,6 +345,9 @@ const getMergeableNeuronMessageKey = ({
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
+  }
+  if (isSpawning(neuron)) {
+    return "neurons.cannot_merge_neuron_spawning";
   }
   if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
     return "neurons.cannot_merge_hardware_wallet";

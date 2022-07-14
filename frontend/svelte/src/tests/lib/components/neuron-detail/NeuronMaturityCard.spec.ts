@@ -49,7 +49,11 @@ describe("NeuronMaturityCard", () => {
     });
     const inPercentage = maturityByStake(props.neuron);
 
-    expect(queryByText(formatPercentage(inPercentage))).toBeInTheDocument();
+    expect(
+      queryByText(
+        formatPercentage(inPercentage, { minFraction: 2, maxFraction: 2 })
+      )
+    ).toBeInTheDocument();
   });
 
   it("renders actions", () => {

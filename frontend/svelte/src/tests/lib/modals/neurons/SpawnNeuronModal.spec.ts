@@ -50,7 +50,12 @@ describe("SpawnNeuronModal", () => {
     });
 
     expect(
-      queryByText(formatPercentage(maturityByStake(neuron)))
+      queryByText(
+        formatPercentage(maturityByStake(neuron), {
+          minFraction: 2,
+          maxFraction: 2,
+        })
+      )
     ).toBeInTheDocument();
   });
 

@@ -33,7 +33,12 @@
     </Tooltip>
   </div>
   <div slot="end">
-    <h3>{formatPercentage(maturityByStake(neuron))}</h3>
+    <h3>
+      {formatPercentage(maturityByStake(neuron), {
+        minFraction: 2,
+        maxFraction: 2,
+      })}
+    </h3>
   </div>
   <div class="actions">
     {#if isControllable}

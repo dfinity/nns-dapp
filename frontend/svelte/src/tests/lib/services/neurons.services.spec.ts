@@ -119,6 +119,7 @@ describe("neurons-services", () => {
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
+  const newSpawnedNeuronId = BigInt(1234);
 
   const spyStakeNeuron = jest
     .spyOn(api, "stakeNeuron")
@@ -156,7 +157,7 @@ describe("neurons-services", () => {
 
   const spySpawnNeuron = jest
     .spyOn(api, "spawnNeuron")
-    .mockImplementation(() => Promise.resolve());
+    .mockImplementation(() => Promise.resolve(newSpawnedNeuronId));
 
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
@@ -505,26 +506,26 @@ describe("neurons-services", () => {
 
     it("should spawn a neuron from maturity", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
-      const { success } = await services.spawnNeuron({
+      const newNeuronId = await services.spawnNeuron({
         neuronId: controlledNeuron.neuronId,
         percentageToSpawn: 50,
       });
 
       expect(spySpawnNeuron).toHaveBeenCalled();
-      expect(success).toBe(true);
+      expect(newNeuronId).toEqual(newSpawnedNeuronId);
     });
 
     it("should not spawn neuron if no identity", async () => {
       setNoIdentity();
 
-      const { success } = await services.spawnNeuron({
+      const newNeuronId = await services.spawnNeuron({
         neuronId: controlledNeuron.neuronId,
         percentageToSpawn: 50,
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spySpawnNeuron).not.toHaveBeenCalled();
-      expect(success).toBe(false);
+      expect(newNeuronId).toBeUndefined();
 
       resetIdentity();
     });
@@ -535,14 +536,14 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      const { success } = await services.spawnNeuron({
+      const newNeuronId = await services.spawnNeuron({
         neuronId: notControlledNeuron.neuronId,
         percentageToSpawn: 50,
       });
 
       expect(toastsStore.show).toHaveBeenCalled();
       expect(spySpawnNeuron).not.toHaveBeenCalled();
-      expect(success).toBe(false);
+      expect(newNeuronId).toBeUndefined();
     });
   });
 

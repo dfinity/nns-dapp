@@ -27,7 +27,12 @@
 <div class="wrapper" data-tid="spawn-maturity-neuron-modal">
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
-    <p>{formatPercentage(maturityByStake(neuron))}</p>
+    <p>
+      {formatPercentage(maturityByStake(neuron), {
+        minFraction: 2,
+        maxFraction: 2,
+      })}
+    </p>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
       {replacePlaceholders($i18n.neurons.icp_stake, {

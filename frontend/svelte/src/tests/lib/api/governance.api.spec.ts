@@ -290,17 +290,19 @@ describe("neurons-api", () => {
 
   describe("spawnNeuron", () => {
     it("spawn a neuron from a percentage of the maturity successfully", async () => {
+      const newNeuronId = BigInt(12333);
       mockGovernanceCanister.spawnNeuron.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        jest.fn().mockResolvedValue(newNeuronId)
       );
 
-      await spawnNeuron({
+      const actualNeuronId = await spawnNeuron({
         identity: mockIdentity,
         percentageToSpawn: 50,
         neuronId: BigInt(10),
       });
 
       expect(mockGovernanceCanister.spawnNeuron).toBeCalled();
+      expect(actualNeuronId).toEqual(newNeuronId);
     });
 
     it("throws error when spawnNeuron fails", async () => {

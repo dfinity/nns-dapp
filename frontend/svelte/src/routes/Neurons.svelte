@@ -8,7 +8,7 @@
   import Toolbar from "../lib/components/ui/Toolbar.svelte";
   import NeuronCard from "../lib/components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../lib/modals/neurons/CreateNeuronModal.svelte";
-  import type { NeuronId } from "@dfinity/nns";
+  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import { neuronsStore, sortedNeuronStore } from "../lib/stores/neurons.store";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -17,6 +17,7 @@
   import { MAX_NEURONS_MERGED } from "../lib/constants/neurons.constants";
   import Tooltip from "../lib/components/ui/Tooltip.svelte";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import { isSpawning } from "../lib/utils/neuron.utils";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -37,10 +38,13 @@
   const openModal = (key: ModalKey) => (showModal = key);
   const closeModal = () => (showModal = undefined);
 
-  const goToNeuronDetails = (id: NeuronId) => () => {
-    routeStore.navigate({
-      path: `${AppPath.NeuronDetail}/${id}`,
-    });
+  const goToNeuronDetails = (neuron: NeuronInfo) => () => {
+    // Spawning neuron can't see details yet
+    if (!isSpawning(neuron)) {
+      routeStore.navigate({
+        path: `${AppPath.NeuronDetail}/${neuron.neuronId}`,
+      });
+    }
   };
 
   let enoughNeuronsToMerge: boolean;
@@ -61,12 +65,26 @@
       <SkeletonCard />
     {:else}
       {#each $sortedNeuronStore as neuron}
-        <NeuronCard
-          role="link"
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
-          {neuron}
-        />
+        {#if isSpawning(neuron)}
+          <Tooltip
+            id="spawning-neuron-card"
+            text={$i18n.neuron_detail.spawning_neuron_info}
+          >
+            <NeuronCard
+              disabled
+              ariaLabel={$i18n.neurons.aria_label_neuron_card}
+              on:click={goToNeuronDetails(neuron)}
+              {neuron}
+            />
+          </Tooltip>
+        {:else}
+          <NeuronCard
+            role="link"
+            ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={goToNeuronDetails(neuron)}
+            {neuron}
+          />
+        {/if}
       {/each}
     {/if}
   </section>

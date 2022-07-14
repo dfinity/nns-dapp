@@ -34,6 +34,7 @@ interface I18nError {
   proposal_payload: string;
   proposal_payload_not_found: string;
   neuron_not_found: string;
+  neuron_spawning: string;
   neuron_load: string;
   list_proposals: string;
   list_canisters: string;
@@ -210,6 +211,7 @@ interface I18nNeurons {
   create: string;
   edit_source: string;
   status_locked: string;
+  status_spawning: string;
   status_unspecified: string;
   status_dissolved: string;
   status_dissolving: string;
@@ -235,6 +237,7 @@ interface I18nNeurons {
   edit_delay: string;
   merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
+  cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_hardware_wallet: string;
   only_merge_two: string;
@@ -542,12 +545,14 @@ interface I18nNeuron_detail {
   spawn_maturity_confirmation_q: string;
   spawn_maturity_confirmation_a: string;
   spawn_maturity_choose: string;
-  spawn_maturity_explanation: string;
-  spawn_maturity_explanation_hw: string;
+  spawn_maturity_explanation_1: string;
+  spawn_maturity_explanation_2: string;
+  spawn_maturity_note_hw: string;
   current_stake: string;
   current_maturity: string;
   dissolve_delay_range: string;
   maturity_range: string;
+  spawning_neuron_info: string;
   maturity_percentage: string;
 }
 
