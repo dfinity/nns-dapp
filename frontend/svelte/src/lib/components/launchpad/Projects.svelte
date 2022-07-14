@@ -41,7 +41,9 @@
 
 {#if loading}
   {#if projectCount === undefined}
-    <Spinner />
+    <div>
+      <Spinner inline />
+    </div>
   {:else}
     <CardGrid>
       {#each Array(projectCount) as _}
@@ -59,3 +61,10 @@
     <p>{$i18n.sns_launchpad.no_projects}</p>
   {/if}
 {/if}
+
+<style lang="scss">
+  // match page spinner
+  div {
+    color: rgba(var(--background-contrast-rgb), var(--very-light-opacity));
+  }
+</style>
