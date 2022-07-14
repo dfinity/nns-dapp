@@ -65,11 +65,15 @@
       $i18n.neurons.merge_neurons_modal_title}</svelte:fragment
   >
   {#if currentStep?.name === "SelectNeurons"}
-    <SelectNeuronsToMerge on:nnsSelect={handleNeuronSelection} />
+    <SelectNeuronsToMerge on:nnsSelect={handleNeuronSelection} on:nnsClose />
   {/if}
   {#if currentStep?.name === "ConfirmMerge"}
     {#if selectedNeurons !== undefined}
-      <ConfirmNeuronsMerge neurons={selectedNeurons} on:nnsClose />
+      <ConfirmNeuronsMerge
+        neurons={selectedNeurons}
+        on:nnsClose
+        on:nnsBack={() => modal.back()}
+      />
     {/if}
   {/if}
 </WizardModal>
