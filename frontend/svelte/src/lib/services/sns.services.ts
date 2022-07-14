@@ -1,6 +1,5 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import { querySnsSummaries, querySnsSummary } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
@@ -45,25 +44,11 @@ const mockDummySwapStates: Partial<SnsSwapState>[] = [
   },
 ];
 
-const ignoreSnsSummaryResult = (certified: boolean): boolean => {
-  const $snsSummariesStore = get(snsSummariesStore);
-
-  /**
-   Since we have chosen not to refetch the data when navigating through the pages,
-   the result of the `query` should be ignored if the `update` is already loaded.
-   */
-  return certified === false && $snsSummariesStore.certified === true;
-};
-
 export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSummaries({ certified, identity }),
     onLoad: ({ response: summaries, certified }) => {
-      if (ignoreSnsSummaryResult(certified)) {
-        return;
-      }
-
       snsSummariesStore.setSummaries({
         summaries,
         certified,
@@ -114,17 +99,12 @@ export const loadSnsSummary = async (canisterId: string) => {
         identity,
         certified,
       }),
-    onLoad: ({ response: summary, certified }) => {
-      if (ignoreSnsSummaryResult(certified)) {
-        return;
-      }
-
+    onLoad: ({ response: summary, certified }) =>
       // TODO(L2-840): detail page should not use that summaries store but only a dedicated state or context store
       snsSummariesStore.setSummaries({
         summaries: [...(summary ? [summary] : [])],
         certified,
-      });
-    },
+      }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
