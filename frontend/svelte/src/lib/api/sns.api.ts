@@ -146,12 +146,12 @@ const wrappers = async ({
   switch (certified) {
     case false:
       if (!snsQueryWrappers) {
-        snsQueryWrappers = await initWrappers({ identity, certified: false });
+        snsQueryWrappers = initWrappers({ identity, certified: false });
       }
       return snsQueryWrappers;
     default:
       if (!snsUpdateWrappers) {
-        snsUpdateWrappers = await initWrappers({ identity, certified: true });
+        snsUpdateWrappers = initWrappers({ identity, certified: true });
       }
       return snsUpdateWrappers;
   }
