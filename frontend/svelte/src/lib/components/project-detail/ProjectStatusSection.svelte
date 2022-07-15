@@ -24,6 +24,7 @@
   );
 
   let summary: SnsSummary;
+  // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
   let swapState: SnsSwapState;
   $: swapState = $projectDetailStore.swapState as SnsSwapState;

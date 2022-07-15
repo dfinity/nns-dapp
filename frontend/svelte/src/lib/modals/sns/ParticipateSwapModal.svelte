@@ -18,6 +18,7 @@
   );
 
   let summary: SnsSummary;
+  // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
 
   const steps: Steps = [
