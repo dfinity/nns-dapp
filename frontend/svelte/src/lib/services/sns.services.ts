@@ -1,7 +1,11 @@
 import type { ProposalInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
-import { querySnsSummaries, querySnsSummary } from "../api/sns.api";
+import {
+  querySnsSummaries,
+  querySnsSummary,
+  querySnsSwapState,
+  querySnsSwapStates,
+} from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
@@ -12,64 +16,20 @@ import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
-import { queryAndUpdate } from "./utils.services";
-
-// TODO(L2-829): to be deleted
-const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () => resolve(generator()),
-      Math.round((0.5 + Math.random() * 4.5) * 1000)
-    )
-  );
-
-// TODO(L2-751): remove and replace with effective data
-let mockSwapStates: SnsSwapState[] = [];
-const mockDummySwapStates: Partial<SnsSwapState>[] = [
-  {
-    myCommitment: BigInt(25 * 100000000),
-    currentCommitment: BigInt(100 * 100000000),
-  },
-  {
-    myCommitment: BigInt(5 * 100000000),
-    currentCommitment: BigInt(775 * 100000000),
-  },
-  {
-    myCommitment: undefined,
-    currentCommitment: BigInt(1000 * 100000000),
-  },
-  {
-    myCommitment: undefined,
-    currentCommitment: BigInt(1500 * 100000000),
-  },
-];
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnResponse,
+} from "./utils.services";
 
 export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSummaries({ certified, identity }),
-    onLoad: ({ response: summaries, certified }) => {
+    onLoad: ({ response: summaries, certified }) =>
       snsSummariesStore.setSummaries({
         summaries,
         certified,
-      });
-
-      // TODO(L2-751): remove mock data
-      if (mockSwapStates.length > 0) {
-        return;
-      }
-
-      // TODO(L2-751): remove mock data
-      mockSwapStates = summaries.map(
-        ({ rootCanisterId }) =>
-          ({
-            ...mockDummySwapStates[
-              Math.floor(0 + Math.random() * (mockDummySwapStates.length - 1))
-            ],
-            rootCanisterId,
-          } as SnsSwapState)
-      );
-    },
+      }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -89,22 +49,23 @@ export const loadSnsSummaries = (): Promise<void> =>
     logMessage: "Syncing Sns summaries",
   });
 
-export const loadSnsSummary = async (canisterId: string) => {
+export const loadSnsSummary = async ({
+  rootCanisterId,
+  onLoad,
+}: {
+  rootCanisterId: string;
+  onLoad: QueryAndUpdateOnResponse<SnsSummary>;
+}) => {
   // TODO(L2-838): load only if not yet in store
 
   return queryAndUpdate<SnsSummary | undefined, unknown>({
     request: ({ certified, identity }) =>
       querySnsSummary({
-        rootCanisterId: canisterId,
+        rootCanisterId,
         identity,
         certified,
       }),
-    onLoad: ({ response: summary, certified }) =>
-      // TODO(L2-840): detail page should not use that summaries store but only a dedicated state or context store
-      snsSummariesStore.setSummaries({
-        summaries: [...(summary ? [summary] : [])],
-        certified,
-      }),
+    onLoad,
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -125,54 +86,82 @@ export const loadSnsSummary = async (canisterId: string) => {
   });
 };
 
-export const loadSnsSwapStates = async (
-  summaries: SnsSummary[] | undefined
-) => {
-  if (summaries === undefined) {
-    snsSwapStatesStore.reset();
-    return;
-  }
+export const loadSnsSwapStates = (): Promise<void> =>
+  queryAndUpdate<SnsSwapState[], unknown>({
+    request: ({ certified, identity }) =>
+      querySnsSwapStates({ certified, identity }),
+    onLoad: ({ response: swapStates, certified }) => {
+      for (const swapState of swapStates) {
+        snsSwapStatesStore.setSwapState({
+          swapState,
+          certified,
+        });
+      }
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
 
-  // TODO(L2-751): remove and replace with effective data
-  // TODO: query and update calls
-  for (const { rootCanisterId } of summaries) {
-    loadSnsSwapState(rootCanisterId).then((swapState) =>
-      snsSwapStatesStore.setSwapState({
-        swapState,
-        certified: true,
-      })
-    );
-  }
-};
+      if (certified !== true) {
+        return;
+      }
 
-// TODO(L2-751): remove and replace with effective data
-// TODO: query and update calls
-const loadSnsSwapState = async (
-  rootCanisterId: Principal
-): Promise<SnsSwapState> =>
-  mockAbout5SecondsWaiting(
-    () =>
-      mockSwapStates.find(
-        (mock) => rootCanisterId.toText() === mock.rootCanisterId.toText()
-      ) as SnsSwapState
-  );
+      // TODO(L2-839): reset and clear stores
 
-export const loadSnsSwapStateStore = async (
-  rootCanisterId: string | undefined
-): Promise<void> => {
-  // TODO: we probably do not want to use this store in the detail page and do not want to reset everything
-  if (rootCanisterId === undefined) {
-    snsSwapStatesStore.reset();
-    return;
-  }
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__sns.list_swap_states",
+        })
+      );
+    },
+    logMessage: "Syncing Sns swap state",
+  });
 
-  const swapState = await loadSnsSwapState(Principal.fromText(rootCanisterId));
+export const loadSnsSwapState = async ({
+  rootCanisterId,
+  onLoad,
+}: {
+  rootCanisterId: string;
+  onLoad: QueryAndUpdateOnResponse<SnsSwapState>;
+}) => {
+  // TODO(L2-838): load only if not yet in store
 
-  snsSwapStatesStore.setSwapState({
-    swapState,
-    certified: true,
+  return queryAndUpdate<SnsSwapState, unknown>({
+    request: ({ certified, identity }) =>
+      querySnsSwapState({
+        rootCanisterId,
+        identity,
+        certified,
+      }),
+    onLoad,
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // TODO(L2-839): reset and clear stores
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__sns.load_swap_state",
+        })
+      );
+    },
+    logMessage: "Syncing Sns swap state",
   });
 };
+
+// TODO(L2-829): to be deleted
+const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
+  new Promise((resolve) =>
+    setTimeout(
+      () => resolve(generator()),
+      Math.round((0.5 + Math.random() * 4.5) * 1000)
+    )
+  );
 
 export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
   mockAbout5SecondsWaiting(async () => {

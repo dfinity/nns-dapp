@@ -4,11 +4,22 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import ParticipateScreen from "../../components/project-detail/ParticipateScreen.svelte";
   import ReviewParticipate from "../../components/project-detail/ReviewParticipate.svelte";
-  import type { SnsFullProject } from "../../stores/projects.store";
   import type { Account } from "../../types/account";
   import { ICP } from "@dfinity/nns";
+  import type { SnsSummary } from "../../types/sns";
+  import { getContext } from "svelte";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+  } from "../../types/project-detail.context";
 
-  export let project: SnsFullProject;
+  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
+    PROJECT_DETAIL_CONTEXT_KEY
+  );
+
+  let summary: SnsSummary;
+  // type safety validation is done in ProjectDetail component
+  $: summary = $projectDetailStore.summary as SnsSummary;
 
   const steps: Steps = [
     {
@@ -45,8 +56,8 @@
       bind:amount
       on:nnsNext={goNext}
       on:nnsClose
-      minAmount={ICP.fromE8s(project.summary.minParticipationCommitment)}
-      maxAmount={ICP.fromE8s(project.summary.maxParticipationCommitment)}
+      minAmount={ICP.fromE8s(summary.minParticipationCommitment)}
+      maxAmount={ICP.fromE8s(summary.maxParticipationCommitment)}
     />
   {/if}
   {#if currentStep.name === "ReviewTransaction" && selectedAccount !== undefined && amount !== undefined}
