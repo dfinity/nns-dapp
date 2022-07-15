@@ -50,15 +50,17 @@
   });
 
   const loadSummary = (rootCanisterId: string) => {
-    if ($snsSummariesStore.certified === true) {
-      // find certified from snsSummariesStore
-      const summaryMaybe = $snsSummariesStore.summaries?.find(
-        ({ rootCanisterId: rootCanister }) =>
-          rootCanister?.toText() === rootCanisterId
-      );
+    // try to get from snsSummariesStore
+    const summaryMaybe = $snsSummariesStore.summaries?.find(
+      ({ rootCanisterId: rootCanister }) =>
+        rootCanister?.toText() === rootCanisterId
+    );
 
-      if (summaryMaybe !== undefined) {
-        $projectDetailStore.summary = summaryMaybe;
+    if (summaryMaybe !== undefined) {
+      $projectDetailStore.summary = summaryMaybe;
+
+      // do not reload already certified data
+      if ($snsSummariesStore.certified === true) {
         return;
       }
     }
@@ -75,15 +77,18 @@
 
   const loadSwapState = (rootCanisterId: string) => {
     if (nonNullable($snsSwapStatesStore)) {
-      // find certified from snsSwapStatesStore
+      // try to get from snsSwapStatesStore
       const swapItemMaybe = $snsSwapStatesStore.find(
-        ({ swapState, certified }) =>
-          certified && swapState?.rootCanisterId?.toText() === rootCanisterId
+        (item) => item?.swapState?.rootCanisterId?.toText() === rootCanisterId
       );
 
       if (swapItemMaybe !== undefined) {
         $projectDetailStore.swapState = swapItemMaybe.swapState;
-        return;
+
+        if (swapItemMaybe.certified === true) {
+          // do not reload already certified data
+          return;
+        }
       }
     }
 
