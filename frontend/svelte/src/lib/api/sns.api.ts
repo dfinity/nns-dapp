@@ -14,7 +14,7 @@ import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
+import { logWithTimestamp, shuffle } from "../utils/dev.utils";
 
 type RootCanisterId = string;
 
@@ -23,7 +23,7 @@ let snsUpdateWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
 
 // TODO(L2-751): remove and replace with effective data
 let mockSwapStates: SnsSwapState[] = [];
-const mockDummySwapStates: Partial<SnsSwapState>[] = [
+const mockDummySwapStates: Partial<SnsSwapState>[] = shuffle([
   {
     myCommitment: BigInt(25 * 100000000),
     currentCommitment: BigInt(100 * 100000000),
@@ -40,7 +40,7 @@ const mockDummySwapStates: Partial<SnsSwapState>[] = [
     myCommitment: undefined,
     currentCommitment: BigInt(1500 * 100000000),
   },
-];
+]);
 
 /**
  * List all deployed Snses - i.e list all Sns projects
