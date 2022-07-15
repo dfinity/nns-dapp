@@ -340,22 +340,23 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
-  const { swapState }: SnsWrapper = await wrapper({
-    rootCanisterId,
-    identity,
-    certified,
-  });
-
   // TODO: current deployed swap canister on testnet is empty
   // Error: "Message": "IC0304: Attempt to execute a message on canister mr56c-4qaaa-aaaaa-aacgq-cai which contains no Wasm module"
+
+  // const { swapState }: SnsWrapper = await wrapper({
+  //   rootCanisterId,
+  //   identity,
+  //   certified,
+  // });
+
   // const { swap } = await swapState({});
-  let swap: unknown;
-  try {
-    swap = await swapState({});
-    console.log("swap", swap);
-  } catch (err) {
-    console.error("swap TBD");
-  }
+  // let swap: unknown;
+  // try {
+  //   swap = await swapState({});
+  //   console.log("swap", swap);
+  // } catch (err) {
+  //   console.error("swap TBD");
+  // }
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
