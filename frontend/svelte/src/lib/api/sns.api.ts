@@ -2,7 +2,6 @@ import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSns, SnsWrapper } from "@dfinity/sns";
-import type { GetStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import {
@@ -350,7 +349,7 @@ export const querySnsSwapState = async ({
   // TODO: current deployed swap canister on testnet is empty
   // Error: "Message": "IC0304: Attempt to execute a message on canister mr56c-4qaaa-aaaaa-aacgq-cai which contains no Wasm module"
   // const { swap } = await swapState({});
-  let swap: GetStateResponse;
+  let swap: unknown;
   try {
     swap = await swapState({});
     console.log("swap", swap);
