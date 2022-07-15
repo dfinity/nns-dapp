@@ -3,70 +3,107 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import ProjectStatusSection from "../../../../lib/components/project-detail/ProjectStatusSection.svelte";
+import {
+  PROJECT_DETAIL_CONTEXT_KEY,
+  type ProjectDetailContext,
+  type ProjectDetailStore,
+} from "../../../../lib/types/project-detail.context";
+import type { SnsSummary, SnsSwapState } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
+import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("ProjectStatusSection", () => {
-  const props = { project: mockSnsFullProject };
+  const renderProjectInfoSection = ({
+    summary,
+    swapState,
+  }: {
+    summary?: SnsSummary;
+    swapState?: SnsSwapState;
+  }) =>
+    render(ContextWrapperTest, {
+      props: {
+        contextKey: PROJECT_DETAIL_CONTEXT_KEY,
+        contextValue: {
+          store: writable<ProjectDetailStore>({
+            summary,
+            swapState,
+          }),
+        } as ProjectDetailContext,
+        Component: ProjectStatusSection,
+      },
+    });
+
   it("should render subtitle", async () => {
-    const { container } = render(ProjectStatusSection, { props });
+    const { container } = renderProjectInfoSection({
+      summary: mockSnsFullProject.summary,
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
+    });
     expect(container.querySelector("h2")).toBeInTheDocument();
   });
 
   it("should render project current commitment", async () => {
-    const { queryByTestId } = render(ProjectStatusSection, { props });
+    const { queryByTestId } = renderProjectInfoSection({
+      summary: mockSnsFullProject.summary,
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
+    });
     expect(queryByTestId("sns-project-current-commitment")).toBeInTheDocument();
   });
 
   it("should render project participate button", async () => {
-    const { queryByTestId } = render(ProjectStatusSection, { props });
+    const { queryByTestId } = renderProjectInfoSection({
+      summary: mockSnsFullProject.summary,
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
+    });
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
   });
 
   it("should open swap participation modal on participate click", async () => {
-    const { queryByTestId } = render(ProjectStatusSection, { props });
-    await clickByTestId(queryByTestId, "sns-project-participate-button");
+    const { getByTestId } = renderProjectInfoSection({
+      summary: mockSnsFullProject.summary,
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
+    });
+
+    await clickByTestId(getByTestId, "sns-project-participate-button");
     await waitFor(() =>
-      expect(queryByTestId("sns-swap-participate-step-1")).toBeInTheDocument()
+      expect(getByTestId("sns-swap-participate-step-1")).toBeInTheDocument()
     );
   });
 
   it("should render accepting participation text when open", async () => {
-    const { queryByText } = render(ProjectStatusSection, { props });
+    const { queryByText } = renderProjectInfoSection({
+      summary: mockSnsFullProject.summary,
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
+    });
     expect(queryByText(en.sns_project_detail.accepting)).toBeInTheDocument();
   });
 
   it("should render pending text when not yet open", async () => {
-    const { queryByText } = render(ProjectStatusSection, {
-      props: {
-        project: {
-          ...mockSnsFullProject,
-          summary: {
-            ...mockSnsFullProject.summary,
-            swapDeadline: BigInt(Math.round(Date.now() / 1000 + 40000)),
-            swapStart: BigInt(Math.round(Date.now() / 1000 + 20000)),
-          },
-        },
+    const { queryByText } = renderProjectInfoSection({
+      summary: {
+        ...mockSnsFullProject.summary,
+        swapDeadline: BigInt(Math.round(Date.now() / 1000 + 40000)),
+        swapStart: BigInt(Math.round(Date.now() / 1000 + 20000)),
       },
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
     });
+
     expect(queryByText(en.sns_project_detail.pending)).toBeInTheDocument();
   });
 
   it("should render closed text when not yet open", async () => {
-    const { queryByText } = render(ProjectStatusSection, {
-      props: {
-        project: {
-          ...mockSnsFullProject,
-          summary: {
-            ...mockSnsFullProject.summary,
-            swapDeadline: BigInt(Math.round(Date.now() / 1000 - 20000)),
-            swapStart: BigInt(Math.round(Date.now() / 1000 - 40000)),
-          },
-        },
+    const { queryByText } = renderProjectInfoSection({
+      summary: {
+        ...mockSnsFullProject.summary,
+        swapDeadline: BigInt(Math.round(Date.now() / 1000 - 20000)),
+        swapStart: BigInt(Math.round(Date.now() / 1000 - 40000)),
       },
+      swapState: mockSnsFullProject.swapState as SnsSwapState,
     });
+
     expect(queryByText(en.sns_project_detail.closed)).toBeInTheDocument();
   });
 });
