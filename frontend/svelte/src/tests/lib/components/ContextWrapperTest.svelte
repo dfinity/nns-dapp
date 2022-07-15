@@ -8,4 +8,4 @@
   setContext(contextKey, contextValue);
 </script>
 
-<svelte:component this={Component} />
+<svelte:component this={Component} on:nnsClose />

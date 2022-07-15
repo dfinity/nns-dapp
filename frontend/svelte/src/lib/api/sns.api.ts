@@ -11,14 +11,35 @@ import {
 } from "../proxy/api.import.proxy";
 import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
-import type { SnsSummary } from "../types/sns";
+import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
+import { logWithTimestamp, shuffle } from "../utils/dev.utils";
 
 type RootCanisterId = string;
 
 let snsQueryWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
+
+// TODO(L2-751): remove and replace with effective data
+let mockSwapStates: SnsSwapState[] = [];
+const mockDummySwapStates: Partial<SnsSwapState>[] = shuffle([
+  {
+    myCommitment: BigInt(25 * 100000000),
+    currentCommitment: BigInt(100 * 100000000),
+  },
+  {
+    myCommitment: BigInt(5 * 100000000),
+    currentCommitment: BigInt(775 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1000 * 100000000),
+  },
+  {
+    myCommitment: undefined,
+    currentCommitment: BigInt(1500 * 100000000),
+  },
+]);
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -254,10 +275,8 @@ export const querySnsSummary = async ({
         (await wrappers({ identity, certified })) ??
         new Map<RootCanisterId, SnsWrapper>()
       ).values(),
-    ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper) => ({
-      ...mockSnsSummaryList[
-        Math.floor(0 + Math.random() * (mockSnsSummaryList.length - 1))
-      ],
+    ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
+      ...mockSnsSummaryList[index],
       rootCanisterId,
     }));
   }
@@ -268,4 +287,100 @@ export const querySnsSummary = async ({
     ({ rootCanisterId: canisterId }: SnsSummary) =>
       canisterId.toText() === rootCanisterId
   );
+};
+
+export const querySnsSwapStates = async ({
+  identity,
+  certified,
+}: {
+  certified: boolean;
+  identity: Identity;
+}): Promise<SnsSwapState[]> => {
+  logWithTimestamp(
+    `Listing all deployed Sns swap states certified:${certified} call...`
+  );
+
+  const snsWrappers: SnsWrapper[] = [
+    ...(
+      (await wrappers({ identity, certified })) ??
+      new Map<RootCanisterId, SnsWrapper>()
+    ).values(),
+  ];
+
+  // TODO(L2-830): we also want to have a status within each summary to display the information progressively
+  const swapStates: (SnsSwapState | undefined)[] = await Promise.all(
+    snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
+      querySnsSwapState({
+        rootCanisterId: rootCanisterId.toText(),
+        certified,
+        identity,
+      })
+    )
+  );
+
+  logWithTimestamp(
+    `Listing all deployed Sns swap states certified:${certified} done.`
+  );
+
+  return swapStates.filter(
+    (state: SnsSwapState | undefined) => state !== undefined
+  ) as SnsSwapState[];
+};
+
+export const querySnsSwapState = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: RootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsSwapState> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
+  );
+
+  // TODO: current deployed swap canister on testnet is empty
+  // Error: "Message": "IC0304: Attempt to execute a message on canister mr56c-4qaaa-aaaaa-aacgq-cai which contains no Wasm module"
+
+  // const { swapState }: SnsWrapper = await wrapper({
+  //   rootCanisterId,
+  //   identity,
+  //   certified,
+  // });
+
+  // const { swap } = await swapState({});
+  // let swap: unknown;
+  // try {
+  //   swap = await swapState({});
+  //   console.log("swap", swap);
+  // } catch (err) {
+  //   console.error("swap TBD");
+  // }
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
+  );
+
+  // TODO(L2-751): remove mock data
+  if (mockSwapStates.length === 0) {
+    mockSwapStates = [
+      ...(
+        (await wrappers({ identity, certified })) ??
+        new Map<RootCanisterId, SnsWrapper>()
+      ).values(),
+    ].map(
+      ({ canisterIds: { rootCanisterId } }, index) =>
+        ({
+          ...mockDummySwapStates[index],
+          rootCanisterId,
+        } as SnsSwapState)
+    );
+  }
+
+  // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
+  // console.log("Sns swap state", swap);
+  return mockSwapStates.find(
+    (mock) => rootCanisterId === mock.rootCanisterId.toText()
+  ) as SnsSwapState;
 };

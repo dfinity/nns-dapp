@@ -649,6 +649,8 @@ interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
   load_summary: string;
+  list_swap_states: string;
+  load_swap_state: string;
 }
 
 interface I18n {
