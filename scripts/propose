@@ -71,16 +71,16 @@ while (($# > 0)); do
   --to)
     PROPOSAL_TYPE="$1"
     LONG_FORM="propose-to-${PROPOSAL_TYPE#propose-to-}"
-    if test -e "$PROPOSALS_DIR/$LONG_FORM"
-    then PROPOSAL_TYPE="$LONG_FORM"
-    else 
+    if test -e "$PROPOSALS_DIR/$LONG_FORM"; then
+      PROPOSAL_TYPE="$LONG_FORM"
+    else
       test -e "$PROPOSALS_DIR/$PROPOSAL_TYPE" || {
         cat <<-EOF >&2
 	ERROR: Unknown proposal type: '$PROPOSAL_TYPE'
 	Use --list to see a list of supported proposals.
 	EOF
-      exit 1
-    }
+        exit 1
+      }
     fi
     shift 1
     ;;
