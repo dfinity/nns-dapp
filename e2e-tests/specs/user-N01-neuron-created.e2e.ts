@@ -4,7 +4,6 @@
 import { MyNavigator } from "../common/navigator";
 import { register } from "../common/register";
 import { skipUnlessBrowserIs } from "../common/test";
-import { AccountsTab } from "../components/accounts-tab";
 import { Icp } from "../components/icp";
 import { NAV_NEURONS_SELECTOR } from "../components/nav";
 import { NeuronsTab } from "../components/neurons-tab";
