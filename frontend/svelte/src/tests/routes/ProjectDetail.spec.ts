@@ -57,7 +57,7 @@ describe("ProjectDetail", () => {
     waitFor(() => expect(loadSnsSwapState).toBeCalled());
   });
 
-  describe("getting from summaries and swaps stores", () => {
+  describe("getting certified data from summaries and swaps stores", () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
@@ -91,6 +91,43 @@ describe("ProjectDetail", () => {
       await tick();
 
       expect(loadSnsSwapState).toBeCalledTimes(0);
+    });
+  });
+
+  describe("getting uncertified data from summaries and swaps stores", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      snsSummariesStore.setSummaries({
+        summaries: [mockSnsFullProject.summary],
+        certified: false,
+      });
+      snsSwapStatesStore.setSwapState({
+        swapState: mockSnsFullProject.swapState as SnsSwapState,
+        certified: false,
+      });
+    });
+
+    afterEach(() => {
+      snsSummariesStore.reset();
+      snsSwapStatesStore.reset();
+      jest.clearAllMocks();
+    });
+
+    it("should not load summary if certified version available", async () => {
+      render(ProjectDetail);
+
+      await tick();
+
+      expect(loadSnsSummary).toBeCalledTimes(1);
+    });
+
+    it("should not load swap state if certified version available", async () => {
+      render(ProjectDetail);
+
+      await tick();
+
+      expect(loadSnsSwapState).toBeCalledTimes(1);
     });
   });
 
