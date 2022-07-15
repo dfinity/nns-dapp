@@ -26,7 +26,7 @@
   export let disabled: boolean | undefined = undefined;
 
   // TODO: https://dfinity.atlassian.net/browse/L2-366
-  let stateInfo: StateInfo;
+  let stateInfo: StateInfo | undefined;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
@@ -74,17 +74,19 @@
     {/if}
   </div>
 
-  <div class="info">
-    <p
-      style={stateInfo.status === "warn"
-        ? `color: var(--warning-emphasis);`
-        : ""}
-      class="status"
-    >
-      {$i18n.neurons[`status_${stateInfo.textKey}`]}
-      <svelte:component this={stateInfo.Icon} />
-    </p>
-  </div>
+  {#if stateInfo !== undefined}
+    <div class="info">
+      <p
+        style={stateInfo.status === "warn"
+          ? `color: var(--warning-emphasis);`
+          : ""}
+        class="status"
+      >
+        {$i18n.neurons[`status_${stateInfo.textKey}`]}
+        <svelte:component this={stateInfo.Icon} />
+      </p>
+    </div>
+  {/if}
 
   {#if dissolvingTime !== undefined}
     <p class="duration">

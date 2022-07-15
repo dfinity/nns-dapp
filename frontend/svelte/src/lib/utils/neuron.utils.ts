@@ -73,7 +73,7 @@ const stateTextMapper: StateMapper = {
   },
 };
 
-export const getStateInfo = (neuronState: NeuronState): StateInfo =>
+export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
   stateTextMapper[neuronState];
 
 export const votingPower = ({
