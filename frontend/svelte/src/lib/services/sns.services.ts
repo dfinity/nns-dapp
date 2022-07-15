@@ -16,7 +16,10 @@ import type { SnsSummary, SnsSwapState } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
-import { queryAndUpdate } from "./utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnResponse,
+} from "./utils.services";
 
 export const loadSnsSummaries = (): Promise<void> =>
   queryAndUpdate<SnsSummary[], unknown>({
@@ -46,7 +49,13 @@ export const loadSnsSummaries = (): Promise<void> =>
     logMessage: "Syncing Sns summaries",
   });
 
-export const loadSnsSummary = async (rootCanisterId: string) => {
+export const loadSnsSummary = async ({
+  rootCanisterId,
+  onLoad,
+}: {
+  rootCanisterId: string;
+  onLoad: QueryAndUpdateOnResponse<SnsSummary>;
+}) => {
   // TODO(L2-838): load only if not yet in store
 
   return queryAndUpdate<SnsSummary | undefined, unknown>({
@@ -56,12 +65,7 @@ export const loadSnsSummary = async (rootCanisterId: string) => {
         identity,
         certified,
       }),
-    onLoad: ({ response: summary, certified }) =>
-      // TODO(L2-840): detail page should not use that summaries store but only a dedicated state or context store
-      snsSummariesStore.setSummaries({
-        summaries: [...(summary ? [summary] : [])],
-        certified,
-      }),
+    onLoad,
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -113,7 +117,13 @@ export const loadSnsSwapStates = (): Promise<void> =>
     logMessage: "Syncing Sns swap state",
   });
 
-export const loadSnsSwapState = async (rootCanisterId: string) => {
+export const loadSnsSwapState = async ({
+  rootCanisterId,
+  onLoad,
+}: {
+  rootCanisterId: string;
+  onLoad: QueryAndUpdateOnResponse<SnsSwapState>;
+}) => {
   // TODO(L2-838): load only if not yet in store
 
   return queryAndUpdate<SnsSwapState, unknown>({
@@ -123,11 +133,7 @@ export const loadSnsSwapState = async (rootCanisterId: string) => {
         identity,
         certified,
       }),
-    onLoad: ({ response: swapState, certified }) =>
-      snsSwapStatesStore.setSwapState({
-        swapState,
-        certified: true,
-      }),
+    onLoad,
     onError: ({ error: err, certified }) => {
       console.error(err);
 

@@ -6,11 +6,22 @@
   import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import Logo from "../ui/Logo.svelte";
+  import { getContext } from "svelte";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+  } from "../../types/project-detail.context";
 
-  export let summary: SnsSummary;
+  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
+    PROJECT_DETAIL_CONTEXT_KEY
+  );
 
-  const minCommitmentIcp = ICP.fromE8s(summary.minParticipationCommitment);
-  const maxCommitmentIcp = ICP.fromE8s(summary.maxParticipationCommitment);
+  let summary: SnsSummary;
+  $: summary = $projectDetailStore.summary as SnsSummary;
+  let minCommitmentIcp: ICP;
+  $: minCommitmentIcp = ICP.fromE8s(summary.minParticipationCommitment);
+  let maxCommitmentIcp: ICP;
+  $: maxCommitmentIcp = ICP.fromE8s(summary.maxParticipationCommitment);
 </script>
 
 <div data-tid="sns-project-detail-info">

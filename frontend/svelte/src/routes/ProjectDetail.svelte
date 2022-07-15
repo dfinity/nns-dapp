@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, setContext } from "svelte";
   import ProjectInfoSection from "../lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/project-detail/ProjectStatusSection.svelte";
   import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
@@ -18,12 +18,17 @@
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
-    type SnsFullProject,
-    snsFullProjectStore,
     snsSummariesStore,
+    snsSwapStatesStore,
   } from "../lib/stores/projects.store";
-  import { getSnsProjectById } from "../lib/utils/sns.utils";
   import Spinner from "../lib/components/ui/Spinner.svelte";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+    type ProjectDetailStore,
+  } from "../lib/types/project-detail.context";
+  import { isNullable, nonNullable } from "../lib/utils/utils";
+  import { writable } from "svelte/store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -32,18 +37,72 @@
   });
 
   let rootCanisterIdString: string | undefined;
-  let fullProject: SnsFullProject | undefined;
-  $: fullProject = getSnsProjectById({
-    id: rootCanisterIdString,
-    projects: $snsFullProjectStore,
+
+  const projectDetailStore = writable<ProjectDetailStore>({
+    summary: undefined,
+    swapState: undefined,
   });
+
+  // TODO: add projectDetailStore to debug store
+
+  setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
+    store: projectDetailStore,
+  });
+
+  const loadSummary = (rootCanisterId: string) => {
+    if ($snsSummariesStore.certified === true) {
+      // find certified from snsSummariesStore
+      const summaryMaybe = $snsSummariesStore.summaries?.find(
+        ({ rootCanisterId: rootCanister }) =>
+          rootCanister?.toText() === rootCanisterId
+      );
+
+      if (summaryMaybe !== undefined) {
+        $projectDetailStore.summary = summaryMaybe;
+        return;
+      }
+    }
+
+    // flag loading state
+    $projectDetailStore.summary = null;
+
+    loadSnsSummary({
+      rootCanisterId,
+      onLoad: ({ response: summary }) =>
+        ($projectDetailStore.summary = summary),
+    });
+  };
+
+  const loadSwapState = (rootCanisterId: string) => {
+    if (nonNullable($snsSwapStatesStore)) {
+      // find certified from snsSwapStatesStore
+      const swapItemMaybe = $snsSwapStatesStore.find(
+        ({ swapState, certified }) =>
+          certified && swapState?.rootCanisterId?.toText() === rootCanisterId
+      );
+
+      if (swapItemMaybe !== undefined) {
+        $projectDetailStore.swapState = swapItemMaybe.swapState;
+        return;
+      }
+    }
+
+    // flag loading state
+    $projectDetailStore.swapState = null;
+
+    loadSnsSwapState({
+      rootCanisterId,
+      onLoad: ({ response: swapState }) =>
+        ($projectDetailStore.swapState = swapState),
+    });
+  };
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
       return;
     }
-    const rootCanisterIdMaybe = routePathRootCanisterId(path);
 
+    const rootCanisterIdMaybe = routePathRootCanisterId(path);
     if (rootCanisterIdMaybe === undefined) {
       unsubscribe();
       routeStore.replace({ path: AppPath.Launchpad });
@@ -51,10 +110,13 @@
     }
     rootCanisterIdString = rootCanisterIdMaybe;
 
-    await Promise.all([
-      loadSnsSummary(rootCanisterIdString),
-      loadSnsSwapState(rootCanisterIdString),
-    ]);
+    if ($projectDetailStore.summary === undefined) {
+      loadSummary(rootCanisterIdString);
+    }
+
+    if ($projectDetailStore.swapState === undefined) {
+      loadSwapState(rootCanisterIdString);
+    }
   });
 
   onDestroy(unsubscribe);
@@ -66,24 +128,42 @@
 
   layoutBackStore.set(goBack);
 
-  $: layoutTitleStore.set(fullProject?.summary.name ?? "");
+  $: layoutTitleStore.set($projectDetailStore?.summary?.name ?? "");
+
+  let loadingSummary: boolean;
+  $: loadingSummary = isNullable($projectDetailStore.summary);
+  let loadingSwapState: boolean;
+  $: loadingSwapState = isNullable($projectDetailStore.swapState);
 
   // TODO(L2-838): if error redirect to launchpad and display error there
 </script>
 
-{#if fullProject === undefined}
-  <!-- TODO: Proper skeleton -->
-  <Spinner />
-{:else}
-  <MainContentWrapper sns>
-    <div class="stretch-mobile">
+<MainContentWrapper sns>
+  <div class="stretch-mobile">
+    {#if loadingSummary && loadingSwapState}
+      <Spinner />
+    {:else}
       <TwoColumns>
-        <ProjectInfoSection summary={fullProject.summary} slot="left" />
-        <ProjectStatusSection project={fullProject} slot="right" />
+        <div slot="left">
+          {#if loadingSummary}
+            <!-- TODO: replace with a skeleton -->
+            <Spinner inline />
+          {:else}
+            <ProjectInfoSection />
+          {/if}
+        </div>
+        <div slot="right">
+          {#if loadingSummary || loadingSwapState}
+            <!-- TODO: replace with a skeleton -->
+            <Spinner inline />
+          {:else}
+            <ProjectStatusSection />
+          {/if}
+        </div>
       </TwoColumns>
-    </div>
-  </MainContentWrapper>
-{/if}
+    {/if}
+  </div>
+</MainContentWrapper>
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";
