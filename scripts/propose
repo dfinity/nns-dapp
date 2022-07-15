@@ -70,7 +70,7 @@ while (($# > 0)); do
     ;;
   --to)
     PROPOSAL_TYPE="$1"
-    LONG_FORM="propose-to-${PROPOSAL_TYPE#propose-to-}"
+    LONG_FORM="propose-to-${PROPOSAL_TYPE}"
     if test -e "$PROPOSALS_DIR/$LONG_FORM"; then
       PROPOSAL_TYPE="$LONG_FORM"
     else
