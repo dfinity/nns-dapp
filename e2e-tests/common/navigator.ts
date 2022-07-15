@@ -53,7 +53,6 @@ export class MyNavigator {
     if (Boolean(process.env.SCREENSHOT) || (options?.screenshot ?? false)) {
       await this.browser["screenshot"](description);
     }
-    console.log("before clicking", description);
     await button.click();
   }
 
