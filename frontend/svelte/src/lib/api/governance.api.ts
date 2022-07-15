@@ -90,9 +90,9 @@ export const leaveCommunityFund = async ({
   identity: Identity;
 }): Promise<void> => {
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) call...`);
-  await governanceCanister({ identity });
+  const { canister } = await governanceCanister({ identity });
 
-  // TODO: Implement leaveCommunityFund https://dfinity.atlassian.net/browse/L2-819
+  await canister.leaveCommunityFund(neuronId);
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
