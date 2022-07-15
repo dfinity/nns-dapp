@@ -3,7 +3,11 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import { loadSnsSummary } from "../../lib/services/sns.services";
+import { tick } from "svelte";
+import {
+  loadSnsSummary,
+  loadSnsSwapState,
+} from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
   snsSwapStatesStore,
@@ -16,8 +20,16 @@ import { mockSnsFullProject } from "../mocks/sns-projects.mock";
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummary: jest
+      .fn()
+      .mockImplementation(({ onLoad }) =>
+        onLoad({ response: mockSnsFullProject.summary })
+      ),
+    loadSnsSwapState: jest
+      .fn()
+      .mockImplementation(({ onLoad }) =>
+        onLoad({ response: mockSnsFullProject.swapState })
+      ),
     routePathRootCanisterId: jest
       .fn()
       .mockImplementation(() => mockSnsFullProject.rootCanisterId.toText()),
@@ -32,31 +44,69 @@ describe("ProjectDetail", () => {
         `/#/project/${mockSnsFullProject.rootCanisterId.toText()}`
       )
     );
-  beforeEach(() => {
-    snsSummariesStore.setSummaries({
-      summaries: [mockSnsFullProject.summary],
-      certified: true,
-    });
-    snsSwapStatesStore.setSwapState({
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
-      certified: true,
-    });
-  });
-  it("should render info section", () => {
-    const { queryByTestId } = render(ProjectDetail);
 
-    expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
-  });
-
-  it("should load project detail", () => {
+  it("should load summary", () => {
     render(ProjectDetail);
 
     waitFor(() => expect(loadSnsSummary).toBeCalled());
   });
 
-  it("should render status section", () => {
+  it("should load swap state", () => {
+    render(ProjectDetail);
+
+    waitFor(() => expect(loadSnsSwapState).toBeCalled());
+  });
+
+  describe("getting from summaries and swaps stores", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      snsSummariesStore.setSummaries({
+        summaries: [mockSnsFullProject.summary],
+        certified: true,
+      });
+      snsSwapStatesStore.setSwapState({
+        swapState: mockSnsFullProject.swapState as SnsSwapState,
+        certified: true,
+      });
+    });
+
+    afterEach(() => {
+      snsSummariesStore.reset();
+      snsSwapStatesStore.reset();
+      jest.clearAllMocks();
+    });
+
+    it("should not load summary if certified version available", async () => {
+      render(ProjectDetail);
+
+      await tick();
+
+      expect(loadSnsSummary).toBeCalledTimes(0);
+    });
+
+    it("should not load swap state if certified version available", async () => {
+      render(ProjectDetail);
+
+      await tick();
+
+      expect(loadSnsSwapState).toBeCalledTimes(0);
+    });
+  });
+
+  it("should render info section", async () => {
     const { queryByTestId } = render(ProjectDetail);
 
-    expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
+    );
+  });
+
+  it("should render status section", async () => {
+    const { queryByTestId } = render(ProjectDetail);
+
+    await waitFor(() =>
+      expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
+    );
   });
 });

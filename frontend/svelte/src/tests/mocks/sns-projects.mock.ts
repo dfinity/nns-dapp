@@ -1,7 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapState } from "../../lib/types/sns";
-import { shuffle } from "../../lib/utils/dev.utils";
 
 const principal = (index: number): Principal =>
   [
@@ -46,7 +45,7 @@ export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const mockSnsSummaryList: SnsSummary[] = shuffle([
+export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
 
@@ -124,7 +123,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
   },
-]);
+];
 
 export const mockSnsFullProject = {
   rootCanisterId: principal(0),
