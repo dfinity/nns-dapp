@@ -81,6 +81,9 @@ const initSnsSwapStatesStore = () => {
   };
 };
 
+// used to improve loading state display only
+export const snsesCountStore = writable<number | undefined>(undefined);
+
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapStatesStore = initSnsSwapStatesStore();
 
