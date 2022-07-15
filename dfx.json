@@ -14,41 +14,31 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-06-17/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "wasm_canister": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
     "sns_governance": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/ledger.did",
       "wasm": "target/ic/ledger-canister_notify-method.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -146,8 +136,8 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "28ea02bad62dc777378a53602b8cd3a515ab23a3"
-       },
+        "IC_COMMIT": "3409f63139688e8d1da5beeeb2efa181f1ba1b1f"
+      },
       "packtool": ""
     }
   },
