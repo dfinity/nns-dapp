@@ -7,7 +7,6 @@
   import {
     snsFullProjectStore,
     type SnsFullProject,
-    snsSummariesStore,
     snsesCountStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
