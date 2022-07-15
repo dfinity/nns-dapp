@@ -268,7 +268,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  # Set the exchange rate
+  echo Setting the cycles exchange rate...
   ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK"
 
   # Allow the cmc canister to create canisters anywhere.
