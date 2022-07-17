@@ -280,6 +280,7 @@ export const anonymizeProposal = async (
     topic,
     status,
     rewardStatus,
+    deadlineTimestampSeconds,
   } = originalProposal;
 
   return {
@@ -297,5 +298,6 @@ export const anonymizeProposal = async (
     topic,
     status,
     rewardStatus,
+    deadlineTimestampSeconds,
   };
 };
