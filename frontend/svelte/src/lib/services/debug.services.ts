@@ -40,14 +40,14 @@ const anonymiseStoreState = async () => {
     canisters,
     proposals,
     proposalsFilters,
-    proposalId,
-    proposalInfo,
     votingNeuronSelect,
     toasts,
     addAccount,
     hardwareWalletNeurons,
     transaction,
     selectedAccount,
+    selectedCanister,
+    selectedProposal,
   } = get(debugStore);
 
   return {
@@ -71,8 +71,8 @@ const anonymiseStoreState = async () => {
       certified: proposals?.certified,
     },
     proposalsFilters: proposalsFilters,
-    proposalId: proposalId,
-    proposalInfo: await anonymizeProposal(proposalInfo),
+    proposalId: selectedProposal.proposal?.id,
+    proposalInfo: await anonymizeProposal(selectedProposal.proposal),
     votingNeuronSelect: {
       neurons: await mapPromises(
         votingNeuronSelect?.neurons,

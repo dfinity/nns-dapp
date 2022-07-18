@@ -170,37 +170,6 @@ const initProposalsFiltersStore = () => {
 };
 
 /**
- * Contains proposalId of the proposalDetail page
- */
-const initProposalIdStore = () => {
-  const { subscribe, set } = writable<ProposalId | undefined>();
-
-  return {
-    subscribe,
-    set,
-    reset: () => set(undefined),
-  };
-};
-
-/**
- * Contains proposalInfo of the proposalDetail page
- */
-const initProposalInfoStore = () => {
-  const proposal = writable<ProposalInfo | undefined>();
-  const proposalChange = derived(
-    [proposalIdStore, proposal],
-    // Reset proposal on proposalId change. To not have this permanent effect in service or component.
-    ([$proposalIdStore, $proposal]) =>
-      $proposal?.id === $proposalIdStore ? $proposal : undefined
-  );
-
-  return {
-    set: proposal.set,
-    ...proposalChange,
-  };
-};
-
-/**
  * Contains available for voting neurons and their selection state
  */
 const initNeuronSelectStore = () => {
@@ -285,7 +254,6 @@ const initProposalPayloadsStore = () => {
 
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
-export const proposalIdStore = initProposalIdStore();
-export const proposalInfoStore = initProposalInfoStore();
+
 export const votingNeuronSelectStore = initNeuronSelectStore();
 export const proposalPayloadsStore = initProposalPayloadsStore();

@@ -17,6 +17,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import { AppPath } from "../constants/routes.constants";
 import {
   startBusy,
   stopBusy,
@@ -24,14 +25,13 @@ import {
 } from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
 import {
-  proposalInfoStore,
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
-import { getLastPathDetailId } from "../utils/app-path.utils";
+import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
@@ -323,8 +323,16 @@ export const loadProposalPayload = async ({
   }
 };
 
-export const routePathProposalId = (path: string): ProposalId | undefined =>
-  getLastPathDetailId(path);
+export const routePathProposalId = (
+  path: string
+): { proposalId: ProposalId | undefined } | undefined => {
+  if (!isRoutePath({ path: AppPath.ProposalDetail, routePath: path })) {
+    return undefined;
+  }
+
+  const proposalId: ProposalId | undefined = getLastPathDetailId(path);
+  return { proposalId };
+};
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
@@ -402,7 +410,6 @@ export const registerVotes = async ({
     await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
-        proposalInfoStore.set(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },

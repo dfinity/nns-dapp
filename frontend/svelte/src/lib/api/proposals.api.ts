@@ -85,14 +85,9 @@ export const queryProposal = async ({
     agent: await createAgent({ identity, host: HOST }),
   });
 
-  const response = await governance.listProposals({
-    request: {
-      limit: 1,
-      beforeProposal: proposalId + BigInt(1),
-      includeRewardStatus: [],
-      excludeTopic: [],
-      includeStatus: [],
-    },
+  // We use getProposal and not listProposals because if the request proposal id does not exist, listProposals would return a random proposal anyway
+  const response = await governance.getProposal({
+    proposalId,
     certified,
   });
 
@@ -101,7 +96,7 @@ export const queryProposal = async ({
       proposalId
     )}) certified:${certified} complete.`
   );
-  return response?.proposals?.[0] ?? undefined;
+  return response;
 };
 
 export const queryProposalPayload = async ({
