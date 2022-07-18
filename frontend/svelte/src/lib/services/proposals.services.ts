@@ -342,10 +342,12 @@ export const registerVotes = async ({
   neuronIds,
   proposalId,
   vote,
+  reloadProposalCallback,
 }: {
   neuronIds: NeuronId[];
   proposalId: ProposalId;
   vote: Vote;
+  reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
   startBusy({ initiator: "vote" });
 
@@ -410,6 +412,7 @@ export const registerVotes = async ({
     await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
+        reloadProposalCallback(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
