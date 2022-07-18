@@ -3,6 +3,10 @@ import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { ProposalsStore } from "../../lib/stores/proposals.store";
 
+const deadlineTimestampSeconds = BigInt(
+  Math.round(new Date().getTime() / 1000 + 10000)
+);
+
 export const mockProposals: ProposalInfo[] = [
   {
     id: BigInt(404),
@@ -16,6 +20,7 @@ export const mockProposals: ProposalInfo[] = [
     topic: Topic.Governance,
     ballots: [],
     proposer: BigInt(123456789),
+    deadlineTimestampSeconds,
   },
   {
     id: BigInt(303),
@@ -29,6 +34,7 @@ export const mockProposals: ProposalInfo[] = [
     topic: Topic.Governance,
     ballots: [],
     proposer: BigInt(987654321),
+    deadlineTimestampSeconds,
   },
 ] as unknown as ProposalInfo[];
 
