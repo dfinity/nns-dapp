@@ -12,7 +12,7 @@
   import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
-  import { isProposalOpenForVote } from "../../../utils/proposals.utils";
+  import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -27,7 +27,7 @@
 
   $: $definedNeuronsStore,
     (visible =
-      votableNeurons().length > 0 && isProposalOpenForVote(proposalInfo));
+      votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {

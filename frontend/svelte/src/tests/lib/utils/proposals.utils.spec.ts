@@ -14,7 +14,7 @@ import {
   getVotingPower,
   hasMatchingProposals,
   hideProposal,
-  isProposalOpenForVote,
+  isProposalOpenForVotes,
   lastProposalId,
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
@@ -961,29 +961,29 @@ describe("proposals-utils", () => {
     });
   });
 
-  describe("Open for vote", () => {
-    it("should be open for vote for ever", () =>
+  describe("Open for votes", () => {
+    it("should be open for votes for ever", () =>
       expect(
-        isProposalOpenForVote({
+        isProposalOpenForVotes({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
         })
       ).toBeTruthy());
 
-    it("should be open for vote", () => {
+    it("should be open for votes", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVote({
+        isProposalOpenForVotes({
           ...mockProposalInfo,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
         })
       ).toBeTruthy();
     });
 
-    it("should not be open for vote", () => {
+    it("should not be open for votes", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVote({
+        isProposalOpenForVotes({
           ...mockProposalInfo,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
         })

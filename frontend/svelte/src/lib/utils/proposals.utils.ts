@@ -121,7 +121,7 @@ const isExcludedVotedProposal = ({
 
   return (
     excludeVotedProposals &&
-    isProposalOpenForVote(proposalInfo) &&
+    isProposalOpenForVotes(proposalInfo) &&
     !containsUnspecifiedBallot()
   );
 };
@@ -326,7 +326,7 @@ export const mapProposalInfo = (
  * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
  * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
  */
-export const isProposalOpenForVote = ({
+export const isProposalOpenForVotes = ({
   deadlineTimestampSeconds,
 }: ProposalInfo): boolean =>
   deadlineTimestampSeconds === undefined ||
