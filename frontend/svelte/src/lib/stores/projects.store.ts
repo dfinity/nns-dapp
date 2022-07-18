@@ -3,10 +3,12 @@ import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapState } from "../types/sns";
 
 // TODO: align summary store architecture with the certified information at the summary level
-export interface SnsSummariesStore {
-  summaries: SnsSummary[] | undefined;
-  certified: boolean | undefined;
-}
+export type SnsSummariesStore =
+  | {
+      summaries: SnsSummary[];
+      certified: boolean;
+    }
+  | undefined;
 
 export type SnsSwapStatesStore =
   | {
@@ -24,19 +26,13 @@ export interface SnsFullProject {
 export type SnsFullProjectStore = SnsFullProject[] | undefined;
 
 const initSnsSummariesStore = () => {
-  const { subscribe, set } = writable<SnsSummariesStore>({
-    summaries: undefined,
-    certified: undefined,
-  });
+  const { subscribe, set } = writable<SnsSummariesStore>(undefined);
 
   return {
     subscribe,
 
     reset() {
-      set({
-        summaries: undefined,
-        certified: undefined,
-      });
+      set(undefined);
     },
 
     setSummaries({
@@ -94,16 +90,17 @@ export const snsSwapStatesStore = initSnsSwapStatesStore();
 export const snsFullProjectStore: Readable<SnsFullProject[] | undefined> =
   derived(
     [snsSummariesStore, snsSwapStatesStore],
-    ([{ summaries }, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
-      summaries === undefined
+    ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
+      $snsSummariesStore === undefined
         ? undefined
-        : summaries.map((summary) => {
+        : $snsSummariesStore.summaries.map((summary) => {
             const { rootCanisterId } = summary;
             const summaryPrincipalAsText = rootCanisterId.toText();
             const swapStateStoreEntry = $snsSwapStatesStore?.find(
               ({ swapState: { rootCanisterId } }) =>
                 rootCanisterId.toText() === summaryPrincipalAsText
             );
+
             return {
               rootCanisterId,
               summary,

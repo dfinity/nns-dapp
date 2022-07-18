@@ -51,7 +51,7 @@
 
   const loadSummary = (rootCanisterId: string) => {
     // try to get from snsSummariesStore
-    const summaryMaybe = $snsSummariesStore.summaries?.find(
+    const summaryMaybe = $snsSummariesStore?.summaries?.find(
       ({ rootCanisterId: rootCanister }) =>
         rootCanister?.toText() === rootCanisterId
     );
@@ -60,7 +60,7 @@
       $projectDetailStore.summary = summaryMaybe;
 
       // do not reload already certified data
-      if ($snsSummariesStore.certified === true) {
+      if ($snsSummariesStore?.certified === true) {
         return;
       }
     }

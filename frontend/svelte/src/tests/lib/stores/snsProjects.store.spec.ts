@@ -20,8 +20,8 @@ describe("projects.store", () => {
 
       const $snsSummariesStore = get(snsSummariesStore);
 
-      expect($snsSummariesStore.summaries).toEqual(mockSnsSummaryList);
-      expect($snsSummariesStore.certified).toBeFalsy();
+      expect($snsSummariesStore?.summaries).toEqual(mockSnsSummaryList);
+      expect($snsSummariesStore?.certified).toBeFalsy();
     });
   });
 
