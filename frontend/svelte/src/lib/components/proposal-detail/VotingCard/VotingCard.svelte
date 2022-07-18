@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
-  import {
-    votableNeurons as getVotableNeurons,
-    ProposalStatus,
-  } from "@dfinity/nns";
+  import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
