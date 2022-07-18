@@ -265,11 +265,11 @@ describe("proposals-services", () => {
       it("should call callback after vote",  (done) => {
         jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
 
-        const spyOnListNeurons = jest
+        jest
           .spyOn(neuronsServices, "listNeurons")
           .mockImplementation(() => Promise.resolve());
 
-        const spyOnQueryProposal = jest
+        jest
           .spyOn(api, "queryProposal")
           .mockImplementation(() => Promise.resolve(mockProposalInfo));
 

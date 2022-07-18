@@ -46,6 +46,7 @@ const anonymiseStoreState = async () => {
     hardwareWalletNeurons,
     transaction,
     selectedAccount,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     selectedCanister,
     selectedProposal,
   } = get(debugStore);
