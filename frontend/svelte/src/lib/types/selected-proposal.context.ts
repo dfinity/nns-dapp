@@ -1,4 +1,4 @@
-import type {ProposalId, ProposalInfo} from "@dfinity/nns";
+import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
 
 /**

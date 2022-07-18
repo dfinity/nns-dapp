@@ -7,7 +7,7 @@ import type {
   ProposalStatus,
   Topic,
 } from "@dfinity/nns";
-import { derived, writable } from "svelte/store";
+import { writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
 import {
   concatenateUniqueProposals,

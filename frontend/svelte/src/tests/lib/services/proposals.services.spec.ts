@@ -256,7 +256,7 @@ describe("proposals-services", () => {
           vote: Vote.YES,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
         expect(spyOnSetCallback).toHaveBeenCalled();
@@ -277,7 +277,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
         expect(spyOnListNeurons).toBeCalled();
         expect(spyToastError).toBeCalledWith({
@@ -321,7 +321,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -340,7 +340,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -359,7 +359,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -377,7 +377,7 @@ describe("proposals-services", () => {
           vote: Vote.NO,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -437,7 +437,7 @@ describe("proposals-services", () => {
           vote: Vote.YES,
           reloadProposalCallback: () => {
             // do nothing
-          }
+          },
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
@@ -477,7 +477,7 @@ describe("proposals-services", () => {
         vote: Vote.NO,
         reloadProposalCallback: () => {
           // do nothing
-        }
+        },
       });
       expect(spyToastShow).not.toBeCalled();
     });

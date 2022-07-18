@@ -1,4 +1,3 @@
-import type { ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
