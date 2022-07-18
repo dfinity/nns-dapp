@@ -19,8 +19,6 @@
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
-  import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
