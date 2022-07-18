@@ -262,7 +262,7 @@ describe("proposals-services", () => {
         expect(spyOnListNeurons).toBeCalledTimes(1);
       });
 
-      it("should call callback after vote",  (done) => {
+      it("should call callback after vote", (done) => {
         jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
 
         jest
