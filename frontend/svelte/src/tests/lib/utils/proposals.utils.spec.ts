@@ -987,6 +987,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.ManageNeuron,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
         })
@@ -998,6 +999,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.ManageNeuron,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
@@ -1009,6 +1011,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
         })
@@ -1017,6 +1020,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
@@ -1025,6 +1029,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
           proposalTimestampSeconds: BigInt(
             Math.round(nowSeconds - 3600 * 24 * 3)
@@ -1038,6 +1043,7 @@ describe("proposals-utils", () => {
       expect(
         isProposalOpenForVotes({
           ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
           proposalTimestampSeconds: BigInt(
             Math.round(nowSeconds - 3600 * 24 * 5)
