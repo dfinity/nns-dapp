@@ -22,7 +22,7 @@ export interface SnsFullProject {
   swapState: SnsSwapState | undefined;
 }
 
-export type SnsFullProjectStore = SnsFullProject[] | undefined;
+export type SnsFullProjectsStore = SnsFullProject[] | undefined;
 
 const initSnsSummariesStore = () => {
   const { subscribe, set } = writable<SnsSummariesStore>(undefined);
@@ -86,13 +86,13 @@ export const snsSwapStatesStore = initSnsSwapStatesStore();
 /**
  * Reflects snsSummariesStore entries. Additionally contains SwapState for every summary (when loaded).
  */
-export const snsFullProjectStore: Readable<SnsFullProject[] | undefined> =
+export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
   derived(
     [snsSummariesStore, snsSwapStatesStore],
     ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
       $snsSummariesStore === undefined
         ? undefined
-        : $snsSummariesStore.summaries.map((summary) => {
+        : $snsSummariesStore?.summaries.map((summary) => {
             const { rootCanisterId } = summary;
             const summaryPrincipalAsText = rootCanisterId.toText();
             const swapStateStoreEntry = $snsSwapStatesStore?.find(

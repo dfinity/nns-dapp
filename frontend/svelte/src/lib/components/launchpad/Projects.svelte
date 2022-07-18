@@ -5,7 +5,7 @@
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    snsFullProjectStore,
+    snsFullProjectsStore,
     type SnsFullProject,
     snsesCountStore,
   } from "../../stores/projects.store";
@@ -17,14 +17,14 @@
 
   let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
-  $: projects = $snsFullProjectStore;
+  $: projects = $snsFullProjectsStore;
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
   const load = async () => {
     // show loading state only when store is empty
-    loading = $snsFullProjectStore === undefined;
+    loading = $snsFullProjectsStore === undefined;
 
     // TODO(L2-838): reload store only if needed
     await Promise.all([loadSnsSummaries(), loadSnsSwapStates()]);

@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import {
-  snsFullProjectStore,
+  snsFullProjectsStore,
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../../../lib/stores/projects.store";
@@ -42,7 +42,7 @@ describe("projects.store", () => {
     });
   });
 
-  describe("snsFullProjectStore", () => {
+  describe("snsFullProjectsStore", () => {
     it("should combine summaries with swap states", async () => {
       const principal = mockSnsSummaryList[0].rootCanisterId;
 
@@ -55,11 +55,11 @@ describe("projects.store", () => {
         certified: true,
       });
 
-      const $snsFullProjectStore = get(snsFullProjectStore);
+      const $snsFullProjectsStore = get(snsFullProjectsStore);
 
-      expect($snsFullProjectStore?.[0].rootCanisterId).toEqual(principal);
-      expect($snsFullProjectStore?.[0].summary).toEqual(mockSnsSummaryList[0]);
-      expect($snsFullProjectStore?.[0].swapState).toEqual(
+      expect($snsFullProjectsStore?.[0].rootCanisterId).toEqual(principal);
+      expect($snsFullProjectsStore?.[0].summary).toEqual(mockSnsSummaryList[0]);
+      expect($snsFullProjectsStore?.[0].swapState).toEqual(
         mockSnsSwapState(principal)
       );
     });
