@@ -71,7 +71,7 @@ describe("proposals-api", () => {
       expect(spyGetProposal).toBeCalledTimes(1);
       expect(spyGetProposal).toBeCalledWith({
         certified,
-        proposalId
+        proposalId,
       });
     });
   });
