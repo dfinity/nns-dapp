@@ -29,6 +29,7 @@
   } from "../lib/types/project-detail.context";
   import { isNullable, nonNullable } from "../lib/utils/utils";
   import { writable } from "svelte/store";
+  import { debugProjectDetailStore } from "../lib/stores/debug.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -42,6 +43,7 @@
     summary: undefined,
     swapState: undefined,
   });
+  debugProjectDetailStore(projectDetailStore);
 
   // TODO: add projectDetailStore to debug store
 
