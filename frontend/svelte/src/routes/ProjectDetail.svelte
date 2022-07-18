@@ -49,6 +49,11 @@
     store: projectDetailStore,
   });
 
+  const goBack = () => {
+    unsubscribe();
+    routeStore.replace({ path: AppPath.Launchpad });
+  };
+
   const loadSummary = (rootCanisterId: string) => {
     // try to get from snsSummariesStore
     const summaryMaybe = $snsSummariesStore?.summaries?.find(
@@ -72,6 +77,7 @@
       rootCanisterId,
       onLoad: ({ response: summary }) =>
         ($projectDetailStore.summary = summary),
+      onError: goBack,
     });
   };
 
@@ -99,6 +105,7 @@
       rootCanisterId,
       onLoad: ({ response: swapState }) =>
         ($projectDetailStore.swapState = swapState),
+      onError: goBack,
     });
   };
 
@@ -109,8 +116,7 @@
 
     const rootCanisterIdMaybe = routePathRootCanisterId(path);
     if (rootCanisterIdMaybe === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPath.Launchpad });
+      goBack();
       return;
     }
     rootCanisterIdString = rootCanisterIdMaybe;
@@ -125,11 +131,6 @@
   });
 
   onDestroy(unsubscribe);
-
-  const goBack = () =>
-    routeStore.navigate({
-      path: AppPath.Launchpad,
-    });
 
   layoutBackStore.set(goBack);
 

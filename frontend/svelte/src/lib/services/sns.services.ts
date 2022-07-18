@@ -21,7 +21,11 @@ import {
   type QueryAndUpdateOnResponse,
 } from "./utils.services";
 
-export const loadSnsSummaries = (): Promise<void> => {
+export const loadSnsSummaries = ({
+  onError,
+}: {
+  onError: () => void;
+}): Promise<void> => {
   snsSummariesStore.setLoadingState();
 
   return queryAndUpdate<SnsSummary[], unknown>({
@@ -47,6 +51,8 @@ export const loadSnsSummaries = (): Promise<void> => {
           fallbackErrorLabelKey: "error__sns.list_summaries",
         })
       );
+
+      onError();
     },
     logMessage: "Syncing Sns summaries",
   });
@@ -55,9 +61,11 @@ export const loadSnsSummaries = (): Promise<void> => {
 export const loadSnsSummary = async ({
   rootCanisterId,
   onLoad,
+  onError,
 }: {
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<SnsSummary>;
+  onError: () => void;
 }) => {
   // TODO(L2-838): load only if not yet in store
 
@@ -84,12 +92,18 @@ export const loadSnsSummary = async ({
           fallbackErrorLabelKey: "error__sns.load_summary",
         })
       );
+
+      onError();
     },
     logMessage: "Syncing Sns summary",
   });
 };
 
-export const loadSnsSwapStates = (): Promise<void> => {
+export const loadSnsSwapStates = ({
+  onError,
+}: {
+  onError: () => void;
+}): Promise<void> => {
   snsSwapStatesStore.setLoadingState();
 
   return queryAndUpdate<SnsSwapState[], unknown>({
@@ -118,6 +132,8 @@ export const loadSnsSwapStates = (): Promise<void> => {
           fallbackErrorLabelKey: "error__sns.list_swap_states",
         })
       );
+
+      onError();
     },
     logMessage: "Syncing Sns swap state",
   });
@@ -126,9 +142,11 @@ export const loadSnsSwapStates = (): Promise<void> => {
 export const loadSnsSwapState = async ({
   rootCanisterId,
   onLoad,
+  onError,
 }: {
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<SnsSwapState>;
+  onError: () => void;
 }) => {
   // TODO(L2-838): load only if not yet in store
 
@@ -155,6 +173,8 @@ export const loadSnsSwapState = async ({
           fallbackErrorLabelKey: "error__sns.load_swap_state",
         })
       );
+
+      onError();
     },
     logMessage: "Syncing Sns swap state",
   });

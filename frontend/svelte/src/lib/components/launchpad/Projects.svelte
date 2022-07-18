@@ -17,6 +17,8 @@
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { isNullable } from "../../utils/utils";
+  import { routeStore } from "../../stores/route.store";
+  import { AppPath } from "../../constants/routes.constants";
 
   let projects: SnsFullProject[] | undefined;
   $: projects = $snsFullProjectsStore;
@@ -28,12 +30,17 @@
   $: loading =
     isNullable($snsSummariesStore) || isNullable($snsSwapStatesStore);
 
+  const goBack = () =>
+    routeStore.navigate({
+      path: AppPath.Accounts,
+    });
+
   const load = async () => {
     if ($snsSummariesStore === undefined) {
-      loadSnsSummaries();
+      loadSnsSummaries({ onError: goBack });
     }
     if ($snsSwapStatesStore === undefined) {
-      loadSnsSwapStates();
+      loadSnsSwapStates({ onError: goBack });
     }
   };
 
