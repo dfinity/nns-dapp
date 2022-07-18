@@ -3,7 +3,7 @@ import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { ProposalsStore } from "../../lib/stores/proposals.store";
 
-const deadlineTimestampSeconds = BigInt(
+export const deadlineTimestampSeconds = BigInt(
   Math.round(new Date().getTime() / 1000 + 10000)
 );
 
