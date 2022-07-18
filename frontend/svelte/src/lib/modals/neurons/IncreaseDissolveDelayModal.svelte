@@ -54,6 +54,7 @@
       {neuron}
       {delayInSeconds}
       on:nnsUpdated={closeModal}
+      on:nnsBack={() => modal.back()}
     />
   {/if}
 </WizardModal>
