@@ -344,6 +344,9 @@ const votingPeriodEnd = (proposalInfo: ProposalInfo): Date => {
   return new Date(Number(deadlineTimestampSeconds) * 1000);
 };
 
+
+// Following fallback logic follows what's originally implemented by the Dashboard
+
 const SHORT_VOTING_PERIOD_SECONDS = 60 * 60 * 12; // 12 hours
 const WAIT_FOR_QUIET_THRESHOLD_SECONDS = 60 * 60 * 12 * 24 * 4; // 4 days
 
