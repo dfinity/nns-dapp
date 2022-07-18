@@ -92,7 +92,7 @@
     position: absolute;
     @include display.inset;
 
-    color: rgba(var(--background-contrast-rgb), 0.2);
+    color: rgba(var(--background-contrast-rgb), var(--very-light-opacity));
   }
 
   .authLayout {

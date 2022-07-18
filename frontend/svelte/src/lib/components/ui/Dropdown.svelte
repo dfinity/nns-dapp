@@ -18,21 +18,20 @@
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/form";
   div {
     width: 100%;
     position: relative;
 
     select {
+      @include form.input;
       padding: var(--padding-2x) var(--padding-3x);
       width: 100%;
 
       border-radius: var(--element-border-radius);
-      border-style: none;
       box-shadow: var(--box-shadow);
 
       appearance: none;
-
-      background: var(--card-background);
     }
 
     .icon {

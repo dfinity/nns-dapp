@@ -528,6 +528,9 @@ interface I18nNeuron_detail {
   spawn_maturity_success: string;
   spawn_maturity_confirmation_q: string;
   spawn_maturity_confirmation_a: string;
+  spawn_maturity_choose: string;
+  spawn_maturity_explanation: string;
+  spawn_maturity_explanation_hw: string;
   current_stake: string;
   current_maturity: string;
   dissolve_delay_range: string;
@@ -641,6 +644,15 @@ interface I18nTheme {
   switch_theme: string;
 }
 
+interface I18nError__sns {
+  init: string;
+  undefined_project: string;
+  list_summaries: string;
+  load_summary: string;
+  list_swap_states: string;
+  load_swap_state: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -676,4 +688,5 @@ interface I18n {
   error__account: I18nError__account;
   error__canister: I18nError__canister;
   theme: I18nTheme;
+  error__sns: I18nError__sns;
 }

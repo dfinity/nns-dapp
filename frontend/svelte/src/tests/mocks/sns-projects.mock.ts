@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal";
-import type { SnsSummary, SnsSwapState } from "../../lib/services/sns.mock";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
+import type { SnsSummary, SnsSwapState } from "../../lib/types/sns";
+import { shuffle } from "../../lib/utils/dev.utils";
 
 const principal = (index: number): Principal =>
   [
@@ -45,7 +46,7 @@ export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const mockSnsSummaryList: SnsSummary[] = [
+export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
 
@@ -123,7 +124,12 @@ export const mockSnsSummaryList: SnsSummary[] = [
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
   },
-];
+])
+  // preserve indexes (important for unit tests)
+  .map((summary, index) => ({
+    ...summary,
+    rootCanisterId: principal(index),
+  }));
 
 export const mockSnsFullProject = {
   rootCanisterId: principal(0),

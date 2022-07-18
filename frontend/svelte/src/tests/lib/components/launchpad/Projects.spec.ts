@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
-import { loadSnsFullProjects } from "../../../../lib/services/sns.services";
+import { loadSnsSummaries } from "../../../../lib/services/sns.services";
 import {
+  snsesCountStore,
   snsSummariesStore,
   snsSwapStatesStore,
 } from "../../../../lib/stores/projects.store";
@@ -17,7 +18,8 @@ import {
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
-    loadSnsFullProjects: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -27,7 +29,7 @@ describe("Projects", () => {
   it("should trigger loadSnsFullProjects", () => {
     render(Projects);
 
-    expect(loadSnsFullProjects).toBeCalled();
+    expect(loadSnsSummaries).toBeCalled();
   });
 
   it("should render projects", () => {
@@ -58,8 +60,18 @@ describe("Projects", () => {
     expect(queryByText(en.sns_launchpad.no_projects)).toBeInTheDocument();
   });
 
-  it("should render skeletons on loading", () => {
-    const { queryAllByTestId } = render(Projects);
-    expect(queryAllByTestId("skeleton-card").length).toBeGreaterThanOrEqual(1);
+  it("should render spinner on loading", () => {
+    const { queryByTestId } = render(Projects);
+    expect(queryByTestId("spinner")).toBeInTheDocument();
+  });
+
+  it("should render skeletons after snsesCountStore update", async () => {
+    const { getAllByTestId } = render(Projects);
+
+    snsesCountStore.set(3);
+
+    await waitFor(() =>
+      expect(getAllByTestId("skeleton-card").length).toBeGreaterThanOrEqual(3)
+    );
   });
 });

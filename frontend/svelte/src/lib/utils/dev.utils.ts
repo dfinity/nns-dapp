@@ -94,3 +94,10 @@ export function triggerDebugReport(node: HTMLElement) {
     },
   };
 }
+
+// TODO: to be deleted - use for mock data only
+export const shuffle = <T>(items: T[]): T[] =>
+  items
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);

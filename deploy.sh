@@ -228,11 +228,38 @@ fi
 # adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if [[ "$DEPLOY_SNS" == "true" ]]; then
-  dfx canister --network "$DFX_NETWORK" create sns_governance --no-wallet || echo sns_governance probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_ledger --no-wallet || echo sns_ledger probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_root --no-wallet || echo sns_root probably exists already.
-  dfx canister --network "$DFX_NETWORK" create sns_swap --no-wallet || echo sns_swap probably exists already.
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --token-name "Free Up My Time" --token-symbol FUT
+  # If the wasm canister has not been installed already, install it.
+  echo Checking whether sns wasm is installed
+  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
+  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]; then
+    echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
+  else
+    echo "Creating SNS wasm canister..."
+    NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
+    SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
+    dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )' --no-wallet
+    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
+    echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
+    echo "Uploading wasms to the wasm canister"
+    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-root-canister.wasm root
+    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-governance-canister.wasm governance
+    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/ledger-canister_notify-method.wasm ledger
+  fi
+  echo "Creating SNS"
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+
+  echo "Populate canister_ids.json"
+  if test -e canister_ids.json; then
+    EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
+    cp canister_ids.json "$EXISTING_CANISTER_IDS"
+  else
+    echo "{}" >canister_ids.json
+  fi
+  idl2json <sns_creation.idl |
+    jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
+    jq -s '.[0] * .[1]' - canister_ids.json >canister_ids.json.new
+  mv canister_ids.json.new canister_ids.json
+
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
@@ -246,9 +273,10 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  echo Setting the cycles exchange rate...
-  echo Note: This needs a patched cycles minting canister.
-  ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
+  # Disabled until we can set the exchange rate again.
+  # echo Setting the cycles exchange rate...
+  # echo Note: This needs a patched cycles minting canister.
+  # ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
 
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.

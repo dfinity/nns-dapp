@@ -1,9 +1,8 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSwapState } from "../../services/sns.mock";
+  import type { SnsSummary, SnsSwapState } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
-  import type { SnsFullProject } from "../../stores/projects.store";
   import { secondsToDuration } from "../../utils/date.utils";
   import { nowInSeconds } from "../../utils/neuron.utils";
   import { getProjectStatus, ProjectStatus } from "../../utils/sns.utils";
@@ -14,12 +13,23 @@
   import Spinner from "../ui/Spinner.svelte";
   import Tag from "../ui/Tag.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
+  import { getContext } from "svelte";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+  } from "../../types/project-detail.context";
 
-  export let project: SnsFullProject;
+  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
+    PROJECT_DETAIL_CONTEXT_KEY
+  );
+
+  let summary: SnsSummary;
+  // type safety validation is done in ProjectDetail component
+  $: summary = $projectDetailStore.summary as SnsSummary;
+  let swapState: SnsSwapState;
+  $: swapState = $projectDetailStore.swapState as SnsSwapState;
 
   const nowSeconds: number = nowInSeconds();
-  let swapState: SnsSwapState | undefined;
-  $: ({ swapState } = project);
   let currentCommitment: bigint;
   $: currentCommitment = swapState?.currentCommitment ?? BigInt(0);
   let currentCommitmentIcp: ICP;
@@ -31,20 +41,20 @@
       : undefined;
   let currentDateTillStartSeconds: number;
   $: currentDateTillStartSeconds = Number(
-    BigInt(nowSeconds) - project.summary.swapStart
+    BigInt(nowSeconds) - summary.swapStart
   );
   let deadlineTillStartSeconds: number;
   $: deadlineTillStartSeconds = Number(
-    project.summary.swapDeadline - project.summary.swapStart
+    summary.swapDeadline - summary.swapStart
   );
   let durationTillDeadline: bigint;
   $: durationTillDeadline =
-    project.summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
+    summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
-  $: durationTillDeadline = project.summary.swapDeadline - BigInt(nowSeconds);
+  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
   const statusTextMapper = {
     [ProjectStatus.Accepting]: $i18n.sns_project_detail.accepting,
     [ProjectStatus.Closed]: $i18n.sns_project_detail.closed,
@@ -52,7 +62,7 @@
   };
   let projectStatus: ProjectStatus;
   $: projectStatus = getProjectStatus({
-    summary: project.summary,
+    summary,
     nowInSeconds: nowSeconds,
   });
 </script>
@@ -80,8 +90,8 @@
       <div data-tid="sns-project-commitment-progress">
         <CommitmentProgressBar
           value={currentCommitment}
-          max={project.summary.maxCommitment}
-          minimumIndicator={project.summary.minCommitment}
+          max={summary.maxCommitment}
+          minimumIndicator={summary.minCommitment}
         />
       </div>
       {#if durationTillDeadline > 0}
@@ -127,7 +137,7 @@
 {/if}
 
 {#if showModal}
-  <ParticipateSwapModal {project} on:nnsClose={closeModal} />
+  <ParticipateSwapModal on:nnsClose={closeModal} />
 {/if}
 
 <style lang="scss">
