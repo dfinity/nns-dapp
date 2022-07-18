@@ -326,9 +326,39 @@ export const mapProposalInfo = (
  * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
  * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
  */
-export const isProposalOpenForVotes = ({
-  deadlineTimestampSeconds,
-}: ProposalInfo): boolean =>
-  deadlineTimestampSeconds === undefined ||
-  new Date(Number(deadlineTimestampSeconds) * 1000).getTime() >=
-    new Date().getTime();
+export const isProposalOpenForVotes = (proposalInfo: ProposalInfo): boolean =>
+  votingPeriodEnd(proposalInfo).getTime() >= new Date().getTime();
+
+/**
+ * Return the voting period end date of a proposal.
+ * @returns {Date} The voting period end date
+ */
+const votingPeriodEnd = (proposalInfo: ProposalInfo): Date => {
+  const { deadlineTimestampSeconds } = proposalInfo;
+
+  // Fallback for undefined deadline_timestamp_seconds which actually should never happen.
+  if (deadlineTimestampSeconds === undefined) {
+    return votingPeriodEndFallback(proposalInfo);
+  }
+
+  return new Date(Number(deadlineTimestampSeconds) * 1000);
+};
+
+const SHORT_VOTING_PERIOD_SECONDS = 60 * 60 * 12; // 12 hours
+const WAIT_FOR_QUIET_THRESHOLD_SECONDS = 60 * 60 * 12 * 24 * 4; // 4 days
+
+const votingPeriodEndFallback = ({
+  proposalTimestampSeconds,
+  topic,
+}: ProposalInfo): Date => {
+  const durationInSeconds: number = [
+    Topic.ManageNeuron,
+    Topic.ExchangeRate,
+  ].includes(topic)
+    ? SHORT_VOTING_PERIOD_SECONDS
+    : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
+
+  return new Date(
+    Number(proposalTimestampSeconds) * 1000 + durationInSeconds * 1000
+  );
+};
