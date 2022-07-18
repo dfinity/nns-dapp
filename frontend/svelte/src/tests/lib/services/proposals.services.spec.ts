@@ -28,6 +28,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
@@ -259,6 +260,27 @@ describe("proposals-services", () => {
           },
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
+      });
+
+      it("should call callback after vote",  (done) => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+        const spyOnListNeurons = jest
+          .spyOn(neuronsServices, "listNeurons")
+          .mockImplementation(() => Promise.resolve());
+
+        const spyOnQueryProposal = jest
+          .spyOn(api, "queryProposal")
+          .mockImplementation(() => Promise.resolve(mockProposalInfo));
+
+        registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          reloadProposalCallback: () => {
+            done();
+          },
+        });
       });
 
       it("should show 'error.list_proposals' on refetch neurons error", async () => {
