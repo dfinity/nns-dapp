@@ -14,41 +14,31 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-06-17/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "wasm_canister": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
     "sns_governance": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/ledger.did",
       "wasm": "target/ic/ledger-canister_notify-method.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -93,6 +83,18 @@
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "type": "persistent"
+    },
+    "small12": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "HOST": "https://small12.dfinity.network",
+        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small12.dfinity.network"
+      },
+      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
       "type": "persistent"
     },
     "small11": {
@@ -146,8 +148,8 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "038ffbc554cf70993c4f9e84f959b86be19c54cc"
-       },
+        "IC_COMMIT": "3409f63139688e8d1da5beeeb2efa181f1ba1b1f"
+      },
       "packtool": ""
     }
   },

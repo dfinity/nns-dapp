@@ -38,7 +38,6 @@
   preventDefault
   inputId="join-community-fund-checkbox"
   checked={isCommunityFund}
-  disabled={isCommunityFund}
   on:nnsChange={showModal}
 >
   <span>{$i18n.neuron_detail.participate_community_fund}</span>

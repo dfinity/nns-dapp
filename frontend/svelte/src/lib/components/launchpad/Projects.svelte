@@ -7,7 +7,6 @@
   import {
     snsFullProjectStore,
     type SnsFullProject,
-    snsSummariesStore,
     snsesCountStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
@@ -28,15 +27,12 @@
     loading = $snsFullProjectStore === undefined;
 
     // TODO(L2-838): reload store only if needed
-    await loadSnsSummaries();
+    await Promise.all([loadSnsSummaries(), loadSnsSwapStates()]);
 
     loading = false;
   };
 
   onMount(load);
-
-  // TODO: do we want such subscribe in the component?
-  $: loadSnsSwapStates($snsSummariesStore.summaries);
 </script>
 
 {#if loading}

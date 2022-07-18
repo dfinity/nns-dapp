@@ -2,6 +2,7 @@ import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapState } from "../types/sns";
 
+// TODO: align summary store architecture with the certified information at the summary level
 export interface SnsSummariesStore {
   summaries: SnsSummary[] | undefined;
   certified: boolean | undefined;

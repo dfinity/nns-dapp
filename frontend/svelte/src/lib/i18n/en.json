@@ -612,6 +612,8 @@
     "init": "There was an error initializing some projects.",
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
-    "load_summary": "There was an unexpected error while loading the project."
+    "load_summary": "There was an unexpected error while loading the project.",
+    "list_swap_states": "There was an unexpected error while loading the states of the swaps of all deployed projects.",
+    "load_swap_state": "There was an unexpected error while loading the state of the swap of the project."
   }
 }
