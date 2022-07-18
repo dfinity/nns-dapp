@@ -4,7 +4,10 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
-import { loadSnsSummaries } from "../../../../lib/services/sns.services";
+import {
+  loadSnsSummaries,
+  loadSnsSwapStates,
+} from "../../../../lib/services/sns.services";
 import {
   snsesCountStore,
   snsSummariesStore,
@@ -24,12 +27,51 @@ jest.mock("../../../../lib/services/sns.services", () => {
 });
 
 describe("Projects", () => {
-  beforeEach(snsSummariesStore.reset);
+  beforeEach(() => {
+    snsSummariesStore.reset();
+    snsSwapStatesStore.reset();
+  });
+
+  afterEach(jest.clearAllMocks);
 
   it("should trigger loadSnsFullProjects", () => {
     render(Projects);
 
     expect(loadSnsSummaries).toBeCalled();
+  });
+
+  it("should trigger loadSnsSwapStates", () => {
+    render(Projects);
+
+    expect(loadSnsSwapStates).toBeCalled();
+  });
+
+  it("should not load data when already loaded", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
+    snsSummariesStore.setSummaries({
+      summaries: mockSnsSummaryList,
+      certified: false,
+    });
+    snsSwapStatesStore.setSwapState({
+      swapState: mockSnsSwapState(principal),
+      certified: false,
+    });
+
+    render(Projects);
+
+    expect(loadSnsSummaries).not.toBeCalled();
+    expect(loadSnsSwapStates).not.toBeCalled();
+  });
+
+  it("should not load data if store-state is null (loading)", () => {
+    snsSummariesStore.setLoadingState();
+    snsSwapStatesStore.setLoadingState();
+
+    render(Projects);
+
+    expect(loadSnsSummaries).not.toBeCalled();
+    expect(loadSnsSwapStates).not.toBeCalled();
   });
 
   it("should render projects", () => {
@@ -41,7 +83,7 @@ describe("Projects", () => {
     });
     snsSwapStatesStore.setSwapState({
       swapState: mockSnsSwapState(principal),
-      certified: true,
+      certified: false,
     });
 
     const { getAllByTestId } = render(Projects);
@@ -50,8 +92,14 @@ describe("Projects", () => {
   });
 
   it("should render a message when no projects available", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
     snsSummariesStore.setSummaries({
       summaries: [],
+      certified: false,
+    });
+    snsSwapStatesStore.setSwapState({
+      swapState: mockSnsSwapState(principal),
       certified: false,
     });
 
