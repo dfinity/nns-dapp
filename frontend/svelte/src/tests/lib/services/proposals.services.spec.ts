@@ -159,8 +159,10 @@ describe("proposals-services", () => {
     });
     afterAll(() => jest.clearAllMocks());
     it("should get proposalId from valid path", () => {
-      expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
-      expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
+      let result = routePathProposalId("/#/proposal/123");
+      expect(result?.proposalId).toEqual(BigInt(123));
+      result = routePathProposalId("/#/proposal/0");
+      expect(result?.proposalId).toEqual(BigInt(0));
     });
 
     it("should not get proposalId from invalid path", () => {
@@ -244,8 +246,6 @@ describe("proposals-services", () => {
       it("should refetch neurons after vote registration", async () => {
         jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
 
-        const spyOnSetCallback = jest.fn();
-
         const spyOnListNeurons = jest
           .spyOn(neuronsServices, "listNeurons")
           .mockImplementation(() => Promise.resolve());
@@ -259,7 +259,6 @@ describe("proposals-services", () => {
           },
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
-        expect(spyOnSetCallback).toHaveBeenCalled();
       });
 
       it("should show 'error.list_proposals' on refetch neurons error", async () => {
