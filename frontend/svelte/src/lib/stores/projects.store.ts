@@ -7,14 +7,16 @@ export type SnsSummariesStore =
       summaries: SnsSummary[];
       certified: boolean;
     }
-  | undefined;
+  | undefined
+  | null;
 
 export type SnsSwapStatesStore =
   | {
       swapState: SnsSwapState;
       certified: boolean;
     }[]
-  | undefined;
+  | undefined
+  | null;
 
 export interface SnsFullProject {
   rootCanisterId: Principal;
@@ -32,6 +34,10 @@ const initSnsSummariesStore = () => {
 
     reset() {
       set(undefined);
+    },
+
+    setLoadingState() {
+      set(null);
     },
 
     setSummaries({
@@ -73,6 +79,10 @@ const initSnsSwapStatesStore = () => {
 
     reset() {
       set(undefined);
+    },
+
+    setLoadingState() {
+      set(null);
     },
   };
 };

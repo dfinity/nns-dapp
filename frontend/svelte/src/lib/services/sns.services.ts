@@ -21,8 +21,10 @@ import {
   type QueryAndUpdateOnResponse,
 } from "./utils.services";
 
-export const loadSnsSummaries = (): Promise<void> =>
-  queryAndUpdate<SnsSummary[], unknown>({
+export const loadSnsSummaries = (): Promise<void> => {
+  snsSummariesStore.setLoadingState();
+
+  return queryAndUpdate<SnsSummary[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSummaries({ certified, identity }),
     onLoad: ({ response: summaries, certified }) =>
@@ -48,6 +50,7 @@ export const loadSnsSummaries = (): Promise<void> =>
     },
     logMessage: "Syncing Sns summaries",
   });
+};
 
 export const loadSnsSummary = async ({
   rootCanisterId,
@@ -86,8 +89,10 @@ export const loadSnsSummary = async ({
   });
 };
 
-export const loadSnsSwapStates = (): Promise<void> =>
-  queryAndUpdate<SnsSwapState[], unknown>({
+export const loadSnsSwapStates = (): Promise<void> => {
+  snsSwapStatesStore.setLoadingState();
+
+  return queryAndUpdate<SnsSwapState[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapStates({ certified, identity }),
     onLoad: ({ response: swapStates, certified }) => {
@@ -116,6 +121,7 @@ export const loadSnsSwapStates = (): Promise<void> =>
     },
     logMessage: "Syncing Sns swap state",
   });
+};
 
 export const loadSnsSwapState = async ({
   rootCanisterId,

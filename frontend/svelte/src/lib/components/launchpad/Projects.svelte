@@ -8,28 +8,33 @@
     snsFullProjectsStore,
     type SnsFullProject,
     snsesCountStore,
+    snsSummariesStore,
+    snsSwapStatesStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
+  import { isNullable } from "../../utils/utils";
 
-  let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
   $: projects = $snsFullProjectsStore;
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
+  let loading: boolean = false;
+  $: loading =
+    isNullable($snsSummariesStore) || isNullable($snsSwapStatesStore);
+
   const load = async () => {
-    // show loading state only when store is empty
-    loading = $snsFullProjectsStore === undefined;
-
-    // TODO(L2-838): reload store only if needed
-    await Promise.all([loadSnsSummaries(), loadSnsSwapStates()]);
-
-    loading = false;
+    if ($snsSummariesStore === undefined) {
+      loadSnsSummaries();
+    }
+    if ($snsSwapStatesStore === undefined) {
+      loadSnsSwapStates();
+    }
   };
 
   onMount(load);
