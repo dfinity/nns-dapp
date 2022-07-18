@@ -107,8 +107,7 @@ const isExcludedVotedProposal = ({
 }): boolean => {
   const { excludeVotedProposals } = filters;
 
-  const { status, ballots } = proposalInfo;
-  const isOpen = status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  const { ballots } = proposalInfo;
   const belongsToValidNeuron = (id: NeuronId) =>
     neurons.find(({ neuronId }) => neuronId === id) !== undefined;
   const containsUnspecifiedBallot = (): boolean =>
@@ -120,7 +119,11 @@ const isExcludedVotedProposal = ({
         belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
     ) !== undefined;
 
-  return excludeVotedProposals && isOpen && !containsUnspecifiedBallot();
+  return (
+    excludeVotedProposals &&
+    isProposalOpenForVote(proposalInfo) &&
+    !containsUnspecifiedBallot()
+  );
 };
 
 /**
@@ -318,3 +321,14 @@ export const mapProposalInfo = (
     status,
   };
 };
+
+/**
+ * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
+ * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
+ */
+export const isProposalOpenForVote = ({
+  deadlineTimestampSeconds,
+}: ProposalInfo): boolean =>
+  deadlineTimestampSeconds === undefined ||
+  new Date(Number(deadlineTimestampSeconds) * 1000).getTime() >=
+    new Date().getTime();

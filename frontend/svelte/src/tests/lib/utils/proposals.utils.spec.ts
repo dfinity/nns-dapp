@@ -14,6 +14,7 @@ import {
   getVotingPower,
   hasMatchingProposals,
   hideProposal,
+  isProposalOpenForVote,
   lastProposalId,
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
@@ -957,6 +958,36 @@ describe("proposals-utils", () => {
           action: {},
         } as Proposal)
       ).toBeUndefined();
+    });
+  });
+
+  describe("Open for vote", () => {
+    it("should be open for vote for ever", () =>
+      expect(
+        isProposalOpenForVote({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+        })
+      ).toBeTruthy());
+
+    it("should be open for vote", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVote({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not be open for vote", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVote({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
+        })
+      ).toBeFalsy();
     });
   });
 });
