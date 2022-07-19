@@ -10,7 +10,7 @@ export type SnsSummariesStore =
   | undefined
   | null;
 
-export type SnsSwapStatesStore =
+export type SnsSwapCommitmentsStore =
   | {
       swapCommitment: SnsSwapCommitment;
       certified: boolean;
@@ -53,7 +53,7 @@ const initSnsSummariesStore = () => {
 };
 
 const initSnsSwapCommitmentsStore = () => {
-  const { subscribe, update, set } = writable<SnsSwapStatesStore>(undefined);
+  const { subscribe, update, set } = writable<SnsSwapCommitmentsStore>(undefined);
 
   return {
     subscribe,
