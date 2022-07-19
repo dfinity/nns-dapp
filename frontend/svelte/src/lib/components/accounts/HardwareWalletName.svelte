@@ -8,12 +8,13 @@
   import InputWithError from "../ui/InputWithError.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "../../constants/accounts.constants";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
   );
 
-  const { store, next }: AddAccountContext = context;
+  const { store, next, back }: AddAccountContext = context;
 
   let hardwareWalletName: string = $store.hardwareWalletName ?? "";
 
@@ -55,9 +56,14 @@
         : undefined}
     />
   </div>
-  <button class="primary full-width" type="submit" {disabled}>
-    {$i18n.core.continue}
-  </button>
+  <FooterModal>
+    <button class="secondary small" type="button" on:click={back}>
+      {$i18n.core.back}
+    </button>
+    <button class="primary small" type="submit" {disabled}>
+      {$i18n.core.continue}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

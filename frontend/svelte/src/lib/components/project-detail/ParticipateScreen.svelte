@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
   import {
     mainTransactionFeeStoreAsIcp,
@@ -63,7 +64,7 @@
       <IcpComponent singleLine icp={$mainTransactionFeeStoreAsIcp} />
     </p>
   </div>
-  <div class="actions">
+  <FooterModal>
     <button
       class="small secondary"
       data-tid="sns-swap-participate-button-cancel"
@@ -75,7 +76,7 @@
       disabled={disableButton}
       on:click={goNext}>{$i18n.sns_project_detail.participate}</button
     >
-  </div>
+  </FooterModal>
 </div>
 
 <style lang="scss">
@@ -105,10 +106,5 @@
 
   .right {
     text-align: right;
-  }
-
-  .actions {
-    @include modal.bottom-buttons;
-    padding-top: var(--padding-4x);
   }
 </style>

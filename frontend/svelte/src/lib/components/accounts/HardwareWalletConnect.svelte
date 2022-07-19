@@ -11,6 +11,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -21,7 +22,7 @@
     ADD_ACCOUNT_CONTEXT_KEY
   );
 
-  const { store }: AddAccountContext = context;
+  const { store, back }: AddAccountContext = context;
 
   const dispatcher = createEventDispatcher();
 
@@ -54,15 +55,21 @@
     <HardwareWalletConnectAction bind:connectionState bind:ledgerIdentity />
   </div>
 
-  <button
-    class="primary full-width submit"
-    type="submit"
-    {disabled}
-    data-tid="ledger-attach-button"
-    class:busy={$busy}
-  >
-    {$i18n.accounts.attach_wallet}
-  </button>
+  {#if !disabled}
+    <FooterModal>
+      <button class="secondary small" type="button" on:click={back}>
+        {$i18n.accounts.edit_name}
+      </button>
+      <button
+        class="primary small"
+        type="submit"
+        {disabled}
+        data-tid="ledger-attach-button"
+      >
+        {$i18n.accounts.attach_wallet}
+      </button>
+    </FooterModal>
+  {/if}
 </form>
 
 <style lang="scss">
@@ -70,14 +77,5 @@
 
   form {
     @include modal.wizard-single-input-form;
-  }
-
-  .submit:not(.busy) {
-    opacity: 0;
-    transition: opacity 150ms;
-
-    &:not([disabled]) {
-      opacity: 1;
-    }
   }
 </style>
