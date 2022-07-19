@@ -2,12 +2,11 @@
   import { ICP, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
-  import { formatPercentage } from "../../utils/format.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import {
+    formattedMaturityByStake,
     isEnoughToStakeNeuron,
-    maturityByStake,
     neuronStake,
   } from "../../utils/neuron.utils";
 
@@ -32,10 +31,7 @@
     <div>
       <h5>{$i18n.neuron_detail.current_maturity}</h5>
       <p>
-        {formatPercentage(maturityByStake(neuron), {
-          minFraction: 2,
-          maxFraction: 2,
-        })}
+        {formattedMaturityByStake(neuron)}
       </p>
       <h5>{$i18n.neuron_detail.current_stake}</h5>
       <p data-tid="neuron-stake">

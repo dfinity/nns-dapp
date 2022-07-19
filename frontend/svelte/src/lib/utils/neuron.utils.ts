@@ -38,7 +38,7 @@ import {
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { enumValues } from "./enum.utils";
-import { formatNumber } from "./format.utils";
+import { formatNumber, formatPercentage } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { isDefined } from "./utils";
 
@@ -46,6 +46,7 @@ export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
   status: "ok" | "warn" | "spawning";
+  color?: "var(--warning-emphasis)" | "var(--primary)";
 };
 
 type StateMapper = {
@@ -70,11 +71,13 @@ const stateTextMapper: StateMapper = {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
+    color: "var(--warning-emphasis)",
   },
   [NeuronState.SPAWNING]: {
     textKey: "spawning",
     Icon: IconHistoryToggleOff,
     status: "spawning",
+    color: "var(--primary)",
   },
 };
 
@@ -160,6 +163,14 @@ export const maturityByStake = (neuron: NeuronInfo): number => {
         neuron.fullNeuron.cachedNeuronStake
     ) / precision
   );
+};
+
+export const formattedMaturityByStake = (neuron: NeuronInfo): string => {
+  const maturity = maturityByStake(neuron);
+  if (maturity === 0) {
+    return "0%";
+  }
+  return formatPercentage(maturity, { minFraction: 2, maxFraction: 2 });
 };
 
 export const sortNeuronsByCreatedTimestamp = (

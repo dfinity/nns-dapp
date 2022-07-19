@@ -5,8 +5,7 @@
 import { fireEvent } from "@testing-library/svelte";
 import SpawnNeuronModal from "../../../../lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "../../../../lib/services/neurons.services";
-import { formatPercentage } from "../../../../lib/utils/format.utils";
-import { maturityByStake } from "../../../../lib/utils/neuron.utils";
+import { formattedMaturityByStake } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -49,14 +48,7 @@ describe("SpawnNeuronModal", () => {
       },
     });
 
-    expect(
-      queryByText(
-        formatPercentage(maturityByStake(neuron), {
-          minFraction: 2,
-          maxFraction: 2,
-        })
-      )
-    ).toBeInTheDocument();
+    expect(queryByText(formattedMaturityByStake(neuron))).toBeInTheDocument();
   });
 
   it("should have disabled button if percentage is not enought to spawn a new neuron", async () => {

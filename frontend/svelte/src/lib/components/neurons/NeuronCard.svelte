@@ -50,11 +50,7 @@
 
   let iconStyle: string;
   $: iconStyle =
-    stateInfo?.status === "warn"
-      ? `color: var(--warning-emphasis);`
-      : stateInfo?.status === "spawning"
-      ? `color: var(--primary);`
-      : "";
+    stateInfo?.color !== undefined ? `color: ${stateInfo.color};` : "";
 </script>
 
 <NeuronCardContainer
