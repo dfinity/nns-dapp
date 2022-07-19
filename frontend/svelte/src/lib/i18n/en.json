@@ -21,7 +21,8 @@
     "log": "Log",
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard",
-    "badgeNew": "New"
+    "badgeNew": "New",
+    "nns": "Network Nervous System"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -93,6 +94,7 @@
     "not_canister_controller_to_update": "The current user is not the controller of the canister. Only controllers can change the settings.",
     "limit_exceeded_topping_up_canister": "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not.",
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
+    "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {

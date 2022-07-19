@@ -2,6 +2,7 @@ import type { ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { isProposalOpenForVotes } from "../utils/proposals.utils";
 import { isNullish } from "../utils/utils";
@@ -136,6 +137,15 @@ const initSnsSwapCommitmentsStore = () => {
   };
 };
 
+const initSnsProjectSelectedStore = () => {
+  const { subscribe, set } = writable<string>(OWN_CANISTER_ID.toText());
+
+  return {
+    subscribe,
+    set,
+  };
+};
+
 // used to improve loading state display only
 export const snsesCountStore = writable<number | undefined>(undefined);
 
@@ -145,6 +155,7 @@ export const openForVotesSnsProposalsStore =
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
+export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 
 // TODO:
 // 1. snsFullProjectsStore should not be exposed

@@ -25,6 +25,7 @@ interface I18nCore {
   principal_id: string;
   copy: string;
   badgeNew: string;
+  nns: string;
 }
 
 interface I18nError {
@@ -97,6 +98,7 @@ interface I18nError {
   not_canister_controller_to_update: string;
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
+  sns_loading_commited_projects: string;
   canister_invalid_transaction: string;
 }
 

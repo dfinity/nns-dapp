@@ -2,141 +2,82 @@
  * @jest-environment jsdom
  */
 
-import { NeuronState } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { authStore } from "../../lib/stores/auth.store";
-import { neuronsStore } from "../../lib/stores/neurons.store";
+import { fireEvent, waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
+import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
+import { committedProjectsStore } from "../../lib/stores/projects.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../mocks/auth.store.mock";
-import en from "../mocks/i18n.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockFullNeuron,
-  mockNeuron,
-} from "../mocks/neurons.mock";
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../mocks/sns-projects.mock";
 
-jest.mock("../../lib/services/neurons.services", () => {
+jest.mock("../../lib/services/sns.services", () => {
   return {
-    listNeurons: jest.fn().mockResolvedValue(undefined),
+    loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
   };
 });
 
 describe("Neurons", () => {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  let authStoreMock: jest.MockedFunction<any>;
+  jest
+    .spyOn(committedProjectsStore, "subscribe")
+    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
-  beforeEach(() => {
-    authStoreMock = jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+  it("should render NnsNeurons by default", () => {
+    const { queryByTestId } = render(Neurons);
+    expect(queryByTestId("neurons-body")).toBeInTheDocument();
   });
 
-  describe("with enough neurons", () => {
-    beforeEach(() => {
-      const mockNeuron2 = {
-        ...mockNeuron,
-        neuronId: BigInt(223),
-      };
-      const spawningNeuron = {
-        ...mockNeuron,
-        state: NeuronState.SPAWNING,
-        neuronId: BigInt(223),
-        fullNeuron: {
-          ...mockFullNeuron,
-          spawnAtTimesSeconds: BigInt(12312313),
-        },
-      };
-      jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockNeuronsStoreSubscribe([
-            mockNeuron,
-            mockNeuron2,
-            spawningNeuron,
-          ])
-        );
-    });
-
-    it("should render content", () => {
-      const { getByText } = render(Neurons);
-
-      expect(
-        getByText("Earn rewards by staking your ICP in neurons.", {
-          exact: false,
-        })
-      ).toBeInTheDocument();
-    });
-
-    it("should render spawning neurons as disabled", () => {
-      const { queryAllByTestId } = render(Neurons);
-
-      const neuronCards = queryAllByTestId("neuron-card");
-      const disabledCards = neuronCards.filter(
-        (card) => card.getAttribute("aria-disabled") === "true"
-      );
-      expect(disabledCards.length).toBe(1);
-    });
-
-    it("should subscribe to store", () =>
-      expect(authStoreMock).toHaveBeenCalled());
-
-    it("should render a principal as text", () => {
-      const { getByText } = render(Neurons);
-
-      expect(
-        getByText(mockPrincipal.toText(), { exact: false })
-      ).toBeInTheDocument();
-    });
-
-    it("should render a NeuronCard", async () => {
-      const { container } = render(Neurons);
-
-      waitFor(() =>
-        expect(container.querySelector('article[role="link"]')).not.toBeNull()
-      );
-    });
-
-    it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
-      const { queryByTestId, queryByText } = render(Neurons);
-
-      const toolbarButton = queryByTestId("stake-neuron-button");
-      expect(toolbarButton).not.toBeNull();
-      expect(queryByText(en.accounts.select_source)).toBeNull();
-
-      toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-      expect(queryByText(en.accounts.select_source)).not.toBeNull();
-    });
-
-    it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {
-      const { queryByTestId, queryByText } = render(Neurons);
-
-      const toolbarButton = queryByTestId("merge-neurons-button");
-      expect(toolbarButton).not.toBeNull();
-      expect(queryByText(en.neurons.merge_neurons_modal_title)).toBeNull();
-
-      toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-      expect(queryByText(en.neurons.merge_neurons_modal_title)).not.toBeNull();
-    });
+  it("should render dropdown to select project", () => {
+    const { queryByTestId } = render(Neurons);
+    expect(queryByTestId("select-project-dropdown")).toBeInTheDocument();
   });
 
-  describe("with less than two neurons", () => {
-    beforeEach(() => {
-      jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
-    });
-    it("should have disabled Merge Neurons button", async () => {
-      const { queryByTestId } = render(Neurons);
+  it("should render project page when a project is selected in the dropdown", async () => {
+    const { queryByTestId } = render(Neurons);
 
-      const toolbarButton = queryByTestId("merge-neurons-button");
-      expect(toolbarButton).not.toBeNull();
-      toolbarButton &&
-        expect(toolbarButton.hasAttribute("disabled")).toBeTruthy();
-    });
+    expect(queryByTestId("neurons-body")).toBeInTheDocument();
+
+    const selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
+
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
+
+    await waitFor(() =>
+      expect(queryByTestId("sns-neurons-body")).toBeInTheDocument()
+    );
+  });
+
+  it("should be able to go back to nns after going to a project", async () => {
+    const { queryByTestId } = render(Neurons);
+
+    expect(queryByTestId("neurons-body")).toBeInTheDocument();
+
+    const selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
+
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
+
+    await waitFor(() =>
+      expect(queryByTestId("sns-neurons-body")).toBeInTheDocument()
+    );
+
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: OWN_CANISTER_ID.toText() },
+      });
+    await waitFor(() =>
+      expect(queryByTestId("neurons-body")).toBeInTheDocument()
+    );
   });
 });
