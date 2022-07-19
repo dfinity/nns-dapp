@@ -30,13 +30,13 @@
   $: loading =
     isNullable($snsSummariesStore) || isNullable($snsSwapStatesStore);
 
-  // TODO: ask Mischa if use should be redirected or if a message should be displayed
+  // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
   const goBack = () =>
     routeStore.navigate({
       path: AppPath.Accounts,
     });
 
-  const load = async () => {
+  const load = () => {
     if ($snsSummariesStore === undefined) {
       loadSnsSummaries({ onError: goBack });
     }
