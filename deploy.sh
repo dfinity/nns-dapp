@@ -249,7 +249,8 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     done
   fi
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml |
+    tee /dev/stderr >sns_creation.idl
 
   echo "Populate canister_ids.json"
   if test -e canister_ids.json; then
