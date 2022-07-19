@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import {
+  committedProjectsStore,
   openProjectsStore,
   snsFullProjectsStore,
   snsSummariesStore,
@@ -118,14 +119,14 @@ describe("projects.store", () => {
         certified: false,
       });
 
-      const committed = get(openProjectsStore);
+      const committed = get(committedProjectsStore);
       expect(committed?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
         summaries: summariesForLifecycle(2),
         certified: false,
       });
-      const noCommitted = get(openProjectsStore);
+      const noCommitted = get(committedProjectsStore);
       expect(noCommitted?.length).toEqual(0);
     });
   });
