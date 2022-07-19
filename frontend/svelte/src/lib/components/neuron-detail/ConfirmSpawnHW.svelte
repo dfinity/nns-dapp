@@ -41,7 +41,6 @@
       </p>
     </div>
     <div>
-      <p>{@html $i18n.neuron_detail.spawn_maturity_explanation_hw}</p>
       <p>
         {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
       </p>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NeuronState, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import {
     routePathNeuronId,
