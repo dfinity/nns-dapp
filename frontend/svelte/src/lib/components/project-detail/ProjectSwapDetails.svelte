@@ -20,13 +20,13 @@
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
 
-  let details: SnsSwapInit;
-  $: ({ details } = summary.swap);
+  let init: SnsSwapInit;
+  $: ({ init } = summary.swap);
 
   let minCommitmentIcp: ICP;
-  $: minCommitmentIcp = ICP.fromE8s(details.min_participant_icp_e8s);
+  $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);
   let maxCommitmentIcp: ICP;
-  $: maxCommitmentIcp = ICP.fromE8s(details.max_participant_icp_e8s);
+  $: maxCommitmentIcp = ICP.fromE8s(init.max_participant_icp_e8s);
 </script>
 
 <KeyValuePair>

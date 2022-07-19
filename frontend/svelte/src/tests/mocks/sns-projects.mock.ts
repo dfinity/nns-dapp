@@ -171,7 +171,7 @@ export const mockQuerySnsSwapState = {
     {
       init: [
         {
-          ...mockSnsSummaryList[0].swap.details,
+          ...mockSnsSummaryList[0].swap.init,
         },
       ],
       state: [

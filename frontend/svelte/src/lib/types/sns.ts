@@ -1,15 +1,15 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 
-// TODO: to be replaced with real types
-
 export interface SnsSummarySwap {
-  details: SnsSwapInit;
+  init: SnsSwapInit;
   state: SnsSwapState;
 }
 
 export interface SnsSummary {
   rootCanisterId: Principal;
+
+  // TODO: to be replaced with real types for real data
 
   logo: string;
   name: string;

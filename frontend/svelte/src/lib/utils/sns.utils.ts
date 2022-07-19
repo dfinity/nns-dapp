@@ -42,7 +42,7 @@ export const concatSnsSummaries = ([summaries, swaps]: [
     swap: {
       // We know for sure that init and state are defined because we check in previous filter that there are not undefined
       // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
-      details: fromNullable(swap.init) as SnsSwapInit,
+      init: fromNullable(swap.init) as SnsSwapInit,
       state: fromNullable(swap.state) as SnsSwapState,
     },
   }));
@@ -76,7 +76,7 @@ export const concatSnsSummary = ([summary, swap]: [
   return {
     ...summary,
     swap: {
-      details,
+      init: details,
       state,
     },
   };
