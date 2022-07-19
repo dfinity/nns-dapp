@@ -1,4 +1,5 @@
 import type { Principal } from "@dfinity/principal";
+import { SwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 
@@ -95,7 +96,8 @@ export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
 
 /**
- * Reflects snsSummariesStore entries. Additionally contains SwapState for every summary (when loaded).
+ * Filter snsSummariesStore entries with projects that are open (for swap) only.
+ * Additionally, contains SwapCommitment for every summary (when loaded).
  */
 export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
   derived(
@@ -103,18 +105,26 @@ export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
     ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
       $snsSummariesStore === undefined
         ? undefined
-        : $snsSummariesStore?.summaries.map((summary) => {
-            const { rootCanisterId } = summary;
-            const summaryPrincipalAsText = rootCanisterId.toText();
-            const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
-              ({ swapCommitment: { rootCanisterId } }) =>
-                rootCanisterId.toText() === summaryPrincipalAsText
-            );
+        : $snsSummariesStore?.summaries
+            .filter(
+              ({
+                swap: {
+                  state: { lifecycle },
+                },
+              }) => SwapLifecycle.Open === lifecycle
+            )
+            .map((summary) => {
+              const { rootCanisterId } = summary;
+              const summaryPrincipalAsText = rootCanisterId.toText();
+              const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
+                ({ swapCommitment: { rootCanisterId } }) =>
+                  rootCanisterId.toText() === summaryPrincipalAsText
+              );
 
-            return {
-              rootCanisterId,
-              summary,
-              swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
-            };
-          })
+              return {
+                rootCanisterId,
+                summary,
+                swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
+              };
+            })
   );
