@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
-  import type { SnsSummary, SnsSwapState } from "../../types/sns";
+  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
@@ -16,8 +16,8 @@
   export let project: SnsFullProject;
 
   let summary: SnsSummary;
-  let swapState: SnsSwapState | undefined;
-  $: ({ summary, swapState } = project);
+  let swapCommitment: SnsSwapCommitment | undefined;
+  $: ({ summary, swapCommitment } = project);
 
   let logo: string;
   let name: string;
@@ -32,11 +32,11 @@
 
   let myCommitment: ICP | undefined;
   $: myCommitment =
-    project.swapState?.myCommitment === undefined
+    project.swapCommitment?.myCommitment === undefined
       ? undefined
-      : project.swapState.myCommitment === undefined
+      : project.swapCommitment.myCommitment === undefined
       ? undefined
-      : ICP.fromE8s(project.swapState.myCommitment);
+      : ICP.fromE8s(project.swapCommitment.myCommitment);
 
   const showProject = () => {
     routeStore.navigate({
@@ -67,7 +67,7 @@
   </dl>
 
   <!-- TODO L2-751: handle fetching errors -->
-  {#if swapState === undefined}
+  {#if swapCommitment === undefined}
     <div class="spinner">
       <Spinner size="small" inline />
     </div>

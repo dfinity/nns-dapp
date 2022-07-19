@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
-import type { SnsSummary, SnsSwapState } from "../types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 
 export type SnsSummariesStore =
   | {
@@ -12,7 +12,7 @@ export type SnsSummariesStore =
 
 export type SnsSwapStatesStore =
   | {
-      swapState: SnsSwapState;
+      swapCommitment: SnsSwapCommitment;
       certified: boolean;
     }[]
   | undefined
@@ -21,7 +21,7 @@ export type SnsSwapStatesStore =
 export interface SnsFullProject {
   rootCanisterId: Principal;
   summary: SnsSummary;
-  swapState: SnsSwapState | undefined;
+  swapCommitment: SnsSwapCommitment | undefined;
 }
 
 export type SnsFullProjectsStore = SnsFullProject[] | undefined;
@@ -52,26 +52,26 @@ const initSnsSummariesStore = () => {
   };
 };
 
-const initSnsSwapStatesStore = () => {
+const initSnsSwapCommitmentsStore = () => {
   const { subscribe, update, set } = writable<SnsSwapStatesStore>(undefined);
 
   return {
     subscribe,
 
-    setSwapState({
-      swapState,
+    setSwapCommitment({
+      swapCommitment,
       certified,
     }: {
-      swapState: SnsSwapState;
+      swapCommitment: SnsSwapCommitment;
       certified: boolean;
     }) {
       update((items) => [
         ...(items ?? []).filter(
-          ({ swapState: { rootCanisterId } }) =>
-            rootCanisterId.toText() !== swapState.rootCanisterId.toText()
+          ({ swapCommitment: { rootCanisterId } }) =>
+            rootCanisterId.toText() !== swapCommitment.rootCanisterId.toText()
         ),
         {
-          swapState,
+          swapCommitment,
           certified,
         },
       ]);
@@ -91,29 +91,29 @@ const initSnsSwapStatesStore = () => {
 export const snsesCountStore = writable<number | undefined>(undefined);
 
 export const snsSummariesStore = initSnsSummariesStore();
-export const snsSwapStatesStore = initSnsSwapStatesStore();
+export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
 
 /**
  * Reflects snsSummariesStore entries. Additionally contains SwapState for every summary (when loaded).
  */
 export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
   derived(
-    [snsSummariesStore, snsSwapStatesStore],
+    [snsSummariesStore, snsSwapCommitmentsStore],
     ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
       $snsSummariesStore === undefined
         ? undefined
         : $snsSummariesStore?.summaries.map((summary) => {
             const { rootCanisterId } = summary;
             const summaryPrincipalAsText = rootCanisterId.toText();
-            const swapStateStoreEntry = $snsSwapStatesStore?.find(
-              ({ swapState: { rootCanisterId } }) =>
+            const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
+              ({ swapCommitment: { rootCanisterId } }) =>
                 rootCanisterId.toText() === summaryPrincipalAsText
             );
 
             return {
               rootCanisterId,
               summary,
-              swapState: swapStateStoreEntry?.swapState,
+              swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
             };
           })
   );

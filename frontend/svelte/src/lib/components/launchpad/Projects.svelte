@@ -9,7 +9,7 @@
     type SnsFullProject,
     snsesCountStore,
     snsSummariesStore,
-    snsSwapStatesStore,
+    snsSwapCommitmentsStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
@@ -28,7 +28,7 @@
 
   let loading: boolean = false;
   $: loading =
-    isNullable($snsSummariesStore) || isNullable($snsSwapStatesStore);
+    isNullable($snsSummariesStore) || isNullable($snsSwapCommitmentsStore);
 
   // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
   const goBack = () =>
@@ -40,7 +40,7 @@
     if ($snsSummariesStore === undefined) {
       loadSnsSummaries({ onError: goBack });
     }
-    if ($snsSwapStatesStore === undefined) {
+    if ($snsSwapCommitmentsStore === undefined) {
       loadSnsSwapStates({ onError: goBack });
     }
   };

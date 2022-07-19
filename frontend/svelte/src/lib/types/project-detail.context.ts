@@ -1,9 +1,9 @@
 import type { Writable } from "svelte/store";
-import type { SnsSummary, SnsSwapState } from "./sns";
+import type { SnsSummary, SnsSwapCommitment } from "./sns";
 
 export interface ProjectDetailStore {
   summary: SnsSummary | undefined | null;
-  swapState: SnsSwapState | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
 }
 
 export interface ProjectDetailContext {

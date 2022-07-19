@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSummary, SnsSwapState } from "../../types/sns";
+  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { nowInSeconds } from "../../utils/neuron.utils";
@@ -26,18 +26,18 @@
   let summary: SnsSummary;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
-  let swapState: SnsSwapState;
-  $: swapState = $projectDetailStore.swapState as SnsSwapState;
+  let swapCommitment: SnsSwapCommitment;
+  $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
 
   const nowSeconds: number = nowInSeconds();
   let currentCommitment: bigint;
-  $: currentCommitment = swapState?.currentCommitment ?? BigInt(0);
+  $: currentCommitment = swapCommitment?.currentCommitment ?? BigInt(0);
   let currentCommitmentIcp: ICP;
   $: currentCommitmentIcp = ICP.fromE8s(currentCommitment);
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
-    swapState?.myCommitment !== undefined
-      ? ICP.fromE8s(swapState?.myCommitment)
+    swapCommitment?.myCommitment !== undefined
+      ? ICP.fromE8s(swapCommitment.myCommitment)
       : undefined;
   let currentDateTillStartSeconds: number;
   $: currentDateTillStartSeconds = Number(
@@ -67,7 +67,7 @@
   });
 </script>
 
-{#if swapState === undefined}
+{#if swapCommitment === undefined}
   <div class="wrapper">
     <Spinner inline />
   </div>

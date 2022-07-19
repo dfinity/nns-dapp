@@ -10,7 +10,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "../../../../lib/types/project-detail.context";
-import type { SnsSummary, SnsSwapState } from "../../../../lib/types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
@@ -22,7 +22,7 @@ describe("ProjectStatusSection", () => {
     swapState,
   }: {
     summary?: SnsSummary;
-    swapState?: SnsSwapState;
+    swapState?: SnsSwapCommitment;
   }) =>
     render(ContextWrapperTest, {
       props: {
@@ -30,7 +30,7 @@ describe("ProjectStatusSection", () => {
         contextValue: {
           store: writable<ProjectDetailStore>({
             summary,
-            swapState,
+            swapCommitment: swapState,
           }),
         } as ProjectDetailContext,
         Component: ProjectStatusSection,
@@ -40,7 +40,7 @@ describe("ProjectStatusSection", () => {
   it("should render subtitle", async () => {
     const { container } = renderProjectInfoSection({
       summary: mockSnsFullProject.summary,
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
     expect(container.querySelector("h2")).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe("ProjectStatusSection", () => {
   it("should render project current commitment", async () => {
     const { queryByTestId } = renderProjectInfoSection({
       summary: mockSnsFullProject.summary,
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
     expect(queryByTestId("sns-project-current-commitment")).toBeInTheDocument();
   });
@@ -56,7 +56,7 @@ describe("ProjectStatusSection", () => {
   it("should render project participate button", async () => {
     const { queryByTestId } = renderProjectInfoSection({
       summary: mockSnsFullProject.summary,
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe("ProjectStatusSection", () => {
   it("should open swap participation modal on participate click", async () => {
     const { getByTestId } = renderProjectInfoSection({
       summary: mockSnsFullProject.summary,
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
     await clickByTestId(getByTestId, "sns-project-participate-button");
@@ -76,7 +76,7 @@ describe("ProjectStatusSection", () => {
   it("should render accepting participation text when open", async () => {
     const { queryByText } = renderProjectInfoSection({
       summary: mockSnsFullProject.summary,
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
     expect(queryByText(en.sns_project_detail.accepting)).toBeInTheDocument();
   });
@@ -88,7 +88,7 @@ describe("ProjectStatusSection", () => {
         swapDeadline: BigInt(Math.round(Date.now() / 1000 + 40000)),
         swapStart: BigInt(Math.round(Date.now() / 1000 + 20000)),
       },
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
     expect(queryByText(en.sns_project_detail.pending)).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe("ProjectStatusSection", () => {
         swapDeadline: BigInt(Math.round(Date.now() / 1000 - 20000)),
         swapStart: BigInt(Math.round(Date.now() / 1000 - 40000)),
       },
-      swapState: mockSnsFullProject.swapState as SnsSwapState,
+      swapState: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
     expect(queryByText(en.sns_project_detail.closed)).toBeInTheDocument();

@@ -2,12 +2,12 @@ import { get } from "svelte/store";
 import {
   snsFullProjectsStore,
   snsSummariesStore,
-  snsSwapStatesStore,
+  snsSwapCommitmentsStore,
 } from "../../../lib/stores/projects.store";
-import type { SnsSwapState } from "../../../lib/types/sns";
+import type { SnsSwapCommitment } from "../../../lib/types/sns";
 import {
   mockSnsSummaryList,
-  mockSnsSwapState,
+  mockSnsSwapCommitment,
 } from "../../mocks/sns-projects.mock";
 
 describe("projects.store", () => {
@@ -27,17 +27,17 @@ describe("projects.store", () => {
 
   describe("snsSwapStatesStore", () => {
     it("should store swap states", async () => {
-      const swapState = mockSnsSwapState(
+      const swapCommitment = mockSnsSwapCommitment(
         mockSnsSummaryList[0].rootCanisterId
-      ) as SnsSwapState;
-      snsSwapStatesStore.setSwapState({
-        swapState,
+      ) as SnsSwapCommitment;
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment,
         certified: true,
       });
 
-      const $snsSwapStatesStore = get(snsSwapStatesStore);
+      const $snsSwapStatesStore = get(snsSwapCommitmentsStore);
 
-      expect($snsSwapStatesStore?.[0].swapState).toEqual(swapState);
+      expect($snsSwapStatesStore?.[0].swapCommitment).toEqual(swapCommitment);
       expect($snsSwapStatesStore?.[0].certified).toBeTruthy();
     });
   });
@@ -50,8 +50,8 @@ describe("projects.store", () => {
         summaries: mockSnsSummaryList,
         certified: false,
       });
-      snsSwapStatesStore.setSwapState({
-        swapState: mockSnsSwapState(principal),
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: mockSnsSwapCommitment(principal),
         certified: true,
       });
 
@@ -59,8 +59,8 @@ describe("projects.store", () => {
 
       expect($snsFullProjectsStore?.[0].rootCanisterId).toEqual(principal);
       expect($snsFullProjectsStore?.[0].summary).toEqual(mockSnsSummaryList[0]);
-      expect($snsFullProjectsStore?.[0].swapState).toEqual(
-        mockSnsSwapState(principal)
+      expect($snsFullProjectsStore?.[0].swapCommitment).toEqual(
+        mockSnsSwapCommitment(principal)
       );
     });
   });

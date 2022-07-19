@@ -11,12 +11,12 @@ import {
 import {
   snsesCountStore,
   snsSummariesStore,
-  snsSwapStatesStore,
+  snsSwapCommitmentsStore,
 } from "../../../../lib/stores/projects.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,
-  mockSnsSwapState,
+  mockSnsSwapCommitment,
 } from "../../../mocks/sns-projects.mock";
 
 jest.mock("../../../../lib/services/sns.services", () => {
@@ -29,7 +29,7 @@ jest.mock("../../../../lib/services/sns.services", () => {
 describe("Projects", () => {
   beforeEach(() => {
     snsSummariesStore.reset();
-    snsSwapStatesStore.reset();
+    snsSwapCommitmentsStore.reset();
   });
 
   afterEach(jest.clearAllMocks);
@@ -53,8 +53,8 @@ describe("Projects", () => {
       summaries: mockSnsSummaryList,
       certified: false,
     });
-    snsSwapStatesStore.setSwapState({
-      swapState: mockSnsSwapState(principal),
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
       certified: false,
     });
 
@@ -66,7 +66,7 @@ describe("Projects", () => {
 
   it("should not load data if store-state is null (loading)", () => {
     snsSummariesStore.setLoadingState();
-    snsSwapStatesStore.setLoadingState();
+    snsSwapCommitmentsStore.setLoadingState();
 
     render(Projects);
 
@@ -81,8 +81,8 @@ describe("Projects", () => {
       summaries: mockSnsSummaryList,
       certified: false,
     });
-    snsSwapStatesStore.setSwapState({
-      swapState: mockSnsSwapState(principal),
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
       certified: false,
     });
 
@@ -98,8 +98,8 @@ describe("Projects", () => {
       summaries: [],
       certified: false,
     });
-    snsSwapStatesStore.setSwapState({
-      swapState: mockSnsSwapState(principal),
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
       certified: false,
     });
 

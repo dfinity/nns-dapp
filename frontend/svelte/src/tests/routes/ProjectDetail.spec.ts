@@ -10,10 +10,10 @@ import {
 } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
-  snsSwapStatesStore,
+  snsSwapCommitmentsStore,
 } from "../../lib/stores/projects.store";
 import { routeStore } from "../../lib/stores/route.store";
-import type { SnsSwapState } from "../../lib/types/sns";
+import type { SnsSwapCommitment } from "../../lib/types/sns";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 import { mockSnsFullProject } from "../mocks/sns-projects.mock";
@@ -28,7 +28,7 @@ jest.mock("../../lib/services/sns.services", () => {
     loadSnsSwapState: jest
       .fn()
       .mockImplementation(({ onLoad }) =>
-        onLoad({ response: mockSnsFullProject.swapState })
+        onLoad({ response: mockSnsFullProject.swapCommitment })
       ),
     routePathRootCanisterId: jest
       .fn()
@@ -65,15 +65,15 @@ describe("ProjectDetail", () => {
         summaries: [mockSnsFullProject.summary],
         certified: true,
       });
-      snsSwapStatesStore.setSwapState({
-        swapState: mockSnsFullProject.swapState as SnsSwapState,
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         certified: true,
       });
     });
 
     afterEach(() => {
       snsSummariesStore.reset();
-      snsSwapStatesStore.reset();
+      snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
     });
 
@@ -102,15 +102,15 @@ describe("ProjectDetail", () => {
         summaries: [mockSnsFullProject.summary],
         certified: false,
       });
-      snsSwapStatesStore.setSwapState({
-        swapState: mockSnsFullProject.swapState as SnsSwapState,
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         certified: false,
       });
     });
 
     afterEach(() => {
       snsSummariesStore.reset();
-      snsSwapStatesStore.reset();
+      snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
     });
 

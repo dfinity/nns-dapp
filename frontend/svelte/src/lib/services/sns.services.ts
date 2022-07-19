@@ -9,10 +9,10 @@ import {
 import { AppPath } from "../constants/routes.constants";
 import {
   snsSummariesStore,
-  snsSwapStatesStore,
+  snsSwapCommitmentsStore,
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
-import type { SnsSummary, SnsSwapState } from "../types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { loadSnsProposals } from "./proposals.services";
@@ -104,15 +104,15 @@ export const loadSnsSwapStates = ({
 }: {
   onError: () => void;
 }): Promise<void> => {
-  snsSwapStatesStore.setLoadingState();
+  snsSwapCommitmentsStore.setLoadingState();
 
-  return queryAndUpdate<SnsSwapState[], unknown>({
+  return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapStates({ certified, identity }),
-    onLoad: ({ response: swapStates, certified }) => {
-      for (const swapState of swapStates) {
-        snsSwapStatesStore.setSwapState({
-          swapState,
+    onLoad: ({ response: swapCommitments, certified }) => {
+      for (const swapCommitment of swapCommitments) {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
           certified,
         });
       }
@@ -145,12 +145,12 @@ export const loadSnsSwapState = async ({
   onError,
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<SnsSwapState>;
+  onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
 }) => {
   // TODO(L2-838): load only if not yet in store
 
-  return queryAndUpdate<SnsSwapState, unknown>({
+  return queryAndUpdate<SnsSwapCommitment, unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapState({
         rootCanisterId,

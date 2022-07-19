@@ -11,7 +11,7 @@ import {
 } from "../proxy/api.import.proxy";
 import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
-import type { SnsSummary, SnsSwapState } from "../types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp, shuffle } from "../utils/dev.utils";
 
@@ -21,8 +21,8 @@ let snsQueryWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
 
 // TODO(L2-751): remove and replace with effective data
-let mockSwapStates: SnsSwapState[] = [];
-const mockDummySwapStates: Partial<SnsSwapState>[] = shuffle([
+let mockSwapStates: SnsSwapCommitment[] = [];
+const mockDummySwapStates: Partial<SnsSwapCommitment>[] = shuffle([
   {
     myCommitment: BigInt(25 * 100000000),
     currentCommitment: BigInt(100 * 100000000),
@@ -295,7 +295,7 @@ export const querySnsSwapStates = async ({
 }: {
   certified: boolean;
   identity: Identity;
-}): Promise<SnsSwapState[]> => {
+}): Promise<SnsSwapCommitment[]> => {
   logWithTimestamp(
     `Listing all deployed Sns swap states certified:${certified} call...`
   );
@@ -308,7 +308,7 @@ export const querySnsSwapStates = async ({
   ];
 
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
-  const swapStates: (SnsSwapState | undefined)[] = await Promise.all(
+  const swapCommitments: (SnsSwapCommitment | undefined)[] = await Promise.all(
     snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
       querySnsSwapState({
         rootCanisterId: rootCanisterId.toText(),
@@ -322,9 +322,9 @@ export const querySnsSwapStates = async ({
     `Listing all deployed Sns swap states certified:${certified} done.`
   );
 
-  return swapStates.filter(
-    (state: SnsSwapState | undefined) => state !== undefined
-  ) as SnsSwapState[];
+  return swapCommitments.filter(
+    (state: SnsSwapCommitment | undefined) => state !== undefined
+  ) as SnsSwapCommitment[];
 };
 
 export const querySnsSwapState = async ({
@@ -335,7 +335,7 @@ export const querySnsSwapState = async ({
   rootCanisterId: RootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<SnsSwapState> => {
+}): Promise<SnsSwapCommitment> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
@@ -364,7 +364,7 @@ export const querySnsSwapState = async ({
         ({
           ...mockDummySwapStates[index],
           rootCanisterId,
-        } as SnsSwapState)
+        } as SnsSwapCommitment)
     );
   }
 
@@ -372,5 +372,5 @@ export const querySnsSwapState = async ({
   console.log("Sns swap state", swap);
   return mockSwapStates.find(
     (mock) => rootCanisterId === mock.rootCanisterId.toText()
-  ) as SnsSwapState;
+  ) as SnsSwapCommitment;
 };

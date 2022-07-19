@@ -22,7 +22,7 @@ export interface SnsSummary {
   maxParticipationCommitment: bigint; // e8s
 }
 
-export interface SnsSwapState {
+export interface SnsSwapCommitment {
   rootCanisterId: Principal;
   myCommitment: bigint | undefined; // e8s
   currentCommitment: bigint; // e8s
