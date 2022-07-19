@@ -1,7 +1,7 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { InitSns, SnsWrapper, Swap } from "@dfinity/sns";
+import type { InitSnsWrapper, SnsWrapper, SnsSwap } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import {
@@ -14,6 +14,7 @@ import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp, shuffle } from "../utils/dev.utils";
+import {initSnsWrapper} from '../../../../../../ic-js/packages/sns/src';
 
 type RootCanisterId = string;
 
@@ -93,9 +94,9 @@ const initSns = async ({
     `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
   );
 
-  const initSns: InitSns = await importInitSns();
+  const initSnsWrapper: InitSnsWrapper = await importInitSns();
 
-  const snsWrapper: SnsWrapper = await initSns({
+  const snsWrapper: SnsWrapper = await initSnsWrapper({
     rootOptions: {
       canisterId: rootCanisterId,
     },
@@ -292,7 +293,7 @@ export const querySnsSummary = async ({
 
 export type QuerySnsSwapState = {
   rootCanisterId: RootCanisterId;
-  swap: [] | [Swap];
+  swap: [] | [SnsSwap];
 };
 
 export const querySnsSwapStates = async ({

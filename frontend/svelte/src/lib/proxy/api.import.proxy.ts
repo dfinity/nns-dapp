@@ -1,5 +1,6 @@
 import type { SnsWasmCanister, SnsWasmCanisterOptions } from "@dfinity/nns";
-import type { InitSns } from "@dfinity/sns";
+import type { InitSnsWrapper } from "@dfinity/sns";
+import {initSnsWrapper} from '../../../../../../ic-js/packages/sns/src';
 
 export interface SnsWasmCanisterCreate {
   create: (options: SnsWasmCanisterOptions) => SnsWasmCanister;
@@ -17,9 +18,9 @@ export const importSnsWasmCanister =
     return SnsWasmCanister;
   };
 
-export const importInitSns = async (): Promise<InitSns> => {
-  const { initSns }: { initSns: InitSns } = await import(
+export const importInitSns = async (): Promise<InitSnsWrapper> => {
+  const { initSnsWrapper }: { initSns: InitSnsWrapper } = await import(
     "@dfinity/sns/dist/esm/sns"
   );
-  return initSns;
+  return initSnsWrapper;
 };

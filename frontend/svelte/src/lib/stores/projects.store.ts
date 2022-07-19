@@ -1,5 +1,5 @@
 import type { Principal } from "@dfinity/principal";
-import { SwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 
@@ -99,6 +99,7 @@ export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
  * Filter snsSummariesStore entries with projects that are open (for swap) only.
  * Additionally, contains SwapCommitment for every summary (when loaded).
  */
+// TODO: rename to openProjectsStore
 export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
   derived(
     [snsSummariesStore, snsSwapCommitmentsStore],
@@ -111,7 +112,7 @@ export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
                 swap: {
                   state: { lifecycle },
                 },
-              }) => SwapLifecycle.Open === lifecycle
+              }) => SnsSwapLifecycle.Open === lifecycle
             )
             .map((summary) => {
               const { rootCanisterId } = summary;

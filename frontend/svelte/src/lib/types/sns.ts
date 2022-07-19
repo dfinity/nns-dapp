@@ -1,11 +1,11 @@
 import type { Principal } from "@dfinity/principal";
-import type { Init, State } from "@dfinity/sns";
+import type { SnsInit, SnsState } from "@dfinity/sns";
 
 // TODO: to be replaced with real types
 
 export interface SnsSummarySwap {
-  details: Init;
-  state: State;
+  details: SnsInit;
+  state: SnsState;
 }
 
 export interface SnsSummary {

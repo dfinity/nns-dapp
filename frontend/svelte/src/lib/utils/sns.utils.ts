@@ -1,10 +1,10 @@
-import type { Init, State, Swap } from "@dfinity/sns";
+import type { SnsInit, SnsState, SnsSwap } from "@dfinity/sns";
 import type { QuerySnsSwapState } from "../api/sns.api";
 import type { SnsSummary } from "../types/sns";
 import { fromNullable } from "./did.utils";
 
 type OptionalSwapSummary = Omit<SnsSummary, "swap"> & {
-  swap?: Swap;
+  swap?: SnsSwap;
 };
 
 type ValidSwapSummary = Required<OptionalSwapSummary>;
@@ -42,8 +42,8 @@ export const concatSnsSummaries = ([summaries, swaps]: [
     swap: {
       // We know for sure that init and state are defined because we check in previous filter that there are not undefined
       // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
-      details: fromNullable(swap.init) as Init,
-      state: fromNullable(swap.state) as State,
+      details: fromNullable(swap.init) as SnsInit,
+      state: fromNullable(swap.state) as SnsState,
     },
   }));
 };
@@ -57,15 +57,17 @@ export const concatSnsSummary = ([summary, swap]: [
   }
 
   // Not sure this should ever happen
-  const possibleSwap: Swap | undefined = fromNullable(swap?.swap);
+  const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
   if (possibleSwap === undefined) {
     return undefined;
   }
 
   const { init, state: possibleState } = possibleSwap;
 
-  const details: Init | undefined = fromNullable(init);
-  const state: State | undefined = fromNullable(possibleState);
+  // TODO: null assertion
+
+  const details: SnsInit | undefined = fromNullable(init);
+  const state: SnsState | undefined = fromNullable(possibleState);
 
   if (details === undefined || state === undefined) {
     return undefined;
