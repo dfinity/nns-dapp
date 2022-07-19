@@ -1,8 +1,8 @@
 import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 import type { QuerySnsSwapState } from "../api/sns.api";
 import type { SnsSummary } from "../types/sns";
+import { assertNonNullish } from "./asserts.utils";
 import { fromNullable } from "./did.utils";
-import {assertNonNullish} from './asserts.utils';
 
 type OptionalSwapSummary = Omit<SnsSummary, "swap"> & {
   swap?: SnsSwap;
