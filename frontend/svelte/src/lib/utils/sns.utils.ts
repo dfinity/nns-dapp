@@ -30,13 +30,12 @@ export const concatSnsSummaries = ([summaries, swaps]: [
     })
   );
 
-  const validSwapSummaries: ValidSwapSummary[] = allSummaries
-    .filter(
-      (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
-        entry.swap !== undefined &&
-        fromNullable(entry.swap.init) !== undefined &&
-        fromNullable(entry.swap.state) !== undefined
-    );
+  const validSwapSummaries: ValidSwapSummary[] = allSummaries.filter(
+    (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
+      entry.swap !== undefined &&
+      fromNullable(entry.swap.init) !== undefined &&
+      fromNullable(entry.swap.state) !== undefined
+  );
 
   return validSwapSummaries.map(({ swap, ...rest }) => ({
     ...rest,
