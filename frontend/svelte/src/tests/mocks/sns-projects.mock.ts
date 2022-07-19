@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/principal";
-import type { SnsState } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";

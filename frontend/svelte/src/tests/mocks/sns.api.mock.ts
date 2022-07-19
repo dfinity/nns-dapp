@@ -30,10 +30,6 @@ export const swapCanisterIdMock: Principal = Principal.fromText(
 export const snsMock: [string, Principal, SnsCanisterStatus][] = [
   ["root", rootCanisterIdMock, {} as unknown as SnsCanisterStatus],
   ["ledger", ledgerCanisterIdMock, {} as unknown as SnsCanisterStatus],
-  [
-    "governance",
-    governanceCanisterIdMock,
-    {} as unknown as SnsCanisterStatus,
-  ],
+  ["governance", governanceCanisterIdMock, {} as unknown as SnsCanisterStatus],
   ["swap", swapCanisterIdMock, {} as unknown as SnsCanisterStatus],
 ];
