@@ -36,25 +36,19 @@ WORKDIR /ic/rs
 #       Otherwise the built binary will simply not be deployed by ic-nns-init.
 RUN binary=ledger-canister && \
     features="notify-method" && \
-    cargo build --target wasm32-unknown-unknown --release -p "$binary" --features "$features"
-RUN binary=ledger-canister && \
-    features="notify-method" && \
-    ls "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+    cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" --features "$features" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
 
 # Note: This is available as a download however we patch the source code to make testing easier.
 RUN binary="governance-canister" && \
     features="test" && \
-    cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance --features "$features"
-RUN binary="governance-canister" && \
-    features="test" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+    cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" --features "$features" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
 
 ## Note: This is available as a download however we patch the source code to make testing easier.
-#RUN binary="cycles-minting-canister" && \
-#    cargo build --target wasm32-unknown-unknown --release -p "$binary"
-#RUN binary="cycles-minting-canister" && \
-#    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
+RUN binary=cycles-minting-canister && \
+    cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
 
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
