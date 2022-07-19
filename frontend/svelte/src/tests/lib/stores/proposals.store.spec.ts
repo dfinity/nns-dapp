@@ -1,10 +1,7 @@
-import type { ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
 import {
-  proposalIdStore,
-  proposalInfoStore,
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
@@ -178,43 +175,6 @@ describe("proposals-store", () => {
         lastAppliedFilter: "excludeVotedProposals",
         excludeVotedProposals: false,
       });
-    });
-  });
-
-  describe("proposalIdStore", () => {
-    it("should store", () => {
-      proposalIdStore.set(BigInt(0));
-      expect(get(proposalIdStore)).toEqual(BigInt(0));
-    });
-
-    it("should reset", () => {
-      proposalIdStore.set(BigInt(0));
-      proposalIdStore.reset();
-      expect(get(proposalIdStore)).toEqual(undefined);
-    });
-  });
-
-  describe("proposalInfoStore", () => {
-    const mockProposalInfo = { id: BigInt(0) } as unknown as ProposalInfo;
-
-    it("should store proposalInfo", () => {
-      proposalIdStore.set(BigInt(0));
-      proposalInfoStore.set(mockProposalInfo);
-      expect(get(proposalInfoStore)).toEqual(mockProposalInfo);
-    });
-
-    it("should reset after proposalIdStore change", () => {
-      proposalIdStore.set(BigInt(0));
-      proposalInfoStore.set(mockProposalInfo);
-      proposalIdStore.set(BigInt(1));
-      expect(get(proposalInfoStore)).toEqual(undefined);
-    });
-
-    it("should not reset after proposalIdStore change with the same id", () => {
-      proposalIdStore.set(BigInt(0));
-      proposalInfoStore.set(mockProposalInfo);
-      proposalIdStore.set(BigInt(0));
-      expect(get(proposalInfoStore)).toEqual(mockProposalInfo);
     });
   });
 

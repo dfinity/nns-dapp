@@ -101,7 +101,11 @@ export const queryProposal = async ({
       proposalId
     )}) certified:${certified} complete.`
   );
-  return response?.proposals?.[0] ?? undefined;
+
+  // `governance.listProposals` returns a random matching proposal for unknown proposal id that's why we test that the returned proposal id is the one we are looking for
+  return response?.proposals?.[0].id === proposalId
+    ? response.proposals[0]
+    : undefined;
 };
 
 export const queryProposalPayload = async ({
