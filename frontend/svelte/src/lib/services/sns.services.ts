@@ -3,8 +3,11 @@ import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
   querySnsSummaries,
   querySnsSummary,
+  querySnsSwapCommitment,
+  querySnsSwapCommitments,
   querySnsSwapState,
   querySnsSwapStates,
+  type QuerySnsSwapState,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
@@ -15,6 +18,7 @@ import { toastsStore } from "../stores/toasts.store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
+import { concatSnsSummaries } from "../utils/sns.utils";
 import { loadSnsProposals } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -28,12 +32,18 @@ export const loadSnsSummaries = ({
 }): Promise<void> => {
   snsSummariesStore.setLoadingState();
 
-  return queryAndUpdate<SnsSummary[], unknown>({
+  return queryAndUpdate<
+    [Omit<SnsSummary, "swap">[], QuerySnsSwapState[]],
+    unknown
+  >({
     request: ({ certified, identity }) =>
-      querySnsSummaries({ certified, identity }),
-    onLoad: ({ response: summaries, certified }) =>
+      Promise.all([
+        querySnsSummaries({ certified, identity }),
+        querySnsSwapStates({ certified, identity }),
+      ]),
+    onLoad: ({ response, certified }) =>
       snsSummariesStore.setSummaries({
-        summaries,
+        summaries: concatSnsSummaries(response),
         certified,
       }),
     onError: ({ error: err, certified }) => {
@@ -64,18 +74,26 @@ export const loadSnsSummary = async ({
   onError,
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<SnsSummary>;
+  onLoad: QueryAndUpdateOnResponse<
+    [Omit<SnsSummary, "swap"> | undefined, QuerySnsSwapState | undefined]
+  >;
   onError: () => void;
 }) => {
   // TODO(L2-838): load only if not yet in store
 
-  return queryAndUpdate<SnsSummary | undefined, unknown>({
+  return queryAndUpdate<
+    [Omit<SnsSummary, "swap"> | undefined, QuerySnsSwapState | undefined],
+    unknown
+  >({
     request: ({ certified, identity }) =>
-      querySnsSummary({
-        rootCanisterId,
-        identity,
-        certified,
-      }),
+      Promise.all([
+        querySnsSummary({
+          rootCanisterId,
+          identity,
+          certified,
+        }),
+        querySnsSwapState({ rootCanisterId, identity, certified }),
+      ]),
     onLoad,
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -99,7 +117,7 @@ export const loadSnsSummary = async ({
   });
 };
 
-export const loadSnsSwapStates = ({
+export const loadSnsSwapCommitments = ({
   onError,
 }: {
   onError: () => void;
@@ -108,7 +126,7 @@ export const loadSnsSwapStates = ({
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
-      querySnsSwapStates({ certified, identity }),
+      querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
       for (const swapCommitment of swapCommitments) {
         snsSwapCommitmentsStore.setSwapCommitment({
@@ -129,17 +147,17 @@ export const loadSnsSwapStates = ({
       toastsStore.error(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error__sns.list_swap_states",
+          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
         })
       );
 
       onError();
     },
-    logMessage: "Syncing Sns swap state",
+    logMessage: "Syncing Sns swap commitments",
   });
 };
 
-export const loadSnsSwapState = async ({
+export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onLoad,
   onError,
@@ -152,7 +170,7 @@ export const loadSnsSwapState = async ({
 
   return queryAndUpdate<SnsSwapCommitment, unknown>({
     request: ({ certified, identity }) =>
-      querySnsSwapState({
+      querySnsSwapCommitment({
         rootCanisterId,
         identity,
         certified,
@@ -170,13 +188,13 @@ export const loadSnsSwapState = async ({
       toastsStore.error(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error__sns.load_swap_state",
+          fallbackErrorLabelKey: "error__sns.load_swap_commitment",
         })
       );
 
       onError();
     },
-    logMessage: "Syncing Sns swap state",
+    logMessage: "Syncing Sns swap commitment",
   });
 };
 

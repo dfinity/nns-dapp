@@ -6,7 +6,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
 import {
   loadSnsSummaries,
-  loadSnsSwapStates,
+  loadSnsSwapCommitments,
 } from "../../../../lib/services/sns.services";
 import {
   snsesCountStore,
@@ -22,7 +22,7 @@ import {
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -43,7 +43,7 @@ describe("Projects", () => {
   it("should trigger loadSnsSwapStates", () => {
     render(Projects);
 
-    expect(loadSnsSwapStates).toBeCalled();
+    expect(loadSnsSwapCommitments).toBeCalled();
   });
 
   it("should not load data when already loaded", () => {
@@ -61,7 +61,7 @@ describe("Projects", () => {
     render(Projects);
 
     expect(loadSnsSummaries).not.toBeCalled();
-    expect(loadSnsSwapStates).not.toBeCalled();
+    expect(loadSnsSwapCommitments).not.toBeCalled();
   });
 
   it("should not load data if store-state is null (loading)", () => {
@@ -71,7 +71,7 @@ describe("Projects", () => {
     render(Projects);
 
     expect(loadSnsSummaries).not.toBeCalled();
-    expect(loadSnsSwapStates).not.toBeCalled();
+    expect(loadSnsSwapCommitments).not.toBeCalled();
   });
 
   it("should render projects", () => {

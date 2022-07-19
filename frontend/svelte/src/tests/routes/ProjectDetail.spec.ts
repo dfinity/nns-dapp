@@ -6,7 +6,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import {
   loadSnsSummary,
-  loadSnsSwapState,
+  loadSnsSwapCommitment,
 } from "../../lib/services/sns.services";
 import {
   snsSummariesStore,
@@ -16,16 +16,21 @@ import { routeStore } from "../../lib/stores/route.store";
 import type { SnsSwapCommitment } from "../../lib/types/sns";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
-import { mockSnsFullProject } from "../mocks/sns-projects.mock";
+import {
+  mockQuerySnsSwapState,
+  mockSnsFullProject,
+} from "../mocks/sns-projects.mock";
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
     loadSnsSummary: jest
       .fn()
       .mockImplementation(({ onLoad }) =>
-        onLoad({ response: mockSnsFullProject.summary })
+        onLoad({
+          response: [mockSnsFullProject.summary, mockQuerySnsSwapState],
+        })
       ),
-    loadSnsSwapState: jest
+    loadSnsSwapCommitment: jest
       .fn()
       .mockImplementation(({ onLoad }) =>
         onLoad({ response: mockSnsFullProject.swapCommitment })
@@ -54,7 +59,7 @@ describe("ProjectDetail", () => {
   it("should load swap state", () => {
     render(ProjectDetail);
 
-    waitFor(() => expect(loadSnsSwapState).toBeCalled());
+    waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
   });
 
   describe("getting certified data from summaries and swaps stores", () => {
@@ -90,7 +95,7 @@ describe("ProjectDetail", () => {
 
       await tick();
 
-      expect(loadSnsSwapState).toBeCalledTimes(0);
+      expect(loadSnsSwapCommitment).toBeCalledTimes(0);
     });
   });
 
@@ -127,7 +132,7 @@ describe("ProjectDetail", () => {
 
       await tick();
 
-      expect(loadSnsSwapState).toBeCalledTimes(1);
+      expect(loadSnsSwapCommitment).toBeCalledTimes(1);
     });
   });
 

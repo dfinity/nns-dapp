@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     loadSnsSummaries,
-    loadSnsSwapStates,
+    loadSnsSwapCommitments,
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
@@ -41,7 +41,7 @@
       loadSnsSummaries({ onError: goBack });
     }
     if ($snsSwapCommitmentsStore === undefined) {
-      loadSnsSwapStates({ onError: goBack });
+      loadSnsSwapCommitments({ onError: goBack });
     }
   };
 

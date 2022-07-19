@@ -13,7 +13,7 @@
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsSummary,
-    loadSnsSwapState,
+    loadSnsSwapCommitment,
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
@@ -29,6 +29,7 @@
   } from "../lib/types/project-detail.context";
   import { isNullable, nonNullable } from "../lib/utils/utils";
   import { writable } from "svelte/store";
+  import { concatSnsSummary } from "../lib/utils/sns.utils";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -75,8 +76,8 @@
 
     loadSnsSummary({
       rootCanisterId,
-      onLoad: ({ response: summary }) =>
-        ($projectDetailStore.summary = summary),
+      onLoad: ({ response }) =>
+        ($projectDetailStore.summary = concatSnsSummary(response)),
       onError: goBack,
     });
   };
@@ -85,7 +86,8 @@
     if (nonNullable($snsSwapCommitmentsStore)) {
       // try to get from snsSwapStatesStore
       const swapItemMaybe = $snsSwapCommitmentsStore.find(
-        (item) => item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
+        (item) =>
+          item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
       );
 
       if (swapItemMaybe !== undefined) {
@@ -101,7 +103,7 @@
     // flag loading state
     $projectDetailStore.swapCommitment = null;
 
-    loadSnsSwapState({
+    loadSnsSwapCommitment({
       rootCanisterId,
       onLoad: ({ response: swapCommitment }) =>
         ($projectDetailStore.swapCommitment = swapCommitment),

@@ -53,7 +53,8 @@ const initSnsSummariesStore = () => {
 };
 
 const initSnsSwapCommitmentsStore = () => {
-  const { subscribe, update, set } = writable<SnsSwapCommitmentsStore>(undefined);
+  const { subscribe, update, set } =
+    writable<SnsSwapCommitmentsStore>(undefined);
 
   return {
     subscribe,
