@@ -95,37 +95,63 @@ export const snsesCountStore = writable<number | undefined>(undefined);
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
 
+// TODO:
+// 1. snsFullProjectsStore should not be exposed
+// 2. it can be renamed to projectsStore
 /**
  * Filter snsSummariesStore entries with projects that are open (for swap) only.
  * Additionally, contains SwapCommitment for every summary (when loaded).
  */
-// TODO: rename to openProjectsStore
 export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
   derived(
     [snsSummariesStore, snsSwapCommitmentsStore],
     ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
       $snsSummariesStore === undefined
         ? undefined
-        : $snsSummariesStore?.summaries
-            .filter(
-              ({
-                swap: {
-                  state: { lifecycle },
-                },
-              }) => SnsSwapLifecycle.Open !== lifecycle
-            )
-            .map((summary) => {
-              const { rootCanisterId } = summary;
-              const summaryPrincipalAsText = rootCanisterId.toText();
-              const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
-                ({ swapCommitment: { rootCanisterId } }) =>
-                  rootCanisterId.toText() === summaryPrincipalAsText
-              );
+        : $snsSummariesStore?.summaries.map((summary) => {
+            const { rootCanisterId } = summary;
+            const summaryPrincipalAsText = rootCanisterId.toText();
+            const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
+              ({ swapCommitment: { rootCanisterId } }) =>
+                rootCanisterId.toText() === summaryPrincipalAsText
+            );
 
-              return {
-                rootCanisterId,
-                summary,
-                swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
-              };
-            })
+            return {
+              rootCanisterId,
+              summary,
+              swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
+            };
+          })
   );
+
+export const openProjectsStore = derived(
+  snsFullProjectsStore,
+  ($snsFullProjectsStore) =>
+    $snsFullProjectsStore === undefined
+      ? undefined
+      : $snsFullProjectsStore.filter(
+          ({
+            summary: {
+              swap: {
+                state: { lifecycle },
+              },
+            },
+          }) => SnsSwapLifecycle.Open === lifecycle
+        )
+);
+
+export const committedProjectsStore = derived(
+  snsFullProjectsStore,
+  ($snsFullProjectsStore) =>
+    $snsFullProjectsStore === undefined
+      ? undefined
+      : $snsFullProjectsStore.filter(
+          ({
+            summary: {
+              swap: {
+                state: { lifecycle },
+              },
+            },
+          }) => SnsSwapLifecycle.Committed !== lifecycle
+        )
+);

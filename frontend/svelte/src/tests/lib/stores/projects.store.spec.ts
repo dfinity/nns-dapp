@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import {
+  openProjectsStore,
   snsFullProjectsStore,
   snsSummariesStore,
   snsSwapCommitmentsStore,
@@ -12,7 +13,7 @@ import {
 
 describe("projects.store", () => {
   describe("snsSummariesStore", () => {
-    it("should store summaries", async () => {
+    it("should store summaries", () => {
       snsSummariesStore.setSummaries({
         summaries: mockSnsSummaryList,
         certified: false,
@@ -26,7 +27,7 @@ describe("projects.store", () => {
   });
 
   describe("snsSwapStatesStore", () => {
-    it("should store swap states", async () => {
+    it("should store swap states", () => {
       const swapCommitment = mockSnsSwapCommitment(
         mockSnsSummaryList[0].rootCanisterId
       ) as SnsSwapCommitment;
@@ -43,7 +44,7 @@ describe("projects.store", () => {
   });
 
   describe("snsFullProjectsStore", () => {
-    it("should combine summaries with swap states", async () => {
+    it("should combine summaries with swap states", () => {
       const principal = mockSnsSummaryList[0].rootCanisterId;
 
       snsSummariesStore.setSummaries({
@@ -62,6 +63,70 @@ describe("projects.store", () => {
       expect($snsFullProjectsStore?.[0].swapCommitment).toEqual(
         mockSnsSwapCommitment(principal)
       );
+    });
+  });
+
+  describe("filter projects store", () => {
+    beforeAll(() => {
+      snsSummariesStore.reset();
+    });
+
+    afterAll(() => {
+      snsSummariesStore.reset();
+    });
+
+    const summariesForLifecycle = (lifecycle) => [
+      {
+        ...mockSnsSummaryList[0],
+        swap: {
+          init: mockSnsSummaryList[0].swap.init,
+          state: {
+            ...mockSnsSummaryList[0].swap.state,
+            lifecycle,
+          },
+        },
+      },
+    ];
+
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
+      certified: true,
+    });
+
+    it("should filter projects that are open", async () => {
+      snsSummariesStore.setSummaries({
+        summaries: summariesForLifecycle(2),
+        certified: false,
+      });
+
+      const open = get(openProjectsStore);
+      expect(open?.length).toEqual(1);
+
+      snsSummariesStore.setSummaries({
+        summaries: summariesForLifecycle(3),
+        certified: false,
+      });
+      const noOpen = get(openProjectsStore);
+      expect(noOpen?.length).toEqual(0);
+    });
+
+    it("should filter projects that are committed", async () => {
+      snsSummariesStore.setSummaries({
+        summaries: summariesForLifecycle(3),
+        certified: false,
+      });
+
+      const committed = get(openProjectsStore);
+      expect(committed?.length).toEqual(1);
+
+      snsSummariesStore.setSummaries({
+        summaries: summariesForLifecycle(2),
+        certified: false,
+      });
+      const noCommitted = get(openProjectsStore);
+      expect(noCommitted?.length).toEqual(0);
     });
   });
 });
