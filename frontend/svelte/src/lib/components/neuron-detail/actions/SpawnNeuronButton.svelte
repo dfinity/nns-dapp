@@ -1,11 +1,15 @@
 <script lang="ts">
   import { ICP, type NeuronInfo } from "@dfinity/nns";
-  import { MIN_NEURON_STAKE } from "../../../constants/neurons.constants";
+  import { E8S_PER_ICP } from "../../../constants/icp.constants";
+  import {
+    MIN_NEURON_STAKE,
+    SPAWN_VARIANCE_PERCENTAGE,
+  } from "../../../constants/neurons.constants";
   import SpawnNeuronModal from "../../../modals/neurons/SpawnNeuronModal.svelte";
   import { accountsStore } from "../../../stores/accounts.store";
   import { i18n } from "../../../stores/i18n";
+  import { formatNumber, formatPercentage } from "../../../utils/format.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatICP } from "../../../utils/icp.utils";
   import {
     isEnoughToStakeNeuron,
     isNeuronControlledByHardwareWallet,
@@ -42,7 +46,18 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
       {
-        $amount: formatICP({ value: BigInt(MIN_NEURON_STAKE), detailed: true }),
+        $amount: formatNumber(
+          MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,
+          { minFraction: 4, maxFraction: 4 }
+        ),
+        $min: formatNumber(MIN_NEURON_STAKE / E8S_PER_ICP, {
+          minFraction: 0,
+          maxFraction: 0,
+        }),
+        $varibility: formatPercentage(SPAWN_VARIANCE_PERCENTAGE, {
+          minFraction: 0,
+          maxFraction: 0,
+        }),
       }
     )}
   >
