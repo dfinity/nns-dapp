@@ -2,6 +2,7 @@ import { derived, type Readable, type Writable } from "svelte/store";
 import type { AddAccountStore } from "../types/add-account.context";
 import type { SelectCanisterDetailsStore } from "../types/canister-detail.context";
 import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neurons.context";
+import type { ProjectDetailStore } from "../types/project-detail.context";
 import type { SelectedAccountStore } from "../types/selected-account.context";
 import type { TransactionStore } from "../types/transaction.context";
 import { accountsStore } from "./accounts.store";
@@ -9,6 +10,7 @@ import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
 import { neuronsStore } from "./neurons.store";
+import { snsSummariesStore, snsSwapStatesStore } from "./projects.store";
 import {
   proposalIdStore,
   proposalInfoStore,
@@ -44,6 +46,10 @@ export const debugSelectedCanisterStore = (
   store: Writable<SelectCanisterDetailsStore>
 ) => (selectedCanisterStore = createDerivedStore(store));
 
+let projectDetailStore: Readable<ProjectDetailStore>;
+export const debugProjectDetailStore = (store: Writable<ProjectDetailStore>) =>
+  (projectDetailStore = createDerivedStore(store));
+
 /**
  * Collects state of all available stores (also from context)
  */
@@ -69,6 +75,9 @@ export const initDebugStore = () =>
       transactionStore,
       selectedAccountStore,
       selectedCanisterStore,
+      projectDetailStore,
+      snsSummariesStore,
+      snsSwapStatesStore,
     ],
     ([
       $busyStore,
@@ -88,6 +97,9 @@ export const initDebugStore = () =>
       $transactionStore,
       $selectedAccountStore,
       $selectedCanisterStore,
+      $projectDetailStore,
+      $snsSummariesStore,
+      $snsSwapStatesStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -106,5 +118,8 @@ export const initDebugStore = () =>
       transaction: $transactionStore,
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
+      projectDetailStore: $projectDetailStore,
+      snsSummariesStore: $snsSummariesStore,
+      snsSwapStatesStore: $snsSwapStatesStore,
     })
   );
