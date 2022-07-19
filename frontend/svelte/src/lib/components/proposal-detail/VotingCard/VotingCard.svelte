@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
-  import {
-    votableNeurons as getVotableNeurons,
-    ProposalStatus,
-  } from "@dfinity/nns";
+  import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
   import { getContext, onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
@@ -16,6 +13,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "../../../types/selected-proposal.context";
+  import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -30,8 +28,7 @@
 
   $: $definedNeuronsStore,
     (visible =
-      votableNeurons().length > 0 &&
-      proposalInfo.status === ProposalStatus.PROPOSAL_STATUS_OPEN);
+      votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
