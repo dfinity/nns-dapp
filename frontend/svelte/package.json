@@ -15,7 +15,8 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
-    "update:nns": "npm update @dfinity/nns"
+    "update:nns": "npm update @dfinity/nns",
+    "update:sns": "npm update @dfinity/sns"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
@@ -63,7 +64,7 @@
     "@dfinity/agent": "^0.12.0",
     "@dfinity/auth-client": "^0.12.0",
     "@dfinity/nns": "nightly",
-    "@dfinity/sns": "^0.0.1",
+    "@dfinity/sns": "nightly",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@zondax/ledger-icp": "^0.6.0"
