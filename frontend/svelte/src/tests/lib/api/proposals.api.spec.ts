@@ -18,7 +18,6 @@ describe("proposals-api", () => {
 
   let spyListProposals;
   let spyRegisterVote;
-  let spyGetProposal;
 
   beforeEach(() => {
     jest
@@ -27,7 +26,6 @@ describe("proposals-api", () => {
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
     spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
-    spyGetProposal = jest.spyOn(mockGovernanceCanister, "getProposal");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -68,10 +66,17 @@ describe("proposals-api", () => {
       });
 
       expect(proposal?.id).toBe(proposalId);
-      expect(spyGetProposal).toBeCalledTimes(1);
-      expect(spyGetProposal).toBeCalledWith({
-        certified,
-        proposalId,
+      expect(spyListProposals).toBeCalledTimes(1);
+      expect(spyListProposals).toBeCalledWith({
+        certified: false,
+        request: {
+          beforeProposal: BigInt(404 + 1),
+          // TODO: check filters
+          excludeTopic: [],
+          includeRewardStatus: [],
+          includeStatus: [],
+          limit: 1,
+        },
       });
     });
   });
