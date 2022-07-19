@@ -358,6 +358,9 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
   );
 
+  // TODO: remove when development of the deployment over
+  console.log("Swap", { rootCanisterId, swap });
+
   return {
     rootCanisterId,
     swap,
