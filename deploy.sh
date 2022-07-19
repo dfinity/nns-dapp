@@ -241,12 +241,16 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-root-canister.wasm root
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-governance-canister.wasm governance
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/ledger-canister_notify-method.wasm ledger
+    for canister in root governance ledger swap; do
+      ./target/ic/sns add-sns-wasm-for-tests \
+        --network "$DFX_NETWORK" \
+        --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" \
+        --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
+    done
   fi
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml |
+    tee /dev/stderr >sns_creation.idl
 
   echo "Populate canister_ids.json"
   if test -e canister_ids.json; then
@@ -255,11 +259,11 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   else
     echo "{}" >canister_ids.json
   fi
-  idl2json <sns_creation.idl |
+  sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
+    idl2json |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
     jq -s '.[0] * .[1]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
-
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
