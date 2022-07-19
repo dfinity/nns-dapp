@@ -34,6 +34,7 @@
   let percentageToMerge: number = 0;
 
   const dispatcher = createEventDispatcher();
+  const close = () => dispatcher("nnsClose");
   const mergeNeuronMaturity = async () => {
     startBusyNeuron({ initiator: "merge-maturity", neuronId: neuron.neuronId });
 
@@ -46,7 +47,7 @@
       toastsStore.success({
         labelKey: "neuron_detail.merge_maturity_success",
       });
-      dispatcher("nnsClose");
+      close();
     }
 
     stopBusy("merge-maturity");
@@ -66,6 +67,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.merge}
       on:nnsSelectPercentage={goToConfirm}
+      on:nnsBack={close}
       bind:percentage={percentageToMerge}
       disabled={percentageToMerge === 0}
     >
@@ -75,7 +77,10 @@
       </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmMerge"}
-    <ConfirmActionScreen on:nnsConfirm={mergeNeuronMaturity}>
+    <ConfirmActionScreen
+      on:nnsConfirm={mergeNeuronMaturity}
+      on:nnsCancel={modal.back}
+    >
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
         <p class="confirm-answer">
@@ -92,6 +97,9 @@
       </div>
       <svelte:fragment slot="button-content"
         >{$i18n.core.confirm}</svelte:fragment
+      >
+      <svelte:fragment slot="button-cancel-content"
+        >{$i18n.neuron_detail.merge_maturity_edit_percentage}</svelte:fragment
       >
     </ConfirmActionScreen>
   {/if}
