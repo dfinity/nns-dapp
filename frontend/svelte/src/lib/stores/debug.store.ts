@@ -3,6 +3,7 @@ import type { AddAccountStore } from "../types/add-account.context";
 import type { SelectCanisterDetailsStore } from "../types/canister-detail.context";
 import type { HardwareWalletNeuronsStore } from "../types/hardware-wallet-neurons.context";
 import type { SelectedAccountStore } from "../types/selected-account.context";
+import type { SelectedProposalStore } from "../types/selected-proposal.context";
 import type { TransactionStore } from "../types/transaction.context";
 import { accountsStore } from "./accounts.store";
 import { busyStore } from "./busy.store";
@@ -10,8 +11,6 @@ import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
 import { neuronsStore } from "./neurons.store";
 import {
-  proposalIdStore,
-  proposalInfoStore,
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
@@ -39,6 +38,10 @@ let selectedAccountStore: Readable<SelectedAccountStore>;
 export const debugSelectedAccountStore = (
   store: Writable<SelectedAccountStore>
 ) => (selectedAccountStore = createDerivedStore(store));
+let selectedProposalStore: Readable<SelectedProposalStore>;
+export const debugSelectedProposalStore = (
+  store: Writable<SelectedProposalStore>
+) => (selectedProposalStore = createDerivedStore(store));
 let selectedCanisterStore: Readable<SelectCanisterDetailsStore>;
 export const debugSelectedCanisterStore = (
   store: Writable<SelectCanisterDetailsStore>
@@ -50,7 +53,7 @@ export const debugSelectedCanisterStore = (
 export const initDebugStore = () =>
   derived(
     [
-      // TODO (L2-611): anonymise wallet id and neuron ids
+      // TODO (L2-611): anonymize wallet id and neuron ids
       // TODO: (L2-683): add routeStore
       busyStore,
       accountsStore,
@@ -59,8 +62,6 @@ export const initDebugStore = () =>
       canistersStore,
       proposalsStore,
       proposalsFiltersStore,
-      proposalIdStore,
-      proposalInfoStore,
       votingNeuronSelectStore,
       proposalPayloadsStore,
       toastsStore,
@@ -69,6 +70,7 @@ export const initDebugStore = () =>
       transactionStore,
       selectedAccountStore,
       selectedCanisterStore,
+      selectedProposalStore,
     ],
     ([
       $busyStore,
@@ -78,8 +80,6 @@ export const initDebugStore = () =>
       $canistersStore,
       $proposalsStore,
       $proposalsFiltersStore,
-      $proposalIdStore,
-      $proposalInfoStore,
       $votingNeuronSelectStore,
       $proposalPayloadsStore,
       $toastsStore,
@@ -88,6 +88,7 @@ export const initDebugStore = () =>
       $transactionStore,
       $selectedAccountStore,
       $selectedCanisterStore,
+      $selectedProposalStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -96,8 +97,6 @@ export const initDebugStore = () =>
       canisters: $canistersStore,
       proposals: $proposalsStore,
       proposalsFilters: $proposalsFiltersStore,
-      proposalId: $proposalIdStore,
-      proposalInfo: $proposalInfoStore,
       votingNeuronSelect: $votingNeuronSelectStore,
       proposalPayloads: $proposalPayloadsStore,
       toasts: $toastsStore,
@@ -106,5 +105,6 @@ export const initDebugStore = () =>
       transaction: $transactionStore,
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
+      selectedProposal: $selectedProposalStore,
     })
   );
