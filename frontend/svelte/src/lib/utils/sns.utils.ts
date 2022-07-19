@@ -34,8 +34,8 @@ export const concatSnsSummaries = ([summaries, swaps]: [
     .filter(
       (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
         entry.swap !== undefined &&
-        entry.swap.init !== undefined &&
-        entry.swap.state !== undefined
+        fromNullable(entry.swap.init) !== undefined &&
+        fromNullable(entry.swap.state) !== undefined
     )
     .map(({ swap, ...rest }) => ({
       ...rest,
