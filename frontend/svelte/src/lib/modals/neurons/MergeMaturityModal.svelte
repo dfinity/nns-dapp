@@ -79,7 +79,7 @@
   {:else if currentStep.name === "ConfirmMerge"}
     <ConfirmActionScreen
       on:nnsConfirm={mergeNeuronMaturity}
-      on:nnsCancel={() => modal.back()}
+      on:nnsCancel={modal.back}
     >
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>

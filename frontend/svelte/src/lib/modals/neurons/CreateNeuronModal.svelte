@@ -164,7 +164,7 @@
       <StakeNeuron
         account={selectedAccount}
         on:nnsNeuronCreated={onNeuronCreated}
-        on:nnsBack={() => modal.back()}
+        on:nnsBack={modal.back}
       />
     {/if}
   {/if}

@@ -43,7 +43,7 @@
       <NewControllerReview
         controller={principal}
         on:nnsClose
-        on:nnsBack={() => modal.back()}
+        on:nnsBack={modal.back}
       />
     {/if}
   </svelte:fragment>

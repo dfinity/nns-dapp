@@ -72,7 +72,7 @@
       <ConfirmNeuronsMerge
         neurons={selectedNeurons}
         on:nnsClose
-        on:nnsBack={() => modal.back()}
+        on:nnsBack={modal.back}
       />
     {/if}
   {/if}
