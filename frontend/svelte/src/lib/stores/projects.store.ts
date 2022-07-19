@@ -112,7 +112,7 @@ export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
                 swap: {
                   state: { lifecycle },
                 },
-              }) => SnsSwapLifecycle.Open === lifecycle
+              }) => SnsSwapLifecycle.Open !== lifecycle
             )
             .map((summary) => {
               const { rootCanisterId } = summary;

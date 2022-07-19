@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import type { SnsState } from "@dfinity/sns";
+import type { SnsSwapState } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
@@ -67,7 +67,7 @@ const mockSwap = {
     sns_token_e8s: BigInt(1000),
     lifecycle: 0,
     buyers: [],
-  } as State,
+  } as SnsSwapState,
 };
 
 export const mockSnsSummaryList: SnsSummary[] = shuffle([

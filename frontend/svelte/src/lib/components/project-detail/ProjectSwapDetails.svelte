@@ -10,7 +10,7 @@
   import Icp from "../ic/ICP.svelte";
   import InfoContextKey from "../ui/InfoContextKey.svelte";
   import { i18n } from "../../stores/i18n";
-  import type { SnsInit } from "@dfinity/sns";
+  import type { SnsSwapInit } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -20,7 +20,7 @@
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
 
-  let details: SnsInit;
+  let details: SnsSwapInit;
   $: ({ details } = summary.swap);
 
   let minCommitmentIcp: ICP;
