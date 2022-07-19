@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
   import { mainTransactionFeeStoreAsIcp } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
@@ -79,7 +80,7 @@
     >
       {$i18n.sns_project_detail.understand_agree}
     </Checkbox>
-    <div class="buttons">
+    <FooterModal>
       <button
         class="small secondary"
         data-tid="sns-swap-participate-button-back"
@@ -91,7 +92,7 @@
         disabled={!accepted}
         on:click={participate}>{$i18n.sns_project_detail.execute}</button
       >
-    </div>
+    </FooterModal>
   </div>
 </div>
 
@@ -141,9 +142,6 @@
 
     :global(label) {
       order: 1;
-    }
-    .buttons {
-      @include modal.bottom-buttons;
     }
   }
 </style>

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { setContext } from "svelte";
   import {
-    routePathProposalId,
     loadProposal,
+    routePathProposalId,
   } from "../lib/services/proposals.services";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -16,15 +16,17 @@
     definedNeuronsStore,
     neuronsStore,
   } from "../lib/stores/neurons.store";
-  import {
-    proposalIdStore,
-    proposalInfoStore,
-  } from "../lib/stores/proposals.store";
-  import { isRoutePath } from "../lib/utils/app-path.utils";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
-  import { get } from "svelte/store";
+  import { get, writable } from "svelte/store";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import type {
+    SelectedProposalContext,
+    SelectedProposalStore,
+  } from "../lib/types/selected-proposal.context";
+  import { debugSelectedProposalStore } from "../lib/stores/debug.store";
+  import type { ProposalId } from "@dfinity/nns";
+  import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../lib/types/selected-proposal.context";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -43,43 +45,73 @@
   let neuronsReady = false;
   $: $neuronsStore, (neuronsReady = neuronsStoreReady());
 
-  const unsubscribeRouteStore = routeStore.subscribe(
-    async ({ path: routePath }) => {
-      if (!isRoutePath({ path: AppPath.ProposalDetail, routePath })) {
+  const selectedProposalStore = writable<SelectedProposalStore>({
+    proposalId: undefined,
+    proposal: undefined,
+  });
+
+  debugSelectedProposalStore(selectedProposalStore);
+
+  setContext<SelectedProposalContext>(SELECTED_PROPOSAL_CONTEXT_KEY, {
+    store: selectedProposalStore,
+  });
+
+  let routeProposalId: { proposalId: ProposalId | undefined } | undefined;
+  $: routeProposalId = routePathProposalId($routeStore.path);
+
+  // TODO: reload after vote $proposalsStore
+
+  $: routeProposalId,
+    (async () => {
+      // Not /proposal route
+      if (routeProposalId === undefined) {
         return;
       }
-      const proposalId = routePathProposalId(routePath);
 
-      if (proposalId === undefined) {
-        // Navigate to the proposal list in no proposalId found
-        routeStore.replace({ path: AppPath.Proposals });
+      // handle unknown proposalId from URL
+      if (routeProposalId.proposalId === undefined) {
+        goBack();
         return;
       }
 
-      proposalIdStore.set(proposalId);
-    }
-  );
+      const { proposalId: storeProposalId } = $selectedProposalStore;
+
+      if (
+        storeProposalId !== routeProposalId.proposalId ||
+        storeProposalId === undefined
+      ) {
+        // So we gonna load proposalId xxx and we set the id in store to avoid to load it multiple times
+        selectedProposalStore.set({
+          proposalId: routeProposalId.proposalId,
+          proposal: undefined,
+        });
+
+        await loadProposal({
+          proposalId: routeProposalId.proposalId,
+          setProposal: (proposalInfo: ProposalInfo) => {
+            // User might quickly modify proposal id url, we just want to be sure that the one to display is effectively the last one requested
+            if (proposalInfo.id !== $selectedProposalStore.proposalId) {
+              return;
+            }
+
+            selectedProposalStore.update(({ proposalId }) => ({
+              proposalId,
+              proposal: proposalInfo,
+            }));
+          },
+          handleError: onError,
+          silentUpdateErrorMessages: true,
+        });
+      }
+    })();
 
   const onError = (certified: boolean) => {
     // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
     if (certified) {
       return;
     }
-    routeStore.replace({ path: AppPath.Proposals });
+    goBack();
   };
-
-  const unsubscribeProposalIdStore = proposalIdStore.subscribe((proposalId) => {
-    if (proposalId === undefined || proposalId === $proposalInfoStore?.id) {
-      return;
-    }
-    loadProposal({
-      proposalId,
-      setProposal: (proposalInfo: ProposalInfo) =>
-        proposalInfoStore.set(proposalInfo),
-      handleError: onError,
-      silentUpdateErrorMessages: true,
-    });
-  });
 
   const goBack = () => {
     const { referrerPath } = get(routeStore);
@@ -92,24 +124,18 @@
   };
 
   layoutBackStore.set(goBack);
-
-  onDestroy(() => {
-    unsubscribeRouteStore();
-    unsubscribeProposalIdStore();
-    proposalIdStore.reset();
-  });
 </script>
 
 <MainContentWrapper>
   <section>
-    {#if $proposalInfoStore}
-      <ProposalDetailCard proposalInfo={$proposalInfoStore} />
+    {#if $selectedProposalStore.proposal !== undefined}
+      <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
 
       {#if neuronsReady}
-        <VotesCard proposalInfo={$proposalInfoStore} />
-        <VotingCard proposalInfo={$proposalInfoStore} />
+        <VotesCard proposalInfo={$selectedProposalStore.proposal} />
+        <VotingCard proposalInfo={$selectedProposalStore.proposal} />
         <IneligibleNeuronsCard
-          proposalInfo={$proposalInfoStore}
+          proposalInfo={$selectedProposalStore.proposal}
           neurons={$definedNeuronsStore}
         />
       {:else}

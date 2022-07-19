@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
   import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
-  import { onDestroy } from "svelte";
+  import { getContext, onDestroy } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
@@ -9,6 +9,10 @@
   import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
+  import {
+    SELECTED_PROPOSAL_CONTEXT_KEY,
+    type SelectedProposalContext,
+  } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
@@ -35,11 +39,23 @@
       votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
   });
+
+  const { store } = getContext<SelectedProposalContext>(
+    SELECTED_PROPOSAL_CONTEXT_KEY
+  );
+
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
       proposalId: proposalInfo.id as bigint,
+      reloadProposalCallback: (
+        proposalInfo: ProposalInfo // we update store only if proposal id are matching even though it would be an edge case that these would not match here
+      ) =>
+        store.update(({ proposalId, proposal }) => ({
+          proposalId,
+          proposal: proposalId === proposalInfo.id ? proposalInfo : proposal,
+        })),
     });
 
   onDestroy(() => {
