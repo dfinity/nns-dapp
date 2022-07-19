@@ -1,8 +1,13 @@
 # Changelog
 
-## Unreleased
+## Proposal XXXX
 * e2e tests: Update the way SNS is deployed to the current standard, which is via the wasm canister.
-* Update dfx to version 10.1
+* Update dfx to version 0.11.0-beta.1
+* User can leave community fund.
+* New Input element.
+* New Checkbox element.
+* Split "Create or Link Canister" in two buttons.
+* Improved error messages when working with hardware wallet.
 
 ## Proposal 67969
 * Polyfill CSS to support older browsers

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { formatNumber } from "../../utils/format.utils";
@@ -43,11 +44,16 @@
     </div>
     <slot />
   </div>
-  <button
-    class="primary full-width"
-    on:click={confirm}
-    data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
-  >
+  <FooterModal>
+    <button class="secondary small" on:click={() => dispatcher("nnsBack")}
+      >{$i18n.canisters.edit_cycles}</button
+    >
+    <button
+      class="primary small"
+      on:click={confirm}
+      data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
+    >
+  </FooterModal>
 </div>
 
 <style lang="scss">

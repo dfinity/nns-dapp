@@ -63,7 +63,7 @@ const listSnses = async ({
   // TODO(L2-828): extract property for wasm canister id
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText("nsrxe-iiaaa-aaaaa-aacaa-cai"),
+    canisterId: Principal.fromText("u7xn3-ciaaa-aaaaa-aaa4a-cai"),
     agent,
   });
 
@@ -340,23 +340,13 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
-  // TODO: current deployed swap canister on testnet is empty
-  // Error: "Message": "IC0304: Attempt to execute a message on canister mr56c-4qaaa-aaaaa-aacgq-cai which contains no Wasm module"
+  const { swapState }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
 
-  // const { swapState }: SnsWrapper = await wrapper({
-  //   rootCanisterId,
-  //   identity,
-  //   certified,
-  // });
-
-  // const { swap } = await swapState({});
-  // let swap: unknown;
-  // try {
-  //   swap = await swapState({});
-  //   console.log("swap", swap);
-  // } catch (err) {
-  //   console.error("swap TBD");
-  // }
+  const { swap } = await swapState({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
@@ -379,7 +369,7 @@ export const querySnsSwapState = async ({
   }
 
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
-  // console.log("Sns swap state", swap);
+  console.log("Sns swap state", swap);
   return mockSwapStates.find(
     (mock) => rootCanisterId === mock.rootCanisterId.toText()
   ) as SnsSwapState;

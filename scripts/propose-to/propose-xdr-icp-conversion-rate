@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+set ic-admin --nns-url "$NNS_URL" propose-xdr-icp-conversion-rate --test-neuron-proposer --summary-file ./README.md --xdr-permyriad-per-icp 123456789
