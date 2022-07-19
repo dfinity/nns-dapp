@@ -80,6 +80,7 @@
     store: addAccountStore,
     selectType,
     next: () => modal?.next(),
+    back: () => modal?.back(),
   });
 
   let currentStep: Step | undefined;

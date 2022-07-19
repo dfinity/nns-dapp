@@ -8,6 +8,7 @@
   import { formatICP } from "../../utils/icp.utils";
   import InputRange from "../../components/ui/InputRange.svelte";
   import { createEventDispatcher } from "svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   export let neuron: NeuronInfo;
   export let percentage: number;
@@ -56,14 +57,19 @@
     </div>
   </Card>
 
-  <button
-    data-tid="select-maturity-percentage-button"
-    class="primary full-width"
-    on:click={selectPercentage}
-    {disabled}
-  >
-    {buttonText}
-  </button>
+  <FooterModal>
+    <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+      {$i18n.core.cancel}
+    </button>
+    <button
+      data-tid="select-maturity-percentage-button"
+      class="primary small"
+      on:click={selectPercentage}
+      {disabled}
+    >
+      {buttonText}
+    </button>
+  </FooterModal>
 </div>
 
 <style lang="scss">

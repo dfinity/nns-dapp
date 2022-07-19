@@ -10,6 +10,7 @@ export interface AddAccountContext {
   store: Writable<AddAccountStore>;
   selectType: (type: AccountType) => Promise<void>;
   next: () => void;
+  back: () => void;
 }
 
 export const ADD_ACCOUNT_CONTEXT_KEY = Symbol("add-account");
