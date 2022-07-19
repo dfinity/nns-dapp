@@ -14,7 +14,6 @@ import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp, shuffle } from "../utils/dev.utils";
-import {initSnsWrapper} from '../../../../../../ic-js/packages/sns/src';
 
 type RootCanisterId = string;
 
