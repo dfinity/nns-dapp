@@ -265,37 +265,10 @@ export const anonymizeProposal = async (
     return originalProposal;
   }
 
-  const {
-    id,
-    ballots,
-    rejectCost,
-    proposalTimestampSeconds,
-    rewardEventRound,
-    failedTimestampSeconds,
-    decidedTimestampSeconds,
-    latestTally,
-    proposal,
-    proposer,
-    executedTimestampSeconds,
-    topic,
-    status,
-    rewardStatus,
-  } = originalProposal;
+  const { ballots } = originalProposal;
 
   return {
-    id,
+    ...originalProposal,
     ballots: await mapPromises(ballots, anonymizeBallot),
-    rejectCost,
-    proposalTimestampSeconds,
-    rewardEventRound,
-    failedTimestampSeconds,
-    decidedTimestampSeconds,
-    latestTally,
-    proposal,
-    proposer,
-    executedTimestampSeconds,
-    topic,
-    status,
-    rewardStatus,
   };
 };
