@@ -3,7 +3,6 @@ import type { State } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
-import type {QuerySnsSwapState} from '../../lib/api/sns.api';
 
 const principal = (index: number): Principal =>
   [
@@ -170,12 +169,16 @@ export const mockQuerySnsSwapState = {
   rootCanisterId: principal(0),
   swap: [
     {
-      init: [{
-        ...mockSnsSummaryList[0].swap.details
-      }],
-      state: [{
-        ...mockSnsSummaryList[0].swap.state
-      }]
-    }
-  ]
-}
+      init: [
+        {
+          ...mockSnsSummaryList[0].swap.details,
+        },
+      ],
+      state: [
+        {
+          ...mockSnsSummaryList[0].swap.state,
+        },
+      ],
+    },
+  ],
+};

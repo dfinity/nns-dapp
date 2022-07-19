@@ -23,13 +23,11 @@ import {
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest
-      .fn()
-      .mockImplementation(({ onLoad }) =>
-        onLoad({
-          response: [mockSnsFullProject.summary, mockQuerySnsSwapState],
-        })
-      ),
+    loadSnsSummary: jest.fn().mockImplementation(({ onLoad }) =>
+      onLoad({
+        response: [mockSnsFullProject.summary, mockQuerySnsSwapState],
+      })
+    ),
     loadSnsSwapCommitment: jest
       .fn()
       .mockImplementation(({ onLoad }) =>
