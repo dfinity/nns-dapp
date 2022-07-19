@@ -92,19 +92,17 @@
     {/each}
   {/if}
 
-  <button
-    slot="footer"
-    class="primary"
-    type="button"
-    on:click={filter}
-    data-tid="apply-proposals-filter"
-  >
-    {$i18n.core.filter}
-  </button>
+  <svelte:fragment slot="footer">
+    <button class="secondary small" type="button" on:click={close}>
+      {$i18n.core.cancel}
+    </button>
+    <button
+      class="primary small"
+      type="button"
+      on:click={filter}
+      data-tid="apply-proposals-filter"
+    >
+      {$i18n.core.filter}
+    </button>
+  </svelte:fragment>
 </Modal>
-
-<style lang="scss">
-  button {
-    margin: var(--padding);
-  }
-</style>

@@ -6,6 +6,7 @@
   import { createEventDispatcher } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import PrincipalInput from "../ui/PrincipalInput.svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   let principal: Principal | undefined;
 
@@ -44,14 +45,23 @@
     />
   </div>
 
-  <button
-    data-tid="attach-canister-button"
-    class="primary full-width"
-    type="submit"
-    disabled={principal === undefined || $busy}
-  >
-    {$i18n.core.confirm}
-  </button>
+  <FooterModal>
+    <button
+      class="secondary small"
+      type="button"
+      on:click={() => dispatcher("nnsClose")}
+    >
+      {$i18n.core.cancel}
+    </button>
+    <button
+      data-tid="attach-canister-button"
+      class="primary small"
+      type="submit"
+      disabled={principal === undefined || $busy}
+    >
+      {$i18n.core.confirm}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

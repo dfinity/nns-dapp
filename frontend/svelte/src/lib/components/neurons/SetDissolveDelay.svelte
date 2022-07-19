@@ -17,10 +17,11 @@
   } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import InputRange from "../ui/InputRange.svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
-  export let cancelButtonText: string | undefined = undefined;
+  export let cancelButtonText: string;
   export let confirmButtonText: string;
   export let minDelayInSeconds: number = 0;
 
@@ -106,23 +107,21 @@
     </Card>
   </div>
 
-  <div class="buttons">
-    {#if cancelButtonText !== undefined}
-      <button
-        on:click={cancel}
-        data-tid="cancel-neuron-delay"
-        class="primary full-width">{cancelButtonText}</button
-      >
-    {/if}
+  <FooterModal>
     <button
-      class="primary full-width"
+      on:click={cancel}
+      data-tid="cancel-neuron-delay"
+      class="secondary small">{cancelButtonText}</button
+    >
+    <button
+      class="primary small"
       disabled={disableUpdate}
       on:click={goToConfirmation}
       data-tid="go-confirm-delay-button"
     >
       {confirmButtonText}
     </button>
-  </div>
+  </FooterModal>
 </div>
 
 <style lang="scss">
@@ -138,12 +137,6 @@
       display: flex;
       justify-content: space-around;
     }
-  }
-
-  .buttons {
-    display: flex;
-    gap: var(--padding);
-    padding: 0 0 var(--padding-2x);
   }
 
   .delay {

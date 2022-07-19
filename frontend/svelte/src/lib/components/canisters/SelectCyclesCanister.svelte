@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
+  import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
   import {
     convertIcpToTCycles,
@@ -55,7 +56,7 @@
     })();
 
   const dispatcher = createEventDispatcher();
-  const selectAccount = () => {
+  const selectAmount = () => {
     dispatcher("nnsSelectAmount", {
       amount: ICP.fromString(String(amount)),
     });
@@ -66,7 +67,11 @@
     minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
 </script>
 
-<div class="wizard-wrapper wrapper" data-tid="select-cycles-screen">
+<form
+  on:submit|preventDefault={selectAmount}
+  class="wizard-wrapper wrapper"
+  data-tid="select-cycles-screen"
+>
   <div class="content">
     <div class="inputs">
       <Input
@@ -96,13 +101,22 @@
     </div>
     <slot />
   </div>
-  <button
-    class="primary full-width"
-    on:click={selectAccount}
-    data-tid="select-cycles-button"
-    disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
-  >
-</div>
+  <FooterModal>
+    <button
+      type="button"
+      class="secondary small"
+      on:click={() => dispatcher("nnsBack")}
+      >{$i18n.canisters.edit_source}</button
+    >
+    <button
+      type="submit"
+      class="primary small"
+      on:click={selectAmount}
+      data-tid="select-cycles-button"
+      disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
+    >
+  </FooterModal>
+</form>
 
 <style lang="scss">
   .wizard-wrapper.wrapper {

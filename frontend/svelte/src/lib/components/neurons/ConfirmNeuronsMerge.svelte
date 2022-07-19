@@ -2,6 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
+  import FooterModal from "../../modals/FooterModal.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
   import { mergeNeurons } from "../../services/neurons.services";
   import { busy, stopBusy } from "../../stores/busy.store";
@@ -73,21 +74,27 @@
     {/each}
   </div>
   <div>
-    <button
-      class="primary full-width"
-      data-tid="confirm-merge-neurons-button"
-      disabled={$busy}
-      on:click={merge}
-    >
-      {$i18n.neurons.merge_neurons_modal_confirm}
-    </button>
-  </div>
-  <div class="disclaimer">
-    <p>{$i18n.neurons.irreversible_action}</p>
+    <FooterModal>
+      <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+        {$i18n.neurons.merge_neurons_edit_selection}
+      </button>
+      <button
+        class="primary small"
+        data-tid="confirm-merge-neurons-button"
+        disabled={$busy}
+        on:click={merge}
+      >
+        {$i18n.neurons.merge_neurons_modal_confirm}
+      </button>
+    </FooterModal>
+    <p class="additional-text">
+      {$i18n.neurons.irreversible_action}
+    </p>
   </div>
 </div>
 
 <style lang="scss">
+  @use "../../themes/mixins/media";
   .wrapper {
     height: 100%;
 
@@ -104,9 +111,13 @@
     align-items: center;
   }
 
-  .disclaimer p {
+  .additional-text {
     width: 100%;
+    margin-top: var(--padding-2x);
     text-align: center;
-    margin: 0;
+
+    @include media.min-width(medium) {
+      text-align: right;
+    }
   }
 </style>

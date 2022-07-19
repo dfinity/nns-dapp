@@ -1,10 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { busy } from "../../stores/busy.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   const dispatcher = createEventDispatcher();
   const confirm = async () => {
     dispatcher("nnsConfirm");
+  };
+  const cancel = async () => {
+    dispatcher("nnsCancel");
   };
 </script>
 
@@ -15,16 +19,19 @@
     </div>
     <slot />
   </div>
-  <div>
+  <FooterModal>
+    <button class="secondary small" on:click={cancel}>
+      <slot name="button-cancel-content" />
+    </button>
     <button
-      class="primary full-width"
+      class="primary small"
       data-tid="confirm-action-button"
       disabled={$busy}
       on:click={confirm}
     >
       <slot name="button-content" />
     </button>
-  </div>
+  </FooterModal>
 </div>
 
 <style lang="scss">
