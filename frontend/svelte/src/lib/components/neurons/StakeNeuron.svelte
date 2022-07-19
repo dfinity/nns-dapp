@@ -10,6 +10,7 @@
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   export let account: Account;
   let amount: number;
@@ -22,7 +23,7 @@
       initiator: "stake-neuron",
       labelKey: isHardwareWallet
         ? "busy_screen.pending_approval_hw"
-        : undefined,
+        : "neurons.may_take_while",
     });
 
     const neuronId = await stakeNeuron({
@@ -70,16 +71,23 @@
     </small>
   </div>
 
-  <small>{$i18n.neurons.may_take_while}</small>
-
-  <button
-    class="primary full-width"
-    type="submit"
-    data-tid="create-neuron-button"
-    disabled={amount === undefined || amount <= 0 || $busy}
-  >
-    {$i18n.neurons.create}
-  </button>
+  <FooterModal>
+    <button
+      class="secondary small"
+      type="button"
+      on:click={() => dispatcher("nnsBack")}
+    >
+      {$i18n.neurons.edit_source}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      data-tid="create-neuron-button"
+      disabled={amount === undefined || amount <= 0 || $busy}
+    >
+      {$i18n.neurons.create}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

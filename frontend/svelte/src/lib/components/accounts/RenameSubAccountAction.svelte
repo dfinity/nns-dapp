@@ -9,6 +9,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "../../types/selected-account.context";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -45,16 +46,25 @@
       disabled={$busy}
     />
   </div>
-  <button
-    class="primary full-width"
-    type="submit"
-    data-tid="rename-subaccount-button"
-    disabled={newAccountName.length === 0 ||
-      $busy ||
-      selectedAccount === undefined}
-  >
-    {$i18n.accounts.rename}
-  </button>
+  <FooterModal>
+    <button
+      class="secondary small"
+      type="button"
+      on:click={() => dispatcher("nnsClose")}
+    >
+      {$i18n.core.cancel}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      data-tid="rename-subaccount-button"
+      disabled={newAccountName.length === 0 ||
+        $busy ||
+        selectedAccount === undefined}
+    >
+      {$i18n.accounts.rename}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

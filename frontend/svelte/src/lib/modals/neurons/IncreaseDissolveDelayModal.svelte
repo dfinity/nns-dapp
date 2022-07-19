@@ -41,8 +41,10 @@
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
       {neuron}
+      cancelButtonText={$i18n.core.cancel}
       confirmButtonText={$i18n.neurons.update_delay}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
+      on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
     />
@@ -53,6 +55,7 @@
       {neuron}
       {delayInSeconds}
       on:nnsUpdated={closeModal}
+      on:nnsBack={modal.back}
     />
   {/if}
 </WizardModal>

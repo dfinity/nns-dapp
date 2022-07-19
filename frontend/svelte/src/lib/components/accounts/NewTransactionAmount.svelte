@@ -12,11 +12,12 @@
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store }: TransactionContext = context;
+  const { store, back, next }: TransactionContext = context;
 
   let amount: number | undefined = $store.amount
     ? Number($store.amount.toE8s()) / E8S_PER_ICP
@@ -55,8 +56,6 @@
       return;
     }
 
-    const { store, next }: TransactionContext = context;
-
     store.update((data) => ({
       ...data,
       amount: icp,
@@ -75,14 +74,19 @@
 
   <NewTransactionInfo feeOnly={true} />
 
-  <button
-    class="primary full-width"
-    type="submit"
-    disabled={!validForm}
-    data-tid="review-transaction"
-  >
-    {$i18n.accounts.review_transaction}
-  </button>
+  <FooterModal>
+    <button class="secondary small" type="button" on:click={back}>
+      {$i18n.accounts.edit_destination}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      disabled={!validForm}
+      data-tid="review-transaction"
+    >
+      {$i18n.accounts.review_transaction}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

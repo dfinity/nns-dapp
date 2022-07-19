@@ -62,6 +62,7 @@
       });
 
   const dispatcher = createEventDispatcher();
+  const close = () => dispatcher("nnsClose");
   const spawnNeuronFromMaturity = async () => {
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
 
@@ -75,7 +76,7 @@
       toastsStore.success({
         labelKey: "neuron_detail.spawn_maturity_success",
       });
-      dispatcher("nnsClose");
+      close();
     }
 
     stopBusy("spawn-neuron");
@@ -95,6 +96,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={goToConfirm}
+      on:nnsBack={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
@@ -108,6 +110,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
+      on:nnsBack={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >

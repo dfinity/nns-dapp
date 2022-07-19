@@ -146,6 +146,7 @@ interface I18nAccounts {
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
   attach_wallet: string;
+  edit_name: string;
   hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
@@ -162,8 +163,10 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   transaction_fee: string;
   review_transaction: string;
+  edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
+  edit_amount: string;
   account_identifier: string;
   transaction_success: string;
   rename: string;
@@ -186,6 +189,7 @@ interface I18nNeurons {
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;
+  merge_neurons_edit_selection: string;
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_with: string;
@@ -204,6 +208,7 @@ interface I18nNeurons {
   current_balance: string;
   may_take_while: string;
   create: string;
+  edit_source: string;
   status_locked: string;
   status_unspecified: string;
   status_dissolved: string;
@@ -227,6 +232,7 @@ interface I18nNeurons {
   set_delay: string;
   confirm_update_delay: string;
   confirm_set_delay: string;
+  edit_delay: string;
   merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_hotkey: string;
@@ -311,6 +317,8 @@ interface I18nCanisters {
   minimum_cycles_text_2: string;
   transaction_fee: string;
   review_cycles_purchase: string;
+  edit_source: string;
+  edit_cycles: string;
   converted_to: string;
 }
 
@@ -335,6 +343,7 @@ interface I18nCanister_detail {
   detach_success: string;
   confirm_new_controller: string;
   enter_controller: string;
+  edit_controller: string;
   new_controller: string;
   add_controller: string;
 }
@@ -521,6 +530,7 @@ interface I18nNeuron_detail {
   merge_maturity_modal_description: string;
   merge_maturity_confirmation_q: string;
   merge_maturity_confirmation_a: string;
+  merge_maturity_edit_percentage: string;
   merge_maturity_success: string;
   spawn_maturity_modal_title: string;
   spawn_confirmation_modal_title: string;

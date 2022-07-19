@@ -1,11 +1,22 @@
 <script lang="ts">
   import Input from "../ui/Input.svelte";
   import { i18n } from "../../stores/i18n";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { addSubAccount } from "../../services/accounts.services";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import FooterModal from "../../modals/FooterModal.svelte";
+  import {
+    ADD_ACCOUNT_CONTEXT_KEY,
+    type AddAccountContext,
+  } from "../../types/add-account.context";
 
   let newAccountName: string = "";
+
+  const context: AddAccountContext = getContext<AddAccountContext>(
+    ADD_ACCOUNT_CONTEXT_KEY
+  );
+
+  const { back }: AddAccountContext = context;
 
   let dispatcher = createEventDispatcher();
 
@@ -33,13 +44,18 @@
       disabled={$busy}
     />
   </div>
-  <button
-    class="primary full-width"
-    type="submit"
-    disabled={newAccountName.length === 0 || $busy}
-  >
-    {$i18n.core.create}
-  </button>
+  <FooterModal>
+    <button class="secondary small" type="button" on:click={back}>
+      {$i18n.core.back}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      disabled={newAccountName.length === 0 || $busy}
+    >
+      {$i18n.core.create}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">
