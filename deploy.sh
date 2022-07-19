@@ -241,10 +241,12 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file $(jq -r '.canisters.sns_root.wasm' dfx.json) root
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file $(jq -r '.canisters.sns_governance.wasm' dfx.json) governance
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file $(jq -r '.canisters.sns_ledger.wasm' dfx.json) ledger
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file $(jq -r '.canisters.sns_swap.wasm' dfx.json) swap
+    for canister in root governance ledger swap; do
+      ./target/ic/sns add-sns-wasm-for-tests \
+        --network "$DFX_NETWORK" \
+        --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" \
+        --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
+    done
   fi
   echo "Creating SNS"
   ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
