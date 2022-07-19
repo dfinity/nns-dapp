@@ -13,6 +13,7 @@
   } from "../../utils/neuron.utils";
   import { busy, stopBusy } from "../../stores/busy.store";
   import { startBusyNeuron } from "../../services/busy.services";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -66,16 +67,23 @@
       )}
     </p>
   </div>
-  <div>
+  <FooterModal>
     <button
-      class="primary full-width"
+      class="secondary small"
+      disabled={$busy}
+      on:click={() => dispatcher("nnsBack")}
+    >
+      {$i18n.neurons.edit_delay}
+    </button>
+    <button
+      class="primary small"
       data-tid="confirm-delay-button"
       disabled={$busy}
       on:click={updateNeuron}
     >
       {confirmButtonText}
     </button>
-  </div>
+  </FooterModal>
 </div>
 
 <style lang="scss">

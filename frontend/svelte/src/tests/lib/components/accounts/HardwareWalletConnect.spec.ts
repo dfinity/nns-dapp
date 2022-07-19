@@ -57,14 +57,15 @@ describe("HardwareWalletConnect", () => {
   });
 
   it("should not enable attach action if not connected", () => {
-    const { getByTestId } = render(AddAccountTest, {
+    const { queryByTestId } = render(AddAccountTest, {
       props,
     });
 
-    const button = getByTestId("ledger-attach-button") as HTMLButtonElement;
+    const attachButton = queryByTestId(
+      "ledger-attach-button"
+    ) as HTMLButtonElement;
 
-    expect(button).not.toBeNull();
-    expect(button.getAttribute("disabled")).not.toBeNull();
+    expect(attachButton).toBeNull();
   });
 
   it("should enable attach action if connected", async () => {

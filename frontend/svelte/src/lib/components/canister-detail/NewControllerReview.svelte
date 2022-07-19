@@ -10,6 +10,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
   import { addController } from "../../services/canisters.services";
+  import FooterModal from "../../modals/FooterModal.svelte";
 
   export let controller: Principal;
 
@@ -54,14 +55,23 @@
     <h5>{$i18n.canister_detail.new_controller}</h5>
     <p>{controller.toText()}</p>
   </div>
-  <button
-    class="primary full-width"
-    type="submit"
-    disabled={$busy}
-    data-tid="confirm-new-canister-controller-button"
-  >
-    {$i18n.accounts.confirm_and_send}
-  </button>
+  <FooterModal>
+    <button
+      class="secondary small"
+      type="button"
+      on:click={() => dispatcher("nnsBack")}
+    >
+      {$i18n.canister_detail.edit_controller}
+    </button>
+    <button
+      class="primary small"
+      type="submit"
+      disabled={$busy}
+      data-tid="confirm-new-canister-controller-button"
+    >
+      {$i18n.accounts.confirm_and_send}
+    </button>
+  </FooterModal>
 </form>
 
 <style lang="scss">

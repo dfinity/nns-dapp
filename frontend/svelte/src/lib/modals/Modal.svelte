@@ -67,7 +67,11 @@
         <slot />
       </div>
 
-      <slot name="footer" />
+      {#if $$slots.footer}
+        <div class="footer">
+          <slot name="footer" />
+        </div>
+      {/if}
     </div>
   </div>
 {/if}
@@ -76,6 +80,7 @@
   @use "../themes/mixins/interaction";
   @use "../themes/mixins/text";
   @use "../themes/mixins/display";
+  @use "../themes/mixins/modal";
 
   .modal {
     position: fixed;
@@ -174,8 +179,8 @@
     overflow-x: hidden;
   }
 
-  .small {
-    height: fit-content;
-    max-height: var(--modal-small-max-height);
+  .footer {
+    padding: var(--padding-2x);
+    @include modal.bottom-buttons;
   }
 </style>

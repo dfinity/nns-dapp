@@ -34,8 +34,17 @@
   <span slot="title" data-tid="add-hotkey-neuron-modal"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</span
   >
-  <AddPrincipal bind:principal on:nnsSelectPrincipal={add}>
-    <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
-    <span slot="button">{$i18n.core.confirm}</span>
-  </AddPrincipal>
+  <section>
+    <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
+      <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
+      <span slot="button">{$i18n.core.confirm}</span>
+    </AddPrincipal>
+  </section>
 </Modal>
+
+<style lang="scss">
+  @use "../../themes/mixins/modal";
+  section {
+    @include modal.section;
+  }
+</style>

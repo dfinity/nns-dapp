@@ -11,6 +11,7 @@ import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "../../../../lib/types/proposals";
 import { enumKeys } from "../../../../lib/utils/enum.utils";
 import en from "../../../mocks/i18n.mock";
+import { clickByTestId } from "../../testHelpers/clickByTestId";
 
 describe("ProposalsFilterModal", () => {
   const props: { props: ProposalsFilterModalProps } = {
@@ -74,7 +75,7 @@ describe("ProposalsFilterModal", () => {
   });
 
   it("should filter filters", async () => {
-    const { container, queryAllByTestId } = render(ProposalsFilterModal, {
+    const { queryAllByTestId, queryByTestId } = render(ProposalsFilterModal, {
       props,
     });
 
@@ -87,10 +88,7 @@ describe("ProposalsFilterModal", () => {
     fireEvent.click(secondInput);
     await waitFor(() => expect(secondInput.checked).toBeTruthy());
 
-    const button: HTMLButtonElement | null = container.querySelector(
-      "div.wrapper > button"
-    );
-    button && (await fireEvent.click(button));
+    await clickByTestId(queryByTestId, "apply-proposals-filter");
 
     const selectedTopics = get(proposalsFiltersStore).topics;
 

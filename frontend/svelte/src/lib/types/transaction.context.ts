@@ -11,6 +11,7 @@ export interface TransactionStore {
 export interface TransactionContext {
   store: Writable<TransactionStore>;
   next: () => void;
+  back: () => void;
   onTransactionComplete?: () => Promise<void>;
 }
 

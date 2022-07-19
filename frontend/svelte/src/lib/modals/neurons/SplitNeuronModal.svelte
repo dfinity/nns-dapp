@@ -12,6 +12,7 @@
   import { splitNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import FooterModal from "../FooterModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -35,6 +36,7 @@
   const onMax = () => (amount = max);
 
   const dispatcher = createEventDispatcher();
+  const close = () => dispatcher("nnsClose");
   const split = async () => {
     // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
     if (!validForm || amount === undefined) {
@@ -54,7 +56,7 @@
         labelKey: "neuron_detail.split_neuron_success",
       });
     }
-    dispatcher("nnsClose");
+    close();
     stopBusy("split-neuron");
   };
 </script>
@@ -72,14 +74,19 @@
       <p>{formattedTransactionFeeICP($mainTransactionFeeStore)} ICP</p>
     </div>
 
-    <button
-      data-tid="split-neuron-button"
-      class="primary full-width"
-      on:click={split}
-      disabled={!validForm || $busy}
-    >
-      {$i18n.neuron_detail.split_neuron_confirm}
-    </button>
+    <FooterModal>
+      <button class="secondary small" on:click={close}>
+        {$i18n.core.cancel}
+      </button>
+      <button
+        data-tid="split-neuron-button"
+        class="primary small"
+        on:click={split}
+        disabled={!validForm || $busy}
+      >
+        {$i18n.neuron_detail.split_neuron_confirm}
+      </button>
+    </FooterModal>
   </section>
 </Modal>
 
