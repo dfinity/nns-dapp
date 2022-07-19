@@ -56,13 +56,16 @@ describe("proposals-api", () => {
 
   describe("load", () => {
     it("should call the canister to get proposalInfo", async () => {
+      const proposalId = BigInt(404);
+      const certified = false;
+
       const proposal = await queryProposal({
-        proposalId: BigInt(404),
+        proposalId,
         identity: mockIdentity,
-        certified: false,
+        certified,
       });
 
-      expect(proposal?.id).toBe(BigInt(404));
+      expect(proposal?.id).toBe(proposalId);
       expect(spyListProposals).toBeCalledTimes(1);
       expect(spyListProposals).toBeCalledWith({
         certified: false,

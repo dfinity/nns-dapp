@@ -7,7 +7,6 @@ import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import VotingCard from "../../../../../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "../../../../../lib/constants/constants";
 import { authStore } from "../../../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../../../lib/stores/neurons.store";
@@ -16,6 +15,7 @@ import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import VotingCardTest from "./VotingCardTest.svelte";
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
@@ -32,6 +32,13 @@ describe("VotingCard", () => {
     neuronId,
   }));
 
+  const renderVotingCard = () =>
+    render(VotingCardTest, {
+      props: {
+        proposalInfo,
+      },
+    });
+
   beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
@@ -45,31 +52,19 @@ describe("VotingCard", () => {
 
   it("should be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    const { queryByTestId } = render(VotingCard, {
-      props: {
-        proposalInfo,
-      },
-    });
+    const { queryByTestId } = renderVotingCard();
     await waitFor(() => expect(queryByTestId("card")).not.toBeInTheDocument());
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { queryByTestId } = render(VotingCard, {
-      props: {
-        proposalInfo,
-      },
-    });
+    const { queryByTestId } = renderVotingCard();
     await waitFor(() => expect(queryByTestId("card")).toBeInTheDocument());
   });
 
   it("should disable action buttons if no neurons selected", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { container } = render(VotingCard, {
-      props: {
-        proposalInfo,
-      },
-    });
+    const { container } = renderVotingCard();
     // remove neuron selection
     votingNeuronSelectStore.reset();
     // wait for UI update (src/lib/components/proposal-detail/VotingCard/VotingCard.svelte#34)
@@ -80,11 +75,7 @@ describe("VotingCard", () => {
   it("should enable action buttons when neurons are selected", async () => {
     // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { container } = render(VotingCard, {
-      props: {
-        proposalInfo,
-      },
-    });
+    const { container } = renderVotingCard();
     expect(container.querySelector("button[disabled]")).toBeNull();
   });
 
@@ -107,11 +98,7 @@ describe("VotingCard", () => {
       spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
 
       neuronsStore.setNeurons({ neurons, certified: true });
-      render(VotingCard, {
-        props: {
-          proposalInfo,
-        },
-      });
+      renderVotingCard();
     });
 
     it("should trigger register-vote and neuron-list updates", async () => {

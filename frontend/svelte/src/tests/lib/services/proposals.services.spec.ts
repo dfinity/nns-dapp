@@ -28,6 +28,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
@@ -159,8 +160,10 @@ describe("proposals-services", () => {
     });
     afterAll(() => jest.clearAllMocks());
     it("should get proposalId from valid path", () => {
-      expect(routePathProposalId("/#/proposal/123")).toBe(BigInt(123));
-      expect(routePathProposalId("/#/proposal/0")).toBe(BigInt(0));
+      let result = routePathProposalId("/#/proposal/123");
+      expect(result?.proposalId).toEqual(BigInt(123));
+      result = routePathProposalId("/#/proposal/0");
+      expect(result?.proposalId).toEqual(BigInt(0));
     });
 
     it("should not get proposalId from invalid path", () => {
@@ -194,6 +197,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
         expect(spyRegisterVote).toHaveReturnedTimes(neuronIds.length);
       });
@@ -205,6 +211,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
         expect(spyBusyStart).toBeCalledWith({ initiator: "vote" });
         expect(spyBusyStop).toBeCalledWith("vote");
@@ -216,6 +225,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
         expect(spyToastShow).not.toBeCalled();
       });
@@ -243,8 +255,32 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.YES,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
         expect(spyOnListNeurons).toBeCalledTimes(1);
+      });
+
+      it("should call callback after vote", (done) => {
+        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
+
+        jest
+          .spyOn(neuronsServices, "listNeurons")
+          .mockImplementation(() => Promise.resolve());
+
+        jest
+          .spyOn(api, "queryProposal")
+          .mockImplementation(() => Promise.resolve(mockProposalInfo));
+
+        registerVotes({
+          neuronIds,
+          proposalId,
+          vote: Vote.YES,
+          reloadProposalCallback: () => {
+            done();
+          },
+        });
       });
 
       it("should show 'error.list_proposals' on refetch neurons error", async () => {
@@ -260,6 +296,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
         expect(spyOnListNeurons).toBeCalled();
         expect(spyToastError).toBeCalledWith({
@@ -301,6 +340,9 @@ describe("proposals-services", () => {
           neuronIds: null as unknown as NeuronId[],
           proposalId,
           vote: Vote.NO,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -317,6 +359,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -333,6 +378,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -348,6 +396,9 @@ describe("proposals-services", () => {
           neuronIds,
           proposalId,
           vote: Vote.NO,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -405,6 +456,9 @@ describe("proposals-services", () => {
           neuronIds: [],
           proposalId: BigInt(1),
           vote: Vote.YES,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
@@ -442,6 +496,9 @@ describe("proposals-services", () => {
         neuronIds,
         proposalId,
         vote: Vote.NO,
+        reloadProposalCallback: () => {
+          // do nothing
+        },
       });
       expect(spyToastShow).not.toBeCalled();
     });
