@@ -50,16 +50,16 @@ export const secondsToDate = (seconds: number): string => {
     day: "numeric",
     year: "numeric",
   };
-  const millisedoncs = seconds * 1000;
+  const milliseconds = seconds * 1000;
   // We only support english for now.
-  return new Date(millisedoncs).toLocaleDateString("en", options);
+  return new Date(milliseconds).toLocaleDateString("en", options);
 };
 
 export const secondsToTime = (seconds: number): string => {
   const options: Intl.DateTimeFormatOptions = {
     timeStyle: "short",
   };
-  const millisedoncs = seconds * 1000;
+  const milliseconds = seconds * 1000;
   // We only support english for now.
-  return new Date(millisedoncs).toLocaleTimeString("en", options);
+  return new Date(milliseconds).toLocaleTimeString("en", options);
 };
