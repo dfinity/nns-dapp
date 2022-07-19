@@ -2,6 +2,7 @@ import type { SnsSwapInit, SnsSwapState, SnsSwap } from "@dfinity/sns";
 import type { QuerySnsSwapState } from "../api/sns.api";
 import type { SnsSummary } from "../types/sns";
 import { fromNullable } from "./did.utils";
+import {assertNonNullish} from './asserts.utils';
 
 type OptionalSwapSummary = Omit<SnsSummary, "swap"> & {
   swap?: SnsSwap;
@@ -56,32 +57,29 @@ export const concatSnsSummary = ([summary, swap]: [
     return undefined;
   }
 
-  // Not sure this should ever happen
+  // Not sure, this should ever happen
   const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
-  if (possibleSwap === undefined) {
-    return undefined;
-  }
 
-  const { init, state: possibleState } = possibleSwap;
+  assertNonNullish(possibleSwap);
 
-  // TODO: null assertion
+  const { init: possibleInit, state: possibleState } = possibleSwap;
 
-  const details: SnsSwapInit | undefined = fromNullable(init);
+  const init: SnsSwapInit | undefined = fromNullable(possibleInit);
   const state: SnsSwapState | undefined = fromNullable(possibleState);
 
-  if (details === undefined || state === undefined) {
-    return undefined;
-  }
+  assertNonNullish(init);
+  assertNonNullish(state);
 
   return {
     ...summary,
     swap: {
-      init: details,
+      init,
       state,
     },
   };
 };
 
+// TODO: replace with swap state
 export enum ProjectStatus {
   Accepting = "accepting",
   Pending = "pending",
