@@ -44,6 +44,7 @@
       cancelButtonText={$i18n.core.cancel}
       confirmButtonText={$i18n.neurons.update_delay}
       minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
+      on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
     />
