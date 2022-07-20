@@ -61,7 +61,7 @@ describe("sns-utils", () => {
       expect(summaries.length).toEqual(0);
     });
 
-    it("should return empty if not root id are matching between summaries and swaps", () => {
+    it("should return empty if no root id are matching between summaries and swaps", () => {
       const summaries = concatSnsSummaries([
         [mockSummary],
         [
