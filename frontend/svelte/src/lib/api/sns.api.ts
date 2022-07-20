@@ -65,6 +65,7 @@ const listSnses = async ({
 
   const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
+console.log({WASM_CANISTER_ID, path: "src/lib/api/sns.api.ts"});
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,

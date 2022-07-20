@@ -20,7 +20,6 @@ set -euo pipefail
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
 JSON_CONFIG_FILE="$PWD/deployment-config.json"
-TEST_WASM_CANISTER_ID="u7xn3-ciaaa-aaaaa-aaa4a-cai"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
@@ -50,7 +49,7 @@ local_deployment_data="$(
   : "Get the SNS wasm canister ID, if it exists"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
   : "      dfx.json -> canisters -> wasm_canister -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
-  WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "${TEST_WASM_CANISTER_ID}")"
+  WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
   export WASM_CANISTER_ID
 
   : "Put any values we found in JSON.  Omit any that are undefined."
