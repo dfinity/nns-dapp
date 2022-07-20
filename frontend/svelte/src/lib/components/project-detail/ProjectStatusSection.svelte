@@ -1,17 +1,16 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSummary, SnsSwapState } from "../../types/sns";
+  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { nowInSeconds } from "../../utils/neuron.utils";
-  import { getProjectStatus, ProjectStatus } from "../../utils/sns.utils";
   import Icp from "../ic/ICP.svelte";
   import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import Tag from "../ui/Tag.svelte";
+  import ProjectStatus from "./ProjectStatus.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
   import {
@@ -26,18 +25,18 @@
   let summary: SnsSummary;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
-  let swapState: SnsSwapState;
-  $: swapState = $projectDetailStore.swapState as SnsSwapState;
+  let swapCommitment: SnsSwapCommitment;
+  $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
 
   const nowSeconds: number = nowInSeconds();
   let currentCommitment: bigint;
-  $: currentCommitment = swapState?.currentCommitment ?? BigInt(0);
+  $: currentCommitment = swapCommitment?.currentCommitment ?? BigInt(0);
   let currentCommitmentIcp: ICP;
   $: currentCommitmentIcp = ICP.fromE8s(currentCommitment);
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
-    swapState?.myCommitment !== undefined
-      ? ICP.fromE8s(swapState?.myCommitment)
+    swapCommitment?.myCommitment !== undefined
+      ? ICP.fromE8s(swapCommitment.myCommitment)
       : undefined;
   let currentDateTillStartSeconds: number;
   $: currentDateTillStartSeconds = Number(
@@ -48,35 +47,21 @@
     summary.swapDeadline - summary.swapStart
   );
   let durationTillDeadline: bigint;
-  $: durationTillDeadline =
-    summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
+  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
-  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
-  const statusTextMapper = {
-    [ProjectStatus.Accepting]: $i18n.sns_project_detail.accepting,
-    [ProjectStatus.Closed]: $i18n.sns_project_detail.closed,
-    [ProjectStatus.Pending]: $i18n.sns_project_detail.pending,
-  };
-  let projectStatus: ProjectStatus;
-  $: projectStatus = getProjectStatus({
-    summary,
-    nowInSeconds: nowSeconds,
-  });
 </script>
 
-{#if swapState === undefined}
+{#if swapCommitment === undefined}
   <div class="wrapper">
     <Spinner inline />
   </div>
 {:else}
   <div class="wrapper" data-tid="sns-project-detail-status">
-    <div class="title">
-      <h2>{$i18n.sns_project_detail.status}</h2>
-      <Tag>{statusTextMapper[projectStatus]}</Tag>
-    </div>
+    <ProjectStatus />
+
     <div class="content">
       <KeyValuePair testId="sns-project-current-commitment">
         <InfoContextKey slot="key">
@@ -143,10 +128,6 @@
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  h2 {
-    margin: 0;
-    line-height: var(--line-height-standard);
-  }
   p {
     margin: 0;
   }
@@ -156,12 +137,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-3x);
-  }
-
-  .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 
   .content {

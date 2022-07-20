@@ -1,48 +1,171 @@
-/**
- * @jest-environment jsdom
- */
-import { getProjectStatus, ProjectStatus } from "../../../lib/utils/sns.utils";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import {
+  concatSnsSummaries,
+  concatSnsSummary,
+} from "../../../lib/utils/sns.utils";
+import {
+  mockSummary,
+  mockSwap,
+  mockSwapInit,
+  mockSwapState,
+} from "../../mocks/sns-projects.mock";
 
 describe("sns-utils", () => {
-  describe("getProjectStatus", () => {
-    it("returns pending status", () => {
-      const nowInSeconds = 1579098983;
-      const summary = {
-        ...mockSnsFullProject.summary,
-        swapStart: BigInt(nowInSeconds + 5),
-        swapDeadline: BigInt(nowInSeconds + 10),
-      };
+  describe("concat sns summaries", () => {
+    it("should return empty for undefined summary", () => {
+      const summaries = concatSnsSummaries([[], []]);
 
-      const status = getProjectStatus({ summary, nowInSeconds });
-
-      expect(status).toBe(ProjectStatus.Pending);
+      expect(summaries.length).toEqual(0);
     });
 
-    it("returns closed status", () => {
-      const nowInSeconds = 1579098983;
-      const summary = {
-        ...mockSnsFullProject.summary,
-        swapStart: BigInt(nowInSeconds - 50),
-        swapDeadline: BigInt(nowInSeconds - 10),
-      };
+    it("should return empty for undefined swap query", () => {
+      const summaries = concatSnsSummaries([[mockSummary], []]);
 
-      const status = getProjectStatus({ summary, nowInSeconds });
-
-      expect(status).toBe(ProjectStatus.Closed);
+      expect(summaries.length).toEqual(0);
     });
 
-    it("returns accepting status", () => {
-      const nowInSeconds = 1579098983;
-      const summary = {
-        ...mockSnsFullProject.summary,
-        swapStart: BigInt(nowInSeconds - 5),
-        swapDeadline: BigInt(nowInSeconds + 10),
-      };
+    it("should return empty for undefined swap init", () => {
+      const summaries = concatSnsSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: "1234",
+            swap: [
+              {
+                init: [],
+                state: [],
+              },
+            ],
+          },
+        ],
+      ]);
 
-      const status = getProjectStatus({ summary, nowInSeconds });
+      expect(summaries.length).toEqual(0);
+    });
 
-      expect(status).toBe(ProjectStatus.Accepting);
+    it("should return empty for undefined swap state", () => {
+      const summaries = concatSnsSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: "1234",
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [],
+              },
+            ],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty if no root id are matching between summaries and swaps", () => {
+      const summaries = concatSnsSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: "1234",
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should concat summaries and swaps", () => {
+      const summaries = concatSnsSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(1);
+    });
+  });
+
+  describe("concat a sns summary", () => {
+    it("should throw error for undefined summary", () => {
+      const call = () => concatSnsSummary([undefined, undefined]);
+
+      expect(call).toThrow();
+    });
+
+    it("should throw error for undefined swap query", () => {
+      const call = () => concatSnsSummary([mockSummary, undefined]);
+
+      expect(call).toThrow();
+    });
+
+    it("should throw error for undefined swap init", () => {
+      const call = () =>
+        concatSnsSummary([
+          mockSummary,
+          {
+            rootCanisterId: "1234",
+            swap: [
+              {
+                init: [],
+                state: [],
+              },
+            ],
+          },
+        ]);
+
+      expect(call).toThrow();
+    });
+
+    it("should throw error for undefined swap state", () => {
+      const call = () =>
+        concatSnsSummary([
+          mockSummary,
+          {
+            rootCanisterId: "1234",
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [],
+              },
+            ],
+          },
+        ]);
+
+      expect(call).toThrow();
+    });
+    it("should concat summary and swap", () => {
+      const summary = concatSnsSummary([
+        mockSummary,
+        {
+          rootCanisterId: "1234",
+          swap: [
+            {
+              init: [mockSwapInit],
+              state: [mockSwapState],
+            },
+          ],
+        },
+      ]);
+
+      expect(summary).toEqual({
+        ...mockSummary,
+        swap: mockSwap,
+      });
     });
   });
 });

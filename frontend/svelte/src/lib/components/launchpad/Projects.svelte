@@ -1,35 +1,48 @@
 <script lang="ts">
   import {
     loadSnsSummaries,
-    loadSnsSwapStates,
+    loadSnsSwapCommitments,
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    snsFullProjectStore,
+    openProjectsStore,
     type SnsFullProject,
     snsesCountStore,
+    snsSummariesStore,
+    snsSwapCommitmentsStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
+  import { isNullable } from "../../utils/utils";
+  import { routeStore } from "../../stores/route.store";
+  import { AppPath } from "../../constants/routes.constants";
 
-  let loading: boolean = false;
   let projects: SnsFullProject[] | undefined;
-  $: projects = $snsFullProjectStore;
+  $: projects = $openProjectsStore;
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
-  const load = async () => {
-    // show loading state only when store is empty
-    loading = $snsFullProjectStore === undefined;
+  let loading: boolean = false;
+  $: loading =
+    isNullable($snsSummariesStore) || isNullable($snsSwapCommitmentsStore);
 
-    // TODO(L2-838): reload store only if needed
-    await Promise.all([loadSnsSummaries(), loadSnsSwapStates()]);
+  // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
+  const goBack = () =>
+    routeStore.navigate({
+      path: AppPath.Accounts,
+    });
 
-    loading = false;
+  const load = () => {
+    if ($snsSummariesStore === undefined) {
+      loadSnsSummaries({ onError: goBack });
+    }
+    if ($snsSwapCommitmentsStore === undefined) {
+      loadSnsSwapCommitments({ onError: goBack });
+    }
   };
 
   onMount(load);

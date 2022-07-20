@@ -24,7 +24,7 @@ describe("ParticipateSwapModal", () => {
       contextValue: {
         store: writable<ProjectDetailStore>({
           summary: mockSnsFullProject.summary,
-          swapState: mockSnsFullProject.swapState,
+          swapCommitment: mockSnsFullProject.swapCommitment,
         }),
       } as ProjectDetailContext,
     });

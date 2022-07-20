@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
-  import Icp from "../ic/ICP.svelte";
-  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
   import Logo from "../ui/Logo.svelte";
   import { getContext } from "svelte";
   import {
@@ -19,10 +17,6 @@
   let summary: SnsSummary;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
-  let minCommitmentIcp: ICP;
-  $: minCommitmentIcp = ICP.fromE8s(summary.minParticipationCommitment);
-  let maxCommitmentIcp: ICP;
-  $: maxCommitmentIcp = ICP.fromE8s(summary.maxParticipationCommitment);
 </script>
 
 <div data-tid="sns-project-detail-info">
@@ -47,28 +41,8 @@
       >
       <span slot="value">{summary.symbol}</span>
     </KeyValuePair>
-    <KeyValuePair>
-      <InfoContextKey slot="key"
-        ><svelte:fragment slot="header"
-          >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
-        >
-        <p class="small">
-          This is the text that is hidden and should appear on click
-        </p>
-      </InfoContextKey>
-      <Icp slot="value" icp={minCommitmentIcp} singleLine />
-    </KeyValuePair>
-    <KeyValuePair>
-      <InfoContextKey slot="key"
-        ><svelte:fragment slot="header"
-          >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
-        >
-        <p class="small">
-          This should be an explanation of what does maximum commitment means
-        </p>
-      </InfoContextKey>
-      <Icp slot="value" icp={maxCommitmentIcp} singleLine />
-    </KeyValuePair>
+
+    <ProjectSwapDetails />
   </div>
 </div>
 
@@ -95,9 +69,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .small {
-    font-size: var(--font-size-small);
   }
 </style>
