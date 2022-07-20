@@ -1,6 +1,4 @@
-import type { Identity } from "@dfinity/agent";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
-import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
 import {
   querySnsSummaries,
   querySnsSummary,
@@ -21,7 +19,6 @@ import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
-import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -208,85 +205,11 @@ export const listSnsProposals = async (): Promise<void> => {
         identity,
         topic: Topic.SnsDecentralizationSale,
       }),
-    onLoad: async ({ response: proposals, certified }) => {
-      // TODO L2-751: to be removed
-      console.log("listSnsProposals", proposals);
-
-      // TODO L2-751: switch to real data
-      // For the demo purpose:
-      // if there is no proposals provided by the backend
-      // we switch to the mock proposals
-      if (proposals.length > 0) {
-        snsProposalsStore.setProposals({
-          proposals,
-          certified,
-        });
-      } else {
-        const identity: Identity = await getIdentity();
-        // we need real testnet/mainnet ids to reach proposal details page
-        const realProposals = await loadProposalsByTopic({
-          topic: Topic.Governance,
-          certified: false,
-          identity,
-        });
-        const realProposalIds = realProposals?.map(({ id }) => id);
-        const mockProposals = [
-          {
-            ...mockProposalInfo,
-            id: realProposalIds?.[0] ?? BigInt(0),
-            proposal: {
-              ...mockProposalInfo.proposal,
-              title: "Project Lode Jogger",
-            },
-            latestTally: {
-              no: BigInt(400000000),
-              yes: BigInt(1600000000),
-            },
-          },
-          {
-            ...mockProposalInfo,
-            id: realProposalIds?.[1] ?? BigInt(1),
-            proposal: {
-              ...mockProposalInfo.proposal,
-              title: "Project ExciteBicycle",
-            },
-            latestTally: {
-              no: BigInt(100000000),
-              yes: BigInt(2000000000),
-            },
-          },
-          {
-            ...mockProposalInfo,
-            id: realProposalIds?.[2] ?? BigInt(2),
-            proposal: {
-              ...mockProposalInfo.proposal,
-              title: "Project The Amazing Bug-Man",
-            },
-            latestTally: {
-              no: BigInt(900000000),
-              yes: BigInt(10000000),
-            },
-          },
-          {
-            ...mockProposalInfo,
-            id: realProposalIds?.[3] ?? BigInt(3),
-            proposal: {
-              ...mockProposalInfo.proposal,
-              title: "Project Street Conflicter",
-            },
-            latestTally: {
-              no: BigInt(500000000),
-              yes: BigInt(500000000),
-            },
-          },
-        ] as ProposalInfo[];
-
-        snsProposalsStore.setProposals({
-          proposals: mockProposals,
-          certified: true,
-        });
-      }
-    },
+    onLoad: ({ response: proposals, certified }) =>
+      snsProposalsStore.setProposals({
+        proposals,
+        certified,
+      }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
