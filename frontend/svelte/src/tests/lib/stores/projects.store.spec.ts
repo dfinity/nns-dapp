@@ -2,12 +2,15 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import {
   committedProjectsStore,
+  openForVotesSnsProposalsStore,
   openProjectsStore,
   snsFullProjectsStore,
+  snsProposalsStore,
   snsSummariesStore,
   snsSwapCommitmentsStore,
 } from "../../../lib/stores/projects.store";
 import type { SnsSwapCommitment } from "../../../lib/types/sns";
+import { mockProposalInfo } from "../../mocks/proposal.mock";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
@@ -117,6 +120,47 @@ describe("projects.store", () => {
       });
       const noCommitted = get(committedProjectsStore);
       expect(noCommitted?.length).toEqual(0);
+    });
+  });
+
+  describe("sns proposals", () => {
+    it("should store proposals", () => {
+      const proposals = [{ ...mockProposalInfo }];
+      snsProposalsStore.setProposals({
+        proposals,
+        certified: false,
+      });
+
+      const $snsProposalsStore = get(snsProposalsStore);
+
+      expect($snsProposalsStore?.proposals).toEqual(proposals);
+      expect($snsProposalsStore?.certified).toBeFalsy();
+    });
+
+    it("should filter open proposals", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      const proposals = [
+        {
+          ...mockProposalInfo,
+          id: BigInt(111),
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+        },
+        {
+          ...mockProposalInfo,
+          id: BigInt(222),
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
+        },
+      ];
+
+      snsProposalsStore.setProposals({
+        proposals,
+        certified: false,
+      });
+
+      const $openForVotesSnsProposalsStore = get(openForVotesSnsProposalsStore);
+
+      expect($openForVotesSnsProposalsStore.length).toBe(1);
+      expect($openForVotesSnsProposalsStore[0]).toEqual(proposals[0]);
     });
   });
 });
