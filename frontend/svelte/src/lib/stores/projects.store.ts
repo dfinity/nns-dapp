@@ -197,10 +197,25 @@ const filterProjectsStore = ({
 export const openProjectsStore = derived(
   snsFullProjectsStore,
   ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
-    filterProjectsStore({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      $snsFullProjectsStore,
-    })
+    // TODO: redo after demo
+    // filterProjectsStore({
+    //   swapLifecycle: SnsSwapLifecycle.Open,
+    //   $snsFullProjectsStore,
+    // })
+    $snsFullProjectsStore === undefined
+      ? undefined
+      : $snsFullProjectsStore.filter(
+          ({
+            summary: {
+              swap: {
+                state: { lifecycle, open_time_window },
+              },
+            },
+          }) =>
+            lifecycle === SnsSwapLifecycle.Open ||
+            (lifecycle === SnsSwapLifecycle.Pending &&
+              open_time_window.length > 0)
+        )
 );
 
 export const committedProjectsStore = derived(
