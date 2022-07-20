@@ -49,25 +49,29 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
+export const mockSwapInit = {
+  min_participant_icp_e8s: BigInt(150000000),
+  fallback_controller_principal_ids: [],
+  max_icp_e8s: BigInt(3000 * 100000000),
+  min_participants: 1,
+  nns_governance_canister_id: "1234",
+  icp_ledger_canister_id: "1234",
+  sns_ledger_canister_id: "1234",
+  max_participant_icp_e8s: BigInt(5000000000),
+  sns_governance_canister_id: "1234",
+  min_icp_e8s: BigInt(1500 * 100000000),
+};
+
+export const mockSwapState = {
+  open_time_window: [],
+  sns_token_e8s: BigInt(1000),
+  lifecycle: 0,
+  buyers: [],
+} as SnsSwapState;
+
 export const mockSwap = {
-  init: {
-    min_participant_icp_e8s: BigInt(150000000),
-    fallback_controller_principal_ids: [],
-    max_icp_e8s: BigInt(3000 * 100000000),
-    min_participants: 1,
-    nns_governance_canister_id: "1234",
-    icp_ledger_canister_id: "1234",
-    sns_ledger_canister_id: "1234",
-    max_participant_icp_e8s: BigInt(5000000000),
-    sns_governance_canister_id: "1234",
-    min_icp_e8s: BigInt(1500 * 100000000),
-  },
-  state: {
-    open_time_window: [],
-    sns_token_e8s: BigInt(1000),
-    lifecycle: 0,
-    buyers: [],
-  } as SnsSwapState,
+  init: mockSwapInit,
+  state: mockSwapState,
 };
 
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
@@ -159,9 +163,11 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     rootCanisterId: principal(index),
   })) as SnsSummary[];
 
+export const mockSummary = mockSnsSummaryList[0];
+
 export const mockSnsFullProject = {
   rootCanisterId: principal(0),
-  summary: mockSnsSummaryList[0],
+  summary: mockSummary,
   swapCommitment: mockSnsSwapCommitment(principal(0)),
 } as SnsFullProject;
 

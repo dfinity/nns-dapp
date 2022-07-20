@@ -52,10 +52,9 @@ export const concatSnsSummaries = ([summaries, swaps]: [
 export const concatSnsSummary = ([summary, swap]: [
   Omit<SnsSummary, "swap"> | undefined,
   QuerySnsSwapState | undefined
-]): SnsSummary | undefined => {
-  if (!summary || !swap) {
-    return undefined;
-  }
+]): SnsSummary => {
+  assertNonNullish(summary);
+  assertNonNullish(swap);
 
   // Not sure, this should ever happen
   const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
