@@ -37,9 +37,6 @@
   {#if proposals.length === 0}
     <p class="no-proposals">{$i18n.voting.nothing_found}</p>
   {:else}
-    <!-- TODO L2-751: to remove -->
-    <p class="no-proposals">Mock proposals</p>
-
     <CardGrid>
       {#each proposals as proposalInfo (proposalInfo.id)}
         <ProposalCard {proposalInfo} />
