@@ -3,7 +3,7 @@ import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
-import { HOST } from "../constants/environment.constants";
+import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -68,7 +68,7 @@ const listSnses = async ({
   // TODO(L2-828): extract property for wasm canister id
 
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText("u7xn3-ciaaa-aaaaa-aaa4a-cai"),
+    canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,
   });
 
