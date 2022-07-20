@@ -65,8 +65,6 @@ const listSnses = async ({
 
   const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
-  // TODO(L2-828): extract property for wasm canister id
-
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,
