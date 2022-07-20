@@ -573,10 +573,12 @@ interface I18nSns_project_detail {
   deadline: string;
   user_commitment: string;
   status: string;
-  accepting: string;
+  status_open: string;
   enter_amount: string;
-  closed: string;
-  pending: string;
+  status_committed: string;
+  status_aborted: string;
+  status_pending: string;
+  status_unspecified: string;
   transaction_fee: string;
   description: string;
   participate_swap_description: string;

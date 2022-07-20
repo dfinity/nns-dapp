@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import type { SnsSummary } from "../../types/sns";
+  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -16,12 +16,12 @@
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let summary: SnsSummary;
+  let swap: SnsSummarySwap;
   // type safety validation is done in ProjectDetail component
-  $: summary = $projectDetailStore.summary as SnsSummary;
+  $: ({ swap } = $projectDetailStore.summary as SnsSummary);
 
   let init: SnsSwapInit;
-  $: ({ init } = summary.swap);
+  $: ({ init } = swap);
 
   let minCommitmentIcp: ICP;
   $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);

@@ -78,23 +78,3 @@ export const concatSnsSummary = ([summary, swap]: [
     },
   };
 };
-
-// TODO: replace with swap state
-export enum ProjectStatus {
-  Accepting = "accepting",
-  Pending = "pending",
-  Closed = "closed",
-}
-
-export const getProjectStatus = ({
-  summary,
-  nowInSeconds,
-}: {
-  summary: SnsSummary;
-  nowInSeconds: number;
-}): ProjectStatus =>
-  BigInt(nowInSeconds) > summary.swapDeadline
-    ? ProjectStatus.Closed
-    : nowInSeconds < summary.swapStart
-    ? ProjectStatus.Pending
-    : ProjectStatus.Accepting;

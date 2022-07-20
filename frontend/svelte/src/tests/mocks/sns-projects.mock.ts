@@ -49,7 +49,7 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-const mockSwap = {
+export const mockSwap = {
   init: {
     min_participant_icp_e8s: BigInt(150000000),
     fallback_controller_principal_ids: [],

@@ -5,13 +5,12 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { nowInSeconds } from "../../utils/neuron.utils";
-  import { getProjectStatus, ProjectStatus } from "../../utils/sns.utils";
   import Icp from "../ic/ICP.svelte";
   import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import Tag from "../ui/Tag.svelte";
+  import ProjectStatus from "./ProjectStatus.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
   import {
@@ -48,23 +47,11 @@
     summary.swapDeadline - summary.swapStart
   );
   let durationTillDeadline: bigint;
-  $: durationTillDeadline =
-    summary.swapDeadline - BigInt(Math.round(Date.now() / 1000));
+  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
-  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
-  const statusTextMapper = {
-    [ProjectStatus.Accepting]: $i18n.sns_project_detail.accepting,
-    [ProjectStatus.Closed]: $i18n.sns_project_detail.closed,
-    [ProjectStatus.Pending]: $i18n.sns_project_detail.pending,
-  };
-  let projectStatus: ProjectStatus;
-  $: projectStatus = getProjectStatus({
-    summary,
-    nowInSeconds: nowSeconds,
-  });
 </script>
 
 {#if swapCommitment === undefined}
@@ -73,10 +60,8 @@
   </div>
 {:else}
   <div class="wrapper" data-tid="sns-project-detail-status">
-    <div class="title">
-      <h2>{$i18n.sns_project_detail.status}</h2>
-      <Tag>{statusTextMapper[projectStatus]}</Tag>
-    </div>
+    <ProjectStatus />
+
     <div class="content">
       <KeyValuePair testId="sns-project-current-commitment">
         <InfoContextKey slot="key">
@@ -143,10 +128,6 @@
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  h2 {
-    margin: 0;
-    line-height: var(--line-height-standard);
-  }
   p {
     margin: 0;
   }
@@ -156,12 +137,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-3x);
-  }
-
-  .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 
   .content {
