@@ -22,7 +22,7 @@
     <span data-tid="icp-value"
       >{`${sign}${formatICP({ value: icp.toE8s(), detailed })}`}</span
     >
-    <span>{label}</span>
+    <span class="label">{label}</span>
   </div>
 {/if}
 

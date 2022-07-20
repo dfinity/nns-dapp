@@ -31,19 +31,23 @@
 
 <KeyValuePair>
   <InfoContextKey slot="key"
-    ><svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
+    ><span class="label" slot="header"
+      >{$i18n.sns_project_detail.min_commitment}</span
     >
-    <p>This is the text that is hidden and should appear on click</p>
+    <p class="description">
+      This is the text that is hidden and should appear on click
+    </p>
   </InfoContextKey>
   <Icp slot="value" icp={minCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
   <InfoContextKey slot="key"
-    ><svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
+    ><span class="label" slot="header"
+      >{$i18n.sns_project_detail.max_commitment}</span
     >
-    <p>This should be an explanation of what does maximum commitment means</p>
+    <p class="description">
+      This should be an explanation of what does maximum commitment means
+    </p>
   </InfoContextKey>
   <Icp slot="value" icp={maxCommitmentIcp} singleLine />
 </KeyValuePair>

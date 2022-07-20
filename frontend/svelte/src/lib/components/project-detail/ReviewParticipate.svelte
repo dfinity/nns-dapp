@@ -35,7 +35,7 @@
 <div data-tid="sns-swap-participate-step-2">
   <div class="info">
     <KeyValuePair>
-      <span slot="key">Source</span>
+      <span class="label" slot="key">Source</span>
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>

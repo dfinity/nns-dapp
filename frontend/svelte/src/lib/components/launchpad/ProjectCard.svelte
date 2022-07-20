@@ -58,10 +58,10 @@
   <p>{description}</p>
 
   <dl>
-    <dt>{$i18n.sns_project.deadline}</dt>
+    <dt class="label">{$i18n.sns_project.deadline}</dt>
     <dd>{secondsToDuration(durationTillDeadline)}</dd>
     {#if myCommitment !== undefined}
-      <dt>{$i18n.sns_project.your_commitment}</dt>
+      <dt class="label">{$i18n.sns_project.your_commitment}</dt>
       <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
     {/if}
   </dl>
@@ -96,10 +96,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--padding-1_5x);
-
-    dt {
-      opacity: var(--light-opacity);
-    }
 
     dd {
       text-align: right;

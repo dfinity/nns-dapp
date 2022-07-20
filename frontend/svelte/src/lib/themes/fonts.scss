@@ -26,6 +26,20 @@ body {
   line-height: var(--line-height-standard);
 }
 
+.label {
+  opacity: var(--light-opacity);
+}
+.description {
+  opacity: var(--very-light-opacity);
+}
+// sometimes opacity is not an option (e.g. when there are icons inside)
+.label-contrast-color {
+  color: rgba(var(--background-contrast-rgb), var(--light-opacity));
+}
+.description-contrast-color {
+  color: rgba(var(--background-contrast-rgb), var(--very-light-opacity));
+}
+
 h1,
 h2,
 h3,

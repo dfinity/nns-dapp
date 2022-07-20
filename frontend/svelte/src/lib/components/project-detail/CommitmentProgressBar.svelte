@@ -21,7 +21,7 @@
   <ProgressBar max={Number(max)} value={Number(value)} color="yellow">
     <div class="info" slot="top">
       <p class="right">
-        <span>
+        <span class="label">
           {$i18n.sns_project_detail.max_commitment}
         </span>
 

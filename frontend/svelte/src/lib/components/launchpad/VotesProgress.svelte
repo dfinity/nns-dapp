@@ -17,7 +17,9 @@
 
 <div class="latest-tally">
   <p>
-    {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
+    <span class="label">{$i18n.proposal_detail.adopt}</span><span class="value"
+      >{formatNumber(yes)}</span
+    >
   </p>
   <div
     class="progressbar"
@@ -29,7 +31,9 @@
     <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
   </div>
   <p>
-    {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
+    <span class="label">{$i18n.proposal_detail.reject}</span><span class="value"
+      >{formatNumber(no)}</span
+    >
   </p>
 </div>
 
@@ -50,12 +54,11 @@
       font-weight: normal;
       font-size: var(--font-size-small);
 
-      span {
+      .value {
         display: block;
 
         text-align: center;
         font-weight: initial;
-        opacity: var(--light-opacity);
       }
     }
 

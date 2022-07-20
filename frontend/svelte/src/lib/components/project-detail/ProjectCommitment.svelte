@@ -39,10 +39,12 @@
 
 <KeyValuePair testId="sns-project-current-commitment">
   <InfoContextKey slot="key">
-    <svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
+    <span class="label" slot="header"
+      >{$i18n.sns_project_detail.current_commitment}</span
     >
-    <p>Some details about what the current commitment means.</p>
+    <p class="description">
+      Some details about what the current commitment means.
+    </p>
   </InfoContextKey>
   <Icp slot="value" icp={currentCommitmentIcp} singleLine />
 </KeyValuePair>
