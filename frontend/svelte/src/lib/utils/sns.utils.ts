@@ -1,10 +1,10 @@
 import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
-import type { QuerySnsSwapState } from "../types/sns.query";
+import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { assertNonNullish } from "./asserts.utils";
 import { fromNullable } from "./did.utils";
 
-type OptionalSwapSummary = Omit<SnsSummary, "swap"> & {
+type OptionalSwapSummary = QuerySnsSummary & {
   swap?: SnsSwap;
 };
 
@@ -15,7 +15,7 @@ type ValidSwapSummary = Required<OptionalSwapSummary>;
  * 2. Filter Sns without Swaps data
  */
 export const concatSnsSummaries = ([summaries, swaps]: [
-  Omit<SnsSummary, "swap">[],
+  QuerySnsSummary[],
   QuerySnsSwapState[]
 ]): SnsSummary[] => {
   const allSummaries: OptionalSwapSummary[] = summaries.map(
@@ -50,7 +50,7 @@ export const concatSnsSummaries = ([summaries, swaps]: [
 };
 
 export const concatSnsSummary = ([summary, swap]: [
-  Omit<SnsSummary, "swap"> | undefined,
+  QuerySnsSummary | undefined,
   QuerySnsSwapState | undefined
 ]): SnsSummary => {
   assertNonNullish(summary);

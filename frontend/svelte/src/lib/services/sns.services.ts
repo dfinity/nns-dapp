@@ -14,8 +14,8 @@ import {
   snsSwapCommitmentsStore,
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
-import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
-import type { QuerySnsSwapState } from "../types/sns.query";
+import type { SnsSwapCommitment } from "../types/sns";
+import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
@@ -32,10 +32,7 @@ export const loadSnsSummaries = ({
 }): Promise<void> => {
   snsSummariesStore.setLoadingState();
 
-  return queryAndUpdate<
-    [Omit<SnsSummary, "swap">[], QuerySnsSwapState[]],
-    unknown
-  >({
+  return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
     request: ({ certified, identity }) =>
       Promise.all([
         querySnsSummaries({ certified, identity }),
@@ -75,14 +72,14 @@ export const loadSnsSummary = async ({
 }: {
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<
-    [Omit<SnsSummary, "swap"> | undefined, QuerySnsSwapState | undefined]
+    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined]
   >;
   onError: () => void;
 }) => {
   // TODO(L2-838): load only if not yet in store
 
   return queryAndUpdate<
-    [Omit<SnsSummary, "swap"> | undefined, QuerySnsSwapState | undefined],
+    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined],
     unknown
   >({
     request: ({ certified, identity }) =>

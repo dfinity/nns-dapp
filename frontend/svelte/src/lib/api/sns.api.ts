@@ -11,9 +11,10 @@ import {
 } from "../proxy/api.import.proxy";
 import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
-import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
+import type { SnsSwapCommitment } from "../types/sns";
 import type {
   QueryRootCanisterId,
+  QuerySnsSummary,
   QuerySnsSwapState,
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
@@ -207,7 +208,7 @@ const wrapper = async ({
 };
 
 // TODO(L2-751): remove mock data
-let mockSnsSummaries: Omit<SnsSummary, "swap">[] = [];
+let mockSnsSummaries: QuerySnsSummary[] = [];
 
 // TODO: ultimately querySnsSummaries and querySummary will not return SnsSummary types but rather a summary related types provided by Candid sns governance
 export const querySnsSummaries = async ({
@@ -216,7 +217,7 @@ export const querySnsSummaries = async ({
 }: {
   certified: boolean;
   identity: Identity;
-}): Promise<Omit<SnsSummary, "swap">[]> => {
+}): Promise<QuerySnsSummary[]> => {
   logWithTimestamp(
     `Listing all deployed Sns summaries certified:${certified} call...`
   );
@@ -229,7 +230,7 @@ export const querySnsSummaries = async ({
   ];
 
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
-  const summaries: (Omit<SnsSummary, "swap"> | undefined)[] = await Promise.all(
+  const summaries: (QuerySnsSummary | undefined)[] = await Promise.all(
     snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
       querySnsSummary({
         rootCanisterId: rootCanisterId.toText(),
@@ -244,8 +245,8 @@ export const querySnsSummaries = async ({
   );
 
   return summaries.filter(
-    (summary: Omit<SnsSummary, "swap"> | undefined) => summary !== undefined
-  ) as Omit<SnsSummary, "swap">[];
+    (summary: QuerySnsSummary | undefined) => summary !== undefined
+  ) as QuerySnsSummary[];
 };
 
 export const querySnsSummary = async ({
@@ -256,7 +257,7 @@ export const querySnsSummary = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<Omit<SnsSummary, "swap"> | undefined> => {
+}): Promise<QuerySnsSummary | undefined> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} summary certified:${certified} call...`
   );
@@ -289,7 +290,7 @@ export const querySnsSummary = async ({
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
   console.log("Sns metadata", summary);
   return mockSnsSummaries.find(
-    ({ rootCanisterId: canisterId }: Omit<SnsSummary, "swap">) =>
+    ({ rootCanisterId: canisterId }: QuerySnsSummary) =>
       canisterId?.toText() === rootCanisterId
   );
 };
