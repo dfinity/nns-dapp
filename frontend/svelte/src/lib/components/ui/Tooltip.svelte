@@ -80,7 +80,7 @@
 <style lang="scss">
   .tooltip-wrapper {
     position: relative;
-    display: var(--tooltip-display);
+    display: var(--tooltip-display, block);
     width: var(--tooltip-width);
   }
 

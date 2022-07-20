@@ -21,7 +21,13 @@
   <ProgressBar max={Number(max)} value={Number(value)} color="yellow">
     <div class="info" slot="top">
       <p class="right">
-        {$i18n.sns_project_detail.max_commitment}
+        <span>
+          {$i18n.sns_project_detail.max_commitment}
+        </span>
+
+        <span data-tid="commitment-max-indicator-value">
+          <Icp icp={ICP.fromE8s(max)} singleLine />
+        </span>
       </p>
       <div class="indicator-wrapper">
         <span
@@ -44,7 +50,7 @@
             {$i18n.sns_project_detail.min_commitment_goal}
           </span>
           <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
-          <span>
+          <span data-tid="commitment-min-indicator-value">
             <Icp icp={ICP.fromE8s(minimumIndicator)} singleLine />
           </span>
         </p>
