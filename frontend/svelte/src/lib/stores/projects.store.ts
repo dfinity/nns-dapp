@@ -152,6 +152,6 @@ export const committedProjectsStore = derived(
                 state: { lifecycle },
               },
             },
-          }) => SnsSwapLifecycle.Committed !== lifecycle
+          }) => SnsSwapLifecycle.Committed === lifecycle
         )
 );
