@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { authStore } from "../../lib/stores/auth.store";
 import { neuronsStore } from "../../lib/stores/neurons.store";
@@ -13,6 +14,7 @@ import {
 import en from "../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
+  mockFullNeuron,
   mockNeuron,
 } from "../mocks/neurons.mock";
 
@@ -38,10 +40,23 @@ describe("Neurons", () => {
         ...mockNeuron,
         neuronId: BigInt(223),
       };
+      const spawningNeuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        neuronId: BigInt(223),
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: BigInt(12312313),
+        },
+      };
       jest
         .spyOn(neuronsStore, "subscribe")
         .mockImplementation(
-          buildMockNeuronsStoreSubscribe([mockNeuron, mockNeuron2])
+          buildMockNeuronsStoreSubscribe([
+            mockNeuron,
+            mockNeuron2,
+            spawningNeuron,
+          ])
         );
     });
 
@@ -53,6 +68,16 @@ describe("Neurons", () => {
           exact: false,
         })
       ).toBeInTheDocument();
+    });
+
+    it("should render spawning neurons as disabled", () => {
+      const { queryAllByTestId } = render(Neurons);
+
+      const neuronCards = queryAllByTestId("neuron-card");
+      const disabledCards = neuronCards.filter(
+        (card) => card.getAttribute("aria-disabled") === "true"
+      );
+      expect(disabledCards.length).toBe(1);
     });
 
     it("should subscribe to store", () =>

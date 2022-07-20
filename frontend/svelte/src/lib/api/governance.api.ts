@@ -139,12 +139,16 @@ export const spawnNeuron = async ({
   // percentageToSpawn is not yet supported by the ledger IC app
   percentageToSpawn?: number;
   identity: Identity;
-}): Promise<void> => {
+}): Promise<NeuronId> => {
   logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  await canister.spawnNeuron({ neuronId, percentageToSpawn });
+  const newNeuronId = await canister.spawnNeuron({
+    neuronId,
+    percentageToSpawn,
+  });
   logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
+  return newNeuronId;
 };
 
 export const addHotkey = async ({
