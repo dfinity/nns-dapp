@@ -1,6 +1,11 @@
 # Changelog
 
+
 ## Proposal XXXX
+* Maturity modulation when spawning a new neuron.
+* UI improvements in the modals.
+
+## Proposal 70821
 * e2e tests: Update the way SNS is deployed to the current standard, which is via the wasm canister.
 * Update dfx to version 0.11.0-beta.1
 * User can leave community fund.
