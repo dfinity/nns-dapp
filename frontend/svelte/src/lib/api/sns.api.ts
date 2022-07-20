@@ -5,7 +5,7 @@ import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import {
-  importInitSns,
+  importInitSnsWrapper,
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
 } from "../proxy/api.import.proxy";
@@ -97,7 +97,7 @@ const initSns = async ({
     `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
   );
 
-  const initSnsWrapper: InitSnsWrapper = await importInitSns();
+  const initSnsWrapper: InitSnsWrapper = await importInitSnsWrapper();
 
   const snsWrapper: SnsWrapper = await initSnsWrapper({
     rootOptions: {

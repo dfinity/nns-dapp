@@ -17,7 +17,7 @@ export const importSnsWasmCanister =
     return SnsWasmCanister;
   };
 
-export const importInitSns = async (): Promise<InitSnsWrapper> => {
+export const importInitSnsWrapper = async (): Promise<InitSnsWrapper> => {
   const { initSnsWrapper }: { initSnsWrapper: InitSnsWrapper } = await import(
     "@dfinity/sns/dist/esm/sns"
   );

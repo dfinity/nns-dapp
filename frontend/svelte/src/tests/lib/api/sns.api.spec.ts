@@ -6,7 +6,7 @@ import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { querySnsSummaries } from "../../../lib/api/sns.api";
 import {
-  importInitSns,
+  importInitSnsWrapper,
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
 import { snsesCountStore } from "../../../lib/stores/projects.store";
@@ -29,7 +29,7 @@ describe("sns-api", () => {
       }),
     });
 
-    (importInitSns as jest.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
