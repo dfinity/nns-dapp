@@ -52,6 +52,7 @@ const replaceMap = [
   "LEDGER_CANISTER_ID",
   "GOVERNANCE_CANISTER_ID",
   "CYCLES_MINTING_CANISTER_ID",
+  "WASM_CANISTER_ID",
 ].reduce(
   (ans, key) => {
     // Each key is transferred from envConfig as a string.
