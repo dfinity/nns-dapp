@@ -4,23 +4,38 @@
 
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { querySnsSummaries } from "../../../lib/api/sns.api";
+import {
+  querySnsSummaries,
+  querySnsSwapState,
+  querySnsSwapStates,
+} from "../../../lib/api/sns.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
 import { snsesCountStore } from "../../../lib/stores/projects.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockSwapInit, mockSwapState } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
+  swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 
 jest.mock("../../../lib/proxy/api.import.proxy");
 
 describe("sns-api", () => {
+  const mockQuerySwap = {
+    swap: [
+      {
+        init: [mockSwapInit],
+        state: [mockSwapState],
+      },
+    ],
+  };
+
   beforeAll(() => {
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,8 +50,10 @@ describe("sns-api", () => {
           rootCanisterId: rootCanisterIdMock,
           ledgerCanisterId: ledgerCanisterIdMock,
           governanceCanisterId: governanceCanisterIdMock,
+          swapCanisterId: swapCanisterIdMock,
         },
         metadata: () => Promise.resolve("metadata"),
+        swapState: () => Promise.resolve(mockQuerySwap),
       })
     );
   });
@@ -66,5 +83,26 @@ describe("sns-api", () => {
     const $snsesCountStore = get(snsesCountStore);
 
     expect($snsesCountStore).toEqual(deployedSnsMock.length);
+  });
+
+  it("should query swap state", async () => {
+    const state = await querySnsSwapState({
+      rootCanisterId: rootCanisterIdMock.toText(),
+      identity: mockIdentity,
+      certified: true,
+    });
+
+    expect(state).not.toBeUndefined();
+    expect(state?.swap).toEqual(mockQuerySwap.swap);
+  });
+
+  it("should list swap states", async () => {
+    const states = await querySnsSwapStates({
+      identity: mockIdentity,
+      certified: true,
+    });
+
+    expect(states.length).toEqual(1);
+    expect(states[0]?.swap).toEqual(mockQuerySwap.swap);
   });
 });
