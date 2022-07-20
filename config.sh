@@ -110,7 +110,7 @@ export REDIRECT_TO_LEGACY
 ENABLE_NEW_SPAWN_FEATURE="$(get_var ENABLE_NEW_SPAWN_FEATURE)"
 export ENABLE_NEW_SPAWN_FEATURE
 
-WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID || printf "")"
+WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID || printf "NO_WASM_CANISTER_SPECIFIED")"
 export WASM_CANISTER_ID
 
 : "Return to the original working directory."
