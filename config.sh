@@ -49,7 +49,8 @@ local_deployment_data="$(
   : "Get the SNS wasm canister ID, if it exists"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
   : "      dfx.json -> canisters -> wasm_canister -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
-  WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || true)"
+  WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "NO_WASM_CANISTER_SPECIFIED")"
+  export WASM_CANISTER_ID
 
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{ OWN_CANISTER_ID: env.CANISTER_ID, IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL, WASM_CANISTER_ID: env.WASM_CANISTER_ID } | del(..|select(. == null))'
@@ -110,7 +111,8 @@ export REDIRECT_TO_LEGACY
 ENABLE_NEW_SPAWN_FEATURE="$(get_var ENABLE_NEW_SPAWN_FEATURE)"
 export ENABLE_NEW_SPAWN_FEATURE
 
-WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID || printf "NO_WASM_CANISTER_SPECIFIED")"
+WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
+echo WASM_CANISTER_ID=$WASM_CANISTER_ID
 export WASM_CANISTER_ID
 
 : "Return to the original working directory."
