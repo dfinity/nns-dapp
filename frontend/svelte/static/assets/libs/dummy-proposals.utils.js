@@ -308,14 +308,15 @@ const makeSnsDecentralizationSaleDummyProposalRequest = ({
   summary: summary,
   action: {
     SetSnsTokenSwapOpenTimeWindow: {
-      swapCanisterId: "zdlco-vyaaa-aaaaa-aabva-cai",
+      // TODO: update swap canister id
+      swapCanisterId: "sbzkb-zqaaa-aaaaa-aaaiq-cai",
       request: {
-        open_time_window: {
-          start_timestamp_seconds: BigInt(
-            Math.round((Date.now() - MS_IN_A_DAY * 6) / 1000)
+        openTimeWindow: {
+          startTimestampSeconds: BigInt(
+            Math.round((Date.now() + 1000 * 60) / 1000)
           ),
-          end_timestamp_seconds: BigInt(
-            Math.round((Date.now() + MS_IN_A_DAY * 6) / 1000)
+          endTimestampSeconds: BigInt(
+            Math.round((Date.now() + MS_IN_A_DAY + MS_IN_A_DAY * 5) / 1000)
           ),
         },
       },
