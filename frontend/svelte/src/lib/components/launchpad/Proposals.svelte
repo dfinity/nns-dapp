@@ -14,7 +14,7 @@
   import ProposalCard from "./ProposalCard.svelte";
 
   let loading: boolean = false;
-  $: isNullable($snsProposalsStore);
+  $: loading = isNullable($snsProposalsStore);
 
   let proposals: ProposalInfo[] | undefined = undefined;
   $: proposals = $openForVotesSnsProposalsStore;
