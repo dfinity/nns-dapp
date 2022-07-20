@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import type { SnsSwapState } from "@dfinity/sns";
+import type { SnsSwapLifecycle } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
@@ -182,3 +183,14 @@ export const mockQuerySnsSwapState = {
     },
   ],
 };
+
+export const summaryForLifecycle = (lifecycle: SnsSwapLifecycle) => ({
+  ...mockSnsFullProject.summary,
+  swap: {
+    ...mockSwap,
+    state: {
+      ...mockSwap.state,
+      lifecycle,
+    },
+  },
+});

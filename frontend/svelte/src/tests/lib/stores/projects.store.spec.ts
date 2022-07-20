@@ -1,3 +1,4 @@
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import {
   committedProjectsStore,
@@ -10,6 +11,7 @@ import type { SnsSwapCommitment } from "../../../lib/types/sns";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
+  summaryForLifecycle,
 } from "../../mocks/sns-projects.mock";
 
 describe("projects.store", () => {
@@ -76,19 +78,6 @@ describe("projects.store", () => {
       snsSummariesStore.reset();
     });
 
-    const summariesForLifecycle = (lifecycle) => [
-      {
-        ...mockSnsSummaryList[0],
-        swap: {
-          init: mockSnsSummaryList[0].swap.init,
-          state: {
-            ...mockSnsSummaryList[0].swap.state,
-            lifecycle,
-          },
-        },
-      },
-    ];
-
     const principal = mockSnsSummaryList[0].rootCanisterId;
 
     snsSwapCommitmentsStore.setSwapCommitment({
@@ -96,9 +85,9 @@ describe("projects.store", () => {
       certified: true,
     });
 
-    it("should filter projects that are open", async () => {
+    it("should filter projects that are open", () => {
       snsSummariesStore.setSummaries({
-        summaries: summariesForLifecycle(2),
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Open)],
         certified: false,
       });
 
@@ -106,16 +95,16 @@ describe("projects.store", () => {
       expect(open?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
-        summaries: summariesForLifecycle(3),
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
         certified: false,
       });
       const noOpen = get(openProjectsStore);
       expect(noOpen?.length).toEqual(0);
     });
 
-    it("should filter projects that are committed", async () => {
+    it("should filter projects that are committed", () => {
       snsSummariesStore.setSummaries({
-        summaries: summariesForLifecycle(3),
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
         certified: false,
       });
 
@@ -123,7 +112,7 @@ describe("projects.store", () => {
       expect(committed?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
-        summaries: summariesForLifecycle(2),
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Open)],
         certified: false,
       });
       const noCommitted = get(committedProjectsStore);
