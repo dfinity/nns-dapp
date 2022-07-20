@@ -34,9 +34,7 @@
     ><svelte:fragment slot="header"
       >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
     >
-    <p class="small">
-      This is the text that is hidden and should appear on click
-    </p>
+    <p>This is the text that is hidden and should appear on click</p>
   </InfoContextKey>
   <Icp slot="value" icp={minCommitmentIcp} singleLine />
 </KeyValuePair>
@@ -45,9 +43,13 @@
     ><svelte:fragment slot="header"
       >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
     >
-    <p class="small">
-      This should be an explanation of what does maximum commitment means
-    </p>
+    <p>This should be an explanation of what does maximum commitment means</p>
   </InfoContextKey>
   <Icp slot="value" icp={maxCommitmentIcp} singleLine />
 </KeyValuePair>
+
+<style lang="scss">
+  p {
+    font-size: var(--font-size-small);
+  }
+</style>

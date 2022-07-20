@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -70,9 +69,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .small {
-    font-size: var(--font-size-small);
   }
 </style>
