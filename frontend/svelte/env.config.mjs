@@ -93,6 +93,7 @@ export const envConfig = {
   LEDGER_CANISTER_URL,
   ROLLUP_WATCH,
   ENABLE_NEW_SPAWN_FEATURE,
+  WASM_CANISTER_ID,
 };
 
 // Note: This is a useful printout at build time.  Please do not remove.
