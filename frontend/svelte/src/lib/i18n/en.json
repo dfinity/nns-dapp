@@ -267,6 +267,8 @@
     "topic_9_subtitle": "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons.",
     "topic_10_title": "Node Provider Rewards",
     "topic_10_subtitle": "Proposals that reward node providers",
+    "topic_11_title": "SNS Decentralization Sale",
+    "topic_11_subtitle": "Proposals for SNS",
     "current_followees": "Currently Following",
     "add": "Add Followee"
   },
@@ -343,7 +345,8 @@
     "SubnetManagement": "Subnet Management",
     "NetworkCanisterManagement": "Network Canister Management",
     "Kyc": "KYC",
-    "NodeProviderRewards": "Node Provider Rewards"
+    "NodeProviderRewards": "Node Provider Rewards",
+    "SnsDecentralizationSale": "SNS Decentralization Sale"
   },
   "rewards": {
     "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",

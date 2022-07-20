@@ -63,6 +63,7 @@ describe("enum-utils", () => {
       Topic.ParticipantManagement,
       Topic.NetworkCanisterManagement,
       Topic.NodeProviderRewards,
+      Topic.SnsDecentralizationSale,
     ];
 
     expect(
