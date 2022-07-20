@@ -6,9 +6,9 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import Proposals from "../../../../lib/components/launchpad/Proposals.svelte";
 import { listSnsProposals } from "../../../../lib/services/sns.services";
+import { snsProposalsStore } from "../../../../lib/stores/projects.store";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
-import { mockWaiting } from "../../../mocks/utils.mock";
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
@@ -17,10 +17,10 @@ jest.mock("../../../../lib/services/sns.services", () => {
 });
 
 describe("Proposals", () => {
-  const mockProposals = (proposals: ProposalInfo[]) =>
-    (listSnsProposals as jest.Mock).mockImplementation(() =>
-      mockWaiting(0.1, proposals)
-    );
+  const mockProposals = (proposals: ProposalInfo[] | null) =>
+    proposals === null
+      ? snsProposalsStore.setLoadingState()
+      : snsProposalsStore.setProposals({ proposals, certified: true });
 
   afterAll(jest.clearAllMocks);
 
@@ -31,7 +31,7 @@ describe("Proposals", () => {
   });
 
   it("should display skeletons", async () => {
-    mockProposals([]);
+    mockProposals(null);
 
     const { container } = render(Proposals);
 

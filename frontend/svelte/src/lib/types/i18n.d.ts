@@ -279,6 +279,8 @@ interface I18nFollow_neurons {
   topic_9_subtitle: string;
   topic_10_title: string;
   topic_10_subtitle: string;
+  topic_11_title: string;
+  topic_11_subtitle: string;
   current_followees: string;
   add: string;
 }
@@ -360,6 +362,7 @@ interface I18nTopics {
   NetworkCanisterManagement: string;
   Kyc: string;
   NodeProviderRewards: string;
+  SnsDecentralizationSale: string;
 }
 
 interface I18nRewards {
