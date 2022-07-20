@@ -107,8 +107,7 @@ const isExcludedVotedProposal = ({
 }): boolean => {
   const { excludeVotedProposals } = filters;
 
-  const { status, ballots } = proposalInfo;
-  const isOpen = status === ProposalStatus.PROPOSAL_STATUS_OPEN;
+  const { ballots } = proposalInfo;
   const belongsToValidNeuron = (id: NeuronId) =>
     neurons.find(({ neuronId }) => neuronId === id) !== undefined;
   const containsUnspecifiedBallot = (): boolean =>
@@ -120,7 +119,11 @@ const isExcludedVotedProposal = ({
         belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
     ) !== undefined;
 
-  return excludeVotedProposals && isOpen && !containsUnspecifiedBallot();
+  return (
+    excludeVotedProposals &&
+    isProposalOpenForVotes(proposalInfo) &&
+    !containsUnspecifiedBallot()
+  );
 };
 
 /**
@@ -317,4 +320,47 @@ export const mapProposalInfo = (
     color: PROPOSAL_COLOR[status],
     status,
   };
+};
+
+/**
+ * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
+ * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
+ */
+export const isProposalOpenForVotes = (proposalInfo: ProposalInfo): boolean =>
+  votingPeriodEnd(proposalInfo).getTime() >= new Date().getTime();
+
+/**
+ * Return the voting period end date of a proposal.
+ * @returns {Date} The voting period end date
+ */
+const votingPeriodEnd = (proposalInfo: ProposalInfo): Date => {
+  const { deadlineTimestampSeconds } = proposalInfo;
+
+  // Fallback for undefined deadline_timestamp_seconds which actually should never happen.
+  if (deadlineTimestampSeconds === undefined) {
+    return votingPeriodEndFallback(proposalInfo);
+  }
+
+  return new Date(Number(deadlineTimestampSeconds) * 1000);
+};
+
+// Following fallback logic follows what's originally implemented by the Dashboard
+
+const SHORT_VOTING_PERIOD_SECONDS = 60 * 60 * 12; // 12 hours
+const WAIT_FOR_QUIET_THRESHOLD_SECONDS = 60 * 60 * 24 * 4; // 4 days
+
+const votingPeriodEndFallback = ({
+  proposalTimestampSeconds,
+  topic,
+}: ProposalInfo): Date => {
+  const durationInSeconds: number = [
+    Topic.ManageNeuron,
+    Topic.ExchangeRate,
+  ].includes(topic)
+    ? SHORT_VOTING_PERIOD_SECONDS
+    : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
+
+  return new Date(
+    Number(proposalTimestampSeconds) * 1000 + durationInSeconds * 1000
+  );
 };

@@ -14,6 +14,7 @@ import {
   getVotingPower,
   hasMatchingProposals,
   hideProposal,
+  isProposalOpenForVotes,
   lastProposalId,
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
@@ -957,6 +958,98 @@ describe("proposals-utils", () => {
           action: {},
         } as Proposal)
       ).toBeUndefined();
+    });
+  });
+
+  describe("Open for votes", () => {
+    it("should be open for votes", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not be open for votes", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
+        })
+      ).toBeFalsy();
+    });
+
+    it("should be open for votes short period", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.ManageNeuron,
+          proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not be open for votes short period", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.ManageNeuron,
+          proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
+        })
+      ).toBeFalsy();
+    });
+
+    it("should be open for votes quiet threshold", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.Governance,
+          proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600)),
+        })
+      ).toBeTruthy();
+
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.Governance,
+          proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
+        })
+      ).toBeTruthy();
+
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.Governance,
+          proposalTimestampSeconds: BigInt(
+            Math.round(nowSeconds - 3600 * 24 * 3)
+          ),
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not be open for votes quiet threshold", () => {
+      const nowSeconds = new Date().getTime() / 1000;
+      expect(
+        isProposalOpenForVotes({
+          ...mockProposalInfo,
+          deadlineTimestampSeconds: undefined,
+          topic: Topic.Governance,
+          proposalTimestampSeconds: BigInt(
+            Math.round(nowSeconds - 3600 * 24 * 5)
+          ),
+        })
+      ).toBeFalsy();
     });
   });
 });
