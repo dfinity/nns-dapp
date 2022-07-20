@@ -26,6 +26,17 @@ const configFromFile = JSON.parse(
 );
 
 /**
+ * Returns the given environment variable, if defined, else returns `undefined`.
+ */
+function getOptionalEnvVar(key) {
+  let value = process.env[key];
+  if (undefined === value || value === "") {
+    value = configFromFile[key];
+  }
+  return value;
+}
+
+/**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
  */
 function getRequiredEnvVar(key) {
@@ -67,6 +78,7 @@ const OWN_CANISTER_ID = getRequiredEnvVar("OWN_CANISTER_ID");
 const GOVERNANCE_CANISTER_URL = getRequiredEnvVar("GOVERNANCE_CANISTER_URL");
 const LEDGER_CANISTER_URL = getRequiredEnvVar("LEDGER_CANISTER_URL");
 const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
+const WASM_CANISTER_ID = getOptionalEnvVar("WASM_CANISTER_ID");
 
 // Configuration
 // ... The testnet name
