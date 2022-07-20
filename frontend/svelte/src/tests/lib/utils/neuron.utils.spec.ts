@@ -27,9 +27,11 @@ import {
   dissolveDelayMultiplier,
   followeesByTopic,
   followeesNeurons,
+  formattedMaturityByStake,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
+  getSpawningTimeInSeconds,
   hasEnoughMaturityToMerge,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -40,6 +42,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
+  isSpawning,
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
@@ -268,6 +271,42 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("getSpawningTimeInSeconds", () => {
+    it("returns undefined if neuron not spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.LOCKED,
+      };
+      expect(getSpawningTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns undefined if spawnAtTimesSeconds is undefined", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: undefined,
+        },
+      };
+      expect(getSpawningTimeInSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns duration from today until spawning time", () => {
+      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: delayInSeconds,
+        },
+      };
+      expect(getSpawningTimeInSeconds(neuron)).toBe(BigInt(SECONDS_IN_YEAR));
+    });
+  });
+
   describe("maturityByStake", () => {
     it("returns 0 when no full neuron", () => {
       const neuron = {
@@ -312,6 +351,42 @@ describe("neuron-utils", () => {
         },
       };
       expect(maturityByStake(neuron)).toBe(0.333333);
+    });
+  });
+
+  describe("formattedMaturityByStake", () => {
+    it("returns 0% when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedMaturityByStake(neuron)).toBe("0%");
+    });
+
+    it("returns maturity in percentage of stake with two decimals", () => {
+      const stake = ICP.fromString("2") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedMaturityByStake(neuron)).toBe("50.00%");
+    });
+
+    it("returns 0% when maturity is 0", () => {
+      const stake = ICP.fromString("3") as ICP;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(formattedMaturityByStake(neuron)).toBe("0%");
     });
   });
 
@@ -645,7 +720,7 @@ describe("neuron-utils", () => {
   });
 
   describe("isEnoughMaturityToSpawn", () => {
-    it("return true if enough ICP to create a neuron", () => {
+    it("return false if just enough ICP to create a neuron without taking into account variance", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -653,7 +728,7 @@ describe("neuron-utils", () => {
           maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE + 1_000),
         },
       };
-      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(false);
 
       const neuron2 = {
         ...mockNeuron,
@@ -663,10 +738,31 @@ describe("neuron-utils", () => {
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
+        false
+      );
+    });
+    it("return true if enough ICP to spawn a neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 3 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 5 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
         true
       );
     });
-    it("returns false if not enough ICP to create a neuron", () => {
+    it("returns false if not enough ICP to spawn a neuron", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -689,7 +785,7 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("isEnoughMaturityToSpawn", () => {
+  describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
       const stake = ICP.fromString("3") as ICP;
       expect(isEnoughToStakeNeuron({ stake })).toBe(true);
@@ -828,6 +924,32 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("isSpawning", () => {
+    it("returns true if neuron is spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: BigInt(123123113),
+        },
+      };
+      expect(isSpawning(neuron)).toBe(true);
+    });
+
+    it("returns false if neuron is not spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        status: NeuronState.LOCKED,
+        fullNeuron: {
+          ...mockFullNeuron,
+          spawnAtTimesSeconds: undefined,
+        },
+      };
+      expect(isSpawning(neuron)).toBe(false);
+    });
+  });
+
   describe("mapMergeableNeurons", () => {
     const mainAccountController = mockMainAccount.principal?.toText() as string;
     it("wraps mergeable neurons with true if mergeable", () => {
@@ -889,6 +1011,26 @@ describe("neuron-utils", () => {
       });
       expect(wrappedNeurons[0].mergeable).toBe(false);
       expect(wrappedNeurons[1].mergeable).toBe(false);
+    });
+
+    it("wraps mergeable neurons with false if neuron is spawning", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.SPAWNING,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron],
+        accounts: {
+          main: mockMainAccount,
+        },
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
     });
 
     it("checks current selection ManageNeuron followees to define a neuron as mergeable", () => {

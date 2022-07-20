@@ -25,6 +25,7 @@ import {
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  SPAWN_VARIANCE_PERCENTAGE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
@@ -38,14 +39,15 @@ import {
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { enumValues } from "./enum.utils";
-import { formatNumber } from "./format.utils";
+import { formatNumber, formatPercentage } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
-  status: "ok" | "warn";
+  status: "ok" | "warn" | "spawning";
+  color?: "var(--warning-emphasis)" | "var(--primary)";
 };
 
 type StateMapper = {
@@ -70,6 +72,13 @@ const stateTextMapper: StateMapper = {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
+    color: "var(--warning-emphasis)",
+  },
+  [NeuronState.SPAWNING]: {
+    textKey: "spawning",
+    Icon: IconHistoryToggleOff,
+    status: "spawning",
+    color: "var(--primary)",
   },
 };
 
@@ -123,6 +132,13 @@ export const getDissolvingTimeInSeconds = (
       BigInt(nowInSeconds())
     : undefined;
 
+export const getSpawningTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined =>
+  isSpawning(neuron) && neuron.fullNeuron?.spawnAtTimesSeconds !== undefined
+    ? neuron.fullNeuron.spawnAtTimesSeconds - BigInt(nowInSeconds())
+    : undefined;
+
 export const ageMultiplier = (ageSeconds: number): number =>
   1 +
   0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);
@@ -148,6 +164,14 @@ export const maturityByStake = (neuron: NeuronInfo): number => {
         neuron.fullNeuron.cachedNeuronStake
     ) / precision
   );
+};
+
+export const formattedMaturityByStake = (neuron: NeuronInfo): string => {
+  const maturity = maturityByStake(neuron);
+  if (maturity === 0) {
+    return "0%";
+  }
+  return formatPercentage(maturity, { minFraction: 2, maxFraction: 2 });
 };
 
 export const sortNeuronsByCreatedTimestamp = (
@@ -303,10 +327,11 @@ export const isEnoughMaturityToSpawn = ({
   const maturitySelected: number = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
-  return isEnoughToStakeNeuron({
-    stake: ICP.fromE8s(BigInt(maturitySelected)),
-  });
+  return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;
 };
+
+export const isSpawning = (neuron: NeuronInfo): boolean =>
+  neuron.state === NeuronState.SPAWNING;
 
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
@@ -317,6 +342,7 @@ const isMergeableNeuron = ({
   accounts: AccountsStore;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
+  !isSpawning(neuron) &&
   // Merging hardware wallet neurons is not yet supported
   isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
 
@@ -329,6 +355,9 @@ const getMergeableNeuronMessageKey = ({
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
+  }
+  if (isSpawning(neuron)) {
+    return "neurons.cannot_merge_neuron_spawning";
   }
   if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
     return "neurons.cannot_merge_hardware_wallet";

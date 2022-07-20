@@ -587,21 +587,25 @@ export const spawnNeuron = async ({
 }: {
   neuronId: NeuronId;
   percentageToSpawn?: number;
-}): Promise<{ success: boolean }> => {
+}): Promise<NeuronId | undefined> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
-    await spawnNeuronApi({ neuronId, percentageToSpawn, identity });
+    const newNeuronId = await spawnNeuronApi({
+      neuronId,
+      percentageToSpawn,
+      identity,
+    });
 
     await listNeurons();
 
-    return { success: true };
+    return newNeuronId;
   } catch (err) {
     toastsStore.show(mapNeuronErrorToToastMessage(err));
 
-    return { success: false };
+    return undefined;
   }
 };
 

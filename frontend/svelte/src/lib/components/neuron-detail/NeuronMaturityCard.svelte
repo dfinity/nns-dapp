@@ -3,14 +3,13 @@
   import IconInfo from "../../icons/IconInfo.svelte";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
-  import { formatPercentage } from "../../utils/format.utils";
   import CardInfo from "../ui/CardInfo.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
+    formattedMaturityByStake,
     isNeuronControllable,
-    maturityByStake,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
 
@@ -33,7 +32,9 @@
     </Tooltip>
   </div>
   <div slot="end">
-    <h3>{formatPercentage(maturityByStake(neuron))}</h3>
+    <h3>
+      {formattedMaturityByStake(neuron)}
+    </h3>
   </div>
   <div class="actions">
     {#if isControllable}

@@ -14,13 +14,13 @@ export const mockFullNeuron: Neuron = {
   createdTimestampSeconds: BigInt(10),
   maturityE8sEquivalent: BigInt(10),
   agingSinceTimestampSeconds: BigInt(10),
+  spawnAtTimesSeconds: undefined,
   neuronFees: BigInt(0),
   hotKeys: [],
   accountIdentifier: "account-identifier-text",
   joinedCommunityFundTimestampSeconds: undefined,
   dissolveState: undefined,
   followees: [],
-  spawnAtTimesSeconds: BigInt(10),
 };
 
 export const mockNeuron: NeuronInfo = {

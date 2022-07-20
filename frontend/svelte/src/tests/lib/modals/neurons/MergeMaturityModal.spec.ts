@@ -5,8 +5,7 @@
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import MergeMaturityModal from "../../../../lib/modals/neurons/MergeMaturityModal.svelte";
 import { mergeMaturity } from "../../../../lib/services/neurons.services";
-import { formatPercentage } from "../../../../lib/utils/format.utils";
-import { maturityByStake } from "../../../../lib/utils/neuron.utils";
+import { formattedMaturityByStake } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -43,9 +42,7 @@ describe("MergeMaturityModal", () => {
   it("should display current maturity", async () => {
     const { queryByText } = await renderMergeMaturityModal();
 
-    expect(
-      queryByText(formatPercentage(maturityByStake(neuron)))
-    ).toBeInTheDocument();
+    expect(queryByText(formattedMaturityByStake(neuron))).toBeInTheDocument();
   });
 
   it("should call mergeMaturity service on confirm click", async () => {

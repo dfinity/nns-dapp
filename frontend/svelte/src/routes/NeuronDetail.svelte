@@ -17,10 +17,11 @@
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import { getNeuronById } from "../lib/utils/neuron.utils";
+  import { getNeuronById, isSpawning } from "../lib/utils/neuron.utils";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import NeuronJoinFundCard from "../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
+  import { toastsStore } from "../lib/stores/toasts.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -30,6 +31,17 @@
     neuronId !== undefined
       ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
       : undefined;
+
+  $: {
+    // Spawning neuron can't access the details
+    // TODO: Test with a spawning neuron
+    if (neuron && isSpawning(neuron)) {
+      toastsStore.error({
+        labelKey: "error.neuron_spawning",
+      });
+      routeStore.replace({ path: AppPath.Neurons });
+    }
+  }
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {

@@ -180,9 +180,9 @@ export const anonymizeFullNeuron = async (
     hotKeys: hotKeys?.length,
     accountIdentifier: await cutAndAnonymize(accountIdentifier),
     joinedCommunityFundTimestampSeconds,
+    spawnAtTimesSeconds,
     dissolveState,
     followees: await mapPromises(followees, anonymizeFollowees),
-    spawnAtTimesSeconds,
   };
 };
 
