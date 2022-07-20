@@ -11,7 +11,7 @@
   export let selectedCanisterId: string | undefined = undefined;
 
   onMount(() => {
-    // TODO: Move to initilization?
+    // TODO: https://dfinity.atlassian.net/browse/L2-878
     loadSnsSummaries({
       onError: () => {
         toastsStore.error({
