@@ -1,4 +1,5 @@
 import type { Action, ProposalInfo } from "@dfinity/nns";
+import { deadlineTimestampSeconds } from "./proposals.store.mock";
 
 /**
  * Generate mock proposals with autoincremented "id".
@@ -66,4 +67,5 @@ export const mockProposalInfo: ProposalInfo = {
       neuronId: BigInt(0),
     },
   ],
+  deadlineTimestampSeconds,
 } as unknown as ProposalInfo;
