@@ -17,7 +17,7 @@
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
     const main: HTMLElement | null = document.querySelector("main");
 
-    console.log('setPosition', destroyed, main, tooltipComponent, target);
+    console.log("setPosition", destroyed, main, tooltipComponent, target);
 
     if (
       destroyed ||
