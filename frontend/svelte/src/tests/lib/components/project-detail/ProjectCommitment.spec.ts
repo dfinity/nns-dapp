@@ -15,7 +15,7 @@ import { renderContextCmp } from "../../../mocks/sns.mock";
 describe("ProjectCommitment", () => {
   const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
 
-  it("should render min and max commiment", () => {
+  it("should render min and max commitment", () => {
     const { queryByTestId } = renderContextCmp({
       summary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
