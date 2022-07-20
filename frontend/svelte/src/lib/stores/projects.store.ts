@@ -124,34 +124,39 @@ export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
           })
   );
 
+const filterProjectsStore = ({
+  swapLifecycle,
+  $snsFullProjectsStore,
+}: {
+  swapLifecycle: SnsSwapLifecycle;
+  $snsFullProjectsStore: SnsFullProject[] | undefined;
+}) =>
+  $snsFullProjectsStore === undefined
+    ? undefined
+    : $snsFullProjectsStore.filter(
+        ({
+          summary: {
+            swap: {
+              state: { lifecycle },
+            },
+          },
+        }) => swapLifecycle === lifecycle
+      );
+
 export const openProjectsStore = derived(
   snsFullProjectsStore,
-  ($snsFullProjectsStore) =>
-    $snsFullProjectsStore === undefined
-      ? undefined
-      : $snsFullProjectsStore.filter(
-          ({
-            summary: {
-              swap: {
-                state: { lifecycle },
-              },
-            },
-          }) => SnsSwapLifecycle.Open === lifecycle
-        )
+  ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
+    filterProjectsStore({
+      swapLifecycle: SnsSwapLifecycle.Open,
+      $snsFullProjectsStore,
+    })
 );
 
 export const committedProjectsStore = derived(
   snsFullProjectsStore,
-  ($snsFullProjectsStore) =>
-    $snsFullProjectsStore === undefined
-      ? undefined
-      : $snsFullProjectsStore.filter(
-          ({
-            summary: {
-              swap: {
-                state: { lifecycle },
-              },
-            },
-          }) => SnsSwapLifecycle.Committed === lifecycle
-        )
+  ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
+    filterProjectsStore({
+      swapLifecycle: SnsSwapLifecycle.Committed,
+      $snsFullProjectsStore,
+    })
 );
