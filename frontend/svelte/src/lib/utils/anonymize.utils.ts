@@ -159,7 +159,6 @@ export const anonymizeFullNeuron = async (
     hotKeys,
     accountIdentifier,
     joinedCommunityFundTimestampSeconds,
-    spawnAtTimesSeconds,
     dissolveState,
     followees,
     spawnAtTimesSeconds,
@@ -184,7 +183,6 @@ export const anonymizeFullNeuron = async (
     spawnAtTimesSeconds,
     dissolveState,
     followees: await mapPromises(followees, anonymizeFollowees),
-    spawnAtTimesSeconds,
   };
 };
 

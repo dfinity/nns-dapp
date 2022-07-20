@@ -21,7 +21,6 @@ export const mockFullNeuron: Neuron = {
   joinedCommunityFundTimestampSeconds: undefined,
   dissolveState: undefined,
   followees: [],
-  spawnAtTimesSeconds: BigInt(10),
 };
 
 export const mockNeuron: NeuronInfo = {
