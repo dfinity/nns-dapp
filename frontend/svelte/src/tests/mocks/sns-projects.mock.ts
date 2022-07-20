@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import type { SnsSwapLifecycle, SnsSwapState } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
@@ -65,7 +65,7 @@ export const mockSwapInit = {
 export const mockSwapState = {
   open_time_window: [],
   sns_token_e8s: BigInt(1000),
-  lifecycle: 0,
+  lifecycle: SnsSwapLifecycle.Open,
   buyers: [],
 } as SnsSwapState;
 
