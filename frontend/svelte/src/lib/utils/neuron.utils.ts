@@ -25,6 +25,7 @@ import {
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  SPAWN_VARIANCE_PERCENTAGE,
 } from "../constants/neurons.constants";
 import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
 import IconLockClock from "../icons/IconLockClock.svelte";
@@ -326,9 +327,7 @@ export const isEnoughMaturityToSpawn = ({
   const maturitySelected: number = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
-  return isEnoughToStakeNeuron({
-    stake: ICP.fromE8s(BigInt(maturitySelected)),
-  });
+  return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>

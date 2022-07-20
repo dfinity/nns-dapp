@@ -11,7 +11,7 @@
   import { formatNumber, formatPercentage } from "../../../utils/format.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import {
-    isEnoughToStakeNeuron,
+    isEnoughMaturityToSpawn,
     isNeuronControlledByHardwareWallet,
   } from "../../../utils/neuron.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
@@ -31,8 +31,9 @@
   $: enoughMaturity =
     neuron.fullNeuron === undefined
       ? false
-      : isEnoughToStakeNeuron({
-          stake: ICP.fromE8s(neuron.fullNeuron.maturityE8sEquivalent),
+      : isEnoughMaturityToSpawn({
+          neuron,
+          percentage: 100,
         });
 </script>
 

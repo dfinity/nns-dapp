@@ -720,7 +720,7 @@ describe("neuron-utils", () => {
   });
 
   describe("isEnoughMaturityToSpawn", () => {
-    it("return true if enough ICP to create a neuron", () => {
+    it("return false if just enough ICP to create a neuron without taking into account variance", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -728,7 +728,7 @@ describe("neuron-utils", () => {
           maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE + 1_000),
         },
       };
-      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(false);
 
       const neuron2 = {
         ...mockNeuron,
@@ -738,10 +738,31 @@ describe("neuron-utils", () => {
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
+        false
+      );
+    });
+    it("return true if enough ICP to spawn a neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 3 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 5 + 1_000),
+        },
+      };
+      expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
         true
       );
     });
-    it("returns false if not enough ICP to create a neuron", () => {
+    it("returns false if not enough ICP to spawn a neuron", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -764,7 +785,7 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("isEnoughMaturityToSpawn", () => {
+  describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
       const stake = ICP.fromString("3") as ICP;
       expect(isEnoughToStakeNeuron({ stake })).toBe(true);

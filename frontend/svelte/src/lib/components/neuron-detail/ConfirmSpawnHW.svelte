@@ -48,6 +48,9 @@
         {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
       </p>
     </div>
+    <p>
+      {@html $i18n.neuron_detail.spawn_maturity_note_hw}
+    </p>
   </div>
   <button
     data-tid="confirm-spawn-button"
