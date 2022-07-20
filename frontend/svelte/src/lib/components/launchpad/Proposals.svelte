@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
   import { listSnsProposals } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
@@ -7,7 +6,6 @@
     openForVotesSnsProposalsStore,
     snsProposalsStore,
   } from "../../stores/projects.store";
-  import { isProposalOpenForVotes } from "../../utils/proposals.utils";
   import { isNullable } from "../../utils/utils";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
@@ -15,9 +13,6 @@
 
   let loading: boolean = false;
   $: loading = isNullable($snsProposalsStore);
-
-  let proposals: ProposalInfo[] | undefined = undefined;
-  $: proposals = $openForVotesSnsProposalsStore;
 
   const load = () => {
     if ($snsProposalsStore === undefined) {
@@ -33,16 +28,14 @@
     <SkeletonProposalCard />
     <SkeletonProposalCard />
   </CardGrid>
-{:else if proposals !== undefined}
-  {#if proposals.length === 0}
-    <p class="no-proposals">{$i18n.voting.nothing_found}</p>
-  {:else}
-    <CardGrid>
-      {#each proposals as proposalInfo (proposalInfo.id)}
-        <ProposalCard {proposalInfo} />
-      {/each}
-    </CardGrid>
-  {/if}
+{:else if $openForVotesSnsProposalsStore.length === 0}
+  <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+{:else}
+  <CardGrid>
+    {#each $openForVotesSnsProposalsStore as proposalInfo (proposalInfo.id)}
+      <ProposalCard {proposalInfo} />
+    {/each}
+  </CardGrid>
 {/if}
 
 <style lang="scss">
