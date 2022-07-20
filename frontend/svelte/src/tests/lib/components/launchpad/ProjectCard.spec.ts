@@ -55,10 +55,10 @@ describe("ProjectCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should display a spinner when the swapState is not loaded", async () => {
+  it("should display a spinner when the swapCommitment is not loaded", async () => {
     const { getByTestId } = render(ProjectCard, {
       props: {
-        project: { ...mockSnsFullProject, swapState: undefined },
+        project: { ...mockSnsFullProject, swapCommitment: undefined },
       },
     });
 
@@ -89,7 +89,7 @@ describe("ProjectCard", () => {
     });
 
     const icpValue = formatICP({
-      value: mockSnsFullProject.swapState?.myCommitment as bigint,
+      value: mockSnsFullProject.swapCommitment?.myCommitment as bigint,
     });
 
     expect(getByText(icpValue, { exact: false })).toBeInTheDocument();

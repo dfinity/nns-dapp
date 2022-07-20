@@ -1,15 +1,15 @@
 <script lang="ts">
   import {
     loadSnsSummaries,
-    loadSnsSwapStates,
+    loadSnsSwapCommitments,
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    snsFullProjectsStore,
+    openProjectsStore,
     type SnsFullProject,
     snsesCountStore,
     snsSummariesStore,
-    snsSwapStatesStore,
+    snsSwapCommitmentsStore,
   } from "../../stores/projects.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
@@ -21,14 +21,14 @@
   import { AppPath } from "../../constants/routes.constants";
 
   let projects: SnsFullProject[] | undefined;
-  $: projects = $snsFullProjectsStore;
+  $: projects = $openProjectsStore;
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
   let loading: boolean = false;
   $: loading =
-    isNullable($snsSummariesStore) || isNullable($snsSwapStatesStore);
+    isNullable($snsSummariesStore) || isNullable($snsSwapCommitmentsStore);
 
   // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
   const goBack = () =>
@@ -40,8 +40,8 @@
     if ($snsSummariesStore === undefined) {
       loadSnsSummaries({ onError: goBack });
     }
-    if ($snsSwapStatesStore === undefined) {
-      loadSnsSwapStates({ onError: goBack });
+    if ($snsSwapCommitmentsStore === undefined) {
+      loadSnsSwapCommitments({ onError: goBack });
     }
   };
 

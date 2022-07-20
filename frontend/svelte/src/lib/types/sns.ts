@@ -1,9 +1,15 @@
 import type { Principal } from "@dfinity/principal";
+import type { SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 
-// TODO: to be replaced with real types
+export interface SnsSummarySwap {
+  init: SnsSwapInit;
+  state: SnsSwapState;
+}
 
 export interface SnsSummary {
   rootCanisterId: Principal;
+
+  // TODO: to be replaced with real types for real data
 
   logo: string;
   name: string;
@@ -20,9 +26,11 @@ export interface SnsSummary {
 
   minParticipationCommitment: bigint; // e8s
   maxParticipationCommitment: bigint; // e8s
+
+  swap: SnsSummarySwap;
 }
 
-export interface SnsSwapState {
+export interface SnsSwapCommitment {
   rootCanisterId: Principal;
   myCommitment: bigint | undefined; // e8s
   currentCommitment: bigint; // e8s

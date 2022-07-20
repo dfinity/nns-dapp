@@ -9,7 +9,7 @@ import en from "../mocks/i18n.mock";
 jest.mock("../../lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
     listSnsProposals: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });

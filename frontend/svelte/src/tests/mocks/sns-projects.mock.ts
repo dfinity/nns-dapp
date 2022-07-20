@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
-import type { SnsSummary, SnsSwapState } from "../../lib/types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
 
 const principal = (index: number): Principal =>
@@ -19,7 +20,9 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
-export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
+export const mockSnsSwapCommitment = (
+  rootCanisterId: Principal
+): SnsSwapCommitment =>
   ({
     [principal(0).toText()]: {
       rootCanisterId: principal(0),
@@ -46,6 +49,31 @@ export const mockSnsSwapState = (rootCanisterId: Principal): SnsSwapState =>
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
+export const mockSwapInit = {
+  min_participant_icp_e8s: BigInt(150000000),
+  fallback_controller_principal_ids: [],
+  max_icp_e8s: BigInt(3000 * 100000000),
+  min_participants: 1,
+  nns_governance_canister_id: "1234",
+  icp_ledger_canister_id: "1234",
+  sns_ledger_canister_id: "1234",
+  max_participant_icp_e8s: BigInt(5000000000),
+  sns_governance_canister_id: "1234",
+  min_icp_e8s: BigInt(1500 * 100000000),
+};
+
+export const mockSwapState = {
+  open_time_window: [],
+  sns_token_e8s: BigInt(1000),
+  lifecycle: SnsSwapLifecycle.Open,
+  buyers: [],
+} as SnsSwapState;
+
+export const mockSwap = {
+  init: mockSwapInit,
+  state: mockSwapState,
+};
+
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
@@ -64,6 +92,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     url: "http://sns-tetris-project.com",
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    swap: mockSwap,
   },
   {
     rootCanisterId: principal(1),
@@ -82,6 +111,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     url: "http://sns-pac-man-project.com",
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    swap: mockSwap,
   },
   {
     rootCanisterId: principal(2),
@@ -103,6 +133,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     url: "http://sns-super-mario-project.com",
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    swap: mockSwap,
   },
   {
     rootCanisterId: principal(3),
@@ -123,16 +154,48 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     url: "http://sns-donkey-kong-project.com",
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    swap: mockSwap,
   },
 ])
   // preserve indexes (important for unit tests)
   .map((summary, index) => ({
     ...summary,
     rootCanisterId: principal(index),
-  }));
+  })) as SnsSummary[];
+
+export const mockSummary = mockSnsSummaryList[0];
 
 export const mockSnsFullProject = {
   rootCanisterId: principal(0),
-  summary: mockSnsSummaryList[0],
-  swapState: mockSnsSwapState(principal(0)),
+  summary: mockSummary,
+  swapCommitment: mockSnsSwapCommitment(principal(0)),
 } as SnsFullProject;
+
+export const mockQuerySnsSwapState = {
+  rootCanisterId: principal(0),
+  swap: [
+    {
+      init: [
+        {
+          ...mockSnsSummaryList[0].swap.init,
+        },
+      ],
+      state: [
+        {
+          ...mockSnsSummaryList[0].swap.state,
+        },
+      ],
+    },
+  ],
+};
+
+export const summaryForLifecycle = (lifecycle: SnsSwapLifecycle) => ({
+  ...mockSnsFullProject.summary,
+  swap: {
+    ...mockSwap,
+    state: {
+      ...mockSwap.state,
+      lifecycle,
+    },
+  },
+});
