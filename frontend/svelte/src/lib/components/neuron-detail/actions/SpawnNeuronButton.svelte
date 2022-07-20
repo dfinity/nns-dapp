@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { E8S_PER_ICP } from "../../../constants/icp.constants";
   import {
     MIN_NEURON_STAKE,
