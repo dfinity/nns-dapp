@@ -209,6 +209,7 @@ export const listSnsProposals = async (): Promise<void> => {
         topic: Topic.SnsDecentralizationSale,
       }),
     onLoad: async ({ response: proposals, certified }) => {
+      // TODO L2-751: to be removed
       console.log("listSnsProposals", proposals);
 
       // TODO L2-751: switch to real data
