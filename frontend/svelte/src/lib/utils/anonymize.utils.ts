@@ -161,7 +161,6 @@ export const anonymizeFullNeuron = async (
     joinedCommunityFundTimestampSeconds,
     dissolveState,
     followees,
-    spawnAtTimesSeconds,
   } = neuron;
 
   return {
@@ -182,7 +181,6 @@ export const anonymizeFullNeuron = async (
     joinedCommunityFundTimestampSeconds,
     dissolveState,
     followees: await mapPromises(followees, anonymizeFollowees),
-    spawnAtTimesSeconds,
   };
 };
 
