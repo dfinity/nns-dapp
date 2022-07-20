@@ -13,13 +13,13 @@
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsSummary,
-    loadSnsSwapState,
+    loadSnsSwapCommitment,
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
     snsSummariesStore,
-    snsSwapStatesStore,
+    snsSwapCommitmentsStore,
   } from "../lib/stores/projects.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
@@ -29,6 +29,7 @@
   } from "../lib/types/project-detail.context";
   import { isNullable, nonNullable } from "../lib/utils/utils";
   import { writable } from "svelte/store";
+  import { concatSnsSummary } from "../lib/utils/sns.utils";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -40,7 +41,7 @@
 
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: undefined,
-    swapState: undefined,
+    swapCommitment: undefined,
   });
 
   // TODO: add projectDetailStore to debug store
@@ -49,9 +50,14 @@
     store: projectDetailStore,
   });
 
+  const goBack = () => {
+    unsubscribe();
+    routeStore.replace({ path: AppPath.Launchpad });
+  };
+
   const loadSummary = (rootCanisterId: string) => {
     // try to get from snsSummariesStore
-    const summaryMaybe = $snsSummariesStore.summaries?.find(
+    const summaryMaybe = $snsSummariesStore?.summaries?.find(
       ({ rootCanisterId: rootCanister }) =>
         rootCanister?.toText() === rootCanisterId
     );
@@ -60,7 +66,7 @@
       $projectDetailStore.summary = summaryMaybe;
 
       // do not reload already certified data
-      if ($snsSummariesStore.certified === true) {
+      if ($snsSummariesStore?.certified === true) {
         return;
       }
     }
@@ -70,20 +76,22 @@
 
     loadSnsSummary({
       rootCanisterId,
-      onLoad: ({ response: summary }) =>
-        ($projectDetailStore.summary = summary),
+      onLoad: ({ response }) =>
+        ($projectDetailStore.summary = concatSnsSummary(response)),
+      onError: goBack,
     });
   };
 
   const loadSwapState = (rootCanisterId: string) => {
-    if (nonNullable($snsSwapStatesStore)) {
+    if (nonNullable($snsSwapCommitmentsStore)) {
       // try to get from snsSwapStatesStore
-      const swapItemMaybe = $snsSwapStatesStore.find(
-        (item) => item?.swapState?.rootCanisterId?.toText() === rootCanisterId
+      const swapItemMaybe = $snsSwapCommitmentsStore.find(
+        (item) =>
+          item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
       );
 
       if (swapItemMaybe !== undefined) {
-        $projectDetailStore.swapState = swapItemMaybe.swapState;
+        $projectDetailStore.swapCommitment = swapItemMaybe.swapCommitment;
 
         if (swapItemMaybe.certified === true) {
           // do not reload already certified data
@@ -93,12 +101,13 @@
     }
 
     // flag loading state
-    $projectDetailStore.swapState = null;
+    $projectDetailStore.swapCommitment = null;
 
-    loadSnsSwapState({
+    loadSnsSwapCommitment({
       rootCanisterId,
-      onLoad: ({ response: swapState }) =>
-        ($projectDetailStore.swapState = swapState),
+      onLoad: ({ response: swapCommitment }) =>
+        ($projectDetailStore.swapCommitment = swapCommitment),
+      onError: goBack,
     });
   };
 
@@ -109,8 +118,7 @@
 
     const rootCanisterIdMaybe = routePathRootCanisterId(path);
     if (rootCanisterIdMaybe === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPath.Launchpad });
+      goBack();
       return;
     }
     rootCanisterIdString = rootCanisterIdMaybe;
@@ -119,17 +127,12 @@
       loadSummary(rootCanisterIdString);
     }
 
-    if ($projectDetailStore.swapState === undefined) {
+    if ($projectDetailStore.swapCommitment === undefined) {
       loadSwapState(rootCanisterIdString);
     }
   });
 
   onDestroy(unsubscribe);
-
-  const goBack = () =>
-    routeStore.navigate({
-      path: AppPath.Launchpad,
-    });
 
   layoutBackStore.set(goBack);
 
@@ -138,7 +141,7 @@
   let loadingSummary: boolean;
   $: loadingSummary = isNullable($projectDetailStore.summary);
   let loadingSwapState: boolean;
-  $: loadingSwapState = isNullable($projectDetailStore.swapState);
+  $: loadingSwapState = isNullable($projectDetailStore.swapCommitment);
 
   // TODO(L2-838): if error redirect to launchpad and display error there
 </script>

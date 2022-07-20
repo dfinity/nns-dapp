@@ -576,10 +576,12 @@ interface I18nSns_project_detail {
   deadline: string;
   user_commitment: string;
   status: string;
-  accepting: string;
+  status_open: string;
   enter_amount: string;
-  closed: string;
-  pending: string;
+  status_committed: string;
+  status_aborted: string;
+  status_pending: string;
+  status_unspecified: string;
   transaction_fee: string;
   description: string;
   participate_swap_description: string;
@@ -662,8 +664,8 @@ interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
   load_summary: string;
-  list_swap_states: string;
-  load_swap_state: string;
+  list_swap_commitments: string;
+  load_swap_commitment: string;
 }
 
 interface I18n {

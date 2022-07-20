@@ -90,6 +90,7 @@ const configApp = {
         "@dfinity/identity",
         "@dfinity/principal",
       ],
+      sns: ["@dfinity/sns"],
     },
   },
   plugins: [

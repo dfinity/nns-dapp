@@ -4,32 +4,74 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import Projects from "../../../../lib/components/launchpad/Projects.svelte";
-import { loadSnsSummaries } from "../../../../lib/services/sns.services";
+import {
+  loadSnsSummaries,
+  loadSnsSwapCommitments,
+} from "../../../../lib/services/sns.services";
 import {
   snsesCountStore,
   snsSummariesStore,
-  snsSwapStatesStore,
+  snsSwapCommitmentsStore,
 } from "../../../../lib/stores/projects.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,
-  mockSnsSwapState,
+  mockSnsSwapCommitment,
 } from "../../../mocks/sns-projects.mock";
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapStates: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
 describe("Projects", () => {
-  beforeEach(snsSummariesStore.reset);
+  beforeEach(() => {
+    snsSummariesStore.reset();
+    snsSwapCommitmentsStore.reset();
+  });
+
+  afterEach(jest.clearAllMocks);
 
   it("should trigger loadSnsFullProjects", () => {
     render(Projects);
 
     expect(loadSnsSummaries).toBeCalled();
+  });
+
+  it("should trigger loadSnsSwapStates", () => {
+    render(Projects);
+
+    expect(loadSnsSwapCommitments).toBeCalled();
+  });
+
+  it("should not load data when already loaded", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
+    snsSummariesStore.setSummaries({
+      summaries: mockSnsSummaryList,
+      certified: false,
+    });
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
+      certified: false,
+    });
+
+    render(Projects);
+
+    expect(loadSnsSummaries).not.toBeCalled();
+    expect(loadSnsSwapCommitments).not.toBeCalled();
+  });
+
+  it("should not load data if store-state is null (loading)", () => {
+    snsSummariesStore.setLoadingState();
+    snsSwapCommitmentsStore.setLoadingState();
+
+    render(Projects);
+
+    expect(loadSnsSummaries).not.toBeCalled();
+    expect(loadSnsSwapCommitments).not.toBeCalled();
   });
 
   it("should render projects", () => {
@@ -39,9 +81,9 @@ describe("Projects", () => {
       summaries: mockSnsSummaryList,
       certified: false,
     });
-    snsSwapStatesStore.setSwapState({
-      swapState: mockSnsSwapState(principal),
-      certified: true,
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
+      certified: false,
     });
 
     const { getAllByTestId } = render(Projects);
@@ -50,8 +92,14 @@ describe("Projects", () => {
   });
 
   it("should render a message when no projects available", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
     snsSummariesStore.setSummaries({
       summaries: [],
+      certified: false,
+    });
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
       certified: false,
     });
 
