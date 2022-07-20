@@ -1,6 +1,6 @@
 import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
-import type { QuerySnsSwapState } from "../api/sns.api";
 import type { SnsSummary } from "../types/sns";
+import type { QuerySnsSwapState } from "../types/sns.query";
 import { assertNonNullish } from "./asserts.utils";
 import { fromNullable } from "./did.utils";
 

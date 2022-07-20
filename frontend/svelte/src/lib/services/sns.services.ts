@@ -7,7 +7,6 @@ import {
   querySnsSwapCommitments,
   querySnsSwapState,
   querySnsSwapStates,
-  type QuerySnsSwapState,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
@@ -16,6 +15,7 @@ import {
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
+import type { QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";

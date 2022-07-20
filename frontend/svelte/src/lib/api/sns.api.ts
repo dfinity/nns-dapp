@@ -1,7 +1,7 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsSwap, SnsWrapper } from "@dfinity/sns";
+import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import { HOST } from "../constants/environment.constants";
 import {
@@ -12,13 +12,17 @@ import {
 import { snsesCountStore } from "../stores/projects.store";
 import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
+import type {
+  QueryRootCanisterId,
+  QuerySnsSwapState,
+} from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp, shuffle } from "../utils/dev.utils";
 
-type RootCanisterId = string;
-
-let snsQueryWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
-let snsUpdateWrappers: Promise<Map<RootCanisterId, SnsWrapper>> | undefined;
+let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
+let snsUpdateWrappers:
+  | Promise<Map<QueryRootCanisterId, SnsWrapper>>
+  | undefined;
 
 // TODO(L2-751): remove and replace with effective data
 let mockSwapCommitments: SnsSwapCommitment[] = [];
@@ -150,7 +154,7 @@ const initWrappers = async ({
 }: {
   certified: boolean;
   identity: Identity;
-}): Promise<Map<RootCanisterId, SnsWrapper>> =>
+}): Promise<Map<QueryRootCanisterId, SnsWrapper>> =>
   new Map(
     (await loadSnsWrappers({ identity, certified })).map(
       (wrapper: SnsWrapper) => [
@@ -166,7 +170,7 @@ const wrappers = async ({
 }: {
   certified: boolean;
   identity: Identity;
-}): Promise<Map<RootCanisterId, SnsWrapper>> => {
+}): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
   // TODO: there is probably a better solution
   switch (certified) {
     case false:
@@ -188,7 +192,7 @@ const wrapper = async ({
   certified,
 }: {
   identity: Identity;
-  rootCanisterId: RootCanisterId;
+  rootCanisterId: QueryRootCanisterId;
   certified: boolean;
 }): Promise<SnsWrapper> => {
   const snsWrapper: SnsWrapper | undefined = (
@@ -220,7 +224,7 @@ export const querySnsSummaries = async ({
   const snsWrappers: SnsWrapper[] = [
     ...(
       (await wrappers({ identity, certified })) ??
-      new Map<RootCanisterId, SnsWrapper>()
+      new Map<QueryRootCanisterId, SnsWrapper>()
     ).values(),
   ];
 
@@ -249,7 +253,7 @@ export const querySnsSummary = async ({
   identity,
   certified,
 }: {
-  rootCanisterId: RootCanisterId;
+  rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
 }): Promise<Omit<SnsSummary, "swap"> | undefined> => {
@@ -274,7 +278,7 @@ export const querySnsSummary = async ({
     mockSnsSummaries = [
       ...(
         (await wrappers({ identity, certified })) ??
-        new Map<RootCanisterId, SnsWrapper>()
+        new Map<QueryRootCanisterId, SnsWrapper>()
       ).values(),
     ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
       ...mockSnsSummaryList[index],
@@ -288,11 +292,6 @@ export const querySnsSummary = async ({
     ({ rootCanisterId: canisterId }: Omit<SnsSummary, "swap">) =>
       canisterId?.toText() === rootCanisterId
   );
-};
-
-export type QuerySnsSwapState = {
-  rootCanisterId: RootCanisterId;
-  swap: [] | [SnsSwap];
 };
 
 export const querySnsSwapStates = async ({
@@ -309,7 +308,7 @@ export const querySnsSwapStates = async ({
   const snsWrappers: SnsWrapper[] = [
     ...(
       (await wrappers({ identity, certified })) ??
-      new Map<RootCanisterId, SnsWrapper>()
+      new Map<QueryRootCanisterId, SnsWrapper>()
     ).values(),
   ];
 
@@ -338,7 +337,7 @@ export const querySnsSwapState = async ({
   identity,
   certified,
 }: {
-  rootCanisterId: RootCanisterId;
+  rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
 }): Promise<QuerySnsSwapState | undefined> => {
@@ -381,7 +380,7 @@ export const querySnsSwapCommitments = async ({
   const snsWrappers: SnsWrapper[] = [
     ...(
       (await wrappers({ identity, certified })) ??
-      new Map<RootCanisterId, SnsWrapper>()
+      new Map<QueryRootCanisterId, SnsWrapper>()
     ).values(),
   ];
 
@@ -409,7 +408,7 @@ export const querySnsSwapCommitment = async ({
   identity,
   certified,
 }: {
-  rootCanisterId: RootCanisterId;
+  rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
 }): Promise<SnsSwapCommitment> => {
@@ -428,7 +427,7 @@ export const querySnsSwapCommitment = async ({
     mockSwapCommitments = [
       ...(
         (await wrappers({ identity, certified })) ??
-        new Map<RootCanisterId, SnsWrapper>()
+        new Map<QueryRootCanisterId, SnsWrapper>()
       ).values(),
     ].map(
       ({ canisterIds: { rootCanisterId } }, index) =>
