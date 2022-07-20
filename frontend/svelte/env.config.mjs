@@ -68,7 +68,7 @@ const GOVERNANCE_CANISTER_URL = getRequiredEnvVar("GOVERNANCE_CANISTER_URL");
 const LEDGER_CANISTER_URL = getRequiredEnvVar("LEDGER_CANISTER_URL");
 const OWN_CANISTER_URL = getRequiredEnvVar("OWN_CANISTER_URL");
 const WASM_CANISTER_ID = getRequiredEnvVar("WASM_CANISTER_ID");
-console.log({WASM_CANISTER_ID, path: "env.config.mjs"});
+console.log({ WASM_CANISTER_ID, path: "env.config.mjs" });
 
 // Configuration
 // ... The testnet name
