@@ -1,6 +1,9 @@
+import type { ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapState } from "../types/sns";
+import { isProposalOpenForVotes } from "../utils/proposals.utils";
+import { isNullable } from "../utils/utils";
 
 // TODO: align summary store architecture with the certified information at the summary level
 export interface SnsSummariesStore {
@@ -22,6 +25,50 @@ export interface SnsFullProject {
 }
 
 export type SnsFullProjectStore = SnsFullProject[] | undefined;
+
+export type SnsProposalsStore =
+  | {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }
+  | undefined
+  | null;
+
+const initSnsProposalsStore = () => {
+  const { subscribe, set } = writable<SnsProposalsStore>(undefined);
+
+  return {
+    subscribe,
+
+    reset() {
+      set(undefined);
+    },
+
+    setLoadingState() {
+      set(null);
+    },
+
+    setProposals({
+      proposals,
+      certified,
+    }: {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }) {
+      set({
+        proposals,
+        certified,
+      });
+    },
+  };
+};
+
+const initOpenForVotesSnsProposalsStore = () =>
+  derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
+    isNullable($snsProposalsStore)
+      ? []
+      : $snsProposalsStore.proposals.filter(isProposalOpenForVotes)
+  );
 
 const initSnsSummariesStore = () => {
   const { subscribe, set } = writable<SnsSummariesStore>({
@@ -84,6 +131,10 @@ const initSnsSwapStatesStore = () => {
 
 // used to improve loading state display only
 export const snsesCountStore = writable<number | undefined>(undefined);
+
+export const snsProposalsStore = initSnsProposalsStore();
+export const openForVotesSnsProposalsStore =
+  initOpenForVotesSnsProposalsStore();
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapStatesStore = initSnsSwapStatesStore();
