@@ -6,7 +6,10 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import ProjectStatus from "../../../../lib/components/project-detail/ProjectStatus.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
-import {mockSnsFullProject, mockSwap, summaryForLifecycle} from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  summaryForLifecycle,
+} from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectStatus", () => {
