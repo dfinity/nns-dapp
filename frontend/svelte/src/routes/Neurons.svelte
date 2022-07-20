@@ -1,19 +1,22 @@
 <script lang="ts">
+  import { Principal } from "@dfinity/principal";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
-  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
   import {
     DFX_NETWORK,
     ENABLE_SNS_NEURONS,
   } from "../lib/constants/environment.constants";
   import NnsNeurons from "../lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "../lib/pages/SnsNeurons.svelte";
-  import { snsProjectSelectedStore } from "../lib/stores/projects.store";
+  import {
+    isNnsProjectStore,
+    snsProjectSelectedStore,
+  } from "../lib/stores/projects.store";
 
   let selectedCanisterId: string | undefined = undefined;
   $: {
     if (selectedCanisterId !== undefined) {
-      snsProjectSelectedStore.set(selectedCanisterId);
+      snsProjectSelectedStore.set(Principal.fromText(selectedCanisterId));
     }
   }
 </script>
@@ -28,8 +31,7 @@
       </div>
     </div>
   {/if}
-  <!-- Default value is OWN_CANISTER_ID -->
-  {#if $snsProjectSelectedStore === OWN_CANISTER_ID.toText()}
+  {#if $isNnsProjectStore}
     <NnsNeurons />
   {:else if $snsProjectSelectedStore !== undefined}
     <SnsNeurons rootCanisterId={$snsProjectSelectedStore} />
@@ -42,7 +44,7 @@
     justify-content: center;
     align-items: center;
 
-    margin: var(--padding-2x) 0;
+    margin-top: var(--padding-2x);
 
     .fit-content {
       width: fit-content;

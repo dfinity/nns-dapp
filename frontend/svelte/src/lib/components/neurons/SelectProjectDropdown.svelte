@@ -26,10 +26,14 @@
     name: string;
     canisterId: string;
   };
-  let selectableProjects: SelectableProject[] = [];
+  const nnsProject = {
+    name: $i18n.core.nns,
+    canisterId: OWN_CANISTER_ID.toText(),
+  };
+  let selectableProjects: SelectableProject[] = [nnsProject];
   const unsubscribe = committedProjectsStore.subscribe((projects) => {
     selectableProjects = [
-      { name: $i18n.core.nns, canisterId: OWN_CANISTER_ID.toText() },
+      nnsProject,
       ...(projects?.map(({ rootCanisterId, summary: { name } }) => ({
         name,
         canisterId: rootCanisterId.toText(),
