@@ -14,10 +14,10 @@ import type {
 import type { Account } from "../types/account";
 import { digestText } from "../utils/dev.utils";
 import { mapTransaction } from "../utils/transactions.utils";
-import { isNullable, mapPromises, nonNullable } from "./utils";
+import { isNullish, mapPromises, nonNullish } from "./utils";
 
 const anonymiseAvailability = (value: unknown): "yes" | "no" =>
-  nonNullable(value) ? "yes" : "no";
+  nonNullish(value) ? "yes" : "no";
 
 export const anonymize = async (value: unknown): Promise<string | undefined> =>
   value === undefined ? undefined : digestText(`${value}`);
@@ -207,7 +207,7 @@ export const anonymizeCanister = async (
 ): Promise<
   undefined | { [key in keyof Required<CanisterDetails>]: unknown }
 > => {
-  if (isNullable(canister)) {
+  if (isNullish(canister)) {
     return canister;
   }
 
@@ -230,7 +230,7 @@ export const anonymizeTransaction = async ({
 }): Promise<
   undefined | { [key in keyof Required<Transaction>]: unknown } | "no account"
 > => {
-  if (isNullable(transaction)) {
+  if (isNullish(transaction)) {
     return transaction;
   }
 

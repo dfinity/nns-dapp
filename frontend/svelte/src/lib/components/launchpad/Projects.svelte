@@ -16,7 +16,7 @@
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import { isNullable } from "../../utils/utils";
+  import { isNullish } from "../../utils/utils";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
 
@@ -28,7 +28,7 @@
 
   let loading: boolean = false;
   $: loading =
-    isNullable($snsSummariesStore) || isNullable($snsSwapCommitmentsStore);
+    isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
 
   // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
   const goBack = () =>
