@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Principal } from "@dfinity/principal";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
   import {
@@ -12,13 +11,6 @@
     isNnsProjectStore,
     snsProjectSelectedStore,
   } from "../lib/stores/projects.store";
-
-  let selectedCanisterId: string | undefined = undefined;
-  $: {
-    if (selectedCanisterId !== undefined) {
-      snsProjectSelectedStore.set(Principal.fromText(selectedCanisterId));
-    }
-  }
 </script>
 
 <MainContentWrapper>
@@ -27,7 +19,7 @@
   {#if ENABLE_SNS_NEURONS && DFX_NETWORK !== "local"}
     <div class="dropdown-wrapper">
       <div class="fit-content">
-        <SelectProjectDropdown bind:selectedCanisterId />
+        <SelectProjectDropdown />
       </div>
     </div>
   {/if}

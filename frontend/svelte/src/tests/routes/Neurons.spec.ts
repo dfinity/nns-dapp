@@ -5,7 +5,10 @@
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "../../lib/stores/projects.store";
+import {
+  committedProjectsStore,
+  snsProjectSelectedStore,
+} from "../../lib/stores/projects.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
   mockProjectSubscribe,
@@ -22,6 +25,11 @@ describe("Neurons", () => {
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+  beforeEach(() => {
+    // Reset to default value
+    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+  });
 
   it("should render NnsNeurons by default", () => {
     const { queryByTestId } = render(Neurons);

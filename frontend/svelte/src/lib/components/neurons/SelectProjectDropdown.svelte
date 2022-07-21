@@ -1,14 +1,18 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import { Principal } from "@dfinity/principal";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
   import { loadSnsSummaries } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
-  import { committedProjectsStore } from "../../stores/projects.store";
+  import {
+    committedProjectsStore,
+    snsProjectSelectedStore,
+  } from "../../stores/projects.store";
   import { toastsStore } from "../../stores/toasts.store";
   import Dropdown from "../ui/Dropdown.svelte";
   import DropdownItem from "../ui/DropdownItem.svelte";
 
-  export let selectedCanisterId: string | undefined = undefined;
+  let selectedCanisterId: string | undefined;
 
   onMount(() => {
     // TODO: https://dfinity.atlassian.net/browse/L2-878
@@ -19,8 +23,14 @@
         });
       },
     });
-    selectedCanisterId = OWN_CANISTER_ID.toText();
+    selectedCanisterId = $snsProjectSelectedStore.toText();
   });
+
+  $: {
+    if (selectedCanisterId !== undefined) {
+      snsProjectSelectedStore.set(Principal.fromText(selectedCanisterId));
+    }
+  }
 
   type SelectableProject = {
     name: string;

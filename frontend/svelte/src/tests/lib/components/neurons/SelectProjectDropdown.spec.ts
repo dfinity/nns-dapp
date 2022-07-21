@@ -1,11 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import SelectProjectDropdown from "../../../../lib/components/neurons/SelectProjectDropdown.svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
 import { loadSnsSummaries } from "../../../../lib/services/sns.services";
-import { committedProjectsStore } from "../../../../lib/stores/projects.store";
+import {
+  committedProjectsStore,
+  snsProjectSelectedStore,
+} from "../../../../lib/stores/projects.store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -21,6 +25,11 @@ describe("SelectProjectDropdown", () => {
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+  beforeEach(() => {
+    // Reset to default value
+    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+  });
 
   it("should load sns summaries", () => {
     render(SelectProjectDropdown);
@@ -55,5 +64,24 @@ describe("SelectProjectDropdown", () => {
       });
 
     selectElement && expect(selectElement.value).toBe(projectCanisterId);
+  });
+
+  it("changes in dropdown are propagated to the snsProjectSelectedStore", async () => {
+    const { container } = render(SelectProjectDropdown);
+
+    const $store1 = get(snsProjectSelectedStore);
+    expect($store1.toText()).toEqual(OWN_CANISTER_ID.toText());
+
+    const selectElement = container.querySelector("select");
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
+
+    await waitFor(() => {
+      const $store2 = get(snsProjectSelectedStore);
+      return expect($store2.toText()).toEqual(projectCanisterId);
+    });
   });
 });
