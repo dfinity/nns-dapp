@@ -22,9 +22,22 @@ describe("Proposals", () => {
       ? snsProposalsStore.setLoadingState()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
+  beforeEach(snsProposalsStore.reset);
+
   afterAll(jest.clearAllMocks);
 
   it("should trigger listSnsProposals", () => {
+    render(Proposals);
+
+    expect(listSnsProposals).toBeCalled();
+  });
+
+  it("should not trigger listSnsProposals if already loaded", () => {
+    snsProposalsStore.setProposals({
+      proposals: [],
+      certified: true,
+    });
+
     render(Proposals);
 
     expect(listSnsProposals).toBeCalled();
