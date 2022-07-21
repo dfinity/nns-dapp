@@ -4,7 +4,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { isProposalOpenForVotes } from "../utils/proposals.utils";
-import { isNullable } from "../utils/utils";
+import { isNullish } from "../utils/utils";
 
 export type SnsSummariesStore =
   | {
@@ -69,7 +69,7 @@ const initSnsProposalsStore = () => {
 
 const initOpenForVotesSnsProposalsStore = () =>
   derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
-    isNullable($snsProposalsStore)
+    isNullish($snsProposalsStore)
       ? []
       : $snsProposalsStore.proposals.filter(isProposalOpenForVotes)
   );
@@ -197,25 +197,10 @@ const filterProjectsStore = ({
 export const openProjectsStore = derived(
   snsFullProjectsStore,
   ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
-    // TODO: redo after demo
-    // filterProjectsStore({
-    //   swapLifecycle: SnsSwapLifecycle.Open,
-    //   $snsFullProjectsStore,
-    // })
-    $snsFullProjectsStore === undefined
-      ? undefined
-      : $snsFullProjectsStore.filter(
-          ({
-            summary: {
-              swap: {
-                state: { lifecycle, open_time_window },
-              },
-            },
-          }) =>
-            lifecycle === SnsSwapLifecycle.Open ||
-            (lifecycle === SnsSwapLifecycle.Pending &&
-              open_time_window.length > 0)
-        )
+    filterProjectsStore({
+      swapLifecycle: SnsSwapLifecycle.Open,
+      $snsFullProjectsStore,
+    })
 );
 
 export const committedProjectsStore = derived(
