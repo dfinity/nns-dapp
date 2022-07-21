@@ -15,32 +15,41 @@
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY
   );
-  const { store, onTransactionComplete, back }: TransactionContext = context;
+  const {
+    store,
+    onTransactionComplete,
+    validateTransaction,
+    back,
+  }: TransactionContext = context;
 
   let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
 
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    startBusy({
-      initiator: "accounts",
-      ...(isAccountHardwareWallet($store.selectedAccount) && {
-        labelKey: "busy_screen.pending_approval_hw",
-      }),
-    });
+    if (validateTransaction === undefined || validateTransaction($store)) {
+      startBusy({
+        initiator: "accounts",
+        ...(isAccountHardwareWallet($store.selectedAccount) && {
+          labelKey: "busy_screen.pending_approval_hw",
+        }),
+      });
 
-    const { success } = await transferICP($store);
+      const { success } = await transferICP($store);
 
-    if (success) {
-      await onTransactionComplete?.();
-      toastsStore.success({ labelKey: "accounts.transaction_success" });
-    }
+      if (success) {
+        await onTransactionComplete?.();
+        toastsStore.success({ labelKey: "accounts.transaction_success" });
+      }
 
-    stopBusy("accounts");
+      stopBusy("accounts");
 
-    // We close the modal in case of success or error if the selected source is not a hardware wallet.
-    // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isAccountHardwareWallet($store.selectedAccount)) {
+      // We close the modal in case of success or error if the selected source is not a hardware wallet.
+      // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
+      if (success || !isAccountHardwareWallet($store.selectedAccount)) {
+        dispatcher("nnsClose");
+      }
+    } else {
       dispatcher("nnsClose");
     }
   };
