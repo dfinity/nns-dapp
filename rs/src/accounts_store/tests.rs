@@ -380,7 +380,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(transfer, neuron_memo, block_height, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            transfer,
+            neuron_memo,
+            block_height,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -413,7 +418,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup1, Memo(0), block_height + 2, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            topup1,
+            Memo(0),
+            block_height + 2,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -427,7 +437,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup2, Memo(0), block_height + 3, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            topup2,
+            Memo(0),
+            block_height + 3,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -451,7 +466,12 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(transfer, neuron_memo, block_height, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            transfer,
+            neuron_memo,
+            block_height,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -466,7 +486,12 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     };
     let previous_transaction_count = store.transactions.len();
     store
-        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            topup,
+            Memo(0),
+            block_height + 1,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
 
     // No new transaction should have been added, but the neuron should be queued for refreshing
@@ -527,7 +552,12 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp::from_nanos_since_unix_epoch(100))
+        .append_transaction(
+            topup,
+            Memo(0),
+            block_height + 1,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
