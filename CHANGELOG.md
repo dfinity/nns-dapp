@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal XXX
+TODO: Copy from proposal
 
 ## Proposal 71197
 * Maturity modulation when spawning a new neuron.
