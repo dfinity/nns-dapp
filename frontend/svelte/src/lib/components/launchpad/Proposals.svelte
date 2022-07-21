@@ -6,13 +6,13 @@
     openForVotesSnsProposalsStore,
     snsProposalsStore,
   } from "../../stores/projects.store";
-  import { isNullable } from "../../utils/utils";
+  import { isNullish } from "../../utils/utils";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
   import ProposalCard from "./ProposalCard.svelte";
 
   let loading: boolean = false;
-  $: loading = isNullable($snsProposalsStore);
+  $: loading = isNullish($snsProposalsStore);
 
   const load = () => {
     if ($snsProposalsStore === undefined) {

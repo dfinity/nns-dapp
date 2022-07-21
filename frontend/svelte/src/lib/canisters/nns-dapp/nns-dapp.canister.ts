@@ -2,7 +2,7 @@ import { Actor } from "@dfinity/agent";
 import type { ProposalId } from "@dfinity/nns";
 import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { nonNullable } from "../../utils/utils";
+import { nonNullish } from "../../utils/utils";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
@@ -331,8 +331,7 @@ export class NNSDappCanister {
     }
 
     throw new UnknownProposalPayloadError(
-      errorText ??
-        (nonNullable(response) ? JSON.stringify(response) : undefined)
+      errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
     );
   }
 }

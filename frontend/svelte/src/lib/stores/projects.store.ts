@@ -4,7 +4,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { isProposalOpenForVotes } from "../utils/proposals.utils";
-import { isNullable } from "../utils/utils";
+import { isNullish } from "../utils/utils";
 
 export type SnsSummariesStore =
   | {
@@ -69,7 +69,7 @@ const initSnsProposalsStore = () => {
 
 const initOpenForVotesSnsProposalsStore = () =>
   derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
-    isNullable($snsProposalsStore)
+    isNullish($snsProposalsStore)
       ? []
       : $snsProposalsStore.proposals.filter(isProposalOpenForVotes)
   );
