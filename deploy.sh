@@ -48,6 +48,15 @@ help_text() {
 	--dry-run
 	  Print the steps that seem to be necessary for deployment.
 
+	--delete
+	  Delete network entries before deploying.
+
+	--delete-canister-ids
+	  Delete canister_id.json entries for the network before deploying.
+
+	--delete-wallet
+	  Delete wallet for the network before deploying.
+
 	--start
 	  Start dfx in the background.
 
@@ -82,6 +91,8 @@ DFX_NETWORK=local                      # which network to deploy to
 CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
+DELETE_CANISTER_IDS="false"
+DELETE_WALLET="false"
 START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
@@ -98,6 +109,19 @@ while (($# > 0)); do
   --help)
     help_text | "${PAGER:-less}"
     exit 0
+    ;;
+  --delete)
+    GUESS="false"
+    DELETE_CANISTER_IDS="true"
+    DELETE_WALLET="true"
+    ;;
+  --delete-canister-ids)
+    GUESS="false"
+    DELETE_CANISTER_IDS="true"
+    ;;
+  --delete-wallet)
+    GUESS="false"
+    DELETE_WALLET="true"
     ;;
   --start)
     GUESS="false"
@@ -170,6 +194,8 @@ if [[ "$GUESS" == "true" ]]; then
 fi
 
 echo
+echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
+echo DELETE_WALLET=$DELETE_WALLET
 echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
@@ -192,6 +218,27 @@ echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
     exit 1
   }
 }
+
+if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
+  if test -e canister_ids.json; then
+    : Back up the canister_ids.json
+    cp canister_ids.json "canister_ids.json.$(date -Isecond -u | sed 's/+.*//g')"
+    echo "Deleting the entries for $DFX_NETWORK in canister_ids.json ..."
+    DFX_NETWORK="$DFX_NETWORK" jq 'map(del(.[env.DFX_NETWORK]))' <canister_ids.json >canister_ids.json.new
+    mv canister_ids.json.new canister_ids.json
+  fi
+fi
+
+if [[ "$DELETE_WALLET" == "true" ]]; then
+  WALLET_FILE="${HOME}/.config/dfx/identity/$(dfx identity whoami)/wallets.json"
+  if test -e "$WALLET_FILE"; then
+    : Back up wallet
+    cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
+    echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
+    DFX_NETWORK="$DFX_NETWORK" jq 'del(.identities.default[env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
+    mv "${WALLET_FILE}.new" "${WALLET_FILE}"
+  fi
+fi
 
 if [[ "$START_DFX" == "true" ]]; then
   echo
