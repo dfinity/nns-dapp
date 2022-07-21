@@ -1,5 +1,7 @@
-import { Topic, type ProposalInfo } from "@dfinity/nns";
+import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import {
+  participateInSnsSwap,
   querySnsSummaries,
   querySnsSummary,
   querySnsSwapCommitment,
@@ -14,11 +16,13 @@ import {
   snsSwapCommitmentsStore,
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
+import { getAccountIdentity } from "./accounts.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -229,4 +233,31 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
     return undefined;
   }
   return getLastPathDetail(path);
+};
+
+export const participateInSwap = async ({
+  amount,
+  rootCanisterId,
+  account,
+}: {
+  amount: ICP;
+  rootCanisterId: Principal;
+  account: Account;
+}): Promise<{ success: boolean }> => {
+  try {
+    const accountIdentity = await getAccountIdentity(account.identifier);
+    await participateInSnsSwap({
+      identity: accountIdentity,
+      rootCanisterId,
+      amount,
+      controller: accountIdentity.getPrincipal(),
+      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
+    });
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+    console.log("in da participate error");
+    console.log(error);
+    return { success: false };
+  }
 };
