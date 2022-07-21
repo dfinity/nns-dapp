@@ -1,5 +1,4 @@
-import type { ProposalInfo } from "@dfinity/nns";
-import { mockProposalInfo } from "../../tests/mocks/proposal.mock";
+import { Topic, type ProposalInfo } from "@dfinity/nns";
 import {
   querySnsSummaries,
   querySnsSummary,
@@ -10,6 +9,7 @@ import {
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
+  snsProposalsStore,
   snsSummariesStore,
   snsSwapCommitmentsStore,
 } from "../stores/projects.store";
@@ -19,7 +19,7 @@ import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
-import { loadSnsProposals } from "./proposals.services";
+import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnResponse,
@@ -195,71 +195,40 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
-// TODO(L2-829): to be deleted
-const mockAbout5SecondsWaiting = <T>(generator: () => T): Promise<T> =>
-  new Promise((resolve) =>
-    setTimeout(
-      () => resolve(generator()),
-      Math.round((0.5 + Math.random() * 4.5) * 1000)
-    )
-  );
+export const listSnsProposals = async (): Promise<void> => {
+  snsProposalsStore.setLoadingState();
 
-export const listSnsProposals = async (): Promise<ProposalInfo[]> =>
-  mockAbout5SecondsWaiting(async () => {
-    // we need real testnet/mainnet ids to reach proposal details page
-    const realProposalIds = (await loadSnsProposals())?.map(({ id }) => id);
+  return queryAndUpdate<ProposalInfo[], unknown>({
+    request: ({ certified, identity }) =>
+      loadProposalsByTopic({
+        certified,
+        identity,
+        topic: Topic.SnsDecentralizationSale,
+      }),
+    onLoad: ({ response: proposals, certified }) =>
+      snsProposalsStore.setProposals({
+        proposals,
+        certified,
+      }),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
 
-    return [
-      {
-        ...mockProposalInfo,
-        id: realProposalIds?.[0] ?? BigInt(0),
-        proposal: {
-          ...mockProposalInfo.proposal,
-          title: "Project Lode Jogger",
-        },
-        latestTally: {
-          no: BigInt(400000000),
-          yes: BigInt(1600000000),
-        },
-      },
-      {
-        ...mockProposalInfo,
-        id: realProposalIds?.[1] ?? BigInt(1),
-        proposal: {
-          ...mockProposalInfo.proposal,
-          title: "Project ExciteBicycle",
-        },
-        latestTally: {
-          no: BigInt(100000000),
-          yes: BigInt(2000000000),
-        },
-      },
-      {
-        ...mockProposalInfo,
-        id: realProposalIds?.[2] ?? BigInt(2),
-        proposal: {
-          ...mockProposalInfo.proposal,
-          title: "Project The Amazing Bug-Man",
-        },
-        latestTally: {
-          no: BigInt(900000000),
-          yes: BigInt(10000000),
-        },
-      },
-      {
-        ...mockProposalInfo,
-        id: realProposalIds?.[3] ?? BigInt(3),
-        proposal: {
-          ...mockProposalInfo.proposal,
-          title: "Project Street Conflicter",
-        },
-        latestTally: {
-          no: BigInt(500000000),
-          yes: BigInt(500000000),
-        },
-      },
-    ] as ProposalInfo[];
+      if (certified !== true) {
+        return;
+      }
+
+      // TODO(L2-839): reset and clear stores
+
+      toastsStore.error(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.proposal_not_found",
+        })
+      );
+    },
+    logMessage: "Syncing Sns proposals",
   });
+};
 
 export const routePathRootCanisterId = (path: string): string | undefined => {
   if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {

@@ -5,9 +5,11 @@
   import { secondsToDuration } from "../../utils/date.utils";
   import {
     getDissolvingTimeInSeconds,
+    getSpawningTimeInSeconds,
     getStateInfo,
     hasJoinedCommunityFund,
     isHotKeyControllable,
+    isSpawning,
     neuronStake,
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
@@ -16,6 +18,7 @@
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
+  import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -23,7 +26,7 @@
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
-  export let disabled: boolean | undefined = undefined;
+  export let disabled: boolean = false;
 
   // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo | undefined;
@@ -40,7 +43,14 @@
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getDissolvingTimeInSeconds(neuron);
 
+  let spawningTime: bigint | undefined;
+  $: spawningTime = getSpawningTimeInSeconds(neuron);
+
   export let cardType: CardType = "card";
+
+  let iconStyle: string;
+  $: iconStyle =
+    stateInfo?.color !== undefined ? `color: ${stateInfo.color};` : "";
 </script>
 
 <NeuronCardContainer
@@ -63,7 +73,9 @@
   </div>
 
   <div slot="end" class="currency">
-    {#if proposerNeuron}
+    {#if isSpawning(neuron)}
+      <IconStackedLineChart />
+    {:else if proposerNeuron}
       <ICPComponent
         label={$i18n.neurons.voting_power}
         icp={ICP.fromE8s(neuron.votingPower)}
@@ -76,12 +88,7 @@
 
   {#if stateInfo !== undefined}
     <div class="info">
-      <p
-        style={stateInfo.status === "warn"
-          ? `color: var(--warning-emphasis);`
-          : ""}
-        class="status"
-      >
+      <p style={iconStyle} class="status">
         {$i18n.neurons[`status_${stateInfo.textKey}`]}
         <svelte:component this={stateInfo.Icon} />
       </p>
@@ -92,6 +99,14 @@
     <p class="duration">
       {replacePlaceholders($i18n.neurons.remaining, {
         $duration: secondsToDuration(dissolvingTime),
+      })}
+    </p>
+  {/if}
+
+  {#if spawningTime !== undefined}
+    <p class="duration">
+      {replacePlaceholders($i18n.neurons.remaining, {
+        $duration: secondsToDuration(spawningTime),
       })}
     </p>
   {/if}

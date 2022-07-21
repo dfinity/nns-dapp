@@ -295,6 +295,35 @@ const makeRewardNodeProviderDummyProposal = ({
   },
 });
 
+const MS_IN_A_DAY = 24 * 60 * 60 * 1000;
+const makeSnsDecentralizationSaleDummyProposalRequest = ({
+  title,
+  url,
+  summary,
+  neuronId,
+}) => ({
+  neuronId,
+  title,
+  url: url,
+  summary: summary,
+  action: {
+    SetSnsTokenSwapOpenTimeWindow: {
+      // TODO: update swap canister id
+      swapCanisterId: "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+      request: {
+        openTimeWindow: {
+          startTimestampSeconds: BigInt(
+            Math.round((Date.now() + 1000 * 60) / 1000)
+          ),
+          endTimestampSeconds: BigInt(
+            Math.round((Date.now() + MS_IN_A_DAY + MS_IN_A_DAY * 5) / 1000)
+          ),
+        },
+      },
+    },
+  },
+});
+
 const makeExecuteNnsFunctionDummyProposalRequest = ({
   title,
   url,
@@ -410,6 +439,15 @@ export const makeDummyProposals = async ({ neuronId, canister }) => {
   try {
     // Used only on testnet
     // We do one by one, in case one fails, we don't do the others.
+    const request0 = makeSnsDecentralizationSaleDummyProposalRequest({
+      title: "Test sns proposal title",
+      neuronId,
+      url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
+      summary: DEMO_SUMMARY,
+    });
+    console.log("SnsDecentralizationSale Proposal...");
+    await canister.makeProposal(request0);
+
     const request1 = makeMotionDummyProposalRequest({
       title:
         "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",

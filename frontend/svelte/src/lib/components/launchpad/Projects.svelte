@@ -67,7 +67,7 @@
     {/each}
   </CardGrid>
   {#if projects.length === 0}
-    <p>{$i18n.sns_launchpad.no_projects}</p>
+    <p class="no-projects">{$i18n.sns_launchpad.no_projects}</p>
   {/if}
 {/if}
 
@@ -75,5 +75,10 @@
   // match page spinner
   div {
     color: rgba(var(--background-contrast-rgb), var(--very-light-opacity));
+  }
+
+  .no-projects {
+    text-align: center;
+    margin: var(--padding-2x) 0;
   }
 </style>

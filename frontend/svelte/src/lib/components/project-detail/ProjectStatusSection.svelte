@@ -6,12 +6,11 @@
   import { secondsToDuration } from "../../utils/date.utils";
   import { nowInSeconds } from "../../utils/neuron.utils";
   import Icp from "../ic/ICP.svelte";
-  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
-  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
+  import ProjectCommitment from "./ProjectCommitment.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -25,14 +24,12 @@
   let summary: SnsSummary;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
+
   let swapCommitment: SnsSwapCommitment;
   $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
 
   const nowSeconds: number = nowInSeconds();
-  let currentCommitment: bigint;
-  $: currentCommitment = swapCommitment?.currentCommitment ?? BigInt(0);
-  let currentCommitmentIcp: ICP;
-  $: currentCommitmentIcp = ICP.fromE8s(currentCommitment);
+
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
     swapCommitment?.myCommitment !== undefined
@@ -63,22 +60,8 @@
     <ProjectStatus />
 
     <div class="content">
-      <KeyValuePair testId="sns-project-current-commitment">
-        <InfoContextKey slot="key">
-          <svelte:fragment slot="header"
-            >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
-          >
-          <p>Some details about what the current commitment means.</p>
-        </InfoContextKey>
-        <Icp slot="value" icp={currentCommitmentIcp} singleLine />
-      </KeyValuePair>
-      <div data-tid="sns-project-commitment-progress">
-        <CommitmentProgressBar
-          value={currentCommitment}
-          max={summary.maxCommitment}
-          minimumIndicator={summary.minCommitment}
-        />
-      </div>
+      <ProjectCommitment />
+
       {#if durationTillDeadline > 0}
         <div>
           <ProgressBar

@@ -1,10 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import {
+import type {
+  NeuronId,
+  ProposalId,
+  ProposalInfo,
   Topic,
-  type NeuronId,
-  type ProposalId,
-  type ProposalInfo,
-  type Vote,
+  Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
@@ -161,15 +161,20 @@ const findProposals = async ({
   });
 };
 
-// Simplified demo function because currently it's not clear which proposal type and which store will be used.
 // TODO L2-751: switch to real data
-export const loadSnsProposals = async (): Promise<ProposalInfo[]> => {
-  const identity: Identity = await getIdentity();
+export const loadProposalsByTopic = async ({
+  topic,
+  certified,
+  identity,
+}: {
+  topic: Topic;
+  certified: boolean;
+  identity: Identity;
+}): Promise<ProposalInfo[]> => {
   const filters: ProposalsFiltersStore = {
     ...get(proposalsFiltersStore),
-    topics: [Topic.Governance],
+    topics: [topic],
     rewards: [],
-    // rewards: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES],
     status: [],
     excludeVotedProposals: false,
     lastAppliedFilter: undefined,
@@ -179,7 +184,7 @@ export const loadSnsProposals = async (): Promise<ProposalInfo[]> => {
     beforeProposal: undefined,
     identity,
     filters,
-    certified: false,
+    certified,
   });
 };
 

@@ -1,6 +1,14 @@
 # Changelog
 
-## Proposal XXXX
+
+## Proposal 71197
+* Maturity modulation when spawning a new neuron.
+* UI improvements in the modals.
+* Add new SNS Proposal topic.
+* Make voting for proposals available till duration expires
+* Scope proposal detail data load to improve UX navigation between proposals
+
+## Proposal 70821
 * e2e tests: Update the way SNS is deployed to the current standard, which is via the wasm canister.
 * Update dfx to version 0.11.0-beta.1
 * User can leave community fund.

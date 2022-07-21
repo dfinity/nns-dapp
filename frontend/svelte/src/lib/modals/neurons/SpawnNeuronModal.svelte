@@ -15,6 +15,8 @@
   import { startBusyNeuron } from "../../services/busy.services";
   import { ENABLE_NEW_SPAWN_FEATURE } from "../../constants/environment.constants";
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
+  import { routeStore } from "../../stores/route.store";
+  import { AppPath } from "../../constants/routes.constants";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -66,17 +68,22 @@
   const spawnNeuronFromMaturity = async () => {
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
 
-    const { success } = await spawnNeuron({
+    const newNeuronId = await spawnNeuron({
       neuronId: neuron.neuronId,
       percentageToSpawn: controlledByHarwareWallet
         ? undefined
         : percentageToSpawn,
     });
-    if (success) {
-      toastsStore.success({
+    if (newNeuronId !== undefined) {
+      toastsStore.show({
+        level: "success",
         labelKey: "neuron_detail.spawn_maturity_success",
+        substitutions: {
+          $neuronId: String(newNeuronId),
+        },
       });
       close();
+      routeStore.navigate({ path: AppPath.Neurons });
     }
 
     stopBusy("spawn-neuron");
@@ -115,9 +122,14 @@
       disabled={!enoughMaturityToSpawn}
     >
       <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
-      <p slot="description">
-        {@html $i18n.neuron_detail.spawn_maturity_explanation}
-      </p>
+      <div slot="description">
+        <p>
+          {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
+        </p>
+        <p>
+          {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
+        </p>
+      </div>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn" && ENABLE_NEW_SPAWN_FEATURE}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
