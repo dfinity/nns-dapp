@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { busy, busyMessageKey } from "../../stores/busy.store";
-  import { triggerDebugReport } from "../../utils/dev.utils";
+  import { triggerDebugReport } from "../../services/debug.services";
   import { translate } from "../../utils/i18n.utils";
   import Spinner from "./Spinner.svelte";
 </script>

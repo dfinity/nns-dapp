@@ -1,6 +1,8 @@
 import { get } from "svelte/store";
 import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
+import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { initDebugStore } from "../stores/debug.store";
+import { i18n } from "../stores/i18n";
 import {
   anonymizeAccount,
   anonymizeCanister,
@@ -11,8 +13,10 @@ import {
   anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
+import { enumKeys } from "../utils/enum.utils";
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
+import { claimSeedNeurons } from "./seed-neurons.services";
 
 /**
  * c - pseudo-anonymised stringified -> console
@@ -28,6 +32,54 @@ export enum LogType {
   File = "f",
   FileOriginal = "fo",
   ClaimNeurons = "cn",
+}
+
+/**
+ * Action function to bind debug logger tigger to the node (6 clicks in 2 seconds)
+ */
+export function triggerDebugReport(node: HTMLElement) {
+  const TWO_SECONDS = 2 * 1000;
+  const originalTouchActionValue: string = node.style.touchAction;
+
+  let startTime: number = 0;
+  let count = 0;
+
+  const click = () => {
+    const now = Date.now();
+
+    if (now - startTime <= TWO_SECONDS) {
+      count++;
+
+      if (count === 5) {
+        const logType: LogType = prompt(get(i18n).core.log) as LogType;
+
+        // input validation
+        if (!enumKeys(LogType).includes(logType)) {
+          return;
+        }
+
+        if (LogType.ClaimNeurons === logType) {
+          claimSeedNeurons();
+          return;
+        }
+
+        generateDebugLogProxy(logType);
+      }
+    } else {
+      startTime = now;
+      count = 0;
+    }
+  };
+
+  node.style.touchAction = "manipulation";
+  node.addEventListener("click", click, { passive: true });
+
+  return {
+    destroy() {
+      node.style.touchAction = originalTouchActionValue;
+      node.removeEventListener("click", click, false);
+    },
+  };
 }
 
 const anonymiseStoreState = async () => {
