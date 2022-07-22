@@ -132,14 +132,14 @@ export const bytesToHexString = (bytes: number[]): string =>
   );
 
 /** Is null or undefined */
-export const isNullable = <T>(
+export const isNullish = <T>(
   argument: T | undefined | null
 ): argument is undefined | null => argument === null || argument === undefined;
 
 /** Not null and not undefined */
-export const nonNullable = <T>(
+export const nonNullish = <T>(
   argument: T | undefined | null
-): argument is NonNullable<T> => !isNullable(argument);
+): argument is NonNullable<T> => !isNullish(argument);
 
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,

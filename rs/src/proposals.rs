@@ -1,13 +1,14 @@
 use crate::proposals::def::{
     AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
     AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, BlessReplicaVersionPayload,
-    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, CreateSubnetPayload, RecoverSubnetPayload,
-    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable,
-    RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangePayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload,
-    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
-    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload,
-    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
+    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, CompleteCanisterMigrationPayload, CreateSubnetPayload,
+    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
+    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
+    RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
+    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
+    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
+    UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
+    UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -116,10 +117,12 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         21 => identity::<AddOrRemoveDataCentersProposalPayload>(payload_bytes),
         22 => identity::<UpdateUnassignedNodesConfigPayload>(payload_bytes),
         23 => transform::<RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable>(payload_bytes),
-        24 => identity::<RerouteCanisterRangePayload>(payload_bytes),
+        24 => identity::<RerouteCanisterRangesPayload>(payload_bytes),
         25 => identity::<AddFirewallRulesPayload>(payload_bytes),
         26 => identity::<RemoveFirewallRulesPayload>(payload_bytes),
         27 => identity::<UpdateFirewallRulesPayload>(payload_bytes),
+        28 => identity::<PrepareCanisterMigrationPayload>(payload_bytes),
+        29 => identity::<CompleteCanisterMigrationPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -345,9 +348,9 @@ mod def {
     }
 
     // NNS function 24 - RerouteCanisterRange
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/reroute_canister_range.rs#L46
-    pub type RerouteCanisterRangePayload =
-        registry_canister::mutations::reroute_canister_range::RerouteCanisterRangePayload;
+    // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66
+    pub type RerouteCanisterRangesPayload =
+        registry_canister::mutations::reroute_canister_ranges::RerouteCanisterRangesPayload;
 
     // NNS function 25 - AddFirewallRules
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L218
@@ -360,6 +363,16 @@ mod def {
     // NNS function 27 - UpdateFirewallRules
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L246
     pub type UpdateFirewallRulesPayload = registry_canister::mutations::firewall::UpdateFirewallRulesPayload;
+
+    // NNS function 28 - PrepareCanisterMigration
+    // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67
+    pub type PrepareCanisterMigrationPayload =
+        registry_canister::mutations::prepare_canister_migration::PrepareCanisterMigrationPayload;
+
+    // NNS function 29 - CompleteCanisterMigration
+    // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34
+    pub type CompleteCanisterMigrationPayload =
+        registry_canister::mutations::complete_canister_migration::CompleteCanisterMigrationPayload;
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>

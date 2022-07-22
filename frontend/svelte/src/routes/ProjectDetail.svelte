@@ -27,7 +27,7 @@
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "../lib/types/project-detail.context";
-  import { isNullable, nonNullable } from "../lib/utils/utils";
+  import { isNullish, nonNullish } from "../lib/utils/utils";
   import { writable } from "svelte/store";
   import { concatSnsSummary } from "../lib/utils/sns.utils";
 
@@ -83,7 +83,7 @@
   };
 
   const loadSwapState = (rootCanisterId: string) => {
-    if (nonNullable($snsSwapCommitmentsStore)) {
+    if (nonNullish($snsSwapCommitmentsStore)) {
       // try to get from snsSwapStatesStore
       const swapItemMaybe = $snsSwapCommitmentsStore.find(
         (item) =>
@@ -139,9 +139,9 @@
   $: layoutTitleStore.set($projectDetailStore?.summary?.name ?? "");
 
   let loadingSummary: boolean;
-  $: loadingSummary = isNullable($projectDetailStore.summary);
+  $: loadingSummary = isNullish($projectDetailStore.summary);
   let loadingSwapState: boolean;
-  $: loadingSwapState = isNullable($projectDetailStore.swapCommitment);
+  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
 
   // TODO(L2-838): if error redirect to launchpad and display error there
 </script>

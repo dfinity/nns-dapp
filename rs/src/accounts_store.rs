@@ -10,11 +10,12 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
+use ic_ledger_core::timestamp::TimeStamp;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use itertools::Itertools;
 use ledger_canister::Operation::{self, Burn, Mint, Transfer};
-use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, TimeStamp, Tokens};
+use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
@@ -852,9 +853,11 @@ impl AccountsStore {
             hardware_wallet_accounts_count: self.hardware_wallet_accounts_count,
             transactions_count: self.transactions.len() as u64,
             block_height_synced_up_to: self.block_height_synced_up_to,
-            earliest_transaction_timestamp_nanos: earliest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
+            earliest_transaction_timestamp_nanos: earliest_transaction
+                .map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch()),
             earliest_transaction_block_height: earliest_transaction.map_or(0, |t| t.block_height),
-            latest_transaction_timestamp_nanos: latest_transaction.map_or(0, |t| t.timestamp.timestamp_nanos),
+            latest_transaction_timestamp_nanos: latest_transaction
+                .map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch()),
             latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
             seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
             neurons_created_count: self.neuron_accounts.len() as u64,

@@ -4,8 +4,8 @@ import {
   debounce,
   isDefined,
   isHash,
-  isNullable,
-  nonNullable,
+  isNullish,
+  nonNullish,
   poll,
   PollingLimitExceededError,
   smallerVersion,
@@ -171,25 +171,25 @@ describe("utils", () => {
     });
   });
 
-  describe("isNullable", () => {
+  describe("isNullish", () => {
     it("should determine nullable", () => {
-      expect(isNullable(null)).toBeTruthy();
-      expect(isNullable(undefined)).toBeTruthy();
-      expect(isNullable(0)).toBeFalsy();
-      expect(isNullable(1)).toBeFalsy();
-      expect(isNullable("")).toBeFalsy();
-      expect(isNullable([])).toBeFalsy();
+      expect(isNullish(null)).toBeTruthy();
+      expect(isNullish(undefined)).toBeTruthy();
+      expect(isNullish(0)).toBeFalsy();
+      expect(isNullish(1)).toBeFalsy();
+      expect(isNullish("")).toBeFalsy();
+      expect(isNullish([])).toBeFalsy();
     });
   });
 
-  describe("nonNullable", () => {
+  describe("nonNullish", () => {
     it("should determine not nullable", () => {
-      expect(nonNullable(null)).toBeFalsy();
-      expect(nonNullable(undefined)).toBeFalsy();
-      expect(nonNullable(0)).toBeTruthy();
-      expect(nonNullable(1)).toBeTruthy();
-      expect(nonNullable("")).toBeTruthy();
-      expect(nonNullable([])).toBeTruthy();
+      expect(nonNullish(null)).toBeFalsy();
+      expect(nonNullish(undefined)).toBeFalsy();
+      expect(nonNullish(0)).toBeTruthy();
+      expect(nonNullish(1)).toBeTruthy();
+      expect(nonNullish("")).toBeTruthy();
+      expect(nonNullish([])).toBeTruthy();
     });
   });
 
