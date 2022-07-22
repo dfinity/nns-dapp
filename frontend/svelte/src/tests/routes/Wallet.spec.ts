@@ -158,6 +158,7 @@ describe("Wallet", () => {
             accountIdentifier: mockMainAccount.identifier,
             transactions: [
               mockSentToSubAccountTransaction,
+              mockSentToSubAccountTransaction,
               mockReceivedFromMainAccountTransaction,
             ],
           });
@@ -167,7 +168,7 @@ describe("Wallet", () => {
 
       afterAll(() => jest.clearAllMocks());
 
-      it("should render transactions", async () => {
+      it("should render unique transactions", async () => {
         const { queryAllByTestId } = render(Wallet);
         expect(queryAllByTestId("transaction-card").length).toBe(2);
       });
