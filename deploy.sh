@@ -309,7 +309,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
     idl2json |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
-    jq -s '.[0] * .[1]' - canister_ids.json >canister_ids.json.new
+    jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
 fi
 
