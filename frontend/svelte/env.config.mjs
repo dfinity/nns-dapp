@@ -77,6 +77,7 @@ const DFX_NETWORK = getRequiredEnvVar("DFX_NETWORK");
 const FETCH_ROOT_KEY = getRequiredEnvVar("FETCH_ROOT_KEY");
 // ... Whether to enable some features
 const ENABLE_NEW_SPAWN_FEATURE = getRequiredEnvVar("ENABLE_NEW_SPAWN_FEATURE");
+const ENABLE_SNS_NEURONS = getRequiredEnvVar("ENABLE_SNS_NEURONS");
 
 export const envConfig = {
   ENVIRONMENT,
@@ -95,6 +96,7 @@ export const envConfig = {
   ROLLUP_WATCH,
   ENABLE_NEW_SPAWN_FEATURE,
   WASM_CANISTER_ID,
+  ENABLE_SNS_NEURONS,
 };
 
 // Note: This is a useful printout at build time.  Please do not remove.
