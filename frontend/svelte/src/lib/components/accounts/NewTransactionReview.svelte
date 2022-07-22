@@ -29,7 +29,11 @@
   const executeTransaction = async () => {
     if (
       validateTransaction === undefined ||
-      validateTransaction({ ...$store })
+      validateTransaction({
+        amount: $store.amount,
+        selectedAccount: $store.selectedAccount,
+        destinationAddress: $store.destinationAddress,
+      })
     ) {
       startBusy({
         initiator: "accounts",
