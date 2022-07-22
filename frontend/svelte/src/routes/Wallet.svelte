@@ -30,6 +30,7 @@
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import { uniqueObjects } from "../lib/utils/utils";
 
   const goBack = () =>
     routeStore.navigate({
@@ -46,7 +47,11 @@
         if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
           return;
         }
-        $selectedAccountStore.transactions = transactions;
+
+        // could contain duplication in case when from and to are the same account
+        const uniqueTransactions = uniqueObjects(transactions);
+
+        $selectedAccountStore.transactions = uniqueTransactions;
       },
     });
 
