@@ -1,10 +1,13 @@
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
+import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
+  isNnsProjectStore,
   openForVotesSnsProposalsStore,
   openProjectsStore,
-  snsFullProjectsStore,
+  snsProjectSelectedStore,
   snsProposalsStore,
   snsSummariesStore,
   snsSwapCommitmentsStore,
@@ -46,29 +49,6 @@ describe("projects.store", () => {
 
       expect($snsSwapStatesStore?.[0].swapCommitment).toEqual(swapCommitment);
       expect($snsSwapStatesStore?.[0].certified).toBeTruthy();
-    });
-  });
-
-  describe("snsFullProjectsStore", () => {
-    it("should combine summaries with swap states", () => {
-      const principal = mockSnsSummaryList[0].rootCanisterId;
-
-      snsSummariesStore.setSummaries({
-        summaries: mockSnsSummaryList,
-        certified: false,
-      });
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(principal),
-        certified: true,
-      });
-
-      const $snsFullProjectsStore = get(snsFullProjectsStore);
-
-      expect($snsFullProjectsStore?.[0].rootCanisterId).toEqual(principal);
-      expect($snsFullProjectsStore?.[0].summary).toEqual(mockSnsSummaryList[0]);
-      expect($snsFullProjectsStore?.[0].swapCommitment).toEqual(
-        mockSnsSwapCommitment(principal)
-      );
     });
   });
 
@@ -161,6 +141,49 @@ describe("projects.store", () => {
 
       expect($openForVotesSnsProposalsStore.length).toBe(1);
       expect($openForVotesSnsProposalsStore[0]).toEqual(proposals[0]);
+    });
+  });
+
+  describe("snsProjectSelectedStore", () => {
+    beforeEach(() => {
+      snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    });
+
+    it("should be set by default to own canister id", () => {
+      const $store = get(snsProjectSelectedStore);
+
+      expect($store).toEqual(OWN_CANISTER_ID);
+    });
+
+    it("should able to set it to another project id", () => {
+      const $store1 = get(snsProjectSelectedStore);
+
+      expect($store1).toEqual(OWN_CANISTER_ID);
+
+      const newPrincipal = Principal.fromText("aaaaa-aa");
+      snsProjectSelectedStore.set(newPrincipal);
+
+      const $store2 = get(snsProjectSelectedStore);
+      expect($store2).toEqual(newPrincipal);
+    });
+  });
+
+  describe("isNnsProjectStore", () => {
+    beforeEach(() => {
+      snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    });
+
+    it("should be set by default true", () => {
+      const $store = get(isNnsProjectStore);
+
+      expect($store).toEqual(true);
+    });
+
+    it("should be false if an sns project is selected", () => {
+      snsProjectSelectedStore.set(Principal.fromText("aaaaa-aa"));
+      const $store = get(isNnsProjectStore);
+
+      expect($store).toBe(false);
     });
   });
 });

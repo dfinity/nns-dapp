@@ -25,6 +25,7 @@ interface I18nCore {
   principal_id: string;
   copy: string;
   badgeNew: string;
+  nns: string;
 }
 
 interface I18nError {
@@ -61,6 +62,7 @@ interface I18nError {
   unknown: string;
   amount_not_valid: string;
   amount_not_enough_stake_neuron: string;
+  amount_not_enough_top_up_neuron: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;
@@ -97,6 +99,7 @@ interface I18nError {
   not_canister_controller_to_update: string;
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
+  sns_loading_commited_projects: string;
   canister_invalid_transaction: string;
 }
 

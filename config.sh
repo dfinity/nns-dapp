@@ -114,6 +114,9 @@ export ENABLE_NEW_SPAWN_FEATURE
 WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
 export WASM_CANISTER_ID
 
+ENABLE_SNS_NEURONS="$(get_var ENABLE_SNS_NEURONS)"
+export ENABLE_SNS_NEURONS
+
 : "Return to the original working directory."
 popd
 echo FIN >&2

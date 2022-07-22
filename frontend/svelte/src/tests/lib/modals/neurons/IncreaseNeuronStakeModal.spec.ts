@@ -16,7 +16,7 @@ import {
 import en from "../../../mocks/i18n.mock";
 import { MockLedgerCanister } from "../../../mocks/ledger.canister.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
@@ -43,7 +43,7 @@ describe("IncreaseNeuronStakeModal", () => {
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
   it("should display modal", async () => {
     const { container } = await renderModal({
@@ -72,17 +72,17 @@ describe("IncreaseNeuronStakeModal", () => {
   const goToStep3 = async ({
     container,
     getByText,
-    enterAmount,
+    amount,
   }: {
     container: HTMLElement;
     getByText;
-    enterAmount: boolean;
+    amount?: string;
   }) => {
-    if (enterAmount) {
+    if (amount !== undefined) {
       const input: HTMLInputElement = container.querySelector(
         "input"
       ) as HTMLInputElement;
-      await fireEvent.input(input, { target: { value: "1" } });
+      await fireEvent.input(input, { target: { value: amount } });
     }
 
     const button: HTMLButtonElement | null = container.querySelector(
@@ -132,7 +132,7 @@ describe("IncreaseNeuronStakeModal", () => {
     await goToStep2({ container, getByText });
 
     // Go to step 3.
-    await goToStep3({ container, getByText, enterAmount: true });
+    await goToStep3({ container, getByText, amount: "1" });
 
     // Go back to step 2.
     await goBack({
@@ -143,6 +143,7 @@ describe("IncreaseNeuronStakeModal", () => {
   });
 
   it("should call reloadNeuron and close wizard once transaction executed", async () => {
+    const transferSpy = jest.spyOn(mockLedgerCanister, "transfer");
     const { container, getByText, component } = await renderModal({
       component: IncreaseNeuronStakeModal,
       props: {
@@ -152,7 +153,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
     await goToStep2({ container, getByText });
 
-    await goToStep3({ container, getByText, enterAmount: true });
+    await goToStep3({ container, getByText, amount: "1" });
 
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
@@ -163,5 +164,36 @@ describe("IncreaseNeuronStakeModal", () => {
 
     await waitFor(() => expect(onClose).toBeCalled());
     expect(reloadNeuron).toBeCalled();
+    expect(transferSpy).toBeCalled();
+  });
+
+  it("should not make the transaction if stake plus amount is less than 1 ICP", async () => {
+    const transferSpy = jest.spyOn(mockLedgerCanister, "transfer");
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        cachedNeuronStake: BigInt(1_000),
+      },
+    };
+    const { container, getByText, component } = await renderModal({
+      component: IncreaseNeuronStakeModal,
+      props: { neuron },
+    });
+
+    await goToStep2({ container, getByText });
+
+    await goToStep3({ container, getByText, amount: "0.01" });
+
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+    const button = container.querySelector(
+      "button[type='submit']"
+    ) as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => expect(onClose).toBeCalled());
+    expect(reloadNeuron).not.toBeCalled();
+    expect(transferSpy).not.toBeCalled();
   });
 });

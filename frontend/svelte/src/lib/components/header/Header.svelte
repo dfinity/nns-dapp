@@ -1,6 +1,6 @@
 <script lang="ts">
   import AccountMenu from "./AccountMenu.svelte";
-  import { triggerDebugReport } from "../../utils/dev.utils";
+  import { triggerDebugReport } from "../../services/debug.services";
   import Header from "../ui/Header.svelte";
   import Toolbar from "../ui/Toolbar.svelte";
 </script>

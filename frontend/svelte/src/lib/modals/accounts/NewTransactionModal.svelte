@@ -20,6 +20,9 @@
   export let destinationAddress: string | undefined = undefined;
   export let onTransactionComplete: (() => Promise<void>) | undefined =
     undefined;
+  export let validateTransaction:
+    | ((store: TransactionStore) => boolean)
+    | undefined = undefined;
 
   let canSelectAccount: boolean;
   $: canSelectAccount = selectedAccount === undefined;
@@ -77,6 +80,7 @@
     next: () => modal?.next(),
     back: () => modal?.back(),
     onTransactionComplete,
+    validateTransaction,
   });
 
   // Update store with selectedAccount in case the property would be set after the component is initialized
