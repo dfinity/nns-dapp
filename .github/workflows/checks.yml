@@ -18,9 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Install shfmt
         run: sudo snap install --classic shfmt
 
@@ -127,6 +124,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
       - name: Install dependencies
         run: npm ci
 
@@ -155,6 +155,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+
       - name: Install dependencies
         run: npm ci
 
@@ -176,6 +179,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
       - name: Provide a config
         run: ./config.sh
