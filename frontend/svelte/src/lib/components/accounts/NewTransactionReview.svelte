@@ -27,7 +27,10 @@
   const dispatcher = createEventDispatcher();
 
   const executeTransaction = async () => {
-    if (validateTransaction === undefined || validateTransaction($store)) {
+    if (
+      validateTransaction === undefined ||
+      validateTransaction({ ...$store })
+    ) {
       startBusy({
         initiator: "accounts",
         ...(isAccountHardwareWallet($store.selectedAccount) && {
