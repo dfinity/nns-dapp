@@ -8,6 +8,7 @@
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
       "remote": {
         "id": {
+          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
