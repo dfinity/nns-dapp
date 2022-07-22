@@ -295,6 +295,18 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
         --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
     done
   fi
+  echo "Checking cycle balance"
+  while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 50.00}' ; do
+    DFX_IDENTITY="$(dfx identity whoami)"
+    WALLET_CANISTER="$(
+      export DFX_IDENTITY
+      export DFX_NETWORK
+      cat ~/.config/dfx/identity/${DFX_IDENTITY}/wallets.json | jq -r '.identities[env.IDENTITY][env.DFX_NETWORK]'
+    )"
+    echo "Please add 50T cycles to this canister: $WALLET_CANISTER"
+    read -rp "Press enter when done ..."
+  done
+
   echo "Creating SNS"
   ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml |
     tee /dev/stderr >sns_creation.idl
