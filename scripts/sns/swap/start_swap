@@ -99,9 +99,14 @@ dfx_network_check_valid
 
 : "Tell the user how to set up a neuron, if none has been provided."
 test -n "${PROPOSER_NEURON_ID:-}" || {
-  read -rp "Please create a neuron, e.g. in the nns-dapp front end.\nPress enter when done... " _
+  echo
+  echo "Please create a neuron, e.g. in the nns-dapp front end."
+  read -rp "Press enter when done... " _
+  echo
   read -rp "Please enter the ID of the neuron: " PROPOSER_NEURON_ID
-  read -rp "Please add $(dfx identity --network "$DFX_NETWORK" get-principal) as a hotkey to the neuron.\nPress enter when done... " _
+  echo
+  echo "Please add $(dfx identity --network "$DFX_NETWORK" get-principal) as a hotkey to the neuron."
+  read -rp "Press enter when done... " _
 }
 
 test -n "${SWAP_CANISTER_ID:-}" || SWAP_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id sns_swap)"
