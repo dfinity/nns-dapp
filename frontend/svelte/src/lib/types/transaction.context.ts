@@ -13,6 +13,7 @@ export interface TransactionContext {
   next: () => void;
   back: () => void;
   onTransactionComplete?: () => Promise<void>;
+  validateTransaction?: (store: TransactionStore) => boolean;
 }
 
 export const NEW_TRANSACTION_CONTEXT_KEY = Symbol("new-transaction");
