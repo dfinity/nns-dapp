@@ -10,13 +10,13 @@ import {
 } from "../../../../lib/services/canisters.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { toastsStore } from "../../../../lib/stores/toasts.store";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
+import { clickByTestId } from "../../testHelpers/clickByTestId";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
 jest.mock("../../../../lib/services/canisters.services", () => {
