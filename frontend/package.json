@@ -12,7 +12,7 @@
     "start": "sirv public",
     "check": "svelte-check --tsconfig tsconfig.json && npm run lint",
     "lint": "scripts/lint",
-    "format": "prettier --write --plugin-search-dir=. ",
+    "format": "prettier --write --plugin-search-dir=. .",
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
     "update:nns": "npm update @dfinity/nns",
