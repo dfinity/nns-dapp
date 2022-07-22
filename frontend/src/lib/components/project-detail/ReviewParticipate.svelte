@@ -55,6 +55,7 @@
         onLoad: ({ response: swapCommitment }) =>
           ($store.swapCommitment = swapCommitment),
         onError: () => {
+          // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
           console.log("error");
         },
       });

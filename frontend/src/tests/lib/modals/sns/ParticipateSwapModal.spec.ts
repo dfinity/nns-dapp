@@ -5,6 +5,10 @@
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
+import {
+  loadSnsSwapCommitment,
+  participateInSwap,
+} from "../../../../lib/services/sns.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -15,6 +19,13 @@ import { mockAccountsStoreSubscribe } from "../../../mocks/accounts.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
+
+jest.mock("../../../../lib/services/sns.services", () => {
+  return {
+    participateInSwap: jest.fn().mockResolvedValue({ success: true }),
+    loadSnsSwapCommitment: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("ParticipateSwapModal", () => {
   const renderSwapModal = () =>
@@ -29,7 +40,7 @@ describe("ParticipateSwapModal", () => {
       } as ProjectDetailContext,
     });
 
-  describe("accountsStore is populated", () => {
+  describe("when accountsStore is populated", () => {
     beforeEach(() => {
       jest
         .spyOn(accountsStore, "subscribe")
@@ -106,7 +117,7 @@ describe("ParticipateSwapModal", () => {
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
     });
 
-    it("should move to the last step and enable button when accepting terms", async () => {
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
       const { queryByText, getByTestId, container } = await renderSwapModal();
 
       const participateButton = getByTestId("sns-swap-participate-button-next");
@@ -134,6 +145,11 @@ describe("ParticipateSwapModal", () => {
       await waitFor(() =>
         expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
       );
+
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
     });
 
     it("should move to the last step and go back", async () => {
@@ -163,7 +179,7 @@ describe("ParticipateSwapModal", () => {
     });
   });
 
-  describe("accountsStore is empty", () => {
+  describe("when accountsStore is empty", () => {
     it("should have disabled button if no account is selected", async () => {
       const { getByTestId, container } = await renderSwapModal();
 
