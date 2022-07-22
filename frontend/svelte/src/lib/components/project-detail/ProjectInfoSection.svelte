@@ -30,15 +30,16 @@
   <a href={summary.url} target="_blank">{summary.url}</a>
   <div class="details">
     <KeyValuePair>
-      <span class="label" slot="key">{$i18n.sns_project_detail.token_name}</span
+      <svelte:fragment slot="key"
+        >{$i18n.sns_project_detail.token_name}</svelte:fragment
       >
-      <span slot="value">{summary.tokenName}</span>
+      <span class="value" slot="value">{summary.tokenName}</span>
     </KeyValuePair>
     <KeyValuePair>
-      <span class="label" slot="key"
-        >{$i18n.sns_project_detail.token_symbol}</span
+      <svelte:fragment slot="key"
+        >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
       >
-      <span slot="value">{summary.symbol}</span>
+      <span class="value" slot="value">{summary.symbol}</span>
     </KeyValuePair>
 
     <ProjectSwapDetails />

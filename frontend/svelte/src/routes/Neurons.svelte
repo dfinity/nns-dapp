@@ -57,7 +57,7 @@
 
     <p>
       {$i18n.neurons.principal_is}
-      {principalText}
+      <span class="value">{principalText}</span>
     </p>
 
     {#if isLoading}

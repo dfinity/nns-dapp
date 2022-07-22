@@ -56,8 +56,9 @@
 <CardInfo>
   <h3 slot="start" class="title">Voting Results</h3>
   <div class="latest-tally">
-    <h4>
-      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
+    <h4 class="label">
+      {$i18n.proposal_detail.adopt}<span class="value">{formatNumber(yes)}</span
+      >
     </h4>
     <div
       class="progressbar"
@@ -69,8 +70,9 @@
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
-    <h4>
-      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
+    <h4 class="label">
+      {$i18n.proposal_detail.reject}<span class="value">{formatNumber(no)}</span
+      >
     </h4>
   </div>
 

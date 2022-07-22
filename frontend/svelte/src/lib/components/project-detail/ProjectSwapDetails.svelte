@@ -31,8 +31,8 @@
 
 <KeyValuePair>
   <InfoContextKey slot="key"
-    ><span class="label" slot="header"
-      >{$i18n.sns_project_detail.min_commitment}</span
+    ><svelte:fragment slot="header"
+      >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
     >
     <p class="description">
       This is the text that is hidden and should appear on click
@@ -42,8 +42,8 @@
 </KeyValuePair>
 <KeyValuePair>
   <InfoContextKey slot="key"
-    ><span class="label" slot="header"
-      >{$i18n.sns_project_detail.max_commitment}</span
+    ><svelte:fragment slot="header"
+      >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
     >
     <p class="description">
       This should be an explanation of what does maximum commitment means

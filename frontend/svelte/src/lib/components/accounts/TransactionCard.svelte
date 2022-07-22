@@ -71,7 +71,7 @@
     <h3>{headline}</h3>
   </div>
   <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} detailed />
-  <p>{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
+  <p class="value">{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
 
   {#if identifier !== undefined}
     <Identifier size="medium" {label} {identifier} />

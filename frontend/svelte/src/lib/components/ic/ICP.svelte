@@ -19,10 +19,10 @@
     class:inheritSize
     class:plus-sign={sign === "+"}
   >
-    <span data-tid="icp-value"
+    <span data-tid="icp-value" class="value"
       >{`${sign}${formatICP({ value: icp.toE8s(), detailed })}`}</span
     >
-    <span class="label">{label}</span>
+    <span>{label}</span>
   </div>
 {/if}
 
@@ -38,7 +38,6 @@
     span:first-of-type {
       font-weight: 700;
       font-size: var(--icp-font-size, var(--font-size-h3));
-      color: inherit;
     }
 
     &.singleLine span:first-of-type {
@@ -62,7 +61,9 @@
     }
 
     &.plus-sign {
-      color: var(--positive-emphasis-tint);
+      .value {
+        color: var(--positive-emphasis-tint);
+      }
 
       span:first-of-type {
         color: var(--positive-emphasis);

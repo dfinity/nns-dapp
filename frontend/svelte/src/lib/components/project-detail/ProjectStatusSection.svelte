@@ -70,10 +70,10 @@
             color="blue"
           >
             <p slot="top" class="push-apart">
-              <span class="label">
+              <span>
                 {$i18n.sns_project_detail.deadline}
               </span>
-              <span>
+              <span class="value">
                 {secondsToDuration(durationTillDeadline)}
               </span>
             </p>
@@ -85,12 +85,12 @@
       {#if myCommitmentIcp !== undefined}
         <div>
           <KeyValuePair>
-            <span class="label" slot="key"
-              >{$i18n.sns_project_detail.user_commitment}</span
+            <svelte:fragment slot="key"
+              >{$i18n.sns_project_detail.user_commitment}</svelte:fragment
             >
-            <span slot="value">
+            <svelte:fragment slot="value">
               <Icp icp={myCommitmentIcp} singleLine />
-            </span>
+            </svelte:fragment>
           </KeyValuePair>
         </div>
       {/if}

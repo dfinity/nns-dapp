@@ -12,7 +12,7 @@
 
 <p>
   <span data-tid="identifier" class:text_small={size === "small"}
-    >{labelText}{identifier}</span
+    >{labelText}<span class="value">{identifier}</span></span
   >
   {#if showCopy}
     <Copy value={identifier} />

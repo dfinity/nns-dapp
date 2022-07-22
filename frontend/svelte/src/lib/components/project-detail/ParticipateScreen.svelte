@@ -47,7 +47,7 @@
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
-        <span class="label" slot="key">Source</span>
+        <span slot="key">{$i18n.accounts.source}</span>
         <IcpComponent slot="value" singleLine icp={selectedAccount?.balance} />
       </KeyValuePair>
     {/if}
@@ -56,13 +56,11 @@
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} />
     <KeyValuePair>
-      <span class="label" slot="key"
-        >Min <IcpComponent singleLine icp={minAmount} /></span
-      >
+      <span slot="key">Min <IcpComponent singleLine icp={minAmount} /></span>
       <span slot="value">max <IcpComponent singleLine icp={maxAmount} /></span>
     </KeyValuePair>
     <p class="right">
-      <span class="label">{$i18n.accounts.transaction_fee}</span>
+      <span>{$i18n.accounts.transaction_fee}</span>
       <IcpComponent singleLine icp={$mainTransactionFeeStoreAsIcp} />
     </p>
   </div>
