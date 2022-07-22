@@ -6,7 +6,7 @@
   import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
-  import { triggerDebugReport } from "../utils/dev.utils";
+  import { triggerDebugReport } from "../services/debug.services";
   import Backdrop from "../components/ui/Backdrop.svelte";
 
   export let visible: boolean = true;
