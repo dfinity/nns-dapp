@@ -297,12 +297,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   fi
   echo "Checking cycle balance"
   while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 50.00}' ; do
-    DFX_IDENTITY="$(dfx identity whoami)"
-    WALLET_CANISTER="$(
-      export DFX_IDENTITY
-      export DFX_NETWORK
-      cat ~/.config/dfx/identity/${DFX_IDENTITY}/wallets.json | jq -r '.identities[env.IDENTITY][env.DFX_NETWORK]'
-    )"
+    WALLET_CANISTER="$(dfx identity --network small11 get-wallet)"
     echo "Please add 50T cycles to this canister: $WALLET_CANISTER"
     read -rp "Press enter when done ..."
   done
