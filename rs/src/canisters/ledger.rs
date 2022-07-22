@@ -1,10 +1,13 @@
 use dfn_core::CanisterId;
 use dfn_protobuf::{protobuf, ToProto};
+use ic_ledger_core::block::EncodedBlock;
 use ic_nns_constants::LEDGER_CANISTER_ID;
-use ledger_canister::protobuf::{ArchiveIndexResponse, TipOfChainRequest};
-use ledger_canister::{
-    AccountBalanceArgs, BlockHeight, EncodedBlock, GetBlocksArgs, GetBlocksRes, SendArgs, TipOfChainRes, Tokens,
+use ledger_canister::protobuf::get_blocks_response::GetBlocksContent;
+use ledger_canister::protobuf::{
+    ArchiveIndexResponse as ArchiveIndexResponsePb, GetBlocksResponse as GetBlocksResponsePb,
+    TipOfChainRequest as TipOfChainRequestPb, TipOfChainResponse as TipOfChainResponsePb,
 };
+use ledger_canister::{AccountBalanceArgs, BlockHeight, GetBlocksArgs, SendArgs, Tokens};
 
 pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
     dfn_core::call(LEDGER_CANISTER_ID, "send_pb", protobuf, request.into_proto())
@@ -13,27 +16,31 @@ pub async fn send(request: SendArgs) -> Result<BlockHeight, String> {
 }
 
 pub async fn account_balance(request: AccountBalanceArgs) -> Result<Tokens, String> {
-    dfn_core::call(LEDGER_CANISTER_ID, "account_balance_pb", protobuf, request.into_proto())
-        .await
-        .map_err(|e| e.1)
+    let tokens: ledger_canister::protobuf::Tokens =
+        dfn_core::call(LEDGER_CANISTER_ID, "account_balance_pb", protobuf, request.into_proto())
+            .await
+            .map_err(|e| e.1)?;
+
+    Ok(Tokens::from_e8s(tokens.e8s))
 }
 
 pub async fn tip_of_chain() -> Result<BlockHeight, String> {
-    let response: TipOfChainRes = dfn_core::call(LEDGER_CANISTER_ID, "tip_of_chain_pb", protobuf, TipOfChainRequest {})
-        .await
-        .map_err(|e| e.1)?;
+    let response: TipOfChainResponsePb =
+        dfn_core::call(LEDGER_CANISTER_ID, "tip_of_chain_pb", protobuf, TipOfChainRequestPb {})
+            .await
+            .map_err(|e| e.1)?;
 
-    Ok(response.tip_index)
+    Ok(response.chain_length.map(|c| c.height).unwrap_or_default())
 }
 
-pub async fn get_archive_index() -> Result<ArchiveIndexResponse, String> {
+pub async fn get_archive_index() -> Result<ArchiveIndexResponsePb, String> {
     dfn_core::call(LEDGER_CANISTER_ID, "get_archive_index_pb", protobuf, ())
         .await
         .map_err(|e| e.1)
 }
 
 pub async fn get_blocks(canister_id: CanisterId, from: BlockHeight, length: u32) -> Result<Vec<EncodedBlock>, String> {
-    let response: GetBlocksRes = dfn_core::call(
+    let response: GetBlocksResponsePb = dfn_core::call(
         canister_id,
         "get_blocks_pb",
         protobuf,
@@ -45,5 +52,11 @@ pub async fn get_blocks(canister_id: CanisterId, from: BlockHeight, length: u32)
     .await
     .map_err(|e| e.1)?;
 
-    Ok(response.0?)
+    match response.get_blocks_content {
+        Some(GetBlocksContent::Blocks(blocks)) => {
+            Ok(blocks.blocks.into_iter().map(|b| EncodedBlock::from(b.block)).collect())
+        }
+        Some(GetBlocksContent::Error(error)) => Err(error),
+        None => Ok(Vec::new()),
+    }
 }

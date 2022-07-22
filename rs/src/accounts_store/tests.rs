@@ -110,7 +110,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
 
@@ -125,7 +125,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             stake_neuron,
             Memo(1678183231181200159),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
 
@@ -140,7 +140,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
             topup_neuron,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
 
@@ -333,7 +333,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
             transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
 
@@ -346,7 +346,7 @@ fn hardware_wallet_transactions_tracked_correctly() {
             transfer,
             Memo(0),
             store.get_block_height_synced_up_to().unwrap_or(0) + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
 
@@ -380,7 +380,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            transfer,
+            neuron_memo,
+            block_height,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -398,7 +403,7 @@ fn append_transaction_detects_neuron_transactions() {
             notification,
             Memo(block_height),
             block_height + 1,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
     assert!(matches!(
@@ -413,7 +418,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup1, Memo(0), block_height + 2, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            topup1,
+            Memo(0),
+            block_height + 2,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -427,7 +437,12 @@ fn append_transaction_detects_neuron_transactions() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup2, Memo(0), block_height + 3, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            topup2,
+            Memo(0),
+            block_height + 3,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -451,7 +466,12 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(transfer, neuron_memo, block_height, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            transfer,
+            neuron_memo,
+            block_height,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -466,7 +486,12 @@ fn append_transaction_detects_neuron_transactions_from_external_accounts() {
     };
     let previous_transaction_count = store.transactions.len();
     store
-        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            topup,
+            Memo(0),
+            block_height + 1,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
 
     // No new transaction should have been added, but the neuron should be queued for refreshing
@@ -512,7 +537,7 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
             stake_neuron_transfer,
             neuron_memo,
             block_height,
-            TimeStamp { timestamp_nanos: 100 },
+            TimeStamp::from_nanos_since_unix_epoch(100),
         )
         .unwrap();
     assert!(matches!(
@@ -527,7 +552,12 @@ fn topup_neuron_owned_by_other_principal_refreshes_balance_using_neurons_princip
         fee: Tokens::from_e8s(10000),
     };
     store
-        .append_transaction(topup, Memo(0), block_height + 1, TimeStamp { timestamp_nanos: 100 })
+        .append_transaction(
+            topup,
+            Memo(0),
+            block_height + 1,
+            TimeStamp::from_nanos_since_unix_epoch(100),
+        )
         .unwrap();
     assert!(matches!(
         store.transactions.back().unwrap().transaction_type.unwrap(),
@@ -821,7 +851,7 @@ fn prune_transactions() {
         },
     );
 
-    let timestamp = TimeStamp { timestamp_nanos: 100 };
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
     for _ in 0..10 {
         let transfer1 = Burn {
             amount: Tokens::from_e8s(100_000),
@@ -1015,7 +1045,7 @@ fn setup_test_store() -> AccountsStore {
     let mut store = AccountsStore::default();
     store.add_account(principal1);
     store.add_account(principal2);
-    let timestamp = TimeStamp { timestamp_nanos: 100 };
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
     {
         let transfer = Mint {
             amount: Tokens::from_e8s(1_000_000_000),
