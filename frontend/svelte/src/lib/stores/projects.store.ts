@@ -2,6 +2,7 @@ import type { ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import { isProposalOpenForVotes } from "../utils/proposals.utils";
 import { isNullish } from "../utils/utils";
@@ -136,6 +137,15 @@ const initSnsSwapCommitmentsStore = () => {
   };
 };
 
+const initSnsProjectSelectedStore = () => {
+  const { subscribe, set } = writable<Principal>(OWN_CANISTER_ID);
+
+  return {
+    subscribe,
+    set,
+  };
+};
+
 // used to improve loading state display only
 export const snsesCountStore = writable<number | undefined>(undefined);
 
@@ -145,6 +155,7 @@ export const openForVotesSnsProposalsStore =
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
+export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 
 // TODO:
 // 1. snsFullProjectsStore should not be exposed
@@ -153,27 +164,26 @@ export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
  * Filter snsSummariesStore entries with projects that are open (for swap) only.
  * Additionally, contains SwapCommitment for every summary (when loaded).
  */
-export const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> =
-  derived(
-    [snsSummariesStore, snsSwapCommitmentsStore],
-    ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
-      $snsSummariesStore === undefined
-        ? undefined
-        : $snsSummariesStore?.summaries.map((summary) => {
-            const { rootCanisterId } = summary;
-            const summaryPrincipalAsText = rootCanisterId.toText();
-            const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
-              ({ swapCommitment: { rootCanisterId } }) =>
-                rootCanisterId.toText() === summaryPrincipalAsText
-            );
+const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
+  [snsSummariesStore, snsSwapCommitmentsStore],
+  ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
+    $snsSummariesStore === undefined
+      ? undefined
+      : $snsSummariesStore?.summaries.map((summary) => {
+          const { rootCanisterId } = summary;
+          const summaryPrincipalAsText = rootCanisterId.toText();
+          const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
+            ({ swapCommitment: { rootCanisterId } }) =>
+              rootCanisterId.toText() === summaryPrincipalAsText
+          );
 
-            return {
-              rootCanisterId,
-              summary,
-              swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
-            };
-          })
-  );
+          return {
+            rootCanisterId,
+            summary,
+            swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
+          };
+        })
+);
 
 const filterProjectsStore = ({
   swapLifecycle,
@@ -210,4 +220,10 @@ export const committedProjectsStore = derived(
       swapLifecycle: SnsSwapLifecycle.Committed,
       $snsFullProjectsStore,
     })
+);
+
+export const isNnsProjectStore = derived(
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
 );

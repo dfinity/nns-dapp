@@ -1,8 +1,17 @@
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
+import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
+
+export const mockProjectSubscribe =
+  (projects: SnsFullProject[]) =>
+  (run: Subscriber<SnsFullProject[]>): (() => void) => {
+    run(projects);
+
+    return () => undefined;
+  };
 
 const principal = (index: number): Principal =>
   [

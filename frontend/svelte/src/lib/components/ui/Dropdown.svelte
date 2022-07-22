@@ -20,30 +20,50 @@
 <style lang="scss">
   @use "../../themes/mixins/form";
   div {
+    @include form.input;
+
     width: 100%;
     position: relative;
+    box-sizing: border-box;
 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-radius: var(--element-border-radius);
+    box-shadow: var(--box-shadow);
+
+    padding: var(--padding-2x) var(--padding-3x);
+    // Click on <select> does not trigger "focus" on parent div.
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within
+    // Matches an element if the element or any of its descendants are focused.
+    &:focus-within {
+      outline: 2px solid var(--primary);
+    }
     select {
-      @include form.input;
-      padding: var(--padding-2x) var(--padding-3x);
       width: 100%;
-
+      // Space for the caret icon.
+      padding-right: var(--padding-4x);
+      background: var(--card-background);
+      border: none;
       border-radius: var(--element-border-radius);
-      box-shadow: var(--box-shadow);
 
       appearance: none;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     .icon {
-      position: absolute;
-      right: var(--padding-3x);
-      top: 0;
-
       display: flex;
       height: 100%;
       align-items: center;
 
       pointer-events: none;
+
+      // Place the caret inside the select.
+      margin-left: calc(-1 * var(--padding-3x));
 
       :global(svg) {
         width: 24px;

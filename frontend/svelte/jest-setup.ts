@@ -21,6 +21,7 @@ process.env.IDENTITY_SERVICE_URL =
   "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
 process.env.ENABLE_NEW_SPAWN_FEATURE = "true";
 process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
+process.env.ENABLE_SNS_NEURONS = "true";
 
 // testing-library setup
 configure({
