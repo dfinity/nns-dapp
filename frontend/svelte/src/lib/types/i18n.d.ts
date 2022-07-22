@@ -62,6 +62,7 @@ interface I18nError {
   unknown: string;
   amount_not_valid: string;
   amount_not_enough_stake_neuron: string;
+  amount_not_enough_top_up_neuron: string;
   stake_neuron: string;
   transaction_invalid_amount: string;
   transaction_no_source_account: string;
