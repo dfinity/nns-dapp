@@ -1,0 +1,52 @@
+{
+  "canisters": {
+    "smiley_dapp": {
+      "main": "src/smiley_dapp/main.mo",
+      "type": "motoko"
+    },
+    "smiley_dapp_assets": {
+      "dependencies": [
+        "smiley_dapp"
+      ],
+      "frontend": {
+        "entrypoint": "src/smiley_dapp_assets/src/index.html"
+      },
+      "source": [
+        "src/smiley_dapp_assets/assets",
+        "dist/smiley_dapp_assets/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "dfx": "0.11.0",
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "nnsdapp": {
+      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "type": "persistent"
+    },
+    "small12": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "prod",
+        "HOST": "https://nnsdapp.dfinity.network",
+        "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
+        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
+      },
+       "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"], 
+      "type": "persistent"
+    }
+  },
+  "version": 1
+}
+

@@ -1,0 +1,6 @@
+service : {
+  getBackgroundColor: () -> (text);
+  getSmileyChar: () -> (text);
+  setBackgroundColor: (text) -> ();
+  setSmileyChar: (text) -> ();
+}

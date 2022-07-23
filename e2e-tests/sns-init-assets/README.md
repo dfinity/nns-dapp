@@ -27,7 +27,7 @@ testable roles within the provisioned SNS. The SNS will be created with
   - Accept a max of 1 ICP per participant
 - A dapp fallback controller configured to `hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe` (identity-1.pem)
 - An initial token distribution configured to:
-  - 1 Token in a Developer neuron belonging to `dktcs-d43lz-rosn2-wnwsj-kef34-6kl3i-ux7qb-ka6xr-biref-ykeaj-sqe` (identity-2.pem)
+  - 1 Token in a Developer neuron belonging to `hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe` (identity-2.pem)
   - 1 Token in an Airdropped neuron belonging to `w3i5o-5ylvd-cmm42-pw66i-n6qcw-fw3q7-kk5la-4edui-ozozq-5qq3j-dae` (identity-3.pem)
   - A treasury bucket with 10 Tokens
   - An initial swap with 2 Tokens for swapping
