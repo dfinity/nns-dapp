@@ -74,7 +74,7 @@ open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.netw
 To work on the UI locally, either use your IDE, or run the following:
 
 ```sh
-cd frontend/svelte
+cd frontend
 npm ci
 npm run dev
 ```

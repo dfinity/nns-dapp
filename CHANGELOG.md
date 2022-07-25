@@ -1,5 +1,7 @@
 # Changelog
 
+## Proposal 71474
+* Fix: Update the proposal schema to match the governance canister
 
 ## Proposal 71197
 * Maturity modulation when spawning a new neuron.

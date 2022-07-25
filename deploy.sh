@@ -13,8 +13,8 @@ help_text() {
 	- Opens the NNS dapp in a browser (optional)
 
 	On success the deployment is ready for development or testing:
-	- svelte:
-	    cd frontend/svelte
+	- frontend:
+	    cd frontend
 	    npm ci
 	    npm run dev
 	- testing:
@@ -224,7 +224,7 @@ if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
     : Back up the canister_ids.json
     cp canister_ids.json "canister_ids.json.$(date -Isecond -u | sed 's/+.*//g')"
     echo "Deleting the entries for $DFX_NETWORK in canister_ids.json ..."
-    DFX_NETWORK="$DFX_NETWORK" jq 'map(del(.[env.DFX_NETWORK]))' <canister_ids.json >canister_ids.json.new
+    DFX_NETWORK="$DFX_NETWORK" jq 'to_entries | map(del(.value[env.DFX_NETWORK])) | from_entries' <canister_ids.json >canister_ids.json.new
     mv canister_ids.json.new canister_ids.json
   fi
 fi
