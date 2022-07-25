@@ -3,14 +3,12 @@
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { nowInSeconds } from "../../utils/neuron.utils";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import ProgressBar from "../ui/ProgressBar.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
+  import ProjectTimeline from "./ProjectTimeline.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -28,23 +26,11 @@
   let swapCommitment: SnsSwapCommitment;
   $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
 
-  const nowSeconds: number = nowInSeconds();
-
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
     swapCommitment?.myCommitment !== undefined
       ? ICP.fromE8s(swapCommitment.myCommitment)
       : undefined;
-  let currentDateTillStartSeconds: number;
-  $: currentDateTillStartSeconds = Number(
-    BigInt(nowSeconds) - summary.swapStart
-  );
-  let deadlineTillStartSeconds: number;
-  $: deadlineTillStartSeconds = Number(
-    summary.swapDeadline - summary.swapStart
-  );
-  let durationTillDeadline: bigint;
-  $: durationTillDeadline = summary.swapDeadline - BigInt(nowSeconds);
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -62,24 +48,7 @@
     <div class="content">
       <ProjectCommitment />
 
-      {#if durationTillDeadline > 0}
-        <div>
-          <ProgressBar
-            value={currentDateTillStartSeconds}
-            max={deadlineTillStartSeconds}
-            color="blue"
-          >
-            <p slot="top" class="push-apart">
-              <span>
-                {$i18n.sns_project_detail.deadline}
-              </span>
-              <span>
-                {secondsToDuration(durationTillDeadline)}
-              </span>
-            </p>
-          </ProgressBar>
-        </div>
-      {/if}
+      <ProjectTimeline />
     </div>
     <div class="actions">
       {#if myCommitmentIcp !== undefined}

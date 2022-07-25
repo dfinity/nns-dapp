@@ -38,6 +38,7 @@ import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
+import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber, formatPercentage } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
@@ -119,8 +120,6 @@ export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
   1 +
   1 *
     (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
-
-export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
 
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo

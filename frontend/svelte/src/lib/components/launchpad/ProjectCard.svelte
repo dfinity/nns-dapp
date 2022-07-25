@@ -6,12 +6,10 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/projects.store";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import Icp from "../ic/ICP.svelte";
   import Card from "../ui/Card.svelte";
   import Logo from "../ui/Logo.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import { nowInSeconds } from "../../utils/neuron.utils";
+  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;
 
@@ -24,19 +22,11 @@
   let description: string;
   let swapDeadline: bigint;
   $: ({ logo, name, description, swapDeadline } = summary);
+
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
-  let durationTillDeadline: bigint;
-  $: durationTillDeadline = swapDeadline - BigInt(nowInSeconds());
-
   let myCommitment: ICP | undefined;
-  $: myCommitment =
-    project.swapCommitment?.myCommitment === undefined
-      ? undefined
-      : project.swapCommitment.myCommitment === undefined
-      ? undefined
-      : ICP.fromE8s(project.swapCommitment.myCommitment);
 
   const showProject = () => {
     routeStore.navigate({
@@ -57,14 +47,7 @@
 
   <p>{description}</p>
 
-  <dl>
-    <dt>{$i18n.sns_project.deadline}</dt>
-    <dd>{secondsToDuration(durationTillDeadline)}</dd>
-    {#if myCommitment !== undefined}
-      <dt>{$i18n.sns_project.your_commitment}</dt>
-      <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
-    {/if}
-  </dl>
+  <ProjectCardSwapInfo {project} bind:myCommitment />
 
   <!-- TODO L2-751: handle fetching errors -->
   {#if swapCommitment === undefined}
@@ -89,21 +72,6 @@
 
   p {
     margin: 0 0 var(--padding-1_5x);
-  }
-
-  dl {
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--padding-1_5x);
-
-    dt {
-      opacity: var(--light-opacity);
-    }
-
-    dd {
-      text-align: right;
-    }
   }
 
   .spinner {
