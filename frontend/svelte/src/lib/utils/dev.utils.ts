@@ -1,10 +1,3 @@
-import { get } from "svelte/store";
-import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
-import { LogType } from "../services/debug.services";
-import { claimSeedNeurons } from "../services/seed-neurons.services";
-import { i18n } from "../stores/i18n";
-import { enumKeys } from "./enum.utils";
-
 export const isNode = (): boolean =>
   typeof process !== "undefined" &&
   process.versions != null &&
@@ -46,54 +39,6 @@ export const digestText = async (text: string): Promise<string> => {
     .join("");
   return hashHex;
 };
-
-/**
- * Bind debug logger tigger to the node (6 clicks in 2 seconds)
- */
-export function triggerDebugReport(node: HTMLElement) {
-  const TWO_SECONDS = 2 * 1000;
-  const originalTouchActionValue: string = node.style.touchAction;
-
-  let startTime: number = 0;
-  let count = 0;
-
-  const click = () => {
-    const now = Date.now();
-
-    if (now - startTime <= TWO_SECONDS) {
-      count++;
-
-      if (count === 5) {
-        const logType: LogType = prompt(get(i18n).core.log) as LogType;
-
-        // input validation
-        if (!enumKeys(LogType).includes(logType)) {
-          return;
-        }
-
-        if (LogType.ClaimNeurons === logType) {
-          claimSeedNeurons();
-          return;
-        }
-
-        generateDebugLogProxy(logType);
-      }
-    } else {
-      startTime = now;
-      count = 0;
-    }
-  };
-
-  node.style.touchAction = "manipulation";
-  node.addEventListener("click", click, { passive: true });
-
-  return {
-    destroy() {
-      node.style.touchAction = originalTouchActionValue;
-      node.removeEventListener("click", click, false);
-    },
-  };
-}
 
 // TODO: to be deleted - use for mock data only
 export const shuffle = <T>(items: T[]): T[] =>
