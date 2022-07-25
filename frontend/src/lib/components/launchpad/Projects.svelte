@@ -5,7 +5,7 @@
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    openProjectsStore,
+    launchPadProjectsStore,
     type SnsFullProject,
     snsesCountStore,
     snsSummariesStore,
@@ -21,7 +21,7 @@
   import { AppPath } from "../../constants/routes.constants";
 
   let projects: SnsFullProject[] | undefined;
-  $: projects = $openProjectsStore;
+  $: projects = $launchPadProjectsStore;
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
