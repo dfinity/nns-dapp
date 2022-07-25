@@ -3,9 +3,9 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
+  activePadProjectsStore,
   committedProjectsStore,
   isNnsProjectStore,
-  activePadProjectsStore,
   openForVotesSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
