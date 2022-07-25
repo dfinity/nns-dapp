@@ -1,6 +1,23 @@
 {
-  "dfx": "0.11.0-beta.1",
+  "dfx": "0.11.0",
   "canisters": {
+    "nns-governance": {
+      "type": "custom",
+      "candid": "target/ic/governance.did",
+      "wasm": "target/ic/governance-canister_test.wasm",
+      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "remote": {
+        "id": {
+          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+        }
+      }
+    },
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/nns-dapp.did",
@@ -147,7 +164,6 @@
     "network": {
       "config": {
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
-        "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
       }
     },
