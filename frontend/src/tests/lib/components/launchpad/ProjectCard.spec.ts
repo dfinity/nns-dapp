@@ -7,7 +7,10 @@ import ProjectCard from "../../../../lib/components/launchpad/ProjectCard.svelte
 import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSwapTimeWindow,
+} from "../../../mocks/sns-projects.mock";
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
@@ -73,7 +76,7 @@ describe("ProjectCard", () => {
     });
 
     const durationTillDeadline =
-      mockSnsFullProject.summary.swapDeadline -
+      mockSwapTimeWindow.end_timestamp_seconds -
       BigInt(Math.round(Date.now() / 1000));
 
     expect(

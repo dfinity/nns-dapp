@@ -20,8 +20,7 @@
   let logo: string;
   let name: string;
   let description: string;
-  let swapDeadline: bigint;
-  $: ({ logo, name, description, swapDeadline } = summary);
+  $: ({ logo, name, description } = summary);
 
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
