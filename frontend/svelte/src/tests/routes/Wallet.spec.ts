@@ -4,7 +4,6 @@
 
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { getAccountTransactions } from "../../lib/services/accounts.services";
 import { accountsStore } from "../../lib/stores/accounts.store";
 import { authStore } from "../../lib/stores/auth.store";
 import { routeStore } from "../../lib/stores/route.store";
@@ -17,10 +16,6 @@ import {
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
-import {
-  mockReceivedFromMainAccountTransaction,
-  mockSentToSubAccountTransaction,
-} from "../mocks/transaction.mock";
 
 jest.mock("../../lib/services/accounts.services", () => ({
   ...(jest.requireActual("../../lib/services/accounts.services") as object),
@@ -147,31 +142,6 @@ describe("Wallet", () => {
       const { getByTestId } = render(Wallet);
 
       expect(getByTestId("skeleton-card")).toBeInTheDocument();
-    });
-
-    describe("transactions loaded", () => {
-      beforeAll(() => {
-        (
-          getAccountTransactions as jest.MockedFn<typeof getAccountTransactions>
-        ).mockImplementation(({ onLoad }) => {
-          onLoad({
-            accountIdentifier: mockMainAccount.identifier,
-            transactions: [
-              mockSentToSubAccountTransaction,
-              mockSentToSubAccountTransaction,
-              mockReceivedFromMainAccountTransaction,
-            ],
-          });
-          return Promise.resolve();
-        });
-      });
-
-      afterAll(() => jest.clearAllMocks());
-
-      it("should render unique transactions", async () => {
-        const { queryAllByTestId } = render(Wallet);
-        expect(queryAllByTestId("transaction-card").length).toBe(2);
-      });
     });
   });
 
