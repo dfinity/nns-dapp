@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
+  import type { SnsSwapCommitment } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -18,10 +18,6 @@
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
-
-  let summary: SnsSummary;
-  // type safety validation is done in ProjectDetail component
-  $: summary = $projectDetailStore.summary as SnsSummary;
 
   let swapCommitment: SnsSwapCommitment;
   $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
@@ -80,10 +76,6 @@
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  p {
-    margin: 0;
-  }
-
   .wrapper {
     height: 100%;
     display: flex;
@@ -95,11 +87,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-  }
-
-  .push-apart {
-    display: flex;
-    justify-content: space-between;
   }
 
   .actions {

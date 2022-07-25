@@ -28,16 +28,9 @@
   $: durationSeconds = swapDuration(swap);
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
-
-  let validDurationStart = false;
-  $: validDurationStart = durationTillStart > 0;
-  let validDuration = false;
-  $: validDuration = durationSeconds > 0;
-  let validDurationDeadline = false;
-  $: validDurationDeadline = durationTillDeadline > 0;
 </script>
 
-{#if validDurationDeadline && validDuration && validDurationStart}
+{#if durationTillDeadline !== undefined && durationSeconds !== undefined && durationTillStart !== undefined}
   <div>
     <ProgressBar
       value={Number(durationTillStart)}
@@ -55,3 +48,14 @@
     </ProgressBar>
   </div>
 {/if}
+
+<style lang="scss">
+  p {
+    margin: 0;
+  }
+
+  .push-apart {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

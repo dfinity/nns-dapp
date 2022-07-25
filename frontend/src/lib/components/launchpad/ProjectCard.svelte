@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import type { ICP } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 

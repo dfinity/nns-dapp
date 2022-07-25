@@ -28,14 +28,11 @@
     swapCommitment?.myCommitment === undefined
       ? undefined
       : ICP.fromE8s(swapCommitment.myCommitment);
-
-  let validDurationDeadline = false;
-  $: validDurationDeadline = durationTillDeadline > 0;
 </script>
 
-{#if validDurationDeadline || myCommitment !== undefined}
+{#if durationTillDeadline !== undefined || myCommitment !== undefined}
   <dl>
-    {#if validDurationDeadline}
+    {#if durationTillDeadline !== undefined}
       <dt>{$i18n.sns_project.deadline}</dt>
       <dd>{secondsToDuration(durationTillDeadline)}</dd>
     {/if}
