@@ -4,9 +4,9 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
+  activePadProjectsStore,
   committedProjectsStore,
   isNnsProjectStore,
-  openProjectsStore,
   openSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
@@ -69,24 +69,33 @@ describe("projects.store", () => {
       certified: true,
     });
 
-    it("should filter projects that are open", () => {
+    it("should filter projects that are active", () => {
       snsSummariesStore.setSummaries({
         summaries: [summaryForLifecycle(SnsSwapLifecycle.Open)],
         certified: false,
       });
-
-      const open = get(openProjectsStore);
+      const open = get(activePadProjectsStore);
       expect(open?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
-        summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
+        summaries: [
+          summaryForLifecycle(SnsSwapLifecycle.Open),
+          summaryForLifecycle(SnsSwapLifecycle.Committed),
+        ],
         certified: false,
       });
-      const noOpen = get(openProjectsStore);
+      const open2 = get(activePadProjectsStore);
+      expect(open2?.length).toEqual(2);
+
+      snsSummariesStore.setSummaries({
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Unspecified)],
+        certified: false,
+      });
+      const noOpen = get(activePadProjectsStore);
       expect(noOpen?.length).toEqual(0);
     });
 
-    it("should filter projects that are committed", () => {
+    it("should filter projects that are committed only", () => {
       snsSummariesStore.setSummaries({
         summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
         certified: false,
