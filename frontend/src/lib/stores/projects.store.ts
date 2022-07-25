@@ -160,14 +160,11 @@ export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
 export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 
-// TODO:
-// 1. snsFullProjectsStore should not be exposed
-// 2. it can be renamed to projectsStore
 /**
  * Filter snsSummariesStore entries with projects that are open (for swap) only.
  * Additionally, contains SwapCommitment for every summary (when loaded).
  */
-const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
+const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     $snsSummariesStore === undefined
@@ -189,12 +186,12 @@ const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
 );
 
 export const activePadProjectsStore = derived(
-  snsFullProjectsStore,
+  projectsStore,
   (projects: SnsFullProject[] | undefined) => filterActiveProjects(projects)
 );
 
 export const committedProjectsStore = derived(
-  snsFullProjectsStore,
+  projectsStore,
   (projects: SnsFullProject[] | undefined) => filterCommittedProjects(projects)
 );
 
