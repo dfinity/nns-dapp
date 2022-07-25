@@ -11,8 +11,33 @@ type OptionalSwapSummary = QuerySnsSummary & {
 type ValidSwapSummary = Required<OptionalSwapSummary>;
 
 /**
+ * Sort Sns summaries according their swap start dates. Sooner dates first.
+ * @param summaries
+ */
+const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
+  summaries.sort(
+    (
+      {
+        swap: {
+          state: { open_time_window: openTimeWindowA },
+        },
+      }: SnsSummary,
+      {
+        swap: {
+          state: { open_time_window: openTimeWindowB },
+        },
+      }: SnsSummary
+    ) =>
+      (openTimeWindowA[0]?.start_timestamp_seconds ?? 0) <
+      (openTimeWindowB[0]?.start_timestamp_seconds ?? 0)
+        ? -1
+        : 1
+  );
+
+/**
  * 1. Concat Sns queries for summaries and swap state.
- * 2. Filter Sns without Swaps data
+ * 2. Filter those Sns without Swaps data
+ * 3. Sort according swap start date
  */
 export const concatSnsSummaries = ([summaries, swaps]: [
   QuerySnsSummary[],
@@ -38,15 +63,17 @@ export const concatSnsSummaries = ([summaries, swaps]: [
       fromNullable(entry.swap.state) !== undefined
   );
 
-  return validSwapSummaries.map(({ swap, ...rest }) => ({
-    ...rest,
-    swap: {
-      // We know for sure that init and state are defined because we check in previous filter that there are not undefined
-      // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
-      init: fromNullable(swap.init) as SnsSwapInit,
-      state: fromNullable(swap.state) as SnsSwapState,
-    },
-  }));
+  return sortSnsSummaries(
+    validSwapSummaries.map(({ swap, ...rest }) => ({
+      ...rest,
+      swap: {
+        // We know for sure that init and state are defined because we check in previous filter that there are not undefined
+        // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
+        init: fromNullable(swap.init) as SnsSwapInit,
+        state: fromNullable(swap.state) as SnsSwapState,
+      },
+    }))
+  );
 };
 
 export const concatSnsSummary = ([summary, swap]: [

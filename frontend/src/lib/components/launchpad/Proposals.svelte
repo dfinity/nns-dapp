@@ -3,7 +3,7 @@
   import { listSnsProposals } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    openForVotesSnsProposalsStore,
+    openSnsProposalsStore,
     snsProposalsStore,
   } from "../../stores/projects.store";
   import { isNullish } from "../../utils/utils";
@@ -28,11 +28,11 @@
     <SkeletonProposalCard />
     <SkeletonProposalCard />
   </CardGrid>
-{:else if $openForVotesSnsProposalsStore.length === 0}
+{:else if $openSnsProposalsStore.length === 0}
   <p class="no-proposals">{$i18n.voting.nothing_found}</p>
 {:else}
   <CardGrid>
-    {#each $openForVotesSnsProposalsStore as proposalInfo (proposalInfo.id)}
+    {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
       <ProposalCard {proposalInfo} />
     {/each}
   </CardGrid>

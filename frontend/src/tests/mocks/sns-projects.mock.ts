@@ -190,7 +190,9 @@ export const mockQuerySnsSwapState = {
   ],
 };
 
-export const summaryForLifecycle = (lifecycle: SnsSwapLifecycle) => ({
+export const summaryForLifecycle = (
+  lifecycle: SnsSwapLifecycle
+): SnsSummary => ({
   ...mockSnsFullProject.summary,
   swap: {
     ...mockSwap,

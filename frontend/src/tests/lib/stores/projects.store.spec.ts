@@ -1,12 +1,13 @@
+import { ProposalStatus } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
+  activePadProjectsStore,
   committedProjectsStore,
   isNnsProjectStore,
-  openForVotesSnsProposalsStore,
-  openProjectsStore,
+  openSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
   snsSummariesStore,
@@ -68,24 +69,33 @@ describe("projects.store", () => {
       certified: true,
     });
 
-    it("should filter projects that are open", () => {
+    it("should filter projects that are active", () => {
       snsSummariesStore.setSummaries({
         summaries: [summaryForLifecycle(SnsSwapLifecycle.Open)],
         certified: false,
       });
-
-      const open = get(openProjectsStore);
+      const open = get(activePadProjectsStore);
       expect(open?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
-        summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
+        summaries: [
+          summaryForLifecycle(SnsSwapLifecycle.Open),
+          summaryForLifecycle(SnsSwapLifecycle.Committed),
+        ],
         certified: false,
       });
-      const noOpen = get(openProjectsStore);
+      const open2 = get(activePadProjectsStore);
+      expect(open2?.length).toEqual(2);
+
+      snsSummariesStore.setSummaries({
+        summaries: [summaryForLifecycle(SnsSwapLifecycle.Unspecified)],
+        certified: false,
+      });
+      const noOpen = get(activePadProjectsStore);
       expect(noOpen?.length).toEqual(0);
     });
 
-    it("should filter projects that are committed", () => {
+    it("should filter projects that are committed only", () => {
       snsSummariesStore.setSummaries({
         summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
         certified: false,
@@ -124,11 +134,19 @@ describe("projects.store", () => {
           ...mockProposalInfo,
           id: BigInt(111),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_REJECTED,
         },
         {
           ...mockProposalInfo,
           id: BigInt(222),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+        },
+        {
+          ...mockProposalInfo,
+          id: BigInt(222),
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
         },
       ];
 
@@ -137,10 +155,10 @@ describe("projects.store", () => {
         certified: false,
       });
 
-      const $openForVotesSnsProposalsStore = get(openForVotesSnsProposalsStore);
+      const $openSnsProposalsStore = get(openSnsProposalsStore);
 
-      expect($openForVotesSnsProposalsStore.length).toBe(1);
-      expect($openForVotesSnsProposalsStore[0]).toEqual(proposals[0]);
+      expect($openSnsProposalsStore.length).toBe(1);
+      expect($openSnsProposalsStore[0]).toEqual(proposals[1]);
     });
   });
 
