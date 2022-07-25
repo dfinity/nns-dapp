@@ -54,8 +54,17 @@ local_deployment_data="$(
   test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
+  : "Get the governance canister ID - it should be defined"
+  GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
+  export GOVERNANCE_CANISTER_ID
+
   : "Put any values we found in JSON.  Omit any that are undefined."
-  jq -n '{ OWN_CANISTER_ID: env.CANISTER_ID, IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL, WASM_CANISTER_ID: env.WASM_CANISTER_ID } | del(..|select(. == null))'
+  jq -n '{
+    OWN_CANISTER_ID: env.CANISTER_ID,
+    IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
+    WASM_CANISTER_ID: env.WASM_CANISTER_ID,
+    GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
+    } | del(..|select(. == null))'
 )"
 
 : "Put all configuration in JSON."
@@ -67,7 +76,7 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-jq -s '
+jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
