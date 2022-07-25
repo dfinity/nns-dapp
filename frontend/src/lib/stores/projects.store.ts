@@ -1,4 +1,4 @@
-import type { ProposalInfo } from "@dfinity/nns";
+import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -7,7 +7,6 @@ import {
   filterActiveProjects,
   filterCommittedProjects,
 } from "../utils/projects.utils";
-import { isProposalOpenForVotes } from "../utils/proposals.utils";
 import { isNullish } from "../utils/utils";
 
 export type SnsSummariesStore =
@@ -71,11 +70,13 @@ const initSnsProposalsStore = () => {
   };
 };
 
-const initOpenForVotesSnsProposalsStore = () =>
+const initOpenSnsProposalsStore = () =>
   derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
     isNullish($snsProposalsStore)
       ? []
-      : $snsProposalsStore.proposals.filter(isProposalOpenForVotes)
+      : $snsProposalsStore.proposals.filter(
+          ({ status }) => status === ProposalStatus.PROPOSAL_STATUS_OPEN
+        )
   );
 
 const initSnsSummariesStore = () => {
@@ -153,8 +154,7 @@ const initSnsProjectSelectedStore = () => {
 export const snsesCountStore = writable<number | undefined>(undefined);
 
 export const snsProposalsStore = initSnsProposalsStore();
-export const openForVotesSnsProposalsStore =
-  initOpenForVotesSnsProposalsStore();
+export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
