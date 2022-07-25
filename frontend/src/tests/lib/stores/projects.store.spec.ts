@@ -5,7 +5,7 @@ import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   isNnsProjectStore,
-  launchPadProjectsStore,
+  activePadProjectsStore,
   openForVotesSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
@@ -74,14 +74,14 @@ describe("projects.store", () => {
         certified: false,
       });
 
-      const open = get(launchPadProjectsStore);
+      const open = get(activePadProjectsStore);
       expect(open?.length).toEqual(1);
 
       snsSummariesStore.setSummaries({
         summaries: [summaryForLifecycle(SnsSwapLifecycle.Committed)],
         certified: false,
       });
-      const noOpen = get(launchPadProjectsStore);
+      const noOpen = get(activePadProjectsStore);
       expect(noOpen?.length).toEqual(0);
     });
 

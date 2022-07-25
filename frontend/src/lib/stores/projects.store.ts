@@ -188,7 +188,7 @@ const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
         })
 );
 
-export const launchPadProjectsStore = derived(
+export const activePadProjectsStore = derived(
   snsFullProjectsStore,
   (projects: SnsFullProject[] | undefined) => filterActiveProjects(projects)
 );
