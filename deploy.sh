@@ -318,6 +318,14 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
     jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
+
+  # Note: This must come afetr the canister_ids has been updated.
+  echo "SNS state after creation"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+  echo "Tell the swap canister to get tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
+  echo "SNS swap state should now have tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
