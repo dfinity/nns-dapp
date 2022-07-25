@@ -465,7 +465,7 @@ export const participateInSnsSwap = async ({
   rootCanisterId: Principal;
   fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
-  logWithTimestamp(`Participating in swap ${rootCanisterId}: call...`);
+  logWithTimestamp("Participating in swap: call...");
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
   const snsWrapper = await wrapper({
@@ -489,5 +489,5 @@ export const participateInSnsSwap = async ({
   // Notify participation
   await snsWrapper.notifyParticipation({ buyer: controller.toText() });
 
-  logWithTimestamp(`Participating in swap ${rootCanisterId}: done`);
+  logWithTimestamp("Participating in swap: done");
 };
