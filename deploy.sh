@@ -13,8 +13,8 @@ help_text() {
 	- Opens the NNS dapp in a browser (optional)
 
 	On success the deployment is ready for development or testing:
-	- svelte:
-	    cd frontend/svelte
+	- frontend:
+	    cd frontend
 	    npm ci
 	    npm run dev
 	- testing:

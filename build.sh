@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# The frontend/svelte is built into public/. The svelte is bundled into a tarball,
+# The frontend is built into public/. The dapp is bundled into a tarball,
 # assets.tar.xz. This tarball is baked into the wasm binary output at build
 # time by cargo, and finally the wasm binary is read by ic-cdk-optimizer and
 # optimizer. This scripts outputs a single file, nns-dapp.wasm.
 #
-#                          frontend/svelte◄─────────── assets.tar.xz
+#                          frontend◄─────────── assets.tar.xz
 #                                                           ▲
 #                                                           │
 #                                                           │
@@ -60,9 +60,9 @@ export ENABLE_SNS_NEURONS
 set -x
 
 ###################
-# frontend/svelte # (output: frontend/svelte/public/)
+# frontend # (output: frontend/public/)
 ###################
-(cd "$TOPLEVEL/frontend/svelte" && npm ci && npm run build)
+(cd "$TOPLEVEL/frontend" && npm ci && npm run build)
 
 #################
 # assets.tar.xz #
@@ -92,7 +92,7 @@ fi
 tarball_dir="$TOPLEVEL/web-assets"
 rm -rf "$tarball_dir"
 echo "using $tarball_dir for tarball directory"
-cp -R "$TOPLEVEL/frontend/svelte/public/" "$tarball_dir/"
+cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 
 # Bundle into a tight tarball
 # On macOS you need to install gtar + xz
