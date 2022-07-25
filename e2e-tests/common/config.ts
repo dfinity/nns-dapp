@@ -7,12 +7,12 @@
  * The configuration is use in the rollup build but also in the parser of the static files - e.g. build.index.mjs to output the index.html with a CSP.
  */
 
-import * as configFromFile from "./deployment-config.json";
+import * as configFromFile from "../../deployment-config.json";
 
 /**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
  */
-export function getRequiredEnvVar(key) {
+export function getRequiredEnvVar(key): string {
   let value = process.env[key];
   if (undefined === value || value === "") {
     value = configFromFile[key];
@@ -28,9 +28,13 @@ export function getRequiredEnvVar(key) {
  */
 export function getRequiredEnvEnum<Type>(key: string, enumType): Type {
   const value = getRequiredEnvVar(key);
-  if (value in enumType) {
+  if (value !== undefined && value in enumType) {
     return value as unknown as Type;
   } else {
-    throw new Error(`Environment variable ${key}='${value}' is not a valid ${enumType}.  Valid values are: ${Object.keys(enumType).join(" ")}`);
+    throw new Error(
+      `Environment variable ${key}='${value}' is not a valid ${enumType}.  Valid values are: ${Object.keys(
+        enumType
+      ).join(" ")}`
+    );
   }
 }
