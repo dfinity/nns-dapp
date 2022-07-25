@@ -3,6 +3,7 @@ import {
   concatSnsSummary,
 } from "../../../lib/utils/sns.utils";
 import {
+  mockSnsSummaryList,
   mockSummary,
   mockSwap,
   mockSwapInit,
@@ -97,6 +98,60 @@ describe("sns-utils", () => {
       ]);
 
       expect(summaries.length).toEqual(1);
+    });
+  });
+
+  describe("sort sns summaries", () => {
+    it("should sort summaries and swaps", () => {
+      const summaries = concatSnsSummaries([
+        [mockSummary, mockSnsSummaryList[1]],
+        [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [
+                  {
+                    ...mockSwapState,
+                    open_time_window: [
+                      {
+                        start_timestamp_seconds: BigInt(4),
+                        end_timestamp_seconds: BigInt(5),
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [
+                  {
+                    ...mockSwapState,
+                    open_time_window: [
+                      {
+                        start_timestamp_seconds: BigInt(1),
+                        end_timestamp_seconds: BigInt(2),
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(2);
+
+      expect(summaries[0].rootCanisterId.toText()).toEqual(
+        mockSnsSummaryList[1].rootCanisterId.toText()
+      );
     });
   });
 
