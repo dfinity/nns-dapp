@@ -8,6 +8,7 @@
     "import-assets": "rm -fr public && cp -R static public",
     "build": "npm run import-assets && npm run i18n && npm run build:config && rollup -c && npm run build:index",
     "dev": "npm run import-assets && npm run i18n && CANISTER_ID=q3fc5-haaaa-aaaaa-aaahq-cai DFX_NETWORK=testnet npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
+    "small06": "npm run import-assets && npm run i18n && CANISTER_ID=sbzkb-zqaaa-aaaaa-aaaiq-cai WASM_CANISTER_ID=qsgjb-riaaa-aaaaa-aaaga-cai DFX_NETWORK=small06 npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w",
     "build:config": "../../config.sh",
     "start": "sirv public",
     "check": "svelte-check --tsconfig ./tsconfig.json && npm run lint",
