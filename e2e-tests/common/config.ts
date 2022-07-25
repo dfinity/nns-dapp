@@ -12,7 +12,7 @@ import * as configFromFile from "../../deployment-config.json";
 /**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
  */
-export function getRequiredEnvVar(key): string | undefined {
+export function getRequiredEnvVar(key): string {
   let value = process.env[key];
   if (undefined === value || value === "") {
     value = configFromFile[key];
