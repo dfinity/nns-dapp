@@ -50,7 +50,8 @@ export const loadSnsSummaries = ({
         return;
       }
 
-      // TODO(L2-839): reset and clear stores
+      // hide unproven data
+      snsSummariesStore.setLoadingState();
 
       toastsStore.error(
         toToastError({
@@ -65,6 +66,7 @@ export const loadSnsSummaries = ({
   });
 };
 
+/** Combined request: querySnsSummary + querySnsSwapState */
 export const loadSnsSummary = async ({
   rootCanisterId,
   onLoad,
@@ -75,10 +77,8 @@ export const loadSnsSummary = async ({
     [QuerySnsSummary | undefined, QuerySnsSwapState | undefined]
   >;
   onError: () => void;
-}) => {
-  // TODO(L2-838): load only if not yet in store
-
-  return queryAndUpdate<
+}) =>
+  queryAndUpdate<
     [QuerySnsSummary | undefined, QuerySnsSwapState | undefined],
     unknown
   >({
@@ -99,8 +99,6 @@ export const loadSnsSummary = async ({
         return;
       }
 
-      // TODO(L2-839): reset and clear stores
-
       toastsStore.error(
         toToastError({
           err,
@@ -112,7 +110,6 @@ export const loadSnsSummary = async ({
     },
     logMessage: "Syncing Sns summary",
   });
-};
 
 export const loadSnsSwapCommitments = ({
   onError,
@@ -139,7 +136,8 @@ export const loadSnsSwapCommitments = ({
         return;
       }
 
-      // TODO(L2-839): reset and clear stores
+      // hide unproven data
+      snsSwapCommitmentsStore.setLoadingState();
 
       toastsStore.error(
         toToastError({
@@ -162,10 +160,8 @@ export const loadSnsSwapCommitment = async ({
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
-}) => {
-  // TODO(L2-838): load only if not yet in store
-
-  return queryAndUpdate<SnsSwapCommitment, unknown>({
+}) =>
+  queryAndUpdate<SnsSwapCommitment, unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
@@ -180,8 +176,6 @@ export const loadSnsSwapCommitment = async ({
         return;
       }
 
-      // TODO(L2-839): reset and clear stores
-
       toastsStore.error(
         toToastError({
           err,
@@ -193,7 +187,6 @@ export const loadSnsSwapCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
-};
 
 export const listSnsProposals = async (): Promise<void> => {
   snsProposalsStore.setLoadingState();
@@ -217,7 +210,8 @@ export const listSnsProposals = async (): Promise<void> => {
         return;
       }
 
-      // TODO(L2-839): reset and clear stores
+      // hide unproven data
+      snsProposalsStore.setLoadingState();
 
       toastsStore.error(
         toToastError({
