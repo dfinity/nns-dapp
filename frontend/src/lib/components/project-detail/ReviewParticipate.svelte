@@ -8,7 +8,7 @@
     loadSnsSwapCommitment,
     participateInSwap,
   } from "../../services/sns.services";
-  import { busy, startBusy } from "../../stores/busy.store";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
   import { mainTransactionFeeStoreAsIcp } from "../../stores/transaction-fees.store";
@@ -63,6 +63,7 @@
         labelKey: "sns_project_detail.participate_success",
       });
     }
+    stopBusy("project-participate");
   };
 
   const dispatcher = createEventDispatcher();
