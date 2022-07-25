@@ -71,7 +71,9 @@ const initOpenSnsProposalsStore = () =>
   derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
     isNullish($snsProposalsStore)
       ? []
-      : $snsProposalsStore.proposals.filter(({status}) => status === ProposalStatus.PROPOSAL_STATUS_OPEN)
+      : $snsProposalsStore.proposals.filter(
+          ({ status }) => status === ProposalStatus.PROPOSAL_STATUS_OPEN
+        )
   );
 
 const initSnsSummariesStore = () => {
@@ -149,8 +151,7 @@ const initSnsProjectSelectedStore = () => {
 export const snsesCountStore = writable<number | undefined>(undefined);
 
 export const snsProposalsStore = initSnsProposalsStore();
-export const openSnsProposalsStore =
-  initOpenSnsProposalsStore();
+export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();

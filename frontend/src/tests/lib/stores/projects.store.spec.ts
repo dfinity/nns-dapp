@@ -6,8 +6,8 @@ import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   isNnsProjectStore,
-  openSnsProposalsStore,
   openProjectsStore,
+  openSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
   snsSummariesStore,
