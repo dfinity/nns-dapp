@@ -1,3 +1,4 @@
+import { ProposalStatus } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -5,8 +6,8 @@ import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   isNnsProjectStore,
-  openForVotesSnsProposalsStore,
   openProjectsStore,
+  openSnsProposalsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
   snsSummariesStore,
@@ -124,11 +125,19 @@ describe("projects.store", () => {
           ...mockProposalInfo,
           id: BigInt(111),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_REJECTED,
         },
         {
           ...mockProposalInfo,
           id: BigInt(222),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+        },
+        {
+          ...mockProposalInfo,
+          id: BigInt(222),
+          deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
+          status: ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
         },
       ];
 
@@ -137,10 +146,10 @@ describe("projects.store", () => {
         certified: false,
       });
 
-      const $openForVotesSnsProposalsStore = get(openForVotesSnsProposalsStore);
+      const $openSnsProposalsStore = get(openSnsProposalsStore);
 
-      expect($openForVotesSnsProposalsStore.length).toBe(1);
-      expect($openForVotesSnsProposalsStore[0]).toEqual(proposals[0]);
+      expect($openSnsProposalsStore.length).toBe(1);
+      expect($openSnsProposalsStore[0]).toEqual(proposals[1]);
     });
   });
 
