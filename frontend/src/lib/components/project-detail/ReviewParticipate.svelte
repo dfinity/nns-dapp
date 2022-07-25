@@ -36,6 +36,7 @@
   let accepted: boolean = false;
   const toggelAccept = () => (accepted = !accepted);
 
+  const dispatcher = createEventDispatcher();
   const participate = async () => {
     // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
     if ($store.summary === undefined || $store.summary === null) {
@@ -62,11 +63,11 @@
       toastsStore.success({
         labelKey: "sns_project_detail.participate_success",
       });
+      dispatcher("nnsClose");
     }
     stopBusy("project-participate");
   };
 
-  const dispatcher = createEventDispatcher();
   const back = () => {
     dispatcher("nnsBack");
   };

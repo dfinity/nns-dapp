@@ -468,15 +468,15 @@ export const participateInSnsSwap = async ({
   logWithTimestamp(`Participating in swap ${rootCanisterId}: call...`);
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: rootCanisterId,
-    subAccount: principalSubaccont,
-  });
   const snsWrapper = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
+  });
+  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: snsWrapper.canisterIds.swapCanisterId,
+    subAccount: principalSubaccont,
   });
 
   // Send amount to the ledger
