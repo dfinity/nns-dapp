@@ -19,6 +19,7 @@ interface I18nCore {
   continue: string;
   amount: string;
   max: string;
+  min: string;
   principal: string;
   toggle: string;
   log: string;

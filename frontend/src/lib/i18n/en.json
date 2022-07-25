@@ -16,6 +16,7 @@
     "continue": "Continue",
     "amount": "Amount",
     "max": "Max",
+    "min": "Min",
     "principal": "Principal",
     "toggle": "toggle",
     "log": "Log",
