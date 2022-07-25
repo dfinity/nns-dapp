@@ -78,7 +78,11 @@
       rootCanisterId,
       onLoad: ({ response }) =>
         ($projectDetailStore.summary = concatSnsSummary(response)),
-      onError: goBack,
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.summary = null;
+        goBack();
+      },
     });
   };
 
@@ -107,7 +111,11 @@
       rootCanisterId,
       onLoad: ({ response: swapCommitment }) =>
         ($projectDetailStore.swapCommitment = swapCommitment),
-      onError: goBack,
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.swapCommitment = null;
+        goBack();
+      },
     });
   };
 
