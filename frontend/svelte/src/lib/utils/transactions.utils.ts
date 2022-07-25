@@ -4,6 +4,7 @@ import type {
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "../types/account";
+import { stringifyJson } from "./utils";
 
 export enum AccountTransactionType {
   Burn = "burn",
@@ -115,9 +116,11 @@ export const transactionDisplayAmount = ({
 export const mapTransaction = ({
   transaction,
   account,
+  toSelfTransaction,
 }: {
   transaction: Transaction;
   account: Account;
+  toSelfTransaction?: boolean;
 }): {
   type: AccountTransactionType;
   isReceive: boolean;
@@ -153,9 +156,12 @@ export const mapTransaction = ({
 
   const type = transactionType(transaction);
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
-  const isReceive = from !== account.identifier;
+  const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;
-  const useFee = showTransactionFee({ type, isReceive });
+  const useFee =
+    toSelfTransaction === true
+      ? false
+      : showTransactionFee({ type, isReceive });
   const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
 
   return {
@@ -183,3 +189,24 @@ export const transactionName = ({
       ? labels.receive
       : labels.send
     : labels[type] ?? type;
+
+/** Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
+export const mapToSelfTransaction = (
+  transactions: Transaction[]
+): { transaction: Transaction; toSelfTransaction: boolean }[] => {
+  const resultTransactions = transactions.map((transaction) => ({
+    transaction: { ...transaction },
+    toSelfTransaction: false,
+  }));
+
+  for (let i = 0; i < resultTransactions.length - 1; i++) {
+    const { transaction } = resultTransactions[i];
+    const { transaction: nextTransaction } = resultTransactions[i + 1];
+
+    if (stringifyJson(transaction) === stringifyJson(nextTransaction)) {
+      resultTransactions[i].toSelfTransaction = true;
+    }
+  }
+
+  return resultTransactions;
+};
