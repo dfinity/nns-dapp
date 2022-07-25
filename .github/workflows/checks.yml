@@ -108,7 +108,7 @@ jobs:
         env:
           RUST_BACKTRACE: 1
 
-  frontend-tests:
+  svelte-tests:
     needs: formatting
     runs-on: ubuntu-20.04
     defaults:
@@ -139,8 +139,7 @@ jobs:
       - name: Test
         run: npm run test
 
-  # Temporarily added:
-  frontend-lint:
+  svelte-lint:
     needs: formatting
     runs-on: ubuntu-20.04
     defaults:
@@ -207,7 +206,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "frontend-tests", "shell-checks"]
+    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes
