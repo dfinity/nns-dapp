@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - svelte
   pull_request:
 
 jobs:
@@ -33,12 +32,12 @@ jobs:
       - name: Format shell scripts
         run: ./scripts/fmt-sh
 
-      - name: Install svelte dependencies
+      - name: Install frontend dependencies
         run: npm ci
-        working-directory: ./frontend/svelte
-      - name: Format svelte
+        working-directory: ./frontend
+      - name: Format frontend
         run: npm run format
-        working-directory: ./frontend/svelte
+        working-directory: ./frontend
 
       - name: Install e2e test dependencies
         run: npm ci
@@ -54,7 +53,7 @@ jobs:
           add: .
           author_name: Formatting Committer
           author_email: "<nobody@example.com>"
-          message: "Updating svelte frontend formatting"
+          message: "Updating frontend formatting"
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
@@ -115,7 +114,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend/svelte
+        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
       REDIRECT_TO_LEGACY: svelte
@@ -140,14 +139,13 @@ jobs:
       - name: Test
         run: npm run test
 
-  # Temporarily added:
   svelte-lint:
     needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend/svelte
+        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
 
