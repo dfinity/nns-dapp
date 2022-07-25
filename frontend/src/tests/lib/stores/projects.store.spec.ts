@@ -5,7 +5,7 @@ import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   isNnsProjectStore,
-  openForVotesSnsProposalsStore,
+  openSnsProposalsStore,
   openProjectsStore,
   snsProjectSelectedStore,
   snsProposalsStore,
@@ -137,10 +137,10 @@ describe("projects.store", () => {
         certified: false,
       });
 
-      const $openForVotesSnsProposalsStore = get(openForVotesSnsProposalsStore);
+      const $openSnsProposalsStore = get(openSnsProposalsStore);
 
-      expect($openForVotesSnsProposalsStore.length).toBe(1);
-      expect($openForVotesSnsProposalsStore[0]).toEqual(proposals[0]);
+      expect($openSnsProposalsStore.length).toBe(1);
+      expect($openSnsProposalsStore[0]).toEqual(proposals[0]);
     });
   });
 
