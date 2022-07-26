@@ -29,18 +29,24 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
+const createBuyersState = (amount) => ({
+  icp_disbursing: false,
+  amount_sns_e8s: BigInt(0),
+  amount_icp_e8s: amount,
+  sns_disbursing: false,
+});
 export const mockSnsSwapCommitment = (
   rootCanisterId: Principal
 ): SnsSwapCommitment =>
   ({
     [principal(0).toText()]: {
       rootCanisterId: principal(0),
-      myCommitment: BigInt(25 * 100000000),
+      myCommitment: createBuyersState(BigInt(25 * 100000000)),
       currentCommitment: BigInt(100 * 100000000),
     },
     [principal(1).toText()]: {
       rootCanisterId: principal(1),
-      myCommitment: BigInt(5 * 100000000),
+      myCommitment: createBuyersState(BigInt(5 * 100000000)),
       currentCommitment: BigInt(775 * 100000000),
     },
     [principal(2).toText()]: {
