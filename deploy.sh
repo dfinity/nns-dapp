@@ -350,7 +350,7 @@ if [[ "$POPULATE" == "true" ]]; then
   }
 fi
 
-if [[ "$DEPLOY_SNS_WASM_CANISTER" == "true" ]]; then
+if [[ "$DEPLOY_SNS" == "true" ]]; then
   echo "Checking cycle balance"
   while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
     WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
