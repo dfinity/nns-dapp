@@ -114,7 +114,7 @@ describe("project-utils", () => {
     });
   });
 
-  describe("time window", () => {
+  describe("deadline", () => {
     it("should return no duration until swap deadline", () =>
       expect(
         durationTillSwapDeadline({
