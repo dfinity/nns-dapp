@@ -47,13 +47,24 @@ local_deployment_data="$(
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
 
   : "Get the SNS wasm canister ID, if it exists"
+  : "- may be set as an env var"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
   : "      dfx.json -> canisters -> wasm_canister -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
-  WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
+  LOCALLY_DEPLOYED_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
+  test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
+  : "Get the governance canister ID - it should be defined"
+  GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
+  export GOVERNANCE_CANISTER_ID
+
   : "Put any values we found in JSON.  Omit any that are undefined."
-  jq -n '{ OWN_CANISTER_ID: env.CANISTER_ID, IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL, WASM_CANISTER_ID: env.WASM_CANISTER_ID } | del(..|select(. == null))'
+  jq -n '{
+    OWN_CANISTER_ID: env.CANISTER_ID,
+    IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
+    WASM_CANISTER_ID: env.WASM_CANISTER_ID,
+    GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
+    } | del(..|select(. == null))'
 )"
 
 : "Put all configuration in JSON."
@@ -65,7 +76,7 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-jq -s '
+jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
@@ -113,6 +124,9 @@ export ENABLE_NEW_SPAWN_FEATURE
 
 WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
 export WASM_CANISTER_ID
+
+ENABLE_SNS_NEURONS="$(get_var ENABLE_SNS_NEURONS)"
+export ENABLE_SNS_NEURONS
 
 : "Return to the original working directory."
 popd
