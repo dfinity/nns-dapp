@@ -202,15 +202,20 @@ if [[ "$GUESS" == "true" ]]; then
   esac
 fi
 
-echo
-echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
-echo DELETE_WALLET=$DELETE_WALLET
-echo START_DFX=$START_DFX
-echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
-echo DEPLOY_II=$DEPLOY_II
-echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
-echo POPULATE=$POPULATE
-echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
+if [[ "$DRY_RUN" == "true" ]] || [[ "$GUESS" == "true" ]]; then
+  echo
+  echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
+  echo DELETE_WALLET=$DELETE_WALLET
+  echo START_DFX=$START_DFX
+  echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
+  echo DEPLOY_SNS_WASM_CANISTER="${DEPLOY_SNS_WASM_CANISTER:-}"
+  echo DEPLOY_II=$DEPLOY_II
+  echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
+  echo POPULATE=$POPULATE
+  echo DEPLOY_SNS="$DEPLOY_SNS"
+  echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
+fi
+
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
   echo
@@ -259,7 +264,8 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
+: "Get WASM and did files.  By now it's needed for almost everything except open..."
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]] || test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   if [[ "$CTL_NOBUILD_NNS" == "true" ]]; then
     echo "Using exising NNS and SNS canisters"
   else
@@ -270,12 +276,6 @@ fi
 
 if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
-fi
-
-if [[ "$DEPLOY_II" == "true" ]]; then
-  dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
-  echo "Waiting for II to be stable..."
-  sleep 4
 fi
 
 # Note: On mainnet SNS are created much later and have unpredictable canister IDs, however
@@ -307,6 +307,12 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
         --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
     done
   fi
+fi
+
+if [[ "$DEPLOY_II" == "true" ]]; then
+  dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
+  echo "Waiting for II to be stable..."
+  sleep 4
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
