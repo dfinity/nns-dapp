@@ -5,7 +5,7 @@
     SnsSwapCommitment,
     SnsSummarySwap,
   } from "../../types/sns";
-  import { durationTillSwapDeadline } from "../../utils/project.utils";
+  import { durationTillSwapDeadline } from "../../utils/projects.utils";
   import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";

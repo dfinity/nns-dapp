@@ -11,7 +11,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
     swapDuration,
-  } from "../../utils/project.utils";
+  } from "../../utils/projects.utils";
   import { secondsToDuration } from "../../utils/date.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
