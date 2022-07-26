@@ -3,9 +3,10 @@ import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
 import { loadMainTransactionFee } from "./transaction-fees.services";
-import {SnsWrapper} from '@dfinity/sns';
 
-export const initApp = (): Promise<[PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]> => {
+export const initApp = (): Promise<
+  [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
+> => {
   const initNns: Promise<void>[] = [
     syncAccounts(),
     listNeurons(),
