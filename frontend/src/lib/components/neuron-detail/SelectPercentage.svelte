@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import {
-    formattedMaturityByStake,
+    formattedMaturity,
     neuronStake,
   } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
@@ -31,7 +31,7 @@
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
     <p>
-      {formattedMaturityByStake(neuron)}
+      {formattedMaturity(neuron)}
     </p>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">

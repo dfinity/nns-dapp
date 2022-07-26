@@ -8,7 +8,7 @@
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
-    formattedMaturityByStake,
+    formattedMaturity,
     isNeuronControllable,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
@@ -33,7 +33,7 @@
   </div>
   <div slot="end">
     <h3>
-      {formattedMaturityByStake(neuron)}
+      {formattedMaturity(neuron)}
     </h3>
   </div>
   <div class="actions">
