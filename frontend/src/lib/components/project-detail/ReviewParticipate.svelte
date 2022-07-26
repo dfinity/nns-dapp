@@ -19,6 +19,7 @@
   } from "../../types/project-detail.context";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { convertNumberToICP } from "../../utils/icp.utils";
+  import { nonNullish } from "../../utils/utils";
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -39,33 +40,32 @@
   const dispatcher = createEventDispatcher();
   const participate = async () => {
     // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-    if ($store.summary === undefined || $store.summary === null) {
-      return;
-    }
-    startBusy({
-      initiator: "project-participate",
-    });
-    const { success } = await participateInSwap({
-      account,
-      amount: icpAmount,
-      rootCanisterId: $store.summary.rootCanisterId,
-    });
-    if (success) {
-      await loadSnsSwapCommitment({
-        rootCanisterId: $store.summary.rootCanisterId.toText(),
-        onLoad: ({ response: swapCommitment }) =>
-          ($store.swapCommitment = swapCommitment),
-        onError: () => {
-          // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-          console.log("error");
-        },
+    if (nonNullish($store.summary)) {
+      startBusy({
+        initiator: "project-participate",
       });
-      toastsStore.success({
-        labelKey: "sns_project_detail.participate_success",
+      const { success } = await participateInSwap({
+        account,
+        amount: icpAmount,
+        rootCanisterId: $store.summary.rootCanisterId,
       });
-      dispatcher("nnsClose");
+      if (success) {
+        await loadSnsSwapCommitment({
+          rootCanisterId: $store.summary.rootCanisterId.toText(),
+          onLoad: ({ response: swapCommitment }) =>
+            ($store.swapCommitment = swapCommitment),
+          onError: () => {
+            // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+            console.log("error");
+          },
+        });
+        toastsStore.success({
+          labelKey: "sns_project_detail.participate_success",
+        });
+        dispatcher("nnsClose");
+      }
+      stopBusy("project-participate");
     }
-    stopBusy("project-participate");
   };
 
   const back = () => {
