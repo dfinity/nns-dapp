@@ -241,3 +241,6 @@ export const poll = async <T>({
     counter: counter + 1,
   });
 };
+
+export const valueSpan = (text: string): string =>
+  `<span class="value">${text}</span>`;
