@@ -1,4 +1,4 @@
-import { IS_TESTNET } from "../constants/environment.constants";
+import { ENABLE_SNS_NEURONS } from "../constants/environment.constants";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
@@ -14,7 +14,7 @@ export const initApp = (): Promise<
   ];
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
-  const initSns: Promise<void>[] = IS_TESTNET
+  const initSns: Promise<void>[] = ENABLE_SNS_NEURONS
     ? [loadSnsSummaries(), loadSnsSwapCommitments()]
     : [];
 

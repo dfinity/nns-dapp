@@ -1,10 +1,7 @@
 <script lang="ts">
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
-  import {
-    DFX_NETWORK,
-    ENABLE_SNS_NEURONS,
-  } from "../lib/constants/environment.constants";
+  import { ENABLE_SNS_NEURONS } from "../lib/constants/environment.constants";
   import NnsNeurons from "../lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "../lib/pages/SnsNeurons.svelte";
   import {
@@ -14,9 +11,7 @@
 </script>
 
 <MainContentWrapper>
-  <!-- SNS Canisters can't be deployed to e2e because we can't define subnets on local dfx -->
-  <!-- TODO: https://dfinity.atlassian.net/browse/L2-663 -->
-  {#if ENABLE_SNS_NEURONS && DFX_NETWORK !== "local"}
+  {#if ENABLE_SNS_NEURONS}
     <div class="dropdown-wrapper">
       <div class="fit-content">
         <SelectProjectDropdown />
