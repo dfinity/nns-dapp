@@ -598,6 +598,7 @@ interface I18nSns_project_detail {
   understand_agree: string;
   edit_transaction: string;
   execute: string;
+  participate_success: string;
   participate: string;
 }
 
