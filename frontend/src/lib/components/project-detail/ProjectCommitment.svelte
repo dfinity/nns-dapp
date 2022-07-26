@@ -42,7 +42,9 @@
     <svelte:fragment slot="header"
       >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
     >
-    <p>Some details about what the current commitment means.</p>
+    <p class="description">
+      Some details about what the current commitment means.
+    </p>
   </InfoContextKey>
   <Icp slot="value" icp={currentCommitmentIcp} singleLine />
 </KeyValuePair>

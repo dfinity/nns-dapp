@@ -24,7 +24,7 @@
 <p class:text_small={size === "small"}><Proposer {proposalInfo} /></p>
 <p class:text_small={size === "small"}>
   {$i18n.proposal_detail.topic_prefix}
-  {topic}
+  <span class="value">{topic}</span>
 </p>
 <p
   class:text_small={size === "small"}
@@ -32,7 +32,7 @@
   data-proposal-id={id}
 >
   {$i18n.proposal_detail.id_prefix}
-  {id}
+  <span class="value">{id}</span>
 </p>
 
 <style lang="scss">

@@ -25,6 +25,7 @@
   data-tid={testId}
   {role}
   on:click
+  class="card"
   class:clickable
   class:withArrow
   class:selected
@@ -57,7 +58,6 @@
     text-decoration: none;
 
     background: var(--card-background);
-    color: var(--card-background-contrast);
     box-shadow: var(--box-shadow);
 
     transition: color var(--animation-time-normal);
