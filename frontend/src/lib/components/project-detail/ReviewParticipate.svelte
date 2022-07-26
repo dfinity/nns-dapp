@@ -4,10 +4,7 @@
   import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
-  import {
-    loadSnsSwapCommitment,
-    participateInSwap,
-  } from "../../services/sns.services";
+  import { participateInSwap } from "../../services/sns.services";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
@@ -48,17 +45,9 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
+        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
       });
       if (success) {
-        await loadSnsSwapCommitment({
-          rootCanisterId: $store.summary.rootCanisterId.toText(),
-          onLoad: ({ response: swapCommitment }) =>
-            ($store.swapCommitment = swapCommitment),
-          onError: () => {
-            // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-            console.log("error");
-          },
-        });
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
         });

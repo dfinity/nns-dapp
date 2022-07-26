@@ -5,10 +5,7 @@
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
-import {
-  loadSnsSwapCommitment,
-  participateInSwap,
-} from "../../../../lib/services/sns.services";
+import { participateInSwap } from "../../../../lib/services/sns.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -23,7 +20,6 @@ import { clickByTestId } from "../../testHelpers/clickByTestId";
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
     participateInSwap: jest.fn().mockResolvedValue({ success: true }),
-    loadSnsSwapCommitment: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -149,7 +145,6 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(participateInSwap).toBeCalled());
-      await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
     });
 
     it("should move to the last step and go back", async () => {

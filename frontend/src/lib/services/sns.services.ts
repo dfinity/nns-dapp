@@ -27,6 +27,7 @@ import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
 } from "./utils.services";
 
 export const loadSnsSummaries = ({
@@ -160,12 +161,15 @@ export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onLoad,
   onError,
+  strategy = "query_and_update",
 }: {
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
+  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
+    strategy,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
@@ -239,10 +243,12 @@ export const participateInSwap = async ({
   amount,
   rootCanisterId,
   account,
+  onSuccess,
 }: {
   amount: ICP;
   rootCanisterId: Principal;
   account: Account;
+  onSuccess?: (swapState: SnsSwapCommitment) => void;
 }): Promise<{ success: boolean }> => {
   try {
     const accountIdentity = await getAccountIdentity(account.identifier);
@@ -253,11 +259,17 @@ export const participateInSwap = async ({
       controller: accountIdentity.getPrincipal(),
       fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
+    await loadSnsSwapCommitment({
+      strategy: "update",
+      rootCanisterId: rootCanisterId.toText(),
+      onLoad: ({ response: swapCommitment }) => onSuccess?.(swapCommitment),
+      onError: () => {
+        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+      },
+    });
     return { success: true };
   } catch (error) {
     // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-    console.log("in da participate error");
-    console.log(error);
     return { success: false };
   }
 };
