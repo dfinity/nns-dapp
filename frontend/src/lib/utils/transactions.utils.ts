@@ -158,6 +158,7 @@ export const mapTransaction = ({
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
   const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;
+  // (from==to workaround) in case of transaction duplication we replace one of the transaction to `Received`, and it doesn't need to show fee because paid fee is already shown in the `Send` one.
   const useFee =
     toSelfTransaction === true
       ? false
@@ -190,7 +191,7 @@ export const transactionName = ({
       : labels.send
     : labels[type] ?? type;
 
-/** Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
+/** (from==to workaround) Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
 export const mapToSelfTransaction = (
   transactions: Transaction[]
 ): { transaction: Transaction; toSelfTransaction: boolean }[] => {
