@@ -1,8 +1,4 @@
 <script lang="ts">
-  import {
-    loadSnsSummaries,
-    loadSnsSwapCommitments,
-  } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     activePadProjectsStore,
@@ -11,14 +7,11 @@
     snsSummariesStore,
     snsSwapCommitmentsStore,
   } from "../../stores/projects.store";
-  import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
 
   let projects: SnsFullProject[] | undefined;
   $: projects = $activePadProjectsStore;
@@ -29,23 +22,6 @@
   let loading: boolean = false;
   $: loading =
     isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
-
-  // TODO(L2-863): ask Mischa if use should be redirected or if a message should be displayed
-  const goBack = () =>
-    routeStore.navigate({
-      path: AppPath.Accounts,
-    });
-
-  const load = () => {
-    if ($snsSummariesStore === undefined) {
-      loadSnsSummaries({ onError: goBack });
-    }
-    if ($snsSwapCommitmentsStore === undefined) {
-      loadSnsSwapCommitments({ onError: goBack });
-    }
-  };
-
-  onMount(load);
 </script>
 
 {#if loading}

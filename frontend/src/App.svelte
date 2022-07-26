@@ -9,26 +9,19 @@
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
   import Toasts from "./lib/components/ui/Toasts.svelte";
-  import { syncAccounts } from "./lib/services/accounts.services";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
-  import { listNeurons } from "./lib/services/neurons.services";
-  import { loadMainTransactionFee } from "./lib/services/transaction-fees.services";
+  import { initApp } from "./lib/services/app.services";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
       await worker.syncAuthIdle(auth);
 
-      // TODO: We do not need to load and sync the account data if we redirect to the Flutter app. Currently these data are not displayed with this application.
       if (!auth.identity) {
         return;
       }
 
-      await Promise.all([
-        syncAccounts(),
-        listNeurons(),
-        loadMainTransactionFee(),
-      ]);
+      await initApp();
     }
   );
 

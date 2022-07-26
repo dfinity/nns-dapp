@@ -5,7 +5,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SelectProjectDropdown from "../../../../lib/components/neurons/SelectProjectDropdown.svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { loadSnsSummaries } from "../../../../lib/services/sns.services";
 import {
   committedProjectsStore,
   snsProjectSelectedStore,
@@ -29,11 +28,6 @@ describe("SelectProjectDropdown", () => {
   beforeEach(() => {
     // Reset to default value
     snsProjectSelectedStore.set(OWN_CANISTER_ID);
-  });
-
-  it("should load sns summaries", () => {
-    render(SelectProjectDropdown);
-    expect(loadSnsSummaries).toHaveBeenCalled();
   });
 
   it("should render NNS and projects as options", () => {

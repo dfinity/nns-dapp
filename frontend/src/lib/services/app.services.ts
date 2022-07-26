@@ -1,0 +1,22 @@
+import { syncAccounts } from "./accounts.services";
+import { listNeurons } from "./neurons.services";
+import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
+import { loadMainTransactionFee } from "./transaction-fees.services";
+
+export const initApp = async () => {
+  const initNns: Promise<void>[] = [
+    syncAccounts(),
+    listNeurons(),
+    loadMainTransactionFee(),
+  ];
+
+  const initSns: Promise<void>[] = [
+    loadSnsSummaries(),
+    loadSnsSwapCommitments(),
+  ];
+
+  /**
+   * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
+   */
+  await Promise.race([Promise.all(initNns), Promise.all(initSns)]);
+};

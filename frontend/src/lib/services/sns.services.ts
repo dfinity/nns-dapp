@@ -30,11 +30,7 @@ import {
   type QueryAndUpdateStrategy,
 } from "./utils.services";
 
-export const loadSnsSummaries = ({
-  onError,
-}: {
-  onError: () => void;
-}): Promise<void> => {
+export const loadSnsSummaries = (): Promise<void> => {
   snsSummariesStore.setLoadingState();
 
   return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
@@ -64,8 +60,6 @@ export const loadSnsSummaries = ({
           fallbackErrorLabelKey: "error__sns.list_summaries",
         })
       );
-
-      onError();
     },
     logMessage: "Syncing Sns summaries",
   });
@@ -116,11 +110,7 @@ export const loadSnsSummary = async ({
     logMessage: "Syncing Sns summary",
   });
 
-export const loadSnsSwapCommitments = ({
-  onError,
-}: {
-  onError: () => void;
-}): Promise<void> => {
+export const loadSnsSwapCommitments = (): Promise<void> => {
   snsSwapCommitmentsStore.setLoadingState();
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
@@ -150,8 +140,6 @@ export const loadSnsSwapCommitments = ({
           fallbackErrorLabelKey: "error__sns.list_swap_commitments",
         })
       );
-
-      onError();
     },
     logMessage: "Syncing Sns swap commitments",
   });
