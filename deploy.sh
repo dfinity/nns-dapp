@@ -13,8 +13,8 @@ help_text() {
 	- Opens the NNS dapp in a browser (optional)
 
 	On success the deployment is ready for development or testing:
-	- svelte:
-	    cd frontend/svelte
+	- frontend:
+	    cd frontend
 	    npm ci
 	    npm run dev
 	- testing:
@@ -224,7 +224,7 @@ if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
     : Back up the canister_ids.json
     cp canister_ids.json "canister_ids.json.$(date -Isecond -u | sed 's/+.*//g')"
     echo "Deleting the entries for $DFX_NETWORK in canister_ids.json ..."
-    DFX_NETWORK="$DFX_NETWORK" jq 'map(del(.[env.DFX_NETWORK]))' <canister_ids.json >canister_ids.json.new
+    DFX_NETWORK="$DFX_NETWORK" jq 'to_entries | map(del(.value[env.DFX_NETWORK])) | from_entries' <canister_ids.json >canister_ids.json.new
     mv canister_ids.json.new canister_ids.json
   fi
 fi
@@ -295,9 +295,16 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
         --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
     done
   fi
+  echo "Checking cycle balance"
+  while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
+    WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
+    echo "Please add 51T cycles to this canister: $WALLET_CANISTER"
+    read -rp "Press enter when done ..."
+    echo
+  done
+
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml |
-    tee /dev/stderr >sns_creation.idl
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
 
   echo "Populate canister_ids.json"
   if test -e canister_ids.json; then
@@ -309,8 +316,16 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
     idl2json |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
-    jq -s '.[0] * .[1]' - canister_ids.json >canister_ids.json.new
+    jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
+
+  # Note: This must come afetr the canister_ids has been updated.
+  echo "SNS state after creation"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+  echo "Tell the swap canister to get tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
+  echo "SNS swap state should now have tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
