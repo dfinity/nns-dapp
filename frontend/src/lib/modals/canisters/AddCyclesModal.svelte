@@ -22,6 +22,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import { valueSpan } from "../../utils/utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -122,14 +123,16 @@
         on:nnsSelectAmount={selectAmount}
       >
         <p>
-          {replacePlaceholders($i18n.canisters.transaction_fee, {
-            $amount: formattedTransactionFeeICP($mainTransactionFeeStore),
+          {@html replacePlaceholders($i18n.canisters.transaction_fee, {
+            $amount: valueSpan(
+              formattedTransactionFeeICP($mainTransactionFeeStore)
+            ),
           })}
         </p>
         <div>
           <div>
             <h5>{$i18n.accounts.source}</h5>
-            <p>{account?.identifier}</p>
+            <p class="value">{account?.identifier}</p>
           </div>
           <div>
             <CanisterIdInfo {canisterId} />

@@ -3,6 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import Proposer from "./Proposer.svelte";
   import { mapProposalInfo } from "../../utils/proposals.utils";
+  import Value from "../ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let size: "small" | "normal" = "normal";
@@ -24,7 +25,7 @@
 <p class:text_small={size === "small"}><Proposer {proposalInfo} /></p>
 <p class:text_small={size === "small"}>
   {$i18n.proposal_detail.topic_prefix}
-  <span class="value">{topic}</span>
+  <Value>{topic}</Value>
 </p>
 <p
   class:text_small={size === "small"}
@@ -32,7 +33,7 @@
   data-proposal-id={id}
 >
   {$i18n.proposal_detail.id_prefix}
-  <span class="value">{id}</span>
+  <Value>{id}</Value>
 </p>
 
 <style lang="scss">

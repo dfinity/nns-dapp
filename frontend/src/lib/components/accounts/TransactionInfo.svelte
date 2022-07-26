@@ -2,6 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import Value from "../ui/Value.svelte";
 
   export let feeOnly: boolean = false;
   export let source: string;
@@ -15,16 +16,16 @@
       ? ` – ${$i18n.accounts.hardware_wallet_text}`
       : ""}
   </h5>
-  <p>{source}</p>
+  <p class="value">{source}</p>
 
   <h5>{$i18n.accounts.destination}</h5>
-  <p>{destination}</p>
+  <p class="value">{destination}</p>
 {/if}
 
 <h5>{$i18n.accounts.transaction_fee}</h5>
 
 <p class="fee">
-  {formattedTransactionFeeICP($mainTransactionFeeStore)}
+  <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
   {$i18n.core.icp}
 </p>
 

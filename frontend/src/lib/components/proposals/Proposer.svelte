@@ -16,7 +16,7 @@
 {#if proposer !== undefined}
   <button class="text" on:click|stopPropagation={() => (modalOpen = true)}
     >{$i18n.proposal_detail.proposer_prefix}
-    <span class="value">{proposer}</span></button
+    {proposer}</button
   >
 
   {#if modalOpen}

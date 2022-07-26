@@ -18,6 +18,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import InputRange from "../ui/InputRange.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;
@@ -50,20 +51,20 @@
 <div class="wizard-wrapper wrapper">
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
-    <p>{neuron.neuronId}</p>
+    <p class="value">{neuron.neuronId}</p>
 
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p data-tid="neuron-stake">
-      {replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: formatICP({ value: neuronICP, detailed: true }),
+      {@html replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
       })}
     </p>
 
     {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
       <h5>{$i18n.neurons.current_dissolve_delay}</h5>
       <p class="duration">
-        {secondsToDuration(neuron.dissolveDelaySeconds)} - {$i18n.neurons
-          .staked}
+        {@html valueSpan(secondsToDuration(neuron.dissolveDelaySeconds))} - {$i18n
+          .neurons.staked}
       </p>
     {/if}
   </div>
@@ -72,7 +73,7 @@
     <Card>
       <div slot="start">
         <h5>{$i18n.neurons.dissolve_delay_title}</h5>
-        <p>{$i18n.neurons.dissolve_delay_description}</p>
+        <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
       </div>
       <div class="select-delay-container">
         <InputRange
