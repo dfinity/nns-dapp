@@ -1,14 +1,22 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import { participateInSwap } from "../../services/sns.services";
+  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
+  import { toastsStore } from "../../stores/toasts.store";
   import { mainTransactionFeeStoreAsIcp } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
+  import {
+    PROJECT_DETAIL_CONTEXT_KEY,
+    type ProjectDetailContext,
+  } from "../../types/project-detail.context";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { convertNumberToICP } from "../../utils/icp.utils";
+  import { nonNullish } from "../../utils/utils";
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -16,17 +24,39 @@
   export let account: Account;
   export let amount: number;
 
+  const { store }: ProjectDetailContext = getContext<ProjectDetailContext>(
+    PROJECT_DETAIL_CONTEXT_KEY
+  );
+
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
 
   let accepted: boolean = false;
   const toggelAccept = () => (accepted = !accepted);
 
-  const participate = () => {
-    // TODO: https://dfinity.atlassian.net/browse/L2-797
+  const dispatcher = createEventDispatcher();
+  const participate = async () => {
+    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+    if (nonNullish($store.summary)) {
+      startBusy({
+        initiator: "project-participate",
+      });
+      const { success } = await participateInSwap({
+        account,
+        amount: icpAmount,
+        rootCanisterId: $store.summary.rootCanisterId,
+        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
+      });
+      if (success) {
+        toastsStore.success({
+          labelKey: "sns_project_detail.participate_success",
+        });
+        dispatcher("nnsClose");
+      }
+      stopBusy("project-participate");
+    }
   };
 
-  const dispatcher = createEventDispatcher();
   const back = () => {
     dispatcher("nnsBack");
   };
@@ -89,7 +119,7 @@
       <button
         class="small primary"
         data-tid="sns-swap-participate-button-execute"
-        disabled={!accepted}
+        disabled={!accepted || $busy}
         on:click={participate}>{$i18n.sns_project_detail.execute}</button
       >
     </FooterModal>

@@ -24,6 +24,7 @@ export type BusyStateInitiatorType =
   | "merge-maturity"
   | "spawn-neuron"
   | "claim_seed_neurons"
+  | "project-participate"
   | "disburse-neuron";
 
 export interface BusyState {

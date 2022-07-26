@@ -4,8 +4,6 @@
 
 import { render } from "@testing-library/svelte";
 import ProjectCard from "../../../../lib/components/launchpad/ProjectCard.svelte";
-import { secondsToDuration } from "../../../../lib/utils/date.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 
@@ -18,7 +16,7 @@ jest.mock("../../../../lib/services/sns.services", () => {
 });
 
 describe("ProjectCard", () => {
-  it("should render a logo", async () => {
+  it("should render a logo", () => {
     const { container } = render(ProjectCard, {
       props: {
         project: mockSnsFullProject,
@@ -31,7 +29,7 @@ describe("ProjectCard", () => {
     expect(img?.getAttribute("src")).toBe(mockSnsFullProject.summary.logo);
   });
 
-  it("should render a title", async () => {
+  it("should render a title", () => {
     const { getByText } = render(ProjectCard, {
       props: {
         project: mockSnsFullProject,
@@ -43,7 +41,7 @@ describe("ProjectCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render a description", async () => {
+  it("should render a description", () => {
     const { getByText } = render(ProjectCard, {
       props: {
         project: mockSnsFullProject,
@@ -55,7 +53,7 @@ describe("ProjectCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should display a spinner when the swapCommitment is not loaded", async () => {
+  it("should display a spinner when the swapCommitment is not loaded", () => {
     const { getByTestId } = render(ProjectCard, {
       props: {
         project: { ...mockSnsFullProject, swapCommitment: undefined },
@@ -65,33 +63,14 @@ describe("ProjectCard", () => {
     expect(getByTestId("spinner")).toBeInTheDocument();
   });
 
-  it("should render deadline", async () => {
+  it("should render swap info", () => {
     const { getByText } = render(ProjectCard, {
       props: {
         project: mockSnsFullProject,
       },
     });
 
-    const durationTillDeadline =
-      mockSnsFullProject.summary.swapDeadline -
-      BigInt(Math.round(Date.now() / 1000));
-
-    expect(
-      getByText(secondsToDuration(durationTillDeadline))
-    ).toBeInTheDocument();
-  });
-
-  it("should render my commitment", async () => {
-    const { getByText } = render(ProjectCard, {
-      props: {
-        project: mockSnsFullProject,
-      },
-    });
-
-    const icpValue = formatICP({
-      value: mockSnsFullProject.swapCommitment?.myCommitment as bigint,
-    });
-
-    expect(getByText(icpValue, { exact: false })).toBeInTheDocument();
+    expect(getByText(en.sns_project.deadline)).toBeInTheDocument();
+    expect(getByText(en.sns_project.your_commitment)).toBeInTheDocument();
   });
 });
