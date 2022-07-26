@@ -71,8 +71,13 @@ export const mockSwapInit = {
   min_icp_e8s: BigInt(1500 * 100000000),
 };
 
+export const mockSwapTimeWindow = {
+  start_timestamp_seconds: BigInt(SECONDS_TODAY + 60 * 5),
+  end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
+};
+
 export const mockSwapState = {
-  open_time_window: [],
+  open_time_window: [mockSwapTimeWindow],
   sns_token_e8s: BigInt(1000),
   lifecycle: SnsSwapLifecycle.Open,
   buyers: [],
@@ -87,8 +92,6 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
 
-    swapDeadline: BigInt(Math.round(Date.now() / 1000) + SECONDS_IN_DAY / 4),
-    swapStart: BigInt(Math.round(Date.now() / 1000) - SECONDS_IN_DAY / 4),
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     minParticipationCommitment: BigInt(150000000),
@@ -106,8 +109,6 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(1),
 
-    swapDeadline: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 30),
-    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 20),
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
     minParticipationCommitment: BigInt(100000000),
@@ -125,11 +126,6 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(2),
 
-    // what needs to be shown for upcomming projects
-    swapDeadline: BigInt(
-      SECONDS_TODAY + SECONDS_IN_DAY * 8 + SECONDS_IN_DAY / 2
-    ),
-    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 5),
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     minParticipationCommitment: BigInt(500000000),
@@ -147,10 +143,6 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(3),
 
-    swapDeadline: BigInt(
-      SECONDS_TODAY + SECONDS_IN_DAY * 10 + SECONDS_IN_DAY / 3
-    ),
-    swapStart: BigInt(SECONDS_TODAY - SECONDS_IN_DAY * 3),
     minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
     minParticipationCommitment: BigInt(150000000),

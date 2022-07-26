@@ -12,6 +12,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
+  import type { SnsSwapInit } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -20,6 +21,11 @@
   let summary: SnsSummary;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
+
+  let init: SnsSwapInit;
+  $: ({
+    swap: { init },
+  } = summary);
 
   const steps: Steps = [
     {
@@ -56,8 +62,8 @@
       bind:amount
       on:nnsNext={goNext}
       on:nnsClose
-      minAmount={ICP.fromE8s(summary.minParticipationCommitment)}
-      maxAmount={ICP.fromE8s(summary.maxParticipationCommitment)}
+      minAmount={ICP.fromE8s(init.min_participant_icp_e8s)}
+      maxAmount={ICP.fromE8s(init.max_participant_icp_e8s)}
     />
   {/if}
   {#if currentStep.name === "ReviewTransaction" && selectedAccount !== undefined && amount !== undefined}

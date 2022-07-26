@@ -63,3 +63,5 @@ export const secondsToTime = (seconds: number): string => {
   // We only support english for now.
   return new Date(milliseconds).toLocaleTimeString("en", options);
 };
+
+export const nowInSeconds = (): number => Math.round(Date.now() / 1000);

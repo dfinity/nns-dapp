@@ -19,14 +19,6 @@ export interface SnsSummary {
   tokenName: string;
   description: string;
 
-  swapDeadline: bigint; // seconds
-  swapStart: bigint; // seconds
-  minCommitment: bigint; // e8s
-  maxCommitment: bigint; // e8s
-
-  minParticipationCommitment: bigint; // e8s
-  maxParticipationCommitment: bigint; // e8s
-
   swap: SnsSummarySwap;
 }
 
