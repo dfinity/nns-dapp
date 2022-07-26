@@ -1,3 +1,4 @@
+import { IS_TESTNET } from "../constants/environment.constants";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
@@ -10,10 +11,10 @@ export const initApp = async () => {
     loadMainTransactionFee(),
   ];
 
-  const initSns: Promise<void>[] = [
-    loadSnsSummaries(),
-    loadSnsSwapCommitments(),
-  ];
+  // Sns in an initiative currently under development and not proposed on mainnet yet
+  const initSns: Promise<void>[] = IS_TESTNET
+    ? [loadSnsSummaries(), loadSnsSwapCommitments()]
+    : [];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
