@@ -2,9 +2,13 @@
  * @jest-environment jsdom
  */
 
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { HttpAgent } from "@dfinity/agent";
+import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
+  participateInSnsSwap,
   querySnsSummaries,
   querySnsSwapState,
   querySnsSwapStates,
@@ -25,6 +29,11 @@ import {
 } from "../../mocks/sns.api.mock";
 
 jest.mock("../../../lib/proxy/api.import.proxy");
+jest.mock("../../../lib/utils/agent.utils", () => {
+  return {
+    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+  };
+});
 
 describe("sns-api", () => {
   const mockQuerySwap = {
@@ -36,7 +45,14 @@ describe("sns-api", () => {
     ],
   };
 
-  beforeAll(() => {
+  const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
+  const ledgerCanisterMock = mock<LedgerCanister>();
+
+  beforeEach(() => {
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => ledgerCanisterMock);
+
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -54,6 +70,7 @@ describe("sns-api", () => {
         },
         metadata: () => Promise.resolve("metadata"),
         swapState: () => Promise.resolve(mockQuerySwap),
+        notifyParticipation: notifyParticipationSpy,
       })
     );
   });
@@ -104,5 +121,17 @@ describe("sns-api", () => {
 
     expect(states.length).toEqual(1);
     expect(states[0]?.swap).toEqual(mockQuerySwap.swap);
+  });
+
+  it("should participate in a swap by transferring and notifying", async () => {
+    await participateInSnsSwap({
+      amount: ICP.fromString("10") as ICP,
+      rootCanisterId: rootCanisterIdMock,
+      identity: mockIdentity,
+      controller: Principal.fromText("aaaaa-aa"),
+    });
+
+    expect(ledgerCanisterMock.transfer).toBeCalled();
+    expect(notifyParticipationSpy).toBeCalled();
   });
 });

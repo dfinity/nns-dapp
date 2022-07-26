@@ -1,10 +1,12 @@
-import type { ProposalInfo } from "@dfinity/nns";
+import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
-import { isProposalOpenForVotes } from "../utils/proposals.utils";
+import {
+  filterActiveProjects,
+  filterCommittedProjects,
+} from "../utils/projects.utils";
 import { isNullish } from "../utils/utils";
 
 export type SnsSummariesStore =
@@ -68,11 +70,13 @@ const initSnsProposalsStore = () => {
   };
 };
 
-const initOpenForVotesSnsProposalsStore = () =>
+const initOpenSnsProposalsStore = () =>
   derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
     isNullish($snsProposalsStore)
       ? []
-      : $snsProposalsStore.proposals.filter(isProposalOpenForVotes)
+      : $snsProposalsStore.proposals.filter(
+          ({ status }) => status === ProposalStatus.PROPOSAL_STATUS_OPEN
+        )
   );
 
 const initSnsSummariesStore = () => {
@@ -150,21 +154,17 @@ const initSnsProjectSelectedStore = () => {
 export const snsesCountStore = writable<number | undefined>(undefined);
 
 export const snsProposalsStore = initSnsProposalsStore();
-export const openForVotesSnsProposalsStore =
-  initOpenForVotesSnsProposalsStore();
+export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 export const snsSummariesStore = initSnsSummariesStore();
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
 export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 
-// TODO:
-// 1. snsFullProjectsStore should not be exposed
-// 2. it can be renamed to projectsStore
 /**
  * Filter snsSummariesStore entries with projects that are open (for swap) only.
  * Additionally, contains SwapCommitment for every summary (when loaded).
  */
-const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
+const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     $snsSummariesStore === undefined
@@ -185,41 +185,14 @@ const snsFullProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
         })
 );
 
-const filterProjectsStore = ({
-  swapLifecycle,
-  $snsFullProjectsStore,
-}: {
-  swapLifecycle: SnsSwapLifecycle;
-  $snsFullProjectsStore: SnsFullProject[] | undefined;
-}) =>
-  $snsFullProjectsStore === undefined
-    ? undefined
-    : $snsFullProjectsStore.filter(
-        ({
-          summary: {
-            swap: {
-              state: { lifecycle },
-            },
-          },
-        }) => swapLifecycle === lifecycle
-      );
-
-export const openProjectsStore = derived(
-  snsFullProjectsStore,
-  ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
-    filterProjectsStore({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      $snsFullProjectsStore,
-    })
+export const activePadProjectsStore = derived(
+  projectsStore,
+  (projects: SnsFullProject[] | undefined) => filterActiveProjects(projects)
 );
 
 export const committedProjectsStore = derived(
-  snsFullProjectsStore,
-  ($snsFullProjectsStore: SnsFullProject[] | undefined) =>
-    filterProjectsStore({
-      swapLifecycle: SnsSwapLifecycle.Committed,
-      $snsFullProjectsStore,
-    })
+  projectsStore,
+  (projects: SnsFullProject[] | undefined) => filterCommittedProjects(projects)
 );
 
 export const isNnsProjectStore = derived(

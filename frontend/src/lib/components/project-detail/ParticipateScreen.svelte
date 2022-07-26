@@ -56,8 +56,12 @@
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} />
     <KeyValuePair>
-      <span slot="key">Min <IcpComponent singleLine icp={minAmount} /></span>
-      <span slot="value">max <IcpComponent singleLine icp={maxAmount} /></span>
+      <span slot="key"
+        >{$i18n.core.min} <IcpComponent singleLine icp={minAmount} /></span
+      >
+      <span slot="value"
+        >{$i18n.core.max} <IcpComponent singleLine icp={maxAmount} /></span
+      >
     </KeyValuePair>
     <p class="right">
       <span>{$i18n.accounts.transaction_fee}</span>

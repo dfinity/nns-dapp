@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import type { ProposalInfo } from "@dfinity/nns";
+import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import Proposals from "../../../../lib/components/launchpad/Proposals.svelte";
 import { listSnsProposals } from "../../../../lib/services/sns.services";
@@ -55,8 +55,10 @@ describe("Proposals", () => {
     );
   });
 
-  it("should proposal cards", async () => {
-    mockProposals([{ ...mockProposalInfo }]);
+  it("should display proposal cards", async () => {
+    mockProposals([
+      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
+    ]);
 
     const { getAllByTestId } = render(Proposals);
 
@@ -66,7 +68,9 @@ describe("Proposals", () => {
   });
 
   it("should hide skeletons", async () => {
-    mockProposals([{ ...mockProposalInfo }]);
+    mockProposals([
+      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
+    ]);
 
     const { container, getAllByTestId } = render(Proposals);
 

@@ -1,5 +1,7 @@
-import { Topic, type ProposalInfo } from "@dfinity/nns";
+import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import {
+  participateInSnsSwap,
   querySnsSummaries,
   querySnsSummary,
   querySnsSwapCommitment,
@@ -14,15 +16,18 @@ import {
   snsSwapCommitmentsStore,
 } from "../stores/projects.store";
 import { toastsStore } from "../stores/toasts.store";
+import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
+import { getAccountIdentity } from "./accounts.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
 } from "./utils.services";
 
 export const loadSnsSummaries = ({
@@ -156,12 +161,15 @@ export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onLoad,
   onError,
+  strategy = "query_and_update",
 }: {
   rootCanisterId: string;
   onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
+  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
+    strategy,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
@@ -229,4 +237,39 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
     return undefined;
   }
   return getLastPathDetail(path);
+};
+
+export const participateInSwap = async ({
+  amount,
+  rootCanisterId,
+  account,
+  onSuccess,
+}: {
+  amount: ICP;
+  rootCanisterId: Principal;
+  account: Account;
+  onSuccess?: (swapState: SnsSwapCommitment) => void;
+}): Promise<{ success: boolean }> => {
+  try {
+    const accountIdentity = await getAccountIdentity(account.identifier);
+    await participateInSnsSwap({
+      identity: accountIdentity,
+      rootCanisterId,
+      amount,
+      controller: accountIdentity.getPrincipal(),
+      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
+    });
+    await loadSnsSwapCommitment({
+      strategy: "update",
+      rootCanisterId: rootCanisterId.toText(),
+      onLoad: ({ response: swapCommitment }) => onSuccess?.(swapCommitment),
+      onError: () => {
+        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+      },
+    });
+    return { success: true };
+  } catch (error) {
+    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+    return { success: false };
+  }
 };
