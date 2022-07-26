@@ -25,7 +25,7 @@
 {#if visible}
   <CardInfo>
     <h3 slot="start">{$i18n.proposal_detail__ineligible.headline}</h3>
-    <p>{$i18n.proposal_detail__ineligible.text}</p>
+    <p class="description">{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
       {#each ineligibleNeurons as neuron}
         <li class="value">

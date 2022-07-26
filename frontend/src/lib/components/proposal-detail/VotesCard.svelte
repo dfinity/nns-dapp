@@ -14,6 +14,7 @@
     votedNeuronDetails,
     type CompactNeuronInfo,
   } from "../../utils/neuron.utils";
+  import Value from "../ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -85,9 +86,9 @@
           aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
           title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
         >
-          <p>{neuron.id}</p>
+          <p class="value">{neuron.id}</p>
           <p class="vote-details">
-            <span>{formatVotingPower(neuron.votingPower)}</span>
+            <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
             {/if}

@@ -4,6 +4,7 @@
   import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "../../stores/i18n";
   import { mapProposalInfo } from "../../utils/proposals.utils";
+  import Value from "../ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -16,7 +17,7 @@
 {#if proposer !== undefined}
   <button class="text" on:click|stopPropagation={() => (modalOpen = true)}
     >{$i18n.proposal_detail.proposer_prefix}
-    {proposer}</button
+    <Value>{proposer}</Value></button
   >
 
   {#if modalOpen}

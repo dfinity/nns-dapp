@@ -11,7 +11,7 @@
 </script>
 
 <p>
-  <span data-tid="identifier" class:text_small={size === "small"}
+  <span data-tid="identifier" class="value" class:text_small={size === "small"}
     >{labelText}<span class="value">{identifier}</span></span
   >
   {#if showCopy}
