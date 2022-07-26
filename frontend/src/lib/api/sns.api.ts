@@ -422,7 +422,8 @@ export const querySnsSwapCommitment = async ({
   return {
     rootCanisterId: Principal.fromText(rootCanisterId),
     myCommitment: userCommitment,
-    currentCommitment: swapState?.derived[0]?.buyer_total_icp_e8s ?? BigInt(0),
+    currentCommitment:
+      swapState?.derived?.[0]?.buyer_total_icp_e8s ?? BigInt(0),
   };
 };
 
