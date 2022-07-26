@@ -162,7 +162,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   .map((summary, index) => ({
     ...summary,
     rootCanisterId: principal(index),
-  })) as SnsSummary[];
+  })) as unknown as SnsSummary[];
 
 export const mockSummary = mockSnsSummaryList[0];
 
