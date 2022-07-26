@@ -47,7 +47,6 @@
 
     &.inheritSize span:first-of-type {
       font-size: inherit;
-      color: var(--gray-50);
     }
 
     &:not(.inline, .singleLine) {

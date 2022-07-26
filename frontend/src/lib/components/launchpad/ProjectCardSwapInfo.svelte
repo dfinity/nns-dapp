@@ -34,7 +34,7 @@
   <dl>
     {#if durationTillDeadline !== undefined}
       <dt>{$i18n.sns_project.deadline}</dt>
-      <dd>{secondsToDuration(durationTillDeadline)}</dd>
+      <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
     {/if}
 
     {#if myCommitment !== undefined}
@@ -52,7 +52,6 @@
     gap: var(--padding-1_5x);
 
     dt {
-      opacity: var(--light-opacity);
     }
 
     dd {

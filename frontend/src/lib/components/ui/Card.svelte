@@ -78,7 +78,22 @@
     &.highlighted {
       background: var(--primary-gradient-fallback);
       background: var(--primary-gradient);
-      color: var(--primary-gradient-contrast);
+
+      color: rgba(var(--primary-contrast-rgb), var(--light-opacity));
+
+      // TODO: find a better solution (a mixin?)
+      :global(h3) {
+        color: var(--primary-contrast);
+      }
+      :global(.value) {
+        color: var(--primary-contrast);
+      }
+      :global(.label) {
+        color: rgba(var(--primary-contrast-rgb), var(--light-opacity));
+      }
+      :global(.description) {
+        color: rgba(var(--primary-contrast-rgb), var(--very-light-opacity));
+      }
     }
 
     &.withArrow {
