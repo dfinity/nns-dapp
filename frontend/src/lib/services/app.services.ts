@@ -3,8 +3,9 @@ import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
 import { loadMainTransactionFee } from "./transaction-fees.services";
+import {SnsWrapper} from '@dfinity/sns';
 
-export const initApp = async () => {
+export const initApp = (): Promise<[PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]> => {
   const initNns: Promise<void>[] = [
     syncAccounts(),
     listNeurons(),
@@ -19,5 +20,5 @@ export const initApp = async () => {
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
    */
-  await Promise.race([Promise.all(initNns), Promise.all(initSns)]);
+  return Promise.allSettled([Promise.all(initNns), Promise.all(initSns)]);
 };
