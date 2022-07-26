@@ -1,8 +1,15 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  ICP,
+  SnsWasmCanister,
+  SubAccount,
+  type DeployedSns,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
   importInitSnsWrapper,
@@ -19,6 +26,7 @@ import type {
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp, shuffle } from "../utils/dev.utils";
+import { ledgerCanister } from "./ledger.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -442,4 +450,44 @@ export const querySnsSwapCommitment = async ({
   return mockSwapCommitments.find(
     (mock) => rootCanisterId === mock.rootCanisterId.toText()
   ) as SnsSwapCommitment;
+};
+
+export const participateInSnsSwap = async ({
+  amount,
+  controller,
+  identity,
+  rootCanisterId,
+  fromSubAccount,
+}: {
+  amount: ICP;
+  controller: Principal;
+  identity: Identity;
+  rootCanisterId: Principal;
+  fromSubAccount?: SubAccountArray;
+}): Promise<void> => {
+  logWithTimestamp("Participating in swap: call...");
+
+  const { canister: nnsLedger } = await ledgerCanister({ identity });
+  const snsWrapper = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: snsWrapper.canisterIds.swapCanisterId,
+    subAccount: principalSubaccont,
+  });
+
+  // Send amount to the ledger
+  await nnsLedger.transfer({
+    amount,
+    fromSubAccount,
+    to: accountIdentifier,
+  });
+
+  // Notify participation
+  await snsWrapper.notifyParticipation({ buyer: controller.toText() });
+
+  logWithTimestamp("Participating in swap: done");
 };

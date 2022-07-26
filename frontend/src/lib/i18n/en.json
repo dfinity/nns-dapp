@@ -568,6 +568,7 @@
     "understand_agree": "I understand and agree.",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
+    "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate"
   },
   "time": {
