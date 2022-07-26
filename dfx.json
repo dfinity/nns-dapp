@@ -31,31 +31,41 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-06-17/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "wasm_canister": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -74,7 +84,9 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/"
       },
-      "providers": ["https://ic0.app/"],
+      "providers": [
+        "https://ic0.app/"
+      ],
       "type": "persistent"
     },
     "staging": {
@@ -84,11 +96,11 @@
         "REDIRECT_TO_LEGACY": "prod",
         "ENABLE_NEW_SPAWN_FEATURE": true,
         "ENABLE_SNS_NEURONS": false,
-        "HOST": "https://nnsdapp.dfinity.network",
-        "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
-        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "testnet": {
@@ -98,11 +110,11 @@
         "REDIRECT_TO_LEGACY": "prod",
         "ENABLE_NEW_SPAWN_FEATURE": true,
         "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://nnsdapp.dfinity.network",
-        "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
-        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small12": {
@@ -112,10 +124,11 @@
         "REDIRECT_TO_LEGACY": "both",
         "ENABLE_NEW_SPAWN_FEATURE": true,
         "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small12.dfinity.network",
-        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small12.dfinity.network"
+        "HOST": "https://small12.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
+      ],
       "type": "persistent"
     },
     "small11": {
@@ -125,10 +138,11 @@
         "REDIRECT_TO_LEGACY": "both",
         "ENABLE_NEW_SPAWN_FEATURE": true,
         "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small11.dfinity.network",
-        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small11.dfinity.network"
+        "HOST": "https://small11.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
       "type": "persistent"
     },
     "small06": {
@@ -138,10 +152,11 @@
         "REDIRECT_TO_LEGACY": "both",
         "ENABLE_NEW_SPAWN_FEATURE": true,
         "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small06.dfinity.network",
-        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small06.dfinity.network"
+        "HOST": "https://small06.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
       "type": "persistent"
     },
     "local": {
@@ -171,7 +186,7 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "5b66c3f6994a43777b1161ef7f587698e1265773"
+        "IC_COMMIT": "268db05d70b3cc20475ba3ac046c0db9bd66c688"
       },
       "packtool": ""
     }
