@@ -13,6 +13,7 @@
     swapDuration,
   } from "../../utils/projects.utils";
   import { secondsToDuration } from "../../utils/date.utils";
+  import Value from "../ui/Value.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -41,9 +42,9 @@
         <span>
           {$i18n.sns_project_detail.deadline}
         </span>
-        <span>
+        <Value>
           {secondsToDuration(durationTillDeadline)}
-        </span>
+        </Value>
       </p>
     </ProgressBar>
   </div>

@@ -24,7 +24,7 @@
     <Logo src={summary.logo} alt={$i18n.sns_launchpad.project_logo} />
     <h1>{summary.name}</h1>
   </div>
-  <p class="description">
+  <p class="value">
     {summary.description}
   </p>
   <a href={summary.url} target="_blank">{summary.url}</a>
@@ -59,8 +59,9 @@
     }
   }
   a {
-    // TODO: change <a /> global styling?
-    font-size: 1rem;
+    font-size: inherit;
+
+    color: var(--primary);
   }
 
   .details {
