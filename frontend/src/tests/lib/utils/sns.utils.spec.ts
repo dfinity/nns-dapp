@@ -2,8 +2,8 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   concatSnsSummary,
-  mapAndSortSnsQueryToSummaries,
   getSwapCanisterAccount,
+  mapAndSortSnsQueryToSummaries,
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
