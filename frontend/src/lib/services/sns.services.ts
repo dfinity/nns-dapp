@@ -13,7 +13,6 @@ import {
   querySnsSwapCommitments,
   querySnsSwapState,
   querySnsSwapStates,
-  querySwapCanisterAccount,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
@@ -27,7 +26,7 @@ import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { concatSnsSummaries } from "../utils/sns.utils";
+import { concatSnsSummaries, getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
@@ -248,16 +247,12 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
 
 export const getSwapAccount = async (
   swapCanisterId: Principal
-): Promise<AccountIdentifier | undefined> => {
-  try {
-    const identity = await getIdentity();
-    return querySwapCanisterAccount({
-      controller: identity.getPrincipal(),
-      swapCanisterId,
-    });
-  } catch (error) {
-    return undefined;
-  }
+): Promise<AccountIdentifier> => {
+  const identity = await getIdentity();
+  return getSwapCanisterAccount({
+    controller: identity.getPrincipal(),
+    swapCanisterId,
+  });
 };
 
 export const participateInSwap = async ({

@@ -1,8 +1,11 @@
+import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   concatSnsSummaries,
   concatSnsSummary,
+  getSwapCanisterAccount,
 } from "../../../lib/utils/sns.utils";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockSnsSummaryList,
   mockSummary,
@@ -10,6 +13,7 @@ import {
   mockSwapInit,
   mockSwapState,
 } from "../../mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 describe("sns-utils", () => {
   describe("concat sns summaries", () => {
@@ -233,6 +237,16 @@ describe("sns-utils", () => {
         swap: mockSwap,
         swapCanisterId,
       });
+    });
+  });
+
+  describe("getSwapCanisterAccount", () => {
+    it("should return swap canister account", async () => {
+      const expectedAccount = await getSwapCanisterAccount({
+        swapCanisterId: rootCanisterIdMock,
+        controller: mockIdentity.getPrincipal(),
+      });
+      expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
     });
   });
 });

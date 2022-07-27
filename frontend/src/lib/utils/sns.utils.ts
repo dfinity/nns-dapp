@@ -1,3 +1,4 @@
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
@@ -109,4 +110,20 @@ export const concatSnsSummary = ([summary, swap]: [
       state,
     },
   };
+};
+
+export const getSwapCanisterAccount = ({
+  controller,
+  swapCanisterId,
+}: {
+  controller: Principal;
+  swapCanisterId: Principal;
+}): AccountIdentifier => {
+  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: swapCanisterId,
+    subAccount: principalSubaccont,
+  });
+
+  return accountIdentifier;
 };

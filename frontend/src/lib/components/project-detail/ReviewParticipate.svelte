@@ -37,9 +37,10 @@
 
   let destinationAddress: AccountIdentifier | undefined;
   $: (async () => {
-    if ($store.summary?.swapCanisterId !== undefined) {
-      destinationAddress = await getSwapAccount($store.summary?.swapCanisterId);
-    }
+    destinationAddress =
+      $store.summary?.swapCanisterId !== undefined
+        ? await getSwapAccount($store.summary?.swapCanisterId)
+        : undefined;
   })();
 
   let accepted: boolean = false;

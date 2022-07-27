@@ -1,11 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICP,
-  SnsWasmCanister,
-  SubAccount,
-  type DeployedSns,
-} from "@dfinity/nns";
+import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
@@ -26,6 +20,7 @@ import type {
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
@@ -195,22 +190,6 @@ const wrapper = async ({
 
 // TODO(L2-751): remove mock data
 let mockSnsSummaries: QuerySnsSummary[] = [];
-
-export const querySwapCanisterAccount = ({
-  controller,
-  swapCanisterId,
-}: {
-  controller: Principal;
-  swapCanisterId: Principal;
-}): AccountIdentifier => {
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: swapCanisterId,
-    subAccount: principalSubaccont,
-  });
-
-  return accountIdentifier;
-};
 
 // TODO: ultimately querySnsSummaries and querySummary will not return SnsSummary types but rather a summary related types provided by Candid sns governance
 export const querySnsSummaries = async ({
@@ -471,7 +450,7 @@ export const participateInSnsSwap = async ({
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const accountIdentifier = querySwapCanisterAccount({
+  const accountIdentifier = getSwapCanisterAccount({
     swapCanisterId,
     controller,
   });
