@@ -57,9 +57,8 @@
 <CardInfo>
   <h3 slot="start" class="title">Voting Results</h3>
   <div class="latest-tally">
-    <h4 class="label">
-      {$i18n.proposal_detail.adopt}<span class="value">{formatNumber(yes)}</span
-      >
+    <h4 class="label yes">
+      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
     </h4>
     <div
       class="progressbar"
@@ -71,9 +70,8 @@
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
-    <h4 class="label">
-      {$i18n.proposal_detail.reject}<span class="value">{formatNumber(no)}</span
-      >
+    <h4 class="label no">
+      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
     </h4>
   </div>
 
@@ -87,7 +85,7 @@
           title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
         >
           <p class="value">{neuron.id}</p>
-          <p class="vote-details">
+          <p class="vote-details" class:yes={neuron.vote === Vote.YES}>
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
@@ -117,6 +115,14 @@
       line-height: var(--line-height-standard);
       text-align: center;
 
+      &.yes {
+        color: var(--primary-shade);
+      }
+
+      &.no {
+        color: var(--negative-emphasis-light);
+      }
+
       span {
         display: block;
         text-align: center;
@@ -134,6 +140,9 @@
       height: 10px;
       background: var(--negative-emphasis-light);
 
+      border-radius: var(--border-radius);
+      overflow: hidden;
+
       .progressbar-value {
         position: absolute;
         top: 0;
@@ -147,7 +156,7 @@
   }
 
   .my-votes {
-    padding-top: var(--padding);
+    padding-top: var(--padding-3x);
   }
 
   ul {
@@ -163,6 +172,12 @@
       display: flex;
       align-items: center;
       gap: var(--padding);
+
+      color: var(--negative-emphasis-light);
+
+      &.yes {
+        color: var(--primary-shade);
+      }
     }
   }
 
