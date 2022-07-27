@@ -9,7 +9,6 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "../../types/selected-account.context";
-  import { stringifyJson } from "../../utils/utils";
   import { mapToSelfTransaction } from "../../utils/transactions.utils";
 
   const { store } = getContext<SelectedAccountContext>(
