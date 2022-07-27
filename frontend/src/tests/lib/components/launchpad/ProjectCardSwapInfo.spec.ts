@@ -66,7 +66,7 @@ describe("ProjectCardSwapInfo", () => {
     const call = () => getByText(secondsToDuration(durationTillDeadline));
     expect(call).toThrow();
 
-    const call2 = () => getByText(en.sns_project.deadline);
+    const call2 = () => getByText(en.sns_project_detail.deadline);
     expect(call2).toThrow();
   });
 
