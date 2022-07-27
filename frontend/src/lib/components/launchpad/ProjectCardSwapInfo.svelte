@@ -10,6 +10,7 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
+  import DateSeconds from "../ui/DateSeconds.svelte";
   import {SnsSwapLifecycle, type SnsSwapState} from '@dfinity/sns';
 
   export let project: SnsFullProject;
@@ -56,7 +57,7 @@
   <!-- Sale starts soon -->
   {#if lifecycle === SnsSwapLifecycle.Pending && durationTillStart !== undefined}
     <dt>{$i18n.sns_project_detail.sale_start}</dt>
-    <dd>{secondsToDuration(durationTillStart)} TODO: July 27, 2022 7:03 AM</dd>
+    <DateSeconds tagName="dd" seconds={Number(durationTillStart)} />
   {/if}
 
   {#if myCommitment !== undefined}
