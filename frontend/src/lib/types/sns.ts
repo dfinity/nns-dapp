@@ -1,5 +1,9 @@
 import type { Principal } from "@dfinity/principal";
-import type { SnsSwapInit, SnsSwapState } from "@dfinity/sns";
+import type {
+  SnsSwapBuyerState,
+  SnsSwapInit,
+  SnsSwapState,
+} from "@dfinity/sns";
 
 export interface SnsSummarySwap {
   init: SnsSwapInit;
@@ -24,6 +28,6 @@ export interface SnsSummary {
 
 export interface SnsSwapCommitment {
   rootCanisterId: Principal;
-  myCommitment: bigint | undefined; // e8s
+  myCommitment: SnsSwapBuyerState | undefined; // e8s
   currentCommitment: bigint; // e8s
 }

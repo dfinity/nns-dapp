@@ -78,7 +78,8 @@ describe("ProjectCardSwapInfo", () => {
     });
 
     const icpValue = formatICP({
-      value: mockSnsFullProject.swapCommitment?.myCommitment as bigint,
+      value: mockSnsFullProject.swapCommitment?.myCommitment
+        ?.amount_icp_e8s as bigint,
     });
 
     expect(getByText(icpValue, { exact: false })).toBeInTheDocument();

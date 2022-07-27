@@ -26,7 +26,7 @@
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
     swapCommitment?.myCommitment !== undefined
-      ? ICP.fromE8s(swapCommitment.myCommitment)
+      ? ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s)
       : undefined;
 
   let showModal: boolean = false;

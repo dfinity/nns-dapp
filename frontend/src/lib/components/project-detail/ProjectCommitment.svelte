@@ -28,9 +28,9 @@
   let max_icp_e8s: bigint;
   $: ({ min_icp_e8s, max_icp_e8s } = init);
 
-  // TODO: display current commitment (info soon available in a new candid field)
   let currentCommitment: bigint;
-  $: currentCommitment = min_icp_e8s;
+  $: currentCommitment =
+    $projectDetailStore.swapCommitment?.currentCommitment ?? BigInt(0);
 
   let currentCommitmentIcp: ICP;
   $: currentCommitmentIcp = ICP.fromE8s(currentCommitment);

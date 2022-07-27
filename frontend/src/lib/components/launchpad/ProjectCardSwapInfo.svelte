@@ -38,7 +38,7 @@
   $: myCommitment =
     swapCommitment?.myCommitment === undefined
       ? undefined
-      : ICP.fromE8s(swapCommitment.myCommitment);
+      : ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s);
 </script>
 
 <dl>

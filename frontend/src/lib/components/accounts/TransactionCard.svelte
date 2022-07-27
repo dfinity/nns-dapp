@@ -19,6 +19,7 @@
 
   export let account: Account;
   export let transaction: Transaction;
+  export let toSelfTransaction: boolean = false;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
@@ -27,6 +28,7 @@
   let to: AccountIdentifierString | undefined;
   let displayAmount: ICPType;
   let date: Date;
+
   $: account,
     transaction,
     (() => {
@@ -34,6 +36,7 @@
         ({ type, isReceive, isSend, from, to, displayAmount, date } =
           mapTransaction({
             transaction,
+            toSelfTransaction,
             account,
           }));
       } catch (err: unknown) {
@@ -48,16 +51,17 @@
   let headline: string;
   $: headline = transactionName({
     type,
-    isReceive,
+    isReceive: isReceive || toSelfTransaction,
     labels: $i18n.transaction_names,
   });
 
   let label: string | undefined;
-  $: label = isReceive
-    ? $i18n.wallet.direction_from
-    : isSend
-    ? $i18n.wallet.direction_to
-    : undefined;
+  $: label =
+    isReceive || toSelfTransaction
+      ? $i18n.wallet.direction_from
+      : isSend
+      ? $i18n.wallet.direction_to
+      : undefined;
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
   let seconds: number;
@@ -70,7 +74,12 @@
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
-  <ICP slot="end" icp={displayAmount} sign={isReceive ? "+" : "-"} detailed />
+  <ICP
+    slot="end"
+    icp={displayAmount}
+    sign={isReceive || toSelfTransaction ? "+" : "-"}
+    detailed
+  />
 
   <DateSeconds {seconds} />
 
