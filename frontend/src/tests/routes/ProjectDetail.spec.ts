@@ -2,17 +2,18 @@
  * @jest-environment jsdom
  */
 
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
 } from "../../lib/services/sns.services";
-import {
-  snsSummariesStore,
-  snsSwapCommitmentsStore,
-} from "../../lib/stores/projects.store";
 import { routeStore } from "../../lib/stores/route.store";
+import {
+  snsQueryStore,
+  snsSwapCommitmentsStore,
+} from "../../lib/stores/sns.store";
 import type { SnsSwapCommitment } from "../../lib/types/sns";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
@@ -20,6 +21,7 @@ import {
   mockQuerySnsSwapState,
   mockSnsFullProject,
 } from "../mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "../mocks/sns-response.mock";
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
@@ -64,10 +66,9 @@ describe("ProjectDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      snsSummariesStore.setSummaries({
-        summaries: [mockSnsFullProject.summary],
-        certified: true,
-      });
+      snsQueryStore.setResponse(
+        snsResponsesForLifecycle({lifecycles: [SnsSwapLifecycle.Open], certified: true})
+      );
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         certified: true,
@@ -75,7 +76,7 @@ describe("ProjectDetail", () => {
     });
 
     afterEach(() => {
-      snsSummariesStore.reset();
+      snsQueryStore.reset();
       snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
     });
@@ -101,10 +102,9 @@ describe("ProjectDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      snsSummariesStore.setSummaries({
-        summaries: [mockSnsFullProject.summary],
-        certified: false,
-      });
+      snsQueryStore.setResponse(
+        snsResponsesForLifecycle({lifecycles: [SnsSwapLifecycle.Open], certified: false})
+      );
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         certified: false,
@@ -112,7 +112,7 @@ describe("ProjectDetail", () => {
     });
 
     afterEach(() => {
-      snsSummariesStore.reset();
+      snsQueryStore.reset();
       snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
     });

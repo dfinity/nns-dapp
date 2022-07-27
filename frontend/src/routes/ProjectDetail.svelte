@@ -17,10 +17,7 @@
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import {
-    snsSummariesStore,
-    snsSwapCommitmentsStore,
-  } from "../lib/stores/projects.store";
+  import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -30,6 +27,7 @@
   import { isNullish, nonNullish } from "../lib/utils/utils";
   import { writable } from "svelte/store";
   import { concatSnsSummary } from "../lib/utils/sns.utils";
+  import { snsSummariesStore } from "../lib/stores/sns.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -57,7 +55,7 @@
 
   const loadSummary = (rootCanisterId: string) => {
     // try to get from snsSummariesStore
-    const summaryMaybe = $snsSummariesStore?.summaries?.find(
+    const summaryMaybe = $snsSummariesStore?.find(
       ({ rootCanisterId: rootCanister }) =>
         rootCanister?.toText() === rootCanisterId
     );

@@ -5,12 +5,10 @@
   } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
-    activePadProjectsStore,
-    type SnsFullProject,
     snsesCountStore,
-    snsSummariesStore,
     snsSwapCommitmentsStore,
-  } from "../../stores/projects.store";
+    snsQueryStore,
+  } from "../../stores/sns.store";
   import { onMount } from "svelte";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
@@ -19,6 +17,11 @@
   import { isNullish } from "../../utils/utils";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
+  import { snsSummariesStore } from "../../stores/sns.store";
+  import {
+    activePadProjectsStore,
+    type SnsFullProject,
+  } from "../../stores/projects.store";
 
   let projects: SnsFullProject[] | undefined;
   $: projects = $activePadProjectsStore;
@@ -37,7 +40,7 @@
     });
 
   const load = () => {
-    if ($snsSummariesStore === undefined) {
+    if ($snsQueryStore === undefined) {
       loadSnsSummaries({ onError: goBack });
     }
     if ($snsSwapCommitmentsStore === undefined) {
