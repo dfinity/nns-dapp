@@ -262,7 +262,13 @@ export const participateInSwap = async ({
     await loadSnsSwapCommitment({
       strategy: "update",
       rootCanisterId: rootCanisterId.toText(),
-      onLoad: ({ response: swapCommitment }) => onSuccess?.(swapCommitment),
+      onLoad: ({ response: swapCommitment, certified }) => {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
+          certified,
+        });
+        onSuccess?.(swapCommitment);
+      },
       onError: () => {
         // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
       },
