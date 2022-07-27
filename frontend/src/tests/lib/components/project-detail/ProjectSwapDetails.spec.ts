@@ -69,11 +69,11 @@ describe("ProjectSwapDetails", () => {
     });
 
     const element = Array.from(
-        container.querySelectorAll('[data-tid="date-seconds"]')
+      container.querySelectorAll('[data-tid="date-seconds"]')
     )[1];
 
     expect(element?.innerHTML).toEqual(
-        mockSwapTimeWindowText.end_timestamp_seconds
+      mockSwapTimeWindowText.end_timestamp_seconds
     );
   });
 });
