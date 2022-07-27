@@ -45,7 +45,10 @@
     <slot />
   </div>
   <FooterModal>
-    <button class="secondary small" on:click={() => dispatcher("nnsBack")}
+    <button
+      class="secondary small"
+      on:click={() => dispatcher("nnsBack")}
+      data-tid="confirm-cycles-canister-button-back"
       >{$i18n.canisters.edit_cycles}</button
     >
     <button

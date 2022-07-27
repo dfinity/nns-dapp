@@ -120,6 +120,7 @@
         {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
+        on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
       >
         <p>
@@ -146,6 +147,7 @@
         {icpToCyclesExchangeRate}
         {amount}
         on:nnsClose
+        on:nnsBack={() => modal.back()}
         on:nnsConfirm={addCycles}
       >
         <div>
