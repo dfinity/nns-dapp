@@ -111,6 +111,7 @@ export const mockSwap: SnsSummarySwap = {
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
+    swapCanisterId: principal(3),
 
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -128,6 +129,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(1),
+    swapCanisterId: principal(2),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
@@ -145,6 +147,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(2),
+    swapCanisterId: principal(1),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -162,6 +165,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(3),
+    swapCanisterId: principal(0),
 
     minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),

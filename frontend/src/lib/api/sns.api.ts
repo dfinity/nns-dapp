@@ -1,11 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICP,
-  SnsWasmCanister,
-  SubAccount,
-  type DeployedSns,
-} from "@dfinity/nns";
+import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
@@ -26,6 +20,7 @@ import type {
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
@@ -332,7 +327,10 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
-  const { swapState }: SnsWrapper = await wrapper({
+  const {
+    swapState,
+    canisterIds: { swapCanisterId },
+  }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
@@ -349,6 +347,7 @@ export const querySnsSwapState = async ({
 
   return {
     rootCanisterId,
+    swapCanisterId,
     swap,
   };
 };
@@ -443,15 +442,17 @@ export const participateInSnsSwap = async ({
   logWithTimestamp("Participating in swap: call...");
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const snsWrapper = await wrapper({
+  const {
+    canisterIds: { swapCanisterId },
+    notifyParticipation,
+  } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: snsWrapper.canisterIds.swapCanisterId,
-    subAccount: principalSubaccont,
+  const accountIdentifier = getSwapCanisterAccount({
+    swapCanisterId,
+    controller,
   });
 
   // Send amount to the ledger
@@ -462,7 +463,7 @@ export const participateInSnsSwap = async ({
   });
 
   // Notify participation
-  await snsWrapper.notifyParticipation({ buyer: controller.toText() });
+  await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
 };
