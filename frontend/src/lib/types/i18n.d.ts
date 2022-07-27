@@ -598,8 +598,9 @@ interface I18nSns_project_detail {
   execute: string;
   participate_success: string;
   participate: string;
+  status_completed: string;
   completed: string;
-  starts_in: string;
+  sale_start: string;
 }
 
 interface I18nTime {

@@ -43,7 +43,8 @@
 <dl>
   <!-- Sale is committed -->
   {#if lifecycle === SnsSwapLifecycle.Committed}
-    <dt>{$i18n.sns_project_detail.completed}</dt>
+    <dt>{$i18n.sns_project_detail.status_completed}</dt>
+    <dd>{$i18n.sns_project_detail.completed}</dd>
   {/if}
 
   <!-- Sale is open -->
@@ -54,8 +55,8 @@
 
   <!-- Sale starts soon -->
   {#if lifecycle === SnsSwapLifecycle.Pending && durationTillStart !== undefined}
-    <dt>{$i18n.sns_project_detail.starts_in}</dt>
-    <dd>{secondsToDuration(durationTillStart)}</dd>
+    <dt>{$i18n.sns_project_detail.sale_start}</dt>
+    <dd>{secondsToDuration(durationTillStart)} TODO: July 27, 2022 7:03 AM</dd>
   {/if}
 
   {#if myCommitment !== undefined}

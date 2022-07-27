@@ -556,9 +556,9 @@
     "status": "Status",
     "status_open": "Accepting Participation",
     "enter_amount": "Enter Amount",
-    "status_committed": "Committed",
+    "status_committed": "Completed",
     "status_aborted": "Aborted",
-    "status_pending": "Pending",
+    "status_pending": "Upcoming sale",
     "status_unspecified": "Unspecified",
     "transaction_fee": "(transaction fee)",
     "description": "Description",
@@ -569,8 +569,9 @@
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
+    "status_completed": "Status",
     "completed": "Completed",
-    "starts_in": "Decentralized sale starts in"
+    "sale_start": "Sale Start"
   },
   "time": {
     "year": "year",
