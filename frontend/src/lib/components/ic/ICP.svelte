@@ -22,7 +22,7 @@
     <span data-tid="icp-value" class="value"
       >{`${sign}${formatICP({ value: icp.toE8s(), detailed })}`}</span
     >
-    <span>{label}</span>
+    <span class="label">{label}</span>
   </div>
 {/if}
 
@@ -61,11 +61,11 @@
 
     &.plus-sign {
       .value {
-        color: var(--positive-emphasis-tint);
+        color: var(--positive-emphasis);
       }
 
-      span:first-of-type {
-        color: var(--positive-emphasis);
+      .label {
+        color: rgba(var(--positive-emphasis-rgb), var(--light-opacity));
       }
     }
   }
