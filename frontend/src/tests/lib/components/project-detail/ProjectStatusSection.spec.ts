@@ -2,13 +2,16 @@
  * @jest-environment jsdom
  */
 
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import ProjectStatusSection from "../../../../lib/components/project-detail/ProjectStatusSection.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
-import {mockSnsFullProject, summaryForLifecycle} from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  summaryForLifecycle,
+} from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
-import {SnsSwapLifecycle} from '@dfinity/sns';
 
 describe("ProjectStatusSection", () => {
   it("should render subtitle", () => {
@@ -44,7 +47,9 @@ describe("ProjectStatusSection", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectStatusSection,
     });
-    expect(queryByTestId("sns-project-participate-button")).not.toBeInTheDocument();
+    expect(
+      queryByTestId("sns-project-participate-button")
+    ).not.toBeInTheDocument();
   });
 
   it("should open swap participation modal on participate click", async () => {
