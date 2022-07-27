@@ -3,7 +3,6 @@
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
-  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
@@ -38,12 +37,9 @@
 </script>
 
 <KeyValuePair testId="sns-project-current-commitment">
-  <InfoContextKey slot="key">
-    <svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.current_commitment}</svelte:fragment
-    >
-    <p>Some details about what the current commitment means.</p>
-  </InfoContextKey>
+  <span slot="key">
+    {$i18n.sns_project_detail.current_commitment}
+  </span>
   <Icp slot="value" icp={currentCommitmentIcp} singleLine />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
