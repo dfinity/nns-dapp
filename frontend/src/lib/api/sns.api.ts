@@ -1,11 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICP,
-  SnsWasmCanister,
-  SubAccount,
-  type DeployedSns,
-} from "@dfinity/nns";
+import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
@@ -25,34 +19,14 @@ import type {
   QuerySnsSwapState,
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp, shuffle } from "../utils/dev.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
   | Promise<Map<QueryRootCanisterId, SnsWrapper>>
   | undefined;
-
-// TODO(L2-751): remove and replace with effective data
-let mockSwapCommitments: SnsSwapCommitment[] = [];
-const mockDummySwapCommitments: Partial<SnsSwapCommitment>[] = shuffle([
-  {
-    myCommitment: BigInt(25 * 100000000),
-    currentCommitment: BigInt(100 * 100000000),
-  },
-  {
-    myCommitment: BigInt(5 * 100000000),
-    currentCommitment: BigInt(775 * 100000000),
-  },
-  {
-    myCommitment: undefined,
-    currentCommitment: BigInt(1000 * 100000000),
-  },
-  {
-    myCommitment: undefined,
-    currentCommitment: BigInt(1500 * 100000000),
-  },
-]);
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -353,7 +327,10 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
-  const { swapState }: SnsWrapper = await wrapper({
+  const {
+    swapState,
+    canisterIds: { swapCanisterId },
+  }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
@@ -370,6 +347,7 @@ export const querySnsSwapState = async ({
 
   return {
     rootCanisterId,
+    swapCanisterId,
     swap,
   };
 };
@@ -424,32 +402,28 @@ export const querySnsSwapCommitment = async ({
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} call...`
   );
 
-  // TODO: use sns wrapper and query ledger (?)
+  const { getUserCommitment, swapState }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  // TODO: Read the current total commitment from SnsSummary instead of SnsSwapCommitment
+  const [userCommitment, state] = await Promise.all([
+    getUserCommitment({
+      principal_id: [identity.getPrincipal()],
+    }),
+    swapState({}),
+  ]);
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} done.`
   );
-
-  // TODO(L2-751): remove mock data
-  if (mockSwapCommitments.length === 0) {
-    mockSwapCommitments = [
-      ...(
-        (await wrappers({ identity, certified })) ??
-        new Map<QueryRootCanisterId, SnsWrapper>()
-      ).values(),
-    ].map(
-      ({ canisterIds: { rootCanisterId } }, index) =>
-        ({
-          ...mockDummySwapCommitments[index],
-          rootCanisterId,
-        } as SnsSwapCommitment)
-    );
-  }
-
-  // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
-  return mockSwapCommitments.find(
-    (mock) => rootCanisterId === mock.rootCanisterId.toText()
-  ) as SnsSwapCommitment;
+  return {
+    rootCanisterId: Principal.fromText(rootCanisterId),
+    myCommitment: userCommitment,
+    currentCommitment: state?.derived?.[0]?.buyer_total_icp_e8s ?? BigInt(0),
+  };
 };
 
 export const participateInSnsSwap = async ({
@@ -468,15 +442,17 @@ export const participateInSnsSwap = async ({
   logWithTimestamp("Participating in swap: call...");
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const snsWrapper = await wrapper({
+  const {
+    canisterIds: { swapCanisterId },
+    notifyParticipation,
+  } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: snsWrapper.canisterIds.swapCanisterId,
-    subAccount: principalSubaccont,
+  const accountIdentifier = getSwapCanisterAccount({
+    swapCanisterId,
+    controller,
   });
 
   // Send amount to the ledger
@@ -487,7 +463,7 @@ export const participateInSnsSwap = async ({
   });
 
   // Notify participation
-  await snsWrapper.notifyParticipation({ buyer: controller.toText() });
+  await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
 };

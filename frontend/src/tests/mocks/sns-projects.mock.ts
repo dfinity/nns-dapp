@@ -2,7 +2,11 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
-import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
+import type {
+  SnsSummary,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+} from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
 
 export const mockProjectSubscribe =
@@ -29,18 +33,24 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
+export const createBuyersState = (amount) => ({
+  icp_disbursing: false,
+  amount_sns_e8s: BigInt(0),
+  amount_icp_e8s: amount,
+  sns_disbursing: false,
+});
 export const mockSnsSwapCommitment = (
   rootCanisterId: Principal
 ): SnsSwapCommitment =>
   ({
     [principal(0).toText()]: {
       rootCanisterId: principal(0),
-      myCommitment: BigInt(25 * 100000000),
+      myCommitment: createBuyersState(BigInt(25 * 100000000)),
       currentCommitment: BigInt(100 * 100000000),
     },
     [principal(1).toText()]: {
       rootCanisterId: principal(1),
-      myCommitment: BigInt(5 * 100000000),
+      myCommitment: createBuyersState(BigInt(5 * 100000000)),
       currentCommitment: BigInt(775 * 100000000),
     },
     [principal(2).toText()]: {
@@ -83,7 +93,7 @@ export const mockSwapState = {
   buyers: [],
 } as SnsSwapState;
 
-export const mockSwap = {
+export const mockSwap: SnsSummarySwap = {
   init: mockSwapInit,
   state: mockSwapState,
 };
@@ -91,6 +101,7 @@ export const mockSwap = {
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
+    swapCanisterId: principal(3),
 
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -108,6 +119,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(1),
+    swapCanisterId: principal(2),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
@@ -125,6 +137,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(2),
+    swapCanisterId: principal(1),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -142,6 +155,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(3),
+    swapCanisterId: principal(0),
 
     minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),

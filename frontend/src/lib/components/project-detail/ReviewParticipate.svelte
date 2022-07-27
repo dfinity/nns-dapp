@@ -1,10 +1,14 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
+  import type { AccountIdentifier } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
-  import { participateInSwap } from "../../services/sns.services";
+  import {
+    getSwapAccount,
+    participateInSwap,
+  } from "../../services/sns.services";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
@@ -30,6 +34,14 @@
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
+
+  let destinationAddress: AccountIdentifier | undefined;
+  $: (async () => {
+    destinationAddress =
+      $store.summary?.swapCanisterId !== undefined
+        ? await getSwapAccount($store.summary?.swapCanisterId)
+        : undefined;
+  })();
 
   let accepted: boolean = false;
   const toggelAccept = () => (accepted = !accepted);
@@ -65,7 +77,7 @@
 <div data-tid="sns-swap-participate-step-2">
   <div class="info">
     <KeyValuePair>
-      <span slot="key">Source</span>
+      <span slot="key">{$i18n.accounts.source}</span>
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>
@@ -89,8 +101,10 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <!-- TODO: What is this? Question pending to be answered -->
-      <p class="value">Entrepot 1239871294879871249123</p>
+      <p>{$store.summary?.name}</p>
+      {#if destinationAddress !== undefined}
+        <p class="value">{destinationAddress.toHex()}</p>
+      {/if}
     </div>
     <div>
       <h5>{$i18n.sns_project_detail.description}</h5>

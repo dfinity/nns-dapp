@@ -1,4 +1,9 @@
-import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import {
+  ICP,
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
@@ -21,8 +26,9 @@ import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { concatSnsSummaries } from "../utils/sns.utils";
+import { concatSnsSummaries, getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
+import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -239,6 +245,16 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
   return getLastPathDetail(path);
 };
 
+export const getSwapAccount = async (
+  swapCanisterId: Principal
+): Promise<AccountIdentifier> => {
+  const identity = await getIdentity();
+  return getSwapCanisterAccount({
+    controller: identity.getPrincipal(),
+    swapCanisterId,
+  });
+};
+
 export const participateInSwap = async ({
   amount,
   rootCanisterId,
@@ -262,7 +278,13 @@ export const participateInSwap = async ({
     await loadSnsSwapCommitment({
       strategy: "update",
       rootCanisterId: rootCanisterId.toText(),
-      onLoad: ({ response: swapCommitment }) => onSuccess?.(swapCommitment),
+      onLoad: ({ response: swapCommitment, certified }) => {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
+          certified,
+        });
+        onSuccess?.(swapCommitment);
+      },
       onError: () => {
         // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
       },

@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { AccountIdentifier, ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import * as api from "../../../lib/api/sns.api";
 import * as services from "../../../lib/services/sns.services";
@@ -6,7 +6,7 @@ import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsSwapCommitment } from "../../mocks/sns-projects.mock";
 
-const { participateInSwap } = services;
+const { participateInSwap, getSwapAccount } = services;
 
 let testGetIdentityReturn = Promise.resolve(mockIdentity);
 const setNoAccountIdentity = () =>
@@ -72,6 +72,14 @@ describe("sns-services", () => {
       expect(spyParticipate).not.toBeCalled();
       expect(spyQuery).not.toBeCalled();
       resetAccountIdentity();
+    });
+  });
+
+  describe("getSwapAccount", () => {
+    afterEach(() => jest.clearAllMocks());
+    it("should return the swap canister account identifier", async () => {
+      const account = await getSwapAccount(mockPrincipal);
+      expect(account).toBeInstanceOf(AccountIdentifier);
     });
   });
 });

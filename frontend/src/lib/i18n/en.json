@@ -564,8 +564,8 @@
     "status_unspecified": "Unspecified",
     "transaction_fee": "(transaction fee)",
     "description": "Description",
-    "participate_swap_description": "Participate in Token Swap",
-    "participate_swap_warning": "Your participation cannot be withdrawn by you. If the token swap is not successful, your commitment will be automatically transferred back to your main ICP account.",
+    "participate_swap_description": "Participate in Decentralized Sale",
+    "participate_swap_warning": "Your participation cannot be withdrawn by you. If the sale is not successful, your commitment will be automatically transferred back to your main ICP account.",
     "understand_agree": "I understand and agree.",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
@@ -638,7 +638,7 @@
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
     "load_summary": "There was an unexpected error while loading the project.",
-    "list_swap_commitments": "There was an unexpected error while loading the commitments of the swaps of all deployed projects.",
-    "load_swap_commitment": "There was an unexpected error while loading the commitment of the swap of the project."
+    "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
+    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project."
   }
 }

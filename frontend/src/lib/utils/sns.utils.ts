@@ -1,3 +1,5 @@
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
@@ -6,6 +8,7 @@ import { fromNullable } from "./did.utils";
 
 type OptionalSwapSummary = QuerySnsSummary & {
   swap?: SnsSwap;
+  swapCanisterId?: Principal;
 };
 
 type ValidSwapSummary = Required<OptionalSwapSummary>;
@@ -44,23 +47,26 @@ export const concatSnsSummaries = ([summaries, swaps]: [
   QuerySnsSwapState[]
 ]): SnsSummary[] => {
   const allSummaries: OptionalSwapSummary[] = summaries.map(
-    ({ rootCanisterId, ...rest }: SnsSummary) => ({
-      rootCanisterId,
-      ...rest,
-      swap: fromNullable(
-        swaps.find(
-          ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
-            swapRootCanisterId === rootCanisterId.toText()
-        )?.swap ?? []
-      ),
-    })
+    ({ rootCanisterId, ...rest }: OptionalSwapSummary) => {
+      const swapState = swaps.find(
+        ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
+          swapRootCanisterId === rootCanisterId.toText()
+      );
+      return {
+        rootCanisterId,
+        ...rest,
+        swapCanisterId: swapState?.swapCanisterId,
+        swap: fromNullable(swapState?.swap ?? []),
+      };
+    }
   );
 
   const validSwapSummaries: ValidSwapSummary[] = allSummaries.filter(
     (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
       entry.swap !== undefined &&
       fromNullable(entry.swap.init) !== undefined &&
-      fromNullable(entry.swap.state) !== undefined
+      fromNullable(entry.swap.state) !== undefined &&
+      entry.swapCanisterId !== undefined
   );
 
   return sortSnsSummaries(
@@ -98,9 +104,26 @@ export const concatSnsSummary = ([summary, swap]: [
 
   return {
     ...summary,
+    swapCanisterId: swap.swapCanisterId,
     swap: {
       init,
       state,
     },
   };
+};
+
+export const getSwapCanisterAccount = ({
+  controller,
+  swapCanisterId,
+}: {
+  controller: Principal;
+  swapCanisterId: Principal;
+}): AccountIdentifier => {
+  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: swapCanisterId,
+    subAccount: principalSubaccont,
+  });
+
+  return accountIdentifier;
 };
