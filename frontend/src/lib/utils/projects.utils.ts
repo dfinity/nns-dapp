@@ -49,7 +49,7 @@ export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
       (SnsSwapLifecycle.Pending === lifecycle && open_time_window.length)
   );
 
-const openTimeWindow = ({
+export const openTimeWindow = ({
   state: { open_time_window },
 }: SnsSummarySwap): SnsSwapTimeWindow | undefined =>
   fromNullable(open_time_window);

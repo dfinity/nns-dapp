@@ -572,8 +572,6 @@ interface I18nSns_launchpad {
 
 interface I18nSns_project {
   project: string;
-  deadline: string;
-  your_commitment: string;
 }
 
 interface I18nSns_project_detail {
@@ -601,6 +599,10 @@ interface I18nSns_project_detail {
   execute: string;
   participate_success: string;
   participate: string;
+  status_completed: string;
+  completed: string;
+  sale_start: string;
+  sale_end: string;
 }
 
 interface I18nTime {
