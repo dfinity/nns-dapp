@@ -13,6 +13,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
+  import Value from "../ui/Value.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
 
   export let neuron: NeuronInfo;
@@ -58,7 +59,7 @@
     <ul>
       {#each hotkeys as hotkey (hotkey)}
         <li>
-          <span>{hotkey}</span>
+          <Value>{hotkey}</Value>
           {#if isControllable}
             <button
               class="text"

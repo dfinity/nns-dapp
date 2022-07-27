@@ -22,6 +22,30 @@ body {
   box-sizing: border-box;
 }
 
+// text color helper classes
+.value {
+  color: var(--value-color);
+}
+.label {
+  color: var(--label-color);
+}
+.description {
+  color: var(--description-color);
+}
+
+// TODO: find a better solution.
+.card {
+  .value {
+    color: var(--card-background-contrast);
+  }
+  .label {
+    color: rgba(var(--card-background-contrast-rgb), var(--light-opacity));
+  }
+  .description {
+    color: rgba(var(--card-background-contrast-rgb), var(--very-light-opacity));
+  }
+}
+
 ::-webkit-scrollbar {
   background: var(--background);
 }
@@ -44,7 +68,15 @@ button,
 select,
 textarea {
   font-family: inherit;
-  color: inherit;
+  color: var(--value-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--value-color);
 }
 
 button {
@@ -62,8 +94,10 @@ button {
 
 main {
   background: var(--background);
-  color: var(--background-contrast);
   transition: background 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+
+  // set default color for the content
+  color: var(--label-color);
 }
 
 section {

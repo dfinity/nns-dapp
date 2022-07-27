@@ -23,11 +23,13 @@
 </script>
 
 {#if proposal?.proposal !== undefined}
-  <p>{proposal.id}</p>
+  <p class="value">{proposal.id}</p>
 
-  <p class="vote">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
+  <p class="vote value">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
 
-  <div class="summary"><ProposalSummary proposal={proposal.proposal} /></div>
+  <div class="summary">
+    <ProposalSummary proposal={proposal.proposal} />
+  </div>
 {:else}
   <SkeletonParagraph />
 

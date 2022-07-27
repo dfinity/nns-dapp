@@ -11,6 +11,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { neuronStake } from "../../utils/neuron.utils";
+  import { valueSpan } from "../../utils/utils";
 
   export let neurons: NeuronInfo[];
 
@@ -61,13 +62,15 @@
       </div>
       <div>
         <h5>{$i18n.neurons.neuron_id}</h5>
-        <p>{neuron.neuronId}</p>
+        <p class="value">{neuron.neuronId}</p>
       </div>
       <div>
         <h5>{$i18n.neurons.neuron_balance}</h5>
         <p>
-          {replacePlaceholders($i18n.neurons.icp_stake, {
-            $amount: formatICP({ value: neuronStake(neuron), detailed: true }),
+          {@html replacePlaceholders($i18n.neurons.icp_stake, {
+            $amount: valueSpan(
+              formatICP({ value: neuronStake(neuron), detailed: true })
+            ),
           })}
         </p>
       </div>

@@ -79,5 +79,7 @@
     @include media.min-width(small) {
       margin: 0 var(--padding-2x) 0 0;
     }
+
+    color: var(--value-color);
   }
 </style>

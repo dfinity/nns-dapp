@@ -14,6 +14,7 @@
   import { busy, stopBusy } from "../../stores/busy.store";
   import { startBusyNeuron } from "../../services/busy.services";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import { valueSpan } from "../../utils/utils";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -46,19 +47,19 @@
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_id}</h5>
-    <p>{neuron.neuronId}</p>
+    <p class="value">{neuron.neuronId}</p>
   </div>
   <div>
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p>
-      {replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: formatICP({ value: neuronICP, detailed: true }),
+      {@html replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
       })}
     </p>
   </div>
   <div class="voting-power">
     <h5>{$i18n.neurons.voting_power}</h5>
-    <p>
+    <p class="value">
       {formatVotingPower(
         votingPower({
           stake: neuronICP,

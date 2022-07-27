@@ -19,6 +19,8 @@
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
+  import { valueSpan } from "../../utils/utils";
+  import Value from "../ui/Value.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -97,23 +99,23 @@
 
   {#if dissolvingTime !== undefined}
     <p class="duration">
-      {replacePlaceholders($i18n.neurons.remaining, {
-        $duration: secondsToDuration(dissolvingTime),
+      {@html replacePlaceholders($i18n.neurons.remaining, {
+        $duration: valueSpan(secondsToDuration(dissolvingTime)),
       })}
     </p>
   {/if}
 
   {#if spawningTime !== undefined}
     <p class="duration">
-      {replacePlaceholders($i18n.neurons.remaining, {
-        $duration: secondsToDuration(spawningTime),
+      {@html replacePlaceholders($i18n.neurons.remaining, {
+        $duration: valueSpan(secondsToDuration(spawningTime)),
       })}
     </p>
   {/if}
 
   {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
     <p class="duration">
-      {secondsToDuration(neuron.dissolveDelaySeconds)}
+      <Value>{secondsToDuration(neuron.dissolveDelaySeconds)}</Value>
       - {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
@@ -140,6 +142,7 @@
 
   .status {
     display: inline-flex;
+    color: var(--value-color);
 
     :global {
       svg {
