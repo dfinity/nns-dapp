@@ -36,7 +36,11 @@
       (hardwareWalletAccounts?.length > 0 && !hideHardwareWalletAccounts));
 </script>
 
-<div class="wizard-list" class:disabled={disableSelection}>
+<div
+  class="wizard-list"
+  class:disabled={disableSelection}
+  data-tid="select-account-screen"
+>
   {#if mainAccount}
     {#if showTitle}
       <h4>{$i18n.accounts.my_accounts}</h4>
