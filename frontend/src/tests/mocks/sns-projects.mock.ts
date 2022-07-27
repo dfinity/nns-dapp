@@ -8,6 +8,7 @@ import type {
   SnsSwapCommitment,
 } from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
+import {secondsToDate, secondsToTime} from '../../lib/utils/date.utils';
 
 export const mockProjectSubscribe =
   (projects: SnsFullProject[]) =>
@@ -85,6 +86,11 @@ export const mockSwapTimeWindow = {
   start_timestamp_seconds: BigInt(SECONDS_TODAY + 60 * 5),
   end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
 };
+
+export const mockSwapTimeWindowText = {
+  start_timestamp_seconds: `${secondsToDate(Number(mockSwapTimeWindow.start_timestamp_seconds))} ${secondsToTime(Number(mockSwapTimeWindow.start_timestamp_seconds))}`,
+  end_timestamp_seconds: `${secondsToDate(Number(mockSwapTimeWindow.end_timestamp_seconds))} ${secondsToTime(Number(mockSwapTimeWindow.end_timestamp_seconds))}`
+}
 
 export const mockSwapState = {
   open_time_window: [mockSwapTimeWindow],
