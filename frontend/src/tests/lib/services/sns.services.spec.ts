@@ -84,7 +84,7 @@ describe("sns-services", () => {
     const spyQuery = jest
       .spyOn(api, "querySwapCanisterAccount")
       .mockImplementation(() =>
-        Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
+        AccountIdentifier.fromHex(mockMainAccount.identifier)
       );
     afterEach(() => jest.clearAllMocks());
     it("should return the swap canister account identifier", async () => {

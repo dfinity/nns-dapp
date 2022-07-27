@@ -37,8 +37,8 @@
 
   let destinationAddress: AccountIdentifier | undefined;
   $: (async () => {
-    if ($store.summary?.rootCanisterId !== undefined) {
-      destinationAddress = await getSwapAccount($store.summary?.rootCanisterId);
+    if ($store.summary?.swapCanisterId !== undefined) {
+      destinationAddress = await getSwapAccount($store.summary?.swapCanisterId);
     }
   })();
 

@@ -171,9 +171,8 @@ describe("sns-api", () => {
 
   it("should return swap canister account", async () => {
     const expectedAccount = await querySwapCanisterAccount({
-      rootCanisterId: rootCanisterIdMock,
+      swapCanisterId: rootCanisterIdMock,
       controller: mockIdentity.getPrincipal(),
-      identity: mockIdentity,
     });
     expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
   });

@@ -247,14 +247,13 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
 };
 
 export const getSwapAccount = async (
-  rootCanisterId: Principal
+  swapCanisterId: Principal
 ): Promise<AccountIdentifier | undefined> => {
   try {
     const identity = await getIdentity();
-    return await querySwapCanisterAccount({
-      rootCanisterId,
+    return querySwapCanisterAccount({
       controller: identity.getPrincipal(),
-      identity,
+      swapCanisterId,
     });
   } catch (error) {
     return undefined;

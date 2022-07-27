@@ -196,23 +196,16 @@ const wrapper = async ({
 // TODO(L2-751): remove mock data
 let mockSnsSummaries: QuerySnsSummary[] = [];
 
-export const querySwapCanisterAccount = async ({
-  rootCanisterId,
-  identity,
+export const querySwapCanisterAccount = ({
   controller,
+  swapCanisterId,
 }: {
-  rootCanisterId: Principal;
-  identity: Identity;
   controller: Principal;
-}): Promise<AccountIdentifier> => {
-  const snsWrapper: SnsWrapper = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
+  swapCanisterId: Principal;
+}): AccountIdentifier => {
   const principalSubaccont = SubAccount.fromPrincipal(controller);
   const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: snsWrapper.canisterIds.swapCanisterId,
+    principal: swapCanisterId,
     subAccount: principalSubaccont,
   });
 
@@ -355,7 +348,10 @@ export const querySnsSwapState = async ({
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
-  const { swapState }: SnsWrapper = await wrapper({
+  const {
+    swapState,
+    canisterIds: { swapCanisterId },
+  }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
@@ -372,6 +368,7 @@ export const querySnsSwapState = async ({
 
   return {
     rootCanisterId,
+    swapCanisterId,
     swap,
   };
 };
@@ -466,14 +463,16 @@ export const participateInSnsSwap = async ({
   logWithTimestamp("Participating in swap: call...");
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const snsWrapper = await wrapper({
+  const {
+    canisterIds: { swapCanisterId },
+    notifyParticipation,
+  } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const accountIdentifier = await querySwapCanisterAccount({
-    rootCanisterId,
-    identity,
+  const accountIdentifier = querySwapCanisterAccount({
+    swapCanisterId,
     controller,
   });
 
@@ -485,7 +484,7 @@ export const participateInSnsSwap = async ({
   });
 
   // Notify participation
-  await snsWrapper.notifyParticipation({ buyer: controller.toText() });
+  await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
 };

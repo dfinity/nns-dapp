@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal";
 import {
   concatSnsSummaries,
   concatSnsSummary,
@@ -30,6 +31,7 @@ describe("sns-utils", () => {
         [
           {
             rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [],
@@ -49,6 +51,7 @@ describe("sns-utils", () => {
         [
           {
             rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -68,6 +71,7 @@ describe("sns-utils", () => {
         [
           {
             rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -87,6 +91,7 @@ describe("sns-utils", () => {
         [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -108,6 +113,7 @@ describe("sns-utils", () => {
         [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -127,6 +133,7 @@ describe("sns-utils", () => {
           },
           {
             rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -174,6 +181,7 @@ describe("sns-utils", () => {
           mockSummary,
           {
             rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [],
@@ -192,6 +200,7 @@ describe("sns-utils", () => {
           mockSummary,
           {
             rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 init: [mockSwapInit],
@@ -204,10 +213,12 @@ describe("sns-utils", () => {
       expect(call).toThrow();
     });
     it("should concat summary and swap", () => {
+      const swapCanisterId = Principal.fromText("aaaaa-aa");
       const summary = concatSnsSummary([
         mockSummary,
         {
           rootCanisterId: "1234",
+          swapCanisterId,
           swap: [
             {
               init: [mockSwapInit],
@@ -220,6 +231,7 @@ describe("sns-utils", () => {
       expect(summary).toEqual({
         ...mockSummary,
         swap: mockSwap,
+        swapCanisterId,
       });
     });
   });
