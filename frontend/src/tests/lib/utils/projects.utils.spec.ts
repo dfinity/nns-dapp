@@ -6,6 +6,7 @@ import {
   durationTillSwapStart,
   filterActiveProjects,
   filterCommittedProjects,
+  openTimeWindow,
   swapDuration,
 } from "../../../lib/utils/projects.utils";
 import {
@@ -168,5 +169,21 @@ describe("project-utils", () => {
           (mockSwap.state.open_time_window[0] as TimeWindow)
             .start_timestamp_seconds
       ));
+  });
+
+  describe("time window", () => {
+    it("should extract time window", () =>
+      expect(openTimeWindow(mockSwap)).not.toBeUndefined());
+
+    it("should not extract time window", () =>
+      expect(
+        openTimeWindow({
+          ...mockSwap,
+          state: {
+            ...mockSwap.state,
+            open_time_window: [],
+          },
+        })
+      ).toBeUndefined());
   });
 });

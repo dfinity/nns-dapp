@@ -542,9 +542,7 @@
     "no_proposals": "No current proposals at the moment"
   },
   "sns_project": {
-    "project": "Project",
-    "deadline": "Deadline",
-    "your_commitment": "Your Current Commitment"
+    "project": "Project"
   },
   "sns_project_detail": {
     "token_name": "Token Name",
@@ -558,9 +556,9 @@
     "status": "Status",
     "status_open": "Accepting Participation",
     "enter_amount": "Enter Amount",
-    "status_committed": "Committed",
+    "status_committed": "Completed",
     "status_aborted": "Aborted",
-    "status_pending": "Pending",
+    "status_pending": "Upcoming sale",
     "status_unspecified": "Unspecified",
     "transaction_fee": "(transaction fee)",
     "description": "Description",
@@ -570,7 +568,11 @@
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
-    "participate": "Participate"
+    "participate": "Participate",
+    "status_completed": "Status",
+    "completed": "Completed",
+    "sale_start": "Sale Start",
+    "sale_end": "Sale End"
   },
   "time": {
     "year": "year",
