@@ -1,6 +1,7 @@
 use crate::canisters::ledger;
 use crate::state::STATE;
 use dfn_core::CanisterId;
+use ic_ledger_core::block::BlockType;
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use lazy_static::lazy_static;
 use ledger_canister::protobuf::ArchiveIndexEntry;
@@ -81,7 +82,7 @@ async fn get_blocks(from: BlockHeight, tip_of_chain: BlockHeight) -> Result<Vec<
     let results: Vec<_> = blocks
         .into_iter()
         .enumerate()
-        .map(|(index, block)| (range.start() + (index as u64), block.decode().unwrap()))
+        .map(|(index, block)| (range.start() + (index as u64), Block::decode(block).unwrap()))
         .collect();
 
     Ok(results)

@@ -33,17 +33,15 @@ diff --git a/rs/nns/cmc/src/main.rs b/rs/nns/cmc/src/main.rs
 index 2c02d80dc..5a6072dc7 100644
 --- a/rs/nns/cmc/src/main.rs
 +++ b/rs/nns/cmc/src/main.rs
-@@ -106,8 +106,8 @@ impl State {
-             minting_account_id: None,
-             authorized_subnets: BTreeMap::new(),
-             default_subnets: vec![],
--            icp_xdr_conversion_rate: None,
--            average_icp_xdr_conversion_rate: None,
-+            icp_xdr_conversion_rate: Some(IcpXdrConversionRate{ timestamp_seconds: 1652443527, xdr_permyriad_per_icp: 60154 }),
-+            average_icp_xdr_conversion_rate: Some(IcpXdrConversionRate{ timestamp_seconds: 1652443527, xdr_permyriad_per_icp: 60154 }),
-             recent_icp_xdr_rates: Some(vec![
-                 IcpXdrConversionRate::default();
-                 NUM_DAYS_FOR_ICP_XDR_AVERAGE
+@@ -95,7 +95,7 @@ struct State {
+ impl State {
+     fn default() -> Self {
+         let resolution = Duration::from_secs(60);
+-        let max_age = Duration::from_secs(60 * 60);
++        let max_age = Duration::from_secs(60 * 2);
+ 
+         Self {
+             ledger_canister_id: CanisterId::ic_00(),
 @@ -320,6 +320,7 @@ fn get_icp_xdr_conversion_rate_() {
  
  #[export_name = "canister_update set_icp_xdr_conversion_rate"]

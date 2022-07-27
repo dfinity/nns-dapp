@@ -13,8 +13,8 @@ help_text() {
 	- Opens the NNS dapp in a browser (optional)
 
 	On success the deployment is ready for development or testing:
-	- svelte:
-	    cd frontend/svelte
+	- frontend:
+	    cd frontend
 	    npm ci
 	    npm run dev
 	- testing:
@@ -47,6 +47,15 @@ help_text() {
 
 	--dry-run
 	  Print the steps that seem to be necessary for deployment.
+
+	--delete
+	  Delete network entries before deploying.
+
+	--delete-canister-ids
+	  Delete canister_id.json entries for the network before deploying.
+
+	--delete-wallet
+	  Delete wallet for the network before deploying.
 
 	--start
 	  Start dfx in the background.
@@ -82,6 +91,8 @@ DFX_NETWORK=local                      # which network to deploy to
 CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
+DELETE_CANISTER_IDS="false"
+DELETE_WALLET="false"
 START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
@@ -98,6 +109,19 @@ while (($# > 0)); do
   --help)
     help_text | "${PAGER:-less}"
     exit 0
+    ;;
+  --delete)
+    GUESS="false"
+    DELETE_CANISTER_IDS="true"
+    DELETE_WALLET="true"
+    ;;
+  --delete-canister-ids)
+    GUESS="false"
+    DELETE_CANISTER_IDS="true"
+    ;;
+  --delete-wallet)
+    GUESS="false"
+    DELETE_WALLET="true"
     ;;
   --start)
     GUESS="false"
@@ -170,6 +194,8 @@ if [[ "$GUESS" == "true" ]]; then
 fi
 
 echo
+echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
+echo DELETE_WALLET=$DELETE_WALLET
 echo START_DFX=$START_DFX
 echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
 echo DEPLOY_II=$DEPLOY_II
@@ -192,6 +218,27 @@ echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
     exit 1
   }
 }
+
+if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
+  if test -e canister_ids.json; then
+    : Back up the canister_ids.json
+    cp canister_ids.json "canister_ids.json.$(date -Isecond -u | sed 's/+.*//g')"
+    echo "Deleting the entries for $DFX_NETWORK in canister_ids.json ..."
+    DFX_NETWORK="$DFX_NETWORK" jq 'to_entries | map(del(.value[env.DFX_NETWORK])) | from_entries' <canister_ids.json >canister_ids.json.new
+    mv canister_ids.json.new canister_ids.json
+  fi
+fi
+
+if [[ "$DELETE_WALLET" == "true" ]]; then
+  WALLET_FILE="${HOME}/.config/dfx/identity/$(dfx identity whoami)/wallets.json"
+  if test -e "$WALLET_FILE"; then
+    : Back up wallet
+    cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
+    echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
+    DFX_NETWORK="$DFX_NETWORK" jq 'del(.identities.default[env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
+    mv "${WALLET_FILE}.new" "${WALLET_FILE}"
+  fi
+fi
 
 if [[ "$START_DFX" == "true" ]]; then
   echo
@@ -241,10 +288,21 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-root-canister.wasm root
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/sns-governance-canister.wasm governance
-    ./target/ic/sns add-sns-wasm-for-tests --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --wasm-file target/ic/ledger-canister_notify-method.wasm ledger
+    for canister in root governance ledger swap; do
+      ./target/ic/sns add-sns-wasm-for-tests \
+        --network "$DFX_NETWORK" \
+        --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" \
+        --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
+    done
   fi
+  echo "Checking cycle balance"
+  while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
+    WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
+    echo "Please add 51T cycles to this canister: $WALLET_CANISTER"
+    read -rp "Press enter when done ..."
+    echo
+  done
+
   echo "Creating SNS"
   ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
 
@@ -255,11 +313,19 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   else
     echo "{}" >canister_ids.json
   fi
-  idl2json <sns_creation.idl |
+  sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
+    idl2json |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
-    jq -s '.[0] * .[1]' - canister_ids.json >canister_ids.json.new
+    jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
 
+  # Note: This must come afetr the canister_ids has been updated.
+  echo "SNS state after creation"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+  echo "Tell the swap canister to get tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
+  echo "SNS swap state should now have tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
@@ -273,10 +339,8 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  # Disabled until we can set the exchange rate again.
-  # echo Setting the cycles exchange rate...
-  # echo Note: This needs a patched cycles minting canister.
-  # ./scripts/set-xdr-conversion-rate --dfx-network "$DFX_NETWORK"
+  echo Setting the cycles exchange rate...
+  ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK" --jfdi
 
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.

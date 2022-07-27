@@ -1,6 +1,23 @@
 {
-  "dfx": "0.11.0-beta.1",
+  "dfx": "0.11.0",
   "canisters": {
+    "nns-governance": {
+      "type": "custom",
+      "candid": "target/ic/governance.did",
+      "wasm": "target/ic/governance-canister_test.wasm",
+      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "remote": {
+        "id": {
+          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+        }
+      }
+    },
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/nns-dapp.did",
@@ -27,8 +44,8 @@
     },
     "sns_ledger": {
       "build": ["true"],
-      "candid": "target/ic/ledger.did",
-      "wasm": "target/ic/ledger-canister_notify-method.wasm",
+      "candid": "target/ic/ic-icrc1-ledger.did",
+      "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_swap": {
@@ -50,7 +67,8 @@
         "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": false,
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.ic0.app",
@@ -64,7 +82,8 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": false,
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": false,
         "HOST": "https://nnsdapp.dfinity.network",
         "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
@@ -78,11 +97,25 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
         "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "type": "persistent"
+    },
+    "small12": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
+        "HOST": "https://small12.dfinity.network",
+        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small12.dfinity.network"
+      },
+      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
       "type": "persistent"
     },
     "small11": {
@@ -91,6 +124,7 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
         "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
         "HOST": "https://small11.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small11.dfinity.network"
       },
@@ -103,6 +137,7 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
         "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
         "HOST": "https://small06.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small06.dfinity.network"
       },
@@ -115,6 +150,7 @@
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
         "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
         "HOST": "http://localhost:8080"
       },
       "bind": "127.0.0.1:8080",
@@ -128,7 +164,6 @@
     "network": {
       "config": {
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
-        "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
       }
     },
@@ -136,7 +171,7 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "3409f63139688e8d1da5beeeb2efa181f1ba1b1f"
+        "IC_COMMIT": "5b66c3f6994a43777b1161ef7f587698e1265773"
       },
       "packtool": ""
     }
