@@ -480,6 +480,7 @@
     "participate_community_fund": "Participate in upcoming community fund.",
     "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
     "maturity_title": "Maturity",
+    "maturity_description": "We changed the representation of the maturity. Please see our <a href=\"https://forum.dfinity.org\" rel=\"noopener noreferrer\" aria-label=\"more info about maturity changes\" target=\"_blank\">forum post</a> for further explanation.",
     "merge_maturity": "Merge Maturity",
     "merge": "Merge",
     "spawn_neuron": "Spawn Neuron",
