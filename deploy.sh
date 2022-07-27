@@ -253,7 +253,7 @@ if [[ "$DELETE_WALLET" == "true" ]]; then
         : Back up wallet
         cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
         echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
-        DFX_NETWORK="$DFX_NETWORK" DFX_ID="$DFX_ID" jq 'del(.identities[env.DFX_ID][env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
+        DFX_NETWORK="$DFX_NETWORK" DFX_ID="$DFX_ID" jq 'del(.identities[env.DFX_ID][env.DFX_NETWORK])' "${WALLET_FILE}" | jq -s first >"${WALLET_FILE}.new"
         mv "${WALLET_FILE}.new" "${WALLET_FILE}"
       fi
     done
