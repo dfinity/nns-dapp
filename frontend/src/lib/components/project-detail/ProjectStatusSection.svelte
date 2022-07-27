@@ -56,9 +56,9 @@
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
 </script>
 
-{#if loadingSummary || loadingSwapState}
-  <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
-{:else if displayStatus}
+<!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
+
+{#if displayStatus}
   <div class="wrapper" data-tid="sns-project-detail-status">
     <ProjectStatus />
 
