@@ -158,7 +158,6 @@ export const formattedMaturity = (neuron: NeuronInfo): string => {
 
   return formatICP({
     value,
-    detailed: true,
   });
 };
 
