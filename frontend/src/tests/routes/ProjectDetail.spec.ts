@@ -81,7 +81,7 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
     });
 
-    it("should not load summary if certified version available", async () => {
+    it.only("should not load summary if certified version available", async () => {
       render(ProjectDetail);
 
       await tick();

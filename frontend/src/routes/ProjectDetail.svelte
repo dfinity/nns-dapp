@@ -17,7 +17,7 @@
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
+  import {snsQueryStore, snsSwapCommitmentsStore} from "../lib/stores/sns.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -64,7 +64,7 @@
       $projectDetailStore.summary = summaryMaybe;
 
       // do not reload already certified data
-      if ($snsSummariesStore?.certified === true) {
+      if ($snsQueryStore?.certified === true) {
         return;
       }
     }
