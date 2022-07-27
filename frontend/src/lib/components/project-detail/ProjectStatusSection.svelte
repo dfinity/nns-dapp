@@ -1,8 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSwapCommitment } from "../../types/sns";
-  import { SnsSummary } from "../../types/sns";
+  import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
