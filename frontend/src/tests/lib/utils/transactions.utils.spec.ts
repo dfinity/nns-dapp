@@ -4,6 +4,7 @@ import { enumKeys } from "../../../lib/utils/enum.utils";
 import {
   accountName,
   AccountTransactionType,
+  mapToSelfTransaction,
   mapTransaction,
   showTransactionFee,
   transactionDisplayAmount,
@@ -155,6 +156,43 @@ describe("transactions-utils", () => {
     });
   });
 
+  describe("mapToSelfTransaction", () => {
+    it("should map to self transactions", () => {
+      const transactions = mapToSelfTransaction([
+        {
+          ...mockSentToSubAccountTransaction,
+          timestamp: { timestamp_nanos: BigInt("111") },
+        },
+        mockReceivedFromMainAccountTransaction,
+        mockReceivedFromMainAccountTransaction,
+        {
+          ...mockSentToSubAccountTransaction,
+          timestamp: { timestamp_nanos: BigInt("222") },
+        },
+        {
+          ...mockSentToSubAccountTransaction,
+          timestamp: { timestamp_nanos: BigInt("333") },
+        },
+        mockSentToSubAccountTransaction,
+        mockSentToSubAccountTransaction,
+      ]);
+
+      const toSelfTransactions = transactions.map(
+        ({ toSelfTransaction }) => toSelfTransaction
+      );
+
+      expect(toSelfTransactions).toEqual([
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+      ]);
+    });
+  });
+
   describe("mapTransaction", () => {
     it("should map Send transaction", () => {
       const { type, isReceive, isSend, from, to, displayAmount, date } =
@@ -222,6 +260,30 @@ describe("transactions-utils", () => {
             BigInt(1e6)
         )
       );
+    });
+
+    it("should support toSelfTransaction", () => {
+      const { isReceive, isSend, displayAmount } = mapTransaction({
+        transaction: mockSentToSubAccountTransaction,
+        account: mockSubAccount,
+        toSelfTransaction: true,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const amount = (mockSentToSubAccountTransaction.transfer as any)?.Send
+        ?.amount.e8s as bigint;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fee = (mockSentToSubAccountTransaction.transfer as any)?.Send?.fee
+        .e8s as bigint;
+
+      expect(displayAmount.toE8s()).toBe(
+        transactionDisplayAmount({
+          useFee: false,
+          amount: ICP.fromE8s(amount),
+          fee: ICP.fromE8s(fee),
+        }).toE8s()
+      );
+      expect(isSend).toBeFalsy();
+      expect(isReceive).toBeTruthy();
     });
   });
 
