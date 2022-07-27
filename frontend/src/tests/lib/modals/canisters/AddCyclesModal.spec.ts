@@ -51,11 +51,10 @@ describe("AddCyclesModal", () => {
   });
 
   it("should be able to go back", async () => {
-    const { queryByTestId, queryAllByTestId, container, component } =
-      await renderModal({
-        component: AddCyclesModalTest,
-        props,
-      });
+    const { queryByTestId, queryAllByTestId, container } = await renderModal({
+      component: AddCyclesModalTest,
+      props,
+    });
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
     // wait to update local variable with conversion rate
