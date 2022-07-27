@@ -1,4 +1,9 @@
-import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import {
+  ICP,
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
@@ -8,6 +13,7 @@ import {
   querySnsSwapCommitments,
   querySnsSwapState,
   querySnsSwapStates,
+  querySwapCanisterAccount,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
 import {
@@ -23,6 +29,7 @@ import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { concatSnsSummaries } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
+import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -237,6 +244,21 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
     return undefined;
   }
   return getLastPathDetail(path);
+};
+
+export const getSwapAccount = async (
+  rootCanisterId: Principal
+): Promise<AccountIdentifier | undefined> => {
+  try {
+    const identity = await getIdentity();
+    return await querySwapCanisterAccount({
+      rootCanisterId,
+      controller: identity.getPrincipal(),
+      identity,
+    });
+  } catch (error) {
+    return undefined;
+  }
 };
 
 export const participateInSwap = async ({

@@ -3,7 +3,12 @@
  */
 
 import type { HttpAgent } from "@dfinity/agent";
-import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  ICP,
+  LedgerCanister,
+  type SnsWasmCanisterOptions,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
@@ -13,6 +18,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
+  querySwapCanisterAccount,
 } from "../../../lib/api/sns.api";
 import {
   importInitSnsWrapper,
@@ -161,5 +167,14 @@ describe("sns-api", () => {
 
     expect(ledgerCanisterMock.transfer).toBeCalled();
     expect(notifyParticipationSpy).toBeCalled();
+  });
+
+  it("should return swap canister account", async () => {
+    const expectedAccount = await querySwapCanisterAccount({
+      rootCanisterId: rootCanisterIdMock,
+      controller: mockIdentity.getPrincipal(),
+      identity: mockIdentity,
+    });
+    expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
   });
 });

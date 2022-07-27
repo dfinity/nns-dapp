@@ -196,6 +196,29 @@ const wrapper = async ({
 // TODO(L2-751): remove mock data
 let mockSnsSummaries: QuerySnsSummary[] = [];
 
+export const querySwapCanisterAccount = async ({
+  rootCanisterId,
+  identity,
+  controller,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  controller: Principal;
+}): Promise<AccountIdentifier> => {
+  const snsWrapper: SnsWrapper = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: snsWrapper.canisterIds.swapCanisterId,
+    subAccount: principalSubaccont,
+  });
+
+  return accountIdentifier;
+};
+
 // TODO: ultimately querySnsSummaries and querySummary will not return SnsSummary types but rather a summary related types provided by Candid sns governance
 export const querySnsSummaries = async ({
   identity,
@@ -448,10 +471,10 @@ export const participateInSnsSwap = async ({
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
-  const accountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: snsWrapper.canisterIds.swapCanisterId,
-    subAccount: principalSubaccont,
+  const accountIdentifier = await querySwapCanisterAccount({
+    rootCanisterId,
+    identity,
+    controller,
   });
 
   // Send amount to the ledger

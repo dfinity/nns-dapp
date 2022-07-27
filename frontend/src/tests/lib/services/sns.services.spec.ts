@@ -1,12 +1,17 @@
-import { ICP } from "@dfinity/nns";
+import { AccountIdentifier, ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import * as api from "../../../lib/api/sns.api";
 import * as services from "../../../lib/services/sns.services";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  mockIdentity,
+  mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
+} from "../../mocks/auth.store.mock";
 import { mockSnsSwapCommitment } from "../../mocks/sns-projects.mock";
 
-const { participateInSwap } = services;
+const { participateInSwap, getSwapAccount } = services;
 
 let testGetIdentityReturn = Promise.resolve(mockIdentity);
 const setNoAccountIdentity = () =>
@@ -72,6 +77,27 @@ describe("sns-services", () => {
       expect(spyParticipate).not.toBeCalled();
       expect(spyQuery).not.toBeCalled();
       resetAccountIdentity();
+    });
+  });
+
+  describe("getSwapAccount", () => {
+    const spyQuery = jest
+      .spyOn(api, "querySwapCanisterAccount")
+      .mockImplementation(() =>
+        Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
+      );
+    afterEach(() => jest.clearAllMocks());
+    it("should return the swap canister account identifier", async () => {
+      const account = await getSwapAccount(mockPrincipal);
+      expect(account).toBeInstanceOf(AccountIdentifier);
+      expect(spyQuery).toBeCalled();
+    });
+    it("should return undefined if no identity", async () => {
+      setNoIdentity();
+      const account = await getSwapAccount(mockPrincipal);
+      expect(account).toBeUndefined();
+      expect(spyQuery).not.toBeCalled();
+      resetIdentity();
     });
   });
 });
