@@ -2,7 +2,11 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
-import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
+import type {
+  SnsSummary,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+} from "../../lib/types/sns";
 import { shuffle } from "../../lib/utils/dev.utils";
 
 export const mockProjectSubscribe =
@@ -89,7 +93,7 @@ export const mockSwapState = {
   buyers: [],
 } as SnsSwapState;
 
-export const mockSwap = {
+export const mockSwap: SnsSummarySwap = {
   init: mockSwapInit,
   state: mockSwapState,
 };
@@ -168,7 +172,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   .map((summary, index) => ({
     ...summary,
     rootCanisterId: principal(index),
-  })) as unknown as SnsSummary[];
+  })) as SnsSummary[];
 
 export const mockSummary = mockSnsSummaryList[0];
 

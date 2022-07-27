@@ -403,17 +403,18 @@ export const querySnsSwapCommitment = async ({
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} call...`
   );
 
-  const snsWrapper: SnsWrapper = await wrapper({
+  const { getUserCommitment, swapState }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
   });
 
-  const [userCommitment, swapState] = await Promise.all([
-    snsWrapper.getUserCommitment({
+  // TODO: Read the current total commitment from SnsSummary instead of SnsSwapCommitment
+  const [userCommitment, state] = await Promise.all([
+    getUserCommitment({
       principal_id: [identity.getPrincipal()],
     }),
-    snsWrapper.swapState({}),
+    swapState({}),
   ]);
 
   logWithTimestamp(
@@ -422,8 +423,7 @@ export const querySnsSwapCommitment = async ({
   return {
     rootCanisterId: Principal.fromText(rootCanisterId),
     myCommitment: userCommitment,
-    currentCommitment:
-      swapState?.derived?.[0]?.buyer_total_icp_e8s ?? BigInt(0),
+    currentCommitment: state?.derived?.[0]?.buyer_total_icp_e8s ?? BigInt(0),
   };
 };
 
