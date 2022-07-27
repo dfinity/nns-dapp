@@ -49,9 +49,3 @@
     minimumIndicator={min_icp_e8s}
   />
 </div>
-
-<style lang="scss">
-  p {
-    margin: 0;
-  }
-</style>

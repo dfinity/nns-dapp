@@ -33,7 +33,7 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
-export const createBuyersState = (amount) => ({
+export const createBuyersState = (amount: bigint) => ({
   icp_disbursing: false,
   amount_sns_e8s: BigInt(0),
   amount_icp_e8s: amount,

@@ -65,9 +65,3 @@
     tagName="span"
   />
 </KeyValuePair>
-
-<style lang="scss">
-  p {
-    font-size: var(--font-size-small);
-  }
-</style>

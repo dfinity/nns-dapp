@@ -5,12 +5,6 @@
   export let seconds: number;
 </script>
 
-<svelte:element this={tagName}
+<svelte:element this={tagName} style="margin-top: 0;"
   >{secondsToDate(seconds)} {secondsToTime(seconds)}</svelte:element
 >
-
-<style lang="scss">
-  p {
-    margin-top: 0;
-  }
-</style>
