@@ -46,6 +46,7 @@
         if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
           return;
         }
+
         $selectedAccountStore.transactions = transactions;
       },
     });
