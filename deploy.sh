@@ -244,14 +244,17 @@ if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
 fi
 
 if [[ "$DELETE_WALLET" == "true" ]]; then
-  WALLET_FILE="${HOME}/.config/dfx/identity/$(dfx identity whoami)/wallets.json"
-  if test -e "$WALLET_FILE"; then
-    : Back up wallet
-    cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
-    echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
-    DFX_NETWORK="$DFX_NETWORK" jq 'del(.identities.default[env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
-    mv "${WALLET_FILE}.new" "${WALLET_FILE}"
-  fi
+  dfx identity list |
+    while read DFX_ID; do
+      WALLET_FILE="${HOME}/.config/dfx/identity/$DFX_ID/wallets.json"
+      if test -e "$WALLET_FILE"; then
+        : Back up wallet
+        cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
+        echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
+        DFX_NETWORK="$DFX_NETWORK" DFX_ID="$DFX_ID" jq 'del(.identities[env.DFX_ID][env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
+        mv "${WALLET_FILE}.new" "${WALLET_FILE}"
+      fi
+    done
 fi
 
 if [[ "$START_DFX" == "true" ]]; then
