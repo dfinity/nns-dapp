@@ -7,14 +7,18 @@
   } from "../../types/sns";
   import {
     durationTillSwapDeadline,
-    durationTillSwapStart,
+    openTimeWindow,
   } from "../../utils/projects.utils";
   import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import DateSeconds from "../ui/DateSeconds.svelte";
-  import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
+  import {
+    SnsSwapLifecycle,
+    type SnsSwapState,
+    type SnsSwapTimeWindow,
+  } from "@dfinity/sns";
 
   export let project: SnsFullProject;
 
@@ -34,8 +38,14 @@
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 
-  let durationTillStart: bigint | undefined;
-  $: durationTillStart = durationTillSwapStart(swap);
+  let timeWindow: SnsSwapTimeWindow | undefined;
+  $: timeWindow = openTimeWindow(swap);
+
+  let start_timestamp_seconds: bigint | undefined;
+  $: ({ start_timestamp_seconds } = timeWindow ?? {
+    start_timestamp_seconds: undefined,
+    end_timestamp_seconds: undefined,
+  });
 
   export let myCommitment: ICP | undefined = undefined;
   $: myCommitment =
@@ -58,9 +68,9 @@
   {/if}
 
   <!-- Sale starts soon -->
-  {#if lifecycle === SnsSwapLifecycle.Pending && durationTillStart !== undefined}
+  {#if lifecycle === SnsSwapLifecycle.Pending && start_timestamp_seconds !== undefined}
     <dt>{$i18n.sns_project_detail.sale_start}</dt>
-    <DateSeconds tagName="dd" seconds={Number(durationTillStart)} />
+    <DateSeconds tagName="dd" seconds={Number(start_timestamp_seconds)} />
   {/if}
 
   {#if myCommitment !== undefined}
