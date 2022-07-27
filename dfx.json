@@ -36,7 +36,12 @@
       ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+        }
+      }
     },
     "sns_governance": {
       "build": [
