@@ -5,13 +5,16 @@
     SnsSwapCommitment,
     SnsSummarySwap,
   } from "../../types/sns";
-  import {durationTillSwapDeadline, durationTillSwapStart} from "../../utils/projects.utils";
+  import {
+    durationTillSwapDeadline,
+    durationTillSwapStart,
+  } from "../../utils/projects.utils";
   import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
   import DateSeconds from "../ui/DateSeconds.svelte";
-  import {SnsSwapLifecycle, type SnsSwapState} from '@dfinity/sns';
+  import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
 
   export let project: SnsFullProject;
 
