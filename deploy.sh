@@ -244,8 +244,10 @@ if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
 fi
 
 if [[ "$DELETE_WALLET" == "true" ]]; then
-  dfx identity list |
-    while read DFX_ID; do
+  # Note: "list" puts a '*' printed next to the current ID, but it is on stderr
+  #       so we discard it on dev/null leaving just the user's identities, one per line.
+  dfx identity list 2>/dev/null |
+    while read -r DFX_ID; do
       WALLET_FILE="${HOME}/.config/dfx/identity/$DFX_ID/wallets.json"
       if test -e "$WALLET_FILE"; then
         : Back up wallet
