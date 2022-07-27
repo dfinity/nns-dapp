@@ -5,11 +5,12 @@
     SnsSwapCommitment,
     SnsSummarySwap,
   } from "../../types/sns";
-  import { durationTillSwapDeadline } from "../../utils/projects.utils";
+  import {durationTillSwapDeadline, durationTillSwapStart} from "../../utils/projects.utils";
   import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import Icp from "../ic/ICP.svelte";
+  import {SnsSwapLifecycle, type SnsSwapState} from '@dfinity/sns';
 
   export let project: SnsFullProject;
 
@@ -20,8 +21,17 @@
   let swap: SnsSummarySwap;
   $: ({ swap } = summary);
 
+  let state: SnsSwapState;
+  $: ({ state } = swap);
+
+  let lifecycle: number;
+  $: lifecycle = state.lifecycle;
+
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
+
+  let durationTillStart: bigint | undefined;
+  $: durationTillStart = durationTillSwapStart(swap);
 
   export let myCommitment: ICP | undefined = undefined;
   $: myCommitment =
@@ -30,19 +40,29 @@
       : ICP.fromE8s(swapCommitment.myCommitment);
 </script>
 
-{#if durationTillDeadline !== undefined || myCommitment !== undefined}
-  <dl>
-    {#if durationTillDeadline !== undefined}
-      <dt>{$i18n.sns_project.deadline}</dt>
-      <dd>{secondsToDuration(durationTillDeadline)}</dd>
-    {/if}
+<dl>
+  <!-- Sale is committed -->
+  {#if lifecycle === SnsSwapLifecycle.Committed}
+    <dt>{$i18n.sns_project_detail.completed}</dt>
+  {/if}
 
-    {#if myCommitment !== undefined}
-      <dt>{$i18n.sns_project.your_commitment}</dt>
-      <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
-    {/if}
-  </dl>
-{/if}
+  <!-- Sale is open -->
+  {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
+    <dt>{$i18n.sns_project_detail.deadline}</dt>
+    <dd>{secondsToDuration(durationTillDeadline)}</dd>
+  {/if}
+
+  <!-- Sale starts soon -->
+  {#if lifecycle === SnsSwapLifecycle.Pending && durationTillStart !== undefined}
+    <dt>{$i18n.sns_project_detail.starts_in}</dt>
+    <dd>{secondsToDuration(durationTillStart)}</dd>
+  {/if}
+
+  {#if myCommitment !== undefined}
+    <dt>{$i18n.sns_project_detail.user_commitment}</dt>
+    <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
+  {/if}
+</dl>
 
 <style lang="scss">
   dl {

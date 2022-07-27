@@ -542,9 +542,7 @@
     "no_proposals": "No current proposals at the moment"
   },
   "sns_project": {
-    "project": "Project",
-    "deadline": "Deadline",
-    "your_commitment": "Your Current Commitment"
+    "project": "Project"
   },
   "sns_project_detail": {
     "token_name": "Token Name",
@@ -570,7 +568,9 @@
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
-    "participate": "Participate"
+    "participate": "Participate",
+    "completed": "Completed",
+    "starts_in": "Decentralized sale starts in"
   },
   "time": {
     "year": "year",
