@@ -85,7 +85,7 @@
           title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
         >
           <p class="value">{neuron.id}</p>
-          <p class="vote-details" class:yes={neuron.vote === Vote.YES}>
+          <p class="vote-details">
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
@@ -172,12 +172,6 @@
       display: flex;
       align-items: center;
       gap: var(--padding);
-
-      color: var(--negative-emphasis-light);
-
-      &.yes {
-        color: var(--primary-shade);
-      }
     }
   }
 
