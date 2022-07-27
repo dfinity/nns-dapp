@@ -67,7 +67,10 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
 
       snsQueryStore.setResponse(
-        snsResponsesForLifecycle({lifecycles: [SnsSwapLifecycle.Open], certified: true})
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        })
       );
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -103,7 +106,10 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
 
       snsQueryStore.setResponse(
-        snsResponsesForLifecycle({lifecycles: [SnsSwapLifecycle.Open], certified: false})
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: false,
+        })
       );
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,

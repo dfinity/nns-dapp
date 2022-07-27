@@ -1,7 +1,6 @@
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { derived, writable } from "svelte/store";
-import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
+import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { mapAndSortSnsQueryToSummaries } from "../utils/sns.utils";
 import { isNullish } from "../utils/utils";

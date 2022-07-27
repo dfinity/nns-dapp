@@ -1,6 +1,6 @@
 import {
-  mapAndSortSnsQueryToSummaries,
   concatSnsSummary,
+  mapAndSortSnsQueryToSummaries,
 } from "../../../lib/utils/sns.utils";
 import {
   mockSnsSummaryList,

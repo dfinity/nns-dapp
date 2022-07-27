@@ -17,7 +17,10 @@
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import {snsQueryStore, snsSwapCommitmentsStore} from "../lib/stores/sns.store";
+  import {
+    snsQueryStore,
+    snsSwapCommitmentsStore,
+  } from "../lib/stores/sns.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
