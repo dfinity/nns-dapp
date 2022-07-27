@@ -7,6 +7,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "../../lib/types/sns";
+import { secondsToDate, secondsToTime } from "../../lib/utils/date.utils";
 import { shuffle } from "../../lib/utils/dev.utils";
 
 export const mockProjectSubscribe =
@@ -33,7 +34,7 @@ export const principal = (index: number): Principal =>
     ),
   ][index];
 
-export const createBuyersState = (amount) => ({
+export const createBuyersState = (amount: bigint) => ({
   icp_disbursing: false,
   amount_sns_e8s: BigInt(0),
   amount_icp_e8s: amount,
@@ -86,6 +87,15 @@ export const mockSwapTimeWindow = {
   end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
 };
 
+export const mockSwapTimeWindowText = {
+  start_timestamp_seconds: `${secondsToDate(
+    Number(mockSwapTimeWindow.start_timestamp_seconds)
+  )} ${secondsToTime(Number(mockSwapTimeWindow.start_timestamp_seconds))}`,
+  end_timestamp_seconds: `${secondsToDate(
+    Number(mockSwapTimeWindow.end_timestamp_seconds)
+  )} ${secondsToTime(Number(mockSwapTimeWindow.end_timestamp_seconds))}`,
+};
+
 export const mockSwapState = {
   open_time_window: [mockSwapTimeWindow],
   sns_token_e8s: BigInt(1000),
@@ -101,6 +111,7 @@ export const mockSwap: SnsSummarySwap = {
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
+    swapCanisterId: principal(3),
 
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -118,6 +129,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(1),
+    swapCanisterId: principal(2),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
@@ -135,6 +147,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(2),
+    swapCanisterId: principal(1),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -152,6 +165,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
   },
   {
     rootCanisterId: principal(3),
+    swapCanisterId: principal(0),
 
     minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),

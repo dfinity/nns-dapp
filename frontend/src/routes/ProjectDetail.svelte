@@ -170,12 +170,7 @@
           {/if}
         </div>
         <div slot="right">
-          {#if loadingSummary || loadingSwapState}
-            <!-- TODO: replace with a skeleton -->
-            <Spinner inline />
-          {:else}
-            <ProjectStatusSection />
-          {/if}
+          <ProjectStatusSection />
         </div>
       </TwoColumns>
     {/if}
