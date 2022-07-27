@@ -40,6 +40,7 @@
   <span slot="key">
     {$i18n.sns_project_detail.current_commitment}
   </span>
+
   <Icp slot="value" icp={currentCommitmentIcp} singleLine />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">

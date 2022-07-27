@@ -124,12 +124,6 @@
     }
   }
 
-  @include media.light-theme() {
-    .how-much {
-      color: var(--background-contrast);
-    }
-  }
-
   form {
     display: flex;
     flex-direction: column;

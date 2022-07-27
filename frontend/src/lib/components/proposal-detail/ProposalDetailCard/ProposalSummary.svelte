@@ -8,7 +8,7 @@
   $: summary = proposal?.summary;
 </script>
 
-<div class="markdown">
+<div class="markdown value">
   <Markdown text={summary} />
 </div>
 

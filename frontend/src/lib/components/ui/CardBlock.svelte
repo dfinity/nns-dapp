@@ -10,7 +10,7 @@
     (expanded = detail.expanded);
 </script>
 
-<article data-tid="card-block" class:expanded>
+<article data-tid="card-block" class="card" class:expanded>
   {#if expandable}
     <Collapsible maxContentHeight={300} initiallyExpanded on:nnsToggle={toggle}>
       <h3 slot="header"><slot name="title" /></h3>
@@ -34,7 +34,6 @@
     text-decoration: none;
 
     background: var(--card-background);
-    color: var(--card-background-contrast);
     box-shadow: var(--box-shadow);
 
     padding: var(--padding-2x);

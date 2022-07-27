@@ -47,6 +47,14 @@
   --light-opacity: 0.6;
   --very-light-opacity: 0.4;
 
+  // text color
+  --value-color: var(--background-contrast);
+  --label-color: rgba(var(--background-contrast-rgb), var(--light-opacity));
+  --description-color: rgba(
+    var(--background-contrast-rgb),
+    var(--very-light-opacity)
+  );
+
   // Overlays - based on dark card background rgb color
   --backdrop: rgba(39, 41, 41, 0.8);
   --backdrop-contrast: #ffffff;

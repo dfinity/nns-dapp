@@ -74,6 +74,7 @@
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
+
   <ICP
     slot="end"
     icp={displayAmount}

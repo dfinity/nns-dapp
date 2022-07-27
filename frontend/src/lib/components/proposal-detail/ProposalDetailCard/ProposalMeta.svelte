@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "../../../../lib/stores/i18n";
   import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
   import { mapProposalInfo } from "../../../utils/proposals.utils";
+  import Value from "../../ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -24,7 +25,7 @@
   {#if proposer !== undefined}
     <button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
       {$i18n.proposal_detail.proposer_prefix}
-      {proposer}
+      <Value>{proposer}</Value>
     </button>
 
     {#if modalOpen}
@@ -37,9 +38,9 @@
 
   <p>
     {$i18n.proposal_detail.topic_prefix}
-    {topic}
+    <Value>{topic}</Value>
   </p>
-  <p>{$i18n.proposal_detail.id_prefix} {id}</p>
+  <p>{$i18n.proposal_detail.id_prefix} <Value>{id}</Value></p>
 </div>
 
 <style lang="scss">

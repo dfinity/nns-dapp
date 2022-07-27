@@ -20,7 +20,7 @@
     <h3 slot="start">{$i18n.neuron_detail.community_fund}</h3>
     <div>
       <JoinCommunityFundCheckbox {neuron} />
-      <p>
+      <p class="description">
         {@html $i18n.neuron_detail.community_fund_more_info}
       </p>
     </div>
