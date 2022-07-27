@@ -571,7 +571,8 @@
     "participate": "Participate",
     "status_completed": "Status",
     "completed": "Completed",
-    "sale_start": "Sale Start"
+    "sale_start": "Sale Start",
+    "sale_end": "Sale End"
   },
   "time": {
     "year": "year",

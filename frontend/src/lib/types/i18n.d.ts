@@ -601,6 +601,7 @@ interface I18nSns_project_detail {
   status_completed: string;
   completed: string;
   sale_start: string;
+  sale_end: string;
 }
 
 interface I18nTime {
