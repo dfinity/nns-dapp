@@ -66,6 +66,9 @@ help_text() {
 	--ii
 	  Create the internet_identity canister.
 
+	--sns-wasm
+	  Create or update an SNS wasm canister.
+
 	--sns
 	  Create an SNS canister set.
 
@@ -97,6 +100,7 @@ START_DFX="false"
 DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_SNS="false"
+DEPLOY_SNS_WASM_CANISTER=""
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
@@ -131,9 +135,14 @@ while (($# > 0)); do
     GUESS="false"
     DEPLOY_II="true"
     ;;
+  --sns-wasm)
+    GUESS="false"
+    DEPLOY_SNS_WASM_CANISTER="true"
+    ;;
   --sns)
     GUESS="false"
     DEPLOY_SNS="true"
+    DEPLOY_SNS_WASM_CANISTER="${DEPLOY_SNS_WASM_CANISTER:-ifnotinstalled}"
     ;;
   --nns-backend)
     GUESS="false"
@@ -193,15 +202,20 @@ if [[ "$GUESS" == "true" ]]; then
   esac
 fi
 
-echo
-echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
-echo DELETE_WALLET=$DELETE_WALLET
-echo START_DFX=$START_DFX
-echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
-echo DEPLOY_II=$DEPLOY_II
-echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
-echo POPULATE=$POPULATE
-echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
+if [[ "$DRY_RUN" == "true" ]] || [[ "$GUESS" == "true" ]]; then
+  echo
+  echo DELETE_CANISTER_IDS=$DELETE_CANISTER_IDS
+  echo DELETE_WALLET=$DELETE_WALLET
+  echo START_DFX=$START_DFX
+  echo DEPLOY_NNS_BACKEND=$DEPLOY_NNS_BACKEND
+  echo DEPLOY_SNS_WASM_CANISTER="${DEPLOY_SNS_WASM_CANISTER:-}"
+  echo DEPLOY_II=$DEPLOY_II
+  echo DEPLOY_NNS_DAPP=$DEPLOY_NNS_DAPP
+  echo POPULATE=$POPULATE
+  echo DEPLOY_SNS="$DEPLOY_SNS"
+  echo OPEN_NNS_DAPP=$OPEN_NNS_DAPP
+fi
+
 [[ "$DRY_RUN" != "true" ]] || exit 0
 [[ "$GUESS" != "true" ]] || {
   echo
@@ -250,7 +264,8 @@ if [[ "$START_DFX" == "true" ]]; then
   read -rp "Please press enter when done... "
 fi
 
-if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]]; then
+: "Get WASM and did files.  By now it's needed for almost everything except open..."
+if [[ "$DEPLOY_NNS_BACKEND" == "true" ]] || [[ "$DEPLOY_SNS" == "true" ]] || test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   if [[ "$CTL_NOBUILD_NNS" == "true" ]]; then
     echo "Using exising NNS and SNS canisters"
   else
@@ -263,25 +278,22 @@ if [[ "$DEPLOY_NNS_BACKEND" == "true" ]]; then
   ./e2e-tests/scripts/nns-canister-install
 fi
 
-if [[ "$DEPLOY_II" == "true" ]]; then
-  dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
-  echo "Waiting for II to be stable..."
-  sleep 4
-fi
-
 # Note: On mainnet SNS are created much later and have unpredictable canister IDs, however
 # until an index canister exists we need the SNS to exist at a predictable address, so we install it now.
 # Note: There may be multiple SNS canister sets; at present this can be done in a somewhat clunky way by
 # adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
-if [[ "$DEPLOY_SNS" == "true" ]]; then
+if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   # If the wasm canister has not been installed already, install it.
   echo Checking whether sns wasm is installed
   SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
-  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]]; then
+  [[ "${SNS_WASM_CANISTER_ID:-}" == "NOPE" ]] || {
     echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
+  }
+  if [[ "${SNS_WASM_CANISTER_ID:-}" != "NOPE" ]] && [[ "$DEPLOY_SNS_WASM_CANISTER" == "ifnotinstalled" ]]; then
+    echo "Using existing WASM canister..."
   else
-    echo "Creating SNS wasm canister..."
+    echo "Deploying SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
     dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )' --no-wallet
@@ -295,37 +307,12 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
         --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
     done
   fi
-  echo "Checking cycle balance"
-  while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
-    WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
-    echo "Please add 51T cycles to this canister: $WALLET_CANISTER"
-    read -rp "Press enter when done ..."
-    echo
-  done
+fi
 
-  echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
-
-  echo "Populate canister_ids.json"
-  if test -e canister_ids.json; then
-    EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
-    cp canister_ids.json "$EXISTING_CANISTER_IDS"
-  else
-    echo "{}" >canister_ids.json
-  fi
-  sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
-    idl2json |
-    jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
-    jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
-  mv canister_ids.json.new canister_ids.json
-
-  # Note: This must come afetr the canister_ids has been updated.
-  echo "SNS state after creation"
-  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
-  echo "Tell the swap canister to get tokens"
-  dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
-  echo "SNS swap state should now have tokens"
-  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+if [[ "$DEPLOY_II" == "true" ]]; then
+  dfx deploy --network "$DFX_NETWORK" internet_identity --no-wallet
+  echo "Waiting for II to be stable..."
+  sleep 4
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
@@ -361,6 +348,40 @@ if [[ "$POPULATE" == "true" ]]; then
       SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
     popd
   }
+fi
+
+if [[ "$DEPLOY_SNS" == "true" ]]; then
+  echo "Checking cycle balance"
+  while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
+    WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
+    echo "Please add 51T cycles to this canister: $WALLET_CANISTER"
+    read -rp "Press enter when done ..."
+    echo
+  done
+
+  echo "Creating SNS"
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+
+  echo "Populate canister_ids.json"
+  if test -e canister_ids.json; then
+    EXISTING_CANISTER_IDS="canister_ids.$(date -Iseconds)"
+    cp canister_ids.json "$EXISTING_CANISTER_IDS"
+  else
+    echo "{}" >canister_ids.json
+  fi
+  sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
+    idl2json |
+    jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
+    jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
+  mv canister_ids.json.new canister_ids.json
+
+  # Note: This must come afetr the canister_ids has been updated.
+  echo "SNS state after creation"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+  echo "Tell the swap canister to get tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
+  echo "SNS swap state should now have tokens"
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
