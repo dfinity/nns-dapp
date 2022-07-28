@@ -301,6 +301,7 @@ const makeSnsDecentralizationSaleDummyProposalRequest = ({
   url,
   summary,
   neuronId,
+  swapCanisterId,
 }) => ({
   neuronId,
   title,
@@ -308,8 +309,7 @@ const makeSnsDecentralizationSaleDummyProposalRequest = ({
   summary: summary,
   action: {
     SetSnsTokenSwapOpenTimeWindow: {
-      // TODO: update swap canister id
-      swapCanisterId: "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+      swapCanisterId,
       request: {
         openTimeWindow: {
           startTimestampSeconds: BigInt(
@@ -435,18 +435,21 @@ adstas patrios, nescio quam coepit!
 [quicquam paternis]: http://visasit.com/dumque
 [vultu]: http://lentas-petitur.com/`;
 
-export const makeDummyProposals = async ({ neuronId, canister }) => {
+export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId }) => {
   try {
     // Used only on testnet
     // We do one by one, in case one fails, we don't do the others.
-    const request0 = makeSnsDecentralizationSaleDummyProposalRequest({
-      title: "Test sns proposal title",
-      neuronId,
-      url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
-      summary: DEMO_SUMMARY,
-    });
-    console.log("SnsDecentralizationSale Proposal...");
-    await canister.makeProposal(request0);
+    if (swapCanisterId !== undefined) {
+      const request0 = makeSnsDecentralizationSaleDummyProposalRequest({
+        title: "Test sns proposal title",
+        neuronId,
+        url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
+        summary: DEMO_SUMMARY,
+        swapCanisterId,
+      });
+      console.log("SnsDecentralizationSale Proposal...");
+      await canister.makeProposal(request0);
+    }
 
     const request1 = makeMotionDummyProposalRequest({
       title:
