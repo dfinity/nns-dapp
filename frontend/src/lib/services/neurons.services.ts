@@ -1,7 +1,6 @@
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
@@ -32,7 +31,6 @@ import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-import { snsSummariesStore } from "../stores/sns.store";
 import { toastsStore } from "../stores/toasts.store";
 import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
@@ -847,13 +845,15 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
+    const { snsSummariesStore } = await import("../stores/sns.store");
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(
       ({
         swap: {
           state: { lifecycle },
         },
-      }) => lifecycle === SnsSwapLifecycle.Pending
+        // Use 1 instead of using enum to avoid importing sns-js
+      }) => lifecycle === 1
     );
     await makeDummyProposalsApi({
       neuronId,
