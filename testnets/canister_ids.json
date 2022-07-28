@@ -1,0 +1,36 @@
+{
+  "__Candid_UI": {
+    "small06": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small11": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
+  },
+  "internet_identity": {
+    "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "small12": "q4eej-kyaaa-aaaaa-aaaha-cai"
+  },
+  "nns-dapp": {
+    "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small12": "q3fc5-haaaa-aaaaa-aaahq-cai",
+    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
+  },
+  "sns_governance": {
+    "small06": "xpeh5-6iaaa-aaaaa-aaaua-cai"
+  },
+  "sns_ledger": {
+    "small06": "xifbj-tqaaa-aaaaa-aaauq-cai"
+  },
+  "sns_root": {
+    "small06": "wckdt-raaaa-aaaaa-aaatq-cai"
+  },
+  "sns_swap": {
+    "small06": "xbgkv-fyaaa-aaaaa-aaava-cai"
+  },
+  "wasm_canister": {
+    "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai",
+    "small12": "qsgjb-riaaa-aaaaa-aaaga-cai"
+  }
+}
