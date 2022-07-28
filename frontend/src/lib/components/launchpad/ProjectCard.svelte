@@ -44,7 +44,7 @@
     <h3>{title}</h3>
   </div>
 
-  <p>{description}</p>
+  <p class="value">{description}</p>
 
   <ProjectCardSwapInfo {project} bind:myCommitment />
 

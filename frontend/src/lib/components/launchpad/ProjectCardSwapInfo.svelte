@@ -87,11 +87,11 @@
     gap: var(--padding-1_5x);
 
     dt {
-      opacity: var(--light-opacity);
     }
 
     dd {
       text-align: right;
+      color: var(--value-color);
     }
   }
 </style>

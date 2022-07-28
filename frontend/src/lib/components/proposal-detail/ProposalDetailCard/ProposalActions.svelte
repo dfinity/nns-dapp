@@ -49,7 +49,7 @@
 
     :global(dt) {
       font-size: var(--font-size-ultra-small);
-      color: var(--background-contrast);
+      color: var(--label-color);
       line-height: 1;
       margin: 0 0 var(--padding-0_5x);
 
@@ -58,12 +58,10 @@
       }
     }
     :global(dd) {
-      margin: 0 0 var(--padding);
-      &:last-child {
-        margin: 0;
-      }
+      margin: 0 0 var(--padding-2x);
 
       font-size: var(--font-size-ultra-small);
+      color: var(--value-color);
       overflow-wrap: break-word;
       white-space: pre-wrap;
 

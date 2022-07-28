@@ -24,7 +24,7 @@
     <Logo src={summary.logo} alt={$i18n.sns_launchpad.project_logo} />
     <h1>{summary.name}</h1>
   </div>
-  <p>
+  <p class="value">
     {summary.description}
   </p>
   <a href={summary.url} target="_blank">{summary.url}</a>
@@ -33,13 +33,13 @@
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_name}</svelte:fragment
       >
-      <span slot="value">{summary.tokenName}</span>
+      <span class="value" slot="value">{summary.tokenName}</span>
     </KeyValuePair>
     <KeyValuePair>
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
       >
-      <span slot="value">{summary.symbol}</span>
+      <span class="value" slot="value">{summary.symbol}</span>
     </KeyValuePair>
 
     <ProjectSwapDetails />
@@ -59,8 +59,9 @@
     }
   }
   a {
-    // TODO: change <a /> global styling?
-    font-size: 1rem;
+    font-size: inherit;
+
+    color: var(--primary);
   }
 
   .details {

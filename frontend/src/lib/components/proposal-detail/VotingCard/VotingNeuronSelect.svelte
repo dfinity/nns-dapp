@@ -9,6 +9,7 @@
   import { formatVotingPower } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
+  import Value from "../../ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -40,7 +41,7 @@
         selector="neuron-checkbox"
       >
         <span
-          class="neuron-id"
+          class="neuron-id value"
           aria-label={replacePlaceholders(
             $i18n.proposal_detail__vote.cast_vote_neuronId,
             {
@@ -49,7 +50,7 @@
           )}>{`${neuron.neuronId}`}</span
         >
         <span
-          class="neuron-voting-power"
+          class="neuron-voting-power value"
           aria-label={replacePlaceholders(
             $i18n.proposal_detail__vote.cast_vote_votingPower,
             {
@@ -69,7 +70,7 @@
 
 <p class="total">
   <span>{$i18n.proposal_detail__vote.total}</span>
-  {formatVotingPower(total === undefined ? 0n : total)}
+  <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
 </p>
 
 <style lang="scss">

@@ -55,7 +55,7 @@ describe("NewTransactionInfo", () => {
     const { getByText } = render(NewTransactionTest, { props });
 
     expect(getByText(en.accounts.transaction_fee)).toBeTruthy();
-    expect(getByText("0.0001 ICP", { exact: false })).toBeInTheDocument();
+    expect(getByText("0.0001", { exact: false })).toBeInTheDocument();
   });
 
   it("should render hardware wallet information", () => {

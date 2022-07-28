@@ -63,10 +63,15 @@
   }
 
   li {
-    margin-top: var(--padding);
+    padding: var(--padding-2x) 0;
 
     display: grid;
     grid-template-columns: 80% auto;
     grid-column-gap: var(--padding);
+
+    border-top: 1px solid currentColor;
+    &:first-child {
+      border-top: none;
+    }
   }
 </style>

@@ -20,7 +20,7 @@
   } from "../../types/project-detail.context";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { convertNumberToICP } from "../../utils/icp.utils";
-  import { nonNullish } from "../../utils/utils";
+  import { nonNullish, valueSpan } from "../../utils/utils";
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -82,8 +82,8 @@
     </KeyValuePair>
     <div>
       <p>
-        {replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: account.identifier,
+        {@html replacePlaceholders($i18n.accounts.main_account, {
+          $identifier: valueSpan(account.identifier),
         })}
       </p>
     </div>
@@ -103,7 +103,7 @@
       <h5>{$i18n.accounts.destination}</h5>
       <p>{$store.summary?.name}</p>
       {#if destinationAddress !== undefined}
-        <p>{destinationAddress.toHex()}</p>
+        <p class="value">{destinationAddress.toHex()}</p>
       {/if}
     </div>
     <div>
@@ -114,7 +114,9 @@
   <div class="actions">
     <div class="warning">
       <span class="icon"><IconWarning size="48px" /></span>
-      <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
+      <span class="description"
+        >{$i18n.sns_project_detail.participate_swap_warning}</span
+      >
     </div>
     <Checkbox
       text="block"

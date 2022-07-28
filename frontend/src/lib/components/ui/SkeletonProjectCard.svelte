@@ -9,7 +9,7 @@
     <SkeletonLogo />
     <SkeletonParagraph />
   </div>
-  <div class="description">
+  <div class="desc">
     <SkeletonParagraph />
     <SkeletonParagraph />
   </div>
@@ -34,7 +34,7 @@
     }
   }
 
-  .description {
+  .desc {
     margin-bottom: var(--padding-1_5x);
 
     display: flex;

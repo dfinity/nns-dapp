@@ -65,7 +65,9 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--card-background-contrast);
+    background: var(--primary);
+    border: 2px solid var(--primary-contrast);
+    box-shadow: var(--interaction-box-shadow);
     @include interaction.tappable;
     appearance: none;
   }
@@ -74,7 +76,9 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--card-background-contrast);
+    background: var(--primary);
+    border: 2px solid var(--primary-contrast);
+    box-shadow: var(--interaction-box-shadow);
     @include interaction.tappable;
   }
 
@@ -82,7 +86,9 @@
     height: var(--icon-width);
     width: var(--icon-width);
     border-radius: 50%;
-    background: var(--card-background-contrast);
+    background: var(--primary);
+    border: 2px solid var(--primary-contrast);
+    box-shadow: var(--interaction-box-shadow);
     @include interaction.tappable;
   }
 

@@ -121,6 +121,7 @@
 
       button.close {
         color: var(--warning-emphasis-contrast);
+        box-shadow: none;
       }
     }
   }
@@ -139,5 +140,7 @@
     border: 1px solid;
     border-radius: var(--border-radius);
     font-size: var(--font-size-h5);
+    line-height: var(--line-height-title);
+    color: var(--positive-emphasis-contrast);
   }
 </style>
