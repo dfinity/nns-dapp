@@ -1,10 +1,34 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
+  import { onMount } from "svelte";
+  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
+  import Value from "../components/ui/Value.svelte";
+  import { authStore } from "../stores/auth.store";
+  import { sortedSnsNeuronStore } from "../stores/snsNeurons.store";
+  import { i18n } from "../stores/i18n";
 
-  export let rootCanisterId: Principal;
+  let principalText: string = "";
+  $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
+
+  let loading = true;
+  onMount(() => {
+    setTimeout(() => {
+      loading = false;
+    }, 3000);
+  });
 </script>
 
-<!-- TODO: https://dfinity.atlassian.net/browse/L2-867 -->
-<div data-tid="sns-neurons-body">
-  {`SNS Neurons Page for ${rootCanisterId.toText()}`}
-</div>
+<section data-tid="sns-neurons-body">
+  <p class="description">
+    {$i18n.neurons.principal_is}
+    <Value>{principalText}</Value>
+  </p>
+
+  {#if loading}
+    <SkeletonCard />
+    <SkeletonCard />
+  {:else}
+    {#each $sortedSnsNeuronStore as neuron}
+      <div>{neuron.id.join("")}</div>
+    {/each}
+  {/if}
+</section>
