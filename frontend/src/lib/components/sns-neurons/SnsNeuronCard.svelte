@@ -3,10 +3,16 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import type { CardType } from "../../types/card";
   import type { StateInfo } from "../../utils/neuron.utils";
-  import { getSnsStateInfo } from "../../utils/sns-neuron.utils";
+  import {
+    getSnsDissolvingTimeInSeconds,
+    getSnsLockedTimeInSeconds,
+    getSnsNeuronState,
+    getSnsStateInfo,
+  } from "../../utils/sns-neuron.utils";
   import IcpComponent from "../ic/ICP.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
+  import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link";
@@ -22,13 +28,15 @@
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getSnsStateInfo(neuron);
 
-  $: {
-    console.log("in da snsneuroncard", stateInfo);
-  }
+  let dissolvingTime: bigint | undefined;
+  $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
+
+  let lockedTime: bigint | undefined;
+  $: lockedTime = getSnsLockedTimeInSeconds(neuron);
 </script>
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <div slot="start" class="lock" data-tid="sns-neuron-card-title">
+  <div slot="start" data-tid="sns-neuron-card-title">
     <h3 data-tid="neuron-id">{neuronId}</h3>
   </div>
 
@@ -37,4 +45,25 @@
   </div>
 
   <NeuronStateInfo {stateInfo} />
+
+  <NeuronStateRemainingTime
+    state={getSnsNeuronState(neuron)}
+    timeInSeconds={dissolvingTime ?? lockedTime}
+  />
 </NeuronCardContainer>
+
+<style lang="scss">
+  @use "../../themes/mixins/media";
+
+  .currency {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    margin-bottom: var(--padding);
+
+    @include media.min-width(medium) {
+      margin-bottom: 0;
+    }
+  }
+</style>

@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { NeuronState, ICP } from "@dfinity/nns";
+  import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
@@ -14,14 +13,12 @@
   } from "../../utils/neuron.utils";
   import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
-  import { valueSpan } from "../../utils/utils";
-  import Value from "../ui/Value.svelte";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
+  import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -30,6 +27,7 @@
   export let ariaLabel: string | undefined = undefined;
   export let selected: boolean = false;
   export let disabled: boolean = false;
+  export let cardType: CardType = "card";
 
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getStateInfo(neuron.state);
@@ -47,12 +45,6 @@
 
   let spawningTime: bigint | undefined;
   $: spawningTime = getSpawningTimeInSeconds(neuron);
-
-  export let cardType: CardType = "card";
-
-  let iconStyle: string;
-  $: iconStyle =
-    stateInfo?.color !== undefined ? `color: ${stateInfo.color};` : "";
 </script>
 
 <NeuronCardContainer
@@ -90,28 +82,12 @@
 
   <NeuronStateInfo {stateInfo} />
 
-  {#if dissolvingTime !== undefined}
-    <p class="duration">
-      {@html replacePlaceholders($i18n.neurons.remaining, {
-        $duration: valueSpan(secondsToDuration(dissolvingTime)),
-      })}
-    </p>
-  {/if}
-
-  {#if spawningTime !== undefined}
-    <p class="duration">
-      {@html replacePlaceholders($i18n.neurons.remaining, {
-        $duration: valueSpan(secondsToDuration(spawningTime)),
-      })}
-    </p>
-  {/if}
-
-  {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
-    <p class="duration">
-      <Value>{secondsToDuration(neuron.dissolveDelaySeconds)}</Value>
-      - {$i18n.neurons.dissolve_delay_title}
-    </p>
-  {/if}
+  <NeuronStateRemainingTime
+    state={neuron.state}
+    timeInSeconds={dissolvingTime ??
+      spawningTime ??
+      neuron.dissolveDelaySeconds}
+  />
 
   <slot />
 </NeuronCardContainer>
@@ -136,9 +112,5 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-  }
-
-  .duration {
-    margin: 0;
   }
 </style>
