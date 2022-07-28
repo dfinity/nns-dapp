@@ -21,6 +21,7 @@
   import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
   import { valueSpan } from "../../utils/utils";
   import Value from "../ui/Value.svelte";
+  import NeuronStateInfo from "./NeuronStateInfo.svelte";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron: boolean = false;
@@ -30,7 +31,6 @@
   export let selected: boolean = false;
   export let disabled: boolean = false;
 
-  // TODO: https://dfinity.atlassian.net/browse/L2-366
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
@@ -88,14 +88,7 @@
     {/if}
   </div>
 
-  {#if stateInfo !== undefined}
-    <div class="info">
-      <p style={iconStyle} class="status">
-        {$i18n.neurons[`status_${stateInfo.textKey}`]}
-        <svelte:component this={stateInfo.Icon} />
-      </p>
-    </div>
-  {/if}
+  <NeuronStateInfo {stateInfo} />
 
   {#if dissolvingTime !== undefined}
     <p class="duration">
@@ -124,7 +117,6 @@
 </NeuronCardContainer>
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
   @use "../../themes/mixins/card";
 
   :global(div.modal article > div) {
@@ -140,30 +132,10 @@
     @include card.stacked-title;
   }
 
-  .status {
-    display: inline-flex;
-    color: var(--value-color);
-
-    :global {
-      svg {
-        margin-left: var(--padding-0_5x);
-      }
-    }
-  }
-
   .currency {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-  }
-
-  .info {
-    @include display.space-between;
-    align-items: center;
-
-    p {
-      margin: 0;
-    }
   }
 
   .duration {

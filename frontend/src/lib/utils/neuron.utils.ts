@@ -55,7 +55,7 @@ export type StateInfo = {
 type StateMapper = {
   [key: number]: StateInfo;
 };
-const stateTextMapper: StateMapper = {
+export const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,

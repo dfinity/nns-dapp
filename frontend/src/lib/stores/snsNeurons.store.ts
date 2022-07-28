@@ -1,6 +1,6 @@
-import { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
-import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neurons.utils";
+import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
 
 export interface NeuronsStore {
   neurons?: SnsNeuron[];
