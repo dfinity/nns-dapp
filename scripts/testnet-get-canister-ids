@@ -34,6 +34,7 @@ while (($# > 0)); do
     ;;
   *)
     printf "ERROR: %s\n" "Unsupported argument: '$arg'"
+    exit 1
     ;;
   esac
 done
