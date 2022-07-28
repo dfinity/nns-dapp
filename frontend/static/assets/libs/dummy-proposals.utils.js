@@ -312,9 +312,11 @@ const makeSnsDecentralizationSaleDummyProposalRequest = ({
       swapCanisterId,
       request: {
         openTimeWindow: {
+          // Start time 10 minutes from now
           startTimestampSeconds: BigInt(
-            Math.round((Date.now() + 1000 * 60) / 1000)
+            Math.round((Date.now() + 1000 * 60 * 10) / 1000)
           ),
+          // End time 5 days from now
           endTimestampSeconds: BigInt(
             Math.round((Date.now() + MS_IN_A_DAY + MS_IN_A_DAY * 5) / 1000)
           ),
