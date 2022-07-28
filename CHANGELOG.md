@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXXXX
+* New Maturity formatting.
+
 ## Proposal 71474
 * Fix: Update the proposal schema to match the governance canister
 
