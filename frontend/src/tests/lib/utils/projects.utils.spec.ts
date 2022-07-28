@@ -1,5 +1,4 @@
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import type { TimeWindow } from "@dfinity/sns/dist/candid/sns_swap";
+import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
 import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   durationTillSwapDeadline,
@@ -129,7 +128,7 @@ describe("project-utils", () => {
 
     it("should return duration until swap deadline", () =>
       expect(durationTillSwapDeadline(mockSwap)).toEqual(
-        (mockSwap.state.open_time_window[0] as TimeWindow)
+        (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
           .end_timestamp_seconds - BigInt(nowInSeconds())
       ));
 
@@ -146,9 +145,9 @@ describe("project-utils", () => {
 
     it("should return swap duration", () =>
       expect(swapDuration(mockSwap)).toEqual(
-        (mockSwap.state.open_time_window[0] as TimeWindow)
+        (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
           .end_timestamp_seconds -
-          (mockSwap.state.open_time_window[0] as TimeWindow)
+          (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
             .start_timestamp_seconds
       ));
 
@@ -166,7 +165,7 @@ describe("project-utils", () => {
     it("should return duration till swap", () =>
       expect(durationTillSwapStart(mockSwap)).toEqual(
         BigInt(nowInSeconds()) -
-          (mockSwap.state.open_time_window[0] as TimeWindow)
+          (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
             .start_timestamp_seconds
       ));
   });
