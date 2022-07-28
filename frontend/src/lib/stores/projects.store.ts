@@ -1,4 +1,3 @@
-import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -7,23 +6,9 @@ import {
   filterActiveProjects,
   filterCommittedProjects,
 } from "../utils/projects.utils";
-import { isNullish } from "../utils/utils";
+import { snsSummariesStore, snsSwapCommitmentsStore } from "./sns.store";
 
-export type SnsSummariesStore =
-  | {
-      summaries: SnsSummary[];
-      certified: boolean;
-    }
-  | undefined
-  | null;
-
-export type SnsSwapCommitmentsStore =
-  | {
-      swapCommitment: SnsSwapCommitment;
-      certified: boolean;
-    }[]
-  | undefined
-  | null;
+// ************** Sns full project - all information **************
 
 export interface SnsFullProject {
   rootCanisterId: Principal;
@@ -31,158 +16,29 @@ export interface SnsFullProject {
   swapCommitment: SnsSwapCommitment | undefined;
 }
 
-export type SnsFullProjectsStore = SnsFullProject[] | undefined;
-
-export type SnsProposalsStore =
-  | {
-      proposals: ProposalInfo[];
-      certified: boolean;
-    }
-  | undefined
-  | null;
-
-const initSnsProposalsStore = () => {
-  const { subscribe, set } = writable<SnsProposalsStore>(undefined);
-
-  return {
-    subscribe,
-
-    reset() {
-      set(undefined);
-    },
-
-    setLoadingState() {
-      set(null);
-    },
-
-    setProposals({
-      proposals,
-      certified,
-    }: {
-      proposals: ProposalInfo[];
-      certified: boolean;
-    }) {
-      set({
-        proposals,
-        certified,
-      });
-    },
-  };
-};
-
-const initOpenSnsProposalsStore = () =>
-  derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
-    isNullish($snsProposalsStore)
-      ? []
-      : $snsProposalsStore.proposals.filter(
-          ({ status }) => status === ProposalStatus.PROPOSAL_STATUS_OPEN
-        )
-  );
-
-const initSnsSummariesStore = () => {
-  const { subscribe, set } = writable<SnsSummariesStore>(undefined);
-
-  return {
-    subscribe,
-
-    reset() {
-      set(undefined);
-    },
-
-    setLoadingState() {
-      set(null);
-    },
-
-    setSummaries({
-      summaries,
-      certified,
-    }: {
-      summaries: SnsSummary[];
-      certified: boolean;
-    }) {
-      set({ summaries: [...summaries], certified });
-    },
-  };
-};
-
-const initSnsSwapCommitmentsStore = () => {
-  const { subscribe, update, set } =
-    writable<SnsSwapCommitmentsStore>(undefined);
-
-  return {
-    subscribe,
-
-    setSwapCommitment({
-      swapCommitment,
-      certified,
-    }: {
-      swapCommitment: SnsSwapCommitment;
-      certified: boolean;
-    }) {
-      update((items) => [
-        ...(items ?? []).filter(
-          ({ swapCommitment: { rootCanisterId } }) =>
-            rootCanisterId.toText() !== swapCommitment.rootCanisterId.toText()
-        ),
-        {
-          swapCommitment,
-          certified,
-        },
-      ]);
-    },
-
-    reset() {
-      set(undefined);
-    },
-
-    setLoadingState() {
-      set(null);
-    },
-  };
-};
-
-const initSnsProjectSelectedStore = () => {
-  const { subscribe, set } = writable<Principal>(OWN_CANISTER_ID);
-
-  return {
-    subscribe,
-    set,
-  };
-};
-
-// used to improve loading state display only
-export const snsesCountStore = writable<number | undefined>(undefined);
-
-export const snsProposalsStore = initSnsProposalsStore();
-export const openSnsProposalsStore = initOpenSnsProposalsStore();
-
-export const snsSummariesStore = initSnsSummariesStore();
-export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
-export const snsProjectSelectedStore = initSnsProjectSelectedStore();
-
 /**
- * Filter snsSummariesStore entries with projects that are open (for swap) only.
- * Additionally, contains SwapCommitment for every summary (when loaded).
+ * Derive Sns stores.
+ * Match summary and swap information with user commitments for particular Sns.
+ *
+ * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
 const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
   [snsSummariesStore, snsSwapCommitmentsStore],
-  ([$snsSummariesStore, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
-    $snsSummariesStore === undefined
-      ? undefined
-      : $snsSummariesStore?.summaries.map((summary) => {
-          const { rootCanisterId } = summary;
-          const summaryPrincipalAsText = rootCanisterId.toText();
-          const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
-            ({ swapCommitment: { rootCanisterId } }) =>
-              rootCanisterId.toText() === summaryPrincipalAsText
-          );
+  ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
+    summaries?.map((summary) => {
+      const { rootCanisterId } = summary;
+      const summaryPrincipalAsText = rootCanisterId.toText();
+      const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
+        ({ swapCommitment: { rootCanisterId } }) =>
+          rootCanisterId.toText() === summaryPrincipalAsText
+      );
 
-          return {
-            rootCanisterId,
-            summary,
-            swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
-          };
-        })
+      return {
+        rootCanisterId,
+        summary,
+        swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
+      };
+    })
 );
 
 export const activePadProjectsStore = derived(
@@ -195,6 +51,25 @@ export const committedProjectsStore = derived(
   (projects: SnsFullProject[] | undefined) => filterCommittedProjects(projects)
 );
 
+// ************** Selected project **************
+
+const initSnsProjectSelectedStore = () => {
+  const { subscribe, set } = writable<Principal>(OWN_CANISTER_ID);
+
+  return {
+    subscribe,
+    set,
+  };
+};
+
+/**
+ * In Neurons or ultimately in Voting screen, user can select the "universe" - e.g. display Neurons of Nns or a particular Sns
+ */
+export const snsProjectSelectedStore = initSnsProjectSelectedStore();
+
+/***
+ * Is the selected project (universe) Nns?
+ */
 export const isNnsProjectStore = derived(
   snsProjectSelectedStore,
   ($snsProjectSelectedStore: Principal) =>

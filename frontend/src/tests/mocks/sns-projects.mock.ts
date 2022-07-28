@@ -18,7 +18,7 @@ export const mockProjectSubscribe =
     return () => undefined;
   };
 
-const principal = (index: number): Principal =>
+export const principal = (index: number): Principal =>
   [
     Principal.fromText(
       "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe"

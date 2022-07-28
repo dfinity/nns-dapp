@@ -10,7 +10,7 @@ import {
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
 } from "../proxy/api.import.proxy";
-import { snsesCountStore } from "../stores/projects.store";
+import { snsesCountStore } from "../stores/sns.store";
 import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSwapCommitment } from "../types/sns";
 import type {

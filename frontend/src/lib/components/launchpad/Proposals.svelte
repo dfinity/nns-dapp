@@ -5,7 +5,7 @@
   import {
     openSnsProposalsStore,
     snsProposalsStore,
-  } from "../../stores/projects.store";
+  } from "../../stores/sns.store";
   import { isNullish } from "../../utils/utils";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
