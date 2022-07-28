@@ -1,4 +1,9 @@
-import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import {
+  ICP,
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
@@ -12,17 +17,18 @@ import {
 import { AppPath } from "../constants/routes.constants";
 import {
   snsProposalsStore,
-  snsSummariesStore,
+  snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../stores/projects.store";
+} from "../stores/sns.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { concatSnsSummaries } from "../utils/sns.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
+import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -31,7 +37,7 @@ import {
 } from "./utils.services";
 
 export const loadSnsSummaries = (): Promise<void> => {
-  snsSummariesStore.setLoadingState();
+  snsQueryStore.setLoadingState();
 
   return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
     request: ({ certified, identity }) =>
@@ -40,10 +46,7 @@ export const loadSnsSummaries = (): Promise<void> => {
         querySnsSwapStates({ certified, identity }),
       ]),
     onLoad: ({ response, certified }) =>
-      snsSummariesStore.setSummaries({
-        summaries: concatSnsSummaries(response),
-        certified,
-      }),
+      snsQueryStore.setResponse({ response, certified }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -52,7 +55,7 @@ export const loadSnsSummaries = (): Promise<void> => {
       }
 
       // hide unproven data
-      snsSummariesStore.setLoadingState();
+      snsQueryStore.setLoadingState();
 
       toastsStore.error(
         toToastError({
@@ -227,6 +230,16 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
   return getLastPathDetail(path);
 };
 
+export const getSwapAccount = async (
+  swapCanisterId: Principal
+): Promise<AccountIdentifier> => {
+  const identity = await getIdentity();
+  return getSwapCanisterAccount({
+    controller: identity.getPrincipal(),
+    swapCanisterId,
+  });
+};
+
 export const participateInSwap = async ({
   amount,
   rootCanisterId,
@@ -250,7 +263,13 @@ export const participateInSwap = async ({
     await loadSnsSwapCommitment({
       strategy: "update",
       rootCanisterId: rootCanisterId.toText(),
-      onLoad: ({ response: swapCommitment }) => onSuccess?.(swapCommitment),
+      onLoad: ({ response: swapCommitment, certified }) => {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
+          certified,
+        });
+        onSuccess?.(swapCommitment);
+      },
       onError: () => {
         // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
       },

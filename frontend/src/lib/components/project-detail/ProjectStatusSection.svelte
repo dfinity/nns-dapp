@@ -1,11 +1,10 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import type { SnsSwapCommitment } from "../../types/sns";
+  import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import Spinner from "../ui/Spinner.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectTimeline from "./ProjectTimeline.svelte";
@@ -14,6 +13,8 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
+  import { isNullish } from "../../utils/utils";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -25,19 +26,39 @@
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
     swapCommitment?.myCommitment !== undefined
-      ? ICP.fromE8s(swapCommitment.myCommitment)
+      ? ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s)
       : undefined;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
+
+  let loadingSummary: boolean;
+  $: loadingSummary = isNullish($projectDetailStore.summary);
+  let loadingSwapState: boolean;
+  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
+
+  let lifecycle: number;
+  $: ({
+    swap: {
+      state: { lifecycle },
+    },
+  } =
+    $projectDetailStore.summary ??
+    ({
+      swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
+    } as unknown as SnsSummary));
+
+  let displayStatus: boolean = false;
+  $: displayStatus =
+    !loadingSummary &&
+    !loadingSwapState &&
+    [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
 </script>
 
-{#if swapCommitment === undefined}
-  <div class="wrapper">
-    <Spinner inline />
-  </div>
-{:else}
+<!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
+
+{#if displayStatus}
   <div class="wrapper" data-tid="sns-project-detail-status">
     <ProjectStatus />
 
@@ -59,12 +80,15 @@
           </KeyValuePair>
         </div>
       {/if}
-      <button
-        on:click={openModal}
-        class="primary small"
-        data-tid="sns-project-participate-button"
-        >{$i18n.sns_project_detail.participate}</button
-      >
+
+      {#if lifecycle === SnsSwapLifecycle.Open}
+        <button
+          on:click={openModal}
+          class="primary small"
+          data-tid="sns-project-participate-button"
+          >{$i18n.sns_project_detail.participate}</button
+        >
+      {/if}
     </div>
   </div>
 {/if}

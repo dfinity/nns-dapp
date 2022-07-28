@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import ProjectCardSwapInfo from "../../../../lib/components/launchpad/ProjectCardSwapInfo.svelte";
 import { secondsToDuration } from "../../../../lib/utils/date.utils";
@@ -13,6 +14,8 @@ import {
   mockSwap,
   mockSwapState,
   mockSwapTimeWindow,
+  mockSwapTimeWindowText,
+  summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 
 jest.mock("../../../../lib/services/sns.services", () => {
@@ -66,7 +69,7 @@ describe("ProjectCardSwapInfo", () => {
     const call = () => getByText(secondsToDuration(durationTillDeadline));
     expect(call).toThrow();
 
-    const call2 = () => getByText(en.sns_project.deadline);
+    const call2 = () => getByText(en.sns_project_detail.deadline);
     expect(call2).toThrow();
   });
 
@@ -78,9 +81,42 @@ describe("ProjectCardSwapInfo", () => {
     });
 
     const icpValue = formatICP({
-      value: mockSnsFullProject.swapCommitment?.myCommitment as bigint,
+      value: mockSnsFullProject.swapCommitment?.myCommitment
+        ?.amount_icp_e8s as bigint,
     });
 
     expect(getByText(icpValue, { exact: false })).toBeInTheDocument();
+  });
+
+  it("should render sale start", () => {
+    const { container } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
+        },
+      },
+    });
+
+    const element = container.querySelector(
+      '[data-tid="date-seconds"]'
+    ) as HTMLElement;
+
+    expect(element.innerHTML).toEqual(
+      mockSwapTimeWindowText.start_timestamp_seconds
+    );
+  });
+
+  it("should render completed", () => {
+    const { getByText } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+        },
+      },
+    });
+
+    expect(getByText(en.sns_project_detail.completed)).toBeInTheDocument();
   });
 });

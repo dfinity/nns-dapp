@@ -1,17 +1,19 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import {
-    activePadProjectsStore,
-    type SnsFullProject,
-    snsesCountStore,
-    snsSummariesStore,
-    snsSwapCommitmentsStore,
-  } from "../../stores/projects.store";
   import ProjectCard from "./ProjectCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
+  import {
+    snsesCountStore,
+    snsSummariesStore,
+    snsSwapCommitmentsStore,
+  } from "../../stores/sns.store";
+  import {
+    activePadProjectsStore,
+    type SnsFullProject,
+  } from "../../stores/projects.store";
 
   let projects: SnsFullProject[] | undefined;
   $: projects = $activePadProjectsStore;

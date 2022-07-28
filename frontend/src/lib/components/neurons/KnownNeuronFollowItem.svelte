@@ -27,7 +27,7 @@
 </script>
 
 <div data-tid={`known-neuron-item-${knownNeuron.id}`}>
-  <p>{knownNeuron.name}</p>
+  <p class="value">{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
   <button
     class="primary small"

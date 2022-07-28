@@ -12,6 +12,7 @@
   import InputRange from "../ui/InputRange.svelte";
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
   export let percentage: number;
@@ -30,13 +31,13 @@
 <div class="wrapper" data-tid="spawn-maturity-neuron-modal">
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
-    <p>
+    <p class="value">
       {formattedMaturityByStake(neuron)}
     </p>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
-      {replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: formatICP({ value: neuronICP, detailed: true }),
+      {@html replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
       })}
     </p>
   </div>

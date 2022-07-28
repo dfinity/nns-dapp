@@ -12,6 +12,7 @@
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
 
@@ -73,7 +74,9 @@
     >
       <svelte:fragment slot="text">
         <h5>{$i18n.neuron_detail.merge_maturity_modal_title}</h5>
-        <p>{$i18n.neuron_detail.merge_maturity_modal_description}</p>
+        <p class="description">
+          {$i18n.neuron_detail.merge_maturity_modal_description}
+        </p>
       </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmMerge"}
@@ -84,13 +87,15 @@
       <div class="confirm" slot="main-info">
         <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
         <p class="confirm-answer">
-          {replacePlaceholders(
+          {@html replacePlaceholders(
             $i18n.neuron_detail.merge_maturity_confirmation_a,
             {
-              $percentage: formatPercentage(percentageToMerge / 100, {
-                minFraction: 0,
-                maxFraction: 0,
-              }),
+              $percentage: valueSpan(
+                formatPercentage(percentageToMerge / 100, {
+                  minFraction: 0,
+                  maxFraction: 0,
+                })
+              ),
             }
           )}
         </p>

@@ -23,6 +23,7 @@
     isNeuronControllableByUser,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
+  import Value from "../ui/Value.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -48,15 +49,15 @@
   <section>
     <div>
       <p>
-        {secondsToDate(Number(neuron.createdTimestampSeconds))} - {$i18n.neurons
-          .staked}
+        <Value>{secondsToDate(Number(neuron.createdTimestampSeconds))}</Value>
+        - {$i18n.neurons.staked}
       </p>
     </div>
     <p class="voting-power">
       {#if neuron.votingPower}
         {`${$i18n.neurons.voting_power}:`}
         <span class="amount">
-          {formatVotingPower(neuron.votingPower)}
+          <Value>{formatVotingPower(neuron.votingPower)}</Value>
         </span>
         {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
           <Tooltip

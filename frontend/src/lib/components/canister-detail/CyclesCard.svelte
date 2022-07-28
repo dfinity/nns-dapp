@@ -8,7 +8,7 @@
 
 <CardInfo testId="canister-cycles-card">
   <p aria-label={$i18n.canister_detail.cycles}>
-    <span class="cycles">{formatCyclesToTCycles(cycles)}</span>
+    <span class="cycles value">{formatCyclesToTCycles(cycles)}</span>
     <span>{$i18n.canister_detail.t_cycles}</span>
   </p>
 </CardInfo>

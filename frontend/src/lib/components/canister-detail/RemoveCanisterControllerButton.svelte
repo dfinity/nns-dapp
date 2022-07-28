@@ -65,18 +65,20 @@
     <div data-tid="remove-canister-controller-confirmation-modal">
       <h4>{$i18n.canister_detail.confirm_remove_controller_title}</h4>
       {#if userController}
-        <p>
+        <p class="description">
           {$i18n.canister_detail.confirm_remove_controller_user_description_1}
         </p>
-        <p>
+        <p class="description">
           {$i18n.canister_detail.confirm_remove_controller_user_description_2}
         </p>
       {:else}
-        <p>{$i18n.canister_detail.confirm_remove_controller_description}</p>
-        <p>{controller}</p>
+        <p class="description">
+          {$i18n.canister_detail.confirm_remove_controller_description}
+        </p>
+        <p class="value">{controller}</p>
       {/if}
       {#if lastController}
-        <p>
+        <p class="description">
           {$i18n.canister_detail.confirm_remove_last_controller_description}
         </p>
       {/if}

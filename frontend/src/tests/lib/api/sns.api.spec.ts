@@ -10,6 +10,7 @@ import { get } from "svelte/store";
 import {
   participateInSnsSwap,
   querySnsSummaries,
+  querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
 } from "../../../lib/api/sns.api";
@@ -17,9 +18,13 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
-import { snsesCountStore } from "../../../lib/stores/projects.store";
+import { snsesCountStore } from "../../../lib/stores/sns.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockSwapInit, mockSwapState } from "../../mocks/sns-projects.mock";
+import {
+  createBuyersState,
+  mockSwapInit,
+  mockSwapState,
+} from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -43,9 +48,17 @@ describe("sns-api", () => {
         state: [mockSwapState],
       },
     ],
+    derived: [
+      {
+        sns_tokens_per_icp: 1,
+        buyer_total_icp_e8s: BigInt(1_000_000_000),
+      },
+    ],
   };
 
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
+  const mockUserCommitment = createBuyersState(BigInt(100_000_000));
+  const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
 
   beforeEach(() => {
@@ -71,6 +84,7 @@ describe("sns-api", () => {
         metadata: () => Promise.resolve("metadata"),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
+        getUserCommitment: getUserCommitmentSpy,
       })
     );
   });
@@ -121,6 +135,20 @@ describe("sns-api", () => {
 
     expect(states.length).toEqual(1);
     expect(states[0]?.swap).toEqual(mockQuerySwap.swap);
+  });
+
+  it("should return swap commitment", async () => {
+    const commitment = await querySnsSwapCommitment({
+      rootCanisterId: rootCanisterIdMock.toText(),
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(getUserCommitmentSpy).toBeCalled();
+    expect(commitment).toEqual({
+      rootCanisterId: rootCanisterIdMock,
+      myCommitment: mockUserCommitment,
+      currentCommitment: mockQuerySwap.derived[0].buyer_total_icp_e8s,
+    });
   });
 
   it("should participate in a swap by transferring and notifying", async () => {

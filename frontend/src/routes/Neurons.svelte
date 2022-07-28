@@ -31,7 +31,7 @@
     justify-content: center;
     align-items: center;
 
-    margin-top: var(--padding-2x);
+    margin-top: var(--padding-4x);
 
     .fit-content {
       width: fit-content;

@@ -11,6 +11,7 @@
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import Value from "../ui/Value.svelte";
 
   export let account: Account;
   let amount: number;
@@ -61,12 +62,12 @@
 
   <div>
     <h5>{$i18n.neurons.source}</h5>
-    <small class="identifier">{account.identifier}</small>
+    <small class="identifier value">{account.identifier}</small>
   </div>
   <div class="transaction-fee">
     <h5>{$i18n.neurons.transaction_fee}</h5>
     <small>
-      <span>{formattedTransactionFeeICP($mainTransactionFeeStore)}</span>
+      <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
       <span>ICP</span>
     </small>
   </div>

@@ -174,6 +174,8 @@
   .key {
     display: inline-block;
     position: relative;
+
+    color: var(--label-color);
   }
   .key-value {
     // word-wrap long values in it's column
