@@ -1,9 +1,9 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
-  concatSnsSummaries,
   concatSnsSummary,
   getSwapCanisterAccount,
+  mapAndSortSnsQueryToSummaries,
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
@@ -18,19 +18,19 @@ import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 describe("sns-utils", () => {
   describe("concat sns summaries", () => {
     it("should return empty for undefined summary", () => {
-      const summaries = concatSnsSummaries([[], []]);
+      const summaries = mapAndSortSnsQueryToSummaries([[], []]);
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should return empty for undefined swap query", () => {
-      const summaries = concatSnsSummaries([[mockSummary], []]);
+      const summaries = mapAndSortSnsQueryToSummaries([[mockSummary], []]);
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should return empty for undefined swap init", () => {
-      const summaries = concatSnsSummaries([
+      const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary],
         [
           {
@@ -50,7 +50,7 @@ describe("sns-utils", () => {
     });
 
     it("should return empty for undefined swap state", () => {
-      const summaries = concatSnsSummaries([
+      const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary],
         [
           {
@@ -70,7 +70,7 @@ describe("sns-utils", () => {
     });
 
     it("should return empty if no root id are matching between summaries and swaps", () => {
-      const summaries = concatSnsSummaries([
+      const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary],
         [
           {
@@ -90,7 +90,7 @@ describe("sns-utils", () => {
     });
 
     it("should concat summaries and swaps", () => {
-      const summaries = concatSnsSummaries([
+      const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary],
         [
           {
@@ -112,7 +112,7 @@ describe("sns-utils", () => {
 
   describe("sort sns summaries", () => {
     it("should sort summaries and swaps", () => {
-      const summaries = concatSnsSummaries([
+      const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary, mockSnsSummaryList[1]],
         [
           {

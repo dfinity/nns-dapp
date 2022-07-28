@@ -42,7 +42,7 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
  * 2. Filter those Sns without Swaps data
  * 3. Sort according swap start date
  */
-export const concatSnsSummaries = ([summaries, swaps]: [
+export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
   QuerySnsSummary[],
   QuerySnsSwapState[]
 ]): SnsSummary[] => {
