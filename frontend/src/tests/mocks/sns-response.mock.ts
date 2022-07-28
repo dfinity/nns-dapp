@@ -8,7 +8,7 @@ import {
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
-import {swapCanisterIdMock} from './sns.api.mock';
+import { swapCanisterIdMock } from "./sns.api.mock";
 
 export const snsResponsesForLifecycle = ({
   certified = false,
