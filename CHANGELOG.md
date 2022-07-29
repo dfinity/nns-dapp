@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 72733
 * Update on maturity text info.
 * Upgrade sns-js
 
