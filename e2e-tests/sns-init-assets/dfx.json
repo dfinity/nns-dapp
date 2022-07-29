@@ -1,16 +1,87 @@
 {
+  "canisters": {
+    "sns-wasm": {
+      "remote": {
+        "candid": "sns-wasm.did",
+        "id": {
+          "small12": "q3fc5-haaaa-aaaaa-aaahq-cai",
+          "nnsdapp": "qsgjb-riaaa-aaaaa-aaaga-cai"
+        }
+      }
+    },
+    "sns-root": {
+      "remote": {
+        "candid": "sns-root.did",
+        "id": {
+          "small12": "t6rzw-2iaaa-aaaaa-aaama-cai",
+          "nnsdapp": "tcvdh-niaaa-aaaaa-aaaoa-cai"
+
+        }
+      }
+    },
+    "sns-swap": {
+      "remote": {
+        "candid": "sns-swap.did",
+        "id": {
+          "small12": "w6ozc-gaaaa-aaaaa-aaarq-cai",
+          "nnsdapp": "tlwi3-3aaaa-aaaaa-aaapq-cai"
+        }
+      }
+    },
+    "sns-governance": {
+      "remote": {
+        "candid": "sns-governance.did",
+        "id": {
+          "small12": "wqmuk-5qaaa-aaaaa-aaaqq-cai",
+          "nnsdapp": "tfuft-aqaaa-aaaaa-aaaoq-cai"
+        }
+      }
+    },
+    "nns-governance": {
+      "remote": {
+        "candid": "nns-governance.did",
+        "id": {
+          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "nnsdapp": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+        }
+      }
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "dfx": "0.11.0",
   "networks": {
-    "testnet": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "nnsdapp": {
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "HOST": "https://nnsdapp.dfinity.network",
-        "OWN_URL": "https://OWN_CANISTER_ID.nnsdapp.dfinity.network",
         "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network"
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
+    },
+    "small12": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "HOST": "https://small12.dfinity.network",
+        "IDENTITY_SERVICE_URL": "https://qjdve-lqaaa-aaaaa-aaaeq-cai.small12.dfinity.network"
+      },
+      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "type": "persistent"
     }
-  }
+  },
+  "version": 1
 }
+

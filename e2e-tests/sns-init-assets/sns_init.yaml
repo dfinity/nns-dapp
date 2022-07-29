@@ -54,7 +54,7 @@ min_participant_icp_e8s: 100000000
 # or equal to `min_participant_icp_e8s` and less than or equal to
 # `max_icp_e8s`. Can effectively be disabled by setting it to `max_icp_e8s`.
 #
-max_participant_icp_e8s: 100000000
+max_participant_icp_e8s: 400000000
 #
 # This field has no default, a value must be provided by the user.
 # The minimum amount of ICP that is required for this token swap to take
@@ -132,13 +132,13 @@ initial_token_distribution:
   FractionalDeveloperVotingPower:
     developer_distribution:
       developer_neurons:
-        - controller: dktcs-d43lz-rosn2-wnwsj-kef34-6kl3i-ux7qb-ka6xr-biref-ykeaj-sqe
+        - controller: hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe
           stake_e8s: 100000000
     treasury_distribution:
       total_e8s: 1000000000
     swap_distribution:
-      total_e8s: 1000000000
-      initial_swap_amount_e8s: 200000000
+      total_e8s: 2000000000
+      initial_swap_amount_e8s: 1200000000
     airdrop_distribution:
       airdrop_neurons:
         - controller: w3i5o-5ylvd-cmm42-pw66i-n6qcw-fw3q7-kk5la-4edui-ozozq-5qq3j-dae
