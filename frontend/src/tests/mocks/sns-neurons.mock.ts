@@ -1,12 +1,13 @@
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import type { Subscriber } from "svelte/store";
 
 export const createMockSnsNeuron = ({
-  stake,
+  stake = BigInt(1_000_000_000),
   id,
   state,
 }: {
-  stake: bigint;
+  stake?: bigint;
   id: number[];
   state?: NeuronState;
 }): SnsNeuron => ({
@@ -22,7 +23,7 @@ export const createMockSnsNeuron = ({
     state === undefined
       ? []
       : [
-          state === NeuronState.LOCKED
+          state === NeuronState.DISSOLVING
             ? {
                 WhenDissolvedTimestampSeconds: BigInt(
                   Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
@@ -42,3 +43,10 @@ export const mockSnsNeuron = createMockSnsNeuron({
   stake: BigInt(1_000_000_000),
   id: [1, 5, 3, 9, 9, 3, 2],
 });
+
+export const buildMockSortedSnsNeuronsStoreSubscribe =
+  (neurons: SnsNeuron[] = []) =>
+  (run: Subscriber<SnsNeuron[]>): (() => void) => {
+    run(neurons);
+    return () => undefined;
+  };
