@@ -4,9 +4,12 @@ import { smiley_dapp } from "../../declarations/smiley_dapp";
 let updates=true;
 
 async function subscribeToUpdates() {
+  console.log("Getting update...")
   // Interact backend  actor, calling the get params method
   const bgcolor = await smiley_dapp.getBackgroundColor();
   const smileyChar = await smiley_dapp.getSmileyChar();
+
+  console.log("New backgroundColor = " + bgcolor)
 
   document.body.style.backgroundColor = bgcolor;
   document.getElementById("icon").innerHTML = "&#x" + smileyChar;

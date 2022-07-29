@@ -121,11 +121,11 @@ dfx canister --network "$DFX_NETWORK" call nns-governance manage_neuron --argume
                         MakeProposal = record {
                                 url = "${URL:-http://...}";
                                 title = opt "${TITLE:-my title}";
-                                summary = "${SUMMARY:-summary}";
+                                summary = "Please vote to decentralize the Tetris Dapp";
                                 action = opt variant{ SetSnsTokenSwapOpenTimeWindow = record {
                                         swap_canister_id = opt principal "$SWAP_CANISTER_ID";
                                         request = opt record { open_time_window = opt record {
-                                                start_timestamp_seconds=$(($(date +%s) + 60 * 5)): nat64;
+                                                start_timestamp_seconds=$(($(date +%s) + 60 * 1)): nat64;
                                                 end_timestamp_seconds=$(($(date +%s) + 60 * 60 * 24 * 6)): nat64;
                                         } }
                                 } }

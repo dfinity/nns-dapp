@@ -3,7 +3,7 @@
   "canisters": {
     "nns-governance": {
       "type": "custom",
-      "candid": "target/ic/governance.did",
+      "candid": "e2e-tests/sns-init-assets/nns-governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
       "remote": {
@@ -32,13 +32,13 @@
     },
     "wasm_canister": {
       "build": ["true"],
-      "candid": "target/ic/sns_wasm.did",
+      "candid": "e2e-tests/sns-init-assets/sns-wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
     "sns_governance": {
       "build": ["true"],
-      "candid": "target/ic/sns_governance.did",
+      "candid": "e2e-tests/sns-init-assets/sns-governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
@@ -50,15 +50,21 @@
     },
     "sns_swap": {
       "build": ["true"],
-      "candid": "target/ic/sns_swap.did",
+      "candid": "e2e-tests/sns-init-assets/sns-swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
       "build": ["true"],
-      "candid": "target/ic/sns_root.did",
+      "candid": "e2e-tests/sns-init-assets/sns-root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
+    },
+    "smiley_dapp": {
+      "candid": "e2e-tests/smiley_dapp/src/declarations/smiley_dapp/smiley_dapp.did"
+    },
+    "smiley_dapp_assets": {
+      "candid": "e2e-tests/smiley_dapp/src/declarations/smiley_dapp_assets/smiley_dapp_assets.did"
     }
   },
   "networks": {

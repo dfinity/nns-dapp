@@ -231,7 +231,7 @@ sudo echo I have superpowers || {
 install_rosetta_maybe
 install_brew_maybe
 command -v wget || "install_wget_$OS"
-is_docker_installed || install_docker
+# is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"

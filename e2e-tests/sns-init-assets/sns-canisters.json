@@ -1,7 +1,7 @@
 {
-  "governance_canister_id": "tfuft-aqaaa-aaaaa-aaaoq-cai",
-  "ledger_canister_id": "tmxop-wyaaa-aaaaa-aaapa-cai",
-  "root_canister_id": "tcvdh-niaaa-aaaaa-aaaoa-cai",
-  "swap_canister_id": "tlwi3-3aaaa-aaaaa-aaapq-cai",
+  "governance_canister_id": "pboue-aqaaa-aaaaa-aacoq-cai",
+  "ledger_canister_id": "my6v6-kyaaa-aaaaa-aacha-cai",
+  "root_canister_id": "mw4yw-riaaa-aaaaa-aacga-cai",
+  "swap_canister_id": "m77tk-haaaa-aaaaa-aachq-cai",
   "dapp_canister_id_list": []
 }

@@ -295,6 +295,12 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
         --wasm-file "$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)" "$canister"
     done
   fi
+  
+  echo "Creating dfx identities"
+  ./e2e-tests/scripts/create-dfx-identites.sh
+  dfx identity list
+  read -rp "Look at those beautiful ids.... [Press Enter to continue]"
+
   echo "Checking cycle balance"
   while dfx wallet --network "$DFX_NETWORK" balance | awk '{exit $1 >= 51.00}'; do
     WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
@@ -303,8 +309,35 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     echo
   done
 
+
+  # Deploy the smaple dapp and save the canister ids
+  echo "Deploying dapp"
+  rm -rf ./e2e-tests/smiley_dapp/.dfx/
+  rm -rf ./e2e-tests/smiley_dapp/canister_ids.json
+  (cd e2e-tests/smiley_dapp/ && dfx deploy --network "$DFX_NETWORK" --with-cycles 1000000000000)
+  jq -s '.[0] * .[1]' canister_ids.json ./e2e-tests/smiley_dapp/canister_ids.json > canister_ids_merged.json
+  mv canister_ids_merged.json canister_ids.json
+  DAPP_FRONTEND="$(jq -r '.smiley_dapp_assets[env.DFX_NETWORK]' canister_ids.json)"
+  dfx canister --network $DFX_NETWORK call smiley_dapp getBackgroundColor '()'
+  echo "https://$DAPP_FRONTEND.$DFX_NETWORK.dfinity.network"
+
+  read -rp "Does everything look okay? Press enter when done ..."
+
+  echo "Querying the SNS-W"
+  dfx canister --network $DFX_NETWORK call wasm_canister list_deployed_snses '(record {} )'
+  read -rp "Does everything look okay? Press enter when done ..."
+
+  echo "\nTime to create the neurons. Remember to add $(dfx identity --network "$DFX_NETWORK" get-principal) as a hotkey to the smaller neuron."
+  read -rp "What was the NeuronId of the Neuron that is submitting the proposal " PROPOSING_NID
+
+  echo "Okay it's time for the demo!!"
+  read -rp "Press enter when it's time to start..."
+  clear
+
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+  set -x 
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file e2e-tests/sns-init-assets/sns_init.yaml | tee sns_creation.idl
+  set +x
 
   echo "Populate canister_ids.json"
   if test -e canister_ids.json; then
@@ -313,19 +346,74 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
   else
     echo "{}" >canister_ids.json
   fi
-  sed -n ':a;/^[(]/bb;d;ba;:b;p;n;bb' <sns_creation.idl |
+  sed '1,2d' <sns_creation.idl |
     idl2json |
     jq '.canisters[] | to_entries | map({ ("sns_"+.key): {(env.DFX_NETWORK): (.value[0])} }) | add' |
     jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
 
+  read -rp "Press Enter to execute list_deployed_snses"
+  set -x
+  dfx canister --network $DFX_NETWORK call wasm_canister list_deployed_snses '(record {} )'
+  set +x
+
+  read -rp "Press Enter to execute list_neurons"
+  set -x
+  dfx canister --network $DFX_NETWORK call sns_governance list_neurons '(record { of_principal=null; limit=100: nat32; start_page_at=null  } )'
+  set +x
+
   # Note: This must come afetr the canister_ids has been updated.
+  read -rp "Press Enter to execute refresh_sns_tokens"
   echo "SNS state after creation"
   dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
   echo "Tell the swap canister to get tokens"
   dfx canister --network "$DFX_NETWORK" call sns_swap refresh_sns_tokens '( record {} )'
   echo "SNS swap state should now have tokens"
   dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+
+
+  read -rp "Press Enter to change dapp ownership"
+  ROOT_CANISTER_ID="$(jq -r '.sns_root[env.DFX_NETWORK]' canister_ids.json)"
+  DAPP_FRONTEND="$(jq -r '.smiley_dapp_assets[env.DFX_NETWORK]' canister_ids.json)"
+  DAPP_BACKEND="$(jq -r '.smiley_dapp[env.DFX_NETWORK]' canister_ids.json)"
+  set -x
+  dfx canister --network $DFX_NETWORK call sns_root list_sns_canisters '(record {} )'
+  ./e2e-tests/scripts/change-ownership.sh $ROOT_CANISTER_ID $DAPP_FRONTEND $DAPP_BACKEND
+  set +x
+
+  read -rp "Press Enter to submit the swap open proposal"
+  set -x
+  ./scripts/sns/swap/start_swap --dfx-network $DFX_NETWORK --title "Launch SNS Project Tetris" --url "https://forum.dfinity.org/t/sns-deployment-and-upgrades-design-proposal/10816" --proposer $PROPOSING_NID
+  set +x
+
+  read -rp "Press Enter to look at the buyer state"
+  set -x
+  dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
+  set +x
+
+  read -rp "Press Enter after updating the dapp backend code"
+  (cd e2e-tests/smiley_dapp/ && dfx build --network "$DFX_NETWORK")
+
+  ROOT_CANISTER_ID="$(jq -r '.sns_root[env.DFX_NETWORK]' canister_ids.json)"
+  GOVERNANCE_CANISTER_ID="$(jq -r '.sns_governance[env.DFX_NETWORK]' canister_ids.json)"
+  LEDGER_CANISTER_ID="$(jq -r '.sns_ledger[env.DFX_NETWORK]' canister_ids.json)"
+  SWAP_CANISTER_ID="$(jq -r '.sns_swap[env.DFX_NETWORK]' canister_ids.json)"
+
+  jq <<< "{ \"governance_canister_id\": \"$GOVERNANCE_CANISTER_ID\", \"ledger_canister_id\": \"$LEDGER_CANISTER_ID\", \"root_canister_id\": \"$ROOT_CANISTER_ID\", \"swap_canister_id\": \"$SWAP_CANISTER_ID\", \"dapp_canister_id_list\": []}" > sns_canister_ids.json
+  DFX_NETWORK_PROVIDER="$(jq -r ".networks.$DFX_NETWORK.providers[0]" dfx.json)"
+  set -x
+
+  read -rp "Press Enter to propose an upgrade"
+
+  IC_URL=$DFX_NETWORK_PROVIDER sns-quill --canister-ids-file sns_canister_ids.json --pem-file e2e-tests/sns-init-assets/identity-1.pem make-upgrade-canister-proposal 42c179a359adb0cdb61edac782d4689b476c6fba67a041ccc91d9f2a573f8b2c --target-canister-id $DAPP_BACKEND --wasm-path e2e-tests/smiley_dapp/.dfx/$DFX_NETWORK/canisters/smiley_dapp/smiley_dapp.wasm > msg.json
+  IC_URL=$DFX_NETWORK_PROVIDER sns-quill send msg.json
+
+  IC_URL=$DFX_NETWORK_PROVIDER sns-quill --canister-ids-file sns_canister_ids.json --pem-file e2e-tests/sns-init-assets/identity-3.pem register-vote 9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24 --proposal-id 1 --vote y > msg.json
+  IC_URL=$DFX_NETWORK_PROVIDER sns-quill send msg.json
+
+  set +x
+
+
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then

@@ -30,8 +30,8 @@
       "bind": "127.0.0.1:8000",
       "type": "ephemeral"
     },
-    "nnsdapp": {
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+    "small11": {
+      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
       "type": "persistent"
     },
     "small12": {

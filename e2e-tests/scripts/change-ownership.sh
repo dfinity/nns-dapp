@@ -1,7 +1,13 @@
 #!/bin/bash
 
+cd "$(dirname $0)"
+
 SNS_ROOT=$1
+DAPP_BACKEND=$2
+DAPP_FRONTEND=$3
+
 PRINCIPAL=$(dfx identity --network "$DFX_NETWORK" get-principal)
+WALLET_CANISTER="$(dfx identity --network "$DFX_NETWORK" get-wallet)"
 
 if test -z "$SNS_ROOT" 
 then
@@ -35,6 +41,6 @@ dfx canister --network $DFX_NETWORK update-settings $DAPP_BACKEND --remove-contr
 dfx canister --network $DFX_NETWORK update-settings $DAPP_FRONTEND --add-controller $SNS_ROOT
 dfx canister --network $DFX_NETWORK update-settings $DAPP_FRONTEND --remove-controller $WALLET_CANISTER
 dfx canister --network $DFX_NETWORK update-settings $DAPP_FRONTEND --remove-controller $PRINCIPAL
-dfx canister --network $DFX_NETWORK call sns-root register_dapp_canister "(record {canister_id = opt principal \"${DAPP_BACKEND}\" } )"
-dfx canister --network $DFX_NETWORK call sns-root register_dapp_canister "(record {canister_id = opt principal \"${DAPP_FRONTEND}\" } )"
-dfx canister --network $DFX_NETWORK call sns-root list_sns_canisters '(record {} )'
+dfx canister --network $DFX_NETWORK call sns_root register_dapp_canister "(record {canister_id = opt principal \"${DAPP_BACKEND}\" } )"
+dfx canister --network $DFX_NETWORK call sns_root register_dapp_canister "(record {canister_id = opt principal \"${DAPP_FRONTEND}\" } )"
+dfx canister --network $DFX_NETWORK call sns_root list_sns_canisters '(record {} )'

@@ -18,6 +18,4 @@ actor  {
   public func setBackgroundColor( color : Text) : async () {
     backgroundColor := color;
   }
-
-
 };
