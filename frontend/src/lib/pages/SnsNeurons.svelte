@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import Value from "../components/ui/Value.svelte";
   import { authStore } from "../stores/auth.store";
@@ -8,13 +7,14 @@
   import { loadSnsNeurons } from "../services/sns-neurons.services";
   import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
+  import { snsProjectSelectedStore } from "../stores/projects.store";
 
   let loading = true;
-  onMount(() => {
-    loadSnsNeurons();
-    setTimeout(() => {
-      loading = false;
-    }, 1000);
+
+  snsProjectSelectedStore.subscribe(async (selectedProjectCanisterId) => {
+    loading = true;
+    await loadSnsNeurons(selectedProjectCanisterId);
+    loading = false;
   });
 
   let principalText: string = "";

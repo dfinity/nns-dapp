@@ -1,44 +1,56 @@
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
 import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
+import { snsProjectSelectedStore } from "./projects.store";
 
 export interface NeuronsStore {
-  neurons?: SnsNeuron[];
-  // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
-  certified: boolean | undefined;
+  [rootCanisterId: string]: {
+    neurons: SnsNeuron[];
+    // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
+    certified: boolean | undefined;
+  };
 }
 
 /**
- * A store that contains the sns neurons.
+ * A store that contains the sns neurons for each project.
  *
- * - setNeurons: replace the current list of neurons with a new list
+ * - setNeurons: replace the current list of neurons for a specific sns project with a new list
  */
 const initSnsNeuronsStore = () => {
-  const { subscribe, set } = writable<NeuronsStore>({
-    neurons: undefined,
-    certified: undefined,
-  });
+  const { subscribe, update } = writable<NeuronsStore>({});
 
   return {
     subscribe,
 
-    setNeurons({ neurons, certified }: Required<NeuronsStore>) {
-      set({
-        neurons,
-        certified,
-      });
+    setNeurons({
+      rootCanisterId,
+      neurons,
+      certified,
+    }: {
+      rootCanisterId: Principal;
+      neurons: SnsNeuron[];
+      certified: boolean | undefined;
+    }) {
+      update((currentState: NeuronsStore) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          neurons,
+          certified,
+        },
+      }));
     },
   };
 };
 
 export const snsNeuronsStore = initSnsNeuronsStore();
 
-export const definedSnsNeuronsStore: Readable<SnsNeuron[]> = derived(
-  snsNeuronsStore,
-  ($neuronsStore) => $neuronsStore.neurons || []
-);
-
 export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
-  definedSnsNeuronsStore,
-  (neurons) => sortSnsNeuronsByCreatedTimestamp(neurons)
+  [snsNeuronsStore, snsProjectSelectedStore],
+  ([store, selectedSnsRootCanisterId]) => {
+    const projectStore = store[selectedSnsRootCanisterId.toText()];
+    return projectStore === undefined
+      ? []
+      : sortSnsNeuronsByCreatedTimestamp(projectStore.neurons);
+  }
 );

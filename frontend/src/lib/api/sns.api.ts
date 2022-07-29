@@ -469,4 +469,5 @@ export const participateInSnsSwap = async ({
   logWithTimestamp("Participating in swap: done");
 };
 
+// TODO: Implement https://dfinity.atlassian.net/browse/L2-869
 export const querySnsNeurons = async (): Promise<SnsNeuron[]> => mockSnsNeurons;
