@@ -6,6 +6,8 @@
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
+    getSnsNeuronId,
+    getSnsNeuronStake,
     getSnsNeuronState,
     getSnsStateInfo,
   } from "../../utils/sns-neuron.utils";
@@ -19,11 +21,11 @@
   export let cardType: CardType = "card";
   export let ariaLabel: string;
 
-  let neuronId: string = "";
-  $: neuronId = neuron.id[0]?.id.join("") ?? "";
+  let neuronId: string;
+  $: neuronId = getSnsNeuronId(neuron);
 
   let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuron.cached_neuron_stake_e8s);
+  $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
 
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getSnsStateInfo(neuron);
@@ -38,6 +40,7 @@
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
   <div slot="start" data-tid="sns-neuron-card-title">
     <h3 data-tid="neuron-id">{neuronId}</h3>
+    <!-- TODO: Hotkey label https://dfinity.atlassian.net/browse/L2-899 -->
   </div>
 
   <div slot="end" class="currency">

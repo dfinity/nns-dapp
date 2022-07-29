@@ -8,7 +8,7 @@ export type SnsNeuronState = NeuronState;
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
 ): SnsNeuron[] =>
-  neurons.sort((a, b) =>
+  [...neurons].sort((a, b) =>
     Number(b.created_timestamp_seconds - a.created_timestamp_seconds)
   );
 
@@ -38,11 +38,6 @@ export const getSnsDissolvingTimeInSeconds = (
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
   const dissolveState = neuron.dissolve_state[0];
-  console.log(
-    "in da getSnsDissolvingTimeInSeconds",
-    neuronState,
-    dissolveState
-  );
   if (
     neuronState === NeuronState.DISSOLVING &&
     dissolveState !== undefined &&
@@ -62,7 +57,12 @@ export const getSnsLockedTimeInSeconds = (
     dissolveState !== undefined &&
     "DissolveDelaySeconds" in dissolveState
   ) {
-    console.log("returning something", dissolveState.DissolveDelaySeconds);
     return dissolveState.DissolveDelaySeconds - BigInt(nowInSeconds());
   }
 };
+
+export const getSnsNeuronStake = (neuron: SnsNeuron): bigint =>
+  neuron.cached_neuron_stake_e8s - neuron.neuron_fees_e8s;
+
+export const getSnsNeuronId = (neuron: SnsNeuron): string =>
+  neuron.id[0]?.id.join("") ?? "";

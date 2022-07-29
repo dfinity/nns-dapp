@@ -18,7 +18,7 @@ export interface NeuronsStore {
  * - setNeurons: replace the current list of neurons for a specific sns project with a new list
  */
 const initSnsNeuronsStore = () => {
-  const { subscribe, update } = writable<NeuronsStore>({});
+  const { subscribe, update, set } = writable<NeuronsStore>({});
 
   return {
     subscribe,
@@ -39,6 +39,11 @@ const initSnsNeuronsStore = () => {
           certified,
         },
       }));
+    },
+
+    // Used in tests
+    reset() {
+      set({});
     },
   };
 };

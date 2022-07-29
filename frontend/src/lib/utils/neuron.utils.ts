@@ -164,7 +164,7 @@ export const formattedMaturity = (neuron: NeuronInfo): string => {
 export const sortNeuronsByCreatedTimestamp = (
   neurons: NeuronInfo[]
 ): NeuronInfo[] =>
-  neurons.sort((a, b) =>
+  [...neurons].sort((a, b) =>
     Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
   );
 

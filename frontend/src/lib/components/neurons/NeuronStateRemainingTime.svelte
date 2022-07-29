@@ -8,9 +8,6 @@
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
-  $: {
-    console.log("in da NeuronStateRemainingTime.svelte", state, timeInSeconds);
-  }
 </script>
 
 {#if timeInSeconds !== undefined}
