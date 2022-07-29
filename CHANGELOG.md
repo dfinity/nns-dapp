@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal 72733
+* Update on maturity text info.
+* Upgrade sns-js
+
 ## Proposal 72588
 * Maturity is displayed without %.
 * Fix a bug when adding cycles to a canister.
