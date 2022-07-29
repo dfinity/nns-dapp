@@ -485,7 +485,7 @@
     "merge": "Merge",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
-    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to three days after voting.",
+    "maturity_tooltip": "When your neuron votes, maturity increases.\nThis allows you to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to four days after voting.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
     "join_community_fund_success": "Your neuron has successfully joined the community fund.",
