@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Account } from "../../types/account";
   import CardInfo from "../ui/CardInfo.svelte";
+  import DateSeconds from "../ui/DateSeconds.svelte";
   import ICP from "../ic/ICP.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";
@@ -9,7 +10,6 @@
     Transaction,
   } from "../../canisters/nns-dapp/nns-dapp.types";
   import { i18n } from "../../stores/i18n";
-  import { secondsToDate, secondsToTime } from "../../utils/date.utils";
   import {
     AccountTransactionType,
     mapTransaction,
@@ -74,13 +74,15 @@
   <div slot="start" class="title">
     <h3>{headline}</h3>
   </div>
+
   <ICP
     slot="end"
     icp={displayAmount}
     sign={isReceive || toSelfTransaction ? "+" : "-"}
     detailed
   />
-  <p>{secondsToDate(seconds)} {secondsToTime(seconds)}</p>
+
+  <DateSeconds {seconds} />
 
   {#if identifier !== undefined}
     <Identifier size="medium" {label} {identifier} />
@@ -93,9 +95,5 @@
   .title {
     @include card.stacked-title;
     @include card.title;
-  }
-
-  p {
-    margin-top: 0;
   }
 </style>

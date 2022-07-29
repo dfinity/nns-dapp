@@ -103,7 +103,7 @@
     --modal-toolbar-height: 35px;
 
     background: var(--background);
-    color: var(--background-contrast);
+
     --select-color: var(--background-contrast);
     --select-border-radius: 0;
 
@@ -145,7 +145,6 @@
     h3 {
       @include text.clamp(1);
 
-      color: inherit;
       font-weight: 400;
       margin-bottom: 0;
       line-height: 1.5;

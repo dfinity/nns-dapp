@@ -47,7 +47,7 @@
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
-        <span slot="key">Source</span>
+        <span slot="key">{$i18n.accounts.source}</span>
         <IcpComponent slot="value" singleLine icp={selectedAccount?.balance} />
       </KeyValuePair>
     {/if}

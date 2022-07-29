@@ -1,5 +1,17 @@
 # Changelog
 
+## Proposal 72733
+* Update on maturity text info.
+* Upgrade sns-js
+
+## Proposal 72588
+* Maturity is displayed without %.
+* Fix a bug when adding cycles to a canister.
+* Fix a bug in the transaction list.
+* Various improvements in the deployment pipeline.
+* Changes in font colors.
+* Disable agent-js idle observer
+
 ## Proposal 71474
 * Fix: Update the proposal schema to match the governance canister
 

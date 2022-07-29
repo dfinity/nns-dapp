@@ -27,7 +27,7 @@ import {
   dissolveDelayMultiplier,
   followeesByTopic,
   followeesNeurons,
-  formattedMaturityByStake,
+  formattedMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
@@ -46,7 +46,6 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
-  maturityByStake,
   minMaturityMerge,
   minNeuronSplittable,
   neuronCanBeSplit,
@@ -307,27 +306,16 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("maturityByStake", () => {
+  describe("formattedMaturity", () => {
     it("returns 0 when no full neuron", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: undefined,
       };
-      expect(maturityByStake(neuron)).toBe(0);
+      expect(formattedMaturity(neuron)).toBe("0");
     });
 
-    it("returns 0 if neuron stake is 0", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: BigInt(0),
-        },
-      };
-      expect(maturityByStake(neuron)).toBe(0);
-    });
-
-    it("returns maturity in percentage of stake", () => {
+    it("returns maturity of stake with two decimals", () => {
       const stake = ICP.fromString("2") as ICP;
       const neuron = {
         ...mockNeuron,
@@ -337,46 +325,10 @@ describe("neuron-utils", () => {
           maturityE8sEquivalent: stake.toE8s() / BigInt(2),
         },
       };
-      expect(maturityByStake(neuron)).toBe(0.5);
+      expect(formattedMaturity(neuron)).toBe("1.00");
     });
 
-    it("returns maturity up to 6 decimal places", () => {
-      const stake = ICP.fromString("3") as ICP;
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: stake.toE8s(),
-          maturityE8sEquivalent: stake.toE8s() / BigInt(3),
-        },
-      };
-      expect(maturityByStake(neuron)).toBe(0.333333);
-    });
-  });
-
-  describe("formattedMaturityByStake", () => {
-    it("returns 0% when no full neuron", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: undefined,
-      };
-      expect(formattedMaturityByStake(neuron)).toBe("0%");
-    });
-
-    it("returns maturity in percentage of stake with two decimals", () => {
-      const stake = ICP.fromString("2") as ICP;
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          cachedNeuronStake: stake.toE8s(),
-          maturityE8sEquivalent: stake.toE8s() / BigInt(2),
-        },
-      };
-      expect(formattedMaturityByStake(neuron)).toBe("50.00%");
-    });
-
-    it("returns 0% when maturity is 0", () => {
+    it("returns 0 when maturity is 0", () => {
       const stake = ICP.fromString("3") as ICP;
       const neuron = {
         ...mockNeuron,
@@ -386,7 +338,7 @@ describe("neuron-utils", () => {
           maturityE8sEquivalent: BigInt(0),
         },
       };
-      expect(formattedMaturityByStake(neuron)).toBe("0%");
+      expect(formattedMaturity(neuron)).toBe("0");
     });
   });
 

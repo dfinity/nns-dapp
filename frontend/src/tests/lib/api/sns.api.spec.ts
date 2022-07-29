@@ -18,7 +18,7 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
-import { snsesCountStore } from "../../../lib/stores/projects.store";
+import { snsesCountStore } from "../../../lib/stores/sns.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,

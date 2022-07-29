@@ -1,10 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import {
-    formattedMaturityByStake,
-    neuronStake,
-  } from "../../utils/neuron.utils";
+  import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
   import Card from "../ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -12,6 +9,7 @@
   import InputRange from "../ui/InputRange.svelte";
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
   export let percentage: number;
@@ -30,13 +28,13 @@
 <div class="wrapper" data-tid="spawn-maturity-neuron-modal">
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
-    <p>
-      {formattedMaturityByStake(neuron)}
+    <p class="value">
+      {formattedMaturity(neuron)}
     </p>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
-      {replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: formatICP({ value: neuronICP, detailed: true }),
+      {@html replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
       })}
     </p>
   </div>

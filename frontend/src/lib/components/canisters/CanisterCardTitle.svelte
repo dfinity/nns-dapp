@@ -12,7 +12,7 @@
 </script>
 
 <div class={`title-block ${titleTag}`}>
-  <svelte:element this={titleTag} class="title"
+  <svelte:element this={titleTag} class="title value"
     >{validName ? canister.name : canisterId}</svelte:element
   >
 

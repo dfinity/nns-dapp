@@ -12,6 +12,8 @@ export interface SnsSummarySwap {
 
 export interface SnsSummary {
   rootCanisterId: Principal;
+  // Used to calculate the account for the participation.
+  swapCanisterId: Principal;
 
   // TODO: to be replaced with real types for real data
 

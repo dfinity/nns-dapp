@@ -16,6 +16,7 @@
   import { reloadRouteData } from "../lib/utils/navigation.utils";
   import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import LinkCanisterModal from "../lib/modals/canisters/LinkCanisterModal.svelte";
+  import Value from "../lib/components/ui/Value.svelte";
 
   const loadCanisters = async () => {
     try {
@@ -66,7 +67,7 @@
     <p>{$i18n.canisters.text}</p>
     <p class="last-info">
       {$i18n.canisters.principal_is}
-      {$authStore.identity?.getPrincipal().toText()}
+      <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
     </p>
 
     {#each $canistersStore.canisters ?? [] as canister}
