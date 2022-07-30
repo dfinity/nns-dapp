@@ -7,7 +7,10 @@ import {
 import { InvalidAmountError } from "../types/neurons.errors";
 
 const countDecimals = (value: number): number => {
-  const split: string[] = `${value}`.split(".");
+  // "1e-7" -> 0.00000001
+  const asText = value.toFixed(10).replace(/0*$/, "");
+  const split: string[] = asText.split(".");
+
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
 };
 

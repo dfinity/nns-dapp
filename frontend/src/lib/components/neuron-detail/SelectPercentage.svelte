@@ -1,10 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import {
-    formattedMaturityByStake,
-    neuronStake,
-  } from "../../utils/neuron.utils";
+  import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
   import Card from "../ui/Card.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -32,7 +29,7 @@
   <div>
     <h5>{$i18n.neuron_detail.current_maturity}</h5>
     <p class="value">
-      {formattedMaturityByStake(neuron)}
+      {formattedMaturity(neuron)}
     </p>
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
