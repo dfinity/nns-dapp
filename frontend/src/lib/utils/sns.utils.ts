@@ -1,6 +1,11 @@
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type {SnsSwap, SnsSwapDerivedState, SnsSwapInit, SnsSwapState} from "@dfinity/sns";
+import type {
+  SnsSwap,
+  SnsSwapDerivedState,
+  SnsSwapInit,
+  SnsSwapState,
+} from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { assertNonNullish } from "./asserts.utils";
@@ -40,8 +45,15 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
 
 /**
  * 1. Concat Sns queries for summaries and swap state.
- * 2. Filter those Sns without Swaps data
+ * 2. Filter those Sns without swap and derived information
  * 3. Sort according swap start date
+ *
+ * Note from NNS team about mandatory swap and derived data that are defined as optional in Candid:
+ *
+ * Swap state and Derived State should always be populated.
+ * They are optional as that is the best strategy for backwards compatibility from the protobuf side, which is what we derive our candid APIs from.
+ * If either of those are missing, that would indicate a bigger issue with the swap canister and can be safely ignored from the nns-dapp.
+ *
  */
 export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
   QuerySnsSummary[],
@@ -58,18 +70,19 @@ export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
         ...rest,
         swapCanisterId: swapState?.swapCanisterId,
         swap: fromNullable(swapState?.swap ?? []),
-        derived: fromNullable(swapState?.derived ?? [])
+        derived: fromNullable(swapState?.derived ?? []),
       };
     }
   );
 
-  // Only those that have valid sale information and state can be considered as valid regardless of their state.
+  // Only those that have valid sale and derived information are - and can be - considered as valid
   const validSwapSummaries: ValidSwapSummary[] = allSummaries.filter(
     (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
       entry.swap !== undefined &&
       fromNullable(entry.swap.init) !== undefined &&
       fromNullable(entry.swap.state) !== undefined &&
-      entry.swapCanisterId !== undefined
+      entry.swapCanisterId !== undefined &&
+      entry.derived !== undefined
   );
 
   return sortSnsSummaries(
@@ -92,10 +105,16 @@ export const concatSnsSummary = ([summary, swap]: [
   assertNonNullish(summary);
   assertNonNullish(swap);
 
-  // Not sure, this should ever happen but we consider sale valid only if we get information - i.e. if no information and state are provided, NNS-dapp cannot display information and user cannot participate anyway
+  /**
+   * See above `mapAndSortSnsQueryToSummaries` doc to get to know why swap and derived are mandatory.
+   */
   const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
-
   assertNonNullish(possibleSwap);
+
+  const possibleDerived: SnsSwapDerivedState | undefined = fromNullable(
+    swap?.derived
+  );
+  assertNonNullish(possibleDerived);
 
   const { init: possibleInit, state: possibleState } = possibleSwap;
 
@@ -105,8 +124,7 @@ export const concatSnsSummary = ([summary, swap]: [
   assertNonNullish(init);
   assertNonNullish(state);
 
-  const {swapCanisterId, derived} = swap;
-  const possibleDerived: SnsSwapDerivedState | undefined = fromNullable(derived);
+  const { swapCanisterId } = swap;
 
   return {
     ...summary,
@@ -115,7 +133,7 @@ export const concatSnsSummary = ([summary, swap]: [
       init,
       state,
     },
-    derived: possibleDerived
+    derived: possibleDerived,
   };
 };
 

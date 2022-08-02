@@ -22,7 +22,7 @@
   );
 
   let swap: SnsSummarySwap;
-  let derived: SnsSwapDerivedState | undefined;
+  let derived: SnsSwapDerivedState;
   // type safety validation is done in ProjectStatusSection component
   $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
 
@@ -35,7 +35,7 @@
   $: ({ min_icp_e8s, max_icp_e8s } = init);
 
   let buyersTotalCommitment: bigint;
-  $: buyersTotalCommitment = derived?.buyer_total_icp_e8s ?? BigInt(0);
+  $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
 
   let buyersTotalCommitmentIcp: ICP;
   $: buyersTotalCommitmentIcp = ICP.fromE8s(buyersTotalCommitment);
