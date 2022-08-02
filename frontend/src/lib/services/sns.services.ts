@@ -1,4 +1,9 @@
-import { ICP, Topic, type ProposalInfo } from "@dfinity/nns";
+import {
+  ICP,
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
@@ -12,17 +17,18 @@ import {
 import { AppPath } from "../constants/routes.constants";
 import {
   snsProposalsStore,
-  snsSummariesStore,
+  snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../stores/projects.store";
+} from "../stores/sns.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { concatSnsSummaries } from "../utils/sns.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
+import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import {
   queryAndUpdate,
@@ -30,12 +36,8 @@ import {
   type QueryAndUpdateStrategy,
 } from "./utils.services";
 
-export const loadSnsSummaries = ({
-  onError,
-}: {
-  onError: () => void;
-}): Promise<void> => {
-  snsSummariesStore.setLoadingState();
+export const loadSnsSummaries = (): Promise<void> => {
+  snsQueryStore.setLoadingState();
 
   return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
     request: ({ certified, identity }) =>
@@ -44,10 +46,7 @@ export const loadSnsSummaries = ({
         querySnsSwapStates({ certified, identity }),
       ]),
     onLoad: ({ response, certified }) =>
-      snsSummariesStore.setSummaries({
-        summaries: concatSnsSummaries(response),
-        certified,
-      }),
+      snsQueryStore.setResponse({ response, certified }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -56,7 +55,7 @@ export const loadSnsSummaries = ({
       }
 
       // hide unproven data
-      snsSummariesStore.setLoadingState();
+      snsQueryStore.setLoadingState();
 
       toastsStore.error(
         toToastError({
@@ -64,8 +63,6 @@ export const loadSnsSummaries = ({
           fallbackErrorLabelKey: "error__sns.list_summaries",
         })
       );
-
-      onError();
     },
     logMessage: "Syncing Sns summaries",
   });
@@ -116,11 +113,7 @@ export const loadSnsSummary = async ({
     logMessage: "Syncing Sns summary",
   });
 
-export const loadSnsSwapCommitments = ({
-  onError,
-}: {
-  onError: () => void;
-}): Promise<void> => {
+export const loadSnsSwapCommitments = (): Promise<void> => {
   snsSwapCommitmentsStore.setLoadingState();
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
@@ -150,8 +143,6 @@ export const loadSnsSwapCommitments = ({
           fallbackErrorLabelKey: "error__sns.list_swap_commitments",
         })
       );
-
-      onError();
     },
     logMessage: "Syncing Sns swap commitments",
   });
@@ -237,6 +228,16 @@ export const routePathRootCanisterId = (path: string): string | undefined => {
     return undefined;
   }
   return getLastPathDetail(path);
+};
+
+export const getSwapAccount = async (
+  swapCanisterId: Principal
+): Promise<AccountIdentifier> => {
+  const identity = await getIdentity();
+  return getSwapCanisterAccount({
+    controller: identity.getPrincipal(),
+    swapCanisterId,
+  });
 };
 
 export const participateInSwap = async ({

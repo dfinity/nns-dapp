@@ -40,9 +40,10 @@ import {
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
-import { formatNumber, formatPercentage } from "./format.utils";
+import { formatNumber } from "./format.utils";
+import { formatICP } from "./icp.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { isDefined } from "./utils";
+import { isDefined, isNullish, nonNullish } from "./utils";
 
 export type StateInfo = {
   textKey: string;
@@ -54,7 +55,7 @@ export type StateInfo = {
 type StateMapper = {
   [key: number]: StateInfo;
 };
-const stateTextMapper: StateMapper = {
+export const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
@@ -110,7 +111,7 @@ export const votingPower = ({
 // TODO: https://dfinity.atlassian.net/browse/L2-507
 export const hasValidStake = (neuron: NeuronInfo): boolean =>
   // Ignore if we can't validate the stake
-  neuron.fullNeuron
+  nonNullish(neuron.fullNeuron)
     ? neuron.fullNeuron.cachedNeuronStake +
         neuron.fullNeuron.maturityE8sEquivalent >
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
@@ -148,35 +149,22 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const maturityByStake = (neuron: NeuronInfo): number => {
-  if (
-    neuron.fullNeuron === undefined ||
-    neuron.fullNeuron.cachedNeuronStake <= 0
-  ) {
-    return 0;
-  }
-  // Keep at least 6 decimal places in the BigInt division
-  const precision = 1_000_000;
-  return (
-    Number(
-      (neuron.fullNeuron.maturityE8sEquivalent * BigInt(precision)) /
-        neuron.fullNeuron.cachedNeuronStake
-    ) / precision
-  );
-};
+export const formattedMaturity = (neuron: NeuronInfo): string => {
+  let value = neuron?.fullNeuron?.maturityE8sEquivalent;
 
-export const formattedMaturityByStake = (neuron: NeuronInfo): string => {
-  const maturity = maturityByStake(neuron);
-  if (maturity === 0) {
-    return "0%";
+  if (isNullish(value)) {
+    value = BigInt(0);
   }
-  return formatPercentage(maturity, { minFraction: 2, maxFraction: 2 });
+
+  return formatICP({
+    value,
+  });
 };
 
 export const sortNeuronsByCreatedTimestamp = (
   neurons: NeuronInfo[]
 ): NeuronInfo[] =>
-  neurons.sort((a, b) =>
+  [...neurons].sort((a, b) =>
     Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
   );
 

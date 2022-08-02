@@ -38,6 +38,7 @@ interface I18nError {
   neuron_not_found: string;
   neuron_spawning: string;
   neuron_load: string;
+  sns_neurons_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -506,6 +507,7 @@ interface I18nNeuron_detail {
   participate_community_fund: string;
   community_fund_more_info: string;
   maturity_title: string;
+  maturity_description: string;
   merge_maturity: string;
   merge: string;
   spawn_neuron: string;
@@ -571,8 +573,6 @@ interface I18nSns_launchpad {
 
 interface I18nSns_project {
   project: string;
-  deadline: string;
-  your_commitment: string;
 }
 
 interface I18nSns_project_detail {
@@ -580,7 +580,7 @@ interface I18nSns_project_detail {
   token_symbol: string;
   min_commitment: string;
   max_commitment: string;
-  current_commitment: string;
+  current_overall_commitment: string;
   min_commitment_goal: string;
   deadline: string;
   user_commitment: string;
@@ -600,6 +600,10 @@ interface I18nSns_project_detail {
   execute: string;
   participate_success: string;
   participate: string;
+  status_completed: string;
+  completed: string;
+  sale_start: string;
+  sale_end: string;
 }
 
 interface I18nTime {

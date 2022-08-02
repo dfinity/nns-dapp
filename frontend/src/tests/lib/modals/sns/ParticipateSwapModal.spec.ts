@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
@@ -12,7 +13,10 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "../../../../lib/types/project-detail.context";
-import { mockAccountsStoreSubscribe } from "../../../mocks/accounts.store.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockMainAccount,
+} from "../../../mocks/accounts.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
@@ -20,6 +24,11 @@ import { clickByTestId } from "../../testHelpers/clickByTestId";
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
     participateInSwap: jest.fn().mockResolvedValue({ success: true }),
+    getSwapAccount: jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
+      ),
   };
 });
 

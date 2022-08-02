@@ -1,5 +1,9 @@
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsSwapDerivedState,
+  type SnsSwapState,
+} from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type {
@@ -7,6 +11,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "../../lib/types/sns";
+import { secondsToDate, secondsToTime } from "../../lib/utils/date.utils";
 import { shuffle } from "../../lib/utils/dev.utils";
 
 export const mockProjectSubscribe =
@@ -17,7 +22,7 @@ export const mockProjectSubscribe =
     return () => undefined;
   };
 
-const principal = (index: number): Principal =>
+export const principal = (index: number): Principal =>
   [
     Principal.fromText(
       "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe"
@@ -33,7 +38,7 @@ const principal = (index: number): Principal =>
     ),
   ][index];
 
-export const createBuyersState = (amount) => ({
+export const createBuyersState = (amount: bigint) => ({
   icp_disbursing: false,
   amount_sns_e8s: BigInt(0),
   amount_icp_e8s: amount,
@@ -46,22 +51,18 @@ export const mockSnsSwapCommitment = (
     [principal(0).toText()]: {
       rootCanisterId: principal(0),
       myCommitment: createBuyersState(BigInt(25 * 100000000)),
-      currentCommitment: BigInt(100 * 100000000),
     },
     [principal(1).toText()]: {
       rootCanisterId: principal(1),
       myCommitment: createBuyersState(BigInt(5 * 100000000)),
-      currentCommitment: BigInt(775 * 100000000),
     },
     [principal(2).toText()]: {
       rootCanisterId: principal(2),
       myCommitment: undefined,
-      currentCommitment: BigInt(1000 * 100000000),
     },
     [principal(3).toText()]: {
       rootCanisterId: principal(3),
       myCommitment: undefined,
-      currentCommitment: BigInt(1500 * 100000000),
     },
   }[rootCanisterId.toText()]);
 
@@ -86,6 +87,15 @@ export const mockSwapTimeWindow = {
   end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
 };
 
+export const mockSwapTimeWindowText = {
+  start_timestamp_seconds: `${secondsToDate(
+    Number(mockSwapTimeWindow.start_timestamp_seconds)
+  )} ${secondsToTime(Number(mockSwapTimeWindow.start_timestamp_seconds))}`,
+  end_timestamp_seconds: `${secondsToDate(
+    Number(mockSwapTimeWindow.end_timestamp_seconds)
+  )} ${secondsToTime(Number(mockSwapTimeWindow.end_timestamp_seconds))}`,
+};
+
 export const mockSwapState = {
   open_time_window: [mockSwapTimeWindow],
   sns_token_e8s: BigInt(1000),
@@ -98,9 +108,15 @@ export const mockSwap: SnsSummarySwap = {
   state: mockSwapState,
 };
 
+export const mockDerived: SnsSwapDerivedState = {
+  buyer_total_icp_e8s: BigInt(100 * 100000000),
+  sns_tokens_per_icp: 1,
+};
+
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
+    swapCanisterId: principal(3),
 
     minCommitment: BigInt(1500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -115,9 +131,11 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(1),
+    swapCanisterId: principal(2),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(2000 * 100000000),
@@ -132,9 +150,11 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(2),
+    swapCanisterId: principal(1),
 
     minCommitment: BigInt(1000 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -149,9 +169,11 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(3),
+    swapCanisterId: principal(0),
 
     minCommitment: BigInt(500 * 100000000),
     maxCommitment: BigInt(3000 * 100000000),
@@ -166,6 +188,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
 ])
   // preserve indexes (important for unit tests)

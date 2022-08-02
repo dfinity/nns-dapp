@@ -35,7 +35,7 @@
 
 <CardInfo>
   <h3 slot="start">{$i18n.neuron_detail.following_title}</h3>
-  <p>{$i18n.neuron_detail.following_description}</p>
+  <p class="description">{$i18n.neuron_detail.following_description}</p>
 
   {#if followees.length > 0}
     <div class="frame">

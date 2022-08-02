@@ -7,6 +7,7 @@
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
   import CardInfo from "../ui/CardInfo.svelte";
+  import Value from "../ui/Value.svelte";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
   import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
 
@@ -24,7 +25,7 @@
   <ul>
     {#each controllers as controller (controller)}
       <li>
-        <span>{controller}</span>
+        <Value>{controller}</Value>
         <RemoveCanisterControllerButton {controller} />
       </li>
     {/each}

@@ -13,13 +13,14 @@
     swapDuration,
   } from "../../utils/projects.utils";
   import { secondsToDuration } from "../../utils/date.utils";
+  import Value from "../ui/Value.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
   let swap: SnsSummarySwap;
-  // type safety validation is done in ProjectDetail component
+  // type safety validation is done in ProjectStatusSection component
   $: ({ swap } = $projectDetailStore.summary as SnsSummary);
 
   let durationTillStart: bigint | undefined;
@@ -41,9 +42,9 @@
         <span>
           {$i18n.sns_project_detail.deadline}
         </span>
-        <span>
+        <Value>
           {secondsToDuration(durationTillDeadline)}
-        </span>
+        </Value>
       </p>
     </ProgressBar>
   </div>

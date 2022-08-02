@@ -14,10 +14,10 @@
 </script>
 
 <h5>{$i18n.core.principal}</h5>
-<p>{principalText}</p>
+<p class="value">{principalText}</p>
 
 <h5>{$i18n.accounts.account_identifier}</h5>
-<p>{accountIdentifier}</p>
+<p class="value">{accountIdentifier}</p>
 
 <style lang="scss">
   h5 {

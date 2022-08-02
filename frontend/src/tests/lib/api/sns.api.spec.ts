@@ -9,6 +9,7 @@ import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
   participateInSnsSwap,
+  querySnsNeurons,
   querySnsSummaries,
   querySnsSwapCommitment,
   querySnsSwapState,
@@ -18,8 +19,9 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
-import { snsesCountStore } from "../../../lib/stores/projects.store";
+import { snsesCountStore } from "../../../lib/stores/sns.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
   mockSwapInit,
@@ -60,6 +62,7 @@ describe("sns-api", () => {
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
+  const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
 
   beforeEach(() => {
     jest
@@ -85,6 +88,7 @@ describe("sns-api", () => {
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
+        listNeurons: queryNeuronsSpy,
       })
     );
   });
@@ -147,7 +151,6 @@ describe("sns-api", () => {
     expect(commitment).toEqual({
       rootCanisterId: rootCanisterIdMock,
       myCommitment: mockUserCommitment,
-      currentCommitment: mockQuerySwap.derived[0].buyer_total_icp_e8s,
     });
   });
 
@@ -161,5 +164,17 @@ describe("sns-api", () => {
 
     expect(ledgerCanisterMock.transfer).toBeCalled();
     expect(notifyParticipationSpy).toBeCalled();
+  });
+
+  it("should query sns neurons", async () => {
+    const neurons = await querySnsNeurons({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(neurons).not.toBeNull();
+    expect(neurons.length).toEqual(1);
+    expect(queryNeuronsSpy).toBeCalled();
   });
 });
