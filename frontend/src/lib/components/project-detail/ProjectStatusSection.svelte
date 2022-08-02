@@ -15,19 +15,21 @@
   } from "../../types/project-detail.context";
   import { isNullish } from "../../utils/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { canUserParticipateToSwap } from "../../utils/projects.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swapCommitment: SnsSwapCommitment;
-  $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
+  let swapCommitment: SnsSwapCommitment | undefined | null;
+  $: swapCommitment = $projectDetailStore.swapCommitment;
+
+  let myCommitment: bigint | undefined;
+  $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
 
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
-    swapCommitment?.myCommitment !== undefined
-      ? ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s)
-      : undefined;
+    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -54,6 +56,12 @@
     !loadingSummary &&
     !loadingSwapState &&
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
+
+  let userCanParticipateToSwap: boolean = false;
+  $: userCanParticipateToSwap = canUserParticipateToSwap({
+    summary: $projectDetailStore.summary,
+    swapCommitment: $projectDetailStore.swapCommitment,
+  });
 </script>
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
@@ -86,6 +94,7 @@
           on:click={openModal}
           class="primary small"
           data-tid="sns-project-participate-button"
+          disabled={userCanParticipateToSwap}
           >{$i18n.sns_project_detail.participate}</button
         >
       {/if}
