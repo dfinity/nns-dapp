@@ -3,6 +3,7 @@ import type { SnsNeuron } from "@dfinity/sns";
 import type { SnsNeuronState } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
+import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -77,7 +78,6 @@ export const getSnsNeuronStake = ({
  *   id: { id: number[] },
  *   //...
  */
-// TODO: https://dfinity.atlassian.net/browse/L2-902
 export const getSnsNeuronId = (neuron: SnsNeuron): string =>
   // TODO: use upcoming fromDefinedNullable
-  neuron.id[0]?.id.join("") ?? "";
+  neuron.id[0]?.id !== undefined ? bytesToHexString(neuron.id[0]?.id) : "";
