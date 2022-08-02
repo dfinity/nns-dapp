@@ -147,7 +147,6 @@ describe("sns-api", () => {
     expect(commitment).toEqual({
       rootCanisterId: rootCanisterIdMock,
       myCommitment: mockUserCommitment,
-      currentCommitment: mockQuerySwap.derived[0].buyer_total_icp_e8s,
     });
   });
 

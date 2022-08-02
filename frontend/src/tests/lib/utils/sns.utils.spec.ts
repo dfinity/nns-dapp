@@ -7,6 +7,7 @@ import {
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
+  mockDerived,
   mockSnsSummaryList,
   mockSummary,
   mockSwap,
@@ -42,6 +43,28 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty for undefined derived info", () => {
+      const summaries = mapAndSortSnsQueryToSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [],
           },
         ],
       ]);
@@ -62,6 +85,7 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
           },
         ],
       ]);
@@ -82,6 +106,7 @@ describe("sns-utils", () => {
                 state: [mockSwapState],
               },
             ],
+            derived: [mockDerived],
           },
         ],
       ]);
@@ -102,6 +127,7 @@ describe("sns-utils", () => {
                 state: [mockSwapState],
               },
             ],
+            derived: [mockDerived],
           },
         ],
       ]);
@@ -134,6 +160,7 @@ describe("sns-utils", () => {
                 ],
               },
             ],
+            derived: [mockDerived],
           },
           {
             rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
@@ -154,6 +181,7 @@ describe("sns-utils", () => {
                 ],
               },
             ],
+            derived: [mockDerived],
           },
         ],
       ]);
@@ -192,6 +220,7 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
           },
         ]);
 
@@ -211,11 +240,33 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
           },
         ]);
 
       expect(call).toThrow();
     });
+
+    it("should throw error for undefined derived info", () => {
+      const call = () =>
+        concatSnsSummary([
+          mockSummary,
+          {
+            rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [],
+          },
+        ]);
+
+      expect(call).toThrow();
+    });
+
     it("should concat summary and swap", () => {
       const swapCanisterId = Principal.fromText("aaaaa-aa");
       const summary = concatSnsSummary([
@@ -229,6 +280,7 @@ describe("sns-utils", () => {
               state: [mockSwapState],
             },
           ],
+          derived: [mockDerived],
         },
       ]);
 
