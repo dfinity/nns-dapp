@@ -55,7 +55,7 @@ export type StateInfo = {
 type StateMapper = {
   [key: number]: StateInfo;
 };
-const stateTextMapper: StateMapper = {
+export const stateTextMapper: StateMapper = {
   [NeuronState.LOCKED]: {
     textKey: "locked",
     Icon: IconLockClock,
@@ -164,7 +164,7 @@ export const formattedMaturity = (neuron: NeuronInfo): string => {
 export const sortNeuronsByCreatedTimestamp = (
   neurons: NeuronInfo[]
 ): NeuronInfo[] =>
-  neurons.sort((a, b) =>
+  [...neurons].sort((a, b) =>
     Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
   );
 

@@ -80,8 +80,10 @@ describe("NnsNeurons", () => {
       expect(disabledCards.length).toBe(1);
     });
 
-    it("should subscribe to store", () =>
-      expect(authStoreMock).toHaveBeenCalled());
+    it("should subscribe to store", () => {
+      render(NnsNeurons);
+      expect(authStoreMock).toHaveBeenCalled();
+    });
 
     it("should render a principal as text", () => {
       const { getByText } = render(NnsNeurons);
