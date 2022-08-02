@@ -36,7 +36,12 @@
       ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+        }
+      }
     },
     "sns_governance": {
       "build": [
@@ -186,7 +191,7 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "268db05d70b3cc20475ba3ac046c0db9bd66c688"
+        "IC_COMMIT": "54a57a1f6f1ed99e66d6cde3100a0565e826385f"
       },
       "packtool": ""
     }
