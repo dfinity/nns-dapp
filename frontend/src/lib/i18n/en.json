@@ -550,7 +550,7 @@
     "token_symbol": "Token Symbol",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
-    "current_commitment": "Current Overall Commitment",
+    "current_overall_commitment": "Current Overall Commitment",
     "min_commitment_goal": "Minimum Commitment Goal",
     "deadline": "Deadline",
     "user_commitment": "Your Current Commitment",

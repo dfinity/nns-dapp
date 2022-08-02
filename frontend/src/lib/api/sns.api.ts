@@ -1,7 +1,11 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
+import type {
+  InitSnsWrapper,
+  SnsSwapBuyerState,
+  SnsWrapper,
+} from "@dfinity/sns";
 import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
@@ -336,19 +340,17 @@ export const querySnsSwapState = async ({
     certified,
   });
 
-  const { swap } = await swapState({});
+  const { swap, derived } = await swapState({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} done.`
   );
 
-  // TODO: remove when development of the deployment over
-  console.log("Swap", { rootCanisterId, swap });
-
   return {
     rootCanisterId,
     swapCanisterId,
     swap,
+    derived
   };
 };
 
@@ -402,27 +404,25 @@ export const querySnsSwapCommitment = async ({
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} call...`
   );
 
-  const { getUserCommitment, swapState }: SnsWrapper = await wrapper({
+  const { getUserCommitment }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
   });
 
-  // TODO: Read the current total commitment from SnsSummary instead of SnsSwapCommitment
-  const [userCommitment, state] = await Promise.all([
-    getUserCommitment({
+  const userCommitment: SnsSwapBuyerState | undefined = await getUserCommitment(
+    {
       principal_id: [identity.getPrincipal()],
-    }),
-    swapState({}),
-  ]);
+    }
+  );
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} done.`
   );
+
   return {
     rootCanisterId: Principal.fromText(rootCanisterId),
     myCommitment: userCommitment,
-    currentCommitment: state?.derived?.[0]?.buyer_total_icp_e8s ?? BigInt(0),
   };
 };
 

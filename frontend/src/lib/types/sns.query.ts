@@ -1,5 +1,5 @@
 import type { Principal } from "@dfinity/principal";
-import type { SnsSwap } from "@dfinity/sns";
+import type { SnsSwap, SnsSwapDerivedState } from "@dfinity/sns";
 import type { SnsSummary } from "./sns";
 
 export type QueryRootCanisterId = string;
@@ -11,4 +11,5 @@ export type QuerySnsSwapState = {
   rootCanisterId: QueryRootCanisterId;
   swapCanisterId: Principal;
   swap: [] | [SnsSwap];
+  derived: [] | [SnsSwapDerivedState];
 };

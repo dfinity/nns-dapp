@@ -1,6 +1,6 @@
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
+import type {SnsSwap, SnsSwapDerivedState, SnsSwapInit, SnsSwapState} from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
 import { assertNonNullish } from "./asserts.utils";
@@ -8,6 +8,7 @@ import { fromNullable } from "./did.utils";
 
 type OptionalSwapSummary = QuerySnsSummary & {
   swap?: SnsSwap;
+  derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
 };
 
@@ -57,10 +58,12 @@ export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
         ...rest,
         swapCanisterId: swapState?.swapCanisterId,
         swap: fromNullable(swapState?.swap ?? []),
+        derived: fromNullable(swapState?.derived ?? [])
       };
     }
   );
 
+  // Only those that have valid sale information and state can be considered as valid regardless of their state.
   const validSwapSummaries: ValidSwapSummary[] = allSummaries.filter(
     (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
       entry.swap !== undefined &&
@@ -89,7 +92,7 @@ export const concatSnsSummary = ([summary, swap]: [
   assertNonNullish(summary);
   assertNonNullish(swap);
 
-  // Not sure, this should ever happen
+  // Not sure, this should ever happen but we consider sale valid only if we get information - i.e. if no information and state are provided, NNS-dapp cannot display information and user cannot participate anyway
   const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
 
   assertNonNullish(possibleSwap);
@@ -102,13 +105,17 @@ export const concatSnsSummary = ([summary, swap]: [
   assertNonNullish(init);
   assertNonNullish(state);
 
+  const {swapCanisterId, derived} = swap;
+  const possibleDerived: SnsSwapDerivedState | undefined = fromNullable(derived);
+
   return {
     ...summary,
-    swapCanisterId: swap.swapCanisterId,
+    swapCanisterId,
     swap: {
       init,
       state,
     },
+    derived: possibleDerived
   };
 };
 
