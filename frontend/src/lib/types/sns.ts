@@ -1,7 +1,8 @@
 import type { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
-  SnsSwapBuyerState, SnsSwapDerivedState,
+  SnsSwapBuyerState,
+  SnsSwapDerivedState,
   SnsSwapInit,
   SnsSwapState,
 } from "@dfinity/sns";

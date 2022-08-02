@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal";
 import {
-  type SnsSwapDerivedState,
   SnsSwapLifecycle,
+  type SnsSwapDerivedState,
   type SnsSwapState,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
