@@ -67,6 +67,7 @@
     "@dfinity/candid": "^0.12.0",
     "@dfinity/identity": "^0.12.0",
     "@dfinity/nns": "nightly",
+    "@dfinity/principal": "^0.12.0",
     "@dfinity/sns": "nightly",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
