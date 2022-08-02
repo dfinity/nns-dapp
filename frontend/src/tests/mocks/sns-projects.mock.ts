@@ -1,5 +1,9 @@
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsSwapDerivedState,
+  type SnsSwapState,
+} from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type {
@@ -47,22 +51,18 @@ export const mockSnsSwapCommitment = (
     [principal(0).toText()]: {
       rootCanisterId: principal(0),
       myCommitment: createBuyersState(BigInt(25 * 100000000)),
-      currentCommitment: BigInt(100 * 100000000),
     },
     [principal(1).toText()]: {
       rootCanisterId: principal(1),
       myCommitment: createBuyersState(BigInt(5 * 100000000)),
-      currentCommitment: BigInt(775 * 100000000),
     },
     [principal(2).toText()]: {
       rootCanisterId: principal(2),
       myCommitment: undefined,
-      currentCommitment: BigInt(1000 * 100000000),
     },
     [principal(3).toText()]: {
       rootCanisterId: principal(3),
       myCommitment: undefined,
-      currentCommitment: BigInt(1500 * 100000000),
     },
   }[rootCanisterId.toText()]);
 
@@ -108,6 +108,11 @@ export const mockSwap: SnsSummarySwap = {
   state: mockSwapState,
 };
 
+export const mockDerived: SnsSwapDerivedState = {
+  buyer_total_icp_e8s: BigInt(100 * 100000000),
+  sns_tokens_per_icp: 1,
+};
+
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
@@ -126,6 +131,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(1),
@@ -144,6 +150,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(2),
@@ -162,6 +169,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
   {
     rootCanisterId: principal(3),
@@ -180,6 +188,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     swap: mockSwap,
+    derived: mockDerived,
   },
 ])
   // preserve indexes (important for unit tests)

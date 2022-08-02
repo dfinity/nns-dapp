@@ -1,9 +1,14 @@
-import type { SnsSwap, SnsSwapLifecycle } from "@dfinity/sns";
+import type {
+  SnsSwap,
+  SnsSwapDerivedState,
+  SnsSwapLifecycle,
+} from "@dfinity/sns";
 import type {
   QuerySnsSummary,
   QuerySnsSwapState,
 } from "../../lib/types/sns.query";
 import {
+  mockDerived,
   mockSnsFullProject,
   principal,
   summaryForLifecycle,
@@ -37,6 +42,7 @@ export const snsResponsesForLifecycle = ({
             state: [summaryForLifecycle(lifecycle).swap.state],
           },
         ] as [SnsSwap],
+        derived: [mockDerived] as [SnsSwapDerivedState],
       })),
     ],
   ],
