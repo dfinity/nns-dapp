@@ -34,6 +34,28 @@ describe("SNS Neurons stores", () => {
       expect(neuronsInStore[mockPrincipal.toText()].neurons).toEqual(neurons);
     });
 
+    it("should reset neurons for a project", () => {
+      const neurons: SnsNeuron[] = [
+        createMockSnsNeuron({
+          stake: BigInt(1_000_000_000),
+          id: [1, 5, 3, 9, 1, 1, 1],
+        }),
+        createMockSnsNeuron({
+          stake: BigInt(2_000_000_000),
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
+      ];
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons,
+        certified: true,
+      });
+      snsNeuronsStore.resetProject(mockPrincipal);
+
+      const neuronsInStore = get(snsNeuronsStore);
+      expect(neuronsInStore[mockPrincipal.toText()]).toBeUndefined();
+    });
+
     it("should add neurons for another project", () => {
       const neurons1: SnsNeuron[] = [
         createMockSnsNeuron({

@@ -47,6 +47,14 @@ const initSnsNeuronsStore = () => {
     reset() {
       set({});
     },
+
+    resetProject(rootCanisterId: Principal) {
+      update((currentState: NeuronsStore) => {
+        const clonedState = { ...currentState };
+        delete clonedState[rootCanisterId.toText()];
+        return clonedState;
+      });
+    },
   };
 };
 
