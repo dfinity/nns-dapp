@@ -51,27 +51,6 @@ describe("sns-utils", () => {
       expect(summaries.length).toEqual(0);
     });
 
-    it("should return empty for undefined derived info", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary],
-        [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
-            derived: [],
-          },
-        ],
-      ]);
-
-      expect(summaries.length).toEqual(0);
-    });
-
     it("should return empty for undefined swap state", () => {
       const summaries = mapAndSortSnsQueryToSummaries([
         [mockSummary],
@@ -86,6 +65,27 @@ describe("sns-utils", () => {
               },
             ],
             derived: [mockDerived],
+          },
+        ],
+      ]);
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty for undefined derived info", () => {
+      const summaries = mapAndSortSnsQueryToSummaries([
+        [mockSummary],
+        [
+          {
+            rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [],
           },
         ],
       ]);
