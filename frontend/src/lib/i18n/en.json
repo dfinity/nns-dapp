@@ -553,6 +553,7 @@
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
     "min_commitment_goal": "Minimum Commitment Goal",
+    "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
     "user_commitment": "Your Current Commitment",
     "status": "Status",
