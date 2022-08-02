@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
@@ -15,7 +14,7 @@
   } from "../../types/project-detail.context";
   import { isNullish } from "../../utils/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { canUserParticipateToSwap } from "../../utils/projects.utils";
+  import ParticipateButton from "./ParticipateButton.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -30,10 +29,6 @@
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
     myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
-
-  let showModal: boolean = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
@@ -51,22 +46,16 @@
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let displayStatus: boolean = false;
-  $: displayStatus =
+  let displayStatusSection: boolean = false;
+  $: displayStatusSection =
     !loadingSummary &&
     !loadingSwapState &&
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
-
-  let userCanParticipateToSwap: boolean = false;
-  $: userCanParticipateToSwap = canUserParticipateToSwap({
-    summary: $projectDetailStore.summary,
-    swapCommitment: $projectDetailStore.swapCommitment,
-  });
 </script>
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
-{#if displayStatus}
+{#if displayStatusSection}
   <div class="wrapper" data-tid="sns-project-detail-status">
     <ProjectStatus />
 
@@ -89,21 +78,9 @@
         </div>
       {/if}
 
-      {#if lifecycle === SnsSwapLifecycle.Open}
-        <button
-          on:click={openModal}
-          class="primary small"
-          data-tid="sns-project-participate-button"
-          disabled={userCanParticipateToSwap}
-          >{$i18n.sns_project_detail.participate}</button
-        >
-      {/if}
+      <ParticipateButton />
     </div>
   </div>
-{/if}
-
-{#if showModal}
-  <ParticipateSwapModal on:nnsClose={closeModal} />
 {/if}
 
 <style lang="scss">
