@@ -34,6 +34,7 @@
     "neuron_not_found": "Neuron not found.",
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
+    "sns_neurons_load": "An error occurred while loading the neurons.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",

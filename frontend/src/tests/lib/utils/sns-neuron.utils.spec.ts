@@ -98,11 +98,9 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns time in seconds until dissolve", () => {
-      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
-      const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
-        dissolve_state: [{ DissolveDelaySeconds: delayInSeconds }],
+        dissolve_state: [{ DissolveDelaySeconds: BigInt(SECONDS_IN_YEAR) }],
       };
       expect(getSnsLockedTimeInSeconds(neuron)).toBe(BigInt(SECONDS_IN_YEAR));
     });
