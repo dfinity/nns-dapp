@@ -574,7 +574,8 @@
     "status_completed": "Status",
     "completed": "Completed",
     "sale_start": "Sale Start",
-    "sale_end": "Sale End"
+    "sale_end": "Sale End",
+    "max_user_commitment_reached": "Maximum commitment reached"
   },
   "time": {
     "year": "year",

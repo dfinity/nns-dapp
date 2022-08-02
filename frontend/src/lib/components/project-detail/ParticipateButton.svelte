@@ -9,6 +9,7 @@
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import { canUserParticipateToSwap } from "../../utils/projects.utils";
   import { i18n } from "../../stores/i18n";
+  import Tooltip from "../ui/Tooltip.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -37,13 +38,27 @@
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
-  <button
-    on:click={openModal}
-    class="primary small"
-    data-tid="sns-project-participate-button"
-    disabled={userCanParticipateToSwap}
-    >{$i18n.sns_project_detail.participate}</button
-  >
+  {#if userCanParticipateToSwap}
+    <button
+      on:click={openModal}
+      class="primary small"
+      data-tid="sns-project-participate-button"
+      >{$i18n.sns_project_detail.participate}</button
+    >
+  {:else}
+    <Tooltip
+      id="sns-project-participate-button-tooltip"
+      text={$i18n.sns_project_detail.max_user_commitment_reached}
+    >
+      <button
+        on:click={openModal}
+        class="primary small"
+        data-tid="sns-project-participate-button"
+        disabled={true}
+        >{$i18n.sns_project_detail.participate}</button
+      >
+    </Tooltip>
+  {/if}
 {/if}
 
 {#if showModal}
