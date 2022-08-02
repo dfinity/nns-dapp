@@ -6,7 +6,7 @@ import { snsProjectSelectedStore } from "../../../lib/stores/projects.store";
 import {
   snsNeuronsStore,
   sortedSnsNeuronStore,
-} from "../../../lib/stores/snsNeurons.store";
+} from "../../../lib/stores/sns-neurons.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 

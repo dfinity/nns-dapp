@@ -5,6 +5,8 @@ import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
 import { snsProjectSelectedStore } from "./projects.store";
 
 export interface NeuronsStore {
+  // Each SNS Project is an entry in this Store.
+  // We use the root canister id as the key to identify the neurons for a specific project.
   [rootCanisterId: string]: {
     neurons: SnsNeuron[];
     // certified is an optimistic value - i.e. it represents the last value that has been pushed in store

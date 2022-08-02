@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import { querySnsNeurons } from "../api/sns.api";
-import { snsNeuronsStore } from "../stores/snsNeurons.store";
+import { snsNeuronsStore } from "../stores/sns-neurons.store";
 
 // TODO: Implement with update and query and error handling https://dfinity.atlassian.net/browse/L2-869
 export const loadSnsNeurons = async (
