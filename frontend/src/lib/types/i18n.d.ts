@@ -421,6 +421,7 @@ interface I18nProposal_detail {
   topic_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
+  open_voting_prefix: string;
   adopt: string;
   reject: string;
   my_votes: string;
