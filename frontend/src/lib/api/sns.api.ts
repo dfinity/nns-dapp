@@ -3,6 +3,7 @@ import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   InitSnsWrapper,
+  SnsNeuron,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -26,6 +27,7 @@ import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
+import { mockSnsNeurons } from "./sns.mock";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -350,7 +352,7 @@ export const querySnsSwapState = async ({
     rootCanisterId,
     swapCanisterId,
     swap,
-    derived
+    derived,
   };
 };
 
@@ -467,3 +469,6 @@ export const participateInSnsSwap = async ({
 
   logWithTimestamp("Participating in swap: done");
 };
+
+// TODO: Implement https://dfinity.atlassian.net/browse/L2-869
+export const querySnsNeurons = async (): Promise<SnsNeuron[]> => mockSnsNeurons;
