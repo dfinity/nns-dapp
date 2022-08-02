@@ -2,39 +2,45 @@
   "__Candid_UI": {
     "small06": "qhbym-qaaaa-aaaaa-aaafq-cai",
     "small11": "qhbym-qaaaa-aaaaa-aaafq-cai",
-    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
+    "small12": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
   },
   "internet_identity": {
     "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
-    "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-    "small12": "q4eej-kyaaa-aaaaa-aaaha-cai"
+    "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "nns-dapp": {
     "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
-    "small12": "q3fc5-haaaa-aaaaa-aaahq-cai",
-    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
+    "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small12": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "testnet": "qsgjb-riaaa-aaaaa-aaaga-cai"
   },
   "sns_governance": {
-    "small06": "xpeh5-6iaaa-aaaaa-aaaua-cai",
-    "small11": "s24we-diaaa-aaaaa-aaaka-cai"
+    "small06": "uwugh-uaaaa-aaaaa-aaa5q-cai",
+    "small11": "s24we-diaaa-aaaaa-aaaka-cai",
+    "testnet": "s24we-diaaa-aaaaa-aaaka-cai"
   },
   "sns_ledger": {
-    "small06": "xifbj-tqaaa-aaaaa-aaauq-cai",
-    "small11": "s55qq-oqaaa-aaaaa-aaakq-cai"
+    "small06": "udtxk-viaaa-aaaaa-aaa6a-cai",
+    "small11": "s55qq-oqaaa-aaaaa-aaakq-cai",
+    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
   },
   "sns_root": {
-    "small06": "wckdt-raaaa-aaaaa-aaatq-cai",
-    "small11": "sp3hj-caaaa-aaaaa-aaajq-cai"
+    "small06": "urvat-zyaaa-aaaaa-aaa5a-cai",
+    "small11": "sp3hj-caaaa-aaaaa-aaajq-cai",
+    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
   },
   "sns_swap": {
-    "small06": "xbgkv-fyaaa-aaaaa-aaava-cai",
-    "small11": "su63m-yyaaa-aaaaa-aaala-cai"
+    "small06": "uesr6-yqaaa-aaaaa-aaa6q-cai",
+    "small11": "su63m-yyaaa-aaaaa-aaala-cai",
+    "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
   },
   "wasm_canister": {
     "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-    "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
-    "small12": "qsgjb-riaaa-aaaaa-aaaga-cai"
+    "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai",
+    "small12": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   }
 }
