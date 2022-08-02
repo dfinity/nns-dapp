@@ -27,7 +27,6 @@ import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
-import { mockSnsNeurons } from "./sns.mock";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -470,5 +469,23 @@ export const participateInSnsSwap = async ({
   logWithTimestamp("Participating in swap: done");
 };
 
-// TODO: Implement https://dfinity.atlassian.net/browse/L2-869
-export const querySnsNeurons = async (): Promise<SnsNeuron[]> => mockSnsNeurons;
+export const querySnsNeurons = async ({
+  identity,
+  rootCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<SnsNeuron[]> => {
+  logWithTimestamp("Getting sns neurons: call...");
+  const { listNeurons } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neurons = await listNeurons({});
+
+  logWithTimestamp("Getting sns neurons: done");
+  return neurons;
+};

@@ -47,6 +47,14 @@ const initSnsNeuronsStore = () => {
     reset() {
       set({});
     },
+
+    resetProject(rootCanisterId: Principal) {
+      update((currentState: NeuronsStore) =>
+        Object.entries(currentState)
+          .filter(([key]) => key !== rootCanisterId.toText())
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      );
+    },
   };
 };
 

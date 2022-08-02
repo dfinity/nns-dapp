@@ -62,7 +62,7 @@ export const getSnsLockedTimeInSeconds = (
     dissolveState !== undefined &&
     "DissolveDelaySeconds" in dissolveState
   ) {
-    return dissolveState.DissolveDelaySeconds - BigInt(nowInSeconds());
+    return dissolveState.DissolveDelaySeconds;
   }
 };
 
@@ -77,6 +77,7 @@ export const getSnsNeuronStake = ({
  *   id: { id: number[] },
  *   //...
  */
+// TODO: https://dfinity.atlassian.net/browse/L2-902
 export const getSnsNeuronId = (neuron: SnsNeuron): string =>
   // TODO: use upcoming fromDefinedNullable
   neuron.id[0]?.id.join("") ?? "";
