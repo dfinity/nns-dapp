@@ -609,6 +609,10 @@ interface I18nSns_project_detail {
   max_user_commitment_reached: string;
 }
 
+interface I18nSns_neuron_detail {
+  header: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -714,6 +718,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_neuron_detail: I18nSns_neuron_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

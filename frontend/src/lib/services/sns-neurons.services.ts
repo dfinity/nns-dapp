@@ -1,9 +1,12 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
-import { querySnsNeurons } from "../api/sns.api";
+import { get } from "svelte/store";
+import { querySnsNeuron, querySnsNeurons } from "../api/sns.api";
 import { snsNeuronsStore } from "../stores/sns-neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { toToastError } from "../utils/error.utils";
+import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
+import { hexStringToBytes } from "../utils/utils";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsNeurons = async (
@@ -41,5 +44,47 @@ export const loadSnsNeurons = async (
       );
     },
     logMessage: "Syncing Sns Neurons",
+  });
+};
+
+export const getSnsNeuron = async ({
+  neuronIdHex,
+  rootCanisterId,
+  onLoad,
+  onError,
+}: {
+  neuronIdHex: string;
+  rootCanisterId: Principal;
+  onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
+  onError?: ({ certified, error }) => void;
+}): Promise<void> => {
+  const store = get(snsNeuronsStore);
+  const neuronFromStore = getSnsNeuronByHexId({
+    neuronIdHex,
+    neurons: store[rootCanisterId.toText()]?.neurons,
+  });
+  if (neuronFromStore !== undefined) {
+    onLoad({
+      neuron: neuronFromStore,
+      certified: store[rootCanisterId.toText()]?.certified,
+    });
+    return;
+  }
+  const neuronId = hexStringToBytes(neuronIdHex);
+  queryAndUpdate<SnsNeuron, Error>({
+    request: ({ certified, identity }) =>
+      querySnsNeuron({
+        rootCanisterId,
+        identity,
+        certified,
+        neuronId: { id: neuronId },
+      }),
+    onLoad: ({ response: neuron, certified }) => {
+      onLoad({ neuron, certified });
+    },
+    onError: ({ certified, error }) => {
+      onError?.({ certified, error });
+    },
+    logMessage: `Getting Sns Neuron ${neuronIdHex}`,
   });
 };

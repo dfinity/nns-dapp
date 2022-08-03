@@ -4,11 +4,15 @@ import { SECONDS_IN_YEAR } from "../../../lib/constants/constants";
 import {
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
+  getSnsNeuronByHexId,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  routePathSnsNeuronCanisterId,
+  routePathSnsNeuronId,
   sortSnsNeuronsByCreatedTimestamp,
 } from "../../../lib/utils/sns-neuron.utils";
+import { bytesToHexString } from "../../../lib/utils/utils";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -139,6 +143,94 @@ describe("sns-neuron utils", () => {
       expect(getSnsNeuronIdAsHexString(neuron)).toBe(
         "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
       );
+    });
+  });
+
+  describe("getSnsNeuronByHexId", () => {
+    it("returns the neuron with the matching id", () => {
+      const neuronId = [1, 2, 3, 4];
+      const neuron1 = createMockSnsNeuron({
+        id: neuronId,
+      });
+      const neuron2 = createMockSnsNeuron({
+        id: [5, 6, 7, 8],
+      });
+      const neurons = [neuron1, neuron2];
+      expect(
+        getSnsNeuronByHexId({
+          neurons,
+          neuronIdHex: bytesToHexString(neuronId),
+        })
+      ).toBe(neuron1);
+    });
+
+    it("returns undefined when no matching id", () => {
+      const neuron1 = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+      });
+      const neuron2 = createMockSnsNeuron({
+        id: [5, 6, 7, 8],
+      });
+      const neurons = [neuron1, neuron2];
+      expect(
+        getSnsNeuronByHexId({
+          neurons,
+          neuronIdHex: bytesToHexString([1, 1, 1, 1]),
+        })
+      ).toBeUndefined();
+    });
+
+    it("returns undefined when no neurons", () => {
+      expect(
+        getSnsNeuronByHexId({
+          neurons: [],
+          neuronIdHex: bytesToHexString([1, 1, 1, 1]),
+        })
+      ).toBeUndefined();
+      expect(
+        getSnsNeuronByHexId({
+          neurons: undefined,
+          neuronIdHex: bytesToHexString([1, 1, 1, 1]),
+        })
+      ).toBeUndefined();
+    });
+  });
+
+  describe("routePathSnsNeuronId", () => {
+    afterAll(() => jest.clearAllMocks());
+    it("should get neuronId from valid path", async () => {
+      expect(routePathSnsNeuronId("/#/project/222/neuron/123")).toBe("123");
+      expect(routePathSnsNeuronId("/#/project/222/neuron/0")).toBe("0");
+    });
+
+    it("should not get neuronId from invalid path", async () => {
+      expect(routePathSnsNeuronId("/#/neuron/")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/project/123")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/project/124/neuron")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/neurons/")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/accounts/")).toBeUndefined();
+    });
+  });
+
+  describe("routePathSnsNeuronCanisterId", () => {
+    afterAll(() => jest.clearAllMocks());
+    it("should get root canister id from valid path", async () => {
+      expect(routePathSnsNeuronCanisterId("/#/project/222/neuron/123")).toBe(
+        "222"
+      );
+      expect(routePathSnsNeuronCanisterId("/#/project/0ff/neuron/0")).toBe(
+        "0ff"
+      );
+    });
+
+    it("should not get root canister id from invalid path", async () => {
+      expect(routePathSnsNeuronCanisterId("/#/neuron/")).toBeUndefined();
+      expect(routePathSnsNeuronCanisterId("/#/project/123")).toBeUndefined();
+      expect(
+        routePathSnsNeuronCanisterId("/#/project/124/neuron")
+      ).toBeUndefined();
+      expect(routePathSnsNeuronCanisterId("/#/neurons/")).toBeUndefined();
+      expect(routePathSnsNeuronCanisterId("/#/accounts/")).toBeUndefined();
     });
   });
 });
