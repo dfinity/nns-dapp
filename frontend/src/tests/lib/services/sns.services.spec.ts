@@ -1,10 +1,8 @@
 import { AccountIdentifier, ICP } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import * as api from "../../../lib/api/sns.api";
 import * as services from "../../../lib/services/sns.services";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsSwapCommitment } from "../../mocks/sns-projects.mock";
 
 const { participateInSwap, getSwapAccount } = services;
 
@@ -24,12 +22,8 @@ jest.mock("../../../lib/services/accounts.services", () => {
 
 describe("sns-services", () => {
   describe("participateInSwap", () => {
-    const spyQuery = jest
-      .spyOn(api, "querySnsSwapCommitment")
-      .mockImplementation(() =>
-        Promise.resolve(mockSnsSwapCommitment(Principal.fromText("aaaaa-aa")))
-      );
     afterEach(() => jest.clearAllMocks());
+
     it("should call api.participateInSnsSwap and return success true", async () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
@@ -41,7 +35,23 @@ describe("sns-services", () => {
       });
       expect(success).toBe(true);
       expect(spyParticipate).toBeCalled();
-      expect(spyQuery).toBeCalled();
+    });
+
+    it("should execute optional callback on successful participation to swap", async () => {
+      jest
+        .spyOn(api, "participateInSnsSwap")
+        .mockImplementation(() => Promise.resolve(undefined));
+
+      const onSuccess = jest.fn();
+
+      await participateInSwap({
+        amount: ICP.fromString("3") as ICP,
+        rootCanisterId: mockPrincipal,
+        account: mockMainAccount,
+        onSuccess,
+      });
+
+      expect(onSuccess).toHaveBeenCalled();
     });
 
     it("should return success false if api call fails", async () => {
@@ -55,7 +65,6 @@ describe("sns-services", () => {
       });
       expect(success).toBe(false);
       expect(spyParticipate).toBeCalled();
-      expect(spyQuery).not.toBeCalled();
     });
 
     it("should return success false if no identity", async () => {
@@ -70,7 +79,6 @@ describe("sns-services", () => {
       });
       expect(success).toBe(false);
       expect(spyParticipate).not.toBeCalled();
-      expect(spyQuery).not.toBeCalled();
       resetAccountIdentity();
     });
   });
