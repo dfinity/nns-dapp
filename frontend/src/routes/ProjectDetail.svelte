@@ -93,53 +93,44 @@
     routeStore.replace({ path: AppPath.Launchpad });
   };
 
-  const getOrLoadSummary = (rootCanisterId: string) => {
-    // try to get from snsSummariesStore
-    const summaryMaybe = $snsSummariesStore?.find(
-      ({ rootCanisterId: rootCanister }) =>
-        rootCanister?.toText() === rootCanisterId
-    );
+  const mapProjectDetail = (rootCanisterId: string | undefined) => {
+    $projectDetailStore.summary =
+      rootCanisterId !== undefined
+        ? $snsSummariesStore.find(
+            ({ rootCanisterId: rootCanister }) =>
+              rootCanister?.toText() === rootCanisterId
+          )
+        : null;
 
-    if (summaryMaybe !== undefined) {
-      $projectDetailStore.summary = summaryMaybe;
+    $projectDetailStore.swapCommitment =
+      rootCanisterId !== undefined
+        ? $snsSwapCommitmentsStore?.find(
+            (item) =>
+              item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
+          )
+        : null;
+  };
 
-      // do not reload already certified data
-      if ($snsQueryStore?.certified === true) {
+  /**
+   * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
+   */
+  $: $snsSummariesStore,
+    $snsSwapCommitmentsStore,
+    (() => {
+      const { path } = $routeStore;
+
+      if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
         return;
       }
-    }
 
-    // flag loading state
-    $projectDetailStore.summary = null;
+      const rootCanisterId = routePathRootCanisterId(path);
+      mapProjectDetail(rootCanisterId);
+    })();
 
-    loadSummary(rootCanisterId);
-  };
-
-  const getOrLoadSwapState = (rootCanisterId: string) => {
-    if (nonNullish($snsSwapCommitmentsStore)) {
-      // try to get from snsSwapStatesStore
-      const swapItemMaybe = $snsSwapCommitmentsStore.find(
-        (item) =>
-          item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
-      );
-
-      if (swapItemMaybe !== undefined) {
-        $projectDetailStore.swapCommitment = swapItemMaybe.swapCommitment;
-
-        if (swapItemMaybe.certified === true) {
-          // do not reload already certified data
-          return;
-        }
-      }
-    }
-
-    // flag loading state
-    $projectDetailStore.swapCommitment = null;
-
-    loadSwapState(rootCanisterId);
-  };
-
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+  /**
+   * We subscribe to the route in a particular function because if not root canister id is provided in the url it redirects to `goBack` which needs the particular usage of `unsubscribe` to avoid loops.
+   */
+  const unsubscribe = routeStore.subscribe(({ path }) => {
     if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
       return;
     }
@@ -150,13 +141,7 @@
       return;
     }
 
-    if ($projectDetailStore.summary === undefined) {
-      getOrLoadSummary(rootCanisterId);
-    }
-
-    if ($projectDetailStore.swapCommitment === undefined) {
-      getOrLoadSwapState(rootCanisterId);
-    }
+    mapProjectDetail(rootCanisterId);
   });
 
   onDestroy(unsubscribe);
