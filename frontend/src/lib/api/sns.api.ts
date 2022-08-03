@@ -274,6 +274,7 @@ export const querySnsSummary = async ({
   }
 
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
+  console.log("Sns metadata", summary);
   return mockSnsSummaries.find(
     ({ rootCanisterId: canisterId }: QuerySnsSummary) =>
       canisterId?.toText() === rootCanisterId

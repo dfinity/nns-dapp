@@ -99,7 +99,7 @@
         ? $snsSwapCommitmentsStore?.find(
             (item) =>
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
-          )
+          )?.swapCommitment
         : null;
   };
 
