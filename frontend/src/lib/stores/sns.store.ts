@@ -96,6 +96,13 @@ const initSnsQueryStore = () => {
       });
     },
 
+    /**
+     * Note about undefined data (edge case):
+     *
+     * The data parameter can contain undefined values if the backend does not find the related info for the root canister id.
+     * This should not happen since we update the store if the user interact with a project that was actually already successfully fetched.
+     * However, if this would ever happen and to prevent issues, we clean up the store for the related root canister id.
+     */
     updateData({
       data: [updatedSummary, updatedSwap],
       rootCanisterId,
