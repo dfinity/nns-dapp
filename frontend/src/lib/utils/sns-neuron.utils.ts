@@ -78,6 +78,6 @@ export const getSnsNeuronStake = ({
  *   id: { id: number[] },
  *   //...
  */
-export const getSnsNeuronId = (neuron: SnsNeuron): string =>
+export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
   // TODO: use upcoming fromDefinedNullable
-  neuron.id[0]?.id !== undefined ? bytesToHexString(neuron.id[0]?.id) : "";
+  bytesToHexString(neuron.id[0]?.id ?? []);
