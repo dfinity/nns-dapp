@@ -54,7 +54,7 @@
       },
     });
 
-  const reload = () => {
+  const reload = async () => {
     const { path } = $routeStore;
 
     const rootCanisterId = routePathRootCanisterId(path);
@@ -64,8 +64,10 @@
       return;
     }
 
-    loadSummary(rootCanisterId);
-    loadSwapState(rootCanisterId);
+    await Promise.all([
+      loadSummary(rootCanisterId),
+      loadSwapState(rootCanisterId),
+    ]);
   };
 
   const projectDetailStore = writable<ProjectDetailStore>({

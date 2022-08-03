@@ -58,7 +58,7 @@
         rootCanisterId: $store.summary.rootCanisterId,
       });
       if (success) {
-        reload();
+        await reload();
 
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
