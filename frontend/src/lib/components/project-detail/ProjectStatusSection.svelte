@@ -72,7 +72,11 @@
       {#if myCommitmentIcp !== undefined}
         <div>
           <KeyValuePair>
-            <ProjectUserCommitmentLabel slot="key" summary={$projectDetailStore.summary} {swapCommitment} />
+            <ProjectUserCommitmentLabel
+              slot="key"
+              summary={$projectDetailStore.summary}
+              {swapCommitment}
+            />
             <svelte:fragment slot="value">
               <Icp icp={myCommitmentIcp} singleLine />
             </svelte:fragment>

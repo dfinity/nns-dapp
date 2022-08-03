@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import type {SnsSummary, SnsSwapCommitment} from '../../types/sns';
+  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 
   export let summary: SnsSummary | undefined | null;
   export let swapCommitment: SnsSwapCommitment | undefined;
