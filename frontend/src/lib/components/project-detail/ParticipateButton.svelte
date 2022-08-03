@@ -51,7 +51,6 @@
       text={$i18n.sns_project_detail.max_user_commitment_reached}
     >
       <button
-        on:click={openModal}
         class="primary small"
         data-tid="sns-project-participate-button"
         disabled>{$i18n.sns_project_detail.participate}</button
