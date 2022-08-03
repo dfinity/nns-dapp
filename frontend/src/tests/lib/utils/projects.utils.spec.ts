@@ -1,6 +1,11 @@
-import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsSwapBuyerState,
+  type SnsSwapTimeWindow,
+} from "@dfinity/sns";
 import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
+  canUserParticipateToSwap,
   durationTillSwapDeadline,
   durationTillSwapStart,
   filterActiveProjects,
@@ -11,6 +16,8 @@ import {
 import {
   mockSnsFullProject,
   mockSwap,
+  mockSwapCommitment,
+  mockSwapInit,
   summaryForLifecycle,
 } from "../../mocks/sns-projects.mock";
 
@@ -184,5 +191,88 @@ describe("project-utils", () => {
           },
         })
       ).toBeUndefined());
+  });
+
+  describe("can user participate to swap", () => {
+    it("cannot participate to swap if no summary or swap information", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: undefined,
+          swapCommitment: undefined,
+        })
+      ).toBeFalsy();
+      expect(
+        canUserParticipateToSwap({ summary: null, swapCommitment: undefined })
+      ).toBeFalsy();
+      expect(
+        canUserParticipateToSwap({ summary: undefined, swapCommitment: null })
+      ).toBeFalsy();
+      expect(
+        canUserParticipateToSwap({ summary: null, swapCommitment: null })
+      ).toBeFalsy();
+    });
+
+    it("cannot participate to swap if sale is not open", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeFalsy();
+
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeFalsy();
+
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeFalsy();
+
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeFalsy();
+    });
+
+    it("cannot participate to swap if sale is open", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeTruthy();
+    });
+
+    it("cannot participate to swap if max user commitment is reached", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: {
+            rootCanisterId: mockSwapCommitment.rootCanisterId,
+            myCommitment: {
+              ...(mockSwapCommitment.myCommitment as SnsSwapBuyerState),
+              amount_icp_e8s: mockSwapInit.max_participant_icp_e8s,
+            },
+          },
+        })
+      ).toBeFalsy();
+    });
+
+    it("cannot participate to swap if max user commitment is not reached", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeTruthy();
+    });
   });
 });
