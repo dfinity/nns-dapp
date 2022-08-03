@@ -42,7 +42,7 @@ describe("Projects", () => {
       SnsSwapLifecycle.Open,
     ];
 
-    snsQueryStore.setResponse(
+    snsQueryStore.setData(
       snsResponsesForLifecycle({
         lifecycles,
       })
@@ -60,10 +60,7 @@ describe("Projects", () => {
   it("should render a message when no projects available", () => {
     const principal = mockSnsSummaryList[0].rootCanisterId;
 
-    snsQueryStore.setResponse({
-      response: [[], []],
-      certified: false,
-    });
+    snsQueryStore.setData([[], []]);
     snsSwapCommitmentsStore.setSwapCommitment({
       swapCommitment: mockSnsSwapCommitment(principal),
       certified: false,

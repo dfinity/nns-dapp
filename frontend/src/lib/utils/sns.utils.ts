@@ -8,7 +8,6 @@ import type {
 } from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
 import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
-import { assertNonNullish } from "./asserts.utils";
 import { fromNullable } from "./did.utils";
 
 type OptionalSwapSummary = QuerySnsSummary & {
@@ -55,10 +54,13 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
  * If either of those are missing, that would indicate a bigger issue with the swap canister and can be safely ignored from the nns-dapp.
  *
  */
-export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
-  QuerySnsSummary[],
-  QuerySnsSwapState[]
-]): SnsSummary[] => {
+export const mapAndSortSnsQueryToSummaries = ({
+  summaries,
+  swaps,
+}: {
+  summaries: QuerySnsSummary[];
+  swaps: QuerySnsSwapState[];
+}): SnsSummary[] => {
   const allSummaries: OptionalSwapSummary[] = summaries.map(
     ({ rootCanisterId, ...rest }: OptionalSwapSummary) => {
       const swapState = swaps.find(
@@ -98,45 +100,6 @@ export const mapAndSortSnsQueryToSummaries = ([summaries, swaps]: [
   );
 };
 
-export const concatSnsSummary = ([summary, swap]: [
-  QuerySnsSummary | undefined,
-  QuerySnsSwapState | undefined
-]): SnsSummary => {
-  assertNonNullish(summary);
-  assertNonNullish(swap);
-
-  /**
-   * See above `mapAndSortSnsQueryToSummaries` doc to get to know why swap and derived are mandatory.
-   */
-  const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
-  assertNonNullish(possibleSwap);
-
-  const possibleDerived: SnsSwapDerivedState | undefined = fromNullable(
-    swap?.derived
-  );
-  assertNonNullish(possibleDerived);
-
-  const { init: possibleInit, state: possibleState } = possibleSwap;
-
-  const init: SnsSwapInit | undefined = fromNullable(possibleInit);
-  const state: SnsSwapState | undefined = fromNullable(possibleState);
-
-  assertNonNullish(init);
-  assertNonNullish(state);
-
-  const { swapCanisterId } = swap;
-
-  return {
-    ...summary,
-    swapCanisterId,
-    swap: {
-      init,
-      state,
-    },
-    derived: possibleDerived,
-  };
-};
-
 export const getSwapCanisterAccount = ({
   controller,
   swapCanisterId,
@@ -144,10 +107,10 @@ export const getSwapCanisterAccount = ({
   controller: Principal;
   swapCanisterId: Principal;
 }): AccountIdentifier => {
-  const principalSubaccont = SubAccount.fromPrincipal(controller);
+  const principalSubaccount = SubAccount.fromPrincipal(controller);
   const accountIdentifier = AccountIdentifier.fromPrincipal({
     principal: swapCanisterId,
-    subAccount: principalSubaccont,
+    subAccount: principalSubaccount,
   });
 
   return accountIdentifier;

@@ -58,3 +58,30 @@ index 2c02d80dc..5a6072dc7 100644
  
      let mut state = STATE.write().unwrap();
      over(
+--- a/rs/sns/swap/src/swap.rs
++++ b/rs/sns/swap/src/swap.rs
+@@ -1226,7 +1226,7 @@ impl TimeWindow {
+ }
+ 
+ impl SetOpenTimeWindowRequest {
+-    pub fn defects(&self, now_timestamp_seconds: u64) -> Vec<String> {
++    pub fn defects(&self, _now_timestamp_seconds: u64) -> Vec<String> {
+         // Require that the open_time_window field be populated.
+         let window = match self.open_time_window {
+             Some(window) => window,
+@@ -1238,12 +1238,12 @@ impl SetOpenTimeWindowRequest {
+ 
+         // Require that start time not be in the past.
+         let (start, end) = window.to_boundaries_timestamp_seconds();
+-        if start < now_timestamp_seconds {
+-            result.push(format!(
+-                "Start time is in the past ({} vs. now={})",
+-                start, now_timestamp_seconds
+-            ));
+-        }
++        // if start < now_timestamp_seconds {
++        //     result.push(format!(
++        //         "Start time is in the past ({} vs. now={})",
++        //         start, now_timestamp_seconds
++        //     ));
++        // }

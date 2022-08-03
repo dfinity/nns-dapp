@@ -60,14 +60,23 @@ export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 export type SnsQueryStore =
   | {
-      response: [QuerySnsSummary[], QuerySnsSwapState[]];
-      certified: boolean;
+      summaries: QuerySnsSummary[];
+      swaps: QuerySnsSwapState[];
     }
   | undefined
   | null;
 
+/**
+ * A store that contains the results of the queries (query and update) calls NNS-dapp performs to fetch Sns data from the backend.
+ * Various derived stores will subscribe to this store to prepare, format and map the data in a way that can be use by the components.
+ *
+ * - reset: mark the store to not have been populated yet
+ * - setLoadingState: explicitly set the store to not containing any data. useful to display various loading interaction while data are loaded
+ * - setData: the function that initializes the store when the app starts
+ * - updateData: a function to update the data of a particular root canister id - e.g. used to reload a particular sns project after user has participated to a sale
+ */
 const initSnsQueryStore = () => {
-  const { subscribe, set } = writable<SnsQueryStore>(undefined);
+  const { subscribe, set, update } = writable<SnsQueryStore>(undefined);
 
   return {
     subscribe,
@@ -80,11 +89,49 @@ const initSnsQueryStore = () => {
       set(null);
     },
 
-    setResponse(data: {
-      response: [QuerySnsSummary[], QuerySnsSwapState[]];
-      certified: boolean;
+    setData([summaries, swaps]: [QuerySnsSummary[], QuerySnsSwapState[]]) {
+      set({
+        summaries,
+        swaps,
+      });
+    },
+
+    /**
+     * Note about undefined data (edge case):
+     *
+     * The data parameter can contain undefined values if the backend does not find the related info for the root canister id.
+     * This should not happen since we update the store if the user interact with a project that was actually already successfully fetched.
+     * However, if this would ever happen and to prevent issues, we clean up the store for the related root canister id.
+     */
+    updateData({
+      data: [updatedSummary, updatedSwap],
+      rootCanisterId,
+    }: {
+      data: [QuerySnsSummary | undefined, QuerySnsSwapState | undefined];
+      rootCanisterId: string;
     }) {
-      set(data);
+      update((store: SnsQueryStore) => ({
+        summaries:
+          updatedSummary === undefined
+            ? (store?.summaries ?? []).filter(
+                ({ rootCanisterId: canisterId }) =>
+                  canisterId.toText() !== rootCanisterId
+              )
+            : (store?.summaries ?? []).map((summary) =>
+                summary.rootCanisterId.toText() === rootCanisterId
+                  ? updatedSummary
+                  : summary
+              ),
+        swaps:
+          updatedSwap === undefined
+            ? (store?.swaps ?? []).filter(
+                ({ rootCanisterId: canisterId }) =>
+                  canisterId !== rootCanisterId
+              )
+            : (store?.swaps ?? []).map((swap) =>
+                swap.rootCanisterId === rootCanisterId ? updatedSwap : swap
+              ),
+      }));
     },
   };
 };
@@ -98,7 +145,10 @@ export const snsQueryStore = initSnsQueryStore();
  * The response of the Snses about summary and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
  */
 export const snsSummariesStore = derived(snsQueryStore, (data: SnsQueryStore) =>
-  mapAndSortSnsQueryToSummaries(data?.response ?? [[], []])
+  mapAndSortSnsQueryToSummaries({
+    summaries: data?.summaries ?? [],
+    swaps: data?.swaps ?? [],
+  })
 );
 
 // ************** Sns commitment **************
