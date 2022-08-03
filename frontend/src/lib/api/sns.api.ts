@@ -52,7 +52,6 @@ const listSnses = async ({
 
   const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
-  console.log({ WASM_CANISTER_ID, path: "src/lib/api/sns.api.ts" });
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,
@@ -275,7 +274,6 @@ export const querySnsSummary = async ({
   }
 
   // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
-  console.log("Sns metadata", summary);
   return mockSnsSummaries.find(
     ({ rootCanisterId: canisterId }: QuerySnsSummary) =>
       canisterId?.toText() === rootCanisterId
