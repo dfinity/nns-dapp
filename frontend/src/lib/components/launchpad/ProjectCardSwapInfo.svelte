@@ -19,6 +19,7 @@
     type SnsSwapState,
     type SnsSwapTimeWindow,
   } from "@dfinity/sns";
+  import ProjectUserCommitmentLabel from "../project-detail/ProjectUserCommitmentLabel.svelte";
 
   export let project: SnsFullProject;
 
@@ -74,7 +75,7 @@
   {/if}
 
   {#if myCommitment !== undefined}
-    <dt>{$i18n.sns_project_detail.user_commitment}</dt>
+    <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
     <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
   {/if}
 </dl>
