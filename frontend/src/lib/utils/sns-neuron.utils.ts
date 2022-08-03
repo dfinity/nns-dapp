@@ -3,6 +3,7 @@ import type { SnsNeuron } from "@dfinity/sns";
 import type { SnsNeuronState } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
+import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -62,7 +63,7 @@ export const getSnsLockedTimeInSeconds = (
     dissolveState !== undefined &&
     "DissolveDelaySeconds" in dissolveState
   ) {
-    return dissolveState.DissolveDelaySeconds - BigInt(nowInSeconds());
+    return dissolveState.DissolveDelaySeconds;
   }
 };
 
@@ -77,6 +78,6 @@ export const getSnsNeuronStake = ({
  *   id: { id: number[] },
  *   //...
  */
-export const getSnsNeuronId = (neuron: SnsNeuron): string =>
+export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
   // TODO: use upcoming fromDefinedNullable
-  neuron.id[0]?.id.join("") ?? "";
+  bytesToHexString(neuron.id[0]?.id ?? []);

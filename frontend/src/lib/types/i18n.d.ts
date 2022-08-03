@@ -38,6 +38,7 @@ interface I18nError {
   neuron_not_found: string;
   neuron_spawning: string;
   neuron_load: string;
+  sns_neurons_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -581,8 +582,9 @@ interface I18nSns_project_detail {
   token_symbol: string;
   min_commitment: string;
   max_commitment: string;
-  current_commitment: string;
+  current_overall_commitment: string;
   min_commitment_goal: string;
+  max_commitment_goal: string;
   deadline: string;
   user_commitment: string;
   status: string;
@@ -605,6 +607,7 @@ interface I18nSns_project_detail {
   completed: string;
   sale_start: string;
   sale_end: string;
+  max_user_commitment_reached: string;
 }
 
 interface I18nTime {

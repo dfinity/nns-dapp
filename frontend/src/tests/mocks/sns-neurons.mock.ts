@@ -30,9 +30,7 @@ export const createMockSnsNeuron = ({
                 ),
               }
             : {
-                DissolveDelaySeconds: BigInt(
-                  Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
-                ),
+                DissolveDelaySeconds: BigInt(Math.floor(3600 * 24 * 365 * 2)),
               },
         ],
   followees: [],

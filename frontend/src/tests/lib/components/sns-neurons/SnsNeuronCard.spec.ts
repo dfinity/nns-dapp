@@ -7,7 +7,7 @@ import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
 import { nowInSeconds } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
-import { getSnsNeuronId } from "../../../../lib/utils/sns-neuron.utils";
+import { getSnsNeuronIdAsHexString } from "../../../../lib/utils/sns-neuron.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
@@ -74,7 +74,9 @@ describe("SnsNeuronCard", () => {
       detailed: true,
     });
     expect(getByText(stakeText)).toBeInTheDocument();
-    expect(getByText(getSnsNeuronId(mockSnsNeuron))).toBeInTheDocument();
+    expect(
+      getByText(getSnsNeuronIdAsHexString(mockSnsNeuron))
+    ).toBeInTheDocument();
   });
 
   it("renders proper text when status is LOCKED", async () => {
