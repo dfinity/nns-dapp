@@ -11,6 +11,8 @@
   import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
+  import { routeStore } from "../stores/route.store";
+  import { AppPath } from "../constants/routes.constants";
 
   let loading = true;
 
@@ -28,8 +30,11 @@
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   const goToNeuronDetails = (neuron: SnsNeuron) => () => {
-    // TODO: Go to neuron details
-    console.log("Going to details:", neuron.id);
+    const neuronId = getSnsNeuronIdAsHexString(neuron);
+    // TODO: Create a path creator helper
+    routeStore.navigate({
+      path: `${AppPath.ProjectDetail}/${$snsProjectSelectedStore}/neuron/${neuronId}`,
+    });
   };
 </script>
 

@@ -576,6 +576,9 @@
     "sale_start": "Sale Start",
     "sale_end": "Sale End"
   },
+  "sns_neuron_detail": {
+    "header": "Neuron"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",
