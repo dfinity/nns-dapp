@@ -9,7 +9,6 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
-  import { isNullish } from "../../utils/utils";
   import Spinner from "../../../lib/components/ui/Spinner.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
@@ -18,12 +17,9 @@
 
   let summary: SnsSummary | undefined | null;
   $: summary = $projectDetailStore.summary;
-
-  let loadingSummary: boolean;
-  $: loadingSummary = isNullish($projectDetailStore.summary);
 </script>
 
-{#if loadingSummary}
+{#if summary === undefined || summary === null}
   <!-- TODO: replace with a skeleton -->
   <Spinner inline />
 {:else}
