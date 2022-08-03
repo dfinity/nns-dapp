@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { type SnsSwapBuyerState, SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsSwapBuyerState } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import ParticipateButton from "../../../../lib/components/project-detail/ParticipateButton.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
