@@ -53,6 +53,7 @@
   <PrivateRoute path={AppPath.CanisterDetail} />
   <PrivateRoute path={AppPath.Launchpad} />
   <PrivateRoute path={AppPath.ProjectDetail} />
+  <PrivateRoute path={AppPath.SnsNeuronDetail} />
 </Guard>
 
 <Toasts />

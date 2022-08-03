@@ -10,4 +10,5 @@ export enum AppPath {
   CanisterDetail = "/#/canister",
   Launchpad = "/#/launchpad",
   ProjectDetail = "/#/project",
+  SnsNeuronDetail = "/#/project/:rootCanisterId/neuron",
 }

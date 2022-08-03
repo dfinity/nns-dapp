@@ -578,6 +578,9 @@
     "sale_end": "Sale End",
     "max_user_commitment_reached": "Maximum commitment reached"
   },
+  "sns_neuron_detail": {
+    "header": "Neuron"
+  },
   "time": {
     "year": "year",
     "year_plural": "years",
