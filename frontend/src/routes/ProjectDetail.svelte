@@ -38,7 +38,43 @@
     }
   });
 
-  let rootCanisterIdString: string | undefined;
+  const loadSummary = (rootCanisterId: string) =>
+    loadSnsSummary({
+      rootCanisterId,
+      onLoad: ({ response }) =>
+        ($projectDetailStore.summary = concatSnsSummary(response)),
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.summary = null;
+        goBack();
+      },
+    });
+
+  const loadSwapState = (rootCanisterId: string) =>
+    loadSnsSwapCommitment({
+      rootCanisterId,
+      onLoad: ({ response: swapCommitment }) =>
+        ($projectDetailStore.swapCommitment = swapCommitment),
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.swapCommitment = null;
+        goBack();
+      },
+    });
+
+  const reload = () => {
+    const { path } = $routeStore;
+
+    const rootCanisterId = routePathRootCanisterId(path);
+
+    if (rootCanisterId === undefined) {
+      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+      return;
+    }
+
+    loadSummary(rootCanisterId);
+    loadSwapState(rootCanisterId);
+  };
 
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: undefined,
@@ -49,6 +85,7 @@
 
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
+    reload,
   });
 
   const goBack = () => {
@@ -56,7 +93,7 @@
     routeStore.replace({ path: AppPath.Launchpad });
   };
 
-  const loadSummary = (rootCanisterId: string) => {
+  const getOrLoadSummary = (rootCanisterId: string) => {
     // try to get from snsSummariesStore
     const summaryMaybe = $snsSummariesStore?.find(
       ({ rootCanisterId: rootCanister }) =>
@@ -75,19 +112,10 @@
     // flag loading state
     $projectDetailStore.summary = null;
 
-    loadSnsSummary({
-      rootCanisterId,
-      onLoad: ({ response }) =>
-        ($projectDetailStore.summary = concatSnsSummary(response)),
-      onError: () => {
-        // hide unproven data
-        $projectDetailStore.summary = null;
-        goBack();
-      },
-    });
+    loadSummary(rootCanisterId);
   };
 
-  const loadSwapState = (rootCanisterId: string) => {
+  const getOrLoadSwapState = (rootCanisterId: string) => {
     if (nonNullish($snsSwapCommitmentsStore)) {
       // try to get from snsSwapStatesStore
       const swapItemMaybe = $snsSwapCommitmentsStore.find(
@@ -108,16 +136,7 @@
     // flag loading state
     $projectDetailStore.swapCommitment = null;
 
-    loadSnsSwapCommitment({
-      rootCanisterId,
-      onLoad: ({ response: swapCommitment }) =>
-        ($projectDetailStore.swapCommitment = swapCommitment),
-      onError: () => {
-        // hide unproven data
-        $projectDetailStore.swapCommitment = null;
-        goBack();
-      },
-    });
+    loadSwapState(rootCanisterId);
   };
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
@@ -125,19 +144,18 @@
       return;
     }
 
-    const rootCanisterIdMaybe = routePathRootCanisterId(path);
-    if (rootCanisterIdMaybe === undefined) {
+    const rootCanisterId = routePathRootCanisterId(path);
+    if (rootCanisterId === undefined) {
       goBack();
       return;
     }
-    rootCanisterIdString = rootCanisterIdMaybe;
 
     if ($projectDetailStore.summary === undefined) {
-      loadSummary(rootCanisterIdString);
+      getOrLoadSummary(rootCanisterId);
     }
 
     if ($projectDetailStore.swapCommitment === undefined) {
-      loadSwapState(rootCanisterIdString);
+      getOrLoadSwapState(rootCanisterId);
     }
   });
 

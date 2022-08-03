@@ -249,10 +249,11 @@ export const participateInSwap = async ({
   amount: ICP;
   rootCanisterId: Principal;
   account: Account;
-  onSuccess?: (swapState: SnsSwapCommitment) => void;
+  onSuccess?: () => void;
 }): Promise<{ success: boolean }> => {
   try {
     const accountIdentity = await getAccountIdentity(account.identifier);
+
     await participateInSnsSwap({
       identity: accountIdentity,
       rootCanisterId,
@@ -260,20 +261,9 @@ export const participateInSwap = async ({
       controller: accountIdentity.getPrincipal(),
       fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
-    await loadSnsSwapCommitment({
-      strategy: "update",
-      rootCanisterId: rootCanisterId.toText(),
-      onLoad: ({ response: swapCommitment, certified }) => {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-        onSuccess?.(swapCommitment);
-      },
-      onError: () => {
-        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-      },
-    });
+
+    onSuccess?.();
+
     return { success: true };
   } catch (error) {
     // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798

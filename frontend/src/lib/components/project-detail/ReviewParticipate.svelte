@@ -28,7 +28,7 @@
   export let account: Account;
   export let amount: number;
 
-  const { store }: ProjectDetailContext = getContext<ProjectDetailContext>(
+  const { store, reload }: ProjectDetailContext = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
@@ -57,7 +57,7 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
-        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
+        onSuccess: reload,
       });
       if (success) {
         toastsStore.success({
