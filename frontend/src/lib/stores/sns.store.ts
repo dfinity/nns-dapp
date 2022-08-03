@@ -119,8 +119,8 @@ const initSnsQueryStore = () => {
               )
             : (store?.summaries ?? []).map((summary) =>
                 summary.rootCanisterId.toText() === rootCanisterId
-                  ? summary
-                  : updatedSummary
+                  ? updatedSummary
+                  : summary
               ),
         swaps:
           updatedSwap === undefined
@@ -129,7 +129,7 @@ const initSnsQueryStore = () => {
                   canisterId !== rootCanisterId
               )
             : (store?.swaps ?? []).map((swap) =>
-                swap.rootCanisterId === rootCanisterId ? swap : updatedSwap
+                swap.rootCanisterId === rootCanisterId ? updatedSwap : swap
               ),
       }));
     },
