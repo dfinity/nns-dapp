@@ -86,9 +86,6 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--padding-1_5x);
 
-    dt {
-    }
-
     dd {
       text-align: right;
       color: var(--value-color);
