@@ -22,7 +22,7 @@
     <div class="info" slot="top">
       <p class="right">
         <span>
-          {$i18n.sns_project_detail.max_commitment}
+          {$i18n.sns_project_detail.max_commitment_goal}
         </span>
 
         <span data-tid="commitment-max-indicator-value">

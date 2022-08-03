@@ -3,7 +3,6 @@
  */
 
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
 import ProjectStatusSection from "../../../../lib/components/project-detail/ProjectStatusSection.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import {
@@ -11,7 +10,6 @@ import {
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
 
 describe("ProjectStatusSection", () => {
   it("should render subtitle", () => {
@@ -50,19 +48,6 @@ describe("ProjectStatusSection", () => {
     expect(
       queryByTestId("sns-project-participate-button")
     ).not.toBeInTheDocument();
-  });
-
-  it("should open swap participation modal on participate click", async () => {
-    const { getByTestId } = renderContextCmp({
-      summary: mockSnsFullProject.summary,
-      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-      Component: ProjectStatusSection,
-    });
-
-    await clickByTestId(getByTestId, "sns-project-participate-button");
-    await waitFor(() =>
-      expect(getByTestId("sns-swap-participate-step-1")).toBeInTheDocument()
-    );
   });
 
   it("should not render any content if state pending", () => {

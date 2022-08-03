@@ -8,7 +8,7 @@
   import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { snsProjectSelectedStore } from "../stores/projects.store";
-  import { getSnsNeuronId } from "../utils/sns-neuron.utils";
+  import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
 
@@ -43,7 +43,7 @@
     <SkeletonCard />
     <SkeletonCard />
   {:else}
-    {#each $sortedSnsNeuronStore as neuron (getSnsNeuronId(neuron))}
+    {#each $sortedSnsNeuronStore as neuron (getSnsNeuronIdAsHexString(neuron))}
       <SnsNeuronCard
         role="link"
         {neuron}

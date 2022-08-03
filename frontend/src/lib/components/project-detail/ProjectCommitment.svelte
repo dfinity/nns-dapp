@@ -11,11 +11,7 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSummarySwap } from "../../types/sns";
-  import type {
-    SnsSwapDerivedState,
-    SnsSwapInit,
-    SnsSwapState,
-  } from "@dfinity/sns";
+  import type { SnsSwapDerivedState, SnsSwapInit } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -27,8 +23,7 @@
   $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
 
   let init: SnsSwapInit;
-  let state: SnsSwapState;
-  $: ({ init, state } = swap);
+  $: ({ init } = swap);
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
