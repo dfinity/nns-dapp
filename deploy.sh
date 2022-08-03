@@ -364,8 +364,18 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     echo
   done
 
+  test -f sns_init.yaml ||
+    jq -s '.[0] * .[1]' \
+      <(sns init-config-file --init-config-file-path /dev/stdout new | yaml2json) \
+      <(yaml2json sns_init.yml)| json2yaml > sns_init.yaml
+
+  while ! sns init-config-file validate ; do
+      echo "Please update the SNS configuration file:" sns_init.yaml
+      read -rp "Press enter when ready ... "
+  done
+
   echo "Creating SNS"
-  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yml >sns_creation.idl
+  ./target/ic/sns deploy --network "$DFX_NETWORK" --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" --init-config-file sns_init.yaml >sns_creation.idl
 
   echo "Populate canister_ids.json"
   if test -e canister_ids.json; then
