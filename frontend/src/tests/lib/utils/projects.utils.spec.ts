@@ -242,7 +242,7 @@ describe("project-utils", () => {
       ).toBeFalsy();
     });
 
-    it("cannot participate to swap if sale is open", () => {
+    it("can participate to swap if sale is open", () => {
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Open),
@@ -266,7 +266,7 @@ describe("project-utils", () => {
       ).toBeFalsy();
     });
 
-    it("cannot participate to swap if max user commitment is not reached", () => {
+    it("can participate to swap if max user commitment is not reached", () => {
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Open),
