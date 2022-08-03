@@ -11,11 +11,7 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSummarySwap } from "../../types/sns";
-  import type {
-    SnsSwapDerivedState,
-    SnsSwapInit,
-    SnsSwapState,
-  } from "@dfinity/sns";
+  import type { SnsSwapDerivedState, SnsSwapInit } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
