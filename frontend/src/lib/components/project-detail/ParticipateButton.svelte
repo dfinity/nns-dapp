@@ -54,7 +54,7 @@
         on:click={openModal}
         class="primary small"
         data-tid="sns-project-participate-button"
-        disabled={true}>{$i18n.sns_project_detail.participate}</button
+        disabled>{$i18n.sns_project_detail.participate}</button
       >
     </Tooltip>
   {/if}
