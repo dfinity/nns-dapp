@@ -122,6 +122,20 @@
       ],
       "type": "persistent"
     },
+    "small13": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
+        "HOST": "https://small13.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
     "small12": {
       "config": {
         "BUILD": "dev",
