@@ -162,4 +162,33 @@ describe("sns.store", () => {
       ).toEqual(swaps[0]);
     });
   });
+
+  it("should filter the data", () => {
+    const data = snsResponsesForLifecycle({
+      lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Pending],
+      certified: true,
+    });
+
+    snsQueryStore.setData(data);
+
+    const rootCanisterId = data[0][0].rootCanisterId as Principal;
+
+    snsQueryStore.updateData({
+      data: [undefined, undefined],
+      rootCanisterId: rootCanisterId.toText(),
+    });
+
+    const updatedStore = get(snsQueryStore);
+    expect(
+      updatedStore?.summaries.find(
+        (summary) => summary.rootCanisterId.toText() === rootCanisterId.toText()
+      )
+    ).toBeUndefined();
+
+    expect(
+      updatedStore?.swaps.find(
+        (swap) => swap.rootCanisterId === rootCanisterId.toText()
+      )
+    ).toBeUndefined();
+  });
 });
