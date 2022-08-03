@@ -4,7 +4,7 @@ import { AppPath } from "../constants/routes.constants";
 import type { SnsNeuronState } from "../types/sns";
 import {
   getLastPathDetail,
-  getThirdLastPathDetail,
+  getParentPathDetail,
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
@@ -104,11 +104,11 @@ export const routePathSnsNeuronId = (path: string): string | undefined => {
   return getLastPathDetail(path);
 };
 
-export const routePathSnsNeuronCanisterId = (
+export const routePathSnsNeuronRootCanisterId = (
   path: string
 ): string | undefined => {
   if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
     return undefined;
   }
-  return getThirdLastPathDetail(path);
+  return getParentPathDetail(path);
 };

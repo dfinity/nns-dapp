@@ -8,8 +8,8 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
-  routePathSnsNeuronCanisterId,
   routePathSnsNeuronId,
+  routePathSnsNeuronRootCanisterId,
   sortSnsNeuronsByCreatedTimestamp,
 } from "../../../lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "../../../lib/utils/utils";
@@ -212,25 +212,27 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("routePathSnsNeuronCanisterId", () => {
+  describe("routePathSnsNeuronRootCanisterId", () => {
     afterAll(() => jest.clearAllMocks());
     it("should get root canister id from valid path", async () => {
-      expect(routePathSnsNeuronCanisterId("/#/project/222/neuron/123")).toBe(
-        "222"
-      );
-      expect(routePathSnsNeuronCanisterId("/#/project/0ff/neuron/0")).toBe(
+      expect(
+        routePathSnsNeuronRootCanisterId("/#/project/222/neuron/123")
+      ).toBe("222");
+      expect(routePathSnsNeuronRootCanisterId("/#/project/0ff/neuron/0")).toBe(
         "0ff"
       );
     });
 
     it("should not get root canister id from invalid path", async () => {
-      expect(routePathSnsNeuronCanisterId("/#/neuron/")).toBeUndefined();
-      expect(routePathSnsNeuronCanisterId("/#/project/123")).toBeUndefined();
+      expect(routePathSnsNeuronRootCanisterId("/#/neuron/")).toBeUndefined();
       expect(
-        routePathSnsNeuronCanisterId("/#/project/124/neuron")
+        routePathSnsNeuronRootCanisterId("/#/project/123")
       ).toBeUndefined();
-      expect(routePathSnsNeuronCanisterId("/#/neurons/")).toBeUndefined();
-      expect(routePathSnsNeuronCanisterId("/#/accounts/")).toBeUndefined();
+      expect(
+        routePathSnsNeuronRootCanisterId("/#/project/124/neuron")
+      ).toBeUndefined();
+      expect(routePathSnsNeuronRootCanisterId("/#/neurons/")).toBeUndefined();
+      expect(routePathSnsNeuronRootCanisterId("/#/accounts/")).toBeUndefined();
     });
   });
 });

@@ -53,7 +53,7 @@ export const getLastPathDetail = (
  * @returns string
  * Ex: sp3hj-caaaa-aaaaa-aaajq-cai
  */
-export const getThirdLastPathDetail = (
+export const getParentPathDetail = (
   path: string | undefined
 ): string | undefined => {
   const steps = path?.replace(/\/+$/, "").split("/") ?? [];
