@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";

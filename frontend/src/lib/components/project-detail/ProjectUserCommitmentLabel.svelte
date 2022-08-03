@@ -4,7 +4,7 @@
   import { canUserParticipateToSwap } from "../../utils/projects.utils";
 
   export let summary: SnsSummary | undefined | null;
-  export let swapCommitment: SnsSwapCommitment | undefined;
+  export let swapCommitment: SnsSwapCommitment | undefined | null;
 
   let canParticipate = false;
   $: canParticipate = canUserParticipateToSwap({ summary, swapCommitment });
