@@ -157,12 +157,7 @@
     {:else}
       <TwoColumns>
         <div slot="left">
-          {#if loadingSummary}
-            <!-- TODO: replace with a skeleton -->
-            <Spinner inline />
-          {:else}
-            <ProjectInfoSection />
-          {/if}
+          <ProjectInfoSection />
         </div>
         <div slot="right">
           <ProjectStatusSection />

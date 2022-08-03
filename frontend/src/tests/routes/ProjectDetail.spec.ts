@@ -24,6 +24,8 @@ jest.mock("../../lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     routePathRootCanisterId: jest
       .fn()
       .mockImplementation(() => mockSnsFullProject.rootCanisterId.toText()),
@@ -39,6 +41,27 @@ describe("ProjectDetail", () => {
       )
     );
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    snsQueryStore.setData(
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        })
+    );
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      certified: true,
+    });
+  });
+
+  afterEach(() => {
+    snsQueryStore.reset();
+    snsSwapCommitmentsStore.reset();
+    jest.clearAllMocks();
+  });
+
   it("should load summary", () => {
     render(ProjectDetail);
 
@@ -49,84 +72,6 @@ describe("ProjectDetail", () => {
     render(ProjectDetail);
 
     waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
-  });
-
-  describe("getting certified data from summaries and swaps stores", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-
-      snsQueryStore.setData(
-        snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        })
-      );
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        certified: true,
-      });
-    });
-
-    afterEach(() => {
-      snsQueryStore.reset();
-      snsSwapCommitmentsStore.reset();
-      jest.clearAllMocks();
-    });
-
-    it.only("should not load summary if certified version available", async () => {
-      render(ProjectDetail);
-
-      await tick();
-
-      expect(loadSnsSummary).toBeCalledTimes(0);
-    });
-
-    it("should not load swap state if certified version available", async () => {
-      render(ProjectDetail);
-
-      await tick();
-
-      expect(loadSnsSwapCommitment).toBeCalledTimes(0);
-    });
-  });
-
-  describe("getting uncertified data from summaries and swaps stores", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-
-      snsQueryStore.setData(
-        snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: false,
-        })
-      );
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        certified: false,
-      });
-    });
-
-    afterEach(() => {
-      snsQueryStore.reset();
-      snsSwapCommitmentsStore.reset();
-      jest.clearAllMocks();
-    });
-
-    it("should not load summary if certified version available", async () => {
-      render(ProjectDetail);
-
-      await tick();
-
-      expect(loadSnsSummary).toBeCalledTimes(1);
-    });
-
-    it("should not load swap state if certified version available", async () => {
-      render(ProjectDetail);
-
-      await tick();
-
-      expect(loadSnsSwapCommitment).toBeCalledTimes(1);
-    });
   });
 
   it("should render info section", async () => {
