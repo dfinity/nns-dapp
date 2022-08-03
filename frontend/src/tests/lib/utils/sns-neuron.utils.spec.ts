@@ -4,7 +4,7 @@ import { SECONDS_IN_YEAR } from "../../../lib/constants/constants";
 import {
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
-  getSnsNeuronId,
+  getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
   sortSnsNeuronsByCreatedTimestamp,
@@ -127,13 +127,18 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("getSnsNeuronId", () => {
+  describe("getSnsNeuronIdAsHexString", () => {
     it("returns id numbers concatenated", () => {
-      const id = [1, 2, 3, 4];
+      const id = [
+        154, 174, 251, 49, 236, 17, 214, 189, 195, 140, 58, 89, 61, 29, 138,
+        113, 79, 48, 136, 37, 96, 61, 215, 50, 182, 65, 198, 97, 8, 19, 238, 36,
+      ];
       const neuron: SnsNeuron = createMockSnsNeuron({
         id,
       });
-      expect(getSnsNeuronId(neuron)).toBe(id.join(""));
+      expect(getSnsNeuronIdAsHexString(neuron)).toBe(
+        "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
+      );
     });
   });
 });

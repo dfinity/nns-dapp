@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-  import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import Icp from "../ic/ICP.svelte";
@@ -16,23 +15,21 @@
   } from "../../types/project-detail.context";
   import { isNullish } from "../../utils/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import ParticipateButton from "./ParticipateButton.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swapCommitment: SnsSwapCommitment;
-  $: swapCommitment = $projectDetailStore.swapCommitment as SnsSwapCommitment;
+  let swapCommitment: SnsSwapCommitment | undefined | null;
+  $: swapCommitment = $projectDetailStore.swapCommitment;
+
+  let myCommitment: bigint | undefined;
+  $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
 
   let myCommitmentIcp: ICP | undefined;
   $: myCommitmentIcp =
-    swapCommitment?.myCommitment !== undefined
-      ? ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s)
-      : undefined;
-
-  let showModal: boolean = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
@@ -50,8 +47,8 @@
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let displayStatus: boolean = false;
-  $: displayStatus =
+  let displayStatusSection: boolean = false;
+  $: displayStatusSection =
     !loadingSummary &&
     !loadingSwapState &&
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
@@ -59,7 +56,7 @@
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
-{#if displayStatus}
+{#if displayStatusSection}
   <div class="wrapper" data-tid="sns-project-detail-status">
     <ProjectStatus />
 
@@ -84,20 +81,9 @@
         </div>
       {/if}
 
-      {#if lifecycle === SnsSwapLifecycle.Open}
-        <button
-          on:click={openModal}
-          class="primary small"
-          data-tid="sns-project-participate-button"
-          >{$i18n.sns_project_detail.participate}</button
-        >
-      {/if}
+      <ParticipateButton />
     </div>
   </div>
-{/if}
-
-{#if showModal}
-  <ParticipateSwapModal on:nnsClose={closeModal} />
 {/if}
 
 <style lang="scss">

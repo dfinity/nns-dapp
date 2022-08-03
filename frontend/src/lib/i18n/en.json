@@ -553,6 +553,7 @@
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
     "min_commitment_goal": "Minimum Commitment Goal",
+    "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
     "user_commitment": "Your Commitment",
     "user_current_commitment": "Your Current Commitment",
@@ -575,7 +576,8 @@
     "status_completed": "Status",
     "completed": "Completed",
     "sale_start": "Sale Start",
-    "sale_end": "Sale End"
+    "sale_end": "Sale End",
+    "max_user_commitment_reached": "Maximum commitment reached"
   },
   "time": {
     "year": "year",
