@@ -6,7 +6,7 @@
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
-    getSnsNeuronId,
+    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
     getSnsStateInfo,
@@ -22,7 +22,7 @@
   export let ariaLabel: string;
 
   let neuronId: string;
-  $: neuronId = getSnsNeuronId(neuron);
+  $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
