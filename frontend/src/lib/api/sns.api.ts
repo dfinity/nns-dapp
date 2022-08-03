@@ -269,7 +269,7 @@ export const querySnsSummary = async ({
     ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
       ...mockSnsSummaryList[index],
       rootCanisterId,
-      certified
+      certified,
     }));
   }
 
@@ -351,7 +351,7 @@ export const querySnsSwapState = async ({
     swapCanisterId,
     swap,
     derived,
-    certified
+    certified,
   };
 };
 

@@ -4,7 +4,6 @@
 
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
@@ -45,10 +44,10 @@ describe("ProjectDetail", () => {
     jest.clearAllMocks();
 
     snsQueryStore.setData(
-        snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        })
+      snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
+      })
     );
     snsSwapCommitmentsStore.setSwapCommitment({
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,

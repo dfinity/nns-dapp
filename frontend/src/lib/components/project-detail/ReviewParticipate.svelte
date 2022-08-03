@@ -28,9 +28,8 @@
   export let account: Account;
   export let amount: number;
 
-  const { store, reload }: ProjectDetailContext = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store, reload }: ProjectDetailContext =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
