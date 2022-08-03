@@ -44,6 +44,7 @@ export const createBuyersState = (amount: bigint) => ({
   amount_icp_e8s: amount,
   sns_disbursing: false,
 });
+
 export const mockSnsSwapCommitment = (
   rootCanisterId: Principal
 ): SnsSwapCommitment =>
@@ -199,10 +200,14 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
 
 export const mockSummary = mockSnsSummaryList[0];
 
+export const mockSwapCommitment = mockSnsSwapCommitment(
+  principal(0)
+) as SnsSwapCommitment;
+
 export const mockSnsFullProject = {
   rootCanisterId: principal(0),
   summary: mockSummary,
-  swapCommitment: mockSnsSwapCommitment(principal(0)),
+  swapCommitment: mockSwapCommitment,
 } as SnsFullProject;
 
 export const mockQuerySnsSwapState = {

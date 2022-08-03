@@ -1,6 +1,10 @@
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
 import type { SnsFullProject } from "../stores/projects.store";
-import type { SnsSummarySwap } from "../types/sns";
+import type {
+  SnsSummary,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+} from "../types/sns";
 import { nowInSeconds } from "./date.utils";
 import { fromNullable } from "./did.utils";
 
@@ -104,4 +108,42 @@ export const durationTillSwapStart = (
 
   const { start_timestamp_seconds } = timeWindow;
   return BigInt(nowInSeconds()) - start_timestamp_seconds;
+};
+
+/**
+ * To participate to a swap:
+ *
+ * - the sale's lifecycle should be Open
+ * - user commitment should not be bigger than the maximal commitment allowed per user
+ * - the maximal commitment allowed per user should be defined
+ */
+export const canUserParticipateToSwap = ({
+  summary,
+  swapCommitment,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+}): boolean => {
+  const {
+    swap: {
+      state: { lifecycle },
+      init: { max_participant_icp_e8s },
+    },
+  } =
+    summary ??
+    ({
+      swap: {
+        state: { lifecycle: SnsSwapLifecycle.Unspecified },
+        init: { max_participant_icp_e8s: undefined },
+      },
+    } as unknown as SnsSummary);
+
+  const myCommitment: bigint =
+    swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0);
+
+  return (
+    [SnsSwapLifecycle.Open].includes(lifecycle) &&
+    max_participant_icp_e8s !== undefined &&
+    myCommitment < max_participant_icp_e8s
+  );
 };
