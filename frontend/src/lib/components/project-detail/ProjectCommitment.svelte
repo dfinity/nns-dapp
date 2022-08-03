@@ -27,8 +27,7 @@
   $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
 
   let init: SnsSwapInit;
-  let state: SnsSwapState;
-  $: ({ init, state } = swap);
+  $: ({ init } = swap);
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
