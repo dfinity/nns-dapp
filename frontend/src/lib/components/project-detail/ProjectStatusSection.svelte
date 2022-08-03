@@ -7,6 +7,7 @@
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
+  import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
   import ProjectTimeline from "./ProjectTimeline.svelte";
   import { getContext } from "svelte";
   import {
@@ -71,9 +72,7 @@
       {#if myCommitmentIcp !== undefined}
         <div>
           <KeyValuePair>
-            <svelte:fragment slot="key"
-              >{$i18n.sns_project_detail.user_commitment}</svelte:fragment
-            >
+            <ProjectUserCommitmentLabel slot="key" summary={$projectDetailStore.summary} {swapCommitment} />
             <svelte:fragment slot="value">
               <Icp icp={myCommitmentIcp} singleLine />
             </svelte:fragment>
