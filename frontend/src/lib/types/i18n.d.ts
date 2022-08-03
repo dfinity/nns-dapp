@@ -430,6 +430,7 @@ interface I18nProposal_detail {
   nns_function_name: string;
   payload: string;
   summary_toggle_view: string;
+  vote: string;
 }
 
 interface I18nProposal_detail__vote {

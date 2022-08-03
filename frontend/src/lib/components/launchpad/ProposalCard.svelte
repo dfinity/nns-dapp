@@ -48,7 +48,7 @@
     {/if}
   </ul>
   <button data-tid="vote-for-sns" class="primary small" on:click={showProposal}
-    >Vote</button
+    >{$i18n.proposal_detail.vote}</button
   >
 </Card>
 
