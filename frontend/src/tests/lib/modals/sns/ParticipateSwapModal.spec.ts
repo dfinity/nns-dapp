@@ -33,6 +33,8 @@ jest.mock("../../../../lib/services/sns.services", () => {
 });
 
 describe("ParticipateSwapModal", () => {
+  const reload = jest.fn();
+
   const renderSwapModal = () =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
@@ -42,6 +44,7 @@ describe("ParticipateSwapModal", () => {
           summary: mockSnsFullProject.summary,
           swapCommitment: mockSnsFullProject.swapCommitment,
         }),
+        reload,
       } as ProjectDetailContext,
     });
 
@@ -154,6 +157,7 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
 
     it("should move to the last step and go back", async () => {

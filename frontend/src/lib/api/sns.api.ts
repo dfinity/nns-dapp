@@ -52,7 +52,6 @@ const listSnses = async ({
 
   const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
-  console.log({ WASM_CANISTER_ID, path: "src/lib/api/sns.api.ts" });
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,
@@ -270,6 +269,7 @@ export const querySnsSummary = async ({
     ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
       ...mockSnsSummaryList[index],
       rootCanisterId,
+      certified,
     }));
   }
 
@@ -352,6 +352,7 @@ export const querySnsSwapState = async ({
     swapCanisterId,
     swap,
     derived,
+    certified,
   };
 };
 
