@@ -8,7 +8,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
     getSnsNeuronIdAsHexString,
-    routePathSnsNeuronCanisterId,
+    routePathSnsNeuronRootCanisterId,
     routePathSnsNeuronId,
   } from "../lib/utils/sns-neuron.utils";
 
@@ -18,7 +18,7 @@
     if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
       return;
     }
-    const rootCanisterIdMaybe = routePathSnsNeuronCanisterId(path);
+    const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
     const neuronIdMaybe = routePathSnsNeuronId(path);
     if (neuronIdMaybe === undefined || rootCanisterIdMaybe === undefined) {
       unsubscribe();

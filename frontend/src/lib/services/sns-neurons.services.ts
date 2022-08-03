@@ -47,6 +47,25 @@ export const loadSnsNeurons = async (
   });
 };
 
+const getNeuronFromStoreByIdHex = ({
+  neuronIdHex,
+  rootCanisterId,
+}: {
+  neuronIdHex: string;
+  rootCanisterId: Principal;
+}): { neuron?: SnsNeuron; certified?: boolean } => {
+  const store = get(snsNeuronsStore);
+  const projectData = store[rootCanisterId.toText()];
+  const neuron = getSnsNeuronByHexId({
+    neuronIdHex,
+    neurons: projectData?.neurons,
+  });
+  return {
+    neuron,
+    certified: projectData?.certified ?? false,
+  };
+};
+
 export const getSnsNeuron = async ({
   neuronIdHex,
   rootCanisterId,
@@ -58,20 +77,19 @@ export const getSnsNeuron = async ({
   onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
   onError?: ({ certified, error }) => void;
 }): Promise<void> => {
-  const store = get(snsNeuronsStore);
-  const neuronFromStore = getSnsNeuronByHexId({
+  const { neuron, certified } = getNeuronFromStoreByIdHex({
     neuronIdHex,
-    neurons: store[rootCanisterId.toText()]?.neurons,
+    rootCanisterId,
   });
-  if (neuronFromStore !== undefined) {
+  if (neuron !== undefined) {
     onLoad({
-      neuron: neuronFromStore,
-      certified: store[rootCanisterId.toText()]?.certified,
+      neuron,
+      certified,
     });
     return;
   }
   const neuronId = hexStringToBytes(neuronIdHex);
-  queryAndUpdate<SnsNeuron, Error>({
+  return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
       querySnsNeuron({
         rootCanisterId,

@@ -132,6 +132,7 @@ export const bytesToHexString = (bytes: number[]): string =>
   );
 
 // Convert a hex string to a byte array
+// Source: https://stackoverflow.com/a/34356351
 export const hexStringToBytes = (hexString: string): number[] => {
   const bytes: number[] = [];
   for (let c = 0; c < hexString.length; c += 2) {

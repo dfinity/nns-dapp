@@ -2,7 +2,7 @@ import { AppPath } from "../../../lib/constants/routes.constants";
 import {
   getLastPathDetail,
   getLastPathDetailId,
-  getThirdLastPathDetail,
+  getParentPathDetail,
   isAppPath,
   isRoutePath,
 } from "../../../lib/utils/app-path.utils";
@@ -74,24 +74,22 @@ describe("routes", () => {
     });
   });
 
-  describe("getThirdLastPathDetail", () => {
+  describe("getParentPathDetail", () => {
     beforeAll(() => {
       // Avoid to print errors during test
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     afterAll(() => jest.clearAllMocks());
     it("should get detail from valid path", () => {
-      expect(getThirdLastPathDetail("/#/123/neuron/123_abc")).toBe("123");
-      expect(getThirdLastPathDetail("/project/123/neuron/123_abc")).toBe("123");
-      expect(getThirdLastPathDetail("/project/123/proposal/123_abc")).toBe(
-        "123"
-      );
+      expect(getParentPathDetail("/#/123/neuron/123_abc")).toBe("123");
+      expect(getParentPathDetail("/project/123/neuron/123_abc")).toBe("123");
+      expect(getParentPathDetail("/project/123/proposal/123_abc")).toBe("123");
     });
 
     it("should get empty detail for an invalid path", () => {
-      expect(getThirdLastPathDetail("/#/neuron/")).toBeUndefined();
-      expect(getThirdLastPathDetail("/neuron/")).toBeUndefined();
-      expect(getThirdLastPathDetail("/")).toBeUndefined();
+      expect(getParentPathDetail("/#/neuron/")).toBeUndefined();
+      expect(getParentPathDetail("/neuron/")).toBeUndefined();
+      expect(getParentPathDetail("/")).toBeUndefined();
     });
 
     it("should not get detail for an undefined path", () => {
