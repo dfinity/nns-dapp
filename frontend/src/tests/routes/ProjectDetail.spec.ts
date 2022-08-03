@@ -17,24 +17,13 @@ import {
 import type { SnsSwapCommitment } from "../../lib/types/sns";
 import ProjectDetail from "../../routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
-import {
-  mockQuerySnsSwapState,
-  mockSnsFullProject,
-} from "../mocks/sns-projects.mock";
+import { mockSnsFullProject } from "../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../mocks/sns-response.mock";
 
 jest.mock("../../lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest.fn().mockImplementation(({ onLoad }) =>
-      onLoad({
-        response: [mockSnsFullProject.summary, mockQuerySnsSwapState],
-      })
-    ),
-    loadSnsSwapCommitment: jest
-      .fn()
-      .mockImplementation(({ onLoad }) =>
-        onLoad({ response: mockSnsFullProject.swapCommitment })
-      ),
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
     routePathRootCanisterId: jest
       .fn()
       .mockImplementation(() => mockSnsFullProject.rootCanisterId.toText()),
@@ -66,7 +55,7 @@ describe("ProjectDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      snsQueryStore.setResponse(
+      snsQueryStore.setData(
         snsResponsesForLifecycle({
           lifecycles: [SnsSwapLifecycle.Open],
           certified: true,
@@ -105,7 +94,7 @@ describe("ProjectDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      snsQueryStore.setResponse(
+      snsQueryStore.setData(
         snsResponsesForLifecycle({
           lifecycles: [SnsSwapLifecycle.Open],
           certified: false,

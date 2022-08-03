@@ -21,30 +21,26 @@ export const snsResponsesForLifecycle = ({
 }: {
   lifecycles: SnsSwapLifecycle[];
   certified?: boolean;
-}): {
-  response: [QuerySnsSummary[], QuerySnsSwapState[]];
-  certified: boolean;
-} => ({
-  response: [
-    [
-      ...lifecycles.map((lifecycle, i) => ({
-        ...mockSnsFullProject.summary,
-        rootCanisterId: principal(i),
-      })),
-    ],
-    [
-      ...lifecycles.map((lifecycle, i) => ({
-        rootCanisterId: principal(i).toText(),
-        swapCanisterId: swapCanisterIdMock,
-        swap: [
-          {
-            init: [summaryForLifecycle(lifecycle).swap.init],
-            state: [summaryForLifecycle(lifecycle).swap.state],
-          },
-        ] as [SnsSwap],
-        derived: [mockDerived] as [SnsSwapDerivedState],
-      })),
-    ],
+}): [QuerySnsSummary[], QuerySnsSwapState[]] => [
+  [
+    ...lifecycles.map((lifecycle, i) => ({
+      ...mockSnsFullProject.summary,
+      rootCanisterId: principal(i),
+      certified,
+    })),
   ],
-  certified,
-});
+  [
+    ...lifecycles.map((lifecycle, i) => ({
+      rootCanisterId: principal(i).toText(),
+      swapCanisterId: swapCanisterIdMock,
+      swap: [
+        {
+          init: [summaryForLifecycle(lifecycle).swap.init],
+          state: [summaryForLifecycle(lifecycle).swap.state],
+        },
+      ] as [SnsSwap],
+      derived: [mockDerived] as [SnsSwapDerivedState],
+      certified,
+    })),
+  ],
+];

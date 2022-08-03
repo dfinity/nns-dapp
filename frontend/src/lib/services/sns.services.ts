@@ -30,11 +30,7 @@ import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
-import {
-  queryAndUpdate,
-  type QueryAndUpdateOnResponse,
-  type QueryAndUpdateStrategy,
-} from "./utils.services";
+import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
@@ -45,8 +41,7 @@ export const loadSnsSummaries = (): Promise<void> => {
         querySnsSummaries({ certified, identity }),
         querySnsSwapStates({ certified, identity }),
       ]),
-    onLoad: ({ response, certified }) =>
-      snsQueryStore.setResponse({ response, certified }),
+    onLoad: ({ response }) => snsQueryStore.setData(response),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -71,13 +66,9 @@ export const loadSnsSummaries = (): Promise<void> => {
 /** Combined request: querySnsSummary + querySnsSwapState */
 export const loadSnsSummary = async ({
   rootCanisterId,
-  onLoad,
   onError,
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<
-    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined]
-  >;
   onError: () => void;
 }) =>
   queryAndUpdate<
@@ -93,7 +84,8 @@ export const loadSnsSummary = async ({
         }),
         querySnsSwapState({ rootCanisterId, identity, certified }),
       ]),
-    onLoad,
+    onLoad: ({ response: data }) =>
+      snsQueryStore.updateData({ data, rootCanisterId }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -150,24 +142,20 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
 
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
-  onLoad,
   onError,
-  strategy = "query_and_update",
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
-  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
-    strategy,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
         identity,
         certified,
       }),
-    onLoad,
+    onLoad: ({ response: swapCommitment, certified }) =>
+      snsSwapCommitmentsStore.setSwapCommitment({ swapCommitment, certified }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 

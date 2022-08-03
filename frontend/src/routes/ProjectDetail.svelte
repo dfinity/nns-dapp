@@ -17,19 +17,15 @@
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import {
-    snsQueryStore,
-    snsSwapCommitmentsStore,
-  } from "../lib/stores/sns.store";
+  import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "../lib/types/project-detail.context";
-  import { isNullish, nonNullish } from "../lib/utils/utils";
+  import { isNullish } from "../lib/utils/utils";
   import { writable } from "svelte/store";
-  import { concatSnsSummary } from "../lib/utils/sns.utils";
   import { snsSummariesStore } from "../lib/stores/sns.store";
 
   onMount(() => {
@@ -41,8 +37,6 @@
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
       rootCanisterId,
-      onLoad: ({ response }) =>
-        ($projectDetailStore.summary = concatSnsSummary(response)),
       onError: () => {
         // hide unproven data
         $projectDetailStore.summary = null;
@@ -53,8 +47,6 @@
   const loadSwapState = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
       rootCanisterId,
-      onLoad: ({ response: swapCommitment }) =>
-        ($projectDetailStore.swapCommitment = swapCommitment),
       onError: () => {
         // hide unproven data
         $projectDetailStore.swapCommitment = null;
