@@ -29,7 +29,7 @@
   };
 </script>
 
-<Card testId="sns-proposal-card">
+<Card>
   <h3 slot="start">{title}</h3>
 
   <ul>
@@ -47,7 +47,9 @@
       </li>
     {/if}
   </ul>
-  <button class="primary small" on:click={showProposal}>Vote</button>
+  <button data-tid="vote-for-sns" class="primary small" on:click={showProposal}
+    >Vote</button
+  >
 </Card>
 
 <style lang="scss">
