@@ -232,12 +232,10 @@ export const participateInSwap = async ({
   amount,
   rootCanisterId,
   account,
-  onSuccess,
 }: {
   amount: ICP;
   rootCanisterId: Principal;
   account: Account;
-  onSuccess?: () => void;
 }): Promise<{ success: boolean }> => {
   try {
     const accountIdentity = await getAccountIdentity(account.identifier);
@@ -249,8 +247,6 @@ export const participateInSwap = async ({
       controller: accountIdentity.getPrincipal(),
       fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
-
-    onSuccess?.();
 
     return { success: true };
   } catch (error) {

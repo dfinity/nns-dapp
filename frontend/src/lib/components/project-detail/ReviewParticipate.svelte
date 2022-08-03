@@ -56,9 +56,10 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
-        onSuccess: reload,
       });
       if (success) {
+        reload();
+
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
         });

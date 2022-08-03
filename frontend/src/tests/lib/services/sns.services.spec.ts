@@ -37,23 +37,6 @@ describe("sns-services", () => {
       expect(spyParticipate).toBeCalled();
     });
 
-    it("should execute optional callback on successful participation to swap", async () => {
-      jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-
-      const onSuccess = jest.fn();
-
-      await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
-        rootCanisterId: mockPrincipal,
-        account: mockMainAccount,
-        onSuccess,
-      });
-
-      expect(onSuccess).toHaveBeenCalled();
-    });
-
     it("should return success false if api call fails", async () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
