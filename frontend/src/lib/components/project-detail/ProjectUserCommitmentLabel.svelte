@@ -1,12 +1,13 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
+  import { canUserParticipateToSwap } from "../../utils/projects.utils";
 
   export let summary: SnsSummary | undefined | null;
   export let swapCommitment: SnsSwapCommitment | undefined;
 
-  // TODO: need can user participate to swap
   let canParticipate = false;
+  $: canParticipate = canUserParticipateToSwap({ summary, swapCommitment });
 </script>
 
 <!-- This component renders the label about user commitment. If user effectively participate to swap should be tested where it is consumed -->
