@@ -4,8 +4,7 @@ import type {
   SnsSwapBuyerState,
   SnsSwapDerivedState,
   SnsSwapInit,
-  SnsSwapState,
-  SnsTokenMetadata,
+  SnsSwapState
 } from "@dfinity/sns";
 
 /**
@@ -16,6 +15,15 @@ export interface SnsSummaryMetadata {
   logo: string;
   name: string;
   description: string;
+}
+
+/**
+ * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.
+ * That's why we have to map the data as well.
+ */
+export interface SnsTokenMetadata {
+  name: string;
+  symbol: string;
 }
 
 export interface SnsSummarySwap {

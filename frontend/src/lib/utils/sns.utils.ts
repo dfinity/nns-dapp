@@ -7,12 +7,25 @@ import type {
   SnsSwapInit,
   SnsSwapState,
 } from "@dfinity/sns";
-import type { SnsSummary, SnsSummaryMetadata } from "../types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import {
+  SnsMetadataResponseEntries,
+  type SnsTokenMetadataResponse,
+} from "../../../../../ic-js/packages/sns/src";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsTokenMetadata,
+} from "../types/sns";
+import type {
+  QuerySns,
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "../types/sns.query";
 import { fromNullable } from "./did.utils";
 
-type OptionalSummary = Omit<QuerySnsMetadata, "metadata"> & {
+type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
+  token?: SnsTokenMetadata;
   swap?: SnsSwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
@@ -72,7 +85,35 @@ const mapOptionalMetadata = ({
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
-  };
+  } as SnsSummaryMetadata;
+};
+
+/**
+ * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
+ */
+const mapOptionalToken = (
+  response: SnsTokenMetadataResponse
+): SnsTokenMetadata | undefined => {
+  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
+    (acc, [key, value]) => {
+      switch (key) {
+        case SnsMetadataResponseEntries.SYMBOL:
+          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
+          break;
+        case SnsMetadataResponseEntries.NAME:
+          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
+      }
+
+      return acc;
+    },
+    {}
+  );
+
+  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
+    return undefined;
+  }
+
+  return nullishToken as SnsTokenMetadata;
 };
 
 /**
@@ -100,7 +141,7 @@ export const mapAndSortSnsQueryToSummaries = ({
   swaps: QuerySnsSwapState[];
 }): SnsSummary[] => {
   const allSummaries: OptionalSummary[] = metadata.map(
-    ({ rootCanisterId, metadata, ...rest }: QuerySnsMetadata) => {
+    ({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
       const swapState = swaps.find(
         ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
           swapRootCanisterId === rootCanisterId
@@ -109,6 +150,7 @@ export const mapAndSortSnsQueryToSummaries = ({
         ...rest,
         rootCanisterId,
         metadata: mapOptionalMetadata(metadata),
+        token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
         swap: fromNullable(swapState?.swap ?? []),
         derived: fromNullable(swapState?.derived ?? []),
@@ -116,7 +158,7 @@ export const mapAndSortSnsQueryToSummaries = ({
     }
   );
 
-  // Only those that have valid metadata, sale and derived information are - and can be - considered as valid
+  // Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
   const validSwapSummaries: ValidSummary[] = allSummaries.filter(
     (entry: OptionalSummary): entry is ValidSummary =>
       entry.swap !== undefined &&
@@ -124,7 +166,8 @@ export const mapAndSortSnsQueryToSummaries = ({
       fromNullable(entry.swap.state) !== undefined &&
       entry.swapCanisterId !== undefined &&
       entry.derived !== undefined &&
-      entry.metadata !== undefined
+      entry.metadata !== undefined &&
+      entry.token !== undefined
   );
 
   return sortSnsSummaries(

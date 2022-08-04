@@ -3,22 +3,23 @@ import type {
   SnsGetMetadataResponse,
   SnsSwap,
   SnsSwapDerivedState,
-  SnsTokenMetadata,
+  SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 
 export type QueryRootCanisterId = string;
 
-export type QueryCertified = { certified: boolean };
-
-export type QuerySns = { rootCanisterId: QueryRootCanisterId };
+export type QuerySns = {
+  rootCanisterId: QueryRootCanisterId;
+  certified: boolean;
+};
 
 export type QuerySnsMetadata = QuerySns & {
   metadata: SnsGetMetadataResponse;
-  token: SnsTokenMetadata;
-} & QueryCertified;
+  token: SnsTokenMetadataResponse;
+};
 
 export type QuerySnsSwapState = QuerySns & {
   swapCanisterId: Principal;
   swap: [] | [SnsSwap];
   derived: [] | [SnsSwapDerivedState];
-} & QueryCertified;
+};
