@@ -150,7 +150,7 @@ describe("sns-utils", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
         metadata: [
           mockQueryMetadata,
-          { ...mockQueryMetadata, rootCanisterId: principal(2).toText() },
+          { ...mockQueryMetadata, rootCanisterId: principal(1).toText() },
         ],
         swaps: [
           {

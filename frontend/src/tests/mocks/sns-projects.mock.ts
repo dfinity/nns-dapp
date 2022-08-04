@@ -288,7 +288,7 @@ export const mockQueryMetadata: QuerySnsMetadata = {
   certified: true,
   metadata: {
     url: [`https://my.url/`],
-    logo: [],
+    logo: ['a_logo'],
     name: [`My project`],
     description: ["Web3 for the win"],
   },
