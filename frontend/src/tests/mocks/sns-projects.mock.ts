@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
+  type SnsTokenMetadata,
   type SnsSwapDerivedState,
   type SnsSwapState,
 } from "@dfinity/sns";
@@ -133,6 +134,11 @@ export const mockMetadata: SnsSummaryMetadata = {
     "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
 };
 
+export const mockToken: SnsTokenMetadata = {
+  name: "Tetris",
+  symbol: "TET",
+};
+
 export const mockSnsSummaryList: SnsSummary[] = shuffle([
   {
     rootCanisterId: principal(0),
@@ -151,6 +157,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     metadata: mockMetadata,
+    token: mockToken,
     swap: buildMockSwap(),
     derived: mockDerived,
   },
@@ -176,6 +183,10 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       url: "http://sns-pac-man-project.com",
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    },
+    token: {
+      name: "Pacman",
+      symbol: "PAC",
     },
     swap: buildMockSwap(principal(1).toText()),
     derived: mockDerived,
@@ -203,6 +214,10 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     },
+    token: {
+      name: "Mario",
+      symbol: "SPM",
+    },
     swap: buildMockSwap(principal(2).toText()),
     derived: mockDerived,
   },
@@ -228,6 +243,10 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       url: "http://sns-donkey-kong-project.com",
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+    },
+    token: {
+      name: "Kong",
+      symbol: "DKG",
     },
     swap: buildMockSwap(principal(3).toText()),
     derived: mockDerived,
@@ -273,4 +292,5 @@ export const mockQueryMetadata: QuerySnsMetadata = {
     name: [`My project`],
     description: ["Web3 for the win"],
   },
+  token: mockToken,
 };

@@ -7,16 +7,12 @@ import type {
   SnsSwapInit,
   SnsSwapState,
 } from "@dfinity/sns";
+import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import type { SnsSummary, SnsSummaryMetadata } from "../types/sns";
-import type {
-  QuerySns,
-  QuerySnsMetadata,
-  QuerySnsSwapState,
-} from "../types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { fromNullable } from "./did.utils";
-import {mockSnsSummaryList} from '../../tests/mocks/sns-projects.mock';
 
-type OptionalSummary = QuerySns & {
+type OptionalSummary = Omit<QuerySnsMetadata, "metadata"> & {
   metadata?: SnsSummaryMetadata;
   swap?: SnsSwap;
   derived?: SnsSwapDerivedState;
@@ -105,14 +101,14 @@ export const mapAndSortSnsQueryToSummaries = ({
   swaps: QuerySnsSwapState[];
 }): SnsSummary[] => {
   const allSummaries: OptionalSummary[] = metadata.map(
-    ({ rootCanisterId, certified, metadata }: QuerySnsMetadata) => {
+    ({ rootCanisterId, metadata, ...rest }: QuerySnsMetadata) => {
       const swapState = swaps.find(
         ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
           swapRootCanisterId === rootCanisterId
       );
       return {
+        ...rest,
         rootCanisterId,
-        certified,
         metadata: mapOptionalMetadata(metadata),
         swapCanisterId: swapState?.swapCanisterId,
         swap: fromNullable(swapState?.swap ?? []),
