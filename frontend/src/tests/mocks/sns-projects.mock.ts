@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import {
+  SnsGetMetadataResponse,
   SnsSwapLifecycle,
   type SnsSwapDerivedState,
   type SnsSwapState,
@@ -210,24 +211,6 @@ export const mockSnsFullProject = {
   swapCommitment: mockSwapCommitment,
 } as SnsFullProject;
 
-export const mockQuerySnsSwapState = {
-  rootCanisterId: principal(0),
-  swap: [
-    {
-      init: [
-        {
-          ...mockSnsSummaryList[0].swap.init,
-        },
-      ],
-      state: [
-        {
-          ...mockSnsSummaryList[0].swap.state,
-        },
-      ],
-    },
-  ],
-};
-
 export const summaryForLifecycle = (
   lifecycle: SnsSwapLifecycle
 ): SnsSummary => ({
@@ -240,3 +223,10 @@ export const summaryForLifecycle = (
     },
   },
 });
+
+export const mockMetadata: SnsGetMetadataResponse = {
+  url: ["https://my.url/"],
+  logo: [],
+  name: ["My project"],
+  description: ["Web3 for the win"],
+};

@@ -1,7 +1,7 @@
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { derived, writable } from "svelte/store";
 import type { SnsSwapCommitment } from "../types/sns";
-import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { mapAndSortSnsQueryToSummaries } from "../utils/sns.utils";
 import { isNullish } from "../utils/utils";
 
@@ -60,7 +60,7 @@ export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 export type SnsQueryStore =
   | {
-      summaries: QuerySnsSummary[];
+      metadata: QuerySnsMetadata[];
       swaps: QuerySnsSwapState[];
     }
   | undefined
@@ -89,9 +89,9 @@ const initSnsQueryStore = () => {
       set(null);
     },
 
-    setData([summaries, swaps]: [QuerySnsSummary[], QuerySnsSwapState[]]) {
+    setData([metadata, swaps]: [QuerySnsMetadata[], QuerySnsSwapState[]]) {
       set({
-        summaries,
+        metadata,
         swaps,
       });
     },
@@ -104,23 +104,23 @@ const initSnsQueryStore = () => {
      * However, if this would ever happen and to prevent issues, we clean up the store for the related root canister id.
      */
     updateData({
-      data: [updatedSummary, updatedSwap],
+      data: [updatedMetadata, updatedSwap],
       rootCanisterId,
     }: {
-      data: [QuerySnsSummary | undefined, QuerySnsSwapState | undefined];
+      data: [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined];
       rootCanisterId: string;
     }) {
       update((store: SnsQueryStore) => ({
-        summaries:
-          updatedSummary === undefined
-            ? (store?.summaries ?? []).filter(
+        metadata:
+          updatedMetadata === undefined
+            ? (store?.metadata ?? []).filter(
                 ({ rootCanisterId: canisterId }) =>
-                  canisterId.toText() !== rootCanisterId
+                  canisterId !== rootCanisterId
               )
-            : (store?.summaries ?? []).map((summary) =>
-                summary.rootCanisterId.toText() === rootCanisterId
-                  ? updatedSummary
-                  : summary
+            : (store?.metadata ?? []).map((metadata) =>
+                metadata.rootCanisterId === rootCanisterId
+                  ? updatedMetadata
+                  : metadata
               ),
         swaps:
           updatedSwap === undefined
@@ -146,7 +146,7 @@ export const snsQueryStore = initSnsQueryStore();
  */
 export const snsSummariesStore = derived(snsQueryStore, (data: SnsQueryStore) =>
   mapAndSortSnsQueryToSummaries({
-    summaries: data?.summaries ?? [],
+    summaries: data?.metadata ?? [],
     swaps: data?.swaps ?? [],
   })
 );

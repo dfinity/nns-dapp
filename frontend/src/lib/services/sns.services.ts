@@ -7,8 +7,8 @@ import {
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
-  querySnsSummaries,
-  querySnsSummary,
+  queryAllSnsMetadata,
+  querySnsMetadata,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
   querySnsSwapState,
@@ -23,7 +23,7 @@ import {
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
-import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
@@ -35,10 +35,10 @@ import { queryAndUpdate } from "./utils.services";
 export const loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
 
-  return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
+  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
     request: ({ certified, identity }) =>
       Promise.all([
-        querySnsSummaries({ certified, identity }),
+        queryAllSnsMetadata({ certified, identity }),
         querySnsSwapStates({ certified, identity }),
       ]),
     onLoad: ({ response }) => snsQueryStore.setData(response),
@@ -72,12 +72,12 @@ export const loadSnsSummary = async ({
   onError: () => void;
 }) =>
   queryAndUpdate<
-    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined],
+    [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined],
     unknown
   >({
     request: ({ certified, identity }) =>
       Promise.all([
-        querySnsSummary({
+        querySnsMetadata({
           rootCanisterId,
           identity,
           certified,

@@ -4,7 +4,7 @@ import type {
   SnsSwapLifecycle,
 } from "@dfinity/sns";
 import type {
-  QuerySnsSummary,
+  QuerySnsMetadata,
   QuerySnsSwapState,
 } from "../../lib/types/sns.query";
 import {
@@ -21,7 +21,7 @@ export const snsResponsesForLifecycle = ({
 }: {
   lifecycles: SnsSwapLifecycle[];
   certified?: boolean;
-}): [QuerySnsSummary[], QuerySnsSwapState[]] => [
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     ...lifecycles.map((lifecycle, i) => ({
       ...mockSnsFullProject.summary,

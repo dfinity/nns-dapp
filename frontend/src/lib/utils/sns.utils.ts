@@ -7,10 +7,10 @@ import type {
   SnsSwapState,
 } from "@dfinity/sns";
 import type { SnsSummary } from "../types/sns";
-import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { fromNullable } from "./did.utils";
 
-type OptionalSwapSummary = QuerySnsSummary & {
+type OptionalSwapSummary = QuerySnsMetadata & {
   swap?: SnsSwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
@@ -58,7 +58,7 @@ export const mapAndSortSnsQueryToSummaries = ({
   summaries,
   swaps,
 }: {
-  summaries: QuerySnsSummary[];
+  summaries: QuerySnsMetadata[];
   swaps: QuerySnsSwapState[];
 }): SnsSummary[] => {
   const allSummaries: OptionalSwapSummary[] = summaries.map(

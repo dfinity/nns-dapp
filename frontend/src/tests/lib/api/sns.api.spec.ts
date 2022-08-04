@@ -9,8 +9,8 @@ import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
   participateInSnsSwap,
+  queryAllSnsMetadata, querySnsMetadata,
   querySnsNeurons,
-  querySnsSummaries,
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
@@ -20,10 +20,12 @@ import {
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
 import { snsesCountStore } from "../../../lib/stores/sns.store";
+import { QuerySnsMetadata } from "../../../lib/types/sns.query";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
+  mockMetadata,
   mockSwapInit,
   mockSwapState,
 } from "../../mocks/sns-projects.mock";
@@ -58,6 +60,11 @@ describe("sns-api", () => {
     ],
   };
 
+  const mockQueryMetadata: QuerySnsMetadata = {
+    certified: true,
+    ...mockMetadata,
+  };
+
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
@@ -84,7 +91,7 @@ describe("sns-api", () => {
           governanceCanisterId: governanceCanisterIdMock,
           swapCanisterId: swapCanisterIdMock,
         },
-        metadata: () => Promise.resolve("metadata"),
+        metadata: () => Promise.resolve(mockQueryMetadata),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
@@ -98,19 +105,30 @@ describe("sns-api", () => {
     jest.restoreAllMocks();
   });
 
-  it("should list sns summaries", async () => {
-    const summaries = await querySnsSummaries({
+  it("should query sns metadata", async () => {
+    const metadata = await querySnsMetadata({
+      rootCanisterId: rootCanisterIdMock.toText(),
       identity: mockIdentity,
       certified: true,
     });
 
-    // TODO: currently summaries use mock data and get the value randomly therefore we cannot test it more precisely
-    expect(summaries).not.toBeNull();
-    expect(summaries.length).toEqual(1);
+    expect(metadata).not.toBeNull();
+    expect(metadata).toEqual([mockQueryMetadata]);
+  });
+
+  it("should list all sns metadata", async () => {
+    const metadata = await queryAllSnsMetadata({
+      identity: mockIdentity,
+      certified: true,
+    });
+
+    expect(metadata).not.toBeNull();
+    expect(metadata.length).toEqual(1);
+    expect(metadata).toEqual([mockQueryMetadata]);
   });
 
   it("should update snsesCountStore", async () => {
-    await querySnsSummaries({
+    await queryAllSnsMetadata({
       identity: mockIdentity,
       certified: true,
     });

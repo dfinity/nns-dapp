@@ -97,7 +97,7 @@ describe("sns.store", () => {
       snsQueryStore.setData(data);
 
       const store = get(snsQueryStore);
-      expect(store?.summaries).toEqual(data[0]);
+      expect(store?.metadata).toEqual(data[0]);
       expect(store?.swaps).toEqual(data[1]);
     });
 
@@ -149,7 +149,7 @@ describe("sns.store", () => {
 
       const updatedStore = get(snsQueryStore);
       expect(
-        updatedStore?.summaries.find(
+        updatedStore?.metadata.find(
           (summary) =>
             summary.rootCanisterId.toText() === rootCanisterId.toText()
         )
@@ -180,7 +180,7 @@ describe("sns.store", () => {
 
     const updatedStore = get(snsQueryStore);
     expect(
-      updatedStore?.summaries.find(
+      updatedStore?.metadata.find(
         (summary) => summary.rootCanisterId.toText() === rootCanisterId.toText()
       )
     ).toBeUndefined();
