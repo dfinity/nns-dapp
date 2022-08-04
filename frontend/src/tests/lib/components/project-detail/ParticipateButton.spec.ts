@@ -7,8 +7,8 @@ import { waitFor } from "@testing-library/svelte";
 import ParticipateButton from "../../../../lib/components/project-detail/ParticipateButton.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import {
+  buildMockSwapInit,
   mockSnsFullProject,
-  mockSwapInit,
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
@@ -70,7 +70,8 @@ describe("ParticipateButton", () => {
         rootCanisterId: mock.rootCanisterId,
         myCommitment: {
           ...(mock.myCommitment as SnsSwapBuyerState),
-          amount_icp_e8s: mockSwapInit.max_participant_icp_e8s,
+          amount_icp_e8s: buildMockSwapInit(mock.rootCanisterId.toText())
+            .max_participant_icp_e8s,
         },
       },
       Component: ParticipateButton,

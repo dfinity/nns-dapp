@@ -71,7 +71,10 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const mockSwapInit = {
+export const buildMockSwapInit = (
+  rootCanisterId: string = principal(0).toText()
+) => ({
+  sns_root_canister_id: rootCanisterId,
   min_participant_icp_e8s: BigInt(150000000),
   fallback_controller_principal_ids: [],
   max_icp_e8s: BigInt(3000 * 100000000),
@@ -82,7 +85,9 @@ export const mockSwapInit = {
   max_participant_icp_e8s: BigInt(5000000000),
   sns_governance_canister_id: "1234",
   min_icp_e8s: BigInt(1500 * 100000000),
-};
+});
+
+export const mockSwapInit = buildMockSwapInit();
 
 export const mockSwapTimeWindow = {
   start_timestamp_seconds: BigInt(SECONDS_TODAY + 60 * 5),
@@ -105,10 +110,14 @@ export const mockSwapState = {
   buyers: [],
 } as SnsSwapState;
 
-export const mockSwap: SnsSummarySwap = {
-  init: mockSwapInit,
+export const buildMockSwap = (
+  rootCanisterId: string = principal(0).toText()
+): SnsSummarySwap => ({
+  init: buildMockSwapInit(rootCanisterId),
   state: mockSwapState,
-};
+});
+
+export const mockSwap = buildMockSwap();
 
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
@@ -141,7 +150,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
     description:
       "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     metadata: mockMetadata,
-    swap: mockSwap,
+    swap: buildMockSwap(),
     derived: mockDerived,
   },
   {
@@ -167,7 +176,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     },
-    swap: mockSwap,
+    swap: buildMockSwap(principal(1).toText()),
     derived: mockDerived,
   },
   {
@@ -193,7 +202,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     },
-    swap: mockSwap,
+    swap: buildMockSwap(principal(2).toText()),
     derived: mockDerived,
   },
   {
@@ -219,7 +228,7 @@ export const mockSnsSummaryList: SnsSummary[] = shuffle([
       description:
         "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
     },
-    swap: mockSwap,
+    swap: buildMockSwap(principal(3).toText()),
     derived: mockDerived,
   },
 ])
@@ -248,7 +257,7 @@ export const summaryForLifecycle = (
   swap: {
     ...mockSwap,
     state: {
-      ...mockSwap.state,
+      ...buildMockSwap().state,
       lifecycle,
     },
   },
