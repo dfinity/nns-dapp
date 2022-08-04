@@ -1,14 +1,14 @@
 use crate::proposals::def::{
     AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
-    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, BlessReplicaVersionPayload,
-    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, CompleteCanisterMigrationPayload, CreateSubnetPayload,
-    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
-    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
-    RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
-    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
-    UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed, AddWasmRequest, AddWasmRequestTrimmed
+    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest, AddWasmRequestTrimmed,
+    BlessReplicaVersionPayload, ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed,
+    CompleteCanisterMigrationPayload, CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload,
+    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable,
+    RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload,
+    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
+    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -380,8 +380,7 @@ mod def {
 
     // NNS function 30 - AddSnsWasm
     // https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
-    pub type AddWasmRequest =
-        ic_sns_wasm::pb::v1::AddWasmRequest;
+    pub type AddWasmRequest = ic_sns_wasm::pb::v1::AddWasmRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SnsWasmTrimmed {
@@ -401,13 +400,12 @@ mod def {
             AddWasmRequestTrimmed {
                 wasm: payload.wasm.map(|w| SnsWasmTrimmed {
                     wasm_hash: calculate_hash_string(&w.wasm),
-                    canister_type: w.canister_type
+                    canister_type: w.canister_type,
                 }),
                 hash: format_bytes(&payload.hash),
             }
         }
     }
-
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
@@ -423,7 +421,7 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         format_bytes(&calculate_hash(bytes))
     }
-    
+
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(bytes.len() * 2);
         for byte in bytes {
