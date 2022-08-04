@@ -585,6 +585,7 @@ interface I18nSns_project_detail {
   max_commitment_goal: string;
   deadline: string;
   user_commitment: string;
+  user_current_commitment: string;
   status: string;
   status_open: string;
   enter_amount: string;
