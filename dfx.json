@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.0",
+  "dfx": "0.11.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -36,12 +36,7 @@
       ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom",
-      "remote": {
-        "id": {
-          "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai"
-        }
-      }
+      "type": "custom"
     },
     "sns_governance": {
       "build": [
