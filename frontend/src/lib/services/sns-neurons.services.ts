@@ -141,7 +141,7 @@ export const addHotkey = async ({
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
     const identity = await getNeuronIdentity(neuronId);
-    const principal = await Principal.fromText(hotkey);
+    const principal = Principal.fromText(hotkey);
     await addNeuronPermissions({
       permissions,
       identity,
