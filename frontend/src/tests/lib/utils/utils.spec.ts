@@ -2,6 +2,7 @@ import {
   bytesToHexString,
   createChunks,
   debounce,
+  hexStringToBytes,
   isDefined,
   isHash,
   isNullish,
@@ -160,14 +161,16 @@ describe("utils", () => {
     });
   });
 
-  describe("bytesToHexString", () => {
-    it("converts bytes to string", () => {
-      expect(bytesToHexString([])).toBe("");
-      expect(bytesToHexString([0])).toBe("00");
-      expect(bytesToHexString([1])).toBe("01");
-      expect(bytesToHexString([15])).toBe("0f");
-      expect(bytesToHexString([255])).toBe("ff");
-      expect(bytesToHexString([1, 255, 3, 0])).toBe("01ff0300");
+  describe("bytesToHexString and hexStringToBytes", () => {
+    it("converts bytes to string and back", () => {
+      expect(hexStringToBytes(bytesToHexString([]))).toEqual([]);
+      expect(hexStringToBytes(bytesToHexString([0]))).toEqual([0]);
+      expect(hexStringToBytes(bytesToHexString([1]))).toEqual([1]);
+      expect(hexStringToBytes(bytesToHexString([15]))).toEqual([15]);
+      expect(hexStringToBytes(bytesToHexString([255]))).toEqual([255]);
+      expect(hexStringToBytes(bytesToHexString([1, 255, 3, 0]))).toEqual([
+        1, 255, 3, 0,
+      ]);
     });
   });
 

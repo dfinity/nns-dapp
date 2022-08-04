@@ -5,12 +5,15 @@
 import type { HttpAgent } from "@dfinity/agent";
 import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
+  addNeuronPermissions,
   participateInSnsSwap,
   queryAllSnsMetadata,
   querySnsMetadata,
+  querySnsNeuron,
   querySnsNeurons,
   querySnsSwapCommitment,
   querySnsSwapState,
@@ -67,6 +70,8 @@ describe("sns-api", () => {
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
+  const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
+  const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -93,6 +98,8 @@ describe("sns-api", () => {
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
+        getNeuron: queryNeuronSpy,
+        addNeuronPermissions: addNeuronPermissionsSpy,
       })
     );
   });
@@ -191,5 +198,29 @@ describe("sns-api", () => {
     expect(neurons).not.toBeNull();
     expect(neurons.length).toEqual(1);
     expect(queryNeuronsSpy).toBeCalled();
+  });
+
+  it("should query one sns neurons", async () => {
+    const neuron = await querySnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: [1, 2, 3] },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(queryNeuronSpy).toBeCalled();
+  });
+
+  it("should add neuron permissions", async () => {
+    await addNeuronPermissions({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      principal: Principal.fromText("aaaaa-aa"),
+      neuronId: { id: [1, 2, 3] },
+      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+
+    expect(addNeuronPermissionsSpy).toBeCalled();
   });
 });

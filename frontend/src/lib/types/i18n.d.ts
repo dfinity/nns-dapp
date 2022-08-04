@@ -585,6 +585,7 @@ interface I18nSns_project_detail {
   max_commitment_goal: string;
   deadline: string;
   user_commitment: string;
+  user_current_commitment: string;
   status: string;
   status_open: string;
   enter_amount: string;
@@ -606,6 +607,10 @@ interface I18nSns_project_detail {
   sale_start: string;
   sale_end: string;
   max_user_commitment_reached: string;
+}
+
+interface I18nSns_neuron_detail {
+  header: string;
 }
 
 interface I18nTime {
@@ -682,6 +687,7 @@ interface I18nError__sns {
   load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
+  sns_add_hotkey: string;
 }
 
 interface I18n {
@@ -713,6 +719,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_neuron_detail: I18nSns_neuron_detail;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
