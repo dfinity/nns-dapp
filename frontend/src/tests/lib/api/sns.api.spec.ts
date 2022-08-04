@@ -25,7 +25,7 @@ import { QuerySnsMetadata } from "../../../lib/types/sns.query";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
-  createBuyersState,
+  createBuyersState, mockQueryMetadata,
   mockSwapInit,
   mockSwapState,
   principal,
@@ -59,17 +59,6 @@ describe("sns-api", () => {
         buyer_total_icp_e8s: BigInt(1_000_000_000),
       },
     ],
-  };
-
-  const mockQueryMetadata: QuerySnsMetadata = {
-    rootCanisterId: principal(0).toText(),
-    certified: true,
-    metadata: {
-      url: [`https://my.url/`],
-      logo: [],
-      name: [`My project`],
-      description: ["Web3 for the win"],
-    },
   };
 
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);

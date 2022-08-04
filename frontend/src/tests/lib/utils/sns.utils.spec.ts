@@ -6,11 +6,11 @@ import {
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
-  mockDerived,
+  mockDerived, mockQueryMetadata,
   mockSnsSummaryList,
   mockSummary,
   mockSwapInit,
-  mockSwapState,
+  mockSwapState, principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
@@ -27,7 +27,7 @@ describe("sns-utils", () => {
 
     it("should return empty for undefined swap query", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [],
       });
 
@@ -36,7 +36,7 @@ describe("sns-utils", () => {
 
     it("should return empty for undefined swap init", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: "1234",
@@ -58,7 +58,7 @@ describe("sns-utils", () => {
 
     it("should return empty for undefined swap state", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: "1234",
@@ -80,7 +80,7 @@ describe("sns-utils", () => {
 
     it("should return empty for undefined derived info", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: "1234",
@@ -102,7 +102,7 @@ describe("sns-utils", () => {
 
     it("should return empty if no root id are matching between summaries and swaps", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: "1234",
@@ -124,7 +124,7 @@ describe("sns-utils", () => {
 
     it("should concat summaries and swaps", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [{ ...mockSummary, certified: true }],
+        metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
@@ -149,8 +149,8 @@ describe("sns-utils", () => {
     it("should sort summaries and swaps", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
         metadata: [
-          { ...mockSummary, certified: true },
-          { ...mockSnsSummaryList[1], certified: true },
+          mockQueryMetadata,
+          { ...mockQueryMetadata, rootCanisterId: principal(2).toText() },
         ],
         swaps: [
           {

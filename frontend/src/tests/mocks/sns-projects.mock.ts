@@ -12,6 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "../../lib/types/sns";
+import type { QuerySnsMetadata } from "../../lib/types/sns.query";
 import { secondsToDate, secondsToTime } from "../../lib/utils/date.utils";
 import { shuffle } from "../../lib/utils/dev.utils";
 
@@ -262,3 +263,14 @@ export const summaryForLifecycle = (
     },
   },
 });
+
+export const mockQueryMetadata: QuerySnsMetadata = {
+  rootCanisterId: principal(0).toText(),
+  certified: true,
+  metadata: {
+    url: [`https://my.url/`],
+    logo: [],
+    name: [`My project`],
+    description: ["Web3 for the win"],
+  },
+};
