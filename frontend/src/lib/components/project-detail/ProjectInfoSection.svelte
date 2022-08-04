@@ -11,7 +11,7 @@
   } from "../../types/project-detail.context";
   import Spinner from "../../../lib/components/ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
-  import { SnsTokenMetadata } from "../../../../../../ic-js/packages/sns";
+  import type { SnsTokenMetadata } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
