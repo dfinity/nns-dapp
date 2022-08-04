@@ -4,7 +4,7 @@ import type {
   SnsSwapBuyerState,
   SnsSwapDerivedState,
   SnsSwapInit,
-  SnsSwapState
+  SnsSwapState,
 } from "@dfinity/sns";
 
 /**

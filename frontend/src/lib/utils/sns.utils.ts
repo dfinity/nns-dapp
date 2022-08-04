@@ -10,7 +10,7 @@ import type {
 import {
   SnsMetadataResponseEntries,
   type SnsTokenMetadataResponse,
-} from "../../../../../ic-js/packages/sns/src";
+} from "@dfinity/sns";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
