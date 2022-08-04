@@ -140,24 +140,24 @@ describe("sns.store", () => {
         certified: true,
       });
 
-      const rootCanisterId = summaries[0].rootCanisterId as Principal;
+      const rootCanisterId = summaries[0].rootCanisterId;
 
       snsQueryStore.updateData({
         data: [summaries[0], swaps[0]],
-        rootCanisterId: rootCanisterId.toText(),
+        rootCanisterId: rootCanisterId,
       });
 
       const updatedStore = get(snsQueryStore);
       expect(
         updatedStore?.metadata.find(
           (summary) =>
-            summary.rootCanisterId.toText() === rootCanisterId.toText()
+            summary.rootCanisterId === rootCanisterId
         )
       ).toEqual(summaries[0]);
 
       expect(
         updatedStore?.swaps.find(
-          (swap) => swap.rootCanisterId === rootCanisterId.toText()
+          (swap) => swap.rootCanisterId === rootCanisterId
         )
       ).toEqual(swaps[0]);
     });
@@ -171,23 +171,23 @@ describe("sns.store", () => {
 
     snsQueryStore.setData(data);
 
-    const rootCanisterId = data[0][0].rootCanisterId as Principal;
+    const rootCanisterId = data[0][0].rootCanisterId;
 
     snsQueryStore.updateData({
       data: [undefined, undefined],
-      rootCanisterId: rootCanisterId.toText(),
+      rootCanisterId: rootCanisterId,
     });
 
     const updatedStore = get(snsQueryStore);
     expect(
       updatedStore?.metadata.find(
-        (summary) => summary.rootCanisterId.toText() === rootCanisterId.toText()
+        (summary) => summary.rootCanisterId === rootCanisterId
       )
     ).toBeUndefined();
 
     expect(
       updatedStore?.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId.toText()
+        (swap) => swap.rootCanisterId === rootCanisterId
       )
     ).toBeUndefined();
   });

@@ -21,14 +21,13 @@ import {
   importSnsWasmCanister,
 } from "../../../lib/proxy/api.import.proxy";
 import { snsesCountStore } from "../../../lib/stores/sns.store";
-import { QuerySnsMetadata } from "../../../lib/types/sns.query";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
-  createBuyersState, mockQueryMetadata,
+  createBuyersState,
+  mockQueryMetadata,
   mockSwapInit,
   mockSwapState,
-  principal,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -109,7 +108,7 @@ describe("sns-api", () => {
     });
 
     expect(metadata).not.toBeNull();
-    expect(metadata).toEqual([mockQueryMetadata]);
+    expect(metadata).toEqual(mockQueryMetadata);
   });
 
   it("should list all sns metadata", async () => {

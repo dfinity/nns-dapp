@@ -9,7 +9,7 @@ import type {
 } from "../../lib/types/sns.query";
 import {
   mockDerived,
-  mockSnsFullProject,
+  mockQueryMetadata,
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
@@ -24,8 +24,8 @@ export const snsResponsesForLifecycle = ({
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     ...lifecycles.map((lifecycle, i) => ({
-      ...mockSnsFullProject.summary,
-      rootCanisterId: principal(i),
+      ...mockQueryMetadata,
+      rootCanisterId: principal(i).toText(),
       certified,
     })),
   ],
