@@ -26,8 +26,10 @@ import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
   mockQueryMetadata,
+  mockQueryMetadataResponse,
   mockSwapInit,
   mockSwapState,
+  mockToken,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -86,7 +88,7 @@ describe("sns-api", () => {
           governanceCanisterId: governanceCanisterIdMock,
           swapCanisterId: swapCanisterIdMock,
         },
-        metadata: () => Promise.resolve(mockQueryMetadata),
+        metadata: () => Promise.resolve([mockQueryMetadataResponse, mockToken]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,

@@ -1,9 +1,10 @@
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
-  type SnsTokenMetadata,
+  type SnsGetMetadataResponse,
   type SnsSwapDerivedState,
   type SnsSwapState,
+  type SnsTokenMetadata,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
@@ -283,14 +284,16 @@ export const summaryForLifecycle = (
   },
 });
 
+export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
+  url: [`https://my.url/`],
+  logo: ["a_logo"],
+  name: [`My project`],
+  description: ["Web3 for the win"],
+};
+
 export const mockQueryMetadata: QuerySnsMetadata = {
   rootCanisterId: principal(0).toText(),
   certified: true,
-  metadata: {
-    url: [`https://my.url/`],
-    logo: ['a_logo'],
-    name: [`My project`],
-    description: ["Web3 for the win"],
-  },
+  metadata: mockQueryMetadataResponse,
   token: mockToken,
 };
