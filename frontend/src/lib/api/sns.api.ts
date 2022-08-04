@@ -5,6 +5,7 @@ import type {
   InitSnsWrapper,
   SnsNeuron,
   SnsNeuronId,
+  SnsNeuronPermissionType,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -517,4 +518,32 @@ export const querySnsNeuron = async ({
 
   logWithTimestamp("Getting sns neuron: done");
   return neuron;
+};
+
+export const addNeuronPermissions = async ({
+  identity,
+  rootCanisterId,
+  permissions,
+  principal,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp("Adding neuron permissions: call...");
+  const { addNeuronPermissions } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  await addNeuronPermissions({
+    permissions,
+    principal,
+    neuronId,
+  });
+
+  logWithTimestamp("Adding neuron permissions: done");
 };
