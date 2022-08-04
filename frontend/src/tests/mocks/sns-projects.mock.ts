@@ -1,10 +1,11 @@
 import { Principal } from "@dfinity/principal";
 import {
+  SnsMetadataResponseEntries,
   SnsSwapLifecycle,
   type SnsGetMetadataResponse,
   type SnsSwapDerivedState,
   type SnsSwapState,
-  type SnsTokenMetadata,
+  type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
@@ -13,6 +14,7 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
+  SnsTokenMetadata,
 } from "../../lib/types/sns";
 import type { QuerySnsMetadata } from "../../lib/types/sns.query";
 import { secondsToDate, secondsToTime } from "../../lib/utils/date.utils";
@@ -291,9 +293,16 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   description: ["Web3 for the win"],
 };
 
+export const mockQueryTokenResponse: SnsTokenMetadataResponse = [
+  [SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
+  [SnsMetadataResponseEntries.NAME, { Text: "Tetris" }],
+  [SnsMetadataResponseEntries.SYMBOL, { Text: "TET" }],
+  [SnsMetadataResponseEntries.FEE, { Nat: BigInt(1000) }],
+];
+
 export const mockQueryMetadata: QuerySnsMetadata = {
   rootCanisterId: principal(0).toText(),
   certified: true,
   metadata: mockQueryMetadataResponse,
-  token: mockToken,
+  token: mockQueryTokenResponse,
 };

@@ -1,5 +1,6 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { SnsMetadataResponseEntries } from "../../../../../../ic-js/packages/sns";
 import {
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
@@ -8,6 +9,7 @@ import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockDerived,
   mockQueryMetadata,
+  mockQueryMetadataResponse,
   mockSnsSummaryList,
   mockSummary,
   mockSwapInit,
@@ -144,6 +146,63 @@ describe("sns-utils", () => {
       });
 
       expect(summaries.length).toEqual(1);
+    });
+
+    it("should return empty for partially undefined metadata", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [
+          {
+            ...mockQueryMetadata,
+            metadata: {
+              ...mockQueryMetadataResponse,
+              name: [],
+            },
+          },
+        ],
+        swaps: [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [mockDerived],
+            certified: true,
+          },
+        ],
+      });
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty for partially undefined token", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [
+          {
+            ...mockQueryMetadata,
+            token: [[SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
+          },
+        ],
+        swaps: [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [mockDerived],
+            certified: true,
+          },
+        ],
+      });
+
+      expect(summaries.length).toEqual(0);
     });
   });
 

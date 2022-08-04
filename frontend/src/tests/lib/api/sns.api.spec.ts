@@ -32,7 +32,7 @@ import {
   mockQueryMetadataResponse,
   mockSwapInit,
   mockSwapState,
-  mockToken,
+  mockQueryTokenResponse,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -93,7 +93,7 @@ describe("sns-api", () => {
           governanceCanisterId: governanceCanisterIdMock,
           swapCanisterId: swapCanisterIdMock,
         },
-        metadata: () => Promise.resolve([mockQueryMetadataResponse, mockToken]),
+        metadata: () => Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
