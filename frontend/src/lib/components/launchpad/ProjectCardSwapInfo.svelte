@@ -19,6 +19,7 @@
     type SnsSwapState,
     type SnsSwapTimeWindow,
   } from "@dfinity/sns";
+  import ProjectUserCommitmentLabel from "../project-detail/ProjectUserCommitmentLabel.svelte";
 
   export let project: SnsFullProject;
 
@@ -58,13 +59,13 @@
   <!-- Sale is committed -->
   {#if lifecycle === SnsSwapLifecycle.Committed}
     <dt>{$i18n.sns_project_detail.status_completed}</dt>
-    <dd>{$i18n.sns_project_detail.completed}</dd>
+    <dd class="value">{$i18n.sns_project_detail.completed}</dd>
   {/if}
 
   <!-- Sale is open -->
   {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
     <dt>{$i18n.sns_project_detail.deadline}</dt>
-    <dd>{secondsToDuration(durationTillDeadline)}</dd>
+    <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
   {/if}
 
   <!-- Sale starts soon -->
@@ -74,7 +75,7 @@
   {/if}
 
   {#if myCommitment !== undefined}
-    <dt>{$i18n.sns_project_detail.user_commitment}</dt>
+    <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
     <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
   {/if}
 </dl>
@@ -88,7 +89,6 @@
 
     dd {
       text-align: right;
-      color: var(--value-color);
     }
   }
 </style>

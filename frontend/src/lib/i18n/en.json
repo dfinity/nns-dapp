@@ -557,7 +557,8 @@
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
-    "user_commitment": "Your Current Commitment",
+    "user_commitment": "Your Commitment",
+    "user_current_commitment": "Your Current Commitment",
     "status": "Status",
     "status_open": "Accepting Participation",
     "enter_amount": "Enter Amount",
@@ -579,6 +580,9 @@
     "sale_start": "Sale Start",
     "sale_end": "Sale End",
     "max_user_commitment_reached": "Maximum commitment reached"
+  },
+  "sns_neuron_detail": {
+    "header": "Neuron"
   },
   "time": {
     "year": "year",
@@ -647,6 +651,7 @@
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
-    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project."
+    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
+    "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }

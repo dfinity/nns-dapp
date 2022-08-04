@@ -8,6 +8,7 @@ export interface ProjectDetailStore {
 
 export interface ProjectDetailContext {
   store: Writable<ProjectDetailStore>;
+  reload: () => Promise<void>;
 }
 
 export const PROJECT_DETAIL_CONTEXT_KEY = Symbol("project-detail");

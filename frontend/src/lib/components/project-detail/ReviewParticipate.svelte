@@ -28,9 +28,8 @@
   export let account: Account;
   export let amount: number;
 
-  const { store }: ProjectDetailContext = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store, reload }: ProjectDetailContext =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
@@ -57,9 +56,10 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
-        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
       });
       if (success) {
+        await reload();
+
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
         });

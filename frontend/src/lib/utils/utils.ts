@@ -131,6 +131,20 @@ export const bytesToHexString = (bytes: number[]): string =>
     ""
   );
 
+// Convert a hex string to a byte array
+// Source: https://stackoverflow.com/a/34356351
+export const hexStringToBytes = (hexString: string): number[] => {
+  const bytes: number[] = [];
+  // Loop through each pair of hex digits
+  for (let c = 0; c < hexString.length; c += 2) {
+    const hexDigit = hexString.substring(c, c + 2);
+    // Parse a base 16
+    const byte = parseInt(hexDigit, 16);
+    bytes.push(byte);
+  }
+  return bytes;
+};
+
 /** Is null or undefined */
 export const isNullish = <T>(
   argument: T | undefined | null

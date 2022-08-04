@@ -4,6 +4,8 @@ import { Principal } from "@dfinity/principal";
 import type {
   InitSnsWrapper,
   SnsNeuron,
+  SnsNeuronId,
+  SnsNeuronPermissionType,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -52,7 +54,6 @@ const listSnses = async ({
 
   const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
 
-  console.log({ WASM_CANISTER_ID, path: "src/lib/api/sns.api.ts" });
   const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
     canisterId: Principal.fromText(WASM_CANISTER_ID),
     agent,
@@ -270,6 +271,7 @@ export const querySnsSummary = async ({
     ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
       ...mockSnsSummaryList[index],
       rootCanisterId,
+      certified,
     }));
   }
 
@@ -352,6 +354,7 @@ export const querySnsSwapState = async ({
     swapCanisterId,
     swap,
     derived,
+    certified,
   };
 };
 
@@ -484,8 +487,63 @@ export const querySnsNeurons = async ({
     rootCanisterId: rootCanisterId.toText(),
     certified,
   });
-  const neurons = await listNeurons({});
+  const neurons = await listNeurons({
+    principal: identity.getPrincipal(),
+  });
 
   logWithTimestamp("Getting sns neurons: done");
   return neurons;
+};
+
+export const querySnsNeuron = async ({
+  identity,
+  rootCanisterId,
+  certified,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+  neuronId: SnsNeuronId;
+}): Promise<SnsNeuron> => {
+  logWithTimestamp("Getting sns neuron: call...");
+  const { getNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neuron = await getNeuron({
+    neuronId,
+  });
+
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
+};
+
+export const addNeuronPermissions = async ({
+  identity,
+  rootCanisterId,
+  permissions,
+  principal,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp("Adding neuron permissions: call...");
+  const { addNeuronPermissions } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  await addNeuronPermissions({
+    permissions,
+    principal,
+    neuronId,
+  });
+
+  logWithTimestamp("Adding neuron permissions: done");
 };
