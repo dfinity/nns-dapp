@@ -1,10 +1,13 @@
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { SECONDS_IN_YEAR } from "../../../lib/constants/constants";
 import {
+  canIdentityManageHotkeys,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
+  getSnsNeuronHotkeys,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
@@ -13,6 +16,7 @@ import {
   sortSnsNeuronsByCreatedTimestamp,
 } from "../../../lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "../../../lib/utils/utils";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -233,6 +237,105 @@ describe("sns-neuron utils", () => {
       ).toBeUndefined();
       expect(routePathSnsNeuronRootCanisterId("/#/neurons/")).toBeUndefined();
       expect(routePathSnsNeuronRootCanisterId("/#/accounts/")).toBeUndefined();
+    });
+  });
+
+  describe("canIdentityManageHotkeys", () => {
+    const addVotePermission = (key) => ({
+      principal: [Principal.fromText(key)] as [Principal],
+      permission_type: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+    const hotkeys = [
+      "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
+      "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
+    ];
+
+    it("returns true when user has voting rights", () => {
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
+          addVotePermission
+        ),
+      };
+      expect(
+        canIdentityManageHotkeys({
+          neuron: controlledNeuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no voting rights", () => {
+      const unControlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: hotkeys.map(addVotePermission),
+      };
+      expect(
+        canIdentityManageHotkeys({
+          neuron: unControlledNeuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+      const otherPermissionNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()] as [Principal],
+            permission_type: [
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+            ],
+          },
+        ],
+      };
+      expect(
+        canIdentityManageHotkeys({
+          neuron: otherPermissionNeuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("getSnsNeuronHotkeys", () => {
+    const addVotePermission = (key) => ({
+      principal: [Principal.fromText(key)] as [Principal],
+      permission_type: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+    const hotkeys = [
+      "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
+      "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
+    ];
+
+    it("returns array of principal ids", () => {
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
+          addVotePermission
+        ),
+      };
+      expect(
+        getSnsNeuronHotkeys({
+          neuron: controlledNeuron,
+          identity: mockIdentity,
+        })
+      ).toEqual(hotkeys);
+    });
+
+    it("doesn't return the controller", () => {
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
+          addVotePermission
+        ),
+      };
+      const expectedHotkeys = getSnsNeuronHotkeys({
+        neuron: controlledNeuron,
+        identity: mockIdentity,
+      });
+      expect(
+        expectedHotkeys.includes(mockIdentity.getPrincipal().toText())
+      ).toBe(false);
     });
   });
 });

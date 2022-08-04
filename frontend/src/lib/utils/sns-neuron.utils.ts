@@ -1,5 +1,6 @@
+import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { AppPath } from "../constants/routes.constants";
 import type { SnsNeuronState } from "../types/sns";
 import {
@@ -8,8 +9,9 @@ import {
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
+import { fromNullable } from "./did.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
-import { bytesToHexString } from "./utils";
+import { bytesToHexString, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -112,3 +114,42 @@ export const routePathSnsNeuronRootCanisterId = (
   }
   return getParentPathDetail(path);
 };
+
+export const canIdentityManageHotkeys = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean => {
+  const neuronId = fromNullable(neuron.id);
+  if (neuronId === undefined || identity === undefined || identity === null) {
+    return false;
+  }
+  const principalPermission = neuron.permissions.find(
+    ({ principal }) =>
+      fromNullable(principal)?.toText() === identity.getPrincipal().toText()
+  );
+  return (
+    principalPermission?.permission_type.includes(
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
+    ) ?? false
+  );
+};
+
+export const getSnsNeuronHotkeys = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | null | undefined;
+}): string[] =>
+  neuron.permissions
+    .filter(({ permission_type }) =>
+      permission_type.includes(
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
+      )
+    )
+    .map(({ principal }) => fromNullable(principal)?.toText())
+    .filter(nonNullish)
+    .filter((principal) => principal !== identity?.getPrincipal().toText());

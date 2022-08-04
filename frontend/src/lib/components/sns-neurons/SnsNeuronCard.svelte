@@ -17,9 +17,9 @@
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
-  export let role: "link";
+  export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
-  export let ariaLabel: string;
+  export let ariaLabel: string | undefined = undefined;
 
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
@@ -53,6 +53,8 @@
     state={getSnsNeuronState(neuron)}
     timeInSeconds={dissolvingTime ?? lockedTime}
   />
+
+  <slot />
 </NeuronCardContainer>
 
 <style lang="scss">
