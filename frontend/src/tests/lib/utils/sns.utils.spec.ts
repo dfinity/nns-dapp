@@ -1,6 +1,6 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries } from "../../../../../../ic-js/packages/sns";
+import { SnsMetadataResponseEntries } from "@dfinity/sns";
 import {
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
