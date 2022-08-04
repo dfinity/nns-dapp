@@ -2,7 +2,10 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { querySnsNeuron, querySnsNeurons } from "../api/sns.api";
-import { snsNeuronsStore } from "../stores/sns-neurons.store";
+import {
+  snsNeuronsStore,
+  type ProjectNeuronStore,
+} from "../stores/sns-neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { toToastError } from "../utils/error.utils";
 import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
@@ -47,6 +50,11 @@ export const loadSnsNeurons = async (
   });
 };
 
+const getSnsNeuronsFromStoreByProject = (
+  rootCanisterId: Principal
+): ProjectNeuronStore | undefined =>
+  get(snsNeuronsStore)[rootCanisterId.toText()];
+
 const getNeuronFromStoreByIdHex = ({
   neuronIdHex,
   rootCanisterId,
@@ -54,8 +62,7 @@ const getNeuronFromStoreByIdHex = ({
   neuronIdHex: string;
   rootCanisterId: Principal;
 }): { neuron?: SnsNeuron; certified?: boolean } => {
-  const store = get(snsNeuronsStore);
-  const projectData = store[rootCanisterId.toText()];
+  const projectData = getSnsNeuronsFromStoreByProject(rootCanisterId);
   const neuron = getSnsNeuronByHexId({
     neuronIdHex,
     neurons: projectData?.neurons,
