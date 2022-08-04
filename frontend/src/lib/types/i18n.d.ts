@@ -687,6 +687,7 @@ interface I18nError__sns {
   load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
+  sns_add_hotkey: string;
 }
 
 interface I18n {
