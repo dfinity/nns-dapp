@@ -29,7 +29,7 @@
   };
 </script>
 
-<Card>
+<Card testId="sns-proposal-card">
   <h3 slot="start">{title}</h3>
 
   <ul>
