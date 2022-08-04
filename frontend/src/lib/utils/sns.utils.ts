@@ -7,7 +7,6 @@ import type {
   SnsSwapInit,
   SnsSwapState,
 } from "@dfinity/sns";
-import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import type { SnsSummary, SnsSummaryMetadata } from "../types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { fromNullable } from "./did.utils";
@@ -130,8 +129,6 @@ export const mapAndSortSnsQueryToSummaries = ({
 
   return sortSnsSummaries(
     validSwapSummaries.map(({ swap, rootCanisterId, ...rest }) => ({
-      // TODO: remove mock data
-      ...mockSnsSummaryList[0],
       rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
       swap: {

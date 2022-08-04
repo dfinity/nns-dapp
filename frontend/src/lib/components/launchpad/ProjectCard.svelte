@@ -20,7 +20,9 @@
   let logo: string;
   let name: string;
   let description: string;
-  $: ({ logo, name, description } = summary);
+  $: ({
+    metadata: { logo, name, description },
+  } = summary);
 
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;

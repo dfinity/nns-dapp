@@ -1,5 +1,4 @@
 import { ProposalStatus } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import {
@@ -150,8 +149,7 @@ describe("sns.store", () => {
       const updatedStore = get(snsQueryStore);
       expect(
         updatedStore?.metadata.find(
-          (summary) =>
-            summary.rootCanisterId === rootCanisterId
+          (summary) => summary.rootCanisterId === rootCanisterId
         )
       ).toEqual(summaries[0]);
 
@@ -186,9 +184,7 @@ describe("sns.store", () => {
     ).toBeUndefined();
 
     expect(
-      updatedStore?.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId
-      )
+      updatedStore?.swaps.find((swap) => swap.rootCanisterId === rootCanisterId)
     ).toBeUndefined();
   });
 });

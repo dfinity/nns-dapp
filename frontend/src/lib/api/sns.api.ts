@@ -260,7 +260,7 @@ export const querySnsMetadata = async ({
     metadata,
     token,
     certified,
-    rootCanisterId
+    rootCanisterId,
   };
 };
 
