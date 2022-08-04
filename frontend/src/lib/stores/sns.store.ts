@@ -142,11 +142,11 @@ const initSnsQueryStore = () => {
 export const snsQueryStore = initSnsQueryStore();
 
 /**
- * The response of the Snses about summary and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
+ * The response of the Snses about metadata and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
  */
 export const snsSummariesStore = derived(snsQueryStore, (data: SnsQueryStore) =>
   mapAndSortSnsQueryToSummaries({
-    summaries: data?.metadata ?? [],
+    metadata: data?.metadata ?? [],
     swaps: data?.swaps ?? [],
   })
 );

@@ -9,13 +9,13 @@ export type QueryRootCanisterId = string;
 
 export type QueryCertified = { certified: boolean };
 
-export type QuerySnsMetadata = {
-  rootCanisterId: QueryRootCanisterId;
-} & SnsGetMetadataResponse &
-  QueryCertified;
+export type QuerySns = { rootCanisterId: QueryRootCanisterId };
 
-export type QuerySnsSwapState = {
-  rootCanisterId: QueryRootCanisterId;
+export type QuerySnsMetadata = QuerySns & {
+  metadata: SnsGetMetadataResponse;
+} & QueryCertified;
+
+export type QuerySnsSwapState = QuerySns & {
   swapCanisterId: Principal;
   swap: [] | [SnsSwap];
   derived: [] | [SnsSwapDerivedState];

@@ -242,20 +242,20 @@ export const querySnsMetadata = async ({
     `Getting Sns ${rootCanisterId} summary certified:${certified} call...`
   );
 
-  const { metadata }: SnsWrapper = await wrapper({
+  const { metadata: meta }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
   });
 
-  const meta = await metadata({});
+  const metadata = await meta({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} summary certified:${certified} done.`
   );
 
   return {
-    ...meta,
+    metadata,
     certified,
     rootCanisterId
   };

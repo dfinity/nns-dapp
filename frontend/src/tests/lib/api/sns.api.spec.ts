@@ -9,7 +9,8 @@ import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
   participateInSnsSwap,
-  queryAllSnsMetadata, querySnsMetadata,
+  queryAllSnsMetadata,
+  querySnsMetadata,
   querySnsNeurons,
   querySnsSwapCommitment,
   querySnsSwapState,
@@ -25,9 +26,9 @@ import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
-  mockMetadata,
   mockSwapInit,
   mockSwapState,
+  principal,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -61,8 +62,14 @@ describe("sns-api", () => {
   };
 
   const mockQueryMetadata: QuerySnsMetadata = {
+    rootCanisterId: principal(0).toText(),
     certified: true,
-    ...mockMetadata,
+    metadata: {
+      url: [`https://my.url/`],
+      logo: [],
+      name: [`My project`],
+      description: ["Web3 for the win"],
+    },
   };
 
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
