@@ -1,57 +1,82 @@
 <script lang="ts">
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
-  import Proposer from "./Proposer.svelte";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import Value from "../ui/Value.svelte";
+  import { nowInSeconds, secondsToDuration } from "../../utils/date.utils";
+  import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let size: "small" | "normal" = "normal";
-  export let link: boolean = true;
+  export let showUrl: boolean = false;
+  export let showTopic: boolean = false;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
-
   $: ({ id, url, topic } = mapProposalInfo(proposalInfo));
+
+  let deadline: bigint | undefined;
+  $: deadline =
+    proposalInfo.deadlineTimestampSeconds === undefined
+      ? undefined
+      : (proposalInfo.deadlineTimestampSeconds ?? 0n) - BigInt(nowInSeconds());
 </script>
 
-{#if link && url}
-  <p class:text_small={size === "small"}>
-    <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
-  </p>
-{/if}
-
-<p class:text_small={size === "small"}><Proposer {proposalInfo} /></p>
-<p class:text_small={size === "small"}>
-  {$i18n.proposal_detail.topic_prefix}
-  <Value>{topic}</Value>
-</p>
-<p
-  class:text_small={size === "small"}
-  data-tid="proposal-id"
-  data-proposal-id={id}
->
-  {$i18n.proposal_detail.id_prefix}
-  <Value>{id}</Value>
-</p>
+<ul>
+  <li>
+    <Proposer {proposalInfo} />
+  </li>
+  {#if showUrl && url}
+    <li>
+      <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
+    </li>
+  {/if}
+  {#if showTopic}
+    <li>
+      {$i18n.proposal_detail.topic_prefix}
+      <Value>{topic}</Value>
+    </li>
+  {/if}
+  <li>
+    {$i18n.proposal_detail.id_prefix}
+    <Value>{id}</Value>
+  </li>
+  {#if deadline !== undefined && deadline >= 0}
+    <li>
+      {$i18n.proposal_detail.open_voting_prefix}
+      <Value>{secondsToDuration(deadline)}</Value>
+    </li>
+  {/if}
+</ul>
 
 <style lang="scss">
   @use "../../themes/mixins/media";
 
-  a {
-    font-size: inherit;
-    line-height: inherit;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 
-    overflow-wrap: anywhere;
-  }
+    li {
+      margin-top: var(--padding-0_5x);
 
-  p {
-    margin: var(--padding-0_5x) 0;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
 
+    // proposer
     :global(button) {
       font-size: inherit;
       color: inherit;
     }
+  }
+
+  a {
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--primary);
+
+    overflow-wrap: anywhere;
   }
 </style>
