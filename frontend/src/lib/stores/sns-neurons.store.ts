@@ -59,8 +59,7 @@ const initSnsNeuronsStore = () => {
   };
 };
 
-export const
-    snsNeuronsStore = initSnsNeuronsStore();
+export const snsNeuronsStore = initSnsNeuronsStore();
 
 export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
   [snsNeuronsStore, snsProjectSelectedStore],

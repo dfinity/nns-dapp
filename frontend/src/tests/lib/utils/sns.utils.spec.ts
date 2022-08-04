@@ -6,11 +6,13 @@ import {
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
-  mockDerived, mockQueryMetadata,
+  mockDerived,
+  mockQueryMetadata,
   mockSnsSummaryList,
   mockSummary,
   mockSwapInit,
-  mockSwapState, principal,
+  mockSwapState,
+  principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
