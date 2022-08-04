@@ -72,7 +72,7 @@ describe("ProjectCard", () => {
 
     expect(getByText(en.sns_project_detail.deadline)).toBeInTheDocument();
     expect(
-      getByText(en.sns_project_detail.user_commitment)
+      getByText(en.sns_project_detail.user_current_commitment)
     ).toBeInTheDocument();
   });
 });

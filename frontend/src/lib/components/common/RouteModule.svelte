@@ -35,6 +35,8 @@
         return (await import("../../../routes/Launchpad.svelte")).default;
       case AppPath.ProjectDetail:
         return (await import("../../../routes/ProjectDetail.svelte")).default;
+      case AppPath.SnsNeuronDetail:
+        return (await import("../../../routes/SnsNeuronDetail.svelte")).default;
       default:
         return (await import("../../../routes/Auth.svelte")).default;
     }
@@ -51,6 +53,7 @@
     [AppPath.NeuronDetail]: $i18n.neuron_detail.title,
     [AppPath.CanisterDetail]: $i18n.canister_detail.title,
     [AppPath.Launchpad]: $i18n.sns_launchpad.header,
+    [AppPath.SnsNeuronDetail]: $i18n.sns_neuron_detail.header,
     [AppPath.ProjectDetail]: "",
   };
 
