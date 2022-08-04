@@ -8,7 +8,7 @@ use crate::proposals::def::{
     StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
     UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
     UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed,
+    UpgradeRootProposalPayloadTrimmed, AddWasmRequest, AddWasmRequestTrimmed
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -93,6 +93,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     }
 
     // See full list here - https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/governance/gen/ic_nns_governance.pb.v1.rs#L1690
+    // identity: deserealize -> serealize to JSON
+    // transform: deserealize -> transform -> serealize to JSON
     match nns_function {
         1 => identity::<CreateSubnetPayload>(payload_bytes),
         2 => identity::<AddNodesToSubnetPayload>(payload_bytes),
@@ -123,6 +125,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         27 => identity::<UpdateFirewallRulesPayload>(payload_bytes),
         28 => identity::<PrepareCanisterMigrationPayload>(payload_bytes),
         29 => identity::<CompleteCanisterMigrationPayload>(payload_bytes),
+        30 => transform::<AddWasmRequest, AddWasmRequestTrimmed>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -152,6 +155,7 @@ mod def {
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
     pub type AddNnsCanisterProposal = ic_nervous_system_root::AddCanisterProposal;
 
+    // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AddNnsCanisterProposalTrimmed {
         pub name: String,
@@ -374,6 +378,37 @@ mod def {
     pub type CompleteCanisterMigrationPayload =
         registry_canister::mutations::complete_canister_migration::CompleteCanisterMigrationPayload;
 
+    // NNS function 30 - AddSnsWasm
+    // https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
+    pub type AddWasmRequest =
+        ic_sns_wasm::pb::v1::AddWasmRequest;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SnsWasmTrimmed {
+        pub wasm_hash: String,
+        pub canister_type: i32,
+    }
+
+    // replace `wasm_module` with `wasm_module_hash`
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct AddWasmRequestTrimmed {
+        pub wasm: Option<SnsWasmTrimmed>,
+        pub hash: String,
+    }
+
+    impl From<AddWasmRequest> for AddWasmRequestTrimmed {
+        fn from(payload: AddWasmRequest) -> Self {
+            AddWasmRequestTrimmed {
+                wasm: payload.wasm.map(|w| SnsWasmTrimmed {
+                    wasm_hash: calculate_hash_string(&w.wasm),
+                    canister_type: w.canister_type
+                }),
+                hash: format_bytes(&payload.hash),
+            }
+        }
+    }
+
+
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -386,8 +421,12 @@ mod def {
     }
 
     fn calculate_hash_string(bytes: &[u8]) -> String {
-        let mut hash_string = String::with_capacity(64);
-        for byte in calculate_hash(bytes) {
+        format_bytes(&calculate_hash(bytes))
+    }
+    
+    fn format_bytes(bytes: &[u8]) -> String {
+        let mut hash_string = String::with_capacity(bytes.len() * 2);
+        for byte in bytes {
             hash_string.push_str(&format!("{:02x}", byte));
         }
         hash_string
