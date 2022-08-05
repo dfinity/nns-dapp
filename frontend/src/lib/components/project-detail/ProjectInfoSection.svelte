@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type {SnsSummary, SnsSummaryMetadata, SnsTokenMetadata} from "../../types/sns";
+  import type {
+    SnsSummary,
+    SnsSummaryMetadata,
+    SnsTokenMetadata,
+  } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
