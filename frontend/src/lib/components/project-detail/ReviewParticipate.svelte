@@ -81,7 +81,7 @@
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>
-      <p>
+      <p data-tid="sns-swap-participate-main-account">
         {@html replacePlaceholders($i18n.accounts.main_account, {
           $identifier: valueSpan(account.identifier),
         })}
@@ -101,7 +101,9 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <p>{$store.summary?.name}</p>
+      <p data-tid="sns-swap-participate-project-name">
+        {$store.summary?.metadata.name}
+      </p>
       {#if destinationAddress !== undefined}
         <p class="value">{destinationAddress.toHex()}</p>
       {/if}

@@ -36,16 +36,6 @@ export interface SnsSummary {
   // Used to calculate the account for the participation.
   swapCanisterId: Principal;
 
-  // TODO: to be replaced with real types for real data
-
-  logo: string;
-  name: string;
-  symbol: string;
-  url: string;
-
-  tokenName: string;
-  description: string;
-
   /**
    * The metadata of the Sns project (title, description, etc.)
    */

@@ -11,7 +11,6 @@ import {
   SnsMetadataResponseEntries,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
-import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -173,8 +172,6 @@ export const mapAndSortSnsQueryToSummaries = ({
 
   return sortSnsSummaries(
     validSwapSummaries.map(({ swap, rootCanisterId, ...rest }) => ({
-      // TODO: remove mock data
-      ...mockSnsSummaryList[0],
       rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
       swap: {
