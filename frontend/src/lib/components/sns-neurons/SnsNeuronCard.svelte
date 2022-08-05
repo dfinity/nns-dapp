@@ -15,8 +15,7 @@
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Copy from "../ui/Copy.svelte";
-  import ShortenMiddleEllipsis from "../ui/ShortenMiddleEllipsis.svelte";
+  import Hash from "../ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
@@ -41,13 +40,7 @@
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
   <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
-    <ShortenMiddleEllipsis
-      id="neuron-id"
-      tagName="h3"
-      testId="neuron-id"
-      text={neuronId}
-    />
-    <Copy value={neuronId} />
+    <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
     <!-- TODO: Hotkey label https://dfinity.atlassian.net/browse/L2-899 -->
   </div>
 
@@ -69,10 +62,6 @@
   @use "../../themes/mixins/media";
 
   .identifier {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-
     :global(h3) {
       margin: 0;
     }

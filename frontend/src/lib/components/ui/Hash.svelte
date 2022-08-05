@@ -1,5 +1,6 @@
 <script lang="ts">
   import { shortenWithMiddleEllipsis } from "../../utils/format.utils";
+  import Copy from "./Copy.svelte";
 
   import Tooltip from "./Tooltip.svelte";
 
@@ -12,7 +13,19 @@
   $: shortenText = shortenWithMiddleEllipsis(text);
 </script>
 
-<Tooltip {id} {text}>
-  <svelte:element this={tagName} data-tid={testId}>{shortenText}</svelte:element
-  >
-</Tooltip>
+<span>
+  <Tooltip {id} {text}>
+    <svelte:element this={tagName} data-tid={testId}
+      >{shortenText}</svelte:element
+    >
+  </Tooltip>
+  <Copy value={text} />
+</span>
+
+<style lang="scss">
+  span {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+  }
+</style>
