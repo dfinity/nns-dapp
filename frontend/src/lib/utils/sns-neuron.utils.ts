@@ -10,6 +10,7 @@ import {
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { fromNullable } from "./did.utils";
+import { enumValues } from "./enum.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
 import { bytesToHexString, nonNullish } from "./utils";
 
@@ -116,17 +117,17 @@ export const routePathSnsNeuronRootCanisterId = (
 };
 
 export const canIdentityManageHotkeys = ({
-  neuron,
+  neuron: { id, permissions },
   identity,
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
 }): boolean => {
-  const neuronId = fromNullable(neuron.id);
+  const neuronId = fromNullable(id);
   if (neuronId === undefined || identity === undefined || identity === null) {
     return false;
   }
-  const principalPermission = neuron.permissions.find(
+  const principalPermission = permissions.find(
     ({ principal }) =>
       fromNullable(principal)?.toText() === identity.getPrincipal().toText()
   );
@@ -137,19 +138,22 @@ export const canIdentityManageHotkeys = ({
   );
 };
 
-export const getSnsNeuronHotkeys = ({
-  neuron,
-  identity,
-}: {
-  neuron: SnsNeuron;
-  identity: Identity | null | undefined;
-}): string[] =>
-  neuron.permissions
+const hasAllPermissions = (permissions: SnsNeuronPermissionType[]): boolean => {
+  const allPermissions = enumValues(SnsNeuronPermissionType);
+  return (
+    allPermissions.length === permissions.length &&
+    allPermissions.every((permission) => permissions.includes(permission))
+  );
+};
+
+export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
+  permissions
+    // Filter the controller. The controller is the neuron with all permissions
+    .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(({ permission_type }) =>
       permission_type.includes(
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
       )
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
-    .filter(nonNullish)
-    .filter((principal) => principal !== identity?.getPrincipal().toText());
+    .filter(nonNullish);

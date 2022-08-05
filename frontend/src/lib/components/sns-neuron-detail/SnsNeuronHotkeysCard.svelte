@@ -22,10 +22,7 @@
     identity: $authStore.identity,
   });
   let hotkeys: string[];
-  $: hotkeys = getSnsNeuronHotkeys({
-    neuron,
-    identity: $authStore.identity,
-  });
+  $: hotkeys = getSnsNeuronHotkeys(neuron);
 
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
@@ -52,7 +49,7 @@
   </div>
   {#if hotkeys.length === 0}
     <div class="warning">
-      <span class="icon"><IconWarning size="48px" /></span>
+      <span class="icon"><IconWarning size="44px" /></span>
       <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
     </div>
   {:else}
@@ -89,6 +86,7 @@
 
   .warning {
     display: grid;
+    // First column is the icon size
     grid-template-columns: 44px 1fr;
     gap: var(--padding-2x);
 

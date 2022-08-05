@@ -2,6 +2,7 @@ import { NeuronState } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { SECONDS_IN_YEAR } from "../../../lib/constants/constants";
+import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
   getSnsDissolvingTimeInSeconds,
@@ -16,7 +17,7 @@ import {
   sortSnsNeuronsByCreatedTimestamp,
 } from "../../../lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "../../../lib/utils/utils";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -306,33 +307,30 @@ describe("sns-neuron utils", () => {
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
       "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
     ];
+    const allPermissions = enumValues(SnsNeuronPermissionType);
+    const controllerPermission = {
+      principal: [mockPrincipal] as [Principal],
+      permission_type: allPermissions,
+    };
 
     it("returns array of principal ids", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
-        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          addVotePermission
-        ),
+        permissions: hotkeys
+          .map(addVotePermission)
+          .concat(controllerPermission),
       };
-      expect(
-        getSnsNeuronHotkeys({
-          neuron: controlledNeuron,
-          identity: mockIdentity,
-        })
-      ).toEqual(hotkeys);
+      expect(getSnsNeuronHotkeys(controlledNeuron)).toEqual(hotkeys);
     });
 
     it("doesn't return the controller", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
-        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          addVotePermission
-        ),
+        permissions: hotkeys
+          .map(addVotePermission)
+          .concat(controllerPermission),
       };
-      const expectedHotkeys = getSnsNeuronHotkeys({
-        neuron: controlledNeuron,
-        identity: mockIdentity,
-      });
+      const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(
         expectedHotkeys.includes(mockIdentity.getPrincipal().toText())
       ).toBe(false);

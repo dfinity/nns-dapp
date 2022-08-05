@@ -115,7 +115,7 @@
   </div>
   <div class="actions">
     <div class="warning">
-      <span class="icon"><IconWarning size="48px" /></span>
+      <span class="icon"><IconWarning size="44px" /></span>
       <span class="description"
         >{$i18n.sns_project_detail.participate_swap_warning}</span
       >
@@ -180,6 +180,7 @@
 
     .warning {
       display: grid;
+      // First column is the icon size
       grid-template-columns: 44px 1fr;
       gap: var(--padding-2x);
 
