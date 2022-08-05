@@ -41,12 +41,18 @@ describe("SelectProjectDropdown", () => {
   it("should render NNS and project name", () => {
     const { container } = render(SelectProjectDropdown);
 
-    expect(((container.querySelector("option:first-of-type") as HTMLElement).textContent ?? '').trim()).toBe(
-      en.core.nns
-    );
-    expect(((container.querySelector("option:last-of-type") as HTMLElement).textContent ?? '').trim()).toBe(
-        mockSnsFullProject.summary.metadata.name
-    );
+    expect(
+      (
+        (container.querySelector("option:first-of-type") as HTMLElement)
+          .textContent ?? ""
+      ).trim()
+    ).toBe(en.core.nns);
+    expect(
+      (
+        (container.querySelector("option:last-of-type") as HTMLElement)
+          .textContent ?? ""
+      ).trim()
+    ).toBe(mockSnsFullProject.summary.metadata.name);
   });
 
   it("should select NNS as default", () => {
