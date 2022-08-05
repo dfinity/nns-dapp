@@ -2,10 +2,9 @@
   import Modal from "../Modal.svelte";
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "../../stores/i18n";
-  import { stopBusy } from "../../stores/busy.store";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/sns-neurons.services";
   import { createEventDispatcher } from "svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
   import { toastsStore } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
   import type { SnsNeuronId } from "@dfinity/sns";
@@ -24,7 +23,7 @@
       });
       return;
     }
-    startBusyNeuron({ initiator: "add-sns-hotkey-neuron", neuronId });
+    startBusy({ initiator: "add-sns-hotkey-neuron" });
     await addHotkey({
       neuronId,
       hotkey: principal,
