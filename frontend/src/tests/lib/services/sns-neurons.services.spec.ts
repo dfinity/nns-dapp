@@ -135,7 +135,7 @@ describe("sns-neurons-services", () => {
       const spyAdd = jest
         .spyOn(api, "addNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
-      const hotkey = "aaaaa-aa";
+      const hotkey = Principal.fromText("aaaaa-aa");
       const { success } = await addHotkey({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         hotkey,
@@ -145,7 +145,7 @@ describe("sns-neurons-services", () => {
       expect(spyAdd).toBeCalledWith({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
-        principal: Principal.fromText(hotkey),
+        principal: hotkey,
         rootCanisterId: mockPrincipal,
         permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
       });

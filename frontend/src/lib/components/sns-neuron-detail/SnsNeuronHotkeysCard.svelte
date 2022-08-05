@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
   import IconClose from "../../icons/IconClose.svelte";
   import IconInfo from "../../icons/IconInfo.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
+  import { fromNullable } from "../../utils/did.utils";
   import {
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
@@ -16,6 +17,10 @@
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   export let neuron: SnsNeuron;
+
+  let neuronId: SnsNeuronId | undefined;
+  // TODO: TODO to use fromDefinedNullable
+  $: neuronId = fromNullable(neuron.id);
 
   let canManageHotkeys: boolean = true;
   $: canManageHotkeys = canIdentityManageHotkeys({
@@ -70,9 +75,9 @@
       {/each}
     </ul>
   {/if}
-  {#if canManageHotkeys}
+  {#if canManageHotkeys && neuronId !== undefined}
     <div class="actions">
-      <AddSnsHotkeyButton />
+      <AddSnsHotkeyButton {neuronId} />
     </div>
   {/if}
 </CardInfo>
