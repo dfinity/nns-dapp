@@ -19,6 +19,7 @@
   export let neuron: SnsNeuron;
 
   let neuronId: SnsNeuronId | undefined;
+  // TODO: TODO to use fromDefinedNullable
   $: neuronId = fromNullable(neuron.id);
 
   let canManageHotkeys: boolean = true;
