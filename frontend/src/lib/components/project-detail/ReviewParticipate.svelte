@@ -101,7 +101,9 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <p data-tid="sns-swap-participate-project-name">{$store.summary?.metadata.name}</p>
+      <p data-tid="sns-swap-participate-project-name">
+        {$store.summary?.metadata.name}
+      </p>
       {#if destinationAddress !== undefined}
         <p class="value">{destinationAddress.toHex()}</p>
       {/if}
