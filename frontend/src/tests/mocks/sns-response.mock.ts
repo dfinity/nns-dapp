@@ -4,12 +4,12 @@ import type {
   SnsSwapLifecycle,
 } from "@dfinity/sns";
 import type {
-  QuerySnsSummary,
+  QuerySnsMetadata,
   QuerySnsSwapState,
 } from "../../lib/types/sns.query";
 import {
   mockDerived,
-  mockSnsFullProject,
+  mockQueryMetadata,
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
@@ -21,11 +21,11 @@ export const snsResponsesForLifecycle = ({
 }: {
   lifecycles: SnsSwapLifecycle[];
   certified?: boolean;
-}): [QuerySnsSummary[], QuerySnsSwapState[]] => [
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     ...lifecycles.map((lifecycle, i) => ({
-      ...mockSnsFullProject.summary,
-      rootCanisterId: principal(i),
+      ...mockQueryMetadata,
+      rootCanisterId: principal(i).toText(),
       certified,
     })),
   ],

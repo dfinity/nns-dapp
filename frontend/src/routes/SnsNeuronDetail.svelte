@@ -1,18 +1,20 @@
 <script lang="ts">
   import { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
+  import SnsNeuronHotkeysCard from "../lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
+  import SnsNeuronMetaInfoCard from "../lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
+  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
   import { getSnsNeuron } from "../lib/services/sns-neurons.services";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
-    getSnsNeuronIdAsHexString,
     routePathSnsNeuronRootCanisterId,
     routePathSnsNeuronId,
   } from "../lib/utils/sns-neuron.utils";
 
-  let snsNeuron: SnsNeuron | undefined;
+  let neuron: SnsNeuron | undefined;
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
@@ -30,8 +32,8 @@
     getSnsNeuron({
       rootCanisterId,
       neuronIdHex: neuronIdMaybe,
-      onLoad: ({ neuron }: { neuron: SnsNeuron }) => {
-        snsNeuron = neuron;
+      onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
+        neuron = snsNeuron;
       },
       onError: () => {
         console.error("Error loading neuron");
@@ -47,9 +49,11 @@
   layoutBackStore.set(goBack);
 </script>
 
-<!-- TODO: Implement UI https://dfinity.atlassian.net/browse/L2-866 -->
-<div data-tid="sns-neuron-detail-page">
-  {`Neuron detail ${
-    snsNeuron === undefined ? "" : getSnsNeuronIdAsHexString(snsNeuron)
-  }`}
-</div>
+<MainContentWrapper>
+  <section data-tid="sns-neuron-detail-page">
+    {#if neuron !== undefined}
+      <SnsNeuronMetaInfoCard {neuron} />
+      <SnsNeuronHotkeysCard {neuron} />
+    {/if}
+  </section>
+</MainContentWrapper>

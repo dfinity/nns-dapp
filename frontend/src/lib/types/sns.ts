@@ -7,6 +7,25 @@ import type {
   SnsSwapState,
 } from "@dfinity/sns";
 
+/**
+ * Metadata are full optional in Candid files but mandatory currently in NNS-dapp
+ */
+export interface SnsSummaryMetadata {
+  url: string;
+  logo: string;
+  name: string;
+  description: string;
+}
+
+/**
+ * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.
+ * That's why we have to map the data as well.
+ */
+export interface SnsTokenMetadata {
+  name: string;
+  symbol: string;
+}
+
 export interface SnsSummarySwap {
   init: SnsSwapInit;
   state: SnsSwapState;
@@ -17,15 +36,15 @@ export interface SnsSummary {
   // Used to calculate the account for the participation.
   swapCanisterId: Principal;
 
-  // TODO: to be replaced with real types for real data
+  /**
+   * The metadata of the Sns project (title, description, etc.)
+   */
+  metadata: SnsSummaryMetadata;
 
-  logo: string;
-  name: string;
-  symbol: string;
-  url: string;
-
-  tokenName: string;
-  description: string;
+  /**
+   * The token metadata of the Sns project (name of the token and symbol)
+   */
+  token: SnsTokenMetadata;
 
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)

@@ -9,7 +9,6 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
-import { mockSnsSummaryList } from "../../tests/mocks/sns-projects.mock";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
@@ -22,7 +21,7 @@ import { ApiErrorKey } from "../types/api.errors";
 import type { SnsSwapCommitment } from "../types/sns";
 import type {
   QueryRootCanisterId,
-  QuerySnsSummary,
+  QuerySnsMetadata,
   QuerySnsSwapState,
 } from "../types/sns.query";
 import { createAgent } from "../utils/agent.utils";
@@ -159,7 +158,6 @@ const wrappers = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
-  // TODO: there is probably a better solution
   switch (certified) {
     case false:
       if (!snsQueryWrappers) {
@@ -194,17 +192,13 @@ const wrapper = async ({
   return snsWrapper;
 };
 
-// TODO(L2-751): remove mock data
-let mockSnsSummaries: QuerySnsSummary[] = [];
-
-// TODO: ultimately querySnsSummaries and querySummary will not return SnsSummary types but rather a summary related types provided by Candid sns governance
-export const querySnsSummaries = async ({
+export const queryAllSnsMetadata = async ({
   identity,
   certified,
 }: {
   certified: boolean;
   identity: Identity;
-}): Promise<QuerySnsSummary[]> => {
+}): Promise<QuerySnsMetadata[]> => {
   logWithTimestamp(
     `Listing all deployed Sns summaries certified:${certified} call...`
   );
@@ -217,9 +211,9 @@ export const querySnsSummaries = async ({
   ];
 
   // TODO(L2-830): we also want to have a status within each summary to display the information progressively
-  const summaries: (QuerySnsSummary | undefined)[] = await Promise.all(
+  const metadata: (QuerySnsMetadata | undefined)[] = await Promise.all(
     snsWrappers.map(({ canisterIds: { rootCanisterId } }: SnsWrapper) =>
-      querySnsSummary({
+      querySnsMetadata({
         rootCanisterId: rootCanisterId.toText(),
         certified,
         identity,
@@ -231,12 +225,12 @@ export const querySnsSummaries = async ({
     `Listing all deployed Sns summaries certified:${certified} done.`
   );
 
-  return summaries.filter(
-    (summary: QuerySnsSummary | undefined) => summary !== undefined
-  ) as QuerySnsSummary[];
+  return metadata.filter(
+    (summary: QuerySnsMetadata | undefined) => summary !== undefined
+  ) as QuerySnsMetadata[];
 };
 
-export const querySnsSummary = async ({
+export const querySnsMetadata = async ({
   rootCanisterId,
   identity,
   certified,
@@ -244,43 +238,29 @@ export const querySnsSummary = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<QuerySnsSummary | undefined> => {
+}): Promise<QuerySnsMetadata | undefined> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} summary certified:${certified} call...`
   );
 
-  const { metadata }: SnsWrapper = await wrapper({
+  const { metadata: meta }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
     certified,
   });
 
-  const summary = await metadata({});
+  const [metadata, token] = await meta({});
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} summary certified:${certified} done.`
   );
 
-  // TODO(L2-829): mock data to be removed and replaced
-  if (mockSnsSummaries.length === 0) {
-    mockSnsSummaries = [
-      ...(
-        (await wrappers({ identity, certified })) ??
-        new Map<QueryRootCanisterId, SnsWrapper>()
-      ).values(),
-    ].map(({ canisterIds: { rootCanisterId } }: SnsWrapper, index) => ({
-      ...mockSnsSummaryList[index],
-      rootCanisterId,
-      certified,
-    }));
-  }
-
-  // TODO(L2-829, L2-751): remove and replace with effective data - i.e. summary comes from sns gov canister through sns wrapper
-  console.log("Sns metadata", summary);
-  return mockSnsSummaries.find(
-    ({ rootCanisterId: canisterId }: QuerySnsSummary) =>
-      canisterId?.toText() === rootCanisterId
-  );
+  return {
+    metadata,
+    token,
+    certified,
+    rootCanisterId,
+  };
 };
 
 export const querySnsSwapStates = async ({

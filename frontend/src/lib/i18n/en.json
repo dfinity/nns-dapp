@@ -582,7 +582,9 @@
     "max_user_commitment_reached": "Maximum commitment reached"
   },
   "sns_neuron_detail": {
-    "header": "Neuron"
+    "header": "Neuron",
+    "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
+    "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
   "time": {
     "year": "year",
