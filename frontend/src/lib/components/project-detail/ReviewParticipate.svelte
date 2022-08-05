@@ -181,7 +181,7 @@
 
     .warning {
       display: grid;
-      grid-template-columns: var(--icon-size-large) 1fr;
+      grid-template-columns: auto 1fr;
       gap: var(--padding-2x);
 
       .icon {
