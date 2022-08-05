@@ -23,7 +23,6 @@
   button {
     height: 30px;
     width: 30px;
-    padding: var(--padding-0_5x) var(--padding-0_5x) 0;
 
     color: var(--primary-tint);
   }
