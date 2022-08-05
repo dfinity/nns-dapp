@@ -73,4 +73,26 @@ describe("ProjectInfoSection", () => {
       mockSnsFullProject.summary.metadata.logo
     );
   });
+
+  it("should render token name", async () => {
+    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+
+    const element = container.querySelector(
+      "span.value:first-of-type"
+    ) as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.textContent).toEqual(mockSnsFullProject.summary.token.name);
+  });
+
+  it("should render token symbol", async () => {
+    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+
+    const element = container.querySelector(
+      "span.value:last-of-type"
+    ) as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.textContent).toEqual(
+      mockSnsFullProject.summary.token.symbol
+    );
+  });
 });
