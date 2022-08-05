@@ -24,6 +24,7 @@
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import { ICON_SIZE_LARGE } from "../../constants/style.constants";
 
   export let account: Account;
   export let amount: number;
@@ -115,7 +116,7 @@
   </div>
   <div class="actions">
     <div class="warning">
-      <span class="icon"><IconWarning size="48px" /></span>
+      <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
       <span class="description"
         >{$i18n.sns_project_detail.participate_swap_warning}</span
       >
@@ -180,7 +181,7 @@
 
     .warning {
       display: grid;
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: auto 1fr;
       gap: var(--padding-2x);
 
       .icon {
