@@ -3,7 +3,7 @@
   export let alt: string;
 </script>
 
-<img {src} {alt} loading="lazy" role="presentation" />
+<img {src} {alt} loading="lazy" />
 
 <style lang="scss">
   img {
