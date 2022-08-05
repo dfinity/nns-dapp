@@ -34,10 +34,17 @@
   const unsubscribe = committedProjectsStore.subscribe((projects) => {
     selectableProjects = [
       nnsProject,
-      ...(projects?.map(({ rootCanisterId, summary: { name } }) => ({
-        name,
-        canisterId: rootCanisterId.toText(),
-      })) ?? []),
+      ...(projects?.map(
+        ({
+          rootCanisterId,
+          summary: {
+            metadata: { name },
+          },
+        }) => ({
+          name,
+          canisterId: rootCanisterId.toText(),
+        })
+      ) ?? []),
     ];
   });
 

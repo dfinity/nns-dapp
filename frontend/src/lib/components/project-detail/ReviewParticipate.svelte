@@ -101,7 +101,7 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <p>{$store.summary?.name}</p>
+      <p>{$store.summary?.metadata.name}</p>
       {#if destinationAddress !== undefined}
         <p class="value">{destinationAddress.toHex()}</p>
       {/if}
