@@ -75,20 +75,24 @@ describe("ProjectInfoSection", () => {
   });
 
   it("should render token name", async () => {
-    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+    const { getByTestId } = renderProjectInfoSection(
+      mockSnsFullProject.summary
+    );
 
-    const element = container.querySelector(
-      "span.value:first-of-type"
+    const element = getByTestId(
+      "sns-project-detail-info-token-name"
     ) as HTMLElement;
     expect(element).toBeInTheDocument();
     expect(element.textContent).toEqual(mockSnsFullProject.summary.token.name);
   });
 
   it("should render token symbol", async () => {
-    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+    const { getByTestId } = renderProjectInfoSection(
+      mockSnsFullProject.summary
+    );
 
-    const element = container.querySelector(
-      "span.value:last-of-type"
+    const element = getByTestId(
+      "sns-project-detail-info-token-symbol"
     ) as HTMLElement;
     expect(element).toBeInTheDocument();
     expect(element.textContent).toEqual(
