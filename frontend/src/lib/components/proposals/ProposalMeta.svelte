@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import Value from "../ui/Value.svelte";
-  import { nowInSeconds, secondsToDuration } from "../../utils/date.utils";
+  import { secondsToDuration } from "../../utils/date.utils";
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
