@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SnsNeuron } from "@dfinity/sns";
+  import { ICON_SIZE_LARGE } from "../../constants/style.constants";
   import IconClose from "../../icons/IconClose.svelte";
   import IconInfo from "../../icons/IconInfo.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
@@ -49,7 +50,7 @@
   </div>
   {#if hotkeys.length === 0}
     <div class="warning">
-      <span class="icon"><IconWarning size="44px" /></span>
+      <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
       <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
     </div>
   {:else}
@@ -86,8 +87,7 @@
 
   .warning {
     display: grid;
-    // First column is the icon size
-    grid-template-columns: 44px 1fr;
+    grid-template-columns: var(--icon-size-large) 1fr;
     gap: var(--padding-2x);
 
     margin-bottom: var(--padding-2x);
