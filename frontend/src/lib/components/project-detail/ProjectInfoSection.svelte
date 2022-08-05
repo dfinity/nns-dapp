@@ -50,13 +50,21 @@
         <svelte:fragment slot="key"
           >{$i18n.sns_project_detail.token_name}</svelte:fragment
         >
-        <span class="value" slot="value" data-tid="sns-project-detail-info-token-name">{token.name}</span>
+        <span
+          class="value"
+          slot="value"
+          data-tid="sns-project-detail-info-token-name">{token.name}</span
+        >
       </KeyValuePair>
       <KeyValuePair>
         <svelte:fragment slot="key"
           >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
         >
-        <span class="value" slot="value" data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span>
+        <span
+          class="value"
+          slot="value"
+          data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
+        >
       </KeyValuePair>
 
       <ProjectSwapDetails />
