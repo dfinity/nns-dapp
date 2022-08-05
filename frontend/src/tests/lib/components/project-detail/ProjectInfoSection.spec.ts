@@ -31,16 +31,46 @@ describe("ProjectInfoSection", () => {
 
   it("should render title", async () => {
     const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
-    expect(container.querySelector("h1")).toBeInTheDocument();
+
+    const element = container.querySelector("h1") as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.textContent).toEqual(
+      mockSnsFullProject.summary.metadata.name
+    );
   });
 
   it("should render project link", async () => {
     const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
-    expect(container.querySelector("a")).toBeInTheDocument();
+
+    const element = container.querySelector("a") as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.getAttribute("href")).toEqual(
+      mockSnsFullProject.summary.metadata.url
+    );
   });
 
   it("should not render content if the summary is not yet defined", async () => {
     const { container } = renderProjectInfoSection(undefined);
     expect(container.querySelector("h1")).not.toBeInTheDocument();
+  });
+
+  it("should render project description", async () => {
+    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+
+    const element = container.querySelector("p:first-of-type") as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.textContent).toEqual(
+      mockSnsFullProject.summary.metadata.description
+    );
+  });
+
+  it("should render project logo", async () => {
+    const { container } = renderProjectInfoSection(mockSnsFullProject.summary);
+
+    const element = container.querySelector("img") as HTMLElement;
+    expect(element).toBeInTheDocument();
+    expect(element.getAttribute("src")).toEqual(
+      mockSnsFullProject.summary.metadata.logo
+    );
   });
 });
