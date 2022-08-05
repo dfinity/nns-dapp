@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNeuron,
@@ -182,7 +182,7 @@ export const removeHotkey = async ({
     return { success: true };
   } catch (err) {
     toastsStore.error({
-      labelKey: "error__sns.sns_add_hotkey",
+      labelKey: "error__sns.sns_remove_hotkey",
       err,
     });
     return { success: false };
