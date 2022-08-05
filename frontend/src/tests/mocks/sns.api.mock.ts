@@ -1,6 +1,7 @@
 import type { DeployedSns } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsCanisterStatus } from "@dfinity/sns";
+import { principal } from "./sns-projects.mock";
 
 export const deployedSnsMock: DeployedSns[] = [
   {
@@ -11,9 +12,7 @@ export const deployedSnsMock: DeployedSns[] = [
   },
 ];
 
-export const rootCanisterIdMock: Principal = Principal.fromText(
-  "pin7y-wyaaa-aaaaa-aacpa-cai"
-);
+export const rootCanisterIdMock: Principal = principal(0);
 
 export const ledgerCanisterIdMock: Principal = Principal.fromText(
   "ktxdj-qiaaa-aaaaa-aacqa-cai"

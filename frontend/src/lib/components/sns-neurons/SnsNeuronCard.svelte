@@ -15,11 +15,12 @@
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
+  import Hash from "../ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
-  export let role: "link";
+  export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
-  export let ariaLabel: string;
+  export let ariaLabel: string | undefined = undefined;
 
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
@@ -38,8 +39,8 @@
 </script>
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <div slot="start" data-tid="sns-neuron-card-title">
-    <h3 data-tid="neuron-id">{neuronId}</h3>
+  <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
+    <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
     <!-- TODO: Hotkey label https://dfinity.atlassian.net/browse/L2-899 -->
   </div>
 
@@ -53,10 +54,18 @@
     state={getSnsNeuronState(neuron)}
     timeInSeconds={dissolvingTime ?? lockedTime}
   />
+
+  <slot />
 </NeuronCardContainer>
 
 <style lang="scss">
   @use "../../themes/mixins/media";
+
+  .identifier {
+    :global(h3) {
+      margin: 0;
+    }
+  }
 
   .currency {
     display: flex;

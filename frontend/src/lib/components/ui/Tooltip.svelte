@@ -110,6 +110,7 @@
     white-space: pre-wrap;
     max-width: 240px;
     width: max-content;
+    overflow-wrap: break-word;
 
     &.noWrap {
       white-space: nowrap;

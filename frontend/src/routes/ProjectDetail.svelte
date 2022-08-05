@@ -142,7 +142,7 @@
 
   layoutBackStore.set(goBack);
 
-  $: layoutTitleStore.set($projectDetailStore?.summary?.name ?? "");
+  $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);

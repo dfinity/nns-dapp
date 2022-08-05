@@ -1,6 +1,7 @@
 import {
   formatNumber,
   formatPercentage,
+  shortenWithMiddleEllipsis,
 } from "../../../lib/utils/format.utils";
 
 describe("format.utils", () => {
@@ -45,6 +46,20 @@ describe("format.utils", () => {
 
     expect(formatPercentage(0.123, { minFraction: 0, maxFraction: 0 })).toEqual(
       "12%"
+    );
+  });
+
+  it("should format with ellipsis in the middle", () => {
+    expect(shortenWithMiddleEllipsis("123456789")).toEqual("123456789");
+    expect(shortenWithMiddleEllipsis("1234567890123456")).toEqual(
+      "1234567890123456"
+    );
+    expect(shortenWithMiddleEllipsis("12345678901234567")).toEqual(
+      "1234567...1234567"
+    );
+
+    expect(shortenWithMiddleEllipsis("123456789012345678901234")).toEqual(
+      "1234567...8901234"
     );
   });
 });
