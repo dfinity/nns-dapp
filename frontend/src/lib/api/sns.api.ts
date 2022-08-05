@@ -158,7 +158,6 @@ const wrappers = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
-  // TODO: there is probably a better solution
   switch (certified) {
     case false:
       if (!snsQueryWrappers) {
