@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummaryMetadata } from "../../types/sns";
+  import type {SnsSummary, SnsSummaryMetadata, SnsTokenMetadata} from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
@@ -11,7 +11,6 @@
   } from "../../types/project-detail.context";
   import Spinner from "../../../lib/components/ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
-  import type { SnsTokenMetadata } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
