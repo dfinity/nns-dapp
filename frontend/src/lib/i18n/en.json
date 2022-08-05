@@ -570,7 +570,7 @@
     "description": "Description",
     "participate_swap_description": "Participate in Decentralized Sale",
     "participate_swap_warning": "Your participation cannot be withdrawn by you. If the sale is not successful, your commitment will be automatically transferred back to your main ICP account.",
-    "understand_agree": "I understand and agree.",
+    "understand_agree": "I understand and want to proceed.",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
