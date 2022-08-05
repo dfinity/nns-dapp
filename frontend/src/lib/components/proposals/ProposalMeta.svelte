@@ -13,13 +13,7 @@
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
-  $: ({ id, url, topic } = mapProposalInfo(proposalInfo));
-
-  let deadline: bigint | undefined;
-  $: deadline =
-    proposalInfo.deadlineTimestampSeconds === undefined
-      ? undefined
-      : (proposalInfo.deadlineTimestampSeconds ?? 0n) - BigInt(nowInSeconds());
+  $: ({ id, url, topic, deadline } = mapProposalInfo(proposalInfo));
 </script>
 
 <ul>
