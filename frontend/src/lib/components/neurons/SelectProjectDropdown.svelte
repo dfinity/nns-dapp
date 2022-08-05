@@ -57,8 +57,6 @@
   testId="select-project-dropdown"
 >
   {#each selectableProjects as { canisterId, name } (canisterId)}
-    <DropdownItem value={canisterId}>
-      {name}
-    </DropdownItem>
+    <DropdownItem value={canisterId}>{name}</DropdownItem>
   {/each}
 </Dropdown>
