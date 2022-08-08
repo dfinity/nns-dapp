@@ -1,6 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { AppPath } from "../constants/routes.constants";
 import type { SnsNeuronState } from "../types/sns";
 import {
@@ -9,7 +10,6 @@ import {
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
-import { fromNullable } from "./did.utils";
 import { enumValues } from "./enum.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
 import { bytesToHexString, nonNullish } from "./utils";
