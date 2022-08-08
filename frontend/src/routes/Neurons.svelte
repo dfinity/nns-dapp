@@ -21,7 +21,7 @@
   {#if $isNnsProjectStore}
     <NnsNeurons />
   {:else if $snsProjectSelectedStore !== undefined}
-    <SnsNeurons rootCanisterId={$snsProjectSelectedStore} />
+    <SnsNeurons />
   {/if}
 </MainContentWrapper>
 

@@ -7,8 +7,8 @@ import {
 import type { Principal } from "@dfinity/principal";
 import {
   participateInSnsSwap,
-  querySnsSummaries,
-  querySnsSummary,
+  queryAllSnsMetadata,
+  querySnsMetadata,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
   querySnsSwapState,
@@ -23,30 +23,25 @@ import {
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { SnsSwapCommitment } from "../types/sns";
-import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
-import {
-  queryAndUpdate,
-  type QueryAndUpdateOnResponse,
-  type QueryAndUpdateStrategy,
-} from "./utils.services";
+import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
 
-  return queryAndUpdate<[QuerySnsSummary[], QuerySnsSwapState[]], unknown>({
+  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
     request: ({ certified, identity }) =>
       Promise.all([
-        querySnsSummaries({ certified, identity }),
+        queryAllSnsMetadata({ certified, identity }),
         querySnsSwapStates({ certified, identity }),
       ]),
-    onLoad: ({ response, certified }) =>
-      snsQueryStore.setResponse({ response, certified }),
+    onLoad: ({ response }) => snsQueryStore.setData(response),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -71,29 +66,26 @@ export const loadSnsSummaries = (): Promise<void> => {
 /** Combined request: querySnsSummary + querySnsSwapState */
 export const loadSnsSummary = async ({
   rootCanisterId,
-  onLoad,
   onError,
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<
-    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined]
-  >;
   onError: () => void;
 }) =>
   queryAndUpdate<
-    [QuerySnsSummary | undefined, QuerySnsSwapState | undefined],
+    [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined],
     unknown
   >({
     request: ({ certified, identity }) =>
       Promise.all([
-        querySnsSummary({
+        querySnsMetadata({
           rootCanisterId,
           identity,
           certified,
         }),
         querySnsSwapState({ rootCanisterId, identity, certified }),
       ]),
-    onLoad,
+    onLoad: ({ response: data }) =>
+      snsQueryStore.updateData({ data, rootCanisterId }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -150,24 +142,20 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
 
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
-  onLoad,
   onError,
-  strategy = "query_and_update",
 }: {
   rootCanisterId: string;
-  onLoad: QueryAndUpdateOnResponse<SnsSwapCommitment>;
   onError: () => void;
-  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
-    strategy,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
         identity,
         certified,
       }),
-    onLoad,
+    onLoad: ({ response: swapCommitment, certified }) =>
+      snsSwapCommitmentsStore.setSwapCommitment({ swapCommitment, certified }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -244,15 +232,14 @@ export const participateInSwap = async ({
   amount,
   rootCanisterId,
   account,
-  onSuccess,
 }: {
   amount: ICP;
   rootCanisterId: Principal;
   account: Account;
-  onSuccess?: (swapState: SnsSwapCommitment) => void;
 }): Promise<{ success: boolean }> => {
   try {
     const accountIdentity = await getAccountIdentity(account.identifier);
+
     await participateInSnsSwap({
       identity: accountIdentity,
       rootCanisterId,
@@ -260,20 +247,7 @@ export const participateInSwap = async ({
       controller: accountIdentity.getPrincipal(),
       fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
-    await loadSnsSwapCommitment({
-      strategy: "update",
-      rootCanisterId: rootCanisterId.toText(),
-      onLoad: ({ response: swapCommitment, certified }) => {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-        onSuccess?.(swapCommitment);
-      },
-      onError: () => {
-        // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-      },
-    });
+
     return { success: true };
   } catch (error) {
     // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798

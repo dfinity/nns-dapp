@@ -3,8 +3,9 @@
  */
 
 import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { writable } from "svelte/store";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../../lib/constants/icp.constants";
 import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
 import { participateInSwap } from "../../../../lib/services/sns.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
@@ -13,6 +14,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "../../../../lib/types/project-detail.context";
+import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -33,6 +35,8 @@ jest.mock("../../../../lib/services/sns.services", () => {
 });
 
 describe("ParticipateSwapModal", () => {
+  const reload = jest.fn();
+
   const renderSwapModal = () =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
@@ -42,6 +46,7 @@ describe("ParticipateSwapModal", () => {
           summary: mockSnsFullProject.summary,
           swapCommitment: mockSnsFullProject.swapCommitment,
         }),
+        reload,
       } as ProjectDetailContext,
     });
 
@@ -98,8 +103,10 @@ describe("ParticipateSwapModal", () => {
       );
     });
 
-    it("should move to the last step with ICP and disabled button", async () => {
-      const { queryByText, getByTestId, container } = await renderSwapModal();
+    const renderEnter10ICPAndNext = async (): Promise<RenderResult> => {
+      const result = await renderSwapModal();
+
+      const { queryByText, getByTestId, container } = result;
 
       const participateButton = getByTestId("sns-swap-participate-button-next");
       expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
@@ -117,30 +124,37 @@ describe("ParticipateSwapModal", () => {
         expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
       );
       expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+      return result;
+    };
+
+    it("should move to the last step with ICP and disabled button", async () => {
+      const { getByTestId } = await renderEnter10ICPAndNext();
 
       const confirmButton = getByTestId("sns-swap-participate-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
     });
 
+    it("should move to the last step and render review info", async () => {
+      const { getByText, getByTestId } = await renderEnter10ICPAndNext();
+
+      expect(
+        (
+          getByTestId("sns-swap-participate-main-account").textContent ?? ""
+        ).includes(mockMainAccount.identifier)
+      ).toBeTruthy();
+      expect(
+        getByText(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S))
+      ).toBeInTheDocument();
+      expect(
+        (
+          getByTestId("sns-swap-participate-project-name").textContent ?? ""
+        ).includes(mockSnsFullProject.summary.metadata.name)
+      ).toBeTruthy();
+    });
+
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-      const { queryByText, getByTestId, container } = await renderSwapModal();
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const icpAmount = "10";
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: icpAmount } });
-      await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-      );
-
-      fireEvent.click(participateButton);
-
-      await waitFor(() =>
-        expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
-      );
-      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+      const { getByTestId, container } = await renderEnter10ICPAndNext();
 
       const confirmButton = getByTestId("sns-swap-participate-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
@@ -154,6 +168,7 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
 
     it("should move to the last step and go back", async () => {

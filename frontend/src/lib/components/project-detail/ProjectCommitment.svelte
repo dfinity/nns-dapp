@@ -11,15 +11,16 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSummarySwap } from "../../types/sns";
-  import type { SnsSwapInit } from "@dfinity/sns";
+  import type { SnsSwapDerivedState, SnsSwapInit } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
   let swap: SnsSummarySwap;
+  let derived: SnsSwapDerivedState;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap } = $projectDetailStore.summary as SnsSummary);
+  $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
 
   let init: SnsSwapInit;
   $: ({ init } = swap);
@@ -28,24 +29,23 @@
   let max_icp_e8s: bigint;
   $: ({ min_icp_e8s, max_icp_e8s } = init);
 
-  let currentCommitment: bigint;
-  $: currentCommitment =
-    $projectDetailStore.swapCommitment?.currentCommitment ?? BigInt(0);
+  let buyersTotalCommitment: bigint;
+  $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
 
-  let currentCommitmentIcp: ICP;
-  $: currentCommitmentIcp = ICP.fromE8s(currentCommitment);
+  let buyersTotalCommitmentIcp: ICP;
+  $: buyersTotalCommitmentIcp = ICP.fromE8s(buyersTotalCommitment);
 </script>
 
 <KeyValuePair testId="sns-project-current-commitment">
   <span slot="key">
-    {$i18n.sns_project_detail.current_commitment}
+    {$i18n.sns_project_detail.current_overall_commitment}
   </span>
 
-  <Icp slot="value" icp={currentCommitmentIcp} singleLine />
+  <Icp slot="value" icp={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar
-    value={currentCommitment}
+    value={buyersTotalCommitment}
     max={max_icp_e8s}
     minimumIndicator={min_icp_e8s}
   />

@@ -1,38 +1,47 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { SnsMetadataResponseEntries } from "@dfinity/sns";
 import {
-  concatSnsSummary,
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
+  mockDerived,
+  mockQueryMetadata,
+  mockQueryMetadataResponse,
   mockSnsSummaryList,
   mockSummary,
-  mockSwap,
   mockSwapInit,
   mockSwapState,
+  principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 describe("sns-utils", () => {
   describe("concat sns summaries", () => {
     it("should return empty for undefined summary", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([[], []]);
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [],
+        swaps: [],
+      });
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should return empty for undefined swap query", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([[mockSummary], []]);
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [],
+      });
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should return empty for undefined swap init", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary],
-        [
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
@@ -42,17 +51,19 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
+            certified: true,
           },
         ],
-      ]);
+      });
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should return empty for undefined swap state", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary],
-        [
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
@@ -62,17 +73,19 @@ describe("sns-utils", () => {
                 state: [],
               },
             ],
+            derived: [mockDerived],
+            certified: true,
           },
         ],
-      ]);
+      });
 
       expect(summaries.length).toEqual(0);
     });
 
-    it("should return empty if no root id are matching between summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary],
-        [
+    it("should return empty for undefined derived info", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
@@ -82,17 +95,41 @@ describe("sns-utils", () => {
                 state: [mockSwapState],
               },
             ],
+            derived: [],
+            certified: true,
           },
         ],
-      ]);
+      });
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty if no root id are matching between summaries and swaps", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [
+          {
+            rootCanisterId: "1234",
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [mockDerived],
+            certified: true,
+          },
+        ],
+      });
 
       expect(summaries.length).toEqual(0);
     });
 
     it("should concat summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary],
-        [
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [mockQueryMetadata],
+        swaps: [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
@@ -102,19 +139,81 @@ describe("sns-utils", () => {
                 state: [mockSwapState],
               },
             ],
+            derived: [mockDerived],
+            certified: true,
           },
         ],
-      ]);
+      });
 
       expect(summaries.length).toEqual(1);
+    });
+
+    it("should return empty for partially undefined metadata", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [
+          {
+            ...mockQueryMetadata,
+            metadata: {
+              ...mockQueryMetadataResponse,
+              name: [],
+            },
+          },
+        ],
+        swaps: [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [mockDerived],
+            certified: true,
+          },
+        ],
+      });
+
+      expect(summaries.length).toEqual(0);
+    });
+
+    it("should return empty for partially undefined token", () => {
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [
+          {
+            ...mockQueryMetadata,
+            token: [[SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
+          },
+        ],
+        swaps: [
+          {
+            rootCanisterId: mockSummary.rootCanisterId.toText(),
+            swapCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [
+              {
+                init: [mockSwapInit],
+                state: [mockSwapState],
+              },
+            ],
+            derived: [mockDerived],
+            certified: true,
+          },
+        ],
+      });
+
+      expect(summaries.length).toEqual(0);
     });
   });
 
   describe("sort sns summaries", () => {
     it("should sort summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries([
-        [mockSummary, mockSnsSummaryList[1]],
-        [
+      const summaries = mapAndSortSnsQueryToSummaries({
+        metadata: [
+          mockQueryMetadata,
+          { ...mockQueryMetadata, rootCanisterId: principal(1).toText() },
+        ],
+        swaps: [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
@@ -134,6 +233,8 @@ describe("sns-utils", () => {
                 ],
               },
             ],
+            derived: [mockDerived],
+            certified: true,
           },
           {
             rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
@@ -154,89 +255,17 @@ describe("sns-utils", () => {
                 ],
               },
             ],
+            derived: [mockDerived],
+            certified: true,
           },
         ],
-      ]);
+      });
 
       expect(summaries.length).toEqual(2);
 
       expect(summaries[0].rootCanisterId.toText()).toEqual(
         mockSnsSummaryList[1].rootCanisterId.toText()
       );
-    });
-  });
-
-  describe("concat a sns summary", () => {
-    it("should throw error for undefined summary", () => {
-      const call = () => concatSnsSummary([undefined, undefined]);
-
-      expect(call).toThrow();
-    });
-
-    it("should throw error for undefined swap query", () => {
-      const call = () => concatSnsSummary([mockSummary, undefined]);
-
-      expect(call).toThrow();
-    });
-
-    it("should throw error for undefined swap init", () => {
-      const call = () =>
-        concatSnsSummary([
-          mockSummary,
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [],
-                state: [],
-              },
-            ],
-          },
-        ]);
-
-      expect(call).toThrow();
-    });
-
-    it("should throw error for undefined swap state", () => {
-      const call = () =>
-        concatSnsSummary([
-          mockSummary,
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [],
-              },
-            ],
-          },
-        ]);
-
-      expect(call).toThrow();
-    });
-    it("should concat summary and swap", () => {
-      const swapCanisterId = Principal.fromText("aaaaa-aa");
-      const summary = concatSnsSummary([
-        mockSummary,
-        {
-          rootCanisterId: "1234",
-          swapCanisterId,
-          swap: [
-            {
-              init: [mockSwapInit],
-              state: [mockSwapState],
-            },
-          ],
-        },
-      ]);
-
-      expect(summary).toEqual({
-        ...mockSummary,
-        swap: mockSwap,
-        swapCanisterId,
-      });
     });
   });
 

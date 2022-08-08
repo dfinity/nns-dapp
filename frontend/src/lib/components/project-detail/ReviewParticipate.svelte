@@ -24,13 +24,13 @@
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import { ICON_SIZE_LARGE } from "../../constants/style.constants";
 
   export let account: Account;
   export let amount: number;
 
-  const { store }: ProjectDetailContext = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store, reload }: ProjectDetailContext =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
@@ -57,9 +57,10 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
-        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
       });
       if (success) {
+        await reload();
+
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
         });
@@ -81,7 +82,7 @@
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>
-      <p>
+      <p data-tid="sns-swap-participate-main-account">
         {@html replacePlaceholders($i18n.accounts.main_account, {
           $identifier: valueSpan(account.identifier),
         })}
@@ -101,7 +102,9 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <p>{$store.summary?.name}</p>
+      <p data-tid="sns-swap-participate-project-name">
+        {$store.summary?.metadata.name}
+      </p>
       {#if destinationAddress !== undefined}
         <p class="value">{destinationAddress.toHex()}</p>
       {/if}
@@ -113,7 +116,7 @@
   </div>
   <div class="actions">
     <div class="warning">
-      <span class="icon"><IconWarning size="48px" /></span>
+      <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
       <span class="description"
         >{$i18n.sns_project_detail.participate_swap_warning}</span
       >
@@ -178,7 +181,7 @@
 
     .warning {
       display: grid;
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: auto 1fr;
       gap: var(--padding-2x);
 
       .icon {

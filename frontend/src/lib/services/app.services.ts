@@ -1,7 +1,10 @@
 import { ENABLE_SNS_NEURONS } from "../constants/environment.constants";
+import {
+  loadSnsSummariesProxy,
+  loadSnsSwapCommitmentsProxy,
+} from "../proxy/sns.services.proxy";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
-import { loadSnsSummaries, loadSnsSwapCommitments } from "./sns.services";
 import { loadMainTransactionFee } from "./transaction-fees.services";
 
 export const initApp = (): Promise<
@@ -15,7 +18,7 @@ export const initApp = (): Promise<
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
   const initSns: Promise<void>[] = ENABLE_SNS_NEURONS
-    ? [loadSnsSummaries(), loadSnsSwapCommitments()]
+    ? [loadSnsSummariesProxy(), loadSnsSwapCommitmentsProxy()]
     : [];
 
   /**

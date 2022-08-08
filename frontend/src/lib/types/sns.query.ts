@@ -1,14 +1,25 @@
 import type { Principal } from "@dfinity/principal";
-import type { SnsSwap } from "@dfinity/sns";
-import type { SnsSummary } from "./sns";
+import type {
+  SnsGetMetadataResponse,
+  SnsSwap,
+  SnsSwapDerivedState,
+  SnsTokenMetadataResponse,
+} from "@dfinity/sns";
 
 export type QueryRootCanisterId = string;
 
-// TODO: this type is temporary, ultimately it should be updated with the proper candid type that will be used to query the summary from the backend
-export type QuerySnsSummary = Omit<SnsSummary, "swap" | "swapCanisterId">;
-
-export type QuerySnsSwapState = {
+export type QuerySns = {
   rootCanisterId: QueryRootCanisterId;
+  certified: boolean;
+};
+
+export type QuerySnsMetadata = QuerySns & {
+  metadata: SnsGetMetadataResponse;
+  token: SnsTokenMetadataResponse;
+};
+
+export type QuerySnsSwapState = QuerySns & {
   swapCanisterId: Principal;
   swap: [] | [SnsSwap];
+  derived: [] | [SnsSwapDerivedState];
 };

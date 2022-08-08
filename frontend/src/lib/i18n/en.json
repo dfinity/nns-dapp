@@ -34,6 +34,7 @@
     "neuron_not_found": "Neuron not found.",
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
+    "sns_neurons_load": "An error occurred while loading the neurons.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -550,10 +551,12 @@
     "token_symbol": "Token Symbol",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
-    "current_commitment": "Current Overall Commitment",
+    "current_overall_commitment": "Current Overall Commitment",
     "min_commitment_goal": "Minimum Commitment Goal",
+    "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
-    "user_commitment": "Your Current Commitment",
+    "user_commitment": "Your Commitment",
+    "user_current_commitment": "Your Current Commitment",
     "status": "Status",
     "status_open": "Accepting Participation",
     "enter_amount": "Enter Amount",
@@ -565,7 +568,7 @@
     "description": "Description",
     "participate_swap_description": "Participate in Decentralized Sale",
     "participate_swap_warning": "Your participation cannot be withdrawn by you. If the sale is not successful, your commitment will be automatically transferred back to your main ICP account.",
-    "understand_agree": "I understand and agree.",
+    "understand_agree": "I understand and want to proceed.",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
@@ -573,7 +576,13 @@
     "status_completed": "Status",
     "completed": "Completed",
     "sale_start": "Sale Start",
-    "sale_end": "Sale End"
+    "sale_end": "Sale End",
+    "max_user_commitment_reached": "Maximum commitment reached"
+  },
+  "sns_neuron_detail": {
+    "header": "Neuron",
+    "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
+    "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
   "time": {
     "year": "year",
@@ -642,6 +651,7 @@
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
-    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project."
+    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
+    "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }

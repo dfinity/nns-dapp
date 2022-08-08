@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.0",
+  "dfx": "0.11.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -117,6 +117,20 @@
       ],
       "type": "persistent"
     },
+    "small13": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "REDIRECT_TO_LEGACY": "both",
+        "ENABLE_NEW_SPAWN_FEATURE": true,
+        "ENABLE_SNS_NEURONS": true,
+        "HOST": "https://small13.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
     "small12": {
       "config": {
         "BUILD": "dev",
@@ -186,7 +200,7 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "268db05d70b3cc20475ba3ac046c0db9bd66c688"
+        "IC_COMMIT": "54a57a1f6f1ed99e66d6cde3100a0565e826385f"
       },
       "packtool": ""
     }
