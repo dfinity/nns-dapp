@@ -60,13 +60,5 @@
 <BusyScreen />
 
 <style lang="scss" global>
-  @import "lib/themes/fonts";
-  @import "lib/themes/variables";
-  @import "lib/themes/theme";
-  @import "lib/themes/button";
-  @import "lib/themes/link";
-  @import "lib/themes/modal";
-  @import "lib/themes/themes/dark";
-  @import "lib/themes/themes/light";
-  @import "lib/themes/colors";
+  @import "@dfinity/gix-components/styles/global.scss";
 </style>
