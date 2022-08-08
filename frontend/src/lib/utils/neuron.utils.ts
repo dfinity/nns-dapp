@@ -10,6 +10,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
@@ -649,3 +650,39 @@ export const getNeuronById = ({
   neuronId: NeuronId;
 }): NeuronInfo | undefined =>
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
+
+/** Update neurons voting state as they participated in voting */
+export const updateNeuronsVotes = ({
+  neurons,
+  vote,
+  proposalId,
+}: {
+  neurons: NeuronInfo[];
+  vote: Vote;
+  proposalId: ProposalId;
+}): NeuronInfo[] => {
+  const votedNeuronBallot: BallotInfo = {
+    vote,
+    proposalId,
+  };
+
+  return neurons.map((neuron) => {
+    const recentBallots = [
+      ...neuron.recentBallots.filter(
+        ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
+      ),
+      votedNeuronBallot,
+    ].map((ballot) => ({
+      ...ballot,
+    }));
+
+    return {
+      ...neuron,
+      recentBallots,
+      fullNeuron: {
+        ...(neuron.fullNeuron as Neuron),
+        recentBallots,
+      },
+    };
+  });
+};

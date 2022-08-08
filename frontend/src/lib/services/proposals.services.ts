@@ -1,14 +1,9 @@
 import type { Identity } from "@dfinity/agent";
 import {
   Vote,
-  type Ballot,
-  type BallotInfo,
-  type Neuron,
   type NeuronId,
-  type NeuronInfo,
   type ProposalId,
   type ProposalInfo,
-  type Tally,
   type Topic,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -34,9 +29,11 @@ import { voteInProgressStore } from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
+import { updateNeuronsVotes } from "../utils/neuron.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
+  updateProposalVotes,
 } from "../utils/proposals.utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
@@ -383,73 +380,29 @@ export const registerVotes = async ({
     });
   }
 
-  // TODO: optimisticaly update the stores + voteInProgressStore ({proposalId, neuronIds: [...]})
-
   const votedNeurons = get(definedNeuronsStore).filter(({ neuronId }) =>
     neuronIds.includes(neuronId)
   );
-  const votedVotingPower = votedNeurons.reduce(
-    (acc, { votingPower }) => acc + votingPower,
-    BigInt(0)
-  );
 
-  // TODO: be sure that some previous proposal fetch update wouldn't ruin the faked data
+  // TODO: be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
+  const updatedProposal = updateProposalVotes({
+    proposalInfo,
+    vote,
+    votedNeurons,
+  });
+  proposalsStore.replaceProposals([updatedProposal]);
 
-  const votedBallots: Ballot[] = votedNeurons.map(
-    ({ neuronId, votingPower }) => ({
-      neuronId,
-      vote,
-      votingPower,
-    })
-  );
-
-  // fake proposal after voting
-  const fakeProposal: ProposalInfo = {
-    ...proposalInfo,
-    ballots: [...proposalInfo.ballots, ...votedBallots],
-    latestTally: {
-      ...(proposalInfo.latestTally as Tally),
-      yes:
-        vote === Vote.YES
-          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votedVotingPower
-          : proposalInfo.latestTally?.yes ?? BigInt(0),
-      no:
-        vote === Vote.NO
-          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votedVotingPower
-          : proposalInfo.latestTally?.no ?? BigInt(0),
-    },
-  };
-
-  proposalsStore.replaceProposals([fakeProposal]);
-
-  // TODO: DONE update context store
-  reloadProposalCallback(fakeProposal);
+  // update selectedProposal context store
+  reloadProposalCallback(updatedProposal);
 
   // fake neurons after voting
-  const votedNeuronBallot: BallotInfo = {
-    vote,
-    proposalId,
-  };
-  const fakeNeurons: NeuronInfo[] = votedNeurons.map((neuron) => {
-    const recentBallots = [
-      ...neuron.recentBallots.filter(
-        ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
-      ),
-      votedNeuronBallot,
-    ].map((ballot) => ({
-      ...ballot,
-    }));
-
-    return {
-      ...neuron,
-      recentBallots,
-      fullNeuron: {
-        ...(neuron.fullNeuron as Neuron),
-        recentBallots,
-      },
-    };
-  });
-  neuronsStore.replaceNeurons(fakeNeurons);
+  neuronsStore.replaceNeurons(
+    updateNeuronsVotes({
+      neurons: votedNeurons,
+      vote,
+      proposalId,
+    })
+  );
 
   // trigger refetching the data
   const reloadListNeurons = async () =>
@@ -466,7 +419,7 @@ export const registerVotes = async ({
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
 
-        // TODO: recheck do we need to update the selected proposal context store?
+        // TODO: recheck do we need to update the selected proposal context store too?
       },
       // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
       strategy: "update",

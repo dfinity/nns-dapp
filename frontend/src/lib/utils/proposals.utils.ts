@@ -5,6 +5,7 @@ import type {
   Proposal,
   ProposalId,
   ProposalInfo,
+  Tally,
 } from "@dfinity/nns";
 import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -363,4 +364,43 @@ const votingPeriodEndFallback = ({
   return new Date(
     Number(proposalTimestampSeconds) * 1000 + durationInSeconds * 1000
   );
+};
+
+/** Update proposal voting state as it participated in voting */
+export const updateProposalVotes = ({
+  proposalInfo,
+  vote,
+  votedNeurons,
+}: {
+  proposalInfo: ProposalInfo;
+  vote: Vote;
+  votedNeurons: NeuronInfo[];
+}): ProposalInfo => {
+  const votingPower = votedNeurons.reduce(
+    (acc, { votingPower }) => acc + votingPower,
+    BigInt(0)
+  );
+  const votedBallots: Ballot[] = votedNeurons.map(
+    ({ neuronId, votingPower }) => ({
+      neuronId,
+      vote,
+      votingPower,
+    })
+  );
+
+  return {
+    ...proposalInfo,
+    ballots: [...proposalInfo.ballots, ...votedBallots],
+    latestTally: {
+      ...(proposalInfo.latestTally as Tally),
+      yes:
+        vote === Vote.YES
+          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.yes ?? BigInt(0),
+      no:
+        vote === Vote.NO
+          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.no ?? BigInt(0),
+    },
+  };
 };
