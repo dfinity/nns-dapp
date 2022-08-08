@@ -400,6 +400,7 @@
     "topic_prefix": "Topic:",
     "id_prefix": "ID:",
     "proposer_prefix": "Proposer:",
+    "open_voting_prefix": "Voting open:",
     "adopt": "Adopt",
     "reject": "Reject",
     "my_votes": "My Votes",
@@ -407,7 +408,8 @@
     "unknown_nns_function": "Unknown nnsFunction",
     "nns_function_name": "nnsFunctionName",
     "payload": "Payload",
-    "summary_toggle_view": "$toggleView summary"
+    "summary_toggle_view": "$toggleView summary",
+    "vote": "Vote"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",

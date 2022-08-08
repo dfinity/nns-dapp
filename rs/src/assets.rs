@@ -165,6 +165,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
             "jpg" => Some("image/jpeg"),
             "ico" => Some("image/x-icon"),
             "ttf" => Some("font/ttf"),
+            "woff2" => Some("font/woff2"),
             _ => None,
         })
         .flatten()

@@ -5,7 +5,11 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+import {
+  DEFAULT_PROPOSALS_FILTERS,
+  PROPOSAL_COLOR,
+} from "../../../lib/constants/proposals.constants";
+import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -16,6 +20,7 @@ import {
   hideProposal,
   isProposalOpenForVotes,
   lastProposalId,
+  mapProposalInfo,
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
   proposalFirstActionKey,
@@ -25,6 +30,7 @@ import {
   replaceProposals,
   selectedNeuronsVotingPower,
 } from "../../../lib/utils/proposals.utils";
+import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import {
   generateMockProposals,
@@ -737,6 +743,28 @@ describe("proposals-utils", () => {
           exclusion: proposals,
         })
       ).toEqual([]);
+    });
+  });
+
+  describe("mapProposalInfo", () => {
+    it("should map proposalInfo fields", () => {
+      const now = nowInSeconds();
+      const deadlineTimestampSeconds = BigInt(now + 1000000);
+      const [proposal] = generateMockProposals(1, {
+        topic: Topic.Governance,
+        status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+        deadlineTimestampSeconds,
+      });
+
+      const { topic, color, deadline } = mapProposalInfo(proposal);
+
+      expect(topic).toEqual(en.topics.Governance);
+      expect(color).toEqual(
+        PROPOSAL_COLOR[ProposalStatus.PROPOSAL_STATUS_OPEN]
+      );
+      expect(deadline).toEqual(
+        deadlineTimestampSeconds - BigInt(nowInSeconds())
+      );
     });
   });
 
