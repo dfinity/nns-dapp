@@ -15,8 +15,7 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
-    "update:nns": "npm update @dfinity/nns",
-    "update:sns": "npm update @dfinity/sns",
+    "update:ic": "npm update @dfinity/nns @dfinity/sns @dfinity/utils",
     "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal && npm i @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal"
   },
   "devDependencies": {
