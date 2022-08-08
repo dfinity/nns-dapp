@@ -16,7 +16,6 @@ import {
   registerVotes,
   routePathProposalId,
 } from "../../../lib/services/proposals.services";
-import * as busyStore from "../../../lib/stores/busy.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -202,21 +201,6 @@ describe("proposals-services", () => {
           },
         });
         expect(spyRegisterVote).toHaveReturnedTimes(neuronIds.length);
-      });
-
-      it("should display appropriate busy screen", async () => {
-        const spyBusyStart = jest.spyOn(busyStore, "startBusy");
-        const spyBusyStop = jest.spyOn(busyStore, "stopBusy");
-        await registerVotes({
-          neuronIds,
-          proposalId,
-          vote: Vote.YES,
-          reloadProposalCallback: () => {
-            // do nothing
-          },
-        });
-        expect(spyBusyStart).toBeCalledWith({ initiator: "vote" });
-        expect(spyBusyStop).toBeCalledWith("vote");
       });
 
       it("should not display errors on successful vote registration", async () => {

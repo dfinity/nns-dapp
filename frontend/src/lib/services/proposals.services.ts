@@ -22,11 +22,6 @@ import {
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import { AppPath } from "../constants/routes.constants";
-import {
-  startBusy,
-  stopBusy,
-  type BusyStateInitiatorType,
-} from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
@@ -357,8 +352,6 @@ export const registerVotes = async ({
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  startBusy({ initiator: "vote" });
-
   const identity: Identity = await getIdentity();
   const proposalId = proposalInfo.id as bigint;
   const voteInProgress = {
@@ -389,58 +382,6 @@ export const registerVotes = async ({
       err,
     });
   }
-
-  const stopBusySpinner = ({
-    certified,
-    initiator,
-  }: {
-    certified: boolean;
-    initiator: BusyStateInitiatorType;
-  }) => {
-    if (!certified) {
-      return;
-    }
-
-    stopBusy(initiator);
-  };
-
-  const reloadListNeurons = async () => {
-    startBusy({ initiator: "reload-neurons" });
-
-    try {
-      await listNeurons({
-        callback: (certified: boolean) =>
-          stopBusySpinner({ certified, initiator: "reload-neurons" }),
-      });
-    } catch (err) {
-      console.error(err);
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
-
-      stopBusy("reload-neurons");
-    }
-  };
-
-  const reloadProposal = async () => {
-    startBusy({ initiator: "reload-proposal" });
-
-    await loadProposal({
-      proposalId,
-      setProposal: (proposalInfo: ProposalInfo) => {
-        reloadProposalCallback(proposalInfo);
-        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
-        proposalsStore.replaceProposals([proposalInfo]);
-      },
-      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
-      strategy: "update",
-      callback: (certified: boolean) =>
-        stopBusySpinner({ certified, initiator: "reload-proposal" }),
-      handleError: () => stopBusy("reload-proposal"),
-      silentUpdateErrorMessages: true,
-    });
-  };
 
   // TODO: optimisticaly update the stores + voteInProgressStore ({proposalId, neuronIds: [...]})
 
@@ -510,11 +451,29 @@ export const registerVotes = async ({
   });
   neuronsStore.replaceNeurons(fakeNeurons);
 
-  stopBusy("vote");
-
   // trigger refetching the data
+  const reloadListNeurons = async () =>
+    // store update is done by `listNeurons` function
+    listNeurons({
+      strategy: "update",
+    });
+
+  const reloadProposal = async () =>
+    loadProposal({
+      proposalId,
+      setProposal: (proposalInfo: ProposalInfo) => {
+        reloadProposalCallback(proposalInfo);
+        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
+        proposalsStore.replaceProposals([proposalInfo]);
+
+        // TODO: recheck do we need to update the selected proposal context store?
+      },
+      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
+      strategy: "update",
+    });
+
   Promise.all([reloadListNeurons(), reloadProposal()]).then(() => {
-    // TODO: remove in progress only after successful update call
+    // remove in progress state only after successful update call
     voteInProgressStore.remove(voteInProgress);
   });
 };
