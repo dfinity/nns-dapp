@@ -1,17 +1,21 @@
 import type { Identity } from "@dfinity/agent";
-import type {
-  NeuronId,
-  ProposalId,
-  ProposalInfo,
-  Topic,
+import {
   Vote,
+  type Ballot,
+  type BallotInfo,
+  type Neuron,
+  type NeuronId,
+  type NeuronInfo,
+  type ProposalId,
+  type ProposalInfo,
+  type Tally,
+  type Topic,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
-  registerVote,
 } from "../api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
@@ -23,7 +27,7 @@ import {
   stopBusy,
   type BusyStateInitiatorType,
 } from "../stores/busy.store";
-import { i18n } from "../stores/i18n";
+import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -31,15 +35,14 @@ import {
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
+import { voteInProgressStore } from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "../utils/proposals.utils";
-import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -345,18 +348,27 @@ export const routePathProposalId = (
  */
 export const registerVotes = async ({
   neuronIds,
-  proposalId,
+  proposalInfo,
   vote,
   reloadProposalCallback,
 }: {
   neuronIds: NeuronId[];
-  proposalId: ProposalId;
+  proposalInfo: ProposalInfo;
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
   startBusy({ initiator: "vote" });
 
   const identity: Identity = await getIdentity();
+  const proposalId = proposalInfo.id as bigint;
+  const voteInProgress = {
+    startVotingTimestamp: Date.now(),
+    neuronIds,
+    proposalId,
+    vote,
+  };
+
+  voteInProgressStore.add(voteInProgress);
 
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
@@ -430,9 +442,81 @@ export const registerVotes = async ({
     });
   };
 
-  await Promise.all([reloadListNeurons(), reloadProposal()]);
+  // TODO: optimisticaly update the stores + voteInProgressStore ({proposalId, neuronIds: [...]})
+
+  const votedNeurons = get(definedNeuronsStore).filter(({ neuronId }) =>
+    neuronIds.includes(neuronId)
+  );
+  const votedVotingPower = votedNeurons.reduce(
+    (acc, { votingPower }) => acc + votingPower,
+    BigInt(0)
+  );
+
+  // TODO: be sure that some previous proposal fetch update wouldn't ruin the faked data
+
+  const votedBallots: Ballot[] = votedNeurons.map(
+    ({ neuronId, votingPower }) => ({
+      neuronId,
+      vote,
+      votingPower,
+    })
+  );
+
+  // fake proposal after voting
+  const fakeProposal: ProposalInfo = {
+    ...proposalInfo,
+    ballots: [...proposalInfo.ballots, ...votedBallots],
+    latestTally: {
+      ...(proposalInfo.latestTally as Tally),
+      yes:
+        vote === Vote.YES
+          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votedVotingPower
+          : proposalInfo.latestTally?.yes ?? BigInt(0),
+      no:
+        vote === Vote.NO
+          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votedVotingPower
+          : proposalInfo.latestTally?.no ?? BigInt(0),
+    },
+  };
+
+  proposalsStore.replaceProposals([fakeProposal]);
+
+  // TODO: DONE update context store
+  reloadProposalCallback(fakeProposal);
+
+  // fake neurons after voting
+  const votedNeuronBallot: BallotInfo = {
+    vote,
+    proposalId,
+  };
+  const fakeNeurons: NeuronInfo[] = votedNeurons.map((neuron) => {
+    const recentBallots = [
+      ...neuron.recentBallots.filter(
+        ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
+      ),
+      votedNeuronBallot,
+    ].map((ballot) => ({
+      ...ballot,
+    }));
+
+    return {
+      ...neuron,
+      recentBallots,
+      fullNeuron: {
+        ...(neuron.fullNeuron as Neuron),
+        recentBallots,
+      },
+    };
+  });
+  neuronsStore.replaceNeurons(fakeNeurons);
 
   stopBusy("vote");
+
+  // trigger refetching the data
+  Promise.all([reloadListNeurons(), reloadProposal()]).then(() => {
+    // TODO: remove in progress only after successful update call
+    voteInProgressStore.remove(voteInProgress);
+  });
 };
 
 const requestRegisterVotes = async ({

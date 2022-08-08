@@ -87,6 +87,9 @@ export const uniqueObjects = <T>(list: T[]): T[] => {
   return result;
 };
 
+export const sameObjects = <T>(a: T, b: T): boolean =>
+  stringifyJson(a) === stringifyJson(b);
+
 // https://stackoverflow.com/questions/43010737/way-to-tell-typescript-compiler-array-prototype-filter-removes-certain-types-fro#answer-54318054
 export const isDefined = <T>(argument: T | undefined): argument is T =>
   argument !== undefined;

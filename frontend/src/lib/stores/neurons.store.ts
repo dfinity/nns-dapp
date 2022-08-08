@@ -50,6 +50,21 @@ const initNeuronsStore = () => {
         };
       });
     },
+
+    replaceNeurons(neurons: NeuronInfo[]) {
+      update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
+        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
+        return {
+          neurons: [
+            ...(oldNeurons || []).filter(
+              ({ neuronId }) => !newIds.has(neuronId)
+            ),
+            ...neurons,
+          ],
+          certified,
+        };
+      });
+    },
   };
 };
 

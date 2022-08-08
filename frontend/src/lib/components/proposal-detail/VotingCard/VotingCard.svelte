@@ -14,6 +14,7 @@
     type SelectedProposalContext,
   } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
+  import Spinner from "../../ui/Spinner.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -48,7 +49,7 @@
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
-      proposalId: proposalInfo.id as bigint,
+      proposalInfo,
       reloadProposalCallback: (
         proposalInfo: ProposalInfo // we update store only if proposal id are matching even though it would be an edge case that these would not match here
       ) =>
