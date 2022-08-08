@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNeuron,
@@ -135,17 +135,16 @@ export const addHotkey = async ({
   rootCanisterId,
 }: {
   neuronId: SnsNeuronId;
-  hotkey: string;
+  hotkey: Principal;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
     const identity = await getNeuronIdentity(neuronId);
-    const principal = Principal.fromText(hotkey);
     await addNeuronPermissions({
       permissions,
       identity,
-      principal,
+      principal: hotkey,
       rootCanisterId,
       neuronId,
     });
