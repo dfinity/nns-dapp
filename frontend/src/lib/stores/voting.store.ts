@@ -34,7 +34,6 @@ const initVoteInProgressStore = () => {
         };
       });
     },
-    },
 
     remove(propsalId: ProposalId) {
       update(({ votes }) => ({
