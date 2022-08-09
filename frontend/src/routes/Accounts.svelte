@@ -56,10 +56,10 @@
 
     {#if accounts?.main}
       <Tooltip
-              id="wallet-total-icp"
-              text={replacePlaceholders($i18n.accounts.current_balance_total, {
-            $amount: totalICP,
-          })}
+        id="wallet-total-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+          $amount: totalICP,
+        })}
       >
         <ICPComponent icp={totalBalance} />
       </Tooltip>
@@ -68,25 +68,25 @@
 
   {#if accounts?.main?.identifier}
     <AccountCard
-            role="link"
-            on:click={() => cardClick(accounts?.main?.identifier ?? "")}
-            showCopy
-            account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+      role="link"
+      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+      showCopy
+      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
     >
     {#each accounts.subAccounts || [] as subAccount}
       <AccountCard
-              role="link"
-              on:click={() => cardClick(subAccount.identifier)}
-              showCopy
-              account={subAccount}>{subAccount.name}</AccountCard
+        role="link"
+        on:click={() => cardClick(subAccount.identifier)}
+        showCopy
+        account={subAccount}>{subAccount.name}</AccountCard
       >
     {/each}
     {#each accounts.hardwareWallets || [] as walletAccount}
       <AccountCard
-              role="link"
-              on:click={() => cardClick(walletAccount.identifier)}
-              showCopy
-              account={walletAccount}>{walletAccount.name}</AccountCard
+        role="link"
+        on:click={() => cardClick(walletAccount.identifier)}
+        showCopy
+        account={walletAccount}>{walletAccount.name}</AccountCard
       >
     {/each}
   {:else}
@@ -105,15 +105,14 @@
   <Footer>
     <Toolbar>
       <button
-              class="primary full-width"
-              on:click={openNewTransaction}
-              data-tid="open-new-transaction"
-      >{$i18n.accounts.new_transaction}</button
+        class="primary full-width"
+        on:click={openNewTransaction}
+        data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
       >
       <button
-              class="primary full-width"
-              on:click={openAddAccountModal}
-              data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
+        class="primary full-width"
+        on:click={openAddAccountModal}
+        data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
       >
     </Toolbar>
   </Footer>

@@ -70,10 +70,10 @@
 
   {#each $canistersStore.canisters ?? [] as canister}
     <CanisterCard
-            role="link"
-            ariaLabel={$i18n.neurons.aria_label_neuron_card}
-            on:click={goToCanisterDetails(canister.canister_id)}
-            {canister}
+      role="link"
+      ariaLabel={$i18n.neurons.aria_label_neuron_card}
+      on:click={goToCanisterDetails(canister.canister_id)}
+      {canister}
     />
   {/each}
 
@@ -97,16 +97,16 @@
 <Footer>
   <Toolbar>
     <button
-            data-tid="create-canister-button"
-            class="primary"
-            on:click={() => openModal("CreateCanister")}
-    >{$i18n.canisters.create_canister}</button
+      data-tid="create-canister-button"
+      class="primary"
+      on:click={() => openModal("CreateCanister")}
+      >{$i18n.canisters.create_canister}</button
     >
     <button
-            data-tid="link-canister-button"
-            class="primary"
-            on:click={() => openModal("LinkCanister")}
-    >{$i18n.canisters.link_canister}</button
+      data-tid="link-canister-button"
+      class="primary"
+      on:click={() => openModal("LinkCanister")}
+      >{$i18n.canisters.link_canister}</button
     >
   </Toolbar>
 </Footer>

@@ -134,18 +134,18 @@
 <Footer>
   <Toolbar>
     <button
-            class="primary"
-            on:click={() => (showNewTransactionModal = true)}
-            disabled={$selectedAccountStore.account === undefined || $busy}
-            data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
     >
   </Toolbar>
 </Footer>
 
 {#if showNewTransactionModal}
   <NewTransactionModal
-          on:nnsClose={() => (showNewTransactionModal = false)}
-          selectedAccount={$selectedAccountStore.account}
+    on:nnsClose={() => (showNewTransactionModal = false)}
+    selectedAccount={$selectedAccountStore.account}
   />
 {/if}
 
