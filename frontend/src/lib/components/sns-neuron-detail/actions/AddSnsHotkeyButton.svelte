@@ -1,10 +1,7 @@
 <script lang="ts">
-  import type { SnsNeuronId } from "@dfinity/sns";
   import AddSnsHotkeyModal from "../../../modals/sns/AddSnsHotkeyModal.svelte";
 
   import { i18n } from "../../../stores/i18n";
-
-  export let neuronId: SnsNeuronId;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -16,5 +13,5 @@
 >
 
 {#if showModal}
-  <AddSnsHotkeyModal {neuronId} on:nnsClose={closeModal} />
+  <AddSnsHotkeyModal on:nnsClose={closeModal} />
 {/if}
