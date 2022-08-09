@@ -41,7 +41,7 @@ import {
   proposalsHaveSameIds,
   updateProposalVote,
 } from "../utils/proposals.utils";
-import { isDefined, nonNullish } from "../utils/utils";
+import { isDefined, isNullish } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -361,11 +361,15 @@ export const registerVotes = async ({
   const voteInProgress: VoteInProgress = {
     neuronIds,
     proposalId,
+    successfullyVotedNeuronIds: [],
     vote,
   };
   const $definedNeuronsStore = get(definedNeuronsStore);
 
   voteInProgressStore.add(voteInProgress);
+
+  let votingProposal: ProposalInfo = { ...proposalInfo };
+
   const $i18n = get(i18n);
   const toastMessage = toastsStore.show({
     labelKey: "proposal_detail__vote.voting_in_progress_message",
@@ -381,24 +385,33 @@ export const registerVotes = async ({
       ({ neuronId: id }) => id === neuronId
     );
 
-    if (nonNullish(originalNeuron)) {
-      // pretend voting
-      const neuron = updateNeuronsVote({
-        neuron: originalNeuron,
-        vote,
-        proposalId,
-      });
-      const proposal = updateProposalVote({
-        proposalInfo,
-        vote,
-        votedNeuron: neuron,
-      });
+    voteInProgressStore.addSuccessfullyVotedNeuronIds({
+      proposalId,
+      successfullyVotedNeuronIds: [neuronId],
+    });
 
-      neuronsStore.replaceNeurons([neuron]);
-      proposalsStore.replaceProposals([proposal]);
-      // update context store
-      reloadProposalCallback(proposal);
+    // TODO: is it necessary?
+    if (isNullish(originalNeuron)) {
+      return;
     }
+
+    // pretend voting
+    const votingNeuron = updateNeuronsVote({
+      neuron: originalNeuron,
+      vote,
+      proposalId,
+    });
+    // update proposal vote state
+    votingProposal = updateProposalVote({
+      proposalInfo: votingProposal,
+      neuron: votingNeuron,
+      vote,
+    });
+
+    neuronsStore.replaceNeurons([votingNeuron]);
+    proposalsStore.replaceProposals([votingProposal]);
+    // update context store
+    reloadProposalCallback(votingProposal);
   };
 
   try {
