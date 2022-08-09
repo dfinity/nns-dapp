@@ -4,13 +4,17 @@
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/sns-neurons.services";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import type { SnsNeuronId } from "@dfinity/sns";
   import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "../../types/sns-neuron-detail.context";
 
-  export let neuronId: SnsNeuronId;
+  const { reload, store }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let principal: Principal | undefined = undefined;
   const dispatcher = createEventDispatcher();
@@ -23,14 +27,24 @@
       });
       return;
     }
+    // Edge case: modal can't be shown when neuron is not defined
+    const neuronId = $store.neuron?.id[0];
+    if (neuronId === undefined) {
+      return;
+    }
     startBusy({ initiator: "add-sns-hotkey-neuron" });
-    await addHotkey({
+    const { success } = await addHotkey({
       neuronId,
       hotkey: principal,
       rootCanisterId: $snsProjectSelectedStore,
     });
+    if (success) {
+      await reload();
+    }
     stopBusy("add-sns-hotkey-neuron");
-    dispatcher("nnsClose");
+    if (success) {
+      dispatcher("nnsClose");
+    }
   };
 </script>
 

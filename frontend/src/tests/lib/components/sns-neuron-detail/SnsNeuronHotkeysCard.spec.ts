@@ -4,7 +4,7 @@
 
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 import SnsNeuronHotkeysCard from "../../../../lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
 import { removeHotkey } from "../../../../lib/services/sns-neurons.services";
 import { authStore } from "../../../../lib/stores/auth.store";
@@ -12,12 +12,13 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "../../../mocks/auth.store.mock";
+import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
 jest.mock("../../../../lib/services/sns-neurons.services", () => {
   return {
-    removeHotkey: jest.fn(),
+    removeHotkey: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -42,53 +43,54 @@ describe("SnsNeuronHotkeysCard", () => {
     permissions: hotkeys.map(addVotePermission),
   };
 
+  const reload = jest.fn();
+  const renderCard = (neuron: SnsNeuron) =>
+    renderSelectedSnsNeuronContext({
+      reload,
+      Component: SnsNeuronHotkeysCard,
+      neuron,
+    });
+
   beforeAll(() =>
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe)
   );
 
+  afterEach(() => jest.clearAllMocks());
+
   it("renders hotkeys title", () => {
-    const { queryByText } = render(SnsNeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
-    });
+    const { queryByText } = renderCard(controlledNeuron);
 
     expect(queryByText(en.neuron_detail.hotkeys_title)).toBeInTheDocument();
   });
 
   it("renders actions", () => {
-    const { queryByTestId } = render(SnsNeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
-    });
+    const { queryByTestId } = renderCard(controlledNeuron);
 
     expect(queryByTestId("add-hotkey-button")).toBeInTheDocument();
   });
 
   it("renders no actions if user not controller", () => {
-    const { queryByTestId, queryAllByTestId } = render(SnsNeuronHotkeysCard, {
-      props: { neuron: unControlledNeuron },
-    });
+    const { queryByTestId, queryAllByTestId } = renderCard(unControlledNeuron);
 
     expect(queryByTestId("add-hotkey-button")).toBeNull();
     expect(queryAllByTestId("remove-hotkey-button")).toHaveLength(0);
   });
 
   it("renders hotkeys", () => {
-    const { queryByText } = render(SnsNeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
-    });
+    const { queryByText } = renderCard(controlledNeuron);
     expect(queryByText(hotkeys[0])).toBeInTheDocument();
     expect(queryByText(hotkeys[1])).toBeInTheDocument();
   });
 
-  it("can remove a hotkey", () => {
-    const { queryAllByTestId } = render(SnsNeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
-    });
+  it("can remove a hotkey and reload neuron", async () => {
+    const { queryAllByTestId } = renderCard(controlledNeuron);
 
     const removeButtons = queryAllByTestId("remove-hotkey-button");
     fireEvent.click(removeButtons[0]);
 
     expect(removeHotkey).toBeCalled();
+    await waitFor(() => expect(reload).toBeCalled());
   });
 });

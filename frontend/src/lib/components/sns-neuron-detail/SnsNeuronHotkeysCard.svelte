@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
+  import { getContext } from "svelte";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
   import { IconClose } from "@dfinity/gix-components";
   import IconInfo from "../../icons/IconInfo.svelte";
@@ -11,6 +12,10 @@
   import { i18n } from "../../stores/i18n";
   import { snsProjectSelectedStore } from "../../stores/projects.store";
   import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "../../types/sns-neuron-detail.context";
+  import {
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
   } from "../../utils/sns-neuron.utils";
@@ -19,78 +24,98 @@
   import Value from "../ui/Value.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
-  export let neuron: SnsNeuron;
+  const { reload, store }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
+  let neuron: SnsNeuron | undefined;
+  $: neuron = $store.neuron;
   let neuronId: SnsNeuronId | undefined;
-
-  $: neuronId = fromDefinedNullable(neuron.id);
+  $: neuronId =
+    neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
 
   let canManageHotkeys: boolean = true;
-  $: canManageHotkeys = canIdentityManageHotkeys({
-    neuron,
-    identity: $authStore.identity,
-  });
+  $: canManageHotkeys =
+    neuron !== undefined
+      ? canIdentityManageHotkeys({
+          neuron,
+          identity: $authStore.identity,
+        })
+      : false;
   let hotkeys: string[];
-  $: hotkeys = getSnsNeuronHotkeys(neuron);
+  $: hotkeys = neuron !== undefined ? getSnsNeuronHotkeys(neuron) : [];
 
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
 
   const remove = async (hotkey: string) => {
+    // Edge case: Remove button is shwon only when neuron is defined
+    if (neuronId === undefined) {
+      return;
+    }
     startBusy({
       initiator: "remove-sns-hotkey-neuron",
     });
-    await removeHotkey({
-      neuronId: neuron.id[0] as SnsNeuronId,
+    const { success } = await removeHotkey({
+      neuronId,
       hotkey,
       rootCanisterId: $snsProjectSelectedStore,
     });
+    if (success) {
+      await reload();
+    }
     stopBusy("remove-sns-hotkey-neuron");
   };
 </script>
 
-<CardInfo testId="sns-hotkeys-card">
-  <div class="title" slot="start">
-    <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
-    {#if showTooltip}
-      <Tooltip
-        id="sns-hotkeys-info"
-        text={$i18n.sns_neuron_detail.add_hotkey_tooltip}
-      >
-        <span>
-          <IconInfo />
-        </span>
-      </Tooltip>
+{#if neuron !== undefined}
+  <CardInfo testId="sns-hotkeys-card">
+    <div class="title" slot="start">
+      <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+      {#if showTooltip}
+        <Tooltip
+          id="sns-hotkeys-info"
+          text={$i18n.sns_neuron_detail.add_hotkey_tooltip}
+        >
+          <span>
+            <IconInfo />
+          </span>
+        </Tooltip>
+      {/if}
+    </div>
+    {#if hotkeys.length === 0}
+      {#if canManageHotkeys}
+        <div class="warning">
+          <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
+          <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
+        </div>
+      {:else}
+        <p>{$i18n.neuron_detail.no_notkeys}</p>
+      {/if}
+    {:else}
+      <ul>
+        {#each hotkeys as hotkey (hotkey)}
+          <li>
+            <Value>{hotkey}</Value>
+            {#if canManageHotkeys}
+              <button
+                class="text"
+                aria-label={$i18n.core.remove}
+                on:click={() => remove(hotkey)}
+                data-tid="remove-hotkey-button"
+                ><IconClose size="18px" /></button
+              >
+            {/if}
+          </li>
+        {/each}
+      </ul>
     {/if}
-  </div>
-  {#if hotkeys.length === 0}
-    <div class="warning">
-      <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
-      <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
-    </div>
-  {:else}
-    <ul>
-      {#each hotkeys as hotkey (hotkey)}
-        <li>
-          <Value>{hotkey}</Value>
-          {#if canManageHotkeys}
-            <button
-              class="text"
-              aria-label={$i18n.core.remove}
-              on:click={() => remove(hotkey)}
-              data-tid="remove-hotkey-button"><IconClose size="18px" /></button
-            >
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  {/if}
-  {#if canManageHotkeys && neuronId !== undefined}
-    <div class="actions">
-      <AddSnsHotkeyButton {neuronId} />
-    </div>
-  {/if}
-</CardInfo>
+    {#if canManageHotkeys && neuronId !== undefined}
+      <div class="actions">
+        <AddSnsHotkeyButton />
+      </div>
+    {/if}
+  </CardInfo>
+{/if}
 
 <style lang="scss">
   @use "../../themes/mixins/card";
