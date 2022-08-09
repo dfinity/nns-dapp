@@ -9,7 +9,9 @@ import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
 import {
   buildMockSwapInit,
-  mockSnsFullProject, mockSnsSwapCommitment, principal,
+  mockSnsFullProject,
+  mockSnsSwapCommitment,
+  principal,
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
@@ -32,20 +34,18 @@ describe("ParticipateButton", () => {
       Component: ParticipateButton,
     });
     expect(
-        queryByTestId("sns-project-participate-button")?.textContent ?? ""
+      queryByTestId("sns-project-participate-button")?.textContent ?? ""
     ).toEqual(en.sns_project_detail.increase_participation);
   });
 
   it("should render a text to participate", () => {
     const { queryByTestId } = renderContextCmp({
       summary: mockSnsFullProject.summary,
-      swapCommitment: mockSnsSwapCommitment(
-          principal(3)
-      ) as SnsSwapCommitment,
+      swapCommitment: mockSnsSwapCommitment(principal(3)) as SnsSwapCommitment,
       Component: ParticipateButton,
     });
     expect(
-        queryByTestId("sns-project-participate-button")?.textContent ?? ""
+      queryByTestId("sns-project-participate-button")?.textContent ?? ""
     ).toEqual(en.sns_project_detail.participate);
   });
 
