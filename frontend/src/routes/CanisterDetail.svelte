@@ -26,7 +26,7 @@
   import { debugSelectedCanisterStore } from "../lib/stores/debug.store";
   import type { CanisterDetails } from "../lib/canisters/ic-management/ic-management.canister.types";
   import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "../lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";

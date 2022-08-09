@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MenuItem from "../ui/MenuItem.svelte";
+  import { MenuItem } from "@dfinity/gix-components";
   import IconWallet from "../../icons/IconWallet.svelte";
   import IconLockOpen from "../../icons/IconLockOpen.svelte";
   import IconHowToVote from "../../icons/IconHowToVote.svelte";

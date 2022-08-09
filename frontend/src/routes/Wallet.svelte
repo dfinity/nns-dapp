@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../lib/components/common/Footer.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
