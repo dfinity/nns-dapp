@@ -35,6 +35,11 @@
     summary: $projectDetailStore.summary,
     swapCommitment: $projectDetailStore.swapCommitment,
   });
+
+  let userHasParticipatedToSwap: boolean = false;
+  $: userHasParticipatedToSwap =
+    ($projectDetailStore.swapCommitment?.myCommitment?.amount_icp_e8s ?? 0n) >
+    0n;
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
@@ -43,7 +48,9 @@
       on:click={openModal}
       class="primary small"
       data-tid="sns-project-participate-button"
-      >{$i18n.sns_project_detail.participate}</button
+      >{userHasParticipatedToSwap
+        ? $i18n.sns_project_detail.increase_participation
+        : $i18n.sns_project_detail.participate}</button
     >
   {:else}
     <Tooltip
