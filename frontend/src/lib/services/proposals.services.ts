@@ -11,12 +11,14 @@ import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
+  registerVote,
 } from "../api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import { AppPath } from "../constants/routes.constants";
+import { i18n } from "../stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
@@ -29,12 +31,14 @@ import { voteInProgressStore } from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { updateNeuronsVotes } from "../utils/neuron.utils";
+import { replacePlaceholders } from "../utils/i18n.utils";
+import { updateNeuronsVote } from "../utils/neuron.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
-  updateProposalVotes,
+  updateProposalVote,
 } from "../utils/proposals.utils";
+import { isDefined, nonNullish } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -357,8 +361,43 @@ export const registerVotes = async ({
     proposalId,
     vote,
   };
+  const $definedNeuronsStore = get(definedNeuronsStore);
 
   voteInProgressStore.add(voteInProgress);
+  const $i18n = get(i18n);
+  const toastMessage = toastsStore.show({
+    labelKey: "proposal_detail__vote.voting_in_progress_message",
+    level: "running",
+    substitutions: {
+      $vote: vote === Vote.YES ? $i18n.core.yes : $i18n.core.no,
+      $proposalTitle: proposalInfo.proposal?.title ?? "",
+      $proposalId: `${proposalId}`,
+    },
+  });
+  const registerVoteCallback = (neuronId: NeuronId) => {
+    const originalNeuron = $definedNeuronsStore.find(
+      ({ neuronId: id }) => id === neuronId
+    );
+
+    if (nonNullish(originalNeuron)) {
+      // pretend voting
+      const neuron = updateNeuronsVote({
+        neuron: originalNeuron,
+        vote,
+        proposalId,
+      });
+      const proposal = updateProposalVote({
+        proposalInfo,
+        vote,
+        votedNeuron: neuron,
+      });
+
+      neuronsStore.replaceNeurons([neuron]);
+      proposalsStore.replaceProposals([proposal]);
+      // update context store
+      reloadProposalCallback(proposal);
+    }
+  };
 
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
@@ -367,6 +406,7 @@ export const registerVotes = async ({
       proposalId,
       identity,
       vote,
+      registerVoteCallback,
     });
     logWithTimestamp(
       `Registering [${neuronIds.map(hashCode)}] votes complete.`
@@ -378,31 +418,10 @@ export const registerVotes = async ({
       labelKey: "error.register_vote_unknown",
       err,
     });
+
+    // TODO: hide the running vote registration
   }
-
-  const votedNeurons = get(definedNeuronsStore).filter(({ neuronId }) =>
-    neuronIds.includes(neuronId)
-  );
-
   // TODO: be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
-  const updatedProposal = updateProposalVotes({
-    proposalInfo,
-    vote,
-    votedNeurons,
-  });
-  proposalsStore.replaceProposals([updatedProposal]);
-
-  // update selectedProposal context store
-  reloadProposalCallback(updatedProposal);
-
-  // fake neurons after voting
-  neuronsStore.replaceNeurons(
-    updateNeuronsVotes({
-      neurons: votedNeurons,
-      vote,
-      proposalId,
-    })
-  );
 
   // trigger refetching the data
   const reloadListNeurons = async () =>
@@ -415,11 +434,10 @@ export const registerVotes = async ({
     loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
+        // update context store
         reloadProposalCallback(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
-
-        // TODO: recheck do we need to update the selected proposal context store too?
       },
       // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
       strategy: "update",
@@ -428,6 +446,7 @@ export const registerVotes = async ({
   Promise.all([reloadListNeurons(), reloadProposal()]).then(() => {
     // remove in progress state only after successful update call
     voteInProgressStore.remove(voteInProgress);
+    toastsStore.hide(toastMessage);
   });
 };
 
@@ -436,11 +455,13 @@ const requestRegisterVotes = async ({
   proposalId,
   identity,
   vote,
+  registerVoteCallback,
 }: {
   neuronIds: bigint[];
   proposalId: ProposalId;
   identity: Identity;
   vote: Vote;
+  registerVoteCallback: (neuronId: NeuronId) => void;
 }): Promise<void> => {
   const errorDetail = (
     neuronId: NeuronId,
@@ -467,7 +488,7 @@ const requestRegisterVotes = async ({
           vote,
           proposalId,
           identity,
-        })
+        }).then(() => registerVoteCallback(neuronId))
     )
   );
 

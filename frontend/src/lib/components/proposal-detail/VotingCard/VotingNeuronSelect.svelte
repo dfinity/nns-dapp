@@ -25,53 +25,57 @@
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
-<p class="headline">
-  <span>{$i18n.proposal_detail__vote.neurons}</span>
-  <span>{$i18n.proposal_detail__vote.voting_power}</span>
-</p>
+{#if $votingNeuronSelectStore.neurons.length > 0}
+  <p class="headline">
+    <span>{$i18n.proposal_detail__vote.neurons}</span>
+    <span>{$i18n.proposal_detail__vote.voting_power}</span>
+  </p>
 
-<ul>
-  {#each $votingNeuronSelectStore.neurons as neuron}
-    <li>
-      <Checkbox
-        inputId={`${neuron.neuronId}`}
-        checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
-        on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        text="block"
-        selector="neuron-checkbox"
-      >
-        <span
-          class="neuron-id value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_neuronId,
-            {
-              $neuronId: `${neuron.neuronId}`,
-            }
-          )}>{`${neuron.neuronId}`}</span
-        >
-        <span
-          class="neuron-voting-power value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_votingPower,
-            {
-              $votingPower: formatVotingPower(
-                getVotingPower({ neuron, proposal: proposalInfo })
-              ),
-            }
+  <ul>
+    {#each $votingNeuronSelectStore.neurons as neuron}
+      <li>
+        <Checkbox
+          inputId={`${neuron.neuronId}`}
+          checked={$votingNeuronSelectStore.selectedIds.includes(
+            neuron.neuronId
           )}
-          >{`${formatVotingPower(
-            getVotingPower({ neuron, proposal: proposalInfo })
-          )}`}</span
+          on:nnsChange={() => toggleSelection(neuron.neuronId)}
+          text="block"
+          selector="neuron-checkbox"
         >
-      </Checkbox>
-    </li>
-  {/each}
-</ul>
+          <span
+            class="neuron-id value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_neuronId,
+              {
+                $neuronId: `${neuron.neuronId}`,
+              }
+            )}>{`${neuron.neuronId}`}</span
+          >
+          <span
+            class="neuron-voting-power value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_votingPower,
+              {
+                $votingPower: formatVotingPower(
+                  getVotingPower({ neuron, proposal: proposalInfo })
+                ),
+              }
+            )}
+            >{`${formatVotingPower(
+              getVotingPower({ neuron, proposal: proposalInfo })
+            )}`}</span
+          >
+        </Checkbox>
+      </li>
+    {/each}
+  </ul>
 
-<p class="total">
-  <span>{$i18n.proposal_detail__vote.total}</span>
-  <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
-</p>
+  <p class="total">
+    <span>{$i18n.proposal_detail__vote.total}</span>
+    <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
+  </p>
+{/if}
 
 <style lang="scss">
   @use "../../../themes/mixins/media";
