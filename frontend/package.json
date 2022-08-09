@@ -1,5 +1,5 @@
 {
-  "name": "nns-dapp",
+  "name": "@dfinity/nns-dapp",
   "version": "1.0.0",
   "private": true,
   "scripts": {
