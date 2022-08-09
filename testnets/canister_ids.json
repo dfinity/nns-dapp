@@ -43,7 +43,12 @@
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   },
-  "nns-governance": {},
+  "nns-governance": {
+    "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+  },
   "sns-wasm": {
     "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
