@@ -66,7 +66,7 @@
     "@dfinity/auth-client": "^0.12.2",
     "@dfinity/authentication": "^0.12.2",
     "@dfinity/candid": "^0.12.2",
-    "@dfinity/gix-components": "^0.0.1",
+    "@dfinity/gix-components": "next",
     "@dfinity/identity": "^0.12.2",
     "@dfinity/nns": "next",
     "@dfinity/principal": "^0.12.2",
