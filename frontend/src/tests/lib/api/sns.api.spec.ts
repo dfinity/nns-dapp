@@ -103,6 +103,7 @@ describe("sns-api", () => {
         listNeurons: queryNeuronsSpy,
         getNeuron: queryNeuronSpy,
         addNeuronPermissions: addNeuronPermissionsSpy,
+        removeNeuronPermissions: removeNeuronPermissionsSpy,
       })
     );
   });
