@@ -4,6 +4,8 @@ import { writable } from "svelte/store";
 export interface VoteInProgress {
   proposalId: ProposalId;
   neuronIds: NeuronId[];
+  // TODO(create Jira task): use it in the upcomming message details
+  successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
 }
 
@@ -34,9 +36,40 @@ const initVoteInProgressStore = () => {
       });
     },
 
-    remove(propsalId: ProposalId) {
+    addSuccessfullyVotedNeuronIds({
+      proposalId,
+      successfullyVotedNeuronIds,
+    }: {
+      proposalId: ProposalId;
+      successfullyVotedNeuronIds: NeuronId[];
+    }) {
+      update(({ votes }) => {
+        const item = votes.find(({ proposalId: id }) => id === proposalId);
+
+        if (item === undefined) {
+          return { votes };
+        }
+
+        return {
+          votes: [
+            ...votes.filter(({ proposalId: id }) => id !== proposalId),
+            {
+              ...item,
+              successfullyVotedNeuronIds: Array.from(
+                new Set([
+                  ...item.successfullyVotedNeuronIds,
+                  ...successfullyVotedNeuronIds,
+                ])
+              ),
+            },
+          ],
+        };
+      });
+    },
+
+    remove(proposalId: ProposalId) {
       update(({ votes }) => ({
-        votes: votes.filter(({ proposalId: id }) => id !== propsalId),
+        votes: votes.filter(({ proposalId: id }) => id !== proposalId),
       }));
     },
   };
