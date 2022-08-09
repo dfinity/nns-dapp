@@ -369,16 +369,16 @@ const votingPeriodEndFallback = ({
 /** Update proposal voting state as it participated in voting */
 export const updateProposalVote = ({
   proposalInfo,
+  neuron,
   vote,
-  votedNeuron,
 }: {
   proposalInfo: ProposalInfo;
+  neuron: NeuronInfo;
   vote: Vote;
-  votedNeuron: NeuronInfo;
 }): ProposalInfo => {
-  const votingPower = votedNeuron.votingPower;
+  const { votingPower, neuronId } = neuron;
   const votedBallot: Ballot = {
-    neuronId: votedNeuron.neuronId,
+    neuronId,
     vote,
     votingPower,
   };
@@ -387,7 +387,7 @@ export const updateProposalVote = ({
     ...proposalInfo,
     ballots: [
       ...proposalInfo.ballots.filter(
-        ({ neuronId }) => neuronId !== votedNeuron.neuronId
+        ({ neuronId }) => neuronId !== neuron.neuronId
       ),
       votedBallot,
     ],
