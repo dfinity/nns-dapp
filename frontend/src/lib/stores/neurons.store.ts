@@ -52,7 +52,6 @@ const initNeuronsStore = () => {
     },
 
     replaceNeurons(neurons: NeuronInfo[]) {
-      // TODO: preserve the order
       update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
         const newNeurons = new Map(
           neurons.map((neuron) => [neuron.neuronId, neuron])
