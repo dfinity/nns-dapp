@@ -16,6 +16,7 @@
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
   import Hash from "../ui/Hash.svelte";
+  import { currentSnsTokenLabelStore } from "../../derived/sns/current-sns-token-label.store";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
@@ -45,7 +46,7 @@
   </div>
 
   <div slot="end" class="currency">
-    <IcpComponent icp={neuronICP} detailed />
+    <IcpComponent icp={neuronICP} detailed label={$currentSnsTokenLabelStore} />
   </div>
 
   <NeuronStateInfo {stateInfo} />
