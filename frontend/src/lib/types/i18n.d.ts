@@ -448,6 +448,7 @@ interface I18nProposal_detail__vote {
   accept_or_reject: string;
   cast_vote_neuronId: string;
   cast_vote_votingPower: string;
+  voting_in_progress_message: string;
 }
 
 interface I18nProposal_detail__ineligible {
