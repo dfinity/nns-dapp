@@ -7,7 +7,7 @@
     snsProposalsStore,
   } from "../../stores/sns.store";
   import { isNullish } from "../../utils/utils";
-  import CardGrid from "../ui/CardGrid.svelte";
+  import { CardGrid } from "@dfinity/gix-components";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
   import ProposalCard from "./ProposalCard.svelte";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
-  import CardGrid from "../ui/CardGrid.svelte";
+  import { CardGrid } from "@dfinity/gix-components";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
