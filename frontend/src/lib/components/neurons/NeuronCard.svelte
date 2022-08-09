@@ -59,10 +59,10 @@
     <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
-      <span class="neuron-control">{$i18n.neurons.community_fund}</span>
+      <span>{$i18n.neurons.community_fund}</span>
     {/if}
     {#if isHotKeyControl}
-      <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
+      <span>{$i18n.neurons.hotkey_control}</span>
     {/if}
   </div>
 
