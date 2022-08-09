@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNeuron,
@@ -10,6 +10,7 @@ import {
   addNeuronPermissions,
   querySnsNeuron,
   querySnsNeurons,
+  removeNeuronPermissions,
 } from "../api/sns.api";
 import {
   snsNeuronsStore,
@@ -152,6 +153,36 @@ export const addHotkey = async ({
   } catch (err) {
     toastsStore.error({
       labelKey: "error__sns.sns_add_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const removeHotkey = async ({
+  neuronId,
+  hotkey,
+  rootCanisterId,
+}: {
+  neuronId: SnsNeuronId;
+  hotkey: string;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const identity = await getNeuronIdentity(neuronId);
+    const principal = Principal.fromText(hotkey);
+    await removeNeuronPermissions({
+      permissions,
+      identity,
+      principal,
+      rootCanisterId,
+      neuronId,
+    });
+    return { success: true };
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error__sns.sns_remove_hotkey",
       err,
     });
     return { success: false };
