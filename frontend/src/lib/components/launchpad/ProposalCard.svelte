@@ -5,7 +5,8 @@
   import { AppPath } from "../../constants/routes.constants";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
-  import VotesProgress from "./VotesProgress.svelte";
+  import { i18n } from "../../stores/i18n";
+  import ProposalMeta from "../proposals/ProposalMeta.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -21,13 +22,23 @@
   };
 </script>
 
-<Card role="link" withArrow on:click={showProposal} testId="sns-proposal-card">
+<Card testId="sns-proposal-card">
   <h3 slot="start">{title}</h3>
-  <VotesProgress {proposalInfo} />
+
+  <ProposalMeta {proposalInfo} />
+
+  <button data-tid="vote-for-sns" class="primary small" on:click={showProposal}
+    >{$i18n.proposal_detail.vote}</button
+  >
 </Card>
 
 <style lang="scss">
   h3 {
     line-height: var(--line-height-standard);
+  }
+
+  button {
+    float: right;
+    margin-top: var(--padding);
   }
 </style>

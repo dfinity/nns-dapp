@@ -60,10 +60,10 @@ describe("Proposals", () => {
       { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
     ]);
 
-    const { getAllByTestId } = render(Proposals);
+    const { queryAllByTestId } = render(Proposals);
 
     await waitFor(() =>
-      expect(getAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(queryAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
     );
   });
 
@@ -72,10 +72,12 @@ describe("Proposals", () => {
       { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
     ]);
 
-    const { container, getAllByTestId } = render(Proposals);
+    const { container } = render(Proposals);
 
     await waitFor(() =>
-      expect(getAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(
+        container.querySelectorAll('[data-tid="sns-proposal-card"]').length
+      ).toBeGreaterThan(0)
     );
 
     expect(container.querySelector('[data-tid="skeleton-card"]')).toBeNull();

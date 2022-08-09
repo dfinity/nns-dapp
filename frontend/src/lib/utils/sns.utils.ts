@@ -11,6 +11,7 @@ import {
   SnsMetadataResponseEntries,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -21,7 +22,6 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "../types/sns.query";
-import { fromNullable } from "./did.utils";
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
@@ -176,9 +176,8 @@ export const mapAndSortSnsQueryToSummaries = ({
       ...rest,
       swap: {
         // We know for sure that init and state are defined because we check in previous filter that there are not undefined
-        // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
-        init: fromNullable(swap.init) as SnsSwapInit,
-        state: fromNullable(swap.state) as SnsSwapState,
+        init: fromDefinedNullable<SnsSwapInit>(swap.init),
+        state: fromDefinedNullable<SnsSwapState>(swap.state),
       },
     }))
   );

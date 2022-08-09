@@ -1,12 +1,15 @@
 <script lang="ts">
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { fromDefinedNullable } from "@dfinity/utils";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
   import IconClose from "../../icons/IconClose.svelte";
   import IconInfo from "../../icons/IconInfo.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
+  import { removeHotkey } from "../../services/sns-neurons.services";
   import { authStore } from "../../stores/auth.store";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { fromNullable } from "../../utils/did.utils";
+  import { snsProjectSelectedStore } from "../../stores/projects.store";
   import {
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
@@ -19,8 +22,8 @@
   export let neuron: SnsNeuron;
 
   let neuronId: SnsNeuronId | undefined;
-  // TODO: TODO to use fromDefinedNullable
-  $: neuronId = fromNullable(neuron.id);
+
+  $: neuronId = fromDefinedNullable(neuron.id);
 
   let canManageHotkeys: boolean = true;
   $: canManageHotkeys = canIdentityManageHotkeys({
@@ -34,8 +37,15 @@
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
 
   const remove = async (hotkey: string) => {
-    // TODO: https://dfinity.atlassian.net/browse/L2-910
-    console.log("Removing", hotkey);
+    startBusy({
+      initiator: "remove-sns-hotkey-neuron",
+    });
+    await removeHotkey({
+      neuronId: neuron.id[0] as SnsNeuronId,
+      hotkey,
+      rootCanisterId: $snsProjectSelectedStore,
+    });
+    stopBusy("remove-sns-hotkey-neuron");
   };
 </script>
 
