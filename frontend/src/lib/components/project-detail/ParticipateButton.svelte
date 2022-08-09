@@ -7,7 +7,10 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import { canUserParticipateToSwap } from "../../utils/projects.utils";
+  import {
+    canUserParticipateToSwap,
+    hasUserParticipatedToSwap,
+  } from "../../utils/projects.utils";
   import { i18n } from "../../stores/i18n";
   import Tooltip from "../ui/Tooltip.svelte";
 
@@ -35,6 +38,11 @@
     summary: $projectDetailStore.summary,
     swapCommitment: $projectDetailStore.swapCommitment,
   });
+
+  let userHasParticipatedToSwap: boolean = false;
+  $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
+    swapCommitment: $projectDetailStore.swapCommitment,
+  });
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
@@ -43,7 +51,9 @@
       on:click={openModal}
       class="primary small"
       data-tid="sns-project-participate-button"
-      >{$i18n.sns_project_detail.participate}</button
+      >{userHasParticipatedToSwap
+        ? $i18n.sns_project_detail.increase_participation
+        : $i18n.sns_project_detail.participate}</button
     >
   {:else}
     <Tooltip
