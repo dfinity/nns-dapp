@@ -5,7 +5,7 @@
   import IconClose from "../../icons/IconClose.svelte";
   import { i18n } from "../../stores/i18n";
   import { debounce } from "../../utils/utils";
-  import Backdrop from "./Backdrop.svelte";
+  import { Backdrop } from "@dfinity/gix-components";
 
   export let anchor: HTMLElement | undefined = undefined;
   export let visible = false;

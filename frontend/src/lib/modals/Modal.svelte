@@ -7,7 +7,7 @@
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
   import { triggerDebugReport } from "../services/debug.services";
-  import Backdrop from "../components/ui/Backdrop.svelte";
+  import { Backdrop } from "@dfinity/gix-components";
 
   export let visible: boolean = true;
   export let size: "small" | "big" = "small";
