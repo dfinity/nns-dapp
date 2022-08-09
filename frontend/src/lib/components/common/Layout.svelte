@@ -10,8 +10,6 @@
   import AccountMenu from "../header/AccountMenu.svelte";
   import { triggerDebugReport } from "../../services/debug.services";
 
-  let open: boolean;
-
   let back = false;
   $: back = $layoutBackStore !== undefined;
 </script>
@@ -21,11 +19,11 @@
 <Layout
   {back}
   modern={$layoutMainStyleStore === "modern"}
-  on:nnsBack={$layoutBackStore}
+  on:nnsBack={() => $layoutBackStore?.()}
 >
   <h4 use:triggerDebugReport slot="title">{$layoutTitleStore}</h4>
 
-  <MenuItems slot="menu-items" bind:open />
+  <MenuItems slot="menu-items"   />
 
   <AccountMenu slot="toolbar-end" />
 
