@@ -311,7 +311,7 @@ describe("project-utils", () => {
           swapCommitment: {
             ...mockSwapCommitment,
             myCommitment: {
-              ...mockSwapCommitment.myCommitment as SnsSwapBuyerState,
+              ...(mockSwapCommitment.myCommitment as SnsSwapBuyerState),
               amount_icp_e8s: BigInt(0),
             },
           },
