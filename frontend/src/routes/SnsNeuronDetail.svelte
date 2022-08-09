@@ -14,8 +14,43 @@
     routePathSnsNeuronRootCanisterId,
     routePathSnsNeuronId,
   } from "../lib/utils/sns-neuron.utils";
+  import {
+    type SelectedSnsNeuronContext,
+    type SelectedSnsNeuronStore,
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+  } from "../lib/types/sns-neuron-detail.context";
+  import { writable } from "svelte/store";
+  import { setContext } from "svelte";
 
-  let neuron: SnsNeuron | undefined;
+  const loadNeuron = async () => {
+    const { neuronIdHex, rootCanisterId } = $selectedSnsNeuronStore;
+    if (neuronIdHex !== undefined && rootCanisterId !== undefined) {
+      await getSnsNeuron({
+        rootCanisterId,
+        neuronIdHex,
+        onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
+          selectedSnsNeuronStore.update((store) => ({
+            ...store,
+            neuron: snsNeuron,
+          }));
+        },
+        onError: () => {
+          console.error("Error loading neuron");
+        },
+      });
+    }
+  };
+
+  const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
+    rootCanisterId: undefined,
+    neuronIdHex: undefined,
+    neuron: undefined,
+  });
+
+  setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
+    store: selectedSnsNeuronStore,
+    reload: loadNeuron,
+  });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
@@ -31,16 +66,10 @@
     const rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
     snsProjectSelectedStore.set(rootCanisterId);
 
-    getSnsNeuron({
-      rootCanisterId,
-      neuronIdHex: neuronIdMaybe,
-      onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
-        neuron = snsNeuron;
-      },
-      onError: () => {
-        console.error("Error loading neuron");
-      },
-    });
+    // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
+    $selectedSnsNeuronStore.neuronIdHex = neuronIdMaybe;
+    $selectedSnsNeuronStore.rootCanisterId = rootCanisterId;
+    loadNeuron();
   });
 
   const goBack = () =>
@@ -53,9 +82,7 @@
 
 <MainContentWrapper>
   <section data-tid="sns-neuron-detail-page">
-    {#if neuron !== undefined}
-      <SnsNeuronMetaInfoCard {neuron} />
-      <SnsNeuronHotkeysCard {neuron} />
-    {/if}
+    <SnsNeuronMetaInfoCard />
+    <SnsNeuronHotkeysCard />
   </section>
 </MainContentWrapper>
