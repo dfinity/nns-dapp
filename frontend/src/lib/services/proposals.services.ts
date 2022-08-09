@@ -32,6 +32,7 @@ import {
   type VoteInProgress,
 } from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
+import { assertNonNullish } from "../utils/asserts.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
@@ -41,7 +42,7 @@ import {
   proposalsHaveSameIds,
   updateProposalVote,
 } from "../utils/proposals.utils";
-import { isDefined, isNullish } from "../utils/utils";
+import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -385,15 +386,12 @@ export const registerVotes = async ({
       ({ neuronId: id }) => id === neuronId
     );
 
+    assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
+
     voteInProgressStore.addSuccessfullyVotedNeuronIds({
       proposalId,
       successfullyVotedNeuronIds: [neuronId],
     });
-
-    // TODO: is it necessary?
-    if (isNullish(originalNeuron)) {
-      return;
-    }
 
     // pretend voting
     const votingNeuron = updateNeuronsVote({
