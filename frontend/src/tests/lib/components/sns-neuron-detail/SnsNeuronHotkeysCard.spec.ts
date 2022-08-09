@@ -4,8 +4,9 @@
 
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronHotkeysCard from "../../../../lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
+import { removeHotkey } from "../../../../lib/services/sns-neurons.services";
 import { authStore } from "../../../../lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
@@ -13,6 +14,12 @@ import {
 } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+
+jest.mock("../../../../lib/services/sns-neurons.services", () => {
+  return {
+    removeHotkey: jest.fn(),
+  };
+});
 
 describe("SnsNeuronHotkeysCard", () => {
   const addVotePermission = (key) => ({
@@ -72,5 +79,16 @@ describe("SnsNeuronHotkeysCard", () => {
     });
     expect(queryByText(hotkeys[0])).toBeInTheDocument();
     expect(queryByText(hotkeys[1])).toBeInTheDocument();
+  });
+
+  it("can remove a hotkey", () => {
+    const { queryAllByTestId } = render(SnsNeuronHotkeysCard, {
+      props: { neuron: controlledNeuron },
+    });
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    fireEvent.click(removeButtons[0]);
+
+    expect(removeHotkey).toBeCalled();
   });
 });

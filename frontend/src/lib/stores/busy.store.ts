@@ -26,6 +26,7 @@ export type BusyStateInitiatorType =
   | "claim_seed_neurons"
   | "project-participate"
   | "add-sns-hotkey-neuron"
+  | "remove-sns-hotkey-neuron"
   | "disburse-neuron";
 
 export interface BusyState {

@@ -18,6 +18,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
+  removeNeuronPermissions,
 } from "../../../lib/api/sns.api";
 import {
   importInitSnsWrapper,
@@ -72,6 +73,7 @@ describe("sns-api", () => {
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
+  const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -101,6 +103,7 @@ describe("sns-api", () => {
         listNeurons: queryNeuronsSpy,
         getNeuron: queryNeuronSpy,
         addNeuronPermissions: addNeuronPermissionsSpy,
+        removeNeuronPermissions: removeNeuronPermissionsSpy,
       })
     );
   });
@@ -223,5 +226,17 @@ describe("sns-api", () => {
     });
 
     expect(addNeuronPermissionsSpy).toBeCalled();
+  });
+
+  it("should remove neuron permissions", async () => {
+    await removeNeuronPermissions({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      principal: Principal.fromText("aaaaa-aa"),
+      neuronId: { id: [1, 2, 3] },
+      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+
+    expect(removeNeuronPermissionsSpy).toBeCalled();
   });
 });
