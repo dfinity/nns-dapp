@@ -23,7 +23,7 @@
 >
   <h4 use:triggerDebugReport slot="title">{$layoutTitleStore}</h4>
 
-  <MenuItems slot="menu-items"   />
+  <MenuItems slot="menu-items" />
 
   <AccountMenu slot="toolbar-end" />
 
