@@ -52,14 +52,26 @@ const initNeuronsStore = () => {
     },
 
     replaceNeurons(neurons: NeuronInfo[]) {
+      // TODO: preserve the order
       update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
-        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
+        const newNeurons = new Map(
+          neurons.map((neuron) => [neuron.neuronId, neuron])
+        );
+        const updatedNeurons = oldNeurons?.map((old) => {
+          const { neuronId } = old;
+          const newNeuron = newNeurons.get(neuronId);
+
+          if (newNeuron) {
+            newNeurons.delete(neuronId);
+          }
+
+          return newNeuron ?? old;
+        });
+
         return {
           neurons: [
-            ...(oldNeurons || []).filter(
-              ({ neuronId }) => !newIds.has(neuronId)
-            ),
-            ...neurons,
+            ...Array.from(updatedNeurons?.values() ?? []),
+            ...Array.from(newNeurons.values()),
           ],
           certified,
         };
