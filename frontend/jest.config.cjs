@@ -20,4 +20,7 @@ module.exports = {
   testEnvironmentOptions: {
     url: "https://nns.ic0.app/",
   },
+  transformIgnorePatterns: [
+    "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
+  ]
 };
