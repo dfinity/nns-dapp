@@ -61,9 +61,9 @@
 </li>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/text";
   @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   li.hidden {
     visibility: hidden;

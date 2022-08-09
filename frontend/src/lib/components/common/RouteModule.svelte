@@ -127,7 +127,7 @@
 </svelte:component>
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   section {
     position: absolute;

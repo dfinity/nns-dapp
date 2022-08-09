@@ -119,7 +119,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
     display: block;

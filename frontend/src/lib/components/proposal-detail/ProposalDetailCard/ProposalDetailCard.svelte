@@ -36,8 +36,8 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../../themes/mixins/media";
-  @use "../../../themes/mixins/text";
+  @use "../@dfinity/gix-components/styles/mixins/media";
+  @use "../@dfinity/gix-components/styles/mixins/text";
 
   .title {
     line-height: var(--line-height-standard);

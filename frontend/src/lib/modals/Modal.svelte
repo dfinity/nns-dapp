@@ -75,9 +75,9 @@
 {/if}
 
 <style lang="scss">
-  @use "../themes/mixins/interaction";
-  @use "../themes/mixins/text";
-  @use "../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/display";
   @use "../themes/mixins/modal";
 
   .modal {

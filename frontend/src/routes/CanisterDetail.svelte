@@ -232,7 +232,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .actions {
     margin-bottom: var(--padding-3x);

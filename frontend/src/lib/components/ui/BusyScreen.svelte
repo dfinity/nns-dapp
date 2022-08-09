@@ -21,7 +21,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   div {
     z-index: calc(var(--z-index) + 1000);

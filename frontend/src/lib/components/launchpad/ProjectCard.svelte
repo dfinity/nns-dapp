@@ -59,7 +59,7 @@
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .title {
     display: flex;

@@ -51,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   div {
     position: absolute;

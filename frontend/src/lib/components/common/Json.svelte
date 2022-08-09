@@ -157,7 +157,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
 
   .root,
   .root ~ ul,
