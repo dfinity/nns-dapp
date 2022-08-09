@@ -39,10 +39,3 @@ export const digestText = async (text: string): Promise<string> => {
     .join("");
   return hashHex;
 };
-
-// TODO: to be deleted - use for mock data only
-export const shuffle = <T>(items: T[]): T[] =>
-  items
-    .map((value) => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);

@@ -59,13 +59,13 @@
   <!-- Sale is committed -->
   {#if lifecycle === SnsSwapLifecycle.Committed}
     <dt>{$i18n.sns_project_detail.status_completed}</dt>
-    <dd>{$i18n.sns_project_detail.completed}</dd>
+    <dd class="value">{$i18n.sns_project_detail.completed}</dd>
   {/if}
 
   <!-- Sale is open -->
   {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
     <dt>{$i18n.sns_project_detail.deadline}</dt>
-    <dd>{secondsToDuration(durationTillDeadline)}</dd>
+    <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
   {/if}
 
   <!-- Sale starts soon -->
@@ -89,7 +89,6 @@
 
     dd {
       text-align: right;
-      color: var(--value-color);
     }
   }
 </style>

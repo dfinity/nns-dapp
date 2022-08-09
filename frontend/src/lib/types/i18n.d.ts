@@ -422,6 +422,7 @@ interface I18nProposal_detail {
   topic_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
+  open_voting_prefix: string;
   adopt: string;
   reject: string;
   my_votes: string;
@@ -430,6 +431,7 @@ interface I18nProposal_detail {
   nns_function_name: string;
   payload: string;
   summary_toggle_view: string;
+  vote: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -611,6 +613,8 @@ interface I18nSns_project_detail {
 
 interface I18nSns_neuron_detail {
   header: string;
+  add_hotkey_info: string;
+  add_hotkey_tooltip: string;
 }
 
 interface I18nTime {
@@ -687,6 +691,8 @@ interface I18nError__sns {
   load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
+  sns_remove_hotkey: string;
+  sns_add_hotkey: string;
 }
 
 interface I18n {

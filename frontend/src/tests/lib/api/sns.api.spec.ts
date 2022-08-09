@@ -5,16 +5,20 @@
 import type { HttpAgent } from "@dfinity/agent";
 import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
+  addNeuronPermissions,
   participateInSnsSwap,
+  queryAllSnsMetadata,
+  querySnsMetadata,
   querySnsNeuron,
   querySnsNeurons,
-  querySnsSummaries,
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
+  removeNeuronPermissions,
 } from "../../../lib/api/sns.api";
 import {
   importInitSnsWrapper,
@@ -25,6 +29,9 @@ import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
+  mockQueryMetadata,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
   mockSwapInit,
   mockSwapState,
 } from "../../mocks/sns-projects.mock";
@@ -65,6 +72,8 @@ describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
+  const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
+  const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -86,12 +95,15 @@ describe("sns-api", () => {
           governanceCanisterId: governanceCanisterIdMock,
           swapCanisterId: swapCanisterIdMock,
         },
-        metadata: () => Promise.resolve("metadata"),
+        metadata: () =>
+          Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
         getNeuron: queryNeuronSpy,
+        addNeuronPermissions: addNeuronPermissionsSpy,
+        removeNeuronPermissions: removeNeuronPermissionsSpy,
       })
     );
   });
@@ -101,19 +113,30 @@ describe("sns-api", () => {
     jest.restoreAllMocks();
   });
 
-  it("should list sns summaries", async () => {
-    const summaries = await querySnsSummaries({
+  it("should query sns metadata", async () => {
+    const metadata = await querySnsMetadata({
+      rootCanisterId: rootCanisterIdMock.toText(),
       identity: mockIdentity,
       certified: true,
     });
 
-    // TODO: currently summaries use mock data and get the value randomly therefore we cannot test it more precisely
-    expect(summaries).not.toBeNull();
-    expect(summaries.length).toEqual(1);
+    expect(metadata).not.toBeNull();
+    expect(metadata).toEqual(mockQueryMetadata);
+  });
+
+  it("should list all sns metadata", async () => {
+    const metadata = await queryAllSnsMetadata({
+      identity: mockIdentity,
+      certified: true,
+    });
+
+    expect(metadata).not.toBeNull();
+    expect(metadata.length).toEqual(1);
+    expect(metadata).toEqual([mockQueryMetadata]);
   });
 
   it("should update snsesCountStore", async () => {
-    await querySnsSummaries({
+    await queryAllSnsMetadata({
       identity: mockIdentity,
       certified: true,
     });
@@ -191,5 +214,29 @@ describe("sns-api", () => {
 
     expect(neuron).not.toBeNull();
     expect(queryNeuronSpy).toBeCalled();
+  });
+
+  it("should add neuron permissions", async () => {
+    await addNeuronPermissions({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      principal: Principal.fromText("aaaaa-aa"),
+      neuronId: { id: [1, 2, 3] },
+      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+
+    expect(addNeuronPermissionsSpy).toBeCalled();
+  });
+
+  it("should remove neuron permissions", async () => {
+    await removeNeuronPermissions({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      principal: Principal.fromText("aaaaa-aa"),
+      neuronId: { id: [1, 2, 3] },
+      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    });
+
+    expect(removeNeuronPermissionsSpy).toBeCalled();
   });
 });

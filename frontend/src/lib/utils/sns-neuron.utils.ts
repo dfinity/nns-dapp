@@ -1,5 +1,7 @@
+import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { AppPath } from "../constants/routes.constants";
 import type { SnsNeuronState } from "../types/sns";
 import {
@@ -8,8 +10,9 @@ import {
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
+import { enumValues } from "./enum.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
-import { bytesToHexString } from "./utils";
+import { bytesToHexString, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -24,8 +27,7 @@ export const sortSnsNeuronsByCreatedTimestamp = (
 export const getSnsNeuronState = ({
   dissolve_state,
 }: SnsNeuron): SnsNeuronState => {
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = dissolve_state[0];
+  const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
     return NeuronState.DISSOLVED;
   }
@@ -47,8 +49,7 @@ export const getSnsDissolvingTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
     neuronState === NeuronState.DISSOLVING &&
     dissolveState !== undefined &&
@@ -62,8 +63,7 @@ export const getSnsLockedTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
     neuronState === NeuronState.LOCKED &&
     dissolveState !== undefined &&
@@ -94,8 +94,7 @@ export const getSnsNeuronByHexId = ({
  *   //...
  */
 export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
-  // TODO: use upcoming fromDefinedNullable
-  bytesToHexString(neuron.id[0]?.id ?? []);
+  bytesToHexString(fromNullable(neuron.id)?.id ?? []);
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
   if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
@@ -112,3 +111,45 @@ export const routePathSnsNeuronRootCanisterId = (
   }
   return getParentPathDetail(path);
 };
+
+export const canIdentityManageHotkeys = ({
+  neuron: { id, permissions },
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean => {
+  const neuronId = fromNullable(id);
+  if (neuronId === undefined || identity === undefined || identity === null) {
+    return false;
+  }
+  const principalPermission = permissions.find(
+    ({ principal }) =>
+      fromNullable(principal)?.toText() === identity.getPrincipal().toText()
+  );
+  return (
+    principalPermission?.permission_type.includes(
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
+    ) ?? false
+  );
+};
+
+const hasAllPermissions = (permissions: SnsNeuronPermissionType[]): boolean => {
+  const allPermissions = enumValues(SnsNeuronPermissionType);
+  return (
+    allPermissions.length === permissions.length &&
+    allPermissions.every((permission) => permissions.includes(permission))
+  );
+};
+
+export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
+  permissions
+    // Filter the controller. The controller is the neuron with all permissions
+    .filter(({ permission_type }) => !hasAllPermissions(permission_type))
+    .filter(({ permission_type }) =>
+      permission_type.includes(
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
+      )
+    )
+    .map(({ principal }) => fromNullable(principal)?.toText())
+    .filter(nonNullish);

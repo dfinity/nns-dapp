@@ -61,7 +61,7 @@ describe("SnsNeuronCard", () => {
   });
 
   it("renders the neuron stake and identifier", async () => {
-    const { getByText } = render(SnsNeuronCard, {
+    const { queryAllByText, getByText } = render(SnsNeuronCard, {
       props: {
         neuron: mockSnsNeuron,
         ...defaultProps,
@@ -75,8 +75,8 @@ describe("SnsNeuronCard", () => {
     });
     expect(getByText(stakeText)).toBeInTheDocument();
     expect(
-      getByText(getSnsNeuronIdAsHexString(mockSnsNeuron))
-    ).toBeInTheDocument();
+      queryAllByText(getSnsNeuronIdAsHexString(mockSnsNeuron)).length
+    ).toBeGreaterThan(0);
   });
 
   it("renders proper text when status is LOCKED", async () => {
