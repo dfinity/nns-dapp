@@ -16,7 +16,7 @@ describe("currentSnsTokenLabelStore", () => {
     snsQueryStore.reset();
     snsProjectSelectedStore.set(OWN_CANISTER_ID);
   });
-  it("returns token value of current selected sns project", () => {
+  it("returns token symbol of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
     snsProjectSelectedStore.set(
