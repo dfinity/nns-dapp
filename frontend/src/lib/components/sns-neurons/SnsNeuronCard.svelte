@@ -12,7 +12,7 @@
     getSnsNeuronStake,
     getSnsNeuronState,
     getSnsStateInfo,
-    isHotkeyControllable,
+    isUserHotkey,
   } from "../../utils/sns-neuron.utils";
   import IcpComponent from "../ic/ICP.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
@@ -27,7 +27,7 @@
   export let ariaLabel: string | undefined = undefined;
 
   let isHotkey: boolean;
-  $: isHotkey = isHotkeyControllable({
+  $: isHotkey = isUserHotkey({
     neuron,
     identity: $authStore.identity,
   });

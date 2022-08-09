@@ -12,7 +12,7 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
-  isHotkeyControllable,
+  isUserHotkey,
   routePathSnsNeuronId,
   routePathSnsNeuronRootCanisterId,
   sortSnsNeuronsByCreatedTimestamp,
@@ -338,7 +338,7 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("isHotkeyControllable", () => {
+  describe("isUserHotkey", () => {
     it("returns true if user only has voting permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
@@ -352,7 +352,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
@@ -372,7 +372,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
@@ -389,7 +389,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
@@ -409,7 +409,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
@@ -430,7 +430,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
@@ -447,7 +447,7 @@ describe("sns-neuron utils", () => {
         ],
       };
       expect(
-        isHotkeyControllable({
+        isUserHotkey({
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })

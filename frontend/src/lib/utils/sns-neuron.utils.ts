@@ -154,7 +154,7 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
 
-export const isHotkeyControllable = ({
+export const isUserHotkey = ({
   neuron,
   identity,
 }: {
