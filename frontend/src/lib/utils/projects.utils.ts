@@ -147,3 +147,10 @@ export const canUserParticipateToSwap = ({
     myCommitment < max_participant_icp_e8s
   );
 };
+
+export const hasUserParticipatedToSwap = ({
+  swapCommitment,
+}: {
+  swapCommitment: SnsSwapCommitment | undefined | null;
+}): boolean =>
+  (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) > BigInt(0);
