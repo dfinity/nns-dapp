@@ -1,6 +1,8 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
+  import { authStore } from "../../stores/auth.store";
+  import { i18n } from "../../stores/i18n";
   import type { CardType } from "../../types/card";
   import type { StateInfo } from "../../utils/neuron.utils";
   import {
@@ -10,6 +12,7 @@
     getSnsNeuronStake,
     getSnsNeuronState,
     getSnsStateInfo,
+    isUserHotkey,
   } from "../../utils/sns-neuron.utils";
   import IcpComponent from "../ic/ICP.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
@@ -22,6 +25,12 @@
   export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
+
+  let isHotkey: boolean;
+  $: isHotkey = isUserHotkey({
+    neuron,
+    identity: $authStore.identity,
+  });
 
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
@@ -42,7 +51,9 @@
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
   <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
     <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
-    <!-- TODO: Hotkey label https://dfinity.atlassian.net/browse/L2-899 -->
+    {#if isHotkey}
+      <span>{$i18n.neurons.hotkey_control}</span>
+    {/if}
   </div>
 
   <div slot="end" class="currency">
@@ -65,8 +76,10 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../themes/mixins/card";
 
   .identifier {
+    @include card.stacked-title;
     :global(h3) {
       margin: 0;
     }
