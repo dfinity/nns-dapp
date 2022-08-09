@@ -66,9 +66,11 @@ export const renderSelectedSnsNeuronContext = ({
     contextKey: SELECTED_SNS_NEURON_CONTEXT_KEY,
     contextValue: {
       store: writable<SelectedSnsNeuronStore>({
+        selected: {
+          neuronIdHex: getSnsNeuronIdAsHexString(neuron),
+          rootCanisterId: rootCanisterIdMock,
+        },
         neuron,
-        neuronIdHex: getSnsNeuronIdAsHexString(neuron),
-        rootCanisterId: rootCanisterIdMock,
       }),
       reload,
     } as SelectedSnsNeuronContext,

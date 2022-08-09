@@ -23,11 +23,11 @@
   import { setContext } from "svelte";
 
   const loadNeuron = async () => {
-    const { neuronIdHex, rootCanisterId } = $selectedSnsNeuronStore;
-    if (neuronIdHex !== undefined && rootCanisterId !== undefined) {
+    const { selected } = $selectedSnsNeuronStore;
+    if (selected !== undefined) {
       await getSnsNeuron({
-        rootCanisterId,
-        neuronIdHex,
+        rootCanisterId: selected.rootCanisterId,
+        neuronIdHex: selected.neuronIdHex,
         onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
           selectedSnsNeuronStore.update((store) => ({
             ...store,
@@ -42,8 +42,7 @@
   };
 
   const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
-    rootCanisterId: undefined,
-    neuronIdHex: undefined,
+    selected: undefined,
     neuron: undefined,
   });
 
@@ -68,8 +67,10 @@
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
     selectedSnsNeuronStore.set({
-      neuronIdHex: neuronIdMaybe,
-      rootCanisterId,
+      selected: {
+        neuronIdHex: neuronIdMaybe,
+        rootCanisterId,
+      },
       neuron: undefined,
     });
     loadNeuron();

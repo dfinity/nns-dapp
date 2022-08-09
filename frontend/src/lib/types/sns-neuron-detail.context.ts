@@ -6,8 +6,12 @@ import type { Writable } from "svelte/store";
  * A store that contains the selected sns neuron.
  */
 export interface SelectedSnsNeuronStore {
-  rootCanisterId: Principal | undefined;
-  neuronIdHex: string | undefined;
+  selected:
+    | {
+        rootCanisterId: Principal;
+        neuronIdHex: string;
+      }
+    | undefined;
   neuron: SnsNeuron | undefined;
 }
 
