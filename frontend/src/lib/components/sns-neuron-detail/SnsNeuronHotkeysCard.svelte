@@ -6,7 +6,6 @@
   import IconWarning from "../../icons/IconWarning.svelte";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
-  import { fromNullable } from "../../utils/did.utils";
   import {
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
@@ -15,12 +14,13 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import Value from "../ui/Value.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
 
   let neuronId: SnsNeuronId | undefined;
-  // TODO: TODO to use fromDefinedNullable
-  $: neuronId = fromNullable(neuron.id);
+
+  $: neuronId = fromDefinedNullable(neuron.id);
 
   let canManageHotkeys: boolean = true;
   $: canManageHotkeys = canIdentityManageHotkeys({

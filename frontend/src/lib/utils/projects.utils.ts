@@ -1,4 +1,5 @@
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import type { SnsFullProject } from "../stores/projects.store";
 import type {
   SnsSummary,
@@ -6,7 +7,6 @@ import type {
   SnsSwapCommitment,
 } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
-import { fromNullable } from "./did.utils";
 
 const filterProjectsStatus = ({
   swapLifecycle,

@@ -1,6 +1,7 @@
 import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { AppPath } from "../constants/routes.constants";
 import type { SnsNeuronState } from "../types/sns";
 import {
@@ -9,7 +10,6 @@ import {
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
-import { fromNullable } from "./did.utils";
 import { enumValues } from "./enum.utils";
 import { stateTextMapper, type StateInfo } from "./neuron.utils";
 import { bytesToHexString, nonNullish } from "./utils";
@@ -27,8 +27,7 @@ export const sortSnsNeuronsByCreatedTimestamp = (
 export const getSnsNeuronState = ({
   dissolve_state,
 }: SnsNeuron): SnsNeuronState => {
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = dissolve_state[0];
+  const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
     return NeuronState.DISSOLVED;
   }
@@ -50,8 +49,7 @@ export const getSnsDissolvingTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
     neuronState === NeuronState.DISSOLVING &&
     dissolveState !== undefined &&
@@ -65,8 +63,7 @@ export const getSnsLockedTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
     neuronState === NeuronState.LOCKED &&
     dissolveState !== undefined &&
@@ -97,8 +94,7 @@ export const getSnsNeuronByHexId = ({
  *   //...
  */
 export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
-  // TODO: use upcoming fromDefinedNullable
-  bytesToHexString(neuron.id[0]?.id ?? []);
+  bytesToHexString(fromNullable(neuron.id)?.id ?? []);
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
   if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
