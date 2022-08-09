@@ -10,10 +10,15 @@
   import Checkbox from "../../ui/Checkbox.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import Value from "../../ui/Value.svelte";
+  import type { VoteInProgress } from "../../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
+  export let voteInProgress: VoteInProgress | undefined = undefined;
 
   let total: bigint;
+  let disabled: boolean = false;
+
+  $: disabled = voteInProgress !== undefined;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
@@ -42,6 +47,7 @@
           on:nnsChange={() => toggleSelection(neuron.neuronId)}
           text="block"
           selector="neuron-checkbox"
+          {disabled}
         >
           <span
             class="neuron-id value"
