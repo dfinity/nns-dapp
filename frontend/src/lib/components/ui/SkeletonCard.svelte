@@ -1,6 +1,6 @@
 <!-- adapted source: https://github.com/ionic-team/ionic-framework/tree/main/core/src/components/skeleton-text -->
 <script lang="ts">
-  import Card from "./Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
   import type { SvelteComponent } from "svelte";

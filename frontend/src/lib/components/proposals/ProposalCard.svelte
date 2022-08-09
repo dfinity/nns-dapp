@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
   import { ProposalStatus } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";

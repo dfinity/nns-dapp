@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";

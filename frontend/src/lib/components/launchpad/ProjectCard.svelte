@@ -6,7 +6,7 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/projects.store";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import Logo from "../ui/Logo.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
