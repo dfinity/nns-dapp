@@ -3,7 +3,7 @@ import type { SnsNeuron } from "@dfinity/sns";
 import type { Writable } from "svelte/store";
 
 /**
- * A store that contains the selected proposal.
+ * A store that contains the selected sns neuron.
  */
 export interface SelectedSnsNeuronStore {
   rootCanisterId: Principal | undefined;

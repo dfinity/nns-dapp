@@ -67,8 +67,11 @@
     snsProjectSelectedStore.set(rootCanisterId);
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
-    $selectedSnsNeuronStore.neuronIdHex = neuronIdMaybe;
-    $selectedSnsNeuronStore.rootCanisterId = rootCanisterId;
+    selectedSnsNeuronStore.set({
+      neuronIdHex: neuronIdMaybe,
+      rootCanisterId,
+      neuron: undefined,
+    });
     loadNeuron();
   });
 
