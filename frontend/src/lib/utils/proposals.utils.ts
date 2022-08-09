@@ -367,6 +367,44 @@ const votingPeriodEndFallback = ({
 };
 
 /** Update proposal voting state as it participated in voting */
+export const updateProposalVote = ({
+  proposalInfo,
+  vote,
+  votedNeuron,
+}: {
+  proposalInfo: ProposalInfo;
+  vote: Vote;
+  votedNeuron: NeuronInfo;
+}): ProposalInfo => {
+  const votingPower = votedNeuron.votingPower;
+  const votedBallot: Ballot = {
+    neuronId: votedNeuron.neuronId,
+    vote,
+    votingPower,
+  };
+
+  return {
+    ...proposalInfo,
+    ballots: [
+      ...proposalInfo.ballots.filter(
+        ({ neuronId }) => neuronId !== votedNeuron.neuronId
+      ),
+      votedBallot,
+    ],
+    latestTally: {
+      ...(proposalInfo.latestTally as Tally),
+      yes:
+        vote === Vote.YES
+          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.yes ?? BigInt(0),
+      no:
+        vote === Vote.NO
+          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.no ?? BigInt(0),
+    },
+  };
+};
+
 export const updateProposalVotes = ({
   proposalInfo,
   vote,

@@ -652,6 +652,39 @@ export const getNeuronById = ({
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
 
 /** Update neurons voting state as they participated in voting */
+export const updateNeuronsVote = ({
+  neuron,
+  vote,
+  proposalId,
+}: {
+  neuron: NeuronInfo;
+  vote: Vote;
+  proposalId: ProposalId;
+}): NeuronInfo => {
+  const newBallot: BallotInfo = {
+    vote,
+    proposalId,
+  };
+  const recentBallots = [
+    ...neuron.recentBallots.filter(
+      ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
+    ),
+    newBallot,
+  ].map((ballot) => ({
+    ...ballot,
+  }));
+
+  return {
+    ...neuron,
+    recentBallots,
+    fullNeuron: {
+      ...(neuron.fullNeuron as Neuron),
+      recentBallots,
+    },
+  };
+};
+
+/** Update neurons voting state as they participated in voting */
 export const updateNeuronsVotes = ({
   neurons,
   vote,
