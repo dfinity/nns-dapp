@@ -13,6 +13,7 @@
   import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
   import { IS_TESTNET } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
+  import GetICPs from "../ic/GetICPs.svelte";
 
   const baseUrl: string = baseHref();
 
@@ -81,3 +82,7 @@
     <svelte:component this={statusIcon} slot="statusIcon" />
   </MenuItem>
 {/each}
+
+{#if IS_TESTNET}
+  <GetICPs />
+{/if}

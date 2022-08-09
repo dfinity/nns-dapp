@@ -10,7 +10,6 @@
     layoutBackStore,
     layoutTitleStore,
   } from "../lib/stores/layout.store";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
@@ -152,22 +151,20 @@
   // TODO(L2-838): if error redirect to launchpad and display error there
 </script>
 
-<MainContentWrapper sns>
-  <div class="stretch-mobile">
-    {#if loadingSummary && loadingSwapState}
-      <Spinner />
-    {:else}
-      <TwoColumns>
-        <div slot="left">
-          <ProjectInfoSection />
-        </div>
-        <div slot="right">
-          <ProjectStatusSection />
-        </div>
-      </TwoColumns>
-    {/if}
-  </div>
-</MainContentWrapper>
+<div class="stretch-mobile">
+  {#if loadingSummary && loadingSwapState}
+    <Spinner />
+  {:else}
+    <TwoColumns>
+      <div slot="left">
+        <ProjectInfoSection />
+      </div>
+      <div slot="right">
+        <ProjectStatusSection />
+      </div>
+    </TwoColumns>
+  {/if}
+</div>
 
 <style lang="scss">
   @use "../lib/themes/mixins/media";

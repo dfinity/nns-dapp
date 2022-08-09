@@ -3,7 +3,6 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronHotkeysCard from "../lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "../lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import { AppPath } from "../lib/constants/routes.constants";
   import { getSnsNeuron } from "../lib/services/sns-neurons.services";
   import { layoutBackStore } from "../lib/stores/layout.store";
@@ -51,11 +50,9 @@
   layoutBackStore.set(goBack);
 </script>
 
-<MainContentWrapper>
-  <section data-tid="sns-neuron-detail-page">
-    {#if neuron !== undefined}
-      <SnsNeuronMetaInfoCard {neuron} />
-      <SnsNeuronHotkeysCard {neuron} />
-    {/if}
-  </section>
-</MainContentWrapper>
+<section data-tid="sns-neuron-detail-page">
+  {#if neuron !== undefined}
+    <SnsNeuronMetaInfoCard {neuron} />
+    <SnsNeuronHotkeysCard {neuron} />
+  {/if}
+</section>

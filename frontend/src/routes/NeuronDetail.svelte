@@ -19,7 +19,6 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { getNeuronById, isSpawning } from "../lib/utils/neuron.utils";
   import { layoutBackStore } from "../lib/stores/layout.store";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import NeuronJoinFundCard from "../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
 
@@ -85,23 +84,21 @@
   layoutBackStore.set(goBack);
 </script>
 
-<MainContentWrapper>
-  <section data-tid="neuron-detail">
-    {#if neuron}
-      <NeuronMetaInfoCard {neuron} />
-      <NeuronMaturityCard {neuron} />
-      <NeuronJoinFundCard {neuron} />
-      <NeuronFollowingCard {neuron} />
-      {#if IS_TESTNET}
-        <NeuronProposalsCard {neuron} />
-      {/if}
-      <NeuronHotkeysCard {neuron} />
-      <NeuronVotingHistoryCard {neuron} />
-    {:else}
-      <SkeletonCard size="large" cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
+<section data-tid="neuron-detail">
+  {#if neuron}
+    <NeuronMetaInfoCard {neuron} />
+    <NeuronMaturityCard {neuron} />
+    <NeuronJoinFundCard {neuron} />
+    <NeuronFollowingCard {neuron} />
+    {#if IS_TESTNET}
+      <NeuronProposalsCard {neuron} />
     {/if}
-  </section>
-</MainContentWrapper>
+    <NeuronHotkeysCard {neuron} />
+    <NeuronVotingHistoryCard {neuron} />
+  {:else}
+    <SkeletonCard size="large" cardType="info" />
+    <SkeletonCard cardType="info" />
+    <SkeletonCard cardType="info" />
+    <SkeletonCard cardType="info" />
+  {/if}
+</section>
