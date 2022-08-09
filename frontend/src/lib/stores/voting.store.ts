@@ -4,7 +4,6 @@ import { writable } from "svelte/store";
 export interface VoteInProgress {
   proposalId: ProposalId;
   neuronIds: NeuronId[];
-  startVotingTimestamp: number;
   vote: Vote;
 }
 

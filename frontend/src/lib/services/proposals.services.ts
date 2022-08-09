@@ -27,7 +27,10 @@ import {
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
-import { voteInProgressStore } from "../stores/voting.store";
+import {
+  voteInProgressStore,
+  type VoteInProgress,
+} from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
@@ -355,8 +358,7 @@ export const registerVotes = async ({
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
   const proposalId = proposalInfo.id as bigint;
-  const voteInProgress = {
-    startVotingTimestamp: Date.now(),
+  const voteInProgress: VoteInProgress = {
     neuronIds,
     proposalId,
     vote,
