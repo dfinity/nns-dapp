@@ -18,11 +18,14 @@ const initToastsStore = () => {
   return {
     subscribe,
 
-    show(msg: ToastMsg) {
+    show(msg: ToastMsg): symbol {
+      const id = Symbol();
+
       update((messages: ToastMsg[]) => {
-        const id = Symbol();
         return [...messages, { ...msg, id }];
       });
+
+      return id;
     },
 
     success({
