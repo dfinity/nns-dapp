@@ -2,7 +2,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { currentSnsTokenLabelStore } from "../../../../lib/derived/sns/current-sns-token-label.store";
+import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
 import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
 import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
@@ -30,7 +30,7 @@ describe("currentSnsTokenLabelStore", () => {
       symbolResponse !== undefined && "Text" in symbolResponse[1]
         ? symbolResponse[1].Text
         : undefined;
-    const expectedToken = get(currentSnsTokenLabelStore);
+    const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBe(symbol);
   });
@@ -38,7 +38,7 @@ describe("currentSnsTokenLabelStore", () => {
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
     snsProjectSelectedStore.set(OWN_CANISTER_ID);
-    const expectedToken = get(currentSnsTokenLabelStore);
+    const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();
   });
@@ -48,7 +48,7 @@ describe("currentSnsTokenLabelStore", () => {
     snsProjectSelectedStore.set(
       Principal.fromText(metadatas[0].rootCanisterId)
     );
-    const expectedToken = get(currentSnsTokenLabelStore);
+    const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();
   });

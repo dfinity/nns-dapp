@@ -9,7 +9,7 @@ import { get } from "svelte/store";
 import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import { currentSnsTokenLabelStore } from "../../../../lib/derived/sns/current-sns-token-label.store";
+import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
 import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
 import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { nowInSeconds } from "../../../../lib/utils/date.utils";
@@ -90,7 +90,7 @@ describe("SnsNeuronCard", () => {
         ...defaultProps,
       },
     });
-    const token = get(currentSnsTokenLabelStore);
+    const token = get(snsTokenSymbolSelectedStore);
     expect(token).not.toBeUndefined();
     token !== undefined && expect(getByText(token)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
