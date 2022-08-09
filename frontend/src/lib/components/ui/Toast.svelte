@@ -12,6 +12,7 @@
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
   import { onDestroy, onMount } from "svelte";
+  import Spinner from "./Spinner.svelte";
 
   export let msg: ToastMsg;
 
@@ -57,10 +58,14 @@
   role="dialog"
   class="toast"
   class:error={level === "error"}
-  class:warn={level === "warn"}
+  class:warn={level === "warn" || level === "running"}
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
+  {#if level === "running"}
+    <Spinner size="small" />
+  {/if}
+
   <p>
     {text}
   </p>
@@ -78,7 +83,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--padding);
+    gap: var(--padding-1_5x);
 
     // (>=3 lines x 1rem) + top/bottom paddings
     height: calc(8.5 * var(--padding));
@@ -124,10 +129,16 @@
         box-shadow: none;
       }
     }
+
+    :global(svg) {
+      position: static;
+      flex: 0 0 var(--padding-2x);
+    }
   }
 
   p {
     margin: 0;
+    flex: 1 0 0;
     max-height: 100%;
     overflow-y: auto;
     word-break: break-word;

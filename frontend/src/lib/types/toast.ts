@@ -1,6 +1,6 @@
 import type { I18nSubstitutions } from "../utils/i18n.utils";
 
-export type ToastLevel = "success" | "warn" | "error";
+export type ToastLevel = "success" | "warn" | "error" | "running";
 
 export interface ToastMsg {
   labelKey: string;
