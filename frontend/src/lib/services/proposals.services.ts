@@ -433,10 +433,8 @@ export const registerVotes = async ({
       labelKey: "error.register_vote_unknown",
       err,
     });
-
-    // TODO: hide the running vote registration
   }
-  // TODO: be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
+  // TODO(create a Jira task): be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
 
   // trigger refetching the data
   const reloadListNeurons = async () =>
@@ -458,7 +456,7 @@ export const registerVotes = async ({
       strategy: "update",
     });
 
-  Promise.all([reloadListNeurons(), reloadProposal()]).then(() => {
+  Promise.all([reloadListNeurons(), reloadProposal()]).finally(() => {
     // remove in progress state only after successful update call
     voteInProgressStore.remove(voteInProgress.proposalId);
     toastsStore.hide(toastMessage);
@@ -482,8 +480,11 @@ const requestRegisterVotes = async ({
     neuronId: NeuronId,
     result: PromiseSettledResult<void>
   ): string | undefined => {
-    if (result.status === "rejected" && result.reason instanceof Error) {
-      const reason = errorToString(result.reason);
+    if (result.status === "rejected") {
+      const reason =
+        result.reason instanceof Error
+          ? errorToString(result.reason)
+          : undefined;
       // detail text
       return replacePlaceholders(get(i18n).error.register_vote_neuron, {
         $neuronId: neuronId.toString(),
@@ -524,16 +525,19 @@ const requestRegisterVotes = async ({
     }
   );
 
-  const details: string[] = responses
-    .map((response, i) => errorDetail(neuronIds[i], response))
-    .filter(isDefined);
   if (rejectedResponses.length > 0) {
+    const details: string[] = responses
+      .map((response, i) => errorDetail(neuronIds[i], response))
+      .filter(isDefined);
     console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
-      detail: details.join(", "),
+      substitutions: {
+        $proposalId: `${proposalId}`,
+        $neuronIds: details.join(", "),
+      },
     });
   }
 };
