@@ -10,14 +10,17 @@ import {
   durationTillSwapStart,
   filterActiveProjects,
   filterCommittedProjects,
+  hasUserParticipatedToSwap,
   openTimeWindow,
   swapDuration,
 } from "../../../lib/utils/projects.utils";
 import {
   mockSnsFullProject,
+  mockSnsSwapCommitment,
   mockSwap,
   mockSwapCommitment,
   mockSwapInit,
+  principal,
   summaryForLifecycle,
 } from "../../mocks/sns-projects.mock";
 
@@ -273,6 +276,47 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
         })
       ).toBeTruthy();
+    });
+  });
+
+  describe("has user participated to swap", () => {
+    it("should have participated to swap", () =>
+      expect(
+        hasUserParticipatedToSwap({
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeTruthy());
+
+    it("should not have participated to swap", () => {
+      expect(
+        hasUserParticipatedToSwap({
+          swapCommitment: undefined,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hasUserParticipatedToSwap({
+          swapCommitment: null,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hasUserParticipatedToSwap({
+          swapCommitment: mockSnsSwapCommitment(principal(3)),
+        })
+      ).toBeFalsy();
+
+      expect(
+        hasUserParticipatedToSwap({
+          swapCommitment: {
+            ...mockSwapCommitment,
+            myCommitment: {
+              ...mockSwapCommitment.myCommitment as SnsSwapBuyerState,
+              amount_icp_e8s: BigInt(0),
+            },
+          },
+        })
+      ).toBeFalsy();
     });
   });
 });

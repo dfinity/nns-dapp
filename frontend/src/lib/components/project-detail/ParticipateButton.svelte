@@ -7,7 +7,10 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
-  import { canUserParticipateToSwap } from "../../utils/projects.utils";
+  import {
+    canUserParticipateToSwap,
+    hasUserParticipatedToSwap,
+  } from "../../utils/projects.utils";
   import { i18n } from "../../stores/i18n";
   import Tooltip from "../ui/Tooltip.svelte";
 
@@ -37,9 +40,9 @@
   });
 
   let userHasParticipatedToSwap: boolean = false;
-  $: userHasParticipatedToSwap =
-    ($projectDetailStore.swapCommitment?.myCommitment?.amount_icp_e8s ?? 0n) >
-    0n;
+  $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
+    swapCommitment: $projectDetailStore.swapCommitment,
+  });
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
