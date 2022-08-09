@@ -10,15 +10,13 @@
   } from "../../../utils/proposals.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { busy } from "../../../stores/busy.store";
-  import {
-    voteInProgressStore,
-    type VoteInProgress,
-  } from "../../../stores/voting.store";
+  import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
+  export let voteInProgress: VoteInProgress | undefined = undefined;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -29,16 +27,12 @@
   let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
   let selectedVoteType: Vote = Vote.YES;
-  let voteInProgress: VoteInProgress | undefined = undefined;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
     proposal: proposalInfo,
   });
-  $: voteInProgress = $voteInProgressStore.votes.find(
-    ({ proposalId }) => proposalInfo.id === proposalId
-  );
   $: disabled =
     $votingNeuronSelectStore.selectedIds.length === 0 ||
     $busy ||

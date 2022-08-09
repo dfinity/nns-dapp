@@ -1,6 +1,5 @@
 import type { NeuronId, ProposalId, Vote } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { sameObjects } from "../utils/utils";
 
 export interface VoteInProgress {
   proposalId: ProposalId;
@@ -25,14 +24,21 @@ const initVoteInProgressStore = () => {
     subscribe,
 
     add(vote: VoteInProgress) {
-      update(({ votes }) => ({
-        votes: [...votes, vote],
-      }));
+      update(({ votes }) => {
+        if (votes.find(({ proposalId }) => proposalId === vote.proposalId)) {
+          throw new Error("Simultaneous proposal voting");
+        }
+
+        return {
+          votes: [...votes, vote],
+        };
+      });
+    },
     },
 
-    remove(vote: VoteInProgress) {
+    remove(propsalId: ProposalId) {
       update(({ votes }) => ({
-        votes: votes.filter((v) => !sameObjects(v, vote)),
+        votes: votes.filter(({ proposalId: id }) => id !== propsalId),
       }));
     },
   };

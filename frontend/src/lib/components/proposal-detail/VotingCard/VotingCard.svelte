@@ -77,7 +77,11 @@
 {#if visible}
   <CardInfo>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect {proposalInfo} />
-    <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
+    <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
+    <VotingConfirmationToolbar
+      {proposalInfo}
+      {voteInProgress}
+      on:nnsConfirm={vote}
+    />
   </CardInfo>
 {/if}
