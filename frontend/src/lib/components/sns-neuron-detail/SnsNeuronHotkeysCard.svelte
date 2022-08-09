@@ -2,7 +2,7 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import IconInfo from "../../icons/IconInfo.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import { removeHotkey } from "../../services/sns-neurons.services";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import { getIdentity } from "../../services/auth.services";
   import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";

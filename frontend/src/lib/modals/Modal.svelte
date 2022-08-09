@@ -1,13 +1,11 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
-  import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
-  import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
   import { triggerDebugReport } from "../services/debug.services";
-  import { Backdrop } from "@dfinity/gix-components";
+  import { Backdrop, IconBackIosNew, IconClose } from "@dfinity/gix-components";
 
   export let visible: boolean = true;
   export let size: "small" | "big" = "small";

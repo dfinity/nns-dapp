@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import ConfirmationModal from "../../modals/ConfirmationModal.svelte";
   import { removeController } from "../../services/canisters.services";
   import { authStore } from "../../stores/auth.store";

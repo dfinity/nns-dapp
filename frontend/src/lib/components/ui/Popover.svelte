@@ -2,10 +2,9 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
-  import IconClose from "../../icons/IconClose.svelte";
   import { i18n } from "../../stores/i18n";
   import { debounce } from "../../utils/utils";
-  import { Backdrop } from "@dfinity/gix-components";
+  import { Backdrop, IconClose } from "@dfinity/gix-components";
 
   export let anchor: HTMLElement | undefined = undefined;
   export let visible = false;
