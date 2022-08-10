@@ -1,5 +1,7 @@
+import { ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
+  assertEnoughBalance,
   emptyAddress,
   getAccountByPrincipal,
   getAccountFromStore,
@@ -129,6 +131,34 @@ describe("accounts-utils", () => {
           accountsStore,
         })
       ).toEqual(mockSubAccount);
+    });
+  });
+
+  describe("assertEnoughBalance", () => {
+    it("should throw if not enough balance", () => {
+      const amountE8s = BigInt(1_000_000_000);
+      expect(() => {
+        assertEnoughBalance({
+          account: {
+            ...mockMainAccount,
+            balance: ICP.fromE8s(amountE8s),
+          },
+          amountE8s: amountE8s + BigInt(10_000),
+        });
+      }).toThrow();
+    });
+
+    it("should not throw if not enough balance", () => {
+      const amountE8s = BigInt(1_000_000_000);
+      expect(() => {
+        assertEnoughBalance({
+          account: {
+            ...mockMainAccount,
+            balance: ICP.fromE8s(amountE8s),
+          },
+          amountE8s: amountE8s - BigInt(10_000),
+        });
+      }).not.toThrow();
     });
   });
 });

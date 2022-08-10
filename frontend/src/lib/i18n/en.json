@@ -59,7 +59,7 @@
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
-    "amount_not_enough_stake_neuron": "Sorry, the amount is too smal. You need a minimum of 1 ICP to stake a neuron",
+    "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of 1 ICP to stake a neuron",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
     "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account.",
@@ -656,6 +656,11 @@
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "project_not_found": "Sorry, the project was not found. Please refresh and try again",
+    "project_not_open": "Sorry, the project does not accept participations yet.",
+    "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
+    "commitment_too_large": "Sorry, the total commitment of $commitment ICP is too large. The maximum is $maxCommitment ICP.",
+    "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }

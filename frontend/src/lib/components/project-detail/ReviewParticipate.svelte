@@ -48,7 +48,6 @@
 
   const dispatcher = createEventDispatcher();
   const participate = async () => {
-    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
     if (nonNullish($store.summary)) {
       startBusy({
         initiator: "project-participate",

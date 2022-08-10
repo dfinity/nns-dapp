@@ -1,15 +1,20 @@
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier, ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries } from "@dfinity/sns";
+import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
+import type { BuyerState } from "@dfinity/sns/dist/candid/sns_swap";
+import type { SnsFullProject } from "../../../lib/stores/projects.store";
+import type { SnsSwapCommitment } from "../../../lib/types/sns";
 import {
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
+  validParticipation,
 } from "../../../lib/utils/sns.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockDerived,
   mockQueryMetadata,
   mockQueryMetadataResponse,
+  mockSnsFullProject,
   mockSnsSummaryList,
   mockSummary,
   mockSwapInit,
@@ -276,6 +281,134 @@ describe("sns-utils", () => {
         controller: mockIdentity.getPrincipal(),
       });
       expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
+    });
+  });
+
+  describe("validParticipation", () => {
+    const validAmountE8s = BigInt(1_000_000_000);
+    const validProject: SnsFullProject = {
+      ...mockSnsFullProject,
+      summary: {
+        ...mockSnsFullProject.summary,
+        swap: {
+          ...mockSnsFullProject.summary.swap,
+          state: {
+            ...mockSnsFullProject.summary.swap.state,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          init: {
+            ...mockSnsFullProject.summary.swap.init,
+            min_participant_icp_e8s: validAmountE8s - BigInt(10_000),
+            max_participant_icp_e8s: validAmountE8s + BigInt(10_000),
+            max_icp_e8s: validAmountE8s + BigInt(10_000),
+          },
+        },
+      },
+      swapCommitment: {
+        ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
+        myCommitment: {
+          ...(mockSnsFullProject.swapCommitment?.myCommitment as BuyerState),
+          amount_icp_e8s: BigInt(0),
+        },
+      },
+    };
+    it("returns true if valid participation", () => {
+      const { valid } = validParticipation({
+        project: validProject,
+        amount: ICP.fromE8s(validAmountE8s),
+      });
+      expect(valid).toBe(true);
+    });
+
+    it("returns false if project committed", () => {
+      const project = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          swap: {
+            ...validProject.summary.swap,
+            state: {
+              ...validProject.summary.swap.state,
+              lifecycle: SnsSwapLifecycle.Committed,
+            },
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(validAmountE8s),
+      });
+      expect(valid).toBe(false);
+    });
+
+    it("returns false if project pending", () => {
+      const project = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          swap: {
+            ...validProject.summary.swap,
+            state: {
+              ...validProject.summary.swap.state,
+              lifecycle: SnsSwapLifecycle.Pending,
+            },
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(validAmountE8s),
+      });
+      expect(valid).toBe(false);
+    });
+
+    it("returns false if amount is larger than maximum per participant", () => {
+      const project = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          swap: {
+            ...validProject.summary.swap,
+            init: {
+              ...validProject.summary.swap.init,
+              max_participant_icp_e8s: validAmountE8s,
+            },
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
+      });
+      expect(valid).toBe(false);
+    });
+
+    it("takes into account current participation to calculate the maximum per participant", () => {
+      const project = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          swap: {
+            ...validProject.summary.swap,
+            init: {
+              ...validProject.summary.swap.init,
+              max_participant_icp_e8s: validAmountE8s * BigInt(2),
+            },
+          },
+        },
+        swapCommitment: {
+          ...(validProject.swapCommitment as SnsSwapCommitment),
+          myCommitment: {
+            ...(validProject.swapCommitment?.myCommitment as BuyerState),
+            amount_icp_e8s: validAmountE8s,
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
+      });
+      expect(valid).toBe(false);
     });
   });
 });
