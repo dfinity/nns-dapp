@@ -164,15 +164,3 @@
     />
     {/if}
 </MainContentWrapper>
-
-<style lang="scss">
-  .spinner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .no-proposals {
-    text-align: center;
-    margin: var(--padding-2x) 0;
-  }
-</style>

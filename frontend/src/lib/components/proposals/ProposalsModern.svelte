@@ -16,7 +16,7 @@
 <ProposalsFilters />
 
 {#if neuronsLoaded}
-  <InfiniteScroll>
+  <InfiniteScroll on:nnsIntersect>
     {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
       <ProposalCard {hidden} {proposalInfo} />
     {/each}
