@@ -13,20 +13,13 @@ If you wish to work against a testnet, there are two options:
 ### 1. Copy canister_ids.json
 
 - Copy the [canister_ids.json] to the root of your local project
-- Change the `DFX_NETWORK=<testnet_name>` in the `dev` target script of [package.json] or prefix your `npm` command
+- Change the `DFX_NETWORK=<testnet_name>` in the `dev` target script of [package.json]
 
 e.g. `small11`:
 
 ```
 "dev": "... DFX_NETWORK=small11 npm run build:config...",
 ```
-
-or
-
-```bash
-DFX_NETWORK=small11 npm run dev
-```
-
 
 ### 2. Manual setup
 
