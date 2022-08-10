@@ -400,6 +400,7 @@
     "topic_prefix": "Topic:",
     "id_prefix": "ID:",
     "proposer_prefix": "Proposer:",
+    "open_voting_prefix": "Voting open:",
     "adopt": "Adopt",
     "reject": "Reject",
     "my_votes": "My Votes",
@@ -407,7 +408,8 @@
     "unknown_nns_function": "Unknown nnsFunction",
     "nns_function_name": "nnsFunctionName",
     "payload": "Payload",
-    "summary_toggle_view": "$toggleView summary"
+    "summary_toggle_view": "$toggleView summary",
+    "vote": "Vote"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
@@ -556,8 +558,8 @@
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
-    "user_commitment": "Your Commitment",
-    "user_current_commitment": "Your Current Commitment",
+    "user_commitment": "My Commitment",
+    "user_current_commitment": "My Current Commitment",
     "status": "Status",
     "status_open": "Accepting Participation",
     "enter_amount": "Enter Amount",
@@ -574,6 +576,7 @@
     "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
+    "increase_participation": "Increase Participation",
     "status_completed": "Status",
     "completed": "Completed",
     "sale_start": "Sale Start",
@@ -653,6 +656,7 @@
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
+    "sns_remove_hotkey": "There was an error removing the hotkey.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }

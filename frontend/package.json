@@ -1,5 +1,5 @@
 {
-  "name": "nns-dapp",
+  "name": "@dfinity/nns-dapp",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -15,8 +15,7 @@
     "format": "prettier --write --plugin-search-dir=. .",
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
-    "update:nns": "npm update @dfinity/nns",
-    "update:sns": "npm update @dfinity/sns",
+    "update:next": "npm update @dfinity/nns @dfinity/sns @dfinity/utils",
     "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal && npm i @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal"
   },
   "devDependencies": {
@@ -67,9 +66,10 @@
     "@dfinity/authentication": "^0.12.2",
     "@dfinity/candid": "^0.12.2",
     "@dfinity/identity": "^0.12.2",
-    "@dfinity/nns": "nightly",
+    "@dfinity/nns": "next",
     "@dfinity/principal": "^0.12.2",
-    "@dfinity/sns": "nightly",
+    "@dfinity/sns": "next",
+    "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@zondax/ledger-icp": "^0.6.0"

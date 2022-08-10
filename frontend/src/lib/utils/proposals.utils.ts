@@ -13,6 +13,7 @@ import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import type { Color } from "../types/theme";
+import { nowInSeconds } from "./date.utils";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -306,10 +307,16 @@ export const mapProposalInfo = (
   topic: string | undefined;
   color: Color | undefined;
   status: ProposalStatus;
+  deadline: bigint | undefined;
 } => {
-  const { proposal, proposer, id, status } = proposalInfo;
+  const { proposal, proposer, id, status, deadlineTimestampSeconds } =
+    proposalInfo;
 
   const { topics } = get(i18n);
+  const deadline =
+    deadlineTimestampSeconds === undefined
+      ? undefined
+      : deadlineTimestampSeconds - BigInt(nowInSeconds());
 
   return {
     id,
@@ -320,6 +327,7 @@ export const mapProposalInfo = (
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
     status,
+    deadline,
   };
 };
 

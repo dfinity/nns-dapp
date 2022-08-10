@@ -17,19 +17,45 @@ describe("ProposalMeta", () => {
 
   it("should render proposal url", () => {
     const { getByText } = render(ProposalMeta, {
-      props,
+      props: {
+        ...props,
+        showUrl: true,
+      },
     });
     expect(getByText("url").getAttribute("href")).toBe("url");
   });
 
-  it("should not render proposal url", () => {
+  it("should not render proposal url by default", () => {
     const { getByText } = render(ProposalMeta, {
       props: {
         ...props,
-        link: false,
       },
     });
     expect(() => getByText("url")).toThrow();
+  });
+
+  it("should not render topic by default", () => {
+    const { getByText } = render(ProposalMeta, {
+      props: {
+        ...props,
+      },
+    });
+
+    expect(() =>
+      getByText(new RegExp(`${en.topics[Topic[mockProposalInfo.topic]]}$`))
+    ).toThrow();
+  });
+
+  it("should render topic", () => {
+    const { getByText } = render(ProposalMeta, {
+      props: {
+        ...props,
+        showTopic: true,
+      },
+    });
+    expect(
+      getByText(new RegExp(`${en.topics[Topic[mockProposalInfo.topic]]}$`))
+    ).toBeInTheDocument();
   });
 
   it("should render proposer id", () => {
@@ -38,15 +64,6 @@ describe("ProposalMeta", () => {
     });
     expect(
       getByText(new RegExp(`${mockProposalInfo.proposer?.toString()}$`))
-    ).toBeInTheDocument();
-  });
-
-  it("should render topic", () => {
-    const { getByText } = render(ProposalMeta, {
-      props,
-    });
-    expect(
-      getByText(new RegExp(`${en.topics[Topic[mockProposalInfo.topic]]}$`))
     ).toBeInTheDocument();
   });
 
@@ -71,15 +88,5 @@ describe("ProposalMeta", () => {
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
-  });
-
-  it("should render small text", () => {
-    const { container } = render(ProposalMeta, {
-      props: {
-        ...props,
-        size: "small",
-      },
-    });
-    expect(container.querySelectorAll(".text_small").length).not.toEqual(0);
   });
 });
