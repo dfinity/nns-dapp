@@ -65,7 +65,9 @@ const replaceMap = [
 
     // Technically speaking we would be able to assign the object without having to stringify it but, jest test does not use rollup and can only assign string to process.env.
     // That's why here too, we stringify the object.
-    acc[`process.env.${key}`] = JSON.stringify(typeof value === "object" ? JSON.stringify(value) : String(value));
+    acc[`process.env.${key}`] = JSON.stringify(
+      typeof value === "object" ? JSON.stringify(value) : String(value)
+    );
     return acc;
   },
   {
