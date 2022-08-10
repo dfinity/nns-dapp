@@ -41,7 +41,7 @@ import {
   NotFoundError,
 } from "../types/neurons.errors";
 import {
-  assertEnoughBalance,
+  assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "../utils/accounts.utils";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
@@ -192,7 +192,7 @@ export const stakeNeuron = async ({
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
-    assertEnoughBalance({
+    assertEnoughAccountFunds({
       account,
       amountE8s: stake.toE8s(),
     });

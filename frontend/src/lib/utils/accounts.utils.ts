@@ -2,7 +2,7 @@ import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { Account } from "../types/account";
-import { LedgerErrorKey } from "../types/ledger.errors";
+import { InsufficientAmountError } from "../types/common.errors";
 
 /*
  * Returns the principal's main or hardware account
@@ -95,8 +95,9 @@ export const getAccountFromStore = ({
 
 /**
  * Throws error if the account doesn't have enough balance.
+ * @throws InsufficientAmountError
  */
-export const assertEnoughBalance = ({
+export const assertEnoughAccountFunds = ({
   account,
   amountE8s,
 }: {
@@ -104,6 +105,6 @@ export const assertEnoughBalance = ({
   amountE8s: bigint;
 }): void => {
   if (account.balance.toE8s() < amountE8s) {
-    throw new LedgerErrorKey("error.insufficient_funds");
+    throw new InsufficientAmountError("error.insufficient_funds");
   }
 };

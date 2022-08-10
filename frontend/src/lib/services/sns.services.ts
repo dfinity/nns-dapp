@@ -28,10 +28,11 @@ import type { Account } from "../types/account";
 import { LedgerErrorKey } from "../types/ledger.errors";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
-import { assertEnoughBalance } from "../utils/accounts.utils";
+import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { getSwapCanisterAccount, validParticipation } from "../utils/sns.utils";
+import { validParticipation } from "../utils/projects.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
@@ -251,7 +252,7 @@ export const participateInSwap = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const transactionFee = get(transactionsFeesStore).main;
-    assertEnoughBalance({
+    assertEnoughAccountFunds({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });

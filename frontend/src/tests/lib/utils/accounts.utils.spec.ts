@@ -1,7 +1,7 @@
 import { ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
-  assertEnoughBalance,
+  assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
   getAccountFromStore,
@@ -134,11 +134,11 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("assertEnoughBalance", () => {
+  describe("assertEnoughAccountFunds", () => {
     it("should throw if not enough balance", () => {
       const amountE8s = BigInt(1_000_000_000);
       expect(() => {
-        assertEnoughBalance({
+        assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balance: ICP.fromE8s(amountE8s),
@@ -151,7 +151,7 @@ describe("accounts-utils", () => {
     it("should not throw if not enough balance", () => {
       const amountE8s = BigInt(1_000_000_000);
       expect(() => {
-        assertEnoughBalance({
+        assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balance: ICP.fromE8s(amountE8s),

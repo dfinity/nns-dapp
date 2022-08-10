@@ -9,7 +9,7 @@
   } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
   import { InvalidAmountError } from "../../types/neurons.errors";
-  import { assertEnoughBalance } from "../../utils/accounts.utils";
+  import { assertEnoughAccountFunds } from "../../utils/accounts.utils";
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
@@ -46,7 +46,7 @@
     }
     try {
       const icp = convertNumberToICP(amount);
-      assertEnoughBalance({
+      assertEnoughAccountFunds({
         account: selectedAccount,
         amountE8s: icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s(),
       });

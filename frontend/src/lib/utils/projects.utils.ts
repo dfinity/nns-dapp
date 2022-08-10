@@ -1,3 +1,4 @@
+import type { ICP } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import type { SnsFullProject } from "../stores/projects.store";
@@ -7,6 +8,8 @@ import type {
   SnsSwapCommitment,
 } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
+import type { I18nSubstitutions } from "./i18n.utils";
+import { formatICP } from "./icp.utils";
 
 const filterProjectsStatus = ({
   swapLifecycle,
@@ -110,6 +113,24 @@ export const durationTillSwapStart = (
   return BigInt(nowInSeconds()) - start_timestamp_seconds;
 };
 
+const isProjectOpen = (summary: SnsSummary): boolean =>
+  summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
+const isEnoughAmount = ({
+  project,
+  amount,
+}: {
+  project: SnsFullProject;
+  amount: ICP;
+}): boolean =>
+  project.summary.swap.init.min_participant_icp_e8s <= amount.toE8s();
+const commitmentTooLarge = ({
+  summary,
+  amountE8s,
+}: {
+  summary: SnsSummary;
+  amountE8s: bigint;
+}): boolean => summary.swap.init.max_participant_icp_e8s < amountE8s;
+
 /**
  * To participate to a swap:
  *
@@ -124,27 +145,15 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const {
-    swap: {
-      state: { lifecycle },
-      init: { max_participant_icp_e8s },
-    },
-  } =
-    summary ??
-    ({
-      swap: {
-        state: { lifecycle: SnsSwapLifecycle.Unspecified },
-        init: { max_participant_icp_e8s: undefined },
-      },
-    } as unknown as SnsSummary);
-
   const myCommitment: bigint =
     swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0);
 
   return (
-    [SnsSwapLifecycle.Open].includes(lifecycle) &&
-    max_participant_icp_e8s !== undefined &&
-    myCommitment < max_participant_icp_e8s
+    summary !== undefined &&
+    summary !== null &&
+    isProjectOpen(summary) &&
+    // Can still participate with 1 e8?
+    !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
   );
 };
 
@@ -154,3 +163,54 @@ export const hasUserParticipatedToSwap = ({
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean =>
   (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) > BigInt(0);
+
+export const validParticipation = ({
+  project,
+  amount,
+}: {
+  project: SnsFullProject | undefined;
+  amount: ICP;
+}): {
+  valid: boolean;
+  labelKey?: string;
+  substitutions?: I18nSubstitutions;
+} => {
+  if (project === undefined) {
+    return { valid: false, labelKey: "error__sns.project_not_found" };
+  }
+  if (!isProjectOpen(project.summary)) {
+    return {
+      valid: false,
+      labelKey: "error__sns.project_not_open",
+    };
+  }
+  if (!isEnoughAmount({ project, amount })) {
+    return {
+      valid: false,
+      labelKey: "error__sns.not_enough_amount",
+      substitutions: {
+        $amount: formatICP({
+          value: project.summary.swap.init.min_participant_icp_e8s,
+        }),
+      },
+    };
+  }
+  const totalCommitment =
+    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) +
+    amount.toE8s();
+  if (
+    commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
+  ) {
+    return {
+      valid: false,
+      labelKey: "error__sns.commitment_too_large",
+      substitutions: {
+        $commitment: formatICP({ value: totalCommitment }),
+        $maxCommitment: formatICP({
+          value: project.summary.swap.init.max_participant_icp_e8s,
+        }),
+      },
+    };
+  }
+  return { valid: true };
+};

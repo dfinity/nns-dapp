@@ -1,8 +1,7 @@
-import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsMetadataResponseEntries,
-  SnsSwapLifecycle,
   type SnsGetMetadataResponse,
   type SnsSwap,
   type SnsSwapDerivedState,
@@ -11,7 +10,6 @@ import {
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-import type { SnsFullProject } from "../stores/projects.store";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -22,8 +20,6 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "../types/sns.query";
-import type { I18nSubstitutions } from "./i18n.utils";
-import { formatICP } from "./icp.utils";
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
@@ -199,71 +195,4 @@ export const getSwapCanisterAccount = ({
   });
 
   return accountIdentifier;
-};
-
-const isProjectOpen = (project: SnsFullProject): boolean =>
-  project.summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
-const isEnoughAmount = ({
-  project,
-  amount,
-}: {
-  project: SnsFullProject;
-  amount: ICP;
-}): boolean =>
-  project.summary.swap.init.min_participant_icp_e8s <= amount.toE8s();
-const commitmentTooLarge = ({
-  project,
-  amountE8s,
-}: {
-  project: SnsFullProject;
-  amountE8s: bigint;
-}): boolean => project.summary.swap.init.max_participant_icp_e8s < amountE8s;
-
-export const validParticipation = ({
-  project,
-  amount,
-}: {
-  project: SnsFullProject | undefined;
-  amount: ICP;
-}): {
-  valid: boolean;
-  labelKey?: string;
-  substitutions?: I18nSubstitutions;
-} => {
-  if (project === undefined) {
-    return { valid: false, labelKey: "error__sns.project_not_found" };
-  }
-  if (!isProjectOpen(project)) {
-    return {
-      valid: false,
-      labelKey: "error__sns.project_not_open",
-    };
-  }
-  if (!isEnoughAmount({ project, amount })) {
-    return {
-      valid: false,
-      labelKey: "error__sns.not_enough_amount",
-      substitutions: {
-        $amount: formatICP({
-          value: project.summary.swap.init.min_participant_icp_e8s,
-        }),
-      },
-    };
-  }
-  const totalCommitment =
-    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) +
-    amount.toE8s();
-  if (commitmentTooLarge({ project, amountE8s: totalCommitment })) {
-    return {
-      valid: false,
-      labelKey: "error__sns.commitment_too_large",
-      substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
-        $maxCommitment: formatICP({
-          value: project.summary.swap.init.max_participant_icp_e8s,
-        }),
-      },
-    };
-  }
-  return { valid: true };
 };
