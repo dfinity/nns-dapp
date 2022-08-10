@@ -10,6 +10,7 @@ ND_COMMIT=79e929ff03499aef8c03abcb9a9fb2fe917d26b4
 ND_DIR=/home/max/dfn/nns-dapp/branches/testnet-environments
 
 
+cd "$ND_DIR"
 dfx identity use default
 
 
