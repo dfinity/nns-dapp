@@ -1,4 +1,5 @@
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import type { SnsFullProject } from "../stores/projects.store";
 import type {
   SnsSummary,
@@ -6,7 +7,6 @@ import type {
   SnsSwapCommitment,
 } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
-import { fromNullable } from "./did.utils";
 
 const filterProjectsStatus = ({
   swapLifecycle,
@@ -147,3 +147,10 @@ export const canUserParticipateToSwap = ({
     myCommitment < max_participant_icp_e8s
   );
 };
+
+export const hasUserParticipatedToSwap = ({
+  swapCommitment,
+}: {
+  swapCommitment: SnsSwapCommitment | undefined | null;
+}): boolean =>
+  (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) > BigInt(0);

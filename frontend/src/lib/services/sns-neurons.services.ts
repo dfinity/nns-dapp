@@ -10,6 +10,7 @@ import {
   addNeuronPermissions,
   querySnsNeuron,
   querySnsNeurons,
+  removeNeuronPermissions,
 } from "../api/sns.api";
 import {
   snsNeuronsStore,
@@ -135,6 +136,35 @@ export const addHotkey = async ({
   rootCanisterId,
 }: {
   neuronId: SnsNeuronId;
+  hotkey: Principal;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const identity = await getNeuronIdentity(neuronId);
+    await addNeuronPermissions({
+      permissions,
+      identity,
+      principal: hotkey,
+      rootCanisterId,
+      neuronId,
+    });
+    return { success: true };
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "error__sns.sns_add_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const removeHotkey = async ({
+  neuronId,
+  hotkey,
+  rootCanisterId,
+}: {
+  neuronId: SnsNeuronId;
   hotkey: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
@@ -142,7 +172,7 @@ export const addHotkey = async ({
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
     const identity = await getNeuronIdentity(neuronId);
     const principal = Principal.fromText(hotkey);
-    await addNeuronPermissions({
+    await removeNeuronPermissions({
       permissions,
       identity,
       principal,
@@ -152,7 +182,7 @@ export const addHotkey = async ({
     return { success: true };
   } catch (err) {
     toastsStore.error({
-      labelKey: "error__sns.sns_add_hotkey",
+      labelKey: "error__sns.sns_remove_hotkey",
       err,
     });
     return { success: false };
