@@ -10,7 +10,7 @@ export const {
   ENABLE_SNS_NEURONS,
 }: Record<string, boolean> = JSON.parse(
   process.env.FEATURE_FLAGS ??
-    '{"ENABLE_NEW_SPAWN_FEATURE":false,"ENABLE_SNS_NEURONS":false}'
+    '{"ENABLE_NEW_SPAWN_FEATURE":true,"ENABLE_SNS_NEURONS":false}'
 );
 
 export const IS_TESTNET: boolean =
