@@ -8,6 +8,8 @@
     mainTransactionFeeStore,
   } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
+  import { InvalidAmountError } from "../../types/neurons.errors";
+  import { assertEnoughBalance } from "../../utils/accounts.utils";
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
@@ -44,13 +46,15 @@
     }
     try {
       const icp = convertNumberToICP(amount);
-      errorMessage =
-        icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s() >
-        selectedAccount.balance.toE8s()
-          ? $i18n.error.insufficient_funds
-          : undefined;
+      assertEnoughBalance({
+        account: selectedAccount,
+        amountE8s: icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s(),
+      });
     } catch (error) {
-      errorMessage = $i18n.error.amount_not_valid;
+      if (error instanceof InvalidAmountError) {
+        errorMessage = $i18n.error.amount_not_valid;
+      }
+      errorMessage = $i18n.error.insufficient_funds;
     }
   })();
   const dispatcher = createEventDispatcher();
