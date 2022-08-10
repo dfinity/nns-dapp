@@ -29,11 +29,6 @@
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   },
-  "sns-wasm": {
-    "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
-  },
   "sns_governance": {
     "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
     "small11": "tzq7c-xqaaa-aaaaa-aaamq-cai",
@@ -54,11 +49,5 @@
     "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "small11": "txssk-maaaa-aaaaa-aaanq-cai",
     "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
-  },
-  "wasm_canister": {
-    "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   }
 }
