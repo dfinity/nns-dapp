@@ -17,6 +17,7 @@
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -122,7 +123,7 @@
       disabled={!enoughMaturityToSpawn}
     >
       <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
-      <div slot="description">
+      <div slot="description" class="description">
         <p>
           {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
         </p>
@@ -141,7 +142,7 @@
           {replacePlaceholders(
             $i18n.neuron_detail.spawn_maturity_confirmation_a,
             {
-              $percentage: percentageMessage,
+              $percentage: valueSpan(percentageMessage),
             }
           )}
         </p>

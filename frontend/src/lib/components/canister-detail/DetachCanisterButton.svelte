@@ -44,8 +44,12 @@
   <ConfirmationModal on:nnsClose={close} on:nnsConfirm={detach}>
     <div data-tid="detach-canister-confirmaation-modal">
       <h4>{$i18n.canister_detail.confirm_detach_title}</h4>
-      <p>{$i18n.canister_detail.confirm_detach_description_1}</p>
-      <p>{$i18n.canister_detail.confirm_detach_description_2}</p>
+      <p class="description">
+        {$i18n.canister_detail.confirm_detach_description_1}
+      </p>
+      <p class="description">
+        {$i18n.canister_detail.confirm_detach_description_2}
+      </p>
     </div>
   </ConfirmationModal>
 {/if}

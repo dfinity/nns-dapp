@@ -244,14 +244,19 @@ if [[ "$DELETE_CANISTER_IDS" == "true" ]]; then
 fi
 
 if [[ "$DELETE_WALLET" == "true" ]]; then
-  WALLET_FILE="${HOME}/.config/dfx/identity/$(dfx identity whoami)/wallets.json"
-  if test -e "$WALLET_FILE"; then
-    : Back up wallet
-    cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
-    echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
-    DFX_NETWORK="$DFX_NETWORK" jq 'del(.identities.default[env.DFX_NETWORK])' "${WALLET_FILE}" >"${WALLET_FILE}.new"
-    mv "${WALLET_FILE}.new" "${WALLET_FILE}"
-  fi
+  # Note: "list" puts a '*' printed next to the current ID, but it is on stderr
+  #       so we discard it on dev/null leaving just the user's identities, one per line.
+  dfx identity list 2>/dev/null |
+    while read -r DFX_ID; do
+      WALLET_FILE="${HOME}/.config/dfx/identity/$DFX_ID/wallets.json"
+      if test -e "$WALLET_FILE"; then
+        : Back up wallet
+        cp "${WALLET_FILE}" "${WALLET_FILE}.$(date -Isecond -u | sed 's/+.*//g')"
+        echo "Deleting the wallet for $DFX_NETWORK in $WALLET_FILE ..."
+        DFX_NETWORK="$DFX_NETWORK" DFX_ID="$DFX_ID" jq 'del(.identities[env.DFX_ID][env.DFX_NETWORK])' "${WALLET_FILE}" | jq -s first >"${WALLET_FILE}.new"
+        mv "${WALLET_FILE}.new" "${WALLET_FILE}"
+      fi
+    done
 fi
 
 if [[ "$START_DFX" == "true" ]]; then
@@ -286,7 +291,7 @@ fi
 if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   # If the wasm canister has not been installed already, install it.
   echo Checking whether sns wasm is installed
-  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
+  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm 2>/dev/null || echo NOPE)"
   [[ "${SNS_WASM_CANISTER_ID:-}" == "NOPE" ]] || {
     echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
   }
@@ -296,8 +301,8 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
     echo "Deploying SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
-    dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' } } )' --no-wallet
-    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
+    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; } )' --no-wallet
+    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
     for canister in root governance ledger swap; do

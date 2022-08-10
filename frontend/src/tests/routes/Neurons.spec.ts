@@ -21,6 +21,12 @@ jest.mock("../../lib/services/sns.services", () => {
   };
 });
 
+jest.mock("../../lib/services/sns-neurons.services", () => {
+  return {
+    loadSnsNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Neurons", () => {
   jest
     .spyOn(committedProjectsStore, "subscribe")

@@ -17,6 +17,7 @@
   import { MAX_NEURONS_MERGED } from "../constants/neurons.constants";
   import Tooltip from "../components/ui/Tooltip.svelte";
   import { isSpawning } from "../utils/neuron.utils";
+  import Value from "../components/ui/Value.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -48,11 +49,11 @@
 </script>
 
 <section data-tid="neurons-body">
-  <p>{$i18n.neurons.text}</p>
+  <p class="description">{$i18n.neurons.text}</p>
 
-  <p>
+  <p class="description">
     {$i18n.neurons.principal_is}
-    {principalText}
+    <Value>{principalText}</Value>
   </p>
 
   {#if isLoading}

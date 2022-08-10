@@ -48,9 +48,11 @@ export const acquireICPTs = async ({
 export const makeDummyProposals = async ({
   neuronId,
   identity,
+  swapCanisterId,
 }: {
   neuronId: NeuronId;
   identity: Identity;
+  swapCanisterId?: string;
 }): Promise<void> => {
   assertTestnet();
 
@@ -62,7 +64,7 @@ export const makeDummyProposals = async ({
     dummyProposalsScriptPath
   );
 
-  await makeProposals({ neuronId, canister });
+  await makeProposals({ neuronId, canister, swapCanisterId });
 };
 
 const assertTestnet = () => {

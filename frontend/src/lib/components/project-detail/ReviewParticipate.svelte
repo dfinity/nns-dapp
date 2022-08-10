@@ -1,10 +1,14 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
+  import type { AccountIdentifier } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import IconSouth from "../../icons/IconSouth.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
-  import { participateInSwap } from "../../services/sns.services";
+  import {
+    getSwapAccount,
+    participateInSwap,
+  } from "../../services/sns.services";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { toastsStore } from "../../stores/toasts.store";
@@ -16,20 +20,28 @@
   } from "../../types/project-detail.context";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { convertNumberToICP } from "../../utils/icp.utils";
-  import { nonNullish } from "../../utils/utils";
+  import { nonNullish, valueSpan } from "../../utils/utils";
   import Icp from "../ic/ICP.svelte";
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import { ICON_SIZE_LARGE } from "../../constants/style.constants";
 
   export let account: Account;
   export let amount: number;
 
-  const { store }: ProjectDetailContext = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store, reload }: ProjectDetailContext =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
+
+  let destinationAddress: AccountIdentifier | undefined;
+  $: (async () => {
+    destinationAddress =
+      $store.summary?.swapCanisterId !== undefined
+        ? await getSwapAccount($store.summary?.swapCanisterId)
+        : undefined;
+  })();
 
   let accepted: boolean = false;
   const toggelAccept = () => (accepted = !accepted);
@@ -45,9 +57,10 @@
         account,
         amount: icpAmount,
         rootCanisterId: $store.summary.rootCanisterId,
-        onSuccess: (swapCommitment) => ($store.swapCommitment = swapCommitment),
       });
       if (success) {
+        await reload();
+
         toastsStore.success({
           labelKey: "sns_project_detail.participate_success",
         });
@@ -65,13 +78,13 @@
 <div data-tid="sns-swap-participate-step-2">
   <div class="info">
     <KeyValuePair>
-      <span slot="key">Source</span>
+      <span slot="key">{$i18n.accounts.source}</span>
       <Icp slot="value" singleLine icp={account.balance} />
     </KeyValuePair>
     <div>
-      <p>
-        {replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: account.identifier,
+      <p data-tid="sns-swap-participate-main-account">
+        {@html replacePlaceholders($i18n.accounts.main_account, {
+          $identifier: valueSpan(account.identifier),
         })}
       </p>
     </div>
@@ -89,8 +102,12 @@
     </div>
     <div>
       <h5>{$i18n.accounts.destination}</h5>
-      <!-- TODO: What is this? Question pending to be answered -->
-      <p>Entrepot 1239871294879871249123</p>
+      <p data-tid="sns-swap-participate-project-name">
+        {$store.summary?.metadata.name}
+      </p>
+      {#if destinationAddress !== undefined}
+        <p class="value">{destinationAddress.toHex()}</p>
+      {/if}
     </div>
     <div>
       <h5>{$i18n.sns_project_detail.description}</h5>
@@ -99,8 +116,10 @@
   </div>
   <div class="actions">
     <div class="warning">
-      <span class="icon"><IconWarning size="48px" /></span>
-      <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
+      <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
+      <span class="description"
+        >{$i18n.sns_project_detail.participate_swap_warning}</span
+      >
     </div>
     <Checkbox
       text="block"
@@ -162,7 +181,7 @@
 
     .warning {
       display: grid;
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: auto 1fr;
       gap: var(--padding-2x);
 
       .icon {

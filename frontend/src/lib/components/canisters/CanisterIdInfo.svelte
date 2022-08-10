@@ -6,4 +6,4 @@
 </script>
 
 <h5>{$i18n.canister_detail.title}</h5>
-<p>{canisterId?.toText()}</p>
+<p class="value">{canisterId?.toText()}</p>

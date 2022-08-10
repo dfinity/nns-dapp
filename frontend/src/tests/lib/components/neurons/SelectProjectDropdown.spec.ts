@@ -5,11 +5,11 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SelectProjectDropdown from "../../../../lib/components/neurons/SelectProjectDropdown.svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { loadSnsSummaries } from "../../../../lib/services/sns.services";
 import {
   committedProjectsStore,
   snsProjectSelectedStore,
 } from "../../../../lib/stores/projects.store";
+import en from "../../../mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -31,16 +31,28 @@ describe("SelectProjectDropdown", () => {
     snsProjectSelectedStore.set(OWN_CANISTER_ID);
   });
 
-  it("should load sns summaries", () => {
-    render(SelectProjectDropdown);
-    expect(loadSnsSummaries).toHaveBeenCalled();
-  });
-
   it("should render NNS and projects as options", () => {
     const { container } = render(SelectProjectDropdown);
 
     // NNS + projects store
     expect(container.querySelectorAll("option").length).toBe(2);
+  });
+
+  it("should render NNS and project name", () => {
+    const { container } = render(SelectProjectDropdown);
+
+    expect(
+      (
+        (container.querySelector("option:first-of-type") as HTMLElement)
+          .textContent ?? ""
+      ).trim()
+    ).toBe(en.core.nns);
+    expect(
+      (
+        (container.querySelector("option:last-of-type") as HTMLElement)
+          .textContent ?? ""
+      ).trim()
+    ).toBe(mockSnsFullProject.summary.metadata.name);
   });
 
   it("should select NNS as default", () => {

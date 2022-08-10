@@ -51,9 +51,9 @@
 >
   <div>
     <h5>{$i18n.canisters.canister_id}</h5>
-    <p>{$store.details?.id.toText()}</p>
+    <p class="value">{$store.details?.id.toText()}</p>
     <h5>{$i18n.canister_detail.new_controller}</h5>
-    <p>{controller.toText()}</p>
+    <p class="value">{controller.toText()}</p>
   </div>
   <FooterModal>
     <button

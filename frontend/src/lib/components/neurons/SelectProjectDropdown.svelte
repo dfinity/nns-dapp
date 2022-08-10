@@ -2,27 +2,17 @@
   import { onDestroy, onMount } from "svelte";
   import { Principal } from "@dfinity/principal";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
-  import { loadSnsSummaries } from "../../services/sns.services";
   import { i18n } from "../../stores/i18n";
   import {
     committedProjectsStore,
     snsProjectSelectedStore,
   } from "../../stores/projects.store";
-  import { toastsStore } from "../../stores/toasts.store";
   import Dropdown from "../ui/Dropdown.svelte";
   import DropdownItem from "../ui/DropdownItem.svelte";
 
   let selectedCanisterId: string | undefined;
 
   onMount(() => {
-    // TODO: https://dfinity.atlassian.net/browse/L2-878
-    loadSnsSummaries({
-      onError: () => {
-        toastsStore.error({
-          labelKey: "errors.sns_loading_commited_projects",
-        });
-      },
-    });
     selectedCanisterId = $snsProjectSelectedStore.toText();
   });
 
@@ -44,10 +34,17 @@
   const unsubscribe = committedProjectsStore.subscribe((projects) => {
     selectableProjects = [
       nnsProject,
-      ...(projects?.map(({ rootCanisterId, summary: { name } }) => ({
-        name,
-        canisterId: rootCanisterId.toText(),
-      })) ?? []),
+      ...(projects?.map(
+        ({
+          rootCanisterId,
+          summary: {
+            metadata: { name },
+          },
+        }) => ({
+          name,
+          canisterId: rootCanisterId.toText(),
+        })
+      ) ?? []),
     ];
   });
 
@@ -60,8 +57,6 @@
   testId="select-project-dropdown"
 >
   {#each selectableProjects as { canisterId, name } (canisterId)}
-    <DropdownItem value={canisterId}>
-      {name}
-    </DropdownItem>
+    <DropdownItem value={canisterId}>{name}</DropdownItem>
   {/each}
 </Dropdown>

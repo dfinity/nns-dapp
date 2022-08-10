@@ -13,6 +13,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../FooterModal.svelte";
+  import Value from "../../components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -71,7 +72,9 @@
     <div>
       <h5>{$i18n.neurons.transaction_fee}</h5>
 
-      <p>{formattedTransactionFeeICP($mainTransactionFeeStore)} ICP</p>
+      <p>
+        <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value> ICP
+      </p>
     </div>
 
     <FooterModal>

@@ -8,9 +8,11 @@
   } from "../../types/project-detail.context";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import Icp from "../ic/ICP.svelte";
-  import InfoContextKey from "../ui/InfoContextKey.svelte";
   import { i18n } from "../../stores/i18n";
   import type { SnsSwapInit } from "@dfinity/sns";
+  import { openTimeWindow } from "../../utils/projects.utils";
+  import DateSeconds from "../ui/DateSeconds.svelte";
+  import type { SnsSwapTimeWindow } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -23,6 +25,16 @@
   let init: SnsSwapInit;
   $: ({ init } = swap);
 
+  let timeWindow: SnsSwapTimeWindow | undefined;
+  $: timeWindow = openTimeWindow(swap);
+
+  let start_timestamp_seconds: bigint | undefined;
+  let end_timestamp_seconds: bigint | undefined;
+  $: ({ start_timestamp_seconds, end_timestamp_seconds } = timeWindow ?? {
+    start_timestamp_seconds: undefined,
+    end_timestamp_seconds: undefined,
+  });
+
   let minCommitmentIcp: ICP;
   $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);
   let maxCommitmentIcp: ICP;
@@ -30,26 +42,26 @@
 </script>
 
 <KeyValuePair>
-  <InfoContextKey slot="key"
-    ><svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.min_commitment}</svelte:fragment
-    >
-    <p>This is the text that is hidden and should appear on click</p>
-  </InfoContextKey>
+  <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
   <Icp slot="value" icp={minCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
-  <InfoContextKey slot="key"
-    ><svelte:fragment slot="header"
-      >{$i18n.sns_project_detail.max_commitment}</svelte:fragment
-    >
-    <p>This should be an explanation of what does maximum commitment means</p>
-  </InfoContextKey>
+  <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
   <Icp slot="value" icp={maxCommitmentIcp} singleLine />
 </KeyValuePair>
-
-<style lang="scss">
-  p {
-    font-size: var(--font-size-small);
-  }
-</style>
+<KeyValuePair>
+  <span slot="key">{$i18n.sns_project_detail.sale_start} </span>
+  <DateSeconds
+    slot="value"
+    seconds={Number(start_timestamp_seconds ?? BigInt(0))}
+    tagName="span"
+  />
+</KeyValuePair>
+<KeyValuePair>
+  <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
+  <DateSeconds
+    slot="value"
+    seconds={Number(end_timestamp_seconds ?? BigInt(0))}
+    tagName="span"
+  />
+</KeyValuePair>

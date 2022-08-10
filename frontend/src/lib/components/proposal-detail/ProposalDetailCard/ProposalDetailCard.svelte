@@ -29,7 +29,7 @@
   <ProposalSummaryCardBlock {proposal} />
 
   <div class="detail">
-    <ProposalMeta {proposalInfo} />
+    <ProposalMeta {proposalInfo} showTopic showUrl />
   </div>
 
   <ProposalActions proposalId={id} {proposal} />
