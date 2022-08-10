@@ -6,8 +6,7 @@ import { render } from "@testing-library/svelte";
 import NeuronMaturityCard from "../../../../lib/components/neuron-detail/NeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { formatPercentage } from "../../../../lib/utils/format.utils";
-import { maturityByStake } from "../../../../lib/utils/neuron.utils";
+import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -43,17 +42,13 @@ describe("NeuronMaturityCard", () => {
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
   });
 
-  it("renders maturity in %", () => {
+  it("renders formatted maturity", () => {
     const { queryByText } = render(NeuronMaturityCard, {
       props,
     });
-    const inPercentage = maturityByStake(props.neuron);
+    const formatted = formattedMaturity(props.neuron);
 
-    expect(
-      queryByText(
-        formatPercentage(inPercentage, { minFraction: 2, maxFraction: 2 })
-      )
-    ).toBeInTheDocument();
+    expect(queryByText(formatted)).toBeInTheDocument();
   });
 
   it("renders actions", () => {

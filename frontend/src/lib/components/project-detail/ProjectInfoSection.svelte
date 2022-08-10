@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { SnsSummary } from "../../types/sns";
+  import type {
+    SnsSummary,
+    SnsSummaryMetadata,
+    SnsTokenMetadata,
+  } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
@@ -9,42 +13,64 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
+  import Spinner from "../../../lib/components/ui/Spinner.svelte";
+  import { isNullish } from "../../utils/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let summary: SnsSummary;
-  // type safety validation is done in ProjectDetail component
-  $: summary = $projectDetailStore.summary as SnsSummary;
+  let summary: SnsSummary | undefined | null;
+  $: summary = $projectDetailStore.summary;
+
+  let metadata: SnsSummaryMetadata | undefined;
+  let token: SnsTokenMetadata | undefined;
+
+  $: metadata = summary?.metadata;
+  $: token = summary?.token;
 </script>
 
-<div data-tid="sns-project-detail-info">
-  <div class="title">
-    <Logo src={summary.logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h1>{summary.name}</h1>
-  </div>
-  <p>
-    {summary.description}
-  </p>
-  <a href={summary.url} target="_blank">{summary.url}</a>
-  <div class="details">
-    <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_name}</svelte:fragment
-      >
-      <span slot="value">{summary.tokenName}</span>
-    </KeyValuePair>
-    <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
-      >
-      <span slot="value">{summary.symbol}</span>
-    </KeyValuePair>
+{#if isNullish(metadata) || isNullish(token)}
+  <!-- TODO: replace with a skeleton -->
+  <Spinner inline />
+{:else}
+  <div data-tid="sns-project-detail-info">
+    <div class="title">
+      <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
+      <h1>{metadata.name}</h1>
+    </div>
+    <p class="value">
+      {metadata.description}
+    </p>
+    <a href={metadata.url} target="_blank" rel="noopener noreferrer"
+      >{metadata.url}</a
+    >
+    <div class="details">
+      <KeyValuePair>
+        <svelte:fragment slot="key"
+          >{$i18n.sns_project_detail.token_name}</svelte:fragment
+        >
+        <span
+          class="value"
+          slot="value"
+          data-tid="sns-project-detail-info-token-name">{token.name}</span
+        >
+      </KeyValuePair>
+      <KeyValuePair>
+        <svelte:fragment slot="key"
+          >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
+        >
+        <span
+          class="value"
+          slot="value"
+          data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
+        >
+      </KeyValuePair>
 
-    <ProjectSwapDetails />
+      <ProjectSwapDetails />
+    </div>
   </div>
-</div>
+{/if}
 
 <style lang="scss">
   .title {
@@ -59,8 +85,9 @@
     }
   }
   a {
-    // TODO: change <a /> global styling?
-    font-size: 1rem;
+    font-size: inherit;
+
+    color: var(--primary);
   }
 
   .details {

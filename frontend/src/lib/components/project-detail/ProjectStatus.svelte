@@ -14,7 +14,7 @@
   );
 
   let swap: SnsSummarySwap;
-  // type safety validation is done in ProjectDetail component
+  // type safety validation is done in ProjectStatusSection component
   $: ({ swap } = $projectDetailStore.summary as SnsSummary);
 
   let state: SnsSwapState;

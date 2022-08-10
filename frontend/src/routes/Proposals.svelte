@@ -148,7 +148,7 @@
 
 <MainContentWrapper>
   <section data-tid="proposals-tab">
-    <p>{$i18n.voting.text}</p>
+    <p class="description">{$i18n.voting.text}</p>
 
     <ProposalsFilters />
 

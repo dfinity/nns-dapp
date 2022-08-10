@@ -1,5 +1,6 @@
 <script lang="ts">
   import Copy from "./Copy.svelte";
+  import Value from "./Value.svelte";
 
   export let identifier: string;
   export let label: string | undefined = undefined;
@@ -12,7 +13,7 @@
 
 <p>
   <span data-tid="identifier" class:text_small={size === "small"}
-    >{labelText}{identifier}</span
+    >{labelText}<Value>{identifier}</Value></span
   >
   {#if showCopy}
     <Copy value={identifier} />
@@ -26,5 +27,7 @@
 
   p {
     margin: 0;
+    display: flex;
+    align-items: center;
   }
 </style>

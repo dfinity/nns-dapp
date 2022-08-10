@@ -17,19 +17,16 @@
     routePathRootCanisterId,
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
-  import {
-    snsSummariesStore,
-    snsSwapCommitmentsStore,
-  } from "../lib/stores/projects.store";
+  import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
   import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "../lib/types/project-detail.context";
-  import { isNullish, nonNullish } from "../lib/utils/utils";
+  import { isNullish } from "../lib/utils/utils";
   import { writable } from "svelte/store";
-  import { concatSnsSummary } from "../lib/utils/sns.utils";
+  import { snsSummariesStore } from "../lib/stores/sns.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -37,7 +34,41 @@
     }
   });
 
-  let rootCanisterIdString: string | undefined;
+  const loadSummary = (rootCanisterId: string) =>
+    loadSnsSummary({
+      rootCanisterId,
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.summary = null;
+        goBack();
+      },
+    });
+
+  const loadSwapState = (rootCanisterId: string) =>
+    loadSnsSwapCommitment({
+      rootCanisterId,
+      onError: () => {
+        // hide unproven data
+        $projectDetailStore.swapCommitment = null;
+        goBack();
+      },
+    });
+
+  const reload = async () => {
+    const { path } = $routeStore;
+
+    const rootCanisterId = routePathRootCanisterId(path);
+
+    if (rootCanisterId === undefined) {
+      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+      return;
+    }
+
+    await Promise.all([
+      loadSummary(rootCanisterId),
+      loadSwapState(rootCanisterId),
+    ]);
+  };
 
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: undefined,
@@ -48,6 +79,7 @@
 
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
+    reload,
   });
 
   const goBack = () => {
@@ -55,96 +87,62 @@
     routeStore.replace({ path: AppPath.Launchpad });
   };
 
-  const loadSummary = (rootCanisterId: string) => {
-    // try to get from snsSummariesStore
-    const summaryMaybe = $snsSummariesStore?.summaries?.find(
-      ({ rootCanisterId: rootCanister }) =>
-        rootCanister?.toText() === rootCanisterId
-    );
+  const mapProjectDetail = (rootCanisterId: string | undefined) => {
+    $projectDetailStore.summary =
+      rootCanisterId !== undefined
+        ? $snsSummariesStore.find(
+            ({ rootCanisterId: rootCanister }) =>
+              rootCanister?.toText() === rootCanisterId
+          )
+        : null;
 
-    if (summaryMaybe !== undefined) {
-      $projectDetailStore.summary = summaryMaybe;
+    $projectDetailStore.swapCommitment =
+      rootCanisterId !== undefined
+        ? $snsSwapCommitmentsStore?.find(
+            (item) =>
+              item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
+          )?.swapCommitment
+        : null;
+  };
 
-      // do not reload already certified data
-      if ($snsSummariesStore?.certified === true) {
+  /**
+   * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
+   */
+  $: $snsSummariesStore,
+    $snsSwapCommitmentsStore,
+    (() => {
+      const { path } = $routeStore;
+
+      if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
         return;
       }
-    }
 
-    // flag loading state
-    $projectDetailStore.summary = null;
+      const rootCanisterId = routePathRootCanisterId(path);
+      mapProjectDetail(rootCanisterId);
+    })();
 
-    loadSnsSummary({
-      rootCanisterId,
-      onLoad: ({ response }) =>
-        ($projectDetailStore.summary = concatSnsSummary(response)),
-      onError: () => {
-        // hide unproven data
-        $projectDetailStore.summary = null;
-        goBack();
-      },
-    });
-  };
-
-  const loadSwapState = (rootCanisterId: string) => {
-    if (nonNullish($snsSwapCommitmentsStore)) {
-      // try to get from snsSwapStatesStore
-      const swapItemMaybe = $snsSwapCommitmentsStore.find(
-        (item) =>
-          item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
-      );
-
-      if (swapItemMaybe !== undefined) {
-        $projectDetailStore.swapCommitment = swapItemMaybe.swapCommitment;
-
-        if (swapItemMaybe.certified === true) {
-          // do not reload already certified data
-          return;
-        }
-      }
-    }
-
-    // flag loading state
-    $projectDetailStore.swapCommitment = null;
-
-    loadSnsSwapCommitment({
-      rootCanisterId,
-      onLoad: ({ response: swapCommitment }) =>
-        ($projectDetailStore.swapCommitment = swapCommitment),
-      onError: () => {
-        // hide unproven data
-        $projectDetailStore.swapCommitment = null;
-        goBack();
-      },
-    });
-  };
-
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
+  /**
+   * We subscribe to the route in a particular function because if not root canister id is provided in the url it redirects to `goBack` which needs the particular usage of `unsubscribe` to avoid loops.
+   */
+  const unsubscribe = routeStore.subscribe(({ path }) => {
     if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
       return;
     }
 
-    const rootCanisterIdMaybe = routePathRootCanisterId(path);
-    if (rootCanisterIdMaybe === undefined) {
+    const rootCanisterId = routePathRootCanisterId(path);
+    if (rootCanisterId === undefined) {
       goBack();
       return;
     }
-    rootCanisterIdString = rootCanisterIdMaybe;
 
-    if ($projectDetailStore.summary === undefined) {
-      loadSummary(rootCanisterIdString);
-    }
-
-    if ($projectDetailStore.swapCommitment === undefined) {
-      loadSwapState(rootCanisterIdString);
-    }
+    mapProjectDetail(rootCanisterId);
   });
 
   onDestroy(unsubscribe);
 
   layoutBackStore.set(goBack);
 
-  $: layoutTitleStore.set($projectDetailStore?.summary?.name ?? "");
+  $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
@@ -161,20 +159,10 @@
     {:else}
       <TwoColumns>
         <div slot="left">
-          {#if loadingSummary}
-            <!-- TODO: replace with a skeleton -->
-            <Spinner inline />
-          {:else}
-            <ProjectInfoSection />
-          {/if}
+          <ProjectInfoSection />
         </div>
         <div slot="right">
-          {#if loadingSummary || loadingSwapState}
-            <!-- TODO: replace with a skeleton -->
-            <Spinner inline />
-          {:else}
-            <ProjectStatusSection />
-          {/if}
+          <ProjectStatusSection />
         </div>
       </TwoColumns>
     {/if}

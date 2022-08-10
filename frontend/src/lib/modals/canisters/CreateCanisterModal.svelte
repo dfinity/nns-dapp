@@ -16,6 +16,7 @@
   import type { Account } from "../../types/account";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import { valueSpan } from "../../utils/utils";
   import WizardModal from "../WizardModal.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
@@ -112,8 +113,10 @@
       >
         <p>{$i18n.canisters.minimum_cycles_text_1}</p>
         <p>
-          {replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
-            $amount: formattedTransactionFeeICP($mainTransactionFeeStore),
+          {@html replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
+            $amount: valueSpan(
+              formattedTransactionFeeICP($mainTransactionFeeStore)
+            ),
           })}
         </p>
       </SelectCyclesCanister>

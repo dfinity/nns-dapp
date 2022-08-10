@@ -1,14 +1,37 @@
-import type { SnsSwap, SnsSwapInit, SnsSwapState } from "@dfinity/sns";
-import type { SnsSummary } from "../types/sns";
-import type { QuerySnsSummary, QuerySnsSwapState } from "../types/sns.query";
-import { assertNonNullish } from "./asserts.utils";
-import { fromNullable } from "./did.utils";
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type {
+  SnsGetMetadataResponse,
+  SnsSwap,
+  SnsSwapDerivedState,
+  SnsSwapInit,
+  SnsSwapState,
+} from "@dfinity/sns";
+import {
+  SnsMetadataResponseEntries,
+  type SnsTokenMetadataResponse,
+} from "@dfinity/sns";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsTokenMetadata,
+} from "../types/sns";
+import type {
+  QuerySns,
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "../types/sns.query";
 
-type OptionalSwapSummary = QuerySnsSummary & {
+type OptionalSummary = QuerySns & {
+  metadata?: SnsSummaryMetadata;
+  token?: SnsTokenMetadata;
   swap?: SnsSwap;
+  derived?: SnsSwapDerivedState;
+  swapCanisterId?: Principal;
 };
 
-type ValidSwapSummary = Required<OptionalSwapSummary>;
+type ValidSummary = Required<OptionalSummary>;
 
 /**
  * Sort Sns summaries according their swap start dates. Sooner dates first.
@@ -35,72 +58,143 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
   );
 
 /**
- * 1. Concat Sns queries for summaries and swap state.
- * 2. Filter those Sns without Swaps data
- * 3. Sort according swap start date
+ * Metadata is given only if all its properties are defined.
  */
-export const concatSnsSummaries = ([summaries, swaps]: [
-  QuerySnsSummary[],
-  QuerySnsSwapState[]
-]): SnsSummary[] => {
-  const allSummaries: OptionalSwapSummary[] = summaries.map(
-    ({ rootCanisterId, ...rest }: SnsSummary) => ({
-      rootCanisterId,
-      ...rest,
-      swap: fromNullable(
-        swaps.find(
-          ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
-            swapRootCanisterId === rootCanisterId.toText()
-        )?.swap ?? []
-      ),
-    })
+const mapOptionalMetadata = ({
+  logo,
+  url,
+  name,
+  description,
+}: SnsGetMetadataResponse): SnsSummaryMetadata | undefined => {
+  const nullishLogo = fromNullable(logo);
+  const nullishUrl = fromNullable(url);
+  const nullishName = fromNullable(name);
+  const nullishDescription = fromNullable(description);
+
+  if (
+    nullishLogo === undefined ||
+    nullishUrl === undefined ||
+    nullishName === undefined ||
+    nullishDescription === undefined
+  ) {
+    return undefined;
+  }
+
+  return {
+    logo: nullishLogo,
+    url: nullishUrl,
+    name: nullishName,
+    description: nullishDescription,
+  } as SnsSummaryMetadata;
+};
+
+/**
+ * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
+ */
+const mapOptionalToken = (
+  response: SnsTokenMetadataResponse
+): SnsTokenMetadata | undefined => {
+  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
+    (acc, [key, value]) => {
+      switch (key) {
+        case SnsMetadataResponseEntries.SYMBOL:
+          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
+          break;
+        case SnsMetadataResponseEntries.NAME:
+          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
+      }
+
+      return acc;
+    },
+    {}
   );
 
-  const validSwapSummaries: ValidSwapSummary[] = allSummaries.filter(
-    (entry: OptionalSwapSummary): entry is ValidSwapSummary =>
+  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
+    return undefined;
+  }
+
+  return nullishToken as SnsTokenMetadata;
+};
+
+/**
+ * 1. Concat Sns queries for metadata and swap state.
+ * 2. Filter those Sns without metadata, swap and derived information
+ * 3. Sort according swap start date
+ *
+ * Note from NNS team about mandatory swap and derived data that are defined as optional in Candid:
+ *
+ * Swap state and Derived State should always be populated.
+ * They are optional as that is the best strategy for backwards compatibility from the protobuf side, which is what we derive our candid APIs from.
+ * If either of those are missing, that would indicate a bigger issue with the swap canister and can be safely ignored from the nns-dapp.
+ *
+ * Note about mandatory Metadata:
+ *
+ * Having mandatory metadata values is the cleanest solution from code perspective but also from feature perspective, user need information to invest in sales they trust.
+ * This might evolve in the future but at least for a first version it is the best approach for above reasons.
+ *
+ */
+export const mapAndSortSnsQueryToSummaries = ({
+  metadata,
+  swaps,
+}: {
+  metadata: QuerySnsMetadata[];
+  swaps: QuerySnsSwapState[];
+}): SnsSummary[] => {
+  const allSummaries: OptionalSummary[] = metadata.map(
+    ({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
+      const swapState = swaps.find(
+        ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
+          swapRootCanisterId === rootCanisterId
+      );
+      return {
+        ...rest,
+        rootCanisterId,
+        metadata: mapOptionalMetadata(metadata),
+        token: mapOptionalToken(token),
+        swapCanisterId: swapState?.swapCanisterId,
+        swap: fromNullable(swapState?.swap ?? []),
+        derived: fromNullable(swapState?.derived ?? []),
+      };
+    }
+  );
+
+  // Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
+  const validSwapSummaries: ValidSummary[] = allSummaries.filter(
+    (entry: OptionalSummary): entry is ValidSummary =>
       entry.swap !== undefined &&
       fromNullable(entry.swap.init) !== undefined &&
-      fromNullable(entry.swap.state) !== undefined
+      fromNullable(entry.swap.state) !== undefined &&
+      entry.swapCanisterId !== undefined &&
+      entry.derived !== undefined &&
+      entry.metadata !== undefined &&
+      entry.token !== undefined
   );
 
   return sortSnsSummaries(
-    validSwapSummaries.map(({ swap, ...rest }) => ({
+    validSwapSummaries.map(({ swap, rootCanisterId, ...rest }) => ({
+      rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
       swap: {
         // We know for sure that init and state are defined because we check in previous filter that there are not undefined
-        // TODO: There might be a cleaner way than a type cast to make TypeScript checks these are defined
-        init: fromNullable(swap.init) as SnsSwapInit,
-        state: fromNullable(swap.state) as SnsSwapState,
+        init: fromDefinedNullable<SnsSwapInit>(swap.init),
+        state: fromDefinedNullable<SnsSwapState>(swap.state),
       },
     }))
   );
 };
 
-export const concatSnsSummary = ([summary, swap]: [
-  QuerySnsSummary | undefined,
-  QuerySnsSwapState | undefined
-]): SnsSummary => {
-  assertNonNullish(summary);
-  assertNonNullish(swap);
+export const getSwapCanisterAccount = ({
+  controller,
+  swapCanisterId,
+}: {
+  controller: Principal;
+  swapCanisterId: Principal;
+}): AccountIdentifier => {
+  const principalSubaccount = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: swapCanisterId,
+    subAccount: principalSubaccount,
+  });
 
-  // Not sure, this should ever happen
-  const possibleSwap: SnsSwap | undefined = fromNullable(swap?.swap);
-
-  assertNonNullish(possibleSwap);
-
-  const { init: possibleInit, state: possibleState } = possibleSwap;
-
-  const init: SnsSwapInit | undefined = fromNullable(possibleInit);
-  const state: SnsSwapState | undefined = fromNullable(possibleState);
-
-  assertNonNullish(init);
-  assertNonNullish(state);
-
-  return {
-    ...summary,
-    swap: {
-      init,
-      state,
-    },
-  };
+  return accountIdentifier;
 };

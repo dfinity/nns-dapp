@@ -20,7 +20,9 @@
   let logo: string;
   let name: string;
   let description: string;
-  $: ({ logo, name, description } = summary);
+  $: ({
+    metadata: { logo, name, description },
+  } = summary);
 
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
@@ -44,7 +46,7 @@
     <h3>{title}</h3>
   </div>
 
-  <p>{description}</p>
+  <p class="value description">{description}</p>
 
   <ProjectCardSwapInfo {project} bind:myCommitment />
 
@@ -57,15 +59,18 @@
 </Card>
 
 <style lang="scss">
+  @use "../../themes/mixins/text";
+
   .title {
     display: flex;
     gap: var(--padding-1_5x);
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: var(--padding);
 
     h3 {
       margin: 0;
       line-height: var(--line-height-standard);
+      @include text.clamp(2);
     }
   }
 
@@ -75,5 +80,9 @@
 
   .spinner {
     margin-top: var(--padding-1_5x);
+  }
+
+  .description {
+    @include text.clamp(6);
   }
 </style>

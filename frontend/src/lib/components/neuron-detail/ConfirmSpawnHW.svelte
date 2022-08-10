@@ -5,10 +5,11 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import {
-    formattedMaturityByStake,
+    formattedMaturity,
     isEnoughToStakeNeuron,
     neuronStake,
   } from "../../utils/neuron.utils";
+  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
 
@@ -31,12 +32,12 @@
     <div>
       <h5>{$i18n.neuron_detail.current_maturity}</h5>
       <p>
-        {formattedMaturityByStake(neuron)}
+        {formattedMaturity(neuron)}
       </p>
       <h5>{$i18n.neuron_detail.current_stake}</h5>
       <p data-tid="neuron-stake">
-        {replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: formatICP({ value: neuronICP, detailed: true }),
+        {@html replacePlaceholders($i18n.neurons.icp_stake, {
+          $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
         })}
       </p>
     </div>

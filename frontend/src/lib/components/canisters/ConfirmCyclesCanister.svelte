@@ -40,7 +40,7 @@
     </div>
     <div>
       <h5>{$i18n.accounts.source}</h5>
-      <p>{account.identifier}</p>
+      <p class="value">{account.identifier}</p>
     </div>
     <slot />
   </div>

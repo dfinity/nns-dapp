@@ -6,7 +6,7 @@ import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import Proposals from "../../../../lib/components/launchpad/Proposals.svelte";
 import { listSnsProposals } from "../../../../lib/services/sns.services";
-import { snsProposalsStore } from "../../../../lib/stores/projects.store";
+import { snsProposalsStore } from "../../../../lib/stores/sns.store";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
@@ -60,10 +60,10 @@ describe("Proposals", () => {
       { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
     ]);
 
-    const { getAllByTestId } = render(Proposals);
+    const { queryAllByTestId } = render(Proposals);
 
     await waitFor(() =>
-      expect(getAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(queryAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
     );
   });
 
@@ -72,10 +72,12 @@ describe("Proposals", () => {
       { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
     ]);
 
-    const { container, getAllByTestId } = render(Proposals);
+    const { container } = render(Proposals);
 
     await waitFor(() =>
-      expect(getAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(
+        container.querySelectorAll('[data-tid="sns-proposal-card"]').length
+      ).toBeGreaterThan(0)
     );
 
     expect(container.querySelector('[data-tid="skeleton-card"]')).toBeNull();

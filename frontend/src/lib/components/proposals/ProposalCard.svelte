@@ -55,7 +55,7 @@
       </div>
       <Tag slot="end" {color}>{$i18n.status[ProposalStatus[status]] ?? ""}</Tag>
 
-      <ProposalMeta {proposalInfo} size="small" link={false} />
+      <ProposalMeta {proposalInfo} showTopic />
     </Card>
   {/if}
 </li>
@@ -79,5 +79,7 @@
     @include media.min-width(small) {
       margin: 0 var(--padding-2x) 0 0;
     }
+
+    color: var(--value-color);
   }
 </style>

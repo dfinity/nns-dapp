@@ -16,7 +16,7 @@
 </script>
 
 <div class="wizard-list" data-tid="edit-followers-screen">
-  <p>{$i18n.follow_neurons.description}</p>
+  <p class="description">{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}
       <FollowTopicSection {neuron} {topic} />

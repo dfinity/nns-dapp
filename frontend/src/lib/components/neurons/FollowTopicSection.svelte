@@ -62,7 +62,7 @@
     <div class="wrapper" slot="header">
       <div>
         <h3>{title}</h3>
-        <p class="subtitle">{subtitle}</p>
+        <p class="subtitle description">{subtitle}</p>
       </div>
       <div class="toolbar">
         <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
@@ -75,7 +75,7 @@
       <ul>
         {#each followees as followee}
           <li data-tid="current-followee-item">
-            <p>{followee.name ?? followee.neuronId}</p>
+            <p class="value">{followee.name ?? followee.neuronId}</p>
             <button on:click={() => removeCurrentFollowee(followee.neuronId)}
               >x</button
             >

@@ -170,7 +170,7 @@ describe("Wallet", () => {
 
       expect(principal?.length).toBeGreaterThan(0);
       expect(
-        queryByText(`${en.wallet.principal} ${principal}`, {
+        queryByText(`${principal}`, {
           exact: false,
         })
       ).toBeInTheDocument();

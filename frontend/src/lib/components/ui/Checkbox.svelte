@@ -57,6 +57,8 @@
   label {
     @include select.label;
 
+    color: var(--value-color);
+
     &.inline {
       @include text.truncate;
     }
