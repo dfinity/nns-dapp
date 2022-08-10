@@ -604,6 +604,7 @@ interface I18nSns_project_detail {
   execute: string;
   participate_success: string;
   participate: string;
+  increase_participation: string;
   status_completed: string;
   completed: string;
   sale_start: string;
