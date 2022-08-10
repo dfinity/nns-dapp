@@ -56,7 +56,7 @@
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click={() => (visible = true)}
+  on:click|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
