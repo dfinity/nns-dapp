@@ -69,4 +69,5 @@
   @import "lib/themes/themes/dark";
   @import "lib/themes/themes/light";
   @import "lib/themes/colors";
+  @import "lib/themes/grid";
 </style>
