@@ -148,19 +148,19 @@
 <MainContentWrapper sns={modern}>
   {#if modern}
     <ProposalsModern
-            {loading}
-            {hidden}
-            {neuronsLoaded}
-            {nothingFound}
-            on:nnsIntersect={findNextProposals}
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
     />
-    {:else}
+  {:else}
     <ProposalsDeprecated
-            {loading}
-            {hidden}
-            {neuronsLoaded}
-            {nothingFound}
-            on:nnsIntersect={findNextProposals}
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
     />
-    {/if}
+  {/if}
 </MainContentWrapper>

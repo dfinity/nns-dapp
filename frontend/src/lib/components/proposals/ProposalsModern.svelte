@@ -3,7 +3,7 @@
   import ProposalCard from "./ProposalCard.svelte";
   import InfiniteScroll from "../ui/InfiniteScroll.svelte";
   import ProposalsFilters from "./ProposalsFilters.svelte";
-  import {i18n} from "../../stores/i18n";
+  import { i18n } from "../../stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import CardGrid from "../ui/CardGrid.svelte";
 

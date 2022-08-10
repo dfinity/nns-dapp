@@ -4,7 +4,7 @@
   import InfiniteScroll from "../ui/InfiniteScroll.svelte";
   import ProposalCard from "./ProposalCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import {proposalsStore} from "../../stores/proposals.store";
+  import { proposalsStore } from "../../stores/proposals.store";
 
   export let neuronsLoaded: boolean;
   export let loading: boolean;
