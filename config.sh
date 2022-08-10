@@ -37,12 +37,14 @@ local_deployment_data="$(
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
-  IDENTITY_SERVICE_URL="$(
+  : "- may be set as an env var"
+  LOCALLY_DEPLOYED_IDENTITY_SERVICE_URL="$(
     set -euo pipefail
     id="$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
     : "If we have a canister ID, insert it into HOST as a subdomain."
     test -z "${id:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
   )"
+  test -n "${IDENTITY_SERVICE_URL:-}" || IDENTITY_SERVICE_URL="$LOCALLY_DEPLOYED_IDENTITY_SERVICE_URL"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
 
@@ -119,14 +121,8 @@ export FETCH_ROOT_KEY
 REDIRECT_TO_LEGACY="$(get_var REDIRECT_TO_LEGACY)"
 export REDIRECT_TO_LEGACY
 
-ENABLE_NEW_SPAWN_FEATURE="$(get_var ENABLE_NEW_SPAWN_FEATURE)"
-export ENABLE_NEW_SPAWN_FEATURE
-
 WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
 export WASM_CANISTER_ID
-
-ENABLE_SNS_NEURONS="$(get_var ENABLE_SNS_NEURONS)"
-export ENABLE_SNS_NEURONS
 
 : "Return to the original working directory."
 popd

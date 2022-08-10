@@ -31,41 +31,31 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "wasm_canister": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom"
     },
     "sns_governance": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": [
-        "true"
-      ],
+      "build": ["true"],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -77,16 +67,16 @@
         "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.ic0.app",
-        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/"
+        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": false
+        }
       },
-      "providers": [
-        "https://ic0.app/"
-      ],
+      "providers": ["https://ic0.app/"],
       "type": "persistent"
     },
     "staging": {
@@ -94,13 +84,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": false
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
     },
     "testnet": {
@@ -108,13 +98,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
     },
     "small13": {
@@ -122,13 +112,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small13.dfinity.network"
+        "HOST": "https://small13.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
     },
     "small12": {
@@ -136,13 +126,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small12.dfinity.network"
+        "HOST": "https://small12.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
       "type": "persistent"
     },
     "small11": {
@@ -150,13 +140,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small11.dfinity.network"
+        "HOST": "https://small11.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
       "type": "persistent"
     },
     "small06": {
@@ -164,13 +154,13 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small06.dfinity.network"
+        "HOST": "https://small06.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        }
       },
-      "providers": [
-        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
-      ],
+      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
       "type": "persistent"
     },
     "local": {
@@ -178,9 +168,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "http://localhost:8080"
+        "HOST": "http://localhost:8080",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": false
+        }
       },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
