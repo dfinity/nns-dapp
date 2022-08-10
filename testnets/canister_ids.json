@@ -6,39 +6,40 @@
     "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
   },
   "internet_identity": {
-    "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "nns-dapp": {
-    "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small12": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "testnet": "qsgjb-riaaa-aaaaa-aaaga-cai"
   },
   "sns_governance": {
-    "small06": "7pdsn-cqaaa-aaaaa-aabcq-cai",
-    "small11": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small11": "tzq7c-xqaaa-aaaaa-aaamq-cai",
     "testnet": "s24we-diaaa-aaaaa-aaaka-cai"
   },
   "sns_ledger": {
-    "small06": "7gazr-uyaaa-aaaaa-aabda-cai",
-    "small11": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+    "small06": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+    "small11": "tqtu6-byaaa-aaaaa-aaana-cai",
     "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
   },
   "sns_root": {
-    "small06": "7icuz-piaaa-aaaaa-aabca-cai",
-    "small11": "q3fc5-haaaa-aaaaa-aaahq-cai",
-    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
+    "small06": "q3fc5-haaaa-aaaaa-aaahq-cai",
+    "small11": "t6rzw-2iaaa-aaaaa-aaama-cai",
+    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai",
+    "small12": "si2b5-pyaaa-aaaaa-aaaja-cai"
   },
   "sns_swap": {
-    "small06": "7bb7f-zaaaa-aaaaa-aabdq-cai",
-    "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small11": "txssk-maaaa-aaaaa-aaanq-cai",
     "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
   },
   "wasm_canister": {
-    "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
