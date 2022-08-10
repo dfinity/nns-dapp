@@ -54,5 +54,11 @@
     "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
+  },
+  "nns-sns-wasm": {
+    "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   }
 }
