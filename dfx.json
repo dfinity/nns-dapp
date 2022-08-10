@@ -30,7 +30,7 @@
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
-    "wasm_canister": {
+    "nns-sns-wasm": {
       "build": ["true"],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
@@ -192,7 +192,7 @@
       "config": {
         "RUSTC_VERSION": "1.58.1",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "54a57a1f6f1ed99e66d6cde3100a0565e826385f"
+        "IC_COMMIT": "3982db093a87e90cbe0595877a4110e4f37ac740"
       },
       "packtool": ""
     }
