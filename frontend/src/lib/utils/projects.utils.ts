@@ -115,14 +115,14 @@ export const durationTillSwapStart = (
 
 const isProjectOpen = (summary: SnsSummary): boolean =>
   summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
-const isEnoughAmount = ({
+const commitmentTooSmall = ({
   project,
   amount,
 }: {
   project: SnsFullProject;
   amount: ICP;
 }): boolean =>
-  project.summary.swap.init.min_participant_icp_e8s <= amount.toE8s();
+  project.summary.swap.init.min_participant_icp_e8s > amount.toE8s();
 const commitmentTooLarge = ({
   summary,
   amountE8s,
@@ -152,7 +152,7 @@ export const canUserParticipateToSwap = ({
     summary !== undefined &&
     summary !== null &&
     isProjectOpen(summary) &&
-    // Can still participate with 1 e8?
+    // Whether user can still participate with 1 e8
     !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
   );
 };
@@ -184,7 +184,7 @@ export const validParticipation = ({
       labelKey: "error__sns.project_not_open",
     };
   }
-  if (!isEnoughAmount({ project, amount })) {
+  if (commitmentTooSmall({ project, amount })) {
     return {
       valid: false,
       labelKey: "error__sns.not_enough_amount",

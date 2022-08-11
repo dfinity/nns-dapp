@@ -659,7 +659,7 @@
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
-    "commitment_too_large": "Sorry, your commitment of $commitment ICP is too large. The maximum is $maxCommitment ICP.",
+    "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }

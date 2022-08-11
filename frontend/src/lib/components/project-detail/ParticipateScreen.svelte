@@ -40,6 +40,7 @@
 
   let errorMessage: string | undefined = undefined;
   $: (() => {
+    // Remove error message when resetting amount or source account
     if (amount === undefined || selectedAccount === undefined) {
       errorMessage = undefined;
       return;

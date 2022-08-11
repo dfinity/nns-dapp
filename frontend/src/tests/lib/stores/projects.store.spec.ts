@@ -6,6 +6,7 @@ import {
   activePadProjectsStore,
   committedProjectsStore,
   isNnsProjectStore,
+  projectsStore,
   snsProjectSelectedStore,
 } from "../../../lib/stores/projects.store";
 import {
@@ -19,6 +20,32 @@ import {
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 describe("projects.store", () => {
+  describe("projectsStore", () => {
+    beforeAll(() => {
+      snsQueryStore.reset();
+    });
+
+    afterAll(() => {
+      snsQueryStore.reset();
+    });
+
+    const principalRootCanisterId = mockSnsSummaryList[0].rootCanisterId;
+
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principalRootCanisterId),
+      certified: true,
+    });
+
+    it("should set projects of all statuses", () => {
+      snsQueryStore.setData(
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed],
+        })
+      );
+      const projects = get(projectsStore);
+      expect(projects).toHaveLength(2);
+    });
+  });
   describe("filter projects store", () => {
     beforeAll(() => {
       snsQueryStore.reset();
