@@ -33,7 +33,7 @@ import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
 import { validParticipation } from "../utils/projects.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
-import { getAccountIdentity } from "./accounts.services";
+import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
@@ -250,6 +250,7 @@ export const participateInSwap = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {
+  let success = false;
   try {
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -276,7 +277,10 @@ export const participateInSwap = async ({
       fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
     });
 
-    return { success: true };
+    success = true;
+    await syncAccounts();
+
+    return { success };
   } catch (error) {
     toastsStore.error(
       toToastError({
@@ -284,6 +288,6 @@ export const participateInSwap = async ({
         fallbackErrorLabelKey: "error__sns.cannot_participate",
       })
     );
-    return { success: false };
+    return { success };
   }
 };
