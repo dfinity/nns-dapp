@@ -461,7 +461,7 @@ export const registerVotes = async ({
     });
 
   Promise.all([reloadListNeurons(), reloadProposal()]).finally(() => {
-    // remove in progress state only after successful update call
+    // remove in progress state update call
     voteInProgressStore.remove(voteInProgress.proposalId);
     toastsStore.hide(toastMessage);
   });
