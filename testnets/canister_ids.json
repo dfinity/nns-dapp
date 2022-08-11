@@ -31,23 +31,23 @@
   },
   "sns_governance": {
     "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
-    "small11": "tzq7c-xqaaa-aaaaa-aaamq-cai",
+    "small11": "sgymv-uiaaa-aaaaa-aaaia-cai",
     "testnet": "s24we-diaaa-aaaaa-aaaka-cai"
   },
   "sns_ledger": {
     "small06": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
-    "small11": "tqtu6-byaaa-aaaaa-aaana-cai",
+    "small11": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
     "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
   },
   "sns_root": {
     "small06": "q3fc5-haaaa-aaaaa-aaahq-cai",
-    "small11": "t6rzw-2iaaa-aaaaa-aaama-cai",
+    "small11": "q3fc5-haaaa-aaaaa-aaahq-cai",
     "small12": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
   },
   "sns_swap": {
     "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
-    "small11": "txssk-maaaa-aaaaa-aaanq-cai",
+    "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
   }
 }
