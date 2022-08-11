@@ -75,3 +75,14 @@ export const isNnsProjectStore = derived(
   ($snsProjectSelectedStore: Principal) =>
     $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
 );
+
+/***
+ * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
+ */
+export const snsOnlyProjectStore = derived(
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
+      ? undefined
+      : $snsProjectSelectedStore
+);
