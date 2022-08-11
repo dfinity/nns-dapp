@@ -599,21 +599,21 @@
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
-    "please_open": "Please open the Internet Computer app on your wallet and try again.",
-    "locked": "Ledger Wallet is locked. Unlock it and try again.",
+    "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
+    "locked": "Hardware Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
     "principal_not_match": "Principal returned by the device does not match the public key.",
     "signature_unexpected": "A ledger error happened during signature. $message (code $code).",
     "signature_length": "Signature must be 64 bytes long (is $length)",
-    "connect_no_device": "No Ledger device found. Is the wallet connected and unlocked?",
-    "connect_many_apps": "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.",
+    "connect_no_device": "No hardware wallet found. Is the hardware wallet connected and unlocked?",
+    "connect_many_apps": "Cannot connect to the hardware wallet. Please close all other wallet applications (e.g. Ledger Live) and try again.",
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
-    "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
+    "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right hardware wallet?",
     "access_denied": "Access denied to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
     "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
-    "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
+    "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right hardware wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {
     "unexpected": "There was an error trying to attach the hardware wallet.",
