@@ -13,14 +13,18 @@
   import { onDestroy } from "svelte";
   import { routeStore } from "../stores/route.store";
   import { AppPath } from "../constants/routes.constants";
+  import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 
   let loading = true;
 
   const unsubscribe: Unsubscriber = snsProjectSelectedStore.subscribe(
     async (selectedProjectCanisterId) => {
-      loading = true;
-      await loadSnsNeurons(selectedProjectCanisterId);
-      loading = false;
+      // Load only when selected project is not NNS
+      if (selectedProjectCanisterId.toText() !== OWN_CANISTER_ID.toText()) {
+        loading = true;
+        await loadSnsNeurons(selectedProjectCanisterId);
+        loading = false;
+      }
     }
   );
 
