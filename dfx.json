@@ -121,6 +121,22 @@
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
       "type": "persistent"
     },
+    "benchmarklarge": {
+      "config": {
+        "BUILD": "dev",
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://benchmarklarge.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_NEW_SPAWN_FEATURE": true,
+          "ENABLE_SNS_NEURONS": true
+        },
+        "IDENTITY_SERVICE_URL": "https://rdmx6-jaaaa-aaaaa-aaadq-cai.benchmarklarge.dfinity.network/"
+      },
+      "providers": [
+        "http://[2001:4d78:40d:0:5000:8aff:febb:940]:8080"
+      ],
+      "type": "persistent"
+    },
     "small12": {
       "config": {
         "BUILD": "dev",
