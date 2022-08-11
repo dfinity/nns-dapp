@@ -22,10 +22,13 @@
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
 
-  const loadNeuron = async () => {
+  const loadNeuron = async (
+    { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
+  ) => {
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined) {
       await getSnsNeuron({
+        forceFetch,
         rootCanisterId: selected.rootCanisterId,
         neuronIdHex: selected.neuronIdHex,
         onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
