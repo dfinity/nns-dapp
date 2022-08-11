@@ -599,7 +599,7 @@
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
-    "please_open": "Please open the Internet Computer app on your wallet and try again.",
+    "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
     "locked": "Ledger Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
     "principal_not_match": "Principal returned by the device does not match the public key.",
