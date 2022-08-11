@@ -41,8 +41,7 @@ git fetch
 git reset --hard origin/testnets
 jq -s '.[0] * .[1]' testnets/canister_ids.json "$to_add" >testnets/canister_ids.json.new
 mv testnets/canister_ids.json.new testnets/canister_ids.json
-if git status --porcelain | grep -q .
-then
+if git status --porcelain | grep -q .; then
   git add testnets/canister_ids.json
   git commit -a -m "Update canister IDs" || true
   git push
