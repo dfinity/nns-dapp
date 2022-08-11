@@ -5,6 +5,7 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 import {
   participateInSnsSwap,
   queryAllSnsMetadata,
@@ -15,17 +16,22 @@ import {
   querySnsSwapStates,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
+import { projectsStore, type SnsFullProject } from "../stores/projects.store";
 import {
   snsProposalsStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
 } from "../stores/sns.store";
 import { toastsStore } from "../stores/toasts.store";
+import { transactionsFeesStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
+import { LedgerErrorKey } from "../types/ledger.errors";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
+import { validParticipation } from "../utils/projects.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -228,6 +234,13 @@ export const getSwapAccount = async (
   });
 };
 
+const getProjectFromStore = (
+  rootCanisterId: Principal
+): SnsFullProject | undefined =>
+  get(projectsStore)?.find(
+    ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
+  );
+
 export const participateInSwap = async ({
   amount,
   rootCanisterId,
@@ -238,6 +251,21 @@ export const participateInSwap = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
+    const transactionFee = get(transactionsFeesStore).main;
+    assertEnoughAccountFunds({
+      account,
+      amountE8s: amount.toE8s() + transactionFee,
+    });
+    const project = getProjectFromStore(rootCanisterId);
+    const { valid, labelKey, substitutions } = validParticipation({
+      project,
+      amount,
+    });
+    if (!valid) {
+      // TODO: Rename LedgerErroKey to NnsDappErrorKey?
+      throw new LedgerErrorKey(labelKey, substitutions);
+    }
+
     const accountIdentity = await getAccountIdentity(account.identifier);
 
     await participateInSnsSwap({
@@ -250,7 +278,12 @@ export const participateInSwap = async ({
 
     return { success: true };
   } catch (error) {
-    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
+    toastsStore.error(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
     return { success: false };
   }
 };
