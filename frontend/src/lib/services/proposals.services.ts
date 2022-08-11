@@ -6,6 +6,7 @@ import {
   type ProposalInfo,
   type Topic,
 } from "@dfinity/nns";
+import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -32,7 +33,6 @@ import {
   type VoteInProgress,
 } from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { assertNonNullish } from "../utils/asserts.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
 import { replacePlaceholders } from "../utils/i18n.utils";
@@ -344,7 +344,8 @@ export const routePathProposalId = (
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
- * @returns List of errors (order is preserved)
+ *
+ * In order to improve UX optimistic UI update is used: after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron) and update the stores with optimistic values.
  */
 export const registerVotes = async ({
   neuronIds,
@@ -371,21 +372,12 @@ export const registerVotes = async ({
 
   let votingProposal: ProposalInfo = { ...proposalInfo };
 
-  const $i18n = get(i18n);
-  const toastMessage = toastsStore.show({
-    labelKey: "proposal_detail__vote.voting_in_progress_message",
-    level: "running",
-    substitutions: {
-      $vote: vote === Vote.YES ? $i18n.core.yes : $i18n.core.no,
-      $proposalTitle: proposalInfo.proposal?.title ?? "",
-      $proposalId: `${proposalId}`,
-    },
-  });
   const registerVoteCallback = (neuronId: NeuronId) => {
     const originalNeuron = $definedNeuronsStore.find(
       ({ neuronId: id }) => id === neuronId
     );
 
+    // TODO: remove after live testing. In theory it should be always defined here.
     assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
 
     voteInProgressStore.addSuccessfullyVotedNeuronIds({
@@ -393,7 +385,7 @@ export const registerVotes = async ({
       successfullyVotedNeuronIds: [neuronId],
     });
 
-    // pretend voting
+    // Mocking the data and update the stores because with proceed with optimistic values
     const votingNeuron = updateNeuronsVote({
       neuron: originalNeuron,
       vote,
@@ -412,8 +404,21 @@ export const registerVotes = async ({
     reloadProposalCallback(votingProposal);
   };
 
+  // display "voting in progress" message
+  const $i18n = get(i18n);
+  const toastMessage = toastsStore.show({
+    labelKey: "proposal_detail__vote.voting_in_progress_message",
+    level: "running",
+    substitutions: {
+      $vote: vote === Vote.YES ? $i18n.core.yes : $i18n.core.no,
+      $proposalTitle: proposalInfo.proposal?.title ?? "",
+      $proposalId: `${proposalId}`,
+    },
+  });
+
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
+
     await requestRegisterVotes({
       neuronIds,
       proposalId,
@@ -421,6 +426,7 @@ export const registerVotes = async ({
       vote,
       registerVoteCallback,
     });
+
     logWithTimestamp(
       `Registering [${neuronIds.map(hashCode)}] votes complete.`
     );

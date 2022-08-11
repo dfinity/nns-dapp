@@ -27,6 +27,7 @@ const initVoteInProgressStore = () => {
     add(vote: VoteInProgress) {
       update(({ votes }) => {
         if (votes.find(({ proposalId }) => proposalId === vote.proposalId)) {
+          // Simultaneous voting is blocked by UI. This check was added here only because otherwise this type of error would be extremely difficult to detect.
           throw new Error("Simultaneous proposal voting");
         }
 

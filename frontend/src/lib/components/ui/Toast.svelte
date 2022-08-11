@@ -58,7 +58,7 @@
   role="dialog"
   class="toast"
   class:error={level === "error"}
-  class:warn={level === "warn" || level === "running"}
+  class:warn={["running", "warn"].includes(level)}
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
