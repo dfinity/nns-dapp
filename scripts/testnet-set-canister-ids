@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+help_text() {
+  cat <<-EOF
+
+	Adds the current canister IDs to the testnet branch and publishes them.
+
+	Note:  Assumes that there is a git worktree with the testnets branch at
+	       a path ending 'branches/testnets'.
+
+	Flags:
+	--help
+	  Prints this help text and exits.
+
+	EOF
+}
+
+: "Print help, if applicable..."
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  *)
+    printf "ERROR: %s\n" "Unsupported argument: '$arg'"
+    exit 1
+    ;;
+  esac
+done
+
+: Get the absolute path
+to_add="$(realpath canister_ids.json)"
+
+: Assuming that the testnets worktree already exists:
+cd "$(git worktree list --porcelain | awk '/^worktree .*branches[/]testnets$/{print $2}')"
+git fetch
+git reset --hard origin/testnets
+jq -s '.[0] * .[1]' testnets/canister_ids.json "$to_add" >testnets/canister_ids.json.new
+mv testnets/canister_ids.json.new testnets/canister_ids.json
+git add testnets/canister_ids.json
+git commit -a -m "Update canister IDs"
+git push
+echo "Published canister IDs to: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json"
