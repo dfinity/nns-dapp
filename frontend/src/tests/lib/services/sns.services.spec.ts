@@ -4,6 +4,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import * as api from "../../../lib/api/sns.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import { syncAccounts } from "../../../lib/services/accounts.services";
 import * as services from "../../../lib/services/sns.services";
 import { snsQueryStore } from "../../../lib/stores/sns.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
@@ -23,6 +24,7 @@ jest.mock("../../../lib/services/accounts.services", () => {
     getAccountIdentity: jest
       .fn()
       .mockImplementation(() => testGetIdentityReturn),
+    syncAccounts: jest.fn(),
   };
 });
 
@@ -46,7 +48,7 @@ describe("sns-services", () => {
       snsQueryStore.reset();
     });
 
-    it("should call api.participateInSnsSwap and return success true", async () => {
+    it("should call api.participateInSnsSwap, sync accounts and return success true", async () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
@@ -59,6 +61,7 @@ describe("sns-services", () => {
       });
       expect(success).toBe(true);
       expect(spyParticipate).toBeCalled();
+      expect(syncAccounts).toBeCalled();
     });
 
     it("should return success false if api call fails", async () => {
