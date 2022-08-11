@@ -114,7 +114,6 @@ jobs:
       - name: Show canister versions
         run: sha256sum target/ic/*.wasm
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
-      # REDIRECT_TO_LEGACY=svelte builds and deploys only Svelte
       - name: Deploy NNS canisters
         run: |
           ./e2e-tests/scripts/nns-canister-install
@@ -141,7 +140,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          REDIRECT_TO_LEGACY=svelte npm run test | tee -a wdio.log || true
+          npm run test | tee -a wdio.log || true
 
       - name: Stop replica
         run: dfx stop

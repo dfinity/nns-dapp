@@ -37,7 +37,6 @@ jobs:
          - BUILD_NAME: "mainnet"
            DFX_NETWORK: "mainnet"
            OWN_CANISTER_ID: ""
-           REDIRECT_TO_LEGACY: "prod"
     steps:
       - uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -51,7 +50,6 @@ jobs:
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
             OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
-            REDIRECT_TO_LEGACY=${{ matrix.REDIRECT_TO_LEGACY }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out
