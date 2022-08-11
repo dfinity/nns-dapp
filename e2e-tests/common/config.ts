@@ -22,19 +22,3 @@ export function getRequiredEnvVar(key): string {
   }
   return value;
 }
-
-/**
- * Returns the given environment variable as an enum variant, else throws an error.
- */
-export function getRequiredEnvEnum<Type>(key: string, enumType): Type {
-  const value = getRequiredEnvVar(key);
-  if (value !== undefined && value in enumType) {
-    return value as unknown as Type;
-  } else {
-    throw new Error(
-      `Environment variable ${key}='${value}' is not a valid ${enumType}.  Valid values are: ${Object.keys(
-        enumType
-      ).join(" ")}`
-    );
-  }
-}

@@ -1,4 +1,4 @@
-import { getRequiredEnvVar, getRequiredEnvEnum } from "./config";
+import { getRequiredEnvVar } from "./config";
 
 export enum RouteHash {
   Accounts = "#/accounts",
