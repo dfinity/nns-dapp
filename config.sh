@@ -37,14 +37,12 @@ local_deployment_data="$(
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
-  : "- may be set as an env var"
-  LOCALLY_DEPLOYED_IDENTITY_SERVICE_URL="$(
+  IDENTITY_SERVICE_URL="$(
     set -euo pipefail
     id="$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
     : "If we have a canister ID, insert it into HOST as a subdomain."
     test -z "${id:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
   )"
-  test -n "${IDENTITY_SERVICE_URL:-}" || IDENTITY_SERVICE_URL="$LOCALLY_DEPLOYED_IDENTITY_SERVICE_URL"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
 
