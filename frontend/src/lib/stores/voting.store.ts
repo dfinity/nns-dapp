@@ -9,15 +9,16 @@ export interface VoteInProgress {
   vote: Vote;
 }
 
-export interface VotingStore {
+export interface VoteInProgressStore {
   votes: VoteInProgress[];
 }
 
 /**
  * A store that contain votes in progress data (proposals and neurons that were not confirmed by `update` calls)
+ * Is used for optimistic UI update
  */
 const initVoteInProgressStore = () => {
-  const { subscribe, update } = writable<VotingStore>({
+  const { subscribe, update } = writable<VoteInProgressStore>({
     votes: [],
   });
 
