@@ -87,24 +87,28 @@ const getNeuronFromStoreByIdHex = ({
 export const getSnsNeuron = async ({
   neuronIdHex,
   rootCanisterId,
+  forceFetch = false,
   onLoad,
   onError,
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
+  forceFetch?: boolean;
   onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
   onError?: ({ certified, error }) => void;
 }): Promise<void> => {
-  const { neuron, certified } = getNeuronFromStoreByIdHex({
-    neuronIdHex,
-    rootCanisterId,
-  });
-  if (neuron !== undefined) {
-    onLoad({
-      neuron,
-      certified,
+  if (!forceFetch) {
+    const { neuron, certified } = getNeuronFromStoreByIdHex({
+      neuronIdHex,
+      rootCanisterId,
     });
-    return;
+    if (neuron !== undefined) {
+      onLoad({
+        neuron,
+        certified,
+      });
+      return;
+    }
   }
   const neuronId = hexStringToBytes(neuronIdHex);
   return queryAndUpdate<SnsNeuron, Error>({
