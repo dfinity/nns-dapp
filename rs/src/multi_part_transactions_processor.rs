@@ -25,7 +25,7 @@ pub enum MultiPartTransactionToBeProcessed {
     RefundTransaction(RefundTransactionArgs),
     CreateCanisterV2(PrincipalId),
     TopUpCanisterV2(PrincipalId, CanisterId),
-    ParticipateSwap(PrincipalId, AccountIdentifier),
+    ParticipateSwap(PrincipalId, AccountIdentifier, CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize)]

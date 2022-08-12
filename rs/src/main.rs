@@ -2,7 +2,7 @@ use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
     DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
     RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse,
-    Stats, AddPendingNotifySwapRequest, AddPendingNotifySwapResponse, TransactionType, PendingTransactionType,
+    Stats, AddPendingNotifySwapRequest, AddPendingNotifySwapResponse, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
@@ -205,7 +205,7 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
     STATE.with(|s| {
         s.accounts_store
             .borrow_mut()
-            .add_pending_transaction(PendingTransactionType::ParticipateSwap(request.swap_canister_id), request.buyer, TransactionType::ParticipateSwap)
+            .add_pending_transaction(request.buyer, TransactionType::ParticipateSwap(request.swap_canister_id))
     })
 }
 

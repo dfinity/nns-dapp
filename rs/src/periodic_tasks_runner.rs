@@ -1,4 +1,4 @@
-use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs, PendingTransactionType, PendingTransaction};
+use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use crate::canisters::ledger;
 use crate::canisters::{cmc, governance, swap};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
@@ -23,8 +23,8 @@ pub async fn run_periodic_tasks() {
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to) => {
-                handle_participate_swap(block_height, principal, to).await;
+            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to, swap_canister_id) => {
+                handle_participate_swap(block_height, principal, to, swap_canister_id).await;
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(block_height, principal, memo).await;
@@ -59,31 +59,9 @@ pub async fn run_periodic_tasks() {
     }
 }
 
-async fn handle_participate_swap(block_height: BlockHeight, principal: PrincipalId, to: AccountIdentifier) {
-    // 1. Find pending swap transaction
-    // 2. If found, notify swap transaction
-    // 3. Update `transaction_completed = true`
-    STATE.with(|s| {
-        match s.accounts_store
-            .borrow_mut()
-            .get_pending_transaction(to) {
-                Some(pending_transaction) => {
-                    match pending_transaction.pending_transaction_type {
-                        PendingTransactionType::ParticipateSwap(canister_id) => {
-                            participate_swap(canister_id, pending_transaction, block_height)
-                        }
-                    }
-                }
-                None => {
-                    Ok(true)
-                }
-            }
-    })
-}
-
-async fn participate_swap(swap_canister_id: CanisterId, pending_transaction: &PendingTransaction, block_height: BlockHeight) {
+async fn handle_participate_swap(block_height: BlockHeight, principal: PrincipalId, to: AccountIdentifier, swap_canister_id: CanisterId) {
     let request = swap::RefreshBuyersTokensRequest {
-        buyer: pending_transaction.principal.to_string(),
+        buyer: principal.to_string(),
     };
     match swap::notify_swap_participation(swap_canister_id, request).await {
         Ok(_) => {
@@ -91,15 +69,13 @@ async fn participate_swap(swap_canister_id: CanisterId, pending_transaction: &Pe
                 s
                     .accounts_store
                     .borrow_mut()
-                    .update_pending_transaction(pending_transaction, block_height, true);
-                Ok(true)
+                    .complete_pending_transaction(to, swap_canister_id, block_height)
             });
         }
-        Err(_) => {
-            Err(false)
-        },
+        Err(_) => {}
     }
 }
+
 
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {

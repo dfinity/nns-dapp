@@ -64,7 +64,6 @@ pub struct PendingTransaction {
 	pub transaction_completed: bool,
     pub to: AccountIdentifier,
 	pub principal: PrincipalId,
-	pub pending_transaction_type: PendingTransactionType,
     pub transaction_type: TransactionType,
 }
 
@@ -139,11 +138,6 @@ pub enum TransactionType {
     TopUpNeuron,
     CreateCanister,
     TopUpCanister(CanisterId),
-    ParticipateSwap,
-}
-
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum PendingTransactionType {
     ParticipateSwap(CanisterId),
 }
 
@@ -477,24 +471,23 @@ impl AccountsStore {
     // Why the "&mut self"?
     pub fn add_pending_transaction(
         &mut self,
-        pending_transaction_type: PendingTransactionType,
         principal: PrincipalId,
         transaction_type: TransactionType,
     ) -> AddPendingNotifySwapResponse {
-        match pending_transaction_type {
-            PendingTransactionType::ParticipateSwap(canister_id) => {
+        match transaction_type {
+            TransactionType::ParticipateSwap(canister_id) => {
                 // Why the &principal.into?
                 let account_identifier = AccountIdentifier::new(canister_id.get(), Some((&principal).into()));
                 // Why the "&"
                 match self.pending_transactions.get_mut(& account_identifier) {
                     Some(transactions) => {
-                        transactions.push(PendingTransaction::new(principal, account_identifier, pending_transaction_type, transaction_type).clone());
+                        transactions.push(PendingTransaction::new(principal, account_identifier, transaction_type).clone());
                         AddPendingNotifySwapResponse::Ok
                     }
                     None => {
                         self.pending_transactions.insert(
                             account_identifier,
-                            vec![PendingTransaction::new(principal, account_identifier, pending_transaction_type, transaction_type)],
+                            vec![PendingTransaction::new(principal, account_identifier, transaction_type)],
                         );
                         AddPendingNotifySwapResponse::Ok
                     }
@@ -507,7 +500,7 @@ impl AccountsStore {
 
     // Get first pending transaction
     pub fn get_pending_transaction(
-        &mut self,
+        &self,
         account_identifier: AccountIdentifier,
     ) -> Option<&PendingTransaction> {
         match self.pending_transactions.get(& account_identifier) {
@@ -516,25 +509,29 @@ impl AccountsStore {
         }
     }
 
-    // Returns true if update is successful
-    pub fn update_pending_transaction(
+    pub fn complete_pending_transaction(
         &mut self,
-        pending_transaction: &PendingTransaction,
+        to: AccountIdentifier,
+        swap_canister_id: CanisterId,
         block_height: BlockHeight,
-        value: bool,
-    ) -> bool {
-        match self.pending_transactions.get_mut(& pending_transaction.to) {
+    ) {
+        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::Complete);
+        match self.pending_transactions.get_mut(& to) {
             Some(transactions) => {
-                match transactions.into_iter().find(|t| !t.transaction_completed && t.principal.to_string() == pending_transaction.principal.to_string()) {
-                    Some(transaction) => {
-                        transaction.transaction_completed = value;
-                        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::Complete);
-                        true
-                    }
-                    None => false
-                }
+                transactions
+                    .into_iter()
+                    .filter(|t| {
+                        if t.transaction_completed {
+                            false
+                        } else if let TransactionType::ParticipateSwap(canister_id) = t.transaction_type {
+                            canister_id.to_string() == swap_canister_id.to_string()
+                        } else {
+                            false
+                        }
+                    })
+                    .map(|t| t.transaction_completed = true);
             }
-            None => false,
+            None => {},
         }
 
     }
@@ -1162,8 +1159,8 @@ impl AccountsStore {
                 TransactionType::CreateCanister
             } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
                 TransactionType::TopUpCanister(canister_id)
-            } else if Self::is_participate_swap_transaction(memo) {
-                TransactionType::ParticipateSwap
+            } else if let Some(canister_id) = self.is_participate_swap_transaction(memo, to) {
+                TransactionType::ParticipateSwap(canister_id)
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {
@@ -1174,11 +1171,21 @@ impl AccountsStore {
         }
     }
 
-    fn is_participate_swap_transaction(memo: Memo) -> bool {
-        // Swap canister id changes per SNS project.
-        // This is why we can't get it here form the account identifier
-        // and we rely on PendingTransaction store to get it.
-        memo == MEMO_PARTICIPATE_SWAP
+    fn is_participate_swap_transaction(&self, memo: Memo, to: AccountIdentifier) -> Option<CanisterId> {
+        if memo == MEMO_PARTICIPATE_SWAP {
+            match self.get_pending_transaction(to) {
+                Some(pending_transaction) => {
+                    if let TransactionType::ParticipateSwap(canister_id) = pending_transaction.transaction_type {
+                        Some(canister_id)
+                    } else {
+                        None
+                    }
+                }
+                None => None
+            }
+        } else {
+            None
+        }
     }
 
     fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
@@ -1310,11 +1317,11 @@ impl AccountsStore {
         block_height: BlockHeight,
     ) {
         match transaction_type {
-            TransactionType::ParticipateSwap => {
+            TransactionType::ParticipateSwap(swap_canister_id) => {
                 self.multi_part_transactions_processor.push(
                     principal,
                     block_height,
-                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to),
+                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to, swap_canister_id),
                 );
             }
             TransactionType::StakeNeuron => {
@@ -1552,14 +1559,12 @@ impl PendingTransaction {
     pub fn new(
         principal: PrincipalId,
         to: AccountIdentifier,
-        pending_transaction_type: PendingTransactionType,
         transaction_type: TransactionType,
     ) -> PendingTransaction {
         PendingTransaction {
             transaction_completed: false,
             to,
             principal,
-            pending_transaction_type,
             transaction_type,
         }
     }

@@ -210,7 +210,7 @@ fn add_pending_transaction() {
 
     let mut store = setup_test_store();
     assert_eq!(0, store.pending_transactions.len());
-    store.add_pending_transaction(PendingTransactionType::ParticipateSwap(swap_canister_id), buyer, TransactionType::ParticipateSwap);
+    store.add_pending_transaction(buyer, TransactionType::ParticipateSwap(swap_canister_id));
 
     let account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
     match store.get_pending_transaction(account_identifier) {
