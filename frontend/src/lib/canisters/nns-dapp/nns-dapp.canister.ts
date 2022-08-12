@@ -14,6 +14,7 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  PendingTransactionsLimitExceededError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
@@ -24,6 +25,7 @@ import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
   AccountIdentifierString,
+  AddPendingNotifySwapRequest,
   CanisterDetails,
   CreateSubAccountResponse,
   GetTransactionsResponse,
@@ -92,7 +94,7 @@ export class NNSDappCanister {
       throw new AccountNotFoundError("error__account.not_found");
     }
 
-    if (Ok) {
+    if (Ok !== undefined) {
       return Ok;
     }
 
@@ -134,7 +136,7 @@ export class NNSDappCanister {
       );
     }
 
-    if (Ok) {
+    if (Ok !== undefined) {
       return Ok;
     }
 
@@ -332,6 +334,24 @@ export class NNSDappCanister {
 
     throw new UnknownProposalPayloadError(
       errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
+    );
+  }
+
+  public async addPendingNotifySwap(
+    request: AddPendingNotifySwapRequest
+  ): Promise<void> {
+    const response = await this.certifiedService.add_pending_notify_swap(
+      request
+    );
+    if ("Ok" in response) {
+      return;
+    }
+    if ("TransactionLimitExceeded" in response) {
+      throw new PendingTransactionsLimitExceededError();
+    }
+    // Edge case
+    throw new Error(
+      `Unkonwn response for add_pending_notify_swap ${JSON.stringify(response)}`
     );
   }
 }

@@ -5,6 +5,7 @@ use ic_nns_common::types::NeuronId;
 use ledger_canister::{BlockHeight, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
+use ledger_canister::{AccountIdentifier};
 
 const MAX_ERRORS_TO_HOLD: usize = 500;
 
@@ -24,6 +25,7 @@ pub enum MultiPartTransactionToBeProcessed {
     RefundTransaction(RefundTransactionArgs),
     CreateCanisterV2(PrincipalId),
     TopUpCanisterV2(PrincipalId, CanisterId),
+    ParticipateSwap(PrincipalId, AccountIdentifier),
 }
 
 #[derive(Clone, CandidType, Deserialize)]

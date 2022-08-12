@@ -204,6 +204,26 @@ fn create_sub_account() {
 }
 
 #[test]
+fn add_pending_transaction() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    assert_eq!(0, store.pending_transactions.len());
+    store.add_pending_transaction(PendingTransactionType::ParticipateSwap(swap_canister_id), buyer, TransactionType::ParticipateSwap);
+
+    let account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    match store.get_pending_transaction(account_identifier) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(pending_transaction) => {
+            assert_eq!(pending_transaction.principal, buyer)
+        }
+    }
+}
+
+#[test]
 fn rename_sub_account() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();

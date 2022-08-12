@@ -10,6 +10,7 @@ import type {
   SnsWrapper,
 } from "@dfinity/sns";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { SWAP_PARTICIPATE_MEMO } from "../constants/api.constants";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
   importInitSnsWrapper,
@@ -28,6 +29,7 @@ import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
+import { nnsDappCanister } from "./nns-dapp.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -439,15 +441,24 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
+  // Notify NNS Dapp to notify when transaction is checked
+  const { canister: nnsDapp } = await nnsDappCanister({ identity });
+  await nnsDapp.addPendingNotifySwap({
+    swap_canister_id: swapCanisterId,
+    buyer: controller,
+  });
+  console.log("after da add pending notify swap");
+
   // Send amount to the ledger
   await nnsLedger.transfer({
     amount,
     fromSubAccount,
     to: accountIdentifier,
+    memo: SWAP_PARTICIPATE_MEMO,
   });
 
   // Notify participation
-  await notifyParticipation({ buyer: controller.toText() });
+  // await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
 };

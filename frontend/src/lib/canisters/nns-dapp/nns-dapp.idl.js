@@ -1,6 +1,14 @@
-/* Do not edit.  Compiled with ./scripts/compile-idl-js from candid/nns_dapp.did */
+/* Do not edit.  Compiled with ./scripts/compile-idl-js from src/lib/canisters/nns-dapp/nns-dapp.did */
 export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
+  const AddPendingNotifySwapRequest = IDL.Record({
+    swap_canister_id: IDL.Principal,
+    buyer: IDL.Principal,
+  });
+  const AddPendingNotifySwapResponse = IDL.Variant({
+    Ok: IDL.Null,
+    TransactionLimitExceeded: IDL.Null,
+  });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
     canister_id: IDL.Principal,
@@ -164,6 +172,11 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     add_account: IDL.Func([], [AccountIdentifier], []),
+    add_pending_notify_swap: IDL.Func(
+      [AddPendingNotifySwapRequest],
+      [AddPendingNotifySwapResponse],
+      []
+    ),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
     attach_canister: IDL.Func(
       [AttachCanisterRequest],
@@ -188,12 +201,12 @@ export const idlFactory = ({ IDL }) => {
       [MultiPartTransactionStatus],
       ["query"]
     ),
-    get_stats: IDL.Func([], [Stats], ["query"]),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],
       []
     ),
+    get_stats: IDL.Func([], [Stats], ["query"]),
     get_transactions: IDL.Func(
       [GetTransactionsRequest],
       [GetTransactionsResponse],

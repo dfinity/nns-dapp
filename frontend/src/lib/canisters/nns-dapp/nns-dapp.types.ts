@@ -9,6 +9,13 @@ export interface AccountDetails {
 // ledger and account canisters in nns-js define a AccountIdentifier as an object that contains the bytes array as a variable
 // nns-dapp canister returns a string
 export type AccountIdentifierString = string;
+export interface AddPendingNotifySwapRequest {
+  swap_canister_id: Principal;
+  buyer: Principal;
+}
+export type AddPendingNotifySwapResponse =
+  | { Ok: null }
+  | { TransactionLimitExceeded: null };
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;
@@ -160,6 +167,9 @@ export type Transfer =
   | { Receive: Receive };
 export default interface _SERVICE {
   add_account: () => Promise<AccountIdentifierString>;
+  add_pending_notify_swap: (
+    arg_0: AddPendingNotifySwapRequest
+  ) => Promise<AddPendingNotifySwapResponse>;
   add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
   attach_canister: (
     arg_0: AttachCanisterRequest

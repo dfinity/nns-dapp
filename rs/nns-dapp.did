@@ -153,6 +153,18 @@ type AttachCanisterResponse =
         NameTooLong;
     };
 
+type AddPendingNotifySwapRequest =
+    record {
+        buyer: principal;
+        swap_canister_id: principal;
+    };
+
+type AddPendingNotifySwapResponse =
+    variant {
+        Ok;
+        TransactionLimitExceeded;
+    };
+
 type DetachCanisterRequest =
     record {
         canister_id: principal;
@@ -240,6 +252,7 @@ service : {
     get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;
+    add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingNotifySwapResponse);
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
