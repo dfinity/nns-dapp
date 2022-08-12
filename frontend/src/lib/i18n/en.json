@@ -43,7 +43,7 @@
     "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
-    "register_vote": "Sorry, there was an error while registering the vote (Proposal: $proposalId). Please try again.",
+    "register_vote": "Sorry, there was an error while registering the vote for the proposal $topic ($proposalId). Please try again.",
     "register_vote_neuron": "$neuronId: $reason",
     "register_vote_unknown": "Sorry, there was an unexpected error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpected error while adding the followee. Please try again later.",

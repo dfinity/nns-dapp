@@ -425,6 +425,7 @@ export const registerVotes = async ({
       proposalId,
       identity,
       vote,
+      topic: proposalInfo.topic,
       registerVoteCallback,
     });
 
@@ -473,12 +474,14 @@ export const requestRegisterVotes = async ({
   proposalId,
   identity,
   vote,
+  topic,
   registerVoteCallback,
 }: {
   neuronIds: bigint[];
   proposalId: ProposalId;
   identity: Identity;
   vote: Vote;
+  topic: Topic;
   registerVoteCallback: (neuronId: NeuronId) => void;
 }): Promise<void> => {
   const requests = neuronIds.map(
@@ -516,6 +519,7 @@ export const requestRegisterVotes = async ({
       responses,
       neuronIds,
     });
+    const $i18n = get(i18n);
 
     console.error("vote", rejectedResponses);
 
@@ -524,6 +528,7 @@ export const requestRegisterVotes = async ({
       level: "error",
       substitutions: {
         $proposalId: `${proposalId}`,
+        $topic: $i18n.topics[Topic[topic]],
       },
       detail: details.join(", "),
     });
