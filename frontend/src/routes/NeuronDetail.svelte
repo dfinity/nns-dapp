@@ -91,7 +91,7 @@
 
   let inVotingProcess: boolean = false;
   $: inVotingProcess =
-    neuron &&
+    neuron !== undefined &&
     neuronVoting({
       neuronId: neuron.neuronId,
       voteInProgressStore: $voteInProgressStore,

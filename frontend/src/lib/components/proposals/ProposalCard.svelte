@@ -5,7 +5,10 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
+  import {
+    proposalsFiltersStore,
+    type ProposalsFiltersStore,
+  } from "../../stores/proposals.store";
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
@@ -42,14 +45,14 @@
   let hide: boolean;
   $: hide =
     hideProposal({
-      filters: $proposalsFiltersStore,
+      filters: $proposalsFiltersStore as ProposalsFiltersStore,
       proposalInfo,
       neurons: $definedNeuronsStore,
     }) ||
     // hide proposals that are currently in the voting state
     $voteInProgressStore.votes.find(
       ({ proposalId }) => proposalInfo.id === proposalId
-    );
+    ) !== undefined;
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->

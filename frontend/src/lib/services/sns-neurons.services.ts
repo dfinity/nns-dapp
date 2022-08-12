@@ -131,8 +131,7 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (neuronId: SnsNeuronId): Promise<Identity> =>
-  getIdentity();
+const getNeuronIdentity = (): Promise<Identity> => getIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -145,7 +144,7 @@ export const addHotkey = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
-    const identity = await getNeuronIdentity(neuronId);
+    const identity = await getNeuronIdentity();
     await addNeuronPermissions({
       permissions,
       identity,
@@ -174,7 +173,7 @@ export const removeHotkey = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
-    const identity = await getNeuronIdentity(neuronId);
+    const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
       permissions,
