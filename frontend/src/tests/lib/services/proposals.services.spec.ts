@@ -356,7 +356,7 @@ describe("proposals-services", () => {
           ).toEqual(neuronIds);
         });
 
-        it("should show the vote in progress toast", async () => {
+        it("should show the vote adopt_in_progress toast", async () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
@@ -371,7 +371,26 @@ describe("proposals-services", () => {
           );
           expect(message).toBeDefined();
           expect(message?.labelKey).toEqual(
-            "proposal_detail__vote.voting_in_progress_message"
+            "proposal_detail__vote.vote_adopt_in_progress"
+          );
+        });
+
+        it("should show the vote reject_in_progress toast", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.NO,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const message = get(toastsStore).find(
+            ({ level }) => level === "running"
+          );
+          expect(message).toBeDefined();
+          expect(message?.labelKey).toEqual(
+            "proposal_detail__vote.vote_reject_in_progress"
           );
         });
 
