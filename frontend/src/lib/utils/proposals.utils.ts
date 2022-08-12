@@ -12,6 +12,7 @@ import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
+import type { VoteInProgress } from "../stores/voting.store";
 import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
@@ -450,3 +451,10 @@ export const registerVoteErrorDetails = ({
 
   return details;
 };
+
+/** There are neurons in a queue whose vote is not yet been registered */
+export const voteRegistrationActive = (votes: VoteInProgress[]): boolean =>
+  votes.find(
+    ({ neuronIds, successfullyVotedNeuronIds }) =>
+      neuronIds.length > successfullyVotedNeuronIds.length
+  ) !== undefined;
