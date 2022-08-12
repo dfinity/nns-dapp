@@ -39,7 +39,7 @@
       rootCanisterId: $snsProjectSelectedStore,
     });
     if (success) {
-      await reload();
+      await reload({ forceFetch: true });
     }
     stopBusy("add-sns-hotkey-neuron");
     if (success) {

@@ -1,4 +1,3 @@
-import type { ICP } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
@@ -19,7 +18,7 @@ import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
-import { InsufficientAmountError } from "../types/common.errors";
+import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { isController } from "../utils/canisters.utils";
 import {
@@ -63,21 +62,6 @@ export const listCanisters = async ({
   });
 };
 
-/**
- * @throws InsufficientAmountError
- */
-const assertEnoughBalance = ({
-  amount,
-  account,
-}: {
-  amount: ICP;
-  account: Account;
-}): void => {
-  if (amount.toE8s() > account.balance.toE8s()) {
-    throw new InsufficientAmountError();
-  }
-};
-
 export const createCanister = async ({
   amount,
   account,
@@ -87,7 +71,7 @@ export const createCanister = async ({
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    assertEnoughBalance({ amount: icpAmount, account });
+    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
@@ -119,7 +103,7 @@ export const topUpCanister = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const icpAmount = convertNumberToICP(amount);
-    assertEnoughBalance({ amount: icpAmount, account });
+    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({

@@ -260,6 +260,25 @@ describe("neurons-services", () => {
       expect(toastsStore.show).toBeCalled();
     });
 
+    it("stake neuron should return undefined if not enough funds in account", async () => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+
+      // 10 ICPs
+      const amount = 10;
+      const response = await stakeNeuron({
+        amount,
+        account: {
+          ...mockMainAccount,
+          balance: ICP.fromString(String(amount - 1)) as ICP,
+        },
+      });
+
+      expect(response).toBeUndefined();
+      expect(toastsStore.show).toBeCalled();
+    });
+
     it("should not stake neuron if no identity", async () => {
       setNoAccountIdentity();
 

@@ -40,7 +40,10 @@ import {
   NotAuthorizedNeuronError,
   NotFoundError,
 } from "../types/neurons.errors";
-import { isAccountHardwareWallet } from "../utils/accounts.utils";
+import {
+  assertEnoughAccountFunds,
+  isAccountHardwareWallet,
+} from "../utils/accounts.utils";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
@@ -189,6 +192,10 @@ export const stakeNeuron = async ({
 }): Promise<NeuronId | undefined> => {
   try {
     const stake = convertNumberToICP(amount);
+    assertEnoughAccountFunds({
+      account,
+      amountE8s: stake.toE8s(),
+    });
 
     if (!isEnoughToStakeNeuron({ stake })) {
       toastsStore.error({
