@@ -1,9 +1,11 @@
 import { ICP } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
   type SnsSwapBuyerState,
   type SnsSwapTimeWindow,
 } from "@dfinity/sns";
+import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "../../../lib/stores/projects.store";
 import type { SnsSwapCommitment } from "../../../lib/types/sns";
 import { nowInSeconds } from "../../../lib/utils/date.utils";
@@ -14,6 +16,7 @@ import {
   filterActiveProjects,
   filterCommittedProjects,
   hasUserParticipatedToSwap,
+  isNnsProject,
   openTimeWindow,
   swapDuration,
   validParticipation,
@@ -450,6 +453,16 @@ describe("project-utils", () => {
         amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
       });
       expect(valid).toBe(false);
+    });
+  });
+
+  describe("isNnsProject", () => {
+    it("returns true if nns dapp principal", () => {
+      expect(isNnsProject(OWN_CANISTER_ID)).toBeTruthy();
+    });
+
+    it("returns true if nns dapp principal", () => {
+      expect(isNnsProject(Principal.from("aaaaa-aa"))).toBeFalsy();
     });
   });
 });
