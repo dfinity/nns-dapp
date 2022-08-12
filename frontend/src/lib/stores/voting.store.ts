@@ -4,7 +4,7 @@ import { writable } from "svelte/store";
 export interface VoteInProgress {
   proposalId: ProposalId;
   neuronIds: NeuronId[];
-  // TODO(create Jira task): use it in the upcomming message details
+  // TODO(L2-941): use it in the upcomming message details
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
 }
@@ -67,6 +67,7 @@ const initVoteInProgressStore = () => {
       });
     },
 
+    // TODO(L2-941): use entry status for removing (rename to e.g. `removeCompleted`)
     remove(proposalId: ProposalId) {
       update(({ votes }) => ({
         votes: votes.filter(({ proposalId: id }) => id !== proposalId),

@@ -52,6 +52,7 @@ const initNeuronsStore = () => {
     },
 
     replaceNeurons(neurons: NeuronInfo[]) {
+      // the function should preserve the order to avoid jumps in the lists
       update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
         const newNeurons = new Map(
           neurons.map((neuron) => [neuron.neuronId, neuron])
