@@ -18,7 +18,7 @@ export interface VoteInProgressStore {
  * Is used for optimistic UI update
  */
 const initVoteInProgressStore = () => {
-  const { subscribe, update } = writable<VoteInProgressStore>({
+  const { subscribe, update, set } = writable<VoteInProgressStore>({
     votes: [],
   });
 
@@ -73,6 +73,10 @@ const initVoteInProgressStore = () => {
       update(({ votes }) => ({
         votes: votes.filter(({ proposalId: id }) => id !== proposalId),
       }));
+    },
+
+    reset() {
+      set({ votes: [] });
     },
   };
 };

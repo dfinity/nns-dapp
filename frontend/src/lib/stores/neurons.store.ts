@@ -76,6 +76,13 @@ const initNeuronsStore = () => {
         };
       });
     },
+
+    reset() {
+      set({
+        neurons: undefined,
+        certified: undefined,
+      });
+    },
   };
 };
 

@@ -7,6 +7,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import NnsNeurons from "../../../lib/pages/NnsNeurons.svelte";
 import { authStore } from "../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
+import { voteInProgressStore } from "../../../lib/stores/voting.store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
@@ -17,6 +18,7 @@ import {
   mockFullNeuron,
   mockNeuron,
 } from "../../mocks/neurons.mock";
+import { mockVotingInProgressItem } from "../../mocks/proposal.mock";
 
 jest.mock("../../../lib/services/neurons.services", () => {
   return {
@@ -111,6 +113,19 @@ describe("NnsNeurons", () => {
       toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
       expect(queryByText(en.accounts.select_source)).not.toBeNull();
+    });
+
+    it("should disable Stake Neurons button during voting process", async () => {
+      const { queryByTestId } = render(NnsNeurons);
+
+      const stakeNeuronButton = queryByTestId("stake-neuron-button");
+      expect(stakeNeuronButton).not.toBeNull();
+
+      voteInProgressStore.add(mockVotingInProgressItem);
+
+      waitFor(() =>
+        expect(stakeNeuronButton?.getAttribute("disabled")).not.toBeNull()
+      );
     });
 
     it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {

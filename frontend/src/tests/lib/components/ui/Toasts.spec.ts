@@ -103,4 +103,12 @@ describe("Toasts", () => {
       expect(container.querySelector("div.toast")).toBeNull()
     );
   });
+
+  it("should return a shown toast id", async () => {
+    const id = toastsStore.show({ labelKey: "test.test", level: "success" });
+
+    expect(id).toBeDefined();
+    expect(typeof id).toBe("symbol");
+    expect(id.description).toBe("toast");
+  });
 });
