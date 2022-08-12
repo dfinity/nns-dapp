@@ -50,10 +50,12 @@ describe("voting-store", () => {
     voteInProgressStore.add(voteA);
     voteInProgressStore.add(voteB);
 
-    voteInProgressStore.addSuccessfullyVotedNeuronIds({
-      proposalId: voteA.proposalId,
-      successfullyVotedNeuronIds,
-    });
+    for (const neuronId of successfullyVotedNeuronIds) {
+      voteInProgressStore.addSuccessfullyVotedNeuronId({
+        proposalId: voteA.proposalId,
+        neuronId,
+      });
+    }
 
     expect(
       get(voteInProgressStore).votes.find(

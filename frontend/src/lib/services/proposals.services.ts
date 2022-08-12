@@ -35,14 +35,13 @@ import {
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
 import { updateNeuronsVote } from "../utils/neuron.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
+  registerVoteErrorDetails,
   updateProposalVote,
 } from "../utils/proposals.utils";
-import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -360,13 +359,13 @@ export const registerVotes = async ({
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
   const proposalId = proposalInfo.id as bigint;
+  const $definedNeuronsStore = get(definedNeuronsStore);
   const voteInProgress: VoteInProgress = {
     neuronIds,
     proposalId,
     successfullyVotedNeuronIds: [],
     vote,
   };
-  const $definedNeuronsStore = get(definedNeuronsStore);
 
   voteInProgressStore.add(voteInProgress);
 
@@ -380,9 +379,9 @@ export const registerVotes = async ({
     // TODO: remove after live testing. In theory it should be always defined here.
     assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
 
-    voteInProgressStore.addSuccessfullyVotedNeuronIds({
+    voteInProgressStore.addSuccessfullyVotedNeuronId({
       proposalId,
-      successfullyVotedNeuronIds: [neuronId],
+      neuronId,
     });
 
     // Mocking the data and update the stores because with proceed with optimistic values
@@ -467,7 +466,7 @@ export const registerVotes = async ({
   });
 };
 
-const requestRegisterVotes = async ({
+export const requestRegisterVotes = async ({
   neuronIds,
   proposalId,
   identity,
@@ -480,38 +479,19 @@ const requestRegisterVotes = async ({
   vote: Vote;
   registerVoteCallback: (neuronId: NeuronId) => void;
 }): Promise<void> => {
-  const errorDetail = (
-    neuronId: NeuronId,
-    result: PromiseSettledResult<void>
-  ): string | undefined => {
-    if (result.status === "rejected") {
-      const reason =
-        result.reason instanceof Error
-          ? errorToString(result.reason)
-          : undefined;
-      // detail text
-      return replacePlaceholders(get(i18n).error.register_vote_neuron, {
-        $neuronId: neuronId.toString(),
-        $reason:
-          reason === undefined || reason?.length === 0
-            ? get(i18n).error.fail
-            : reason,
-      });
-    }
-    return undefined;
-  };
-  const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
-    neuronIds.map(
-      (neuronId: NeuronId): Promise<void> =>
-        registerVote({
-          neuronId,
-          vote,
-          proposalId,
-          identity,
-        }).then(() => registerVoteCallback(neuronId))
-    )
+  const requests = neuronIds.map(
+    (neuronId: NeuronId): Promise<void> =>
+      registerVote({
+        neuronId,
+        vote,
+        proposalId,
+        identity,
+      })
+        // call it only after successful registration
+        .then(() => registerVoteCallback(neuronId))
   );
 
+  const responses = await Promise.allSettled(requests);
   const rejectedResponses = responses.filter(
     (response: PromiseSettledResult<void>) => {
       const { status } = response;
@@ -530,9 +510,11 @@ const requestRegisterVotes = async ({
   );
 
   if (rejectedResponses.length > 0) {
-    const details: string[] = responses
-      .map((response, i) => errorDetail(neuronIds[i], response))
-      .filter(isDefined);
+    const details: string[] = registerVoteErrorDetails({
+      responses,
+      neuronIds,
+    });
+
     console.error("vote", rejectedResponses);
 
     toastsStore.show({
@@ -540,8 +522,8 @@ const requestRegisterVotes = async ({
       level: "error",
       substitutions: {
         $proposalId: `${proposalId}`,
-        $neuronIds: details.join(", "),
       },
+      detail: details.join(", "),
     });
   }
 };

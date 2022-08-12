@@ -38,17 +38,18 @@ const initVoteInProgressStore = () => {
       });
     },
 
-    addSuccessfullyVotedNeuronIds({
+    addSuccessfullyVotedNeuronId({
       proposalId,
-      successfullyVotedNeuronIds,
+      neuronId,
     }: {
       proposalId: ProposalId;
-      successfullyVotedNeuronIds: NeuronId[];
+      neuronId: NeuronId;
     }) {
       update(({ votes }) => {
         const item = votes.find(({ proposalId: id }) => id === proposalId);
 
         if (item === undefined) {
+          console.error("updating not voting item", votes, proposalId);
           return { votes };
         }
 
@@ -58,10 +59,7 @@ const initVoteInProgressStore = () => {
             {
               ...item,
               successfullyVotedNeuronIds: Array.from(
-                new Set([
-                  ...item.successfullyVotedNeuronIds,
-                  ...successfullyVotedNeuronIds,
-                ])
+                new Set([...item.successfullyVotedNeuronIds, neuronId])
               ),
             },
           ],

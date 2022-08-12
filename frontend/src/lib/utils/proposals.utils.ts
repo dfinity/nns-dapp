@@ -14,6 +14,8 @@ import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
 import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
+import { errorToString } from "./error.utils";
+import { replacePlaceholders } from "./i18n.utils";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -411,4 +413,40 @@ export const updateProposalVote = ({
           : proposalInfo.latestTally?.no ?? BigInt(0),
     },
   };
+};
+
+/** Returns `registerVote` error reason text or undefined if not an error */
+const registerVoteErrorReason = (
+  neuronId: NeuronId,
+  result: PromiseSettledResult<void>
+): string | undefined => {
+  if (result.status === "fulfilled") {
+    return undefined;
+  }
+
+  const reason =
+    result.reason instanceof Error ? errorToString(result.reason) : undefined;
+  // detail text
+  return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+    $neuronId: neuronId.toString(),
+    $reason:
+      reason === undefined || reason?.length === 0
+        ? get(i18n).error.fail
+        : reason,
+  });
+};
+
+/** Returns `registerVote` error details (neuronId and the reason by error) */
+export const registerVoteErrorDetails = ({
+  responses,
+  neuronIds,
+}: {
+  responses: PromiseSettledResult<void>[];
+  neuronIds: bigint[];
+}): string[] => {
+  const details: string[] = responses
+    .map((response, i) => registerVoteErrorReason(neuronIds[i], response))
+    .filter(isDefined);
+
+  return details;
 };
