@@ -5,6 +5,7 @@ import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
+  isNnsProject,
 } from "../utils/projects.utils";
 import { snsSummariesStore, snsSwapCommitmentsStore } from "./sns.store";
 
@@ -73,5 +74,16 @@ export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 export const isNnsProjectStore = derived(
   snsProjectSelectedStore,
   ($snsProjectSelectedStore: Principal) =>
-    $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
+    isNnsProject($snsProjectSelectedStore)
+);
+
+/***
+ * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
+ */
+export const snsOnlyProjectStore = derived(
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    isNnsProject($snsProjectSelectedStore)
+      ? undefined
+      : $snsProjectSelectedStore
 );

@@ -1,6 +1,8 @@
 import type { ICP } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { SnsFullProject } from "../stores/projects.store";
 import type {
   SnsSummary,
@@ -214,3 +216,6 @@ export const validParticipation = ({
   }
   return { valid: true };
 };
+
+export const isNnsProject = (canisterId: Principal): boolean =>
+  canisterId.toText() === OWN_CANISTER_ID.toText();
