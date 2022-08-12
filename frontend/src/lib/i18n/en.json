@@ -427,7 +427,8 @@
     "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?",
     "cast_vote_neuronId": "Neuron ID $neuronId",
     "cast_vote_votingPower": "Voting power of $votingPower",
-    "voting_in_progress_message": "Registering the vote ($vote) for $proposalTitle ($proposalId). Please do not leave the nns-dapp until the registration is complete."
+    "vote_adopt_in_progress": "Adopting proposal $topic ($proposalId). Please do not leave until completed.",
+    "vote_reject_in_progress": "Rejecting proposal $topic ($proposalId). Please do not leave until completed."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",

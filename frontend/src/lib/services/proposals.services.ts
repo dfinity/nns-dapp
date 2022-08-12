@@ -1,10 +1,10 @@
 import type { Identity } from "@dfinity/agent";
 import {
+  Topic,
   Vote,
   type NeuronId,
   type ProposalId,
   type ProposalInfo,
-  type Topic,
 } from "@dfinity/nns";
 import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -406,12 +406,14 @@ export const registerVotes = async ({
   // display "voting in progress" message
   const $i18n = get(i18n);
   const toastMessage = toastsStore.show({
-    labelKey: "proposal_detail__vote.voting_in_progress_message",
+    labelKey:
+      vote === Vote.YES
+        ? "proposal_detail__vote.vote_adopt_in_progress"
+        : "proposal_detail__vote.vote_reject_in_progress",
     level: "running",
     substitutions: {
-      $vote: vote === Vote.YES ? $i18n.core.yes : $i18n.core.no,
-      $proposalTitle: proposalInfo.proposal?.title ?? "",
       $proposalId: `${proposalId}`,
+      $topic: $i18n.topics[Topic[proposalInfo.topic]],
     },
   });
 
