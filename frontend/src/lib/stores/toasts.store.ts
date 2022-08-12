@@ -7,7 +7,7 @@ import type { I18nSubstitutions } from "../utils/i18n.utils";
 /**
  * Toast messages.
  *
- * - show: display a message in toast component - messages are stacked but only one is displayed
+ * - show: display a message in toast component
  * - success: display a message of type "success" - something went really well ;)
  * - error: display an error and print the issue in the console as well
  * - hide: remove the toast message with that timestamp or the first one.
@@ -18,11 +18,14 @@ const initToastsStore = () => {
   return {
     subscribe,
 
-    show(msg: ToastMsg) {
+    show(msg: ToastMsg): symbol {
+      const id = Symbol("toast");
+
       update((messages: ToastMsg[]) => {
-        const id = Symbol();
         return [...messages, { ...msg, id }];
       });
+
+      return id;
     },
 
     success({

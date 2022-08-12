@@ -242,10 +242,13 @@ export const stakeNeuron = async ({
  */
 export const listNeurons = async ({
   callback,
+  strategy = "query_and_update",
 }: {
   callback?: (certified: boolean) => void;
+  strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
+    strategy,
     request: ({ certified, identity }) => queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });

@@ -14,6 +14,10 @@
     type SelectedProposalContext,
   } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
+  import {
+    voteInProgressStore,
+    type VoteInProgress,
+  } from "../../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -25,10 +29,16 @@
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
+  let voteInProgress: VoteInProgress | undefined = undefined;
+
+  $: voteInProgress = $voteInProgressStore.votes.find(
+    ({ proposalId }) => proposalInfo.id === proposalId
+  );
 
   $: $definedNeuronsStore,
     (visible =
-      votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo));
+      voteInProgress !== undefined ||
+      (votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
@@ -48,7 +58,7 @@
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
-      proposalId: proposalInfo.id as bigint,
+      proposalInfo,
       reloadProposalCallback: (
         proposalInfo: ProposalInfo // we update store only if proposal id are matching even though it would be an edge case that these would not match here
       ) =>
@@ -67,7 +77,11 @@
 {#if visible}
   <CardInfo>
     <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect {proposalInfo} />
-    <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
+    <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
+    <VotingConfirmationToolbar
+      {proposalInfo}
+      {voteInProgress}
+      on:nnsConfirm={vote}
+    />
   </CardInfo>
 {/if}
