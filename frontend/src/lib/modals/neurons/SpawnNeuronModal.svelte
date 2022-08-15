@@ -105,15 +105,3 @@
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
 </WizardModal>
-
-<style lang="scss">
-  .confirm-answer {
-    margin: 0;
-    text-align: center;
-  }
-
-  .confirm {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
