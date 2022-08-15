@@ -33,8 +33,8 @@ const onIdleSignOut = async () => {
 };
 
 const getDelegationChain = async (): Promise<string | undefined> => {
-  const customStore = createStore('auth-client-db', 'ic-keyval');
-  return get('delegation', customStore);
+  const customStore = createStore("auth-client-db", "ic-keyval");
+  return get("delegation", customStore);
 };
 
 // Source idb-keyval: https://github.com/jakearchibald/idb-keyval
