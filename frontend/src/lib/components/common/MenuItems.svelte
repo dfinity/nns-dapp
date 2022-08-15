@@ -12,7 +12,7 @@
   import { routeStore } from "../../stores/route.store";
   import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
   import {
-    ENABLE_SNS_NEURONS,
+    ENABLE_SNS,
     IS_TESTNET,
   } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
@@ -57,7 +57,7 @@
       icon: IconSettingsApplications,
     },
     // Launchpad should not be visible on mainnet
-    ...(ENABLE_SNS_NEURONS
+    ...(ENABLE_SNS
       ? [
           {
             context: "launchpad",

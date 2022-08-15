@@ -19,8 +19,8 @@
   export let neuron: NeuronInfo;
 
   let isOpen: boolean = false;
-  let controlledByHarwareWallet: boolean;
-  $: controlledByHarwareWallet = isNeuronControlledByHardwareWallet({
+  let controlledByHardwareWallet: boolean;
+  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
     neuron,
     accounts: $accountsStore,
   });
@@ -72,6 +72,6 @@
   <SpawnNeuronModal
     on:nnsClose={closeModal}
     {neuron}
-    {controlledByHarwareWallet}
+    {controlledByHardwareWallet}
   />
 {/if}

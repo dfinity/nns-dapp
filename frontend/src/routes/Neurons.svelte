@@ -1,6 +1,6 @@
 <script lang="ts">
   import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
-  import { ENABLE_SNS_NEURONS } from "../lib/constants/environment.constants";
+  import { ENABLE_SNS } from "../lib/constants/environment.constants";
   import NnsNeurons from "../lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "../lib/pages/SnsNeurons.svelte";
   import {
@@ -9,7 +9,7 @@
   } from "../lib/stores/projects.store";
 </script>
 
-{#if ENABLE_SNS_NEURONS}
+{#if ENABLE_SNS}
   <div class="dropdown-wrapper">
     <div class="fit-content">
       <SelectProjectDropdown />
