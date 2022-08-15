@@ -4,7 +4,6 @@
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import { formatPercentage } from "../../utils/format.utils";
   import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
@@ -16,7 +15,7 @@
   import { AppPath } from "../../constants/routes.constants";
 
   export let neuron: NeuronInfo;
-  export let controlledByHarwareWallet: boolean;
+  export let controlledByHardwareWallet: boolean;
 
   const hardwareWalletSteps: Steps = [
     {
@@ -37,7 +36,7 @@
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: Steps = controlledByHarwareWallet
+  const steps: Steps = controlledByHardwareWallet
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
@@ -52,14 +51,6 @@
     percentage: percentageToSpawn,
   });
 
-  let percentageMessage: string;
-  $: percentageMessage = controlledByHarwareWallet
-    ? "100%"
-    : formatPercentage(percentageToSpawn / 100, {
-        minFraction: 0,
-        maxFraction: 0,
-      });
-
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
   const spawnNeuronFromMaturity = async () => {
@@ -67,7 +58,7 @@
 
     const newNeuronId = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToSpawn: controlledByHarwareWallet
+      percentageToSpawn: controlledByHardwareWallet
         ? undefined
         : percentageToSpawn,
     });
@@ -84,9 +75,6 @@
     }
 
     stopBusy("spawn-neuron");
-  };
-  const goToConfirm = () => {
-    modal.next();
   };
 </script>
 
@@ -120,10 +108,6 @@
 </WizardModal>
 
 <style lang="scss">
-  h4 {
-    text-align: center;
-  }
-
   p {
     // For the link inside "i18n.neuron_detail.spawn_maturity_explanation"
     :global(a) {
