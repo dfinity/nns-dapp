@@ -12,6 +12,7 @@
   } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
   import { isNode } from "../../utils/dev.utils";
+  import { VOTING_UI } from "../../constants/environment.constants";
 
   export let path: AppPath;
 
@@ -48,7 +49,7 @@
 
   const routesConfig: Record<
     AppPath,
-    { title: string; layout: "modern" | "deprecated" | undefined }
+    { title: string; layout: "modern" | "legacy" | undefined }
   > = {
     [AppPath.Authentication]: {
       title: "",
@@ -56,32 +57,32 @@
     },
     [AppPath.Accounts]: {
       title: $i18n.navigation.accounts,
-      layout: "deprecated",
+      layout: "legacy",
     },
     [AppPath.Neurons]: {
       title: $i18n.navigation.neurons,
-      layout: "deprecated",
+      layout: "legacy",
     },
     [AppPath.Proposals]: {
       title: $i18n.navigation.voting,
-      layout: "deprecated",
+      layout: VOTING_UI,
     },
     [AppPath.Canisters]: {
       title: $i18n.navigation.canisters,
-      layout: "deprecated",
+      layout: "legacy",
     },
-    [AppPath.Wallet]: { title: $i18n.wallet.title, layout: "deprecated" },
+    [AppPath.Wallet]: { title: $i18n.wallet.title, layout: "legacy" },
     [AppPath.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
-      layout: "deprecated",
+      layout: "legacy",
     },
     [AppPath.NeuronDetail]: {
       title: $i18n.neuron_detail.title,
-      layout: "deprecated",
+      layout: "legacy",
     },
     [AppPath.CanisterDetail]: {
       title: $i18n.canister_detail.title,
-      layout: "deprecated",
+      layout: "legacy",
     },
     [AppPath.Launchpad]: {
       title: $i18n.sns_launchpad.header,

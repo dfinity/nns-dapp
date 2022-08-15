@@ -22,9 +22,9 @@
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import ProposalsDeprecated from "../lib/components/proposals/ProposalsDeprecated.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
+  import { VOTING_UI } from "../lib/constants/environment.constants";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -141,26 +141,22 @@
 
   let neuronsLoaded: boolean;
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
-
-  let modern = true;
 </script>
 
-<MainContentWrapper sns={modern}>
-  {#if modern}
-    <ProposalsModern
-      {loading}
-      {hidden}
-      {neuronsLoaded}
-      {nothingFound}
-      on:nnsIntersect={findNextProposals}
-    />
-  {:else}
-    <ProposalsDeprecated
-      {loading}
-      {hidden}
-      {neuronsLoaded}
-      {nothingFound}
-      on:nnsIntersect={findNextProposals}
-    />
-  {/if}
-</MainContentWrapper>
+{#if VOTING_UI === "modern"}
+  <ProposalsModern
+    {loading}
+    {hidden}
+    {neuronsLoaded}
+    {nothingFound}
+    on:nnsIntersect={findNextProposals}
+  />
+{:else}
+  <ProposalsDeprecated
+    {loading}
+    {hidden}
+    {neuronsLoaded}
+    {nothingFound}
+    on:nnsIntersect={findNextProposals}
+  />
+{/if}
