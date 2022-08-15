@@ -5,14 +5,18 @@ import type {
   Proposal,
   ProposalId,
   ProposalInfo,
+  Tally,
 } from "@dfinity/nns";
 import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
+import type { VoteInProgress } from "../stores/voting.store";
 import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
+import { errorToString } from "./error.utils";
+import { replacePlaceholders } from "./i18n.utils";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -372,3 +376,85 @@ const votingPeriodEndFallback = ({
     Number(proposalTimestampSeconds) * 1000 + durationInSeconds * 1000
   );
 };
+
+/** Update proposal voting state as it participated in voting */
+export const updateProposalVote = ({
+  proposalInfo,
+  neuron,
+  vote,
+}: {
+  proposalInfo: ProposalInfo;
+  neuron: NeuronInfo;
+  vote: Vote;
+}): ProposalInfo => {
+  const { votingPower, neuronId } = neuron;
+  const votedBallot: Ballot = {
+    neuronId,
+    vote,
+    votingPower,
+  };
+
+  return {
+    ...proposalInfo,
+    ballots: [
+      ...proposalInfo.ballots.filter(
+        ({ neuronId }) => neuronId !== neuron.neuronId
+      ),
+      votedBallot,
+    ],
+    latestTally: {
+      ...(proposalInfo.latestTally as Tally),
+      yes:
+        vote === Vote.YES
+          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.yes ?? BigInt(0),
+      no:
+        vote === Vote.NO
+          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.no ?? BigInt(0),
+    },
+  };
+};
+
+/** Returns `registerVote` error reason text or undefined if not an error */
+const registerVoteErrorReason = (
+  neuronId: NeuronId,
+  result: PromiseSettledResult<void>
+): string | undefined => {
+  if (result.status === "fulfilled") {
+    return undefined;
+  }
+
+  const reason =
+    result.reason instanceof Error ? errorToString(result.reason) : undefined;
+  // detail text
+  return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+    $neuronId: neuronId.toString(),
+    $reason:
+      reason === undefined || reason?.length === 0
+        ? get(i18n).error.fail
+        : reason,
+  });
+};
+
+/** Returns `registerVote` error details (neuronId and the reason by error) */
+export const registerVoteErrorDetails = ({
+  responses,
+  neuronIds,
+}: {
+  responses: PromiseSettledResult<void>[];
+  neuronIds: bigint[];
+}): string[] => {
+  const details: string[] = responses
+    .map((response, i) => registerVoteErrorReason(neuronIds[i], response))
+    .filter(isDefined);
+
+  return details;
+};
+
+/** There are neurons in a queue whose vote is not yet been registered */
+export const voteRegistrationActive = (votes: VoteInProgress[]): boolean =>
+  votes.find(
+    ({ neuronIds, successfullyVotedNeuronIds }) =>
+      neuronIds.length > successfullyVotedNeuronIds.length
+  ) !== undefined;

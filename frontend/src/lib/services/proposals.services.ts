@@ -1,11 +1,12 @@
 import type { Identity } from "@dfinity/agent";
-import type {
-  NeuronId,
-  ProposalId,
-  ProposalInfo,
+import {
   Topic,
   Vote,
+  type NeuronId,
+  type ProposalId,
+  type ProposalInfo,
 } from "@dfinity/nns";
+import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import {
   queryProposal,
@@ -18,12 +19,8 @@ import {
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import { AppPath } from "../constants/routes.constants";
-import {
-  startBusy,
-  stopBusy,
-  type BusyStateInitiatorType,
-} from "../stores/busy.store";
 import { i18n } from "../stores/i18n";
+import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -31,15 +28,20 @@ import {
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
 import { toastsStore } from "../stores/toasts.store";
+import {
+  voteInProgressStore,
+  type VoteInProgress,
+} from "../stores/voting.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
+import { updateNeuronsVote } from "../utils/neuron.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
+  registerVoteErrorDetails,
+  updateProposalVote,
 } from "../utils/proposals.utils";
-import { isDefined } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import {
@@ -341,31 +343,92 @@ export const routePathProposalId = (
 
 /**
  * Makes multiple registerVote calls (1 per neuronId).
- * @returns List of errors (order is preserved)
+ *
+ * In order to improve UX optimistic UI update is used: after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron) and update the stores with optimistic values.
  */
 export const registerVotes = async ({
   neuronIds,
-  proposalId,
+  proposalInfo,
   vote,
   reloadProposalCallback,
 }: {
   neuronIds: NeuronId[];
-  proposalId: ProposalId;
+  proposalInfo: ProposalInfo;
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  startBusy({ initiator: "vote" });
-
   const identity: Identity = await getIdentity();
+  const proposalId = proposalInfo.id as bigint;
+  const $definedNeuronsStore = get(definedNeuronsStore);
+  const voteInProgress: VoteInProgress = {
+    neuronIds,
+    proposalId,
+    successfullyVotedNeuronIds: [],
+    vote,
+  };
+
+  voteInProgressStore.add(voteInProgress);
+
+  let votingProposal: ProposalInfo = { ...proposalInfo };
+
+  const registerVoteCallback = (neuronId: NeuronId) => {
+    const originalNeuron = $definedNeuronsStore.find(
+      ({ neuronId: id }) => id === neuronId
+    );
+
+    // TODO: remove after live testing. In theory it should be always defined here.
+    assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
+
+    voteInProgressStore.addSuccessfullyVotedNeuronId({
+      proposalId,
+      neuronId,
+    });
+
+    // Mocking the data and update the stores because with proceed with optimistic values
+    const votingNeuron = updateNeuronsVote({
+      neuron: originalNeuron,
+      vote,
+      proposalId,
+    });
+    // update proposal vote state
+    votingProposal = updateProposalVote({
+      proposalInfo: votingProposal,
+      neuron: votingNeuron,
+      vote,
+    });
+
+    neuronsStore.replaceNeurons([votingNeuron]);
+    proposalsStore.replaceProposals([votingProposal]);
+    // update context store
+    reloadProposalCallback(votingProposal);
+  };
+
+  // display "voting in progress" message
+  const $i18n = get(i18n);
+  const toastMessage = toastsStore.show({
+    labelKey:
+      vote === Vote.YES
+        ? "proposal_detail__vote.vote_adopt_in_progress"
+        : "proposal_detail__vote.vote_reject_in_progress",
+    level: "running",
+    substitutions: {
+      $proposalId: `${proposalId}`,
+      $topic: $i18n.topics[Topic[proposalInfo.topic]],
+    },
+  });
 
   try {
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
+
     await requestRegisterVotes({
       neuronIds,
       proposalId,
       identity,
       vote,
+      topic: proposalInfo.topic,
+      registerVoteCallback,
     });
+
     logWithTimestamp(
       `Registering [${neuronIds.map(hashCode)}] votes complete.`
     );
@@ -377,104 +440,63 @@ export const registerVotes = async ({
       err,
     });
   }
+  // TODO(create a Jira task): be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
 
-  const stopBusySpinner = ({
-    certified,
-    initiator,
-  }: {
-    certified: boolean;
-    initiator: BusyStateInitiatorType;
-  }) => {
-    if (!certified) {
-      return;
-    }
+  // trigger refetching the data
+  const reloadListNeurons = async () =>
+    // store update is done by `listNeurons` function
+    listNeurons({
+      strategy: "update",
+    });
 
-    stopBusy(initiator);
-  };
-
-  const reloadListNeurons = async () => {
-    startBusy({ initiator: "reload-neurons" });
-
-    try {
-      await listNeurons({
-        callback: (certified: boolean) =>
-          stopBusySpinner({ certified, initiator: "reload-neurons" }),
-      });
-    } catch (err) {
-      console.error(err);
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
-
-      stopBusy("reload-neurons");
-    }
-  };
-
-  const reloadProposal = async () => {
-    startBusy({ initiator: "reload-proposal" });
-
-    await loadProposal({
+  const reloadProposal = async () =>
+    loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) => {
+        // update context store
         reloadProposalCallback(proposalInfo);
         // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
         proposalsStore.replaceProposals([proposalInfo]);
       },
       // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
       strategy: "update",
-      callback: (certified: boolean) =>
-        stopBusySpinner({ certified, initiator: "reload-proposal" }),
-      handleError: () => stopBusy("reload-proposal"),
-      silentUpdateErrorMessages: true,
     });
-  };
 
-  await Promise.all([reloadListNeurons(), reloadProposal()]);
-
-  stopBusy("vote");
+  Promise.all([reloadListNeurons(), reloadProposal()]).finally(() => {
+    // remove in progress state update call
+    voteInProgressStore.remove(voteInProgress.proposalId);
+    toastsStore.hide(toastMessage);
+  });
 };
 
-const requestRegisterVotes = async ({
+export const requestRegisterVotes = async ({
   neuronIds,
   proposalId,
   identity,
   vote,
+  topic,
+  registerVoteCallback,
 }: {
   neuronIds: bigint[];
   proposalId: ProposalId;
   identity: Identity;
   vote: Vote;
+  topic: Topic;
+  registerVoteCallback: (neuronId: NeuronId) => void;
 }): Promise<void> => {
-  const errorDetail = (
-    neuronId: NeuronId,
-    result: PromiseSettledResult<void>
-  ): string | undefined => {
-    if (result.status === "rejected" && result.reason instanceof Error) {
-      const reason = errorToString(result.reason);
-      // detail text
-      return replacePlaceholders(get(i18n).error.register_vote_neuron, {
-        $neuronId: neuronId.toString(),
-        $reason:
-          reason === undefined || reason?.length === 0
-            ? get(i18n).error.fail
-            : reason,
-      });
-    }
-    return undefined;
-  };
-  const responses: Array<PromiseSettledResult<void>> = await Promise.allSettled(
-    neuronIds.map(
-      (neuronId: NeuronId): Promise<void> =>
-        registerVote({
-          neuronId,
-          vote,
-          proposalId,
-          identity,
-        })
-    )
+  const requests = neuronIds.map(
+    (neuronId: NeuronId): Promise<void> =>
+      registerVote({
+        neuronId,
+        vote,
+        proposalId,
+        identity,
+      })
+        // call it only after successful registration
+        .then(() => registerVoteCallback(neuronId))
   );
 
+  const responses = await Promise.allSettled(requests);
   const rejectedResponses = responses.filter(
     (response: PromiseSettledResult<void>) => {
       const { status } = response;
@@ -492,15 +514,22 @@ const requestRegisterVotes = async ({
     }
   );
 
-  const details: string[] = responses
-    .map((response, i) => errorDetail(neuronIds[i], response))
-    .filter(isDefined);
   if (rejectedResponses.length > 0) {
+    const details: string[] = registerVoteErrorDetails({
+      responses,
+      neuronIds,
+    });
+    const $i18n = get(i18n);
+
     console.error("vote", rejectedResponses);
 
     toastsStore.show({
       labelKey: "error.register_vote",
       level: "error",
+      substitutions: {
+        $proposalId: `${proposalId}`,
+        $topic: $i18n.topics[Topic[topic]],
+      },
       detail: details.join(", "),
     });
   }

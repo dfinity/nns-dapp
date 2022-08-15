@@ -450,6 +450,8 @@ interface I18nProposal_detail__vote {
   accept_or_reject: string;
   cast_vote_neuronId: string;
   cast_vote_votingPower: string;
+  vote_adopt_in_progress: string;
+  vote_reject_in_progress: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -693,6 +695,11 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   sns_remove_hotkey: string;
+  project_not_found: string;
+  project_not_open: string;
+  not_enough_amount: string;
+  commitment_too_large: string;
+  cannot_participate: string;
   sns_add_hotkey: string;
 }
 

@@ -10,6 +10,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
@@ -33,6 +34,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
+import type { VoteInProgressStore } from "../stores/voting.store";
 import type { Account } from "../types/account";
 import {
   getAccountByPrincipal,
@@ -649,3 +651,50 @@ export const getNeuronById = ({
   neuronId: NeuronId;
 }): NeuronInfo | undefined =>
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
+
+/** Update neurons voting state as they participated in voting */
+export const updateNeuronsVote = ({
+  neuron,
+  vote,
+  proposalId,
+}: {
+  neuron: NeuronInfo;
+  vote: Vote;
+  proposalId: ProposalId;
+}): NeuronInfo => {
+  const newBallot: BallotInfo = {
+    vote,
+    proposalId,
+  };
+  const recentBallots = [
+    ...neuron.recentBallots.filter(
+      ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
+    ),
+    newBallot,
+  ].map((ballot) => ({
+    ...ballot,
+  }));
+
+  return {
+    ...neuron,
+    recentBallots,
+    fullNeuron: {
+      ...(neuron.fullNeuron as Neuron),
+      recentBallots,
+    },
+  };
+};
+
+/** Is a neuron currently in a vote registration process */
+export const neuronVoting = ({
+  voteInProgressStore: { votes },
+  neuronId,
+}: {
+  voteInProgressStore: VoteInProgressStore;
+  neuronId: NeuronId;
+}): boolean =>
+  votes.find(
+    ({ neuronIds, successfullyVotedNeuronIds }) =>
+      neuronIds.includes(neuronId) &&
+      !successfullyVotedNeuronIds.includes(neuronId)
+  ) !== undefined;

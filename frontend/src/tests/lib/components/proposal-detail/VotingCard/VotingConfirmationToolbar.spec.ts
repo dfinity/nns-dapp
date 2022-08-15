@@ -68,6 +68,17 @@ describe("VotingConfirmationToolbar", () => {
     );
   });
 
+  it("should disable Adapt/Reject buttons when voteInProgress", async () => {
+    const { getByTestId } = render(VotingConfirmationToolbar, {
+      props: { ...props, voteInProgress: true },
+    });
+    const adaptButton = getByTestId("vote-yes");
+    const rejectButton = getByTestId("vote-no");
+
+    expect(adaptButton?.getAttribute("disabled")).not.toBeNull();
+    expect(rejectButton?.getAttribute("disabled")).not.toBeNull();
+  });
+
   it('should display "total" in modal', async () => {
     const { getByText, container } = render(VotingConfirmationToolbar, {
       props,

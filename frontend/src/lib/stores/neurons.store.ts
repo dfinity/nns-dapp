@@ -50,6 +50,40 @@ const initNeuronsStore = () => {
         };
       });
     },
+
+    replaceNeurons(neurons: NeuronInfo[]) {
+      // the function should preserve the order to avoid jumps in the lists
+      update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
+        const newNeurons = new Map(
+          neurons.map((neuron) => [neuron.neuronId, neuron])
+        );
+        const updatedNeurons = oldNeurons?.map((old) => {
+          const { neuronId } = old;
+          const newNeuron = newNeurons.get(neuronId);
+
+          if (newNeuron) {
+            newNeurons.delete(neuronId);
+          }
+
+          return newNeuron ?? old;
+        });
+
+        return {
+          neurons: [
+            ...Array.from(updatedNeurons?.values() ?? []),
+            ...Array.from(newNeurons.values()),
+          ],
+          certified,
+        };
+      });
+    },
+
+    reset() {
+      set({
+        neurons: undefined,
+        certified: undefined,
+      });
+    },
   };
 };
 

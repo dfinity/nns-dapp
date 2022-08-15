@@ -87,24 +87,28 @@ const getNeuronFromStoreByIdHex = ({
 export const getSnsNeuron = async ({
   neuronIdHex,
   rootCanisterId,
+  forceFetch = false,
   onLoad,
   onError,
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
+  forceFetch?: boolean;
   onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
   onError?: ({ certified, error }) => void;
 }): Promise<void> => {
-  const { neuron, certified } = getNeuronFromStoreByIdHex({
-    neuronIdHex,
-    rootCanisterId,
-  });
-  if (neuron !== undefined) {
-    onLoad({
-      neuron,
-      certified,
+  if (!forceFetch) {
+    const { neuron, certified } = getNeuronFromStoreByIdHex({
+      neuronIdHex,
+      rootCanisterId,
     });
-    return;
+    if (neuron !== undefined) {
+      onLoad({
+        neuron,
+        certified,
+      });
+      return;
+    }
   }
   const neuronId = hexStringToBytes(neuronIdHex);
   return queryAndUpdate<SnsNeuron, Error>({
@@ -127,8 +131,7 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (neuronId: SnsNeuronId): Promise<Identity> =>
-  getIdentity();
+const getNeuronIdentity = (): Promise<Identity> => getIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -141,7 +144,7 @@ export const addHotkey = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
-    const identity = await getNeuronIdentity(neuronId);
+    const identity = await getNeuronIdentity();
     await addNeuronPermissions({
       permissions,
       identity,
@@ -170,7 +173,7 @@ export const removeHotkey = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
-    const identity = await getNeuronIdentity(neuronId);
+    const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
       permissions,

@@ -109,6 +109,36 @@ describe("sns-neurons-services", () => {
       });
     });
 
+    it("should call api even if it's in the store when forceFetch", (done) => {
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeuron")
+        .mockImplementation(() => Promise.resolve({ ...mockSnsNeuron }));
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons: [mockSnsNeuron],
+        certified: true,
+      });
+      const onLoad = ({
+        neuron,
+        certified,
+      }: {
+        neuron: SnsNeuron;
+        certified: boolean;
+      }) => {
+        expect(spyQuery).toBeCalled();
+        expect(neuron).not.toBe(mockSnsNeuron);
+        if (certified) {
+          done();
+        }
+      };
+      getSnsNeuron({
+        forceFetch: true,
+        neuronIdHex: bytesToHexString(mockSnsNeuron.id[0]?.id as number[]),
+        rootCanisterId: mockPrincipal,
+        onLoad,
+      });
+    });
+
     it("should call onError callback when call failes", (done) => {
       const spyQuery = jest
         .spyOn(api, "querySnsNeuron")

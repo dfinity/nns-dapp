@@ -10,10 +10,13 @@
   } from "../../../utils/proposals.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { busy } from "../../../stores/busy.store";
+  import type { VoteInProgress } from "../../../stores/voting.store";
+  import Spinner from "../../ui/Spinner.svelte";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
+  export let voteInProgress: VoteInProgress | undefined = undefined;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -30,7 +33,10 @@
     selectedIds: $votingNeuronSelectStore.selectedIds,
     proposal: proposalInfo,
   });
-  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0 || $busy;
+  $: disabled =
+    $votingNeuronSelectStore.selectedIds.length === 0 ||
+    $busy ||
+    voteInProgress !== undefined;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.YES;
@@ -62,14 +68,26 @@
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
+    class="primary full-width"
   >
+    {#if voteInProgress?.vote === Vote.YES}
+      <Spinner size="small" />
+    {:else}
+      {$i18n.proposal_detail__vote.adopt}
+    {/if}
+  </button>
   <button
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
+    class="danger full-width"
   >
+    {#if voteInProgress?.vote === Vote.NO}
+      <Spinner size="small" />
+    {:else}
+      {$i18n.proposal_detail__vote.reject}
+    {/if}
+  </button>
 </div>
 
 {#if showConfirmationModal}
