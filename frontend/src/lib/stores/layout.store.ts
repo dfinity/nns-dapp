@@ -6,6 +6,6 @@ export const layoutBackStore = writable<(() => void) | undefined>(undefined);
 /**
  * @deprecated ultimately all views should be migrated to the new "modern" UI
  */
-export const layoutMainStyleStore = writable<
-  "modern" | "legacy" | undefined
->(undefined);
+export const layoutMainStyleStore = writable<"modern" | "legacy" | undefined>(
+  undefined
+);
