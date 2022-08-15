@@ -11,7 +11,7 @@
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
   import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
-  import { ENABLE_SNS_NEURONS } from "../../constants/environment.constants";
+  import { ENABLE_SNS } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
 
   const baseUrl: string = baseHref();
@@ -53,7 +53,7 @@
       icon: IconSettingsApplications,
     },
     // Launchpad should not be visible on mainnet
-    ...(ENABLE_SNS_NEURONS
+    ...(ENABLE_SNS
       ? [
           {
             context: "launchpad",
