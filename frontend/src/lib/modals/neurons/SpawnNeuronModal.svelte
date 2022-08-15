@@ -41,7 +41,6 @@
     : nnsDappAccountSteps;
 
   let currentStep: Step;
-  let modal: WizardModal;
 
   let percentageToSpawn: number = 0;
 
@@ -78,7 +77,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ??
       $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
@@ -108,16 +107,6 @@
 </WizardModal>
 
 <style lang="scss">
-  p {
-    // For the link inside "i18n.neuron_detail.spawn_maturity_explanation"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
-    }
-  }
-
   .confirm-answer {
     margin: 0;
     text-align: center;
