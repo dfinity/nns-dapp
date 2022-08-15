@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import ProposalsFilters from "./ProposalsFilters.svelte";
-  import InfiniteScroll from "../ui/InfiniteScroll.svelte";
+  import { InfiniteScroll } from "@dfinity/gix-components";
   import ProposalCard from "./ProposalCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import { proposalsStore } from "../../stores/proposals.store";

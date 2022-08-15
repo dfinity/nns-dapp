@@ -22,7 +22,7 @@
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
-  import ProposalsDeprecated from "../lib/components/proposals/ProposalsDeprecated.svelte";
+  import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
   import { VOTING_UI } from "../lib/constants/environment.constants";
 
@@ -152,7 +152,7 @@
     on:nnsIntersect={findNextProposals}
   />
 {:else}
-  <ProposalsDeprecated
+  <ProposalsLegacy
     {loading}
     {hidden}
     {neuronsLoaded}
