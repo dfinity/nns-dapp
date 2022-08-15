@@ -1,4 +1,4 @@
-import { ENABLE_SNS_NEURONS } from "../constants/environment.constants";
+import { ENABLE_SNS } from "../constants/environment.constants";
 import {
   loadSnsSummariesProxy,
   loadSnsSwapCommitmentsProxy,
@@ -17,7 +17,7 @@ export const initApp = (): Promise<
   ];
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
-  const initSns: Promise<void>[] = ENABLE_SNS_NEURONS
+  const initSns: Promise<void>[] = ENABLE_SNS
     ? [loadSnsSummariesProxy(), loadSnsSwapCommitmentsProxy()]
     : [];
 

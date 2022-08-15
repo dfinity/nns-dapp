@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
-  import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
@@ -32,18 +31,18 @@
       <Spinner inline />
     </div>
   {:else}
-    <CardGrid>
+    <div class="grid">
       {#each Array(projectCount) as _}
         <SkeletonProjectCard />
       {/each}
-    </CardGrid>
+    </div>
   {/if}
 {:else if projects !== undefined}
-  <CardGrid>
+  <div class="grid">
     {#each projects as project (project.rootCanisterId.toText())}
       <ProjectCard {project} />
     {/each}
-  </CardGrid>
+  </div>
   {#if projects.length === 0}
     <p class="no-projects">{$i18n.sns_launchpad.no_projects}</p>
   {/if}

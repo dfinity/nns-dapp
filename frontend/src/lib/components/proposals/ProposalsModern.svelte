@@ -5,7 +5,6 @@
   import ProposalsFilters from "./ProposalsFilters.svelte";
   import { i18n } from "../../stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import CardGrid from "../ui/CardGrid.svelte";
 
   export let neuronsLoaded: boolean;
   export let loading: boolean;
@@ -28,9 +27,9 @@
 {/if}
 
 {#if loading || !neuronsLoaded}
-  <CardGrid>
+  <div class="grid">
     <SkeletonCard />
     <SkeletonCard />
     <SkeletonCard />
-  </CardGrid>
+  </div>
 {/if}

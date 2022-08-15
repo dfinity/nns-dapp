@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MenuItem from "../ui/MenuItem.svelte";
+  import { MenuItem } from "@dfinity/gix-components";
   import IconWallet from "../../icons/IconWallet.svelte";
   import IconLockOpen from "../../icons/IconLockOpen.svelte";
   import IconHowToVote from "../../icons/IconHowToVote.svelte";
@@ -11,8 +11,12 @@
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
   import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
-  import { ENABLE_SNS_NEURONS } from "../../constants/environment.constants";
+  import {
+    ENABLE_SNS,
+    IS_TESTNET,
+  } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
+  import GetICPs from "../ic/GetICPs.svelte";
 
   const baseUrl: string = baseHref();
 
@@ -53,7 +57,7 @@
       icon: IconSettingsApplications,
     },
     // Launchpad should not be visible on mainnet
-    ...(ENABLE_SNS_NEURONS
+    ...(ENABLE_SNS
       ? [
           {
             context: "launchpad",
@@ -81,3 +85,7 @@
     <svelte:component this={statusIcon} slot="statusIcon" />
   </MenuItem>
 {/each}
+
+{#if IS_TESTNET}
+  <GetICPs />
+{/if}

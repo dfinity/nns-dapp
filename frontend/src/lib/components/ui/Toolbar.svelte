@@ -9,7 +9,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   .toolbar {
     position: absolute;

@@ -5,7 +5,7 @@
   import { authStore } from "../stores/auth.store";
   import type { AuthStore } from "../stores/auth.store";
   import { i18n } from "../stores/i18n";
-  import Toolbar from "../components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import NeuronCard from "../components/neurons/NeuronCard.svelte";
   import CreateNeuronModal from "../modals/neurons/CreateNeuronModal.svelte";
   import type { NeuronId } from "@dfinity/nns";

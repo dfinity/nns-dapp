@@ -37,7 +37,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   p {
     margin: 0 0 var(--padding-2x);

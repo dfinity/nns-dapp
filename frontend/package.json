@@ -16,7 +16,8 @@
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
     "update:next": "npm update @dfinity/nns @dfinity/sns @dfinity/utils",
-    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal && npm i @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal"
+    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal && npm i @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal",
+    "update:gix": "npm update @dfinity/gix-components"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
@@ -65,6 +66,7 @@
     "@dfinity/auth-client": "^0.12.2",
     "@dfinity/authentication": "^0.12.2",
     "@dfinity/candid": "^0.12.2",
+    "@dfinity/gix-components": "next",
     "@dfinity/identity": "^0.12.2",
     "@dfinity/nns": "next",
     "@dfinity/principal": "^0.12.2",

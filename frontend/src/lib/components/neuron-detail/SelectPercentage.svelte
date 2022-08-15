@@ -3,7 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import InputRange from "../ui/InputRange.svelte";

@@ -44,7 +44,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   div {
     margin: var(--padding-3x) 0;

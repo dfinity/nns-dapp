@@ -4,13 +4,11 @@ export const ROLLUP_WATCH: boolean = process.env.ROLLUP_WATCH === "true";
 export const FETCH_ROOT_KEY: boolean = process.env.FETCH_ROOT_KEY === "true";
 export const WASM_CANISTER_ID: string = String(process.env.WASM_CANISTER_ID);
 
-// TypeScript definition "Record" is used for simplicity reason but, if we would expose the flags object, we could improve the description
 export const {
-  ENABLE_NEW_SPAWN_FEATURE,
-  ENABLE_SNS_NEURONS,
-}: Record<string, boolean> = JSON.parse(
-  process.env.FEATURE_FLAGS ??
-    '{"ENABLE_NEW_SPAWN_FEATURE":true,"ENABLE_SNS_NEURONS":false}'
+  ENABLE_SNS,
+  VOTING_UI,
+}: { ENABLE_SNS: boolean; VOTING_UI: "legacy" | "modern" } = JSON.parse(
+  process.env.FEATURE_FLAGS ?? '{"ENABLE_SNS":false,"VOTING_UI":"legacy"}'
 );
 
 export const IS_TESTNET: boolean =
