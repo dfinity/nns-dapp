@@ -11,7 +11,10 @@
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
   import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
-  import {ENABLE_SNS_NEURONS, IS_TESTNET} from "../../constants/environment.constants";
+  import {
+    ENABLE_SNS_NEURONS,
+    IS_TESTNET,
+  } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
 
