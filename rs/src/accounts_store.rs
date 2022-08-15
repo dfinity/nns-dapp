@@ -494,7 +494,7 @@ impl AccountsStore {
         match self.pending_transactions.get(&account_identifier) {
             Some(transactions) => transactions
                 .iter()
-                .find(|t| !t.transaction_completed && t.principal.to_string() == principal.to_string()),
+                .find(|t| !t.transaction_completed && t.principal == principal),
             None => None,
         }
     }
@@ -502,7 +502,8 @@ impl AccountsStore {
     pub fn complete_pending_transaction(
         &mut self,
         to: AccountIdentifier,
-        transaction_type: TransactionType,
+        // Fix warning: warning: unused variable: `transaction_type` 
+        _transaction_type: TransactionType,
         principal: PrincipalId,
         block_height: BlockHeight,
     ) {
@@ -512,8 +513,8 @@ impl AccountsStore {
             let filtered_transactions = transactions
                 .iter_mut()
                 .filter(|t| !t.transaction_completed)
-                .filter(|t| t.principal.to_string() == principal.to_string())
-                .filter(|t| matches!(t.transaction_type, transaction_type));
+                .filter(|t| t.principal == principal)
+                .filter(|t| matches!(t.transaction_type, _transaction_type));
             for transaction in filtered_transactions {
                 transaction.transaction_completed = true
             }
@@ -1138,13 +1139,13 @@ impl AccountsStore {
             } else {
                 TransactionType::TopUpNeuron
             }
+        } else if let Some(canister_id) = self.is_participate_swap_transaction(to, *principal) {
+            TransactionType::ParticipateSwap(canister_id)
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
             } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
                 TransactionType::TopUpCanister(canister_id)
-            } else if let Some(canister_id) = self.is_participate_swap_transaction(to, *principal) {
-                TransactionType::ParticipateSwap(canister_id)
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {

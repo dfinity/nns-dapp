@@ -10,7 +10,6 @@ import type {
   SnsWrapper,
 } from "@dfinity/sns";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { SWAP_PARTICIPATE_MEMO } from "../constants/api.constants";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
   importInitSnsWrapper,
@@ -453,7 +452,6 @@ export const participateInSnsSwap = async ({
     amount,
     fromSubAccount,
     to: accountIdentifier,
-    memo: SWAP_PARTICIPATE_MEMO,
   });
 
   // Notify participation

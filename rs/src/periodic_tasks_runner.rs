@@ -69,7 +69,7 @@ async fn handle_participate_swap(
     let request = RefreshBuyerTokensRequest {
         buyer: principal.to_string(),
     };
-    if let Ok(_) = swap::notify_swap_participation(swap_canister_id, request).await {
+    if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
         STATE.with(|s| {
             s.accounts_store.borrow_mut().complete_pending_transaction(
                 to,
