@@ -1,4 +1,4 @@
-use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER, MEMO_PARTICIPATE_SWAP};
+use crate::constants::{MEMO_CREATE_CANISTER, MEMO_PARTICIPATE_SWAP, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
@@ -61,9 +61,9 @@ struct Account {
 
 #[derive(CandidType, Deserialize, Clone)]
 pub struct PendingTransaction {
-	pub transaction_completed: bool,
+    pub transaction_completed: bool,
     pub to: AccountIdentifier,
-	pub principal: PrincipalId,
+    pub principal: PrincipalId,
     pub transaction_type: TransactionType,
 }
 
@@ -479,9 +479,10 @@ impl AccountsStore {
                 // Why the &principal.into?
                 let account_identifier = AccountIdentifier::new(canister_id.get(), Some((&principal).into()));
                 // Why the "&"
-                match self.pending_transactions.get_mut(& account_identifier) {
+                match self.pending_transactions.get_mut(&account_identifier) {
                     Some(transactions) => {
-                        transactions.push(PendingTransaction::new(principal, account_identifier, transaction_type).clone());
+                        transactions
+                            .push(PendingTransaction::new(principal, account_identifier, transaction_type).clone());
                         AddPendingNotifySwapResponse::Ok
                     }
                     None => {
@@ -493,17 +494,13 @@ impl AccountsStore {
                     }
                 }
             }
-            _ => AddPendingNotifySwapResponse::TransactionTypeNotSupported
-
+            _ => AddPendingNotifySwapResponse::TransactionTypeNotSupported,
         }
     }
 
     // Get first pending transaction
-    pub fn get_pending_transaction(
-        &self,
-        account_identifier: AccountIdentifier,
-    ) -> Option<&PendingTransaction> {
-        match self.pending_transactions.get(& account_identifier) {
+    pub fn get_pending_transaction(&self, account_identifier: AccountIdentifier) -> Option<&PendingTransaction> {
+        match self.pending_transactions.get(&account_identifier) {
             Some(transactions) => transactions.into_iter().find(|t| !t.transaction_completed),
             None => None,
         }
@@ -515,8 +512,9 @@ impl AccountsStore {
         swap_canister_id: CanisterId,
         block_height: BlockHeight,
     ) {
-        self.multi_part_transactions_processor.update_status(block_height, MultiPartTransactionStatus::Complete);
-        match self.pending_transactions.get_mut(& to) {
+        self.multi_part_transactions_processor
+            .update_status(block_height, MultiPartTransactionStatus::Complete);
+        match self.pending_transactions.get_mut(&to) {
             Some(transactions) => {
                 transactions
                     .into_iter()
@@ -531,9 +529,8 @@ impl AccountsStore {
                     })
                     .map(|t| t.transaction_completed = true);
             }
-            None => {},
+            None => {}
         }
-
     }
 
     pub fn append_transaction(
@@ -1181,7 +1178,7 @@ impl AccountsStore {
                         None
                     }
                 }
-                None => None
+                None => None,
             }
         } else {
             None
@@ -1556,11 +1553,7 @@ impl NamedSubAccount {
 }
 
 impl PendingTransaction {
-    pub fn new(
-        principal: PrincipalId,
-        to: AccountIdentifier,
-        transaction_type: TransactionType,
-    ) -> PendingTransaction {
+    pub fn new(principal: PrincipalId, to: AccountIdentifier, transaction_type: TransactionType) -> PendingTransaction {
         PendingTransaction {
             transaction_completed: false,
             to,

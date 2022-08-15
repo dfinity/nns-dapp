@@ -59,15 +59,19 @@ pub async fn run_periodic_tasks() {
     }
 }
 
-async fn handle_participate_swap(block_height: BlockHeight, principal: PrincipalId, to: AccountIdentifier, swap_canister_id: CanisterId) {
+async fn handle_participate_swap(
+    block_height: BlockHeight,
+    principal: PrincipalId,
+    to: AccountIdentifier,
+    swap_canister_id: CanisterId,
+) {
     let request = swap::RefreshBuyersTokensRequest {
         buyer: principal.to_string(),
     };
     match swap::notify_swap_participation(swap_canister_id, request).await {
         Ok(_) => {
             STATE.with(|s| {
-                s
-                    .accounts_store
+                s.accounts_store
                     .borrow_mut()
                     .complete_pending_transaction(to, swap_canister_id, block_height)
             });
@@ -75,7 +79,6 @@ async fn handle_participate_swap(block_height: BlockHeight, principal: Principal
         Err(_) => {}
     }
 }
-
 
 async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {

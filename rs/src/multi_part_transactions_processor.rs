@@ -2,10 +2,10 @@ use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCani
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
+use ledger_canister::AccountIdentifier;
 use ledger_canister::{BlockHeight, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
-use ledger_canister::{AccountIdentifier};
 
 const MAX_ERRORS_TO_HOLD: usize = 500;
 
