@@ -100,11 +100,11 @@
   .toast {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--padding-1_5x);
 
     border-radius: var(--border-radius);
-    background: var(--background);
+    background: var(--card-background);
     box-shadow: var(--strong-shadow);
 
     padding: var(--padding-1_5x);
@@ -133,11 +133,11 @@
     p {
       margin: 0;
       flex-grow: 1;
+      align-self: center;
       word-break: break-word;
     }
 
     button.close {
-      align-self: flex-start;
       padding: 0;
       line-height: 0;
     }
