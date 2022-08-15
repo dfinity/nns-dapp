@@ -72,7 +72,7 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false,
+          "ENABLE_SNS": false,
           "VOTING_UI": "legacy"
         }
       },
@@ -86,7 +86,7 @@
         "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false,
+          "ENABLE_SNS": false,
           "VOTING_UI": "legacy"
         }
       },
@@ -100,7 +100,7 @@
         "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
@@ -114,7 +114,7 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
@@ -128,7 +128,7 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
@@ -142,7 +142,7 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
@@ -156,7 +156,7 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
@@ -170,7 +170,7 @@
         "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false,
+          "ENABLE_SNS": false,
           "VOTING_UI": "modern"
         }
       },
