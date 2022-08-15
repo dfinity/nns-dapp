@@ -8,7 +8,9 @@
     mainTransactionFeeStore,
   } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
-  import { maxICP } from "../../utils/icp.utils";
+  import { InvalidAmountError } from "../../types/neurons.errors";
+  import { assertEnoughAccountFunds } from "../../utils/accounts.utils";
+  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
@@ -18,7 +20,7 @@
 
   export let selectedAccount: Account | undefined = undefined;
   export let amount: number | undefined = undefined;
-  // TODO: Handle min and max validations: https://dfinity.atlassian.net/browse/L2-798
+  // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let minAmount: ICP;
   export let maxAmount: ICP;
 
@@ -31,8 +33,31 @@
 
   let disableButton: boolean;
   $: disableButton =
-    selectedAccount === undefined || amount === 0 || amount === undefined;
+    selectedAccount === undefined ||
+    amount === 0 ||
+    amount === undefined ||
+    errorMessage !== undefined;
 
+  let errorMessage: string | undefined = undefined;
+  $: (() => {
+    // Remove error message when resetting amount or source account
+    if (amount === undefined || selectedAccount === undefined) {
+      errorMessage = undefined;
+      return;
+    }
+    try {
+      const icp = convertNumberToICP(amount);
+      assertEnoughAccountFunds({
+        account: selectedAccount,
+        amountE8s: icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s(),
+      });
+    } catch (error) {
+      if (error instanceof InvalidAmountError) {
+        errorMessage = $i18n.error.amount_not_valid;
+      }
+      errorMessage = $i18n.error.insufficient_funds;
+    }
+  })();
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
@@ -43,7 +68,11 @@
   };
 </script>
 
-<div class="wrapper" data-tid="sns-swap-participate-step-1">
+<form
+  on:submit|preventDefault={goNext}
+  class="wrapper"
+  data-tid="sns-swap-participate-step-1"
+>
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
@@ -54,7 +83,7 @@
     <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
   </div>
   <div class="wrapper info">
-    <AmountInput bind:amount on:nnsMax={addMax} {max} />
+    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <KeyValuePair>
       <span slot="key"
         >{$i18n.core.min} <IcpComponent singleLine icp={minAmount} /></span
@@ -72,16 +101,17 @@
     <button
       class="small secondary"
       data-tid="sns-swap-participate-button-cancel"
+      type="button"
       on:click={close}>{$i18n.core.cancel}</button
     >
     <button
       class="small primary"
       data-tid="sns-swap-participate-button-next"
       disabled={disableButton}
-      on:click={goNext}>{$i18n.sns_project_detail.participate}</button
+      type="submit">{$i18n.sns_project_detail.participate}</button
     >
   </FooterModal>
-</div>
+</form>
 
 <style lang="scss">
   @use "../../themes/mixins/modal";

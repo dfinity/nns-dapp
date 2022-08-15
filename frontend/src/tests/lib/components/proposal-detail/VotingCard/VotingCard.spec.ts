@@ -107,7 +107,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(neurons.length)
       );
-      await waitFor(() => expect(spyListNeurons).toBeCalledTimes(2));
+      await waitFor(() => expect(spyListNeurons).toBeCalledTimes(1));
     });
 
     it("should trigger register-vote YES", async () => {

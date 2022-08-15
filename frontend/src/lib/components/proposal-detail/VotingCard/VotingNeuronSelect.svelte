@@ -10,10 +10,15 @@
   import Checkbox from "../../ui/Checkbox.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import Value from "../../ui/Value.svelte";
+  import type { VoteInProgress } from "../../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
+  export let voteInProgress: VoteInProgress | undefined = undefined;
 
   let total: bigint;
+  let disabled: boolean = false;
+
+  $: disabled = voteInProgress !== undefined;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
@@ -25,53 +30,58 @@
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
-<p class="headline">
-  <span>{$i18n.proposal_detail__vote.neurons}</span>
-  <span>{$i18n.proposal_detail__vote.voting_power}</span>
-</p>
+{#if $votingNeuronSelectStore.neurons.length > 0}
+  <p class="headline">
+    <span>{$i18n.proposal_detail__vote.neurons}</span>
+    <span>{$i18n.proposal_detail__vote.voting_power}</span>
+  </p>
 
-<ul>
-  {#each $votingNeuronSelectStore.neurons as neuron}
-    <li>
-      <Checkbox
-        inputId={`${neuron.neuronId}`}
-        checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
-        on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        text="block"
-        selector="neuron-checkbox"
-      >
-        <span
-          class="neuron-id value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_neuronId,
-            {
-              $neuronId: `${neuron.neuronId}`,
-            }
-          )}>{`${neuron.neuronId}`}</span
-        >
-        <span
-          class="neuron-voting-power value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_votingPower,
-            {
-              $votingPower: formatVotingPower(
-                getVotingPower({ neuron, proposal: proposalInfo })
-              ),
-            }
+  <ul>
+    {#each $votingNeuronSelectStore.neurons as neuron}
+      <li>
+        <Checkbox
+          inputId={`${neuron.neuronId}`}
+          checked={$votingNeuronSelectStore.selectedIds.includes(
+            neuron.neuronId
           )}
-          >{`${formatVotingPower(
-            getVotingPower({ neuron, proposal: proposalInfo })
-          )}`}</span
+          on:nnsChange={() => toggleSelection(neuron.neuronId)}
+          text="block"
+          selector="neuron-checkbox"
+          {disabled}
         >
-      </Checkbox>
-    </li>
-  {/each}
-</ul>
+          <span
+            class="neuron-id value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_neuronId,
+              {
+                $neuronId: `${neuron.neuronId}`,
+              }
+            )}>{`${neuron.neuronId}`}</span
+          >
+          <span
+            class="neuron-voting-power value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_votingPower,
+              {
+                $votingPower: formatVotingPower(
+                  getVotingPower({ neuron, proposal: proposalInfo })
+                ),
+              }
+            )}
+            >{`${formatVotingPower(
+              getVotingPower({ neuron, proposal: proposalInfo })
+            )}`}</span
+          >
+        </Checkbox>
+      </li>
+    {/each}
+  </ul>
 
-<p class="total">
-  <span>{$i18n.proposal_detail__vote.total}</span>
-  <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
-</p>
+  <p class="total">
+    <span>{$i18n.proposal_detail__vote.total}</span>
+    <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
+  </p>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

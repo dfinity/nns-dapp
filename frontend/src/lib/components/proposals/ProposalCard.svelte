@@ -5,13 +5,17 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
+  import {
+    proposalsFiltersStore,
+    type ProposalsFiltersStore,
+  } from "../../stores/proposals.store";
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import type { Color } from "../../types/theme";
   import Tag from "../ui/Tag.svelte";
+  import { voteInProgressStore } from "../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -39,11 +43,16 @@
   //
   // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
   let hide: boolean;
-  $: hide = hideProposal({
-    filters: $proposalsFiltersStore,
-    proposalInfo,
-    neurons: $definedNeuronsStore,
-  });
+  $: hide =
+    hideProposal({
+      filters: $proposalsFiltersStore as ProposalsFiltersStore,
+      proposalInfo,
+      neurons: $definedNeuronsStore,
+    }) ||
+    // hide proposals that are currently in the voting state
+    $voteInProgressStore.votes.find(
+      ({ proposalId }) => proposalInfo.id === proposalId
+    ) !== undefined;
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->

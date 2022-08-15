@@ -18,6 +18,7 @@
   import Tooltip from "../components/ui/Tooltip.svelte";
   import { isSpawning } from "../utils/neuron.utils";
   import Value from "../components/ui/Value.svelte";
+  import { voteInProgressStore } from "../stores/voting.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -43,6 +44,9 @@
       path: `${AppPath.NeuronDetail}/${id}`,
     });
   };
+
+  let votingInProgress: boolean = false;
+  $: votingInProgress = $voteInProgressStore.votes.length > 0;
 
   let enoughNeuronsToMerge: boolean;
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
@@ -94,6 +98,7 @@
     >
     {#if enoughNeuronsToMerge}
       <button
+        disabled={votingInProgress}
         data-tid="merge-neurons-button"
         class="primary full-width"
         on:click={() => openModal("merge-neurons")}

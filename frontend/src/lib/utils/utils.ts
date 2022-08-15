@@ -206,7 +206,7 @@ export const smallerVersion = ({
   );
 };
 
-const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, milliseconds);
   });

@@ -18,6 +18,22 @@ describe("neurons-store", () => {
     expect(neuronsInStore).toEqual({ neurons, certified: true });
   });
 
+  it("should reset neurons", () => {
+    const neurons: NeuronInfo[] = [
+      { ...mockNeuron, neuronId: BigInt(1) },
+      { ...mockNeuron, neuronId: BigInt(2) },
+    ];
+    neuronsStore.setNeurons({ neurons, certified: true });
+
+    neuronsStore.reset();
+
+    const neuronsInStore = get(neuronsStore);
+    expect(neuronsInStore).toEqual({
+      neurons: undefined,
+      certified: undefined,
+    });
+  });
+
   it("should push neurons", () => {
     const neurons: NeuronInfo[] = [
       { ...mockNeuron, neuronId: BigInt(1) },

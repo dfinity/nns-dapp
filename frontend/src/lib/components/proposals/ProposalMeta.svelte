@@ -13,7 +13,8 @@
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
-  $: ({ id, url, topic, deadline } = mapProposalInfo(proposalInfo));
+  let deadline: bigint | undefined;
+  $: ({ id, url, deadline, topic } = mapProposalInfo(proposalInfo));
 </script>
 
 <ul>
