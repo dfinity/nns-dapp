@@ -1,4 +1,4 @@
-@use "text";
+@use "@dfinity/gix-components/styles/mixins/text";
 
 @mixin stacked-title {
   display: grid;

@@ -10,7 +10,7 @@
 >
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   .tag {
     padding: calc(var(--padding-0_5x) / 2) var(--padding);
 

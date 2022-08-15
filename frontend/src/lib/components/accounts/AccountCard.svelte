@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Account } from "../../types/account";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import ICP from "../ic/ICP.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";

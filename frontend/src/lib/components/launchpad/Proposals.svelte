@@ -7,7 +7,6 @@
     snsProposalsStore,
   } from "../../stores/sns.store";
   import { isNullish } from "../../utils/utils";
-  import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
   import ProposalCard from "./ProposalCard.svelte";
 
@@ -24,18 +23,18 @@
 </script>
 
 {#if loading}
-  <CardGrid>
+  <div class="grid">
     <SkeletonProposalCard />
     <SkeletonProposalCard />
-  </CardGrid>
+  </div>
 {:else if $openSnsProposalsStore.length === 0}
   <p class="no-proposals">{$i18n.voting.nothing_found}</p>
 {:else}
-  <CardGrid>
+  <div class="grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
       <ProposalCard {proposalInfo} />
     {/each}
-  </CardGrid>
+  </div>
 {/if}
 
 <style lang="scss">
