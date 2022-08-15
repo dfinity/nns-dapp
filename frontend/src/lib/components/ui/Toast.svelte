@@ -11,10 +11,23 @@
   } from "../../utils/i18n.utils";
   import { i18n } from "../../stores/i18n";
   import type { ToastLevel, ToastMsg } from "../../types/toast";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, SvelteComponent } from "svelte";
   import Spinner from "./Spinner.svelte";
+  import IconWarning from "../../icons/IconWarning.svelte";
+  import IconClose from "../../icons/IconClose.svelte";
+  import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
+  import IconCheckCircleOutline from "../../icons/IconCheckCircleOutline.svelte";
+  import IconError from "../../icons/IconError.svelte";
 
   export let msg: ToastMsg;
+
+  const iconMapper = (level: ToastLevel): typeof SvelteComponent =>
+    ({
+      ["success"]: IconCheckCircleOutline,
+      ["warn"]: IconWarning,
+      ["error"]: IconError,
+      ["info"]: IconInfoOutline,
+    }[level]);
 
   const close = () => toastsStore.hide(msg.id);
   let text: string | undefined;
@@ -23,8 +36,9 @@
   let level: ToastLevel;
   let detail: string | undefined;
   let substitutions: I18nSubstitutions | undefined;
+  let spinner: boolean | undefined;
 
-  $: ({ labelKey, level, detail, substitutions } = msg);
+  $: ({ labelKey, level, detail, substitutions, spinner } = msg);
   $: text = `${replacePlaceholders(
     translate({ labelKey }),
     substitutions ?? {}
@@ -57,24 +71,28 @@
 <div
   role="dialog"
   class="toast"
-  class:error={level === "error"}
-  class:warn={["running", "warn"].includes(level)}
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
-  {#if level === "running"}
-    <Spinner size="small" />
-  {/if}
-
-  <p>
-    {text}
-  </p>
-
-  <button
-    class="close"
+  <div
+    class="icon"
+    aria-hidden="true"
+    class:success={level === "success"}
+    class:info={level === "info"}
+    class:warn={level === "warn"}
     class:error={level === "error"}
-    class:warning={level === "warn"}
-    on:click={close}>{$i18n.core.close}</button
+  >
+    {#if spinner}
+      <Spinner size="small" inline />
+    {:else}
+      <svelte:component this={iconMapper(level)} />
+    {/if}
+  </div>
+
+  <p>{text}</p>
+
+  <button class="close" on:click={close} aria-label={$i18n.core.close}
+    ><IconClose /></button
   >
 </div>
 
@@ -85,73 +103,43 @@
     align-items: center;
     gap: var(--padding-1_5x);
 
-    // (>=3 lines x 1rem) + top/bottom paddings
-    height: calc(8.5 * var(--padding));
-
     border-radius: var(--border-radius);
-    background: var(--positive-emphasis);
-    color: var(--positive-emphasis-contrast);
-    box-shadow: 0 4px 16px 0 rgba(var(--background-rgb), 0.3);
+    background: var(--background);
+    box-shadow: var(--strong-shadow);
 
-    padding: var(--padding) var(--padding-2x);
+    padding: var(--padding-1_5x);
     box-sizing: border-box;
 
-    --scrollbar-background: #9dd196;
-    --scrollbar-thumb: var(--positive-emphasis-shade);
+    .icon {
+      line-height: 0;
 
-    ::-webkit-scrollbar {
-      background: var(--scrollbar-background);
-      width: 0.8em;
-      border-radius: 0.5em;
-      -webkit-border-radius: 0.5em;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border: solid 2.5px var(--scrollbar-thumb);
-      height: auto;
-    }
+      &.success {
+        color: var(--positive-emphasis);
+      }
 
-    &.error {
-      background: var(--negative-emphasis);
-      color: var(--negative-emphasis-light-contrast);
-      --scrollbar-background: var(--negative-emphasis-tint);
-      --scrollbar-thumb: var(--negative-emphasis);
-    }
+      &.info {
+        color: var(--primary);
+      }
 
-    &.warn {
-      background: var(--warning-emphasis);
-      color: var(--warning-emphasis-contrast);
-      --scrollbar-background: var(--warning-emphasis-tint);
-      --scrollbar-thumb: var(--warning-emphasis);
+      &.warn {
+        color: var(--warning-emphasis-shade);
+      }
 
-      button.close {
-        color: var(--warning-emphasis-contrast);
-        box-shadow: none;
+      &.error {
+        color: var(--negative-emphasis);
       }
     }
 
-    :global(svg) {
-      position: static;
-      flex: 0 0 var(--padding-2x);
+    p {
+      margin: 0;
+      flex-grow: 1;
+      word-break: break-word;
     }
-  }
 
-  p {
-    margin: 0;
-    flex: 1 0 0;
-    max-height: 100%;
-    overflow-y: auto;
-    word-break: break-word;
-  }
-
-  button.close {
-    // rewrite default button styles
-    padding: var(--padding-0_5x) var(--padding);
-    min-height: 0;
-    border: 1px solid;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-h5);
-    line-height: var(--line-height-title);
-    color: var(--positive-emphasis-contrast);
+    button.close {
+      align-self: flex-start;
+      padding: 0;
+      line-height: 0;
+    }
   }
 </style>
