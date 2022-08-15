@@ -72,7 +72,8 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS_NEURONS": false,
+          "VOTING_UI": "legacy"
         }
       },
       "providers": ["https://ic0.app/"],
@@ -85,7 +86,8 @@
         "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS_NEURONS": false,
+          "VOTING_UI": "legacy"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
@@ -98,7 +100,8 @@
         "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS_NEURONS": true,
+          "VOTING_UI": "modern"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
@@ -111,7 +114,8 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS_NEURONS": true,
+          "VOTING_UI": "modern"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
@@ -124,7 +128,8 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS_NEURONS": true,
+          "VOTING_UI": "modern"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
@@ -137,7 +142,8 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS_NEURONS": true,
+          "VOTING_UI": "modern"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
@@ -150,7 +156,8 @@
         "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS_NEURONS": true,
+          "VOTING_UI": "modern"
         }
       },
       "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
@@ -163,7 +170,8 @@
         "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS_NEURONS": false,
+          "VOTING_UI": "modern"
         }
       },
       "bind": "127.0.0.1:8080",
