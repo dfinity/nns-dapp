@@ -69,18 +69,15 @@ async fn handle_participate_swap(
     let request = RefreshBuyerTokensRequest {
         buyer: principal.to_string(),
     };
-    match swap::notify_swap_participation(swap_canister_id, request).await {
-        Ok(_) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().complete_pending_transaction(
-                    to,
-                    TransactionType::ParticipateSwap(swap_canister_id),
-                    principal,
-                    block_height,
-                )
-            });
-        }
-        Err(_) => {}
+    if let Ok(_) = swap::notify_swap_participation(swap_canister_id, request).await {
+        STATE.with(|s| {
+            s.accounts_store.borrow_mut().complete_pending_transaction(
+                to,
+                TransactionType::ParticipateSwap(swap_canister_id),
+                principal,
+                block_height,
+            )
+        });
     }
 }
 

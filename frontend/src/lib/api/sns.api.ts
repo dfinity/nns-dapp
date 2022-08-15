@@ -441,7 +441,7 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
-  // Notify NNS Dapp to notify when transaction is checked
+  // If the client disconnects after the tranfer, the participation will still be notified.
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
   await nnsDapp.addPendingNotifySwap({
     swap_canister_id: swapCanisterId,

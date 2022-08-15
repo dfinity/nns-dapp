@@ -355,7 +355,9 @@ export class NNSDappCanister {
     }
     // Edge case
     throw new Error(
-      `Unkonwn response for add_pending_notify_swap ${JSON.stringify(response)}`
+      `Unknonwn response for add_pending_notify_swap ${JSON.stringify(
+        response
+      )}`
     );
   }
 }

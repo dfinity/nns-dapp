@@ -1,4 +1,4 @@
-use crate::constants::{MEMO_CREATE_CANISTER, MEMO_PARTICIPATE_SWAP, MEMO_TOP_UP_CANISTER};
+use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
@@ -474,22 +474,12 @@ impl AccountsStore {
     ) -> AddPendingTransactionResponse {
         match transaction_type {
             TransactionType::ParticipateSwap(canister_id) => {
-                // Why the &principal.into?
                 let account_identifier = AccountIdentifier::new(canister_id.get(), Some((&principal).into()));
-                match self.pending_transactions.get_mut(&account_identifier) {
-                    Some(transactions) => {
-                        transactions
-                            .push(PendingTransaction::new(principal, account_identifier, transaction_type).clone());
-                        AddPendingTransactionResponse::Ok
-                    }
-                    None => {
-                        self.pending_transactions.insert(
-                            account_identifier,
-                            vec![PendingTransaction::new(principal, account_identifier, transaction_type)],
-                        );
-                        AddPendingTransactionResponse::Ok
-                    }
-                }
+                self.pending_transactions
+                    .entry(account_identifier)
+                    .or_default()
+                    .push(PendingTransaction::new(principal, account_identifier, transaction_type));
+                AddPendingTransactionResponse::Ok
             }
             _ => AddPendingTransactionResponse::TransactionTypeNotSupported,
         }
@@ -503,8 +493,8 @@ impl AccountsStore {
     ) -> Option<&PendingTransaction> {
         match self.pending_transactions.get(&account_identifier) {
             Some(transactions) => transactions
-                .into_iter()
-                .find(|t| !t.transaction_completed && t.principal == principal),
+                .iter()
+                .find(|t| !t.transaction_completed && t.principal.to_string() == principal.to_string()),
             None => None,
         }
     }
@@ -518,19 +508,21 @@ impl AccountsStore {
     ) {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
-        match self.pending_transactions.get_mut(&to) {
-            Some(transactions) => {
-                let filtered_transactions = transactions
-                    .into_iter()
-                    .filter(|t| !t.transaction_completed)
-                    .filter(|t| t.principal == principal)
-                    .filter(|t| matches!(t.transaction_type, transaction_type));
-                for transaction in filtered_transactions {
-                    transaction.transaction_completed = true
-                }
+        if let Some(transactions) = self.pending_transactions.get_mut(&to) {
+            let filtered_transactions = transactions
+                .iter_mut()
+                .filter(|t| !t.transaction_completed)
+                .filter(|t| t.principal.to_string() == principal.to_string())
+                .filter(|t| matches!(t.transaction_type, transaction_type));
+            for transaction in filtered_transactions {
+                transaction.transaction_completed = true
             }
-            None => {}
         }
+        // match self.pending_transactions.get_mut(&to) {
+        //     Some(transactions) => {
+        //     }
+        //     None => {}
+        // }
     }
 
     pub fn append_transaction(
@@ -1156,7 +1148,7 @@ impl AccountsStore {
                 TransactionType::CreateCanister
             } else if let Some(canister_id) = Self::is_topup_canister_transaction(memo, &to, canister_ids) {
                 TransactionType::TopUpCanister(canister_id)
-            } else if let Some(canister_id) = self.is_participate_swap_transaction(memo, to, *principal) {
+            } else if let Some(canister_id) = self.is_participate_swap_transaction(to, *principal) {
                 TransactionType::ParticipateSwap(canister_id)
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
@@ -1168,26 +1160,16 @@ impl AccountsStore {
         }
     }
 
-    fn is_participate_swap_transaction(
-        &self,
-        memo: Memo,
-        to: AccountIdentifier,
-        principal: PrincipalId,
-    ) -> Option<CanisterId> {
-        if memo == MEMO_PARTICIPATE_SWAP {
-            // TODO: How to make sure that the pending transaction is the correct one. Is checking the principal enough?
-            match self.get_pending_transaction(to, principal) {
-                Some(pending_transaction) => {
-                    if let TransactionType::ParticipateSwap(canister_id) = pending_transaction.transaction_type {
-                        Some(canister_id)
-                    } else {
-                        None
-                    }
+    fn is_participate_swap_transaction(&self, to: AccountIdentifier, principal: PrincipalId) -> Option<CanisterId> {
+        match self.get_pending_transaction(to, principal) {
+            Some(pending_transaction) => {
+                if let TransactionType::ParticipateSwap(canister_id) = pending_transaction.transaction_type {
+                    Some(canister_id)
+                } else {
+                    None
                 }
-                None => None,
             }
-        } else {
-            None
+            None => None,
         }
     }
 

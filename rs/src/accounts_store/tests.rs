@@ -223,16 +223,91 @@ fn add_pending_transaction_and_complete() {
         }
     }
 
+    let same_buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     // Set transaction as complete
-    store.complete_pending_transaction(account_identifier, transaction_type, buyer, 1);
+    store.complete_pending_transaction(account_identifier, transaction_type, same_buyer, 1);
 
     // There should be no more pending transactions
-    match store.get_pending_transaction(account_identifier, buyer) {
+    match store.get_pending_transaction(account_identifier, same_buyer) {
         None => {
             assert_eq!(true, true);
         }
         Some(_) => {
             panic!("Pending transaction found!");
+        }
+    }
+}
+
+#[test]
+fn add_and_complete_multiple_pending_transactions() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let buyer2 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let swap_canister_id2 = CanisterId::from_str(TEST_ACCOUNT_4).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    let transaction_type2 = TransactionType::ParticipateSwap(swap_canister_id2);
+    assert_eq!(0, store.pending_transactions.len());
+    store.add_pending_transaction(buyer, transaction_type);
+    store.add_pending_transaction(buyer2, transaction_type2);
+    store.add_pending_transaction(buyer2, transaction_type);
+
+    // Buyer investing in swap 1
+    let account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    match store.get_pending_transaction(account_identifier, buyer) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(pending_transaction) => {
+            assert_eq!(pending_transaction.principal, buyer)
+        }
+    }
+    // Buyer 2 investing in swap 1
+    let account_identifier2 = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer2).into()));
+    match store.get_pending_transaction(account_identifier2, buyer2) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(pending_transaction) => {
+            assert_eq!(pending_transaction.principal, buyer2)
+        }
+    }
+    // Buyer 2 investing in swap 2
+    let account_identifier3 = AccountIdentifier::new(swap_canister_id2.get(), Some((&buyer2).into()));
+    match store.get_pending_transaction(account_identifier3, buyer2) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(pending_transaction) => {
+            assert_eq!(pending_transaction.principal, buyer2)
+        }
+    }
+
+    let same_buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let same_buyer2 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+
+    // Set transaction as complete buyer 1
+    store.complete_pending_transaction(account_identifier, transaction_type, same_buyer, 1);
+
+    // There should be no more pending transactions
+    match store.get_pending_transaction(account_identifier, same_buyer) {
+        None => {
+            assert_eq!(true, true);
+        }
+        Some(_) => {
+            panic!("Pending transaction found!");
+        }
+    }
+
+    // Buyer 2 is still pending
+    let account_identifier2 = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer2).into()));
+    match store.get_pending_transaction(account_identifier2, same_buyer2) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(pending_transaction) => {
+            assert_eq!(pending_transaction.principal, buyer2)
         }
     }
 }
