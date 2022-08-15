@@ -204,21 +204,35 @@ fn create_sub_account() {
 }
 
 #[test]
-fn add_pending_transaction() {
+fn add_pending_transaction_and_complete() {
     let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
 
     let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
     assert_eq!(0, store.pending_transactions.len());
-    store.add_pending_transaction(buyer, TransactionType::ParticipateSwap(swap_canister_id));
+    store.add_pending_transaction(buyer, transaction_type);
 
     let account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
-    match store.get_pending_transaction(account_identifier) {
+    match store.get_pending_transaction(account_identifier, buyer) {
         None => {
             panic!("Pending transaction not found");
         }
         Some(pending_transaction) => {
             assert_eq!(pending_transaction.principal, buyer)
+        }
+    }
+
+    // Set transaction as complete
+    store.complete_pending_transaction(account_identifier, transaction_type, buyer, 1);
+
+    // There should be no more pending transactions
+    match store.get_pending_transaction(account_identifier, buyer) {
+        None => {
+            assert_eq!(true, true);
+        }
+        Some(_) => {
+            panic!("Pending transaction found!");
         }
     }
 }

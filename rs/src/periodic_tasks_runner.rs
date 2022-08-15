@@ -1,4 +1,4 @@
-use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
+use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs, TransactionType};
 use crate::canisters::ledger;
 use crate::canisters::{cmc, governance, swap};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
@@ -10,6 +10,7 @@ use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
+use ic_sns_swap::pb::v1::RefreshBuyerTokensRequest;
 use ledger_canister::{
     AccountBalanceArgs, AccountIdentifier, BlockHeight, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
@@ -65,15 +66,18 @@ async fn handle_participate_swap(
     to: AccountIdentifier,
     swap_canister_id: CanisterId,
 ) {
-    let request = swap::RefreshBuyersTokensRequest {
+    let request = RefreshBuyerTokensRequest {
         buyer: principal.to_string(),
     };
     match swap::notify_swap_participation(swap_canister_id, request).await {
         Ok(_) => {
             STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .complete_pending_transaction(to, swap_canister_id, block_height)
+                s.accounts_store.borrow_mut().complete_pending_transaction(
+                    to,
+                    TransactionType::ParticipateSwap(swap_canister_id),
+                    principal,
+                    block_height,
+                )
             });
         }
         Err(_) => {}

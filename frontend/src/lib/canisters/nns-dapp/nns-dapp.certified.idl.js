@@ -5,9 +5,9 @@ export const idlFactory = ({ IDL }) => {
     swap_canister_id: IDL.Principal,
     buyer: IDL.Principal,
   });
-  const AddPendingNotifySwapResponse = IDL.Variant({
+  const AddPendingTransactionResponse = IDL.Variant({
     Ok: IDL.Null,
-    TransactionLimitExceeded: IDL.Null,
+    TransactionTypeNotSupported: IDL.Null,
   });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
@@ -174,7 +174,7 @@ export const idlFactory = ({ IDL }) => {
     add_account: IDL.Func([], [AccountIdentifier], []),
     add_pending_notify_swap: IDL.Func(
       [AddPendingNotifySwapRequest],
-      [AddPendingNotifySwapResponse],
+      [AddPendingTransactionResponse],
       []
     ),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),

@@ -66,5 +66,3 @@ export class UnknownProposalPayloadError extends Error {
 
 export class ProposalPayloadNotFoundError extends Error {}
 export class ProposalPayloadTooLargeError extends Error {}
-
-export class PendingTransactionsLimitExceededError extends Error {}

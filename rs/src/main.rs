@@ -1,5 +1,5 @@
 use crate::accounts_store::{
-    AccountDetails, AddPendingNotifySwapRequest, AddPendingNotifySwapResponse, AttachCanisterRequest,
+    AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
@@ -201,7 +201,7 @@ pub fn add_pending_notify_swap() {
     over(candid_one, add_pending_notify_swap_impl);
 }
 
-fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingNotifySwapResponse {
+fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
     STATE.with(|s| {
         s.accounts_store.borrow_mut().add_pending_transaction(
             request.buyer,

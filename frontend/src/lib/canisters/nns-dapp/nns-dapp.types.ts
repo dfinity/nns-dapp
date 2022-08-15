@@ -13,9 +13,9 @@ export interface AddPendingNotifySwapRequest {
   swap_canister_id: Principal;
   buyer: Principal;
 }
-export type AddPendingNotifySwapResponse =
+export type AddPendingTransactionResponse =
   | { Ok: null }
-  | { TransactionLimitExceeded: null };
+  | { TransactionTypeNotSupported: null };
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;
@@ -169,7 +169,7 @@ export default interface _SERVICE {
   add_account: () => Promise<AccountIdentifierString>;
   add_pending_notify_swap: (
     arg_0: AddPendingNotifySwapRequest
-  ) => Promise<AddPendingNotifySwapResponse>;
+  ) => Promise<AddPendingTransactionResponse>;
   add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
   attach_canister: (
     arg_0: AttachCanisterRequest

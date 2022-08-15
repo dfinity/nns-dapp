@@ -447,7 +447,6 @@ export const participateInSnsSwap = async ({
     swap_canister_id: swapCanisterId,
     buyer: controller,
   });
-  console.log("after da add pending notify swap");
 
   // Send amount to the ledger
   await nnsLedger.transfer({
@@ -458,7 +457,7 @@ export const participateInSnsSwap = async ({
   });
 
   // Notify participation
-  // await notifyParticipation({ buyer: controller.toText() });
+  await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
 };
