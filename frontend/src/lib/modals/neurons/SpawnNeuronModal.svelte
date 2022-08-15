@@ -4,20 +4,16 @@
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { formatPercentage } from "../../utils/format.utils";
   import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
   import { toastsStore } from "../../stores/toasts.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
   import { startBusyNeuron } from "../../services/busy.services";
-  import { ENABLE_NEW_SPAWN_FEATURE } from "../../constants/environment.constants";
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
   export let controlledByHarwareWallet: boolean;
@@ -99,21 +95,7 @@
     >{currentStep?.title ??
       $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
   >
-  {#if currentStep.name === "SelectPercentage" && !ENABLE_NEW_SPAWN_FEATURE}
-    <SelectPercentage
-      {neuron}
-      buttonText={$i18n.neuron_detail.spawn}
-      on:nnsSelectPercentage={goToConfirm}
-      on:nnsBack={close}
-      bind:percentage={percentageToSpawn}
-      disabled={!enoughMaturityToSpawn}
-    >
-      <svelte:fragment slot="text">
-        <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
-        <p>{$i18n.neuron_detail.spawn_maturity_modal_description}</p>
-      </svelte:fragment>
-    </SelectPercentage>
-  {:else if currentStep.name === "SelectPercentage" && ENABLE_NEW_SPAWN_FEATURE}
+  {#if currentStep.name === "SelectPercentage"}
     <SelectPercentage
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
@@ -132,25 +114,8 @@
         </p>
       </div>
     </SelectPercentage>
-  {:else if currentStep.name === "ConfirmSpawn" && ENABLE_NEW_SPAWN_FEATURE}
+  {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
-  {:else if currentStep.name === "ConfirmSpawn" && !ENABLE_NEW_SPAWN_FEATURE}
-    <ConfirmActionScreen on:nnsConfirm={spawnNeuronFromMaturity}>
-      <div class="confirm" slot="main-info">
-        <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
-        <p class="confirm-answer">
-          {replacePlaceholders(
-            $i18n.neuron_detail.spawn_maturity_confirmation_a,
-            {
-              $percentage: valueSpan(percentageMessage),
-            }
-          )}
-        </p>
-      </div>
-      <svelte:fragment slot="button-content"
-        >{$i18n.core.confirm}</svelte:fragment
-      >
-    </ConfirmActionScreen>
   {/if}
 </WizardModal>
 
