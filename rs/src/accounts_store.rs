@@ -518,11 +518,6 @@ impl AccountsStore {
                 transaction.transaction_completed = true
             }
         }
-        // match self.pending_transactions.get_mut(&to) {
-        //     Some(transactions) => {
-        //     }
-        //     None => {}
-        // }
     }
 
     pub fn append_transaction(
