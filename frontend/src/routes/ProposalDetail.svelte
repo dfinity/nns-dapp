@@ -125,30 +125,32 @@
   layoutBackStore.set(goBack);
 </script>
 
-<section>
-  {#if $selectedProposalStore.proposal !== undefined}
-    <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
+<main class="legacy">
+  <section>
+    {#if $selectedProposalStore.proposal !== undefined}
+      <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
 
-    {#if neuronsReady}
-      <VotesCard proposalInfo={$selectedProposalStore.proposal} />
-      <VotingCard proposalInfo={$selectedProposalStore.proposal} />
-      <IneligibleNeuronsCard
-        proposalInfo={$selectedProposalStore.proposal}
-        neurons={$definedNeuronsStore}
-      />
+      {#if neuronsReady}
+        <VotesCard proposalInfo={$selectedProposalStore.proposal} />
+        <VotingCard proposalInfo={$selectedProposalStore.proposal} />
+        <IneligibleNeuronsCard
+                proposalInfo={$selectedProposalStore.proposal}
+                neurons={$definedNeuronsStore}
+        />
+      {:else}
+        <div class="loader">
+          <SkeletonCard cardType="info" />
+          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+        </div>
+      {/if}
     {:else}
       <div class="loader">
         <SkeletonCard cardType="info" />
         <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
       </div>
     {/if}
-  {:else}
-    <div class="loader">
-      <SkeletonCard cardType="info" />
-      <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-    </div>
-  {/if}
-</section>
+  </section>
+</main>
 
 <style lang="scss">
   .loader {

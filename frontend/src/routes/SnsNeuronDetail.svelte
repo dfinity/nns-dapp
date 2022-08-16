@@ -86,7 +86,9 @@
   layoutBackStore.set(goBack);
 </script>
 
-<section data-tid="sns-neuron-detail-page">
-  <SnsNeuronMetaInfoCard />
-  <SnsNeuronHotkeysCard />
-</section>
+<main>
+  <section data-tid="sns-neuron-detail-page">
+    <SnsNeuronMetaInfoCard />
+    <SnsNeuronHotkeysCard />
+  </section>
+</main>
