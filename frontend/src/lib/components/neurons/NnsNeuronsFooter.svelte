@@ -41,7 +41,7 @@
         <button
           disabled
           data-tid="merge-neurons-button"
-          class="primary full-width"
+          class="primary full-width tooltip-button"
           on:click={() => openModal("merge-neurons")}
           >{$i18n.neurons.merge_neurons}</button
         >
@@ -63,7 +63,7 @@
     --tooltip-width: 50%;
   }
 
-  :global(footer .tooltip-wrapper button) {
+  .tooltip-button {
     width: 100%;
   }
 </style>
