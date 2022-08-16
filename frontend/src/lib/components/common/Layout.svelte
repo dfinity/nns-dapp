@@ -6,7 +6,7 @@
     layoutBackStore,
     layoutMainStyleStore,
   } from "../../stores/layout.store";
-  import { Layout, Title } from "@dfinity/gix-components";
+  import { Layout, HeaderTitle } from "@dfinity/gix-components";
   import AccountMenu from "../header/AccountMenu.svelte";
   import { triggerDebugReport } from "../../services/debug.services";
 
@@ -22,7 +22,7 @@
   on:nnsBack={() => $layoutBackStore?.()}
 >
   <div use:triggerDebugReport slot="title">
-    <Title>{$layoutTitleStore}</Title>
+    <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
   </div>
 
   <MenuItems slot="menu-items" />
