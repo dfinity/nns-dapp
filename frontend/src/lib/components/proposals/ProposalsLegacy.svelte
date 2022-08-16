@@ -30,7 +30,7 @@
   {/if}
 
   {#if loading || !neuronsLoaded}
-    <div class="spinner">
+    <div class="spinner" data-tid="proposals-loading">
       <SkeletonCard />
       <SkeletonCard />
     </div>
