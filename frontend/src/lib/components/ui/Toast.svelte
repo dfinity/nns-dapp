@@ -14,7 +14,7 @@
   import { onDestroy, onMount, SvelteComponent } from "svelte";
   import Spinner from "./Spinner.svelte";
   import IconWarning from "../../icons/IconWarning.svelte";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
   import IconCheckCircleOutline from "../../icons/IconCheckCircleOutline.svelte";
   import IconError from "../../icons/IconError.svelte";
@@ -74,14 +74,7 @@
   in:fly={{ y: 100, duration: 200 }}
   out:fade={{ delay: 100 }}
 >
-  <div
-    class="icon"
-    aria-hidden="true"
-    class:success={level === "success"}
-    class:info={level === "info"}
-    class:warn={level === "warn"}
-    class:error={level === "error"}
-  >
+  <div class="icon {level}" aria-hidden="true">
     {#if spinner}
       <Spinner size="small" inline />
     {:else}
@@ -105,7 +98,7 @@
 
     border-radius: var(--border-radius);
     background: var(--card-background);
-    box-shadow: var(--strong-shadow);
+    box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));
 
     padding: var(--padding-1_5x);
     box-sizing: border-box;
