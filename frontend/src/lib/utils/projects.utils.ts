@@ -132,6 +132,13 @@ const commitmentTooLarge = ({
   summary: SnsSummary;
   amountE8s: bigint;
 }): boolean => summary.swap.init.max_participant_icp_e8s < amountE8s;
+const commitmentExceedsAmountLeft = ({
+  summary: { swap, derived },
+  amountE8s,
+}: {
+  summary: SnsSummary;
+  amountE8s: bigint;
+}): boolean => swap.init.max_icp_e8s - derived.buyer_total_icp_e8s < amountE8s;
 
 /**
  * To participate to a swap:
@@ -210,6 +217,25 @@ export const validParticipation = ({
         $commitment: formatICP({ value: totalCommitment }),
         $maxCommitment: formatICP({
           value: project.summary.swap.init.max_participant_icp_e8s,
+        }),
+      },
+    };
+  }
+  if (
+    commitmentExceedsAmountLeft({
+      summary: project.summary,
+      amountE8s: totalCommitment,
+    })
+  ) {
+    return {
+      valid: false,
+      labelKey: "error__sns.commitment_exceeds_current_allowed",
+      substitutions: {
+        $commitment: formatICP({ value: totalCommitment }),
+        $maxCommitment: formatICP({
+          value:
+            project.summary.swap.init.max_icp_e8s -
+            project.summary.derived.buyer_total_icp_e8s,
         }),
       },
     };

@@ -702,6 +702,7 @@ interface I18nError__sns {
   project_not_open: string;
   not_enough_amount: string;
   commitment_too_large: string;
+  commitment_exceeds_current_allowed: string;
   cannot_participate: string;
   sns_add_hotkey: string;
 }
