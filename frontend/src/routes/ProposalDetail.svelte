@@ -134,8 +134,8 @@
         <VotesCard proposalInfo={$selectedProposalStore.proposal} />
         <VotingCard proposalInfo={$selectedProposalStore.proposal} />
         <IneligibleNeuronsCard
-                proposalInfo={$selectedProposalStore.proposal}
-                neurons={$definedNeuronsStore}
+          proposalInfo={$selectedProposalStore.proposal}
+          neurons={$definedNeuronsStore}
         />
       {:else}
         <div class="loader">

@@ -1,5 +1,5 @@
 <footer>
-    <slot />
+  <slot />
 </footer>
 
 <style lang="scss">
