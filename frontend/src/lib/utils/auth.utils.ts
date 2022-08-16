@@ -11,9 +11,10 @@ import { clear, createStore, get } from "idb-keyval";
 export const isSignedIn = (identity: Identity | undefined | null): boolean =>
   identity !== undefined && identity !== null;
 
-const customStore = createStore("auth-client-db", "ic-keyval");
+// Exported for test purpose
+export const customIdbAuthStore = createStore("auth-client-db", "ic-keyval");
 
 export const getIdbAuthKey = <T>(key: string): Promise<T | undefined> =>
-  get<T>(key, customStore);
+  get<T>(key, customIdbAuthStore);
 
-export const clearIdbAuthKeys = async () => clear(customStore);
+export const clearIdbAuthKeys = async () => clear(customIdbAuthStore);

@@ -4,12 +4,17 @@
 
 import { AuthClient } from "@dfinity/auth-client";
 import { waitFor } from "@testing-library/svelte";
+import { get, set } from "idb-keyval";
 import { mock } from "jest-mock-extended";
 import {
   displayAndCleanLogoutMsg,
   logout,
 } from "../../../lib/services/auth.services";
 import { toastsStore } from "../../../lib/stores/toasts.store";
+import {
+  customIdbAuthStore,
+  getIdbAuthKey,
+} from "../../../lib/utils/auth.utils";
 import * as routeUtils from "../../../lib/utils/route.utils";
 
 describe("auth-services", () => {
@@ -38,12 +43,16 @@ describe("auth-services", () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it("should clear storage", async () => {
-    const spy = jest.spyOn(Storage.prototype, "clear");
+  it("should clear indexeddb auth info on logout", async () => {
+    await set("test", "value", customIdbAuthStore);
+
+    const value = await getIdbAuthKey("test");
+    expect(value).not.toBeUndefined();
 
     await logout({});
 
-    expect(spy).toHaveBeenCalled();
+    const valueCleared = await get("test", customIdbAuthStore);
+    expect(valueCleared).toBeUndefined();
   });
 
   it("should reload browser", async () => {
