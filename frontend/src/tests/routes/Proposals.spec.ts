@@ -69,17 +69,6 @@ describe("Proposals", () => {
         .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
     );
 
-    it("should render a description", () => {
-      const { getByText } = render(Proposals);
-
-      expect(
-        getByText(
-          "The Internet Computer network runs under the control of the Network Nervous System",
-          { exact: false }
-        )
-      ).toBeInTheDocument();
-    });
-
     it("should render filters", () => {
       const { getByText } = render(Proposals);
 
