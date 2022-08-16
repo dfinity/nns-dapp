@@ -103,6 +103,7 @@ export const idlFactory = ({ IDL }) => {
     Mint: IDL.Null,
     StakeNeuronNotification: IDL.Null,
     TopUpCanister: CanisterId,
+    ParticipateSwap: CanisterId,
     CreateCanister: IDL.Null,
     Transfer: IDL.Null,
     TopUpNeuron: IDL.Null,
@@ -225,6 +226,7 @@ export const idlFactory = ({ IDL }) => {
     ),
   });
 };
-export const init = ({ IDL }) => {
+// Remove param `{ IDL }` because TS was complaining of unused variable
+export const init = () => {
   return [];
 };

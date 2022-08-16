@@ -206,6 +206,7 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
         s.accounts_store.borrow_mut().add_pending_transaction(
             request.buyer,
             TransactionType::ParticipateSwap(request.swap_canister_id),
+            AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
         )
     })
 }

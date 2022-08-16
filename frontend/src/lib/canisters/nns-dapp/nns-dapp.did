@@ -94,6 +94,7 @@ type TransactionType =
         TopUpNeuron;
         CreateCanister;
         TopUpCanister: CanisterId;
+        ParticipateSwap: CanisterId;
     };
 
 type CreateSubAccountResponse =

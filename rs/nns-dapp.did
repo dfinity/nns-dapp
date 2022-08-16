@@ -93,6 +93,7 @@ type TransactionType =
         TopUpNeuron;
         CreateCanister;
         TopUpCanister: CanisterId;
+        ParticipateSwap: CanisterId;
     };
 
 type CreateSubAccountResponse =
@@ -159,10 +160,10 @@ type AddPendingNotifySwapRequest =
         swap_canister_id: principal;
     };
 
-type AddPendingNotifySwapResponse =
+type AddPendingTransactionResponse =
     variant {
         Ok;
-        TransactionLimitExceeded;
+        TransactionTypeNotSupported;
     };
 
 type DetachCanisterRequest =
@@ -252,7 +253,7 @@ service : {
     get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;
-    add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingNotifySwapResponse);
+    add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingTransactionResponse);
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();

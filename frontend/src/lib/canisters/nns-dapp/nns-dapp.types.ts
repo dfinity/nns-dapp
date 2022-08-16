@@ -31,20 +31,18 @@ export interface CanisterDetails {
   canister_id: CanisterId;
 }
 export type CanisterId = Principal;
-export type CreateSubAccountResponse = {
-  Ok?: SubAccountDetails;
-  AccountNotFound?: null;
-  NameTooLong?: null;
-  SubAccountLimitExceeded?: null;
-};
+export type CreateSubAccountResponse =
+  | { Ok: SubAccountDetails }
+  | { AccountNotFound: null }
+  | { NameTooLong: null }
+  | { SubAccountLimitExceeded: null };
 export interface DetachCanisterRequest {
   canister_id: Principal;
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
-export type GetAccountResponse = {
-  Ok?: AccountDetails;
-  AccountNotFound?: null;
-};
+export type GetAccountResponse =
+  | { Ok: AccountDetails }
+  | { AccountNotFound: null };
 export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface GetTransactionsRequest {
   page_size: number;
@@ -154,10 +152,11 @@ export interface Transaction {
 export type TransactionType =
   | { Burn: null }
   | { Mint: null }
-  | { Transfer: null }
   | { StakeNeuronNotification: null }
   | { TopUpCanister: CanisterId }
+  | { ParticipateSwap: CanisterId }
   | { CreateCanister: null }
+  | { Transfer: null }
   | { TopUpNeuron: null }
   | { StakeNeuron: null };
 export type Transfer =

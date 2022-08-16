@@ -103,6 +103,7 @@ export const idlFactory = ({ IDL }) => {
     Mint: IDL.Null,
     StakeNeuronNotification: IDL.Null,
     TopUpCanister: CanisterId,
+    ParticipateSwap: CanisterId,
     CreateCanister: IDL.Null,
     Transfer: IDL.Null,
     TopUpNeuron: IDL.Null,
