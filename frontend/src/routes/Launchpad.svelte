@@ -14,11 +14,13 @@
   });
 </script>
 
-<h2>{$i18n.sns_launchpad.projects}</h2>
-<Projects />
+<main>
+  <h2>{$i18n.sns_launchpad.projects}</h2>
+  <Projects />
 
-<h2>{$i18n.sns_launchpad.proposals}</h2>
-<Proposals />
+  <h2>{$i18n.sns_launchpad.proposals}</h2>
+  <Proposals />
+</main>
 
 <style lang="scss">
   h2 {
