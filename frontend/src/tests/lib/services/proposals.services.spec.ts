@@ -367,7 +367,7 @@ describe("proposals-services", () => {
           });
 
           const message = get(toastsStore).find(
-            ({ level }) => level === "running"
+            ({ spinner }) => spinner === true
           );
           expect(message).toBeDefined();
           expect(message?.labelKey).toEqual(
@@ -386,7 +386,7 @@ describe("proposals-services", () => {
           });
 
           const message = get(toastsStore).find(
-            ({ level }) => level === "running"
+            ({ spinner }) => spinner === true
           );
           expect(message).toBeDefined();
           expect(message?.labelKey).toEqual(
@@ -405,7 +405,7 @@ describe("proposals-services", () => {
           });
 
           const message = () =>
-            get(toastsStore).find(({ level }) => level === "running");
+            get(toastsStore).find(({ spinner }) => spinner === true);
 
           expect(message()).toBeDefined();
 

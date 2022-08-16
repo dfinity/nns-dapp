@@ -410,7 +410,8 @@ export const registerVotes = async ({
       vote === Vote.YES
         ? "proposal_detail__vote.vote_adopt_in_progress"
         : "proposal_detail__vote.vote_reject_in_progress",
-    level: "running",
+    level: "info",
+    spinner: true,
     substitutions: {
       $proposalId: `${proposalId}`,
       $topic: $i18n.topics[Topic[proposalInfo.topic]],
