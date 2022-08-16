@@ -9,6 +9,7 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
@@ -445,6 +446,7 @@ export const participateInSnsSwap = async ({
   await nnsDapp.addPendingNotifySwap({
     swap_canister_id: swapCanisterId,
     buyer: controller,
+    buyer_sub_account: toNullable(fromSubAccount),
   });
 
   // Send amount to the ledger

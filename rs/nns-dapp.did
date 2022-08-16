@@ -157,6 +157,7 @@ type AttachCanisterResponse =
 type AddPendingNotifySwapRequest =
     record {
         buyer: principal;
+        buyer_sub_account: opt SubAccount;
         swap_canister_id: principal;
     };
 

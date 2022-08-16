@@ -1,8 +1,10 @@
 /* Do not edit.  Compiled with ./scripts/compile-idl-js from src/lib/canisters/nns-dapp/nns-dapp.did */
 export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
+  const SubAccount = IDL.Vec(IDL.Nat8);
   const AddPendingNotifySwapRequest = IDL.Record({
     swap_canister_id: IDL.Principal,
+    buyer_sub_account: IDL.Opt(SubAccount),
     buyer: IDL.Principal,
   });
   const AddPendingTransactionResponse = IDL.Variant({
@@ -19,7 +21,6 @@ export const idlFactory = ({ IDL }) => {
     NameTooLong: IDL.Null,
     CanisterLimitExceeded: IDL.Null,
   });
-  const SubAccount = IDL.Vec(IDL.Nat8);
   const SubAccountDetails = IDL.Record({
     name: IDL.Text,
     sub_account: SubAccount,

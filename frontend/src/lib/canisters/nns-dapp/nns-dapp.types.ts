@@ -11,6 +11,7 @@ export interface AccountDetails {
 export type AccountIdentifierString = string;
 export interface AddPendingNotifySwapRequest {
   swap_canister_id: Principal;
+  buyer_sub_account: [] | [SubAccountArray];
   buyer: Principal;
 }
 export type AddPendingTransactionResponse = { Ok: null };
