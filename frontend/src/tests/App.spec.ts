@@ -29,9 +29,7 @@ describe("App", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    jest
-        .spyOn(authStore, "sync")
-        .mockImplementation(() => Promise.resolve())
+    jest.spyOn(authStore, "sync").mockImplementation(() => Promise.resolve());
   });
 
   afterAll(() => {
