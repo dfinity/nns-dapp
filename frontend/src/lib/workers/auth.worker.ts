@@ -1,5 +1,6 @@
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
+import { getIdbAuthKey } from "../utils/auth.utils";
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
@@ -32,43 +33,5 @@ const onIdleSignOut = async () => {
   postMessage({ msg: "nnsSignOut" });
 };
 
-const getDelegationChain = async (): Promise<string | undefined> => {
-  const customStore = createStore("auth-client-db", "ic-keyval");
-  return get("delegation", customStore);
-};
-
-// Source idb-keyval: https://github.com/jakearchibald/idb-keyval
-
-type UseStore = <T>(
-  txMode: IDBTransactionMode,
-  callback: (store: IDBObjectStore) => T | PromiseLike<T>
-) => Promise<T>;
-
-function promisifyRequest<T = undefined>(
-  request: IDBRequest<T> | IDBTransaction
-): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    // @ts-ignore - file size hacks
-    request.oncomplete = request.onsuccess = () => resolve(request.result);
-    // @ts-ignore - file size hacks
-    request.onabort = request.onerror = () => reject(request.error);
-  });
-}
-
-function createStore(dbName: string, storeName: string): UseStore {
-  const request = indexedDB.open(dbName);
-  request.onupgradeneeded = () => request.result.createObjectStore(storeName);
-  const dbp = promisifyRequest(request);
-
-  return (txMode, callback) =>
-    dbp.then((db) =>
-      callback(db.transaction(storeName, txMode).objectStore(storeName))
-    );
-}
-
-function get<T>(
-  key: IDBValidKey,
-  customStore: UseStore
-): Promise<T | undefined> {
-  return customStore("readonly", (store) => promisifyRequest(store.get(key)));
-}
+const getDelegationChain = async (): Promise<string | undefined> =>
+  getIdbAuthKey("delegation");

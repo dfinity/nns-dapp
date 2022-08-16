@@ -1,4 +1,5 @@
 import type { Identity } from "@dfinity/agent";
+import { clear, createStore, get } from "idb-keyval";
 
 /**
  * The user is signed in when the identity is not undefined and not null.
@@ -9,3 +10,10 @@ import type { Identity } from "@dfinity/agent";
  */
 export const isSignedIn = (identity: Identity | undefined | null): boolean =>
   identity !== undefined && identity !== null;
+
+const customStore = createStore("auth-client-db", "ic-keyval");
+
+export const getIdbAuthKey = <T>(key: string): Promise<T | undefined> =>
+  get<T>(key, customStore);
+
+export const clearIdbAuthKeys = async () => clear(customStore);

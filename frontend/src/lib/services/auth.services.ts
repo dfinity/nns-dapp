@@ -1,10 +1,10 @@
 import type { Identity } from "@dfinity/agent";
 import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
-import { themeStore } from "../stores/theme.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
+import {clearIdbAuthKeys} from '../utils/auth.utils';
 
 const msgParam: string = "msg";
 const levelParam: string = "level";
@@ -20,12 +20,11 @@ export const logout = async ({
     appendMsgToUrl(msg);
   }
 
-  // We preserve the anonymous theme information only so that user sign-in with same theme next time
-  const { theme: storageTheme }: Storage = localStorage;
+  // We do not clear local storage. It contains anonymous information such as the selected theme.
+  // Information the user want to preserve across sign-in. e.g. if I select the light theme, logout and sign-in again, I am happy if the dapp still uses the light theme.
 
-  window.localStorage.clear();
-
-  themeStore.select(storageTheme);
+  // We clear the delegation and identity from indexedDB
+  await clearIdbAuthKeys();
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();

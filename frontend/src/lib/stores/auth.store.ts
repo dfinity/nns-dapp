@@ -38,7 +38,7 @@ const createAuthClient = (): Promise<AuthClient> =>
  *
  * - signOut: call auth-client log out and set null in the store. started with a user interaction ("click on a button")
  *
- * note: clearing the local storage does not happen in the state management but afterwards in its caller function (see <Logout/>)
+ * note: clearing idb auth keys does not happen in the state management but afterwards in its caller function (see <Logout/>)
  *
  */
 const initAuthStore = () => {
