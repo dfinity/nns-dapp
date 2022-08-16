@@ -12,7 +12,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   .wrapper {
     position: fixed;
     bottom: var(--padding-2x);

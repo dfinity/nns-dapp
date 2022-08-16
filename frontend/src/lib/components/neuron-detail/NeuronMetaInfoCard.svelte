@@ -110,7 +110,7 @@
 </NeuronCard>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   section {
     padding: var(--padding) 0 0 0;
     display: flex;

@@ -56,7 +56,7 @@
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click={() => (visible = true)}
+  on:click|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
@@ -93,7 +93,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .open {
     display: flex;

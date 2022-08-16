@@ -19,7 +19,6 @@
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import { get, writable } from "svelte/store";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import type {
     SelectedProposalContext,
     SelectedProposalStore,
@@ -126,32 +125,30 @@
   layoutBackStore.set(goBack);
 </script>
 
-<MainContentWrapper>
-  <section>
-    {#if $selectedProposalStore.proposal !== undefined}
-      <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
+<section>
+  {#if $selectedProposalStore.proposal !== undefined}
+    <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
 
-      {#if neuronsReady}
-        <VotesCard proposalInfo={$selectedProposalStore.proposal} />
-        <VotingCard proposalInfo={$selectedProposalStore.proposal} />
-        <IneligibleNeuronsCard
-          proposalInfo={$selectedProposalStore.proposal}
-          neurons={$definedNeuronsStore}
-        />
-      {:else}
-        <div class="loader">
-          <SkeletonCard cardType="info" />
-          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-        </div>
-      {/if}
+    {#if neuronsReady}
+      <VotesCard proposalInfo={$selectedProposalStore.proposal} />
+      <VotingCard proposalInfo={$selectedProposalStore.proposal} />
+      <IneligibleNeuronsCard
+        proposalInfo={$selectedProposalStore.proposal}
+        neurons={$definedNeuronsStore}
+      />
     {:else}
       <div class="loader">
         <SkeletonCard cardType="info" />
         <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
       </div>
     {/if}
-  </section>
-</MainContentWrapper>
+  {:else}
+    <div class="loader">
+      <SkeletonCard cardType="info" />
+      <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
+    </div>
+  {/if}
+</section>
 
 <style lang="scss">
   .loader {

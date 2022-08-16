@@ -2,7 +2,7 @@
   import Footer from "../lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import { authStore } from "../lib/stores/auth.store";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { listCanisters } from "../lib/services/canisters.services";
@@ -14,7 +14,6 @@
   import { routeStore } from "../lib/stores/route.store";
   import CreateCanisterModal from "../lib/modals/canisters/CreateCanisterModal.svelte";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import LinkCanisterModal from "../lib/modals/canisters/LinkCanisterModal.svelte";
   import Value from "../lib/components/ui/Value.svelte";
 
@@ -62,57 +61,55 @@
   const closeModal = () => (modal = undefined);
 </script>
 
-<MainContentWrapper>
-  <section>
-    <p>{$i18n.canisters.text}</p>
-    <p class="last-info">
-      {$i18n.canisters.principal_is}
-      <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
-    </p>
+<section>
+  <p>{$i18n.canisters.text}</p>
+  <p class="last-info">
+    {$i18n.canisters.principal_is}
+    <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
+  </p>
 
-    {#each $canistersStore.canisters ?? [] as canister}
-      <CanisterCard
-        role="link"
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={goToCanisterDetails(canister.canister_id)}
-        {canister}
-      />
-    {/each}
+  {#each $canistersStore.canisters ?? [] as canister}
+    <CanisterCard
+      role="link"
+      ariaLabel={$i18n.neurons.aria_label_neuron_card}
+      on:click={goToCanisterDetails(canister.canister_id)}
+      {canister}
+    />
+  {/each}
 
-    {#if noCanisters}
-      <p>{$i18n.canisters.empty}</p>
-    {/if}
-
-    {#if loading}
-      <SkeletonCard />
-      <SkeletonCard />
-    {/if}
-  </section>
-
-  {#if modal === "CreateCanister"}
-    <CreateCanisterModal on:nnsClose={closeModal} />
-  {/if}
-  {#if modal === "LinkCanister"}
-    <LinkCanisterModal on:nnsClose={closeModal} />
+  {#if noCanisters}
+    <p>{$i18n.canisters.empty}</p>
   {/if}
 
-  <Footer>
-    <Toolbar>
-      <button
-        data-tid="create-canister-button"
-        class="primary"
-        on:click={() => openModal("CreateCanister")}
-        >{$i18n.canisters.create_canister}</button
-      >
-      <button
-        data-tid="link-canister-button"
-        class="primary"
-        on:click={() => openModal("LinkCanister")}
-        >{$i18n.canisters.link_canister}</button
-      >
-    </Toolbar>
-  </Footer>
-</MainContentWrapper>
+  {#if loading}
+    <SkeletonCard />
+    <SkeletonCard />
+  {/if}
+</section>
+
+{#if modal === "CreateCanister"}
+  <CreateCanisterModal on:nnsClose={closeModal} />
+{/if}
+{#if modal === "LinkCanister"}
+  <LinkCanisterModal on:nnsClose={closeModal} />
+{/if}
+
+<Footer>
+  <Toolbar>
+    <button
+      data-tid="create-canister-button"
+      class="primary"
+      on:click={() => openModal("CreateCanister")}
+      >{$i18n.canisters.create_canister}</button
+    >
+    <button
+      data-tid="link-canister-button"
+      class="primary"
+      on:click={() => openModal("LinkCanister")}
+      >{$i18n.canisters.link_canister}</button
+    >
+  </Toolbar>
+</Footer>
 
 <style lang="scss">
   .last-info {

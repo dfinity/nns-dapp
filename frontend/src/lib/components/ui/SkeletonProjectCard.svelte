@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from "./Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import SkeletonLogo from "./SkeletonLogo.svelte";
   import SkeletonParagraph from "./SkeletonParagraph.svelte";
 </script>
