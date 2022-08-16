@@ -68,10 +68,10 @@
     "@dfinity/candid": "^0.13.1",
     "@dfinity/gix-components": "next",
     "@dfinity/identity": "^0.13.1",
-    "@dfinity/nns": "^0.7.0-next-2022-08-16",
+    "@dfinity/nns": "next",
     "@dfinity/principal": "^0.13.1",
-    "@dfinity/sns": "^0.0.3-next-2022-08-16",
-    "@dfinity/utils": "^0.0.1-next-2022-08-16",
+    "@dfinity/sns": "next",
+    "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@zondax/ledger-icp": "^0.6.0"
