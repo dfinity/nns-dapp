@@ -1131,12 +1131,7 @@ impl AccountsStore {
                 TransactionType::TopUpNeuron
             }
         } else if let Some(pending_transaction) = self.get_pending_transaction(to, *principal) {
-            if let TransactionType::ParticipateSwap(canister_id) = pending_transaction.transaction_type {
-                TransactionType::ParticipateSwap(canister_id)
-            } else {
-                // Edge case, we only store ParticipateSwap transactions in pending_transactions
-                TransactionType::Transfer
-            }
+            pending_transaction.transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
