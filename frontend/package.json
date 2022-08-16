@@ -38,6 +38,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.15.0",
     "eslint-plugin-svelte3": "^4.0.0",
+    "fake-indexeddb": "^4.0.0",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
     "jest-mock-extended": "^2.0.6",
