@@ -6,7 +6,7 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import { getSnsNeuron } from "../lib/services/sns-neurons.services";
   import { layoutBackStore } from "../lib/stores/layout.store";
-  import { snsProjectSelectedStore } from "../lib/stores/projects.store";
+  import { selectedProjectStore } from "../lib/derived/projects/selected-project.store";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import {
@@ -65,7 +65,6 @@
       return;
     }
     const rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
-    snsProjectSelectedStore.set(rootCanisterId);
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
     selectedSnsNeuronStore.set({

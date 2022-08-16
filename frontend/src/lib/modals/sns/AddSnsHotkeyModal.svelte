@@ -7,7 +7,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import { toastsStore } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import { selectedProjectStore } from "../../derived/projects/selected-project.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -36,7 +36,7 @@
     const { success } = await addHotkey({
       neuronId,
       hotkey: principal,
-      rootCanisterId: $snsProjectSelectedStore,
+      rootCanisterId: $selectedProjectStore,
     });
     if (success) {
       await reload({ forceFetch: true });

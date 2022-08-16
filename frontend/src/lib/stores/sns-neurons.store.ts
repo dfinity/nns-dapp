@@ -1,8 +1,8 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { derived, writable, type Readable } from "svelte/store";
+import { selectedProjectStore } from "../derived/projects/selected-project.store";
 import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
-import { snsProjectSelectedStore } from "./projects.store";
 
 export interface ProjectNeuronStore {
   neurons: SnsNeuron[];
@@ -62,7 +62,7 @@ const initSnsNeuronsStore = () => {
 export const snsNeuronsStore = initSnsNeuronsStore();
 
 export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
-  [snsNeuronsStore, snsProjectSelectedStore],
+  [snsNeuronsStore, selectedProjectStore],
   ([store, selectedSnsRootCanisterId]) => {
     const projectStore = store[selectedSnsRootCanisterId.toText()];
     return projectStore === undefined

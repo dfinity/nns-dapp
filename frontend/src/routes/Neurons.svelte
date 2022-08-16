@@ -6,8 +6,14 @@
   import NnsNeuronsFooter from "../lib/components/neurons/NnsNeuronsFooter.svelte";
   import {
     isNnsProjectStore,
-    snsProjectSelectedStore,
-  } from "../lib/stores/projects.store";
+    selectedProjectStore,
+  } from "../lib/derived/projects/selected-project.store";
+
+  $: {
+    console.log("in da Neurons route");
+    console.log($selectedProjectStore.toText());
+    console.log($isNnsProjectStore);
+  }
 </script>
 
 <main class="legacy">
@@ -21,7 +27,7 @@
 
   {#if $isNnsProjectStore}
     <NnsNeurons />
-  {:else if $snsProjectSelectedStore !== undefined}
+  {:else if $selectedProjectStore !== undefined}
     <SnsNeurons />
   {/if}
 </main>

@@ -9,8 +9,8 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "../stores/projects.store";
+    selectedProjectStore,
+  } from "../derived/projects/selected-project.store";
   import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
@@ -38,7 +38,9 @@
     const neuronId = getSnsNeuronIdAsHexString(neuron);
     // TODO: Create a path creator helper
     routeStore.navigate({
-      path: `${AppPath.ProjectDetail}/${$snsProjectSelectedStore}/neuron/${neuronId}`,
+      path: `${
+        AppPath.ProjectDetail
+      }/${$selectedProjectStore.toText()}/neuron/${neuronId}`,
     });
   };
 </script>

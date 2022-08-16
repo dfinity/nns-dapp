@@ -9,6 +9,11 @@ export const routePath = (): string => {
     .toLowerCase()}`;
 };
 
+export const getQueryFromUrl = (): string | undefined => {
+  const { pathname } = window.location;
+  return pathname.split("?")[1];
+};
+
 // e.g. #/accounts => accounts
 // e.g. #/wallet/123?a=b => wallet/123
 export const routeContext = (): string => {
@@ -68,3 +73,15 @@ export const baseHref = (): string => {
   const { origin }: URL = new URL(document.baseURI);
   return base?.href.replace(origin, "") ?? "/";
 };
+
+export const getQueryParam = ({
+  key,
+  query,
+}: {
+  key: string;
+  query: string;
+}): string | undefined =>
+  query
+    .split("&")
+    .find((param) => param.startsWith(`${key}=`))
+    ?.split("=")[1];

@@ -1,24 +1,30 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { Principal } from "@dfinity/principal";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
   import { i18n } from "../../stores/i18n";
-  import {
-    committedProjectsStore,
-    snsProjectSelectedStore,
-  } from "../../stores/projects.store";
+  import { committedProjectsStore } from "../../stores/projects.store";
+  import { selectedProjectStore } from "../../derived/projects/selected-project.store";
   import Dropdown from "../ui/Dropdown.svelte";
   import DropdownItem from "../ui/DropdownItem.svelte";
+  import { routeStore } from "../../stores/route.store";
+  import Spinner from "../ui/Spinner.svelte";
 
   let selectedCanisterId: string | undefined;
 
   onMount(() => {
-    selectedCanisterId = $snsProjectSelectedStore.toText();
+    selectedCanisterId = $selectedProjectStore.toText();
   });
 
   $: {
-    if (selectedCanisterId !== undefined) {
-      snsProjectSelectedStore.set(Principal.fromText(selectedCanisterId));
+    if (
+      selectedCanisterId !== undefined &&
+      $committedProjectsStore !== undefined
+    ) {
+      console.log("before navigating");
+      routeStore.navigate({
+        path: $routeStore.path,
+        query: `project=${selectedCanisterId}`,
+      });
     }
   }
 
@@ -51,12 +57,16 @@
   onDestroy(unsubscribe);
 </script>
 
-<Dropdown
-  name="project"
-  bind:selectedValue={selectedCanisterId}
-  testId="select-project-dropdown"
->
-  {#each selectableProjects as { canisterId, name } (canisterId)}
-    <DropdownItem value={canisterId}>{name}</DropdownItem>
-  {/each}
-</Dropdown>
+{#if $committedProjectsStore === undefined}
+  <Spinner />
+{:else}
+  <Dropdown
+    name="project"
+    bind:selectedValue={selectedCanisterId}
+    testId="select-project-dropdown"
+  >
+    {#each selectableProjects as { canisterId, name } (canisterId)}
+      <DropdownItem value={canisterId}>{name}</DropdownItem>
+    {/each}
+  </Dropdown>
+{/if}
