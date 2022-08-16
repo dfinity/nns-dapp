@@ -3,8 +3,8 @@ import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
+import { clearIdbAuthKeys } from "../utils/auth.utils";
 import { replaceHistory } from "../utils/route.utils";
-import {clearIdbAuthKeys} from '../utils/auth.utils';
 
 const msgParam: string = "msg";
 const levelParam: string = "level";
