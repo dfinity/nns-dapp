@@ -2,7 +2,7 @@
   import Banner from "../header/Banner.svelte";
   import MenuItems from "./MenuItems.svelte";
   import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
-  import { Layout } from "@dfinity/gix-components";
+  import { Layout, HeaderTitle } from "@dfinity/gix-components";
   import AccountMenu from "../header/AccountMenu.svelte";
   import { triggerDebugReport } from "../../services/debug.services";
 
@@ -13,7 +13,9 @@
 <Banner />
 
 <Layout {back} on:nnsBack={() => $layoutBackStore?.()}>
-  <h4 use:triggerDebugReport slot="title">{$layoutTitleStore}</h4>
+  <div use:triggerDebugReport slot="title">
+    <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
+  </div>
 
   <MenuItems slot="menu-items" />
 
