@@ -18,5 +18,4 @@ describe("Guard", () => {
     expect(container.querySelector("svg")).not.toBeNull();
     expect(container.querySelector("circle")).not.toBeNull();
   });
-
 });
