@@ -119,17 +119,19 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<section>
-  {#if $selectedAccountStore.account !== undefined}
-    <WalletSummary />
-    <div class="actions">
-      <WalletActions />
-    </div>
-    <TransactionList />
-  {:else}
-    <Spinner />
-  {/if}
-</section>
+<main class="legacy">
+  <section>
+    {#if $selectedAccountStore.account !== undefined}
+      <WalletSummary />
+      <div class="actions">
+        <WalletActions />
+      </div>
+      <TransactionList />
+    {:else}
+      <Spinner />
+    {/if}
+  </section>
+</main>
 
 <Footer>
   <Toolbar>

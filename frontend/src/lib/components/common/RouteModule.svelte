@@ -5,11 +5,7 @@
   import Spinner from "../ui/Spinner.svelte";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
-  import {
-    layoutBackStore,
-    layoutMainStyleStore,
-    layoutTitleStore,
-  } from "../../stores/layout.store";
+  import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
   import { i18n } from "../../stores/i18n";
   import { isNode } from "../../utils/dev.utils";
 
@@ -46,57 +42,43 @@
     }
   };
 
-  const routesConfig: Record<
-    AppPath,
-    { title: string; layout: "modern" | "deprecated" | undefined }
-  > = {
+  const routesConfig: Record<AppPath, { title: string }> = {
     [AppPath.Authentication]: {
       title: "",
-      layout: undefined,
     },
     [AppPath.Accounts]: {
       title: $i18n.navigation.accounts,
-      layout: "deprecated",
     },
     [AppPath.Neurons]: {
       title: $i18n.navigation.neurons,
-      layout: "deprecated",
     },
     [AppPath.Proposals]: {
       title: $i18n.navigation.voting,
-      layout: "deprecated",
     },
     [AppPath.Canisters]: {
       title: $i18n.navigation.canisters,
-      layout: "deprecated",
     },
-    [AppPath.Wallet]: { title: $i18n.wallet.title, layout: "deprecated" },
+    [AppPath.Wallet]: { title: $i18n.wallet.title },
     [AppPath.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
-      layout: "deprecated",
     },
     [AppPath.NeuronDetail]: {
       title: $i18n.neuron_detail.title,
-      layout: "deprecated",
     },
     [AppPath.CanisterDetail]: {
       title: $i18n.canister_detail.title,
-      layout: "deprecated",
     },
     [AppPath.Launchpad]: {
       title: $i18n.sns_launchpad.header,
-      layout: "modern",
     },
     [AppPath.SnsNeuronDetail]: {
       title: $i18n.sns_neuron_detail.header,
-      layout: "modern",
     },
-    [AppPath.ProjectDetail]: { title: "", layout: "modern" },
+    [AppPath.ProjectDetail]: { title: "" },
   };
 
   onMount(async () => {
     layoutTitleStore.set(routesConfig[path].title);
-    layoutMainStyleStore.set(routesConfig[path].layout);
 
     // Reset back action because only detail routes have such feature other views use the menu
     layoutBackStore.set(undefined);
