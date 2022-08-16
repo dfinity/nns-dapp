@@ -473,13 +473,8 @@ impl AccountsStore {
     }
 
     // Get pending transaction
-    pub fn get_pending_transaction(
-        &self,
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-    ) -> Option<&TransactionType> {
-        self.pending_transactions
-            .get(&(from, to))
+    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<&TransactionType> {
+        self.pending_transactions.get(&(from, to))
     }
 
     pub fn complete_pending_transaction(

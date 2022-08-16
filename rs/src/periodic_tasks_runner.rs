@@ -72,11 +72,9 @@ async fn handle_participate_swap(
     };
     if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
         STATE.with(|s| {
-            s.accounts_store.borrow_mut().complete_pending_transaction(
-                from,
-                to,
-                block_height,
-            )
+            s.accounts_store
+                .borrow_mut()
+                .complete_pending_transaction(from, to, block_height)
         });
     }
 }
