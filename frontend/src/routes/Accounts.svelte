@@ -6,7 +6,7 @@
   import ICPComponent from "../lib/components/ic/ICP.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
@@ -15,7 +15,6 @@
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import Tooltip from "../lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
 
@@ -51,79 +50,76 @@
   }
 </script>
 
-<MainContentWrapper>
-  <section data-tid="accounts-body">
-    <div class="title">
-      <h1>{$i18n.accounts.title}</h1>
+<section data-tid="accounts-body">
+  <div class="title">
+    <h1>{$i18n.accounts.title}</h1>
 
-      {#if accounts?.main}
-        <Tooltip
-          id="wallet-total-icp"
-          text={replacePlaceholders($i18n.accounts.current_balance_total, {
-            $amount: totalICP,
-          })}
-        >
-          <ICPComponent icp={totalBalance} />
-        </Tooltip>
-      {/if}
-    </div>
+    {#if accounts?.main}
+      <Tooltip
+        id="wallet-total-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+          $amount: totalICP,
+        })}
+      >
+        <ICPComponent icp={totalBalance} />
+      </Tooltip>
+    {/if}
+  </div>
 
-    {#if accounts?.main?.identifier}
+  {#if accounts?.main?.identifier}
+    <AccountCard
+      role="link"
+      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+      showCopy
+      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+    >
+    {#each accounts.subAccounts || [] as subAccount}
       <AccountCard
         role="link"
-        on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+        on:click={() => cardClick(subAccount.identifier)}
         showCopy
-        account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+        account={subAccount}>{subAccount.name}</AccountCard
       >
-      {#each accounts.subAccounts || [] as subAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(subAccount.identifier)}
-          showCopy
-          account={subAccount}>{subAccount.name}</AccountCard
-        >
-      {/each}
-      {#each accounts.hardwareWallets || [] as walletAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(walletAccount.identifier)}
-          showCopy
-          account={walletAccount}>{walletAccount.name}</AccountCard
-        >
-      {/each}
-    {:else}
-      <SkeletonCard />
-    {/if}
-  </section>
+    {/each}
+    {#each accounts.hardwareWallets || [] as walletAccount}
+      <AccountCard
+        role="link"
+        on:click={() => cardClick(walletAccount.identifier)}
+        showCopy
+        account={walletAccount}>{walletAccount.name}</AccountCard
+      >
+    {/each}
+  {:else}
+    <SkeletonCard />
+  {/if}
+</section>
 
-  {#if modal === "AddAccountModal"}
-    <AddAcountModal on:nnsClose={closeModal} />
-  {/if}
-  {#if modal === "NewTransaction"}
-    <NewTransactionModal on:nnsClose={closeModal} />
-  {/if}
+{#if modal === "AddAccountModal"}
+  <AddAcountModal on:nnsClose={closeModal} />
+{/if}
+{#if modal === "NewTransaction"}
+  <NewTransactionModal on:nnsClose={closeModal} />
+{/if}
 
-  {#if accounts}
-    <Footer>
-      <Toolbar>
-        <button
-          class="primary full-width"
-          on:click={openNewTransaction}
-          data-tid="open-new-transaction"
-          >{$i18n.accounts.new_transaction}</button
-        >
-        <button
-          class="primary full-width"
-          on:click={openAddAccountModal}
-          data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
-        >
-      </Toolbar>
-    </Footer>
-  {/if}
-</MainContentWrapper>
+{#if accounts}
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary full-width"
+        on:click={openNewTransaction}
+        data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
+      >
+      <button
+        class="primary full-width"
+        on:click={openAddAccountModal}
+        data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
+      >
+    </Toolbar>
+  </Footer>
+{/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
     display: block;

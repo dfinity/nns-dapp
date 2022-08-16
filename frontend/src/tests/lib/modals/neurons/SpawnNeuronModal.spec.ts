@@ -32,7 +32,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
+        controlledByHardwareWallet: false,
       },
     });
 
@@ -44,7 +44,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
+        controlledByHardwareWallet: false,
       },
     });
 
@@ -62,7 +62,7 @@ describe("SpawnNeuronModal", () => {
             maturityE8sEquivalent: BigInt(1_000_000),
           },
         },
-        controlledByHarwareWallet: false,
+        controlledByHardwareWallet: false,
       },
     });
 
@@ -83,7 +83,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
+        controlledByHardwareWallet: false,
       },
     });
 
@@ -106,7 +106,7 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: true,
+        controlledByHardwareWallet: true,
       },
     });
 

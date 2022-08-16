@@ -1,7 +1,6 @@
 <script lang="ts">
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
-  import { ENABLE_SNS_NEURONS } from "../lib/constants/environment.constants";
+  import { ENABLE_SNS } from "../lib/constants/environment.constants";
   import NnsNeurons from "../lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "../lib/pages/SnsNeurons.svelte";
   import {
@@ -10,20 +9,18 @@
   } from "../lib/stores/projects.store";
 </script>
 
-<MainContentWrapper>
-  {#if ENABLE_SNS_NEURONS}
-    <div class="dropdown-wrapper">
-      <div class="fit-content">
-        <SelectProjectDropdown />
-      </div>
+{#if ENABLE_SNS}
+  <div class="dropdown-wrapper">
+    <div class="fit-content">
+      <SelectProjectDropdown />
     </div>
-  {/if}
-  {#if $isNnsProjectStore}
-    <NnsNeurons />
-  {:else if $snsProjectSelectedStore !== undefined}
-    <SnsNeurons />
-  {/if}
-</MainContentWrapper>
+  </div>
+{/if}
+{#if $isNnsProjectStore}
+  <NnsNeurons />
+{:else if $snsProjectSelectedStore !== undefined}
+  <SnsNeurons />
+{/if}
 
 <style lang="scss">
   .dropdown-wrapper {

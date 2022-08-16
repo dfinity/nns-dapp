@@ -20,7 +20,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   .status {
     display: inline-flex;

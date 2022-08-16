@@ -21,8 +21,8 @@ process.env.IDENTITY_SERVICE_URL =
   "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
 process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
 process.env.FEATURE_FLAGS = JSON.stringify({
-  ENABLE_NEW_SPAWN_FEATURE: true,
-  ENABLE_SNS_NEURONS: true,
+  ENABLE_SNS: true,
+  VOTING_UI: "modern",
 });
 
 // testing-library setup

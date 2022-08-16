@@ -27,7 +27,6 @@
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -146,32 +145,30 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<MainContentWrapper>
-  <section data-tid="proposals-tab">
-    <p class="description">{$i18n.voting.text}</p>
+<section data-tid="proposals-tab">
+  <p class="description">{$i18n.voting.text}</p>
 
-    <ProposalsFilters />
+  <ProposalsFilters />
 
-    {#if neuronsLoaded}
-      <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-          <ProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
+  {#if neuronsLoaded}
+    <InfiniteScroll on:nnsIntersect={findNextProposals}>
+      {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
+        <ProposalCard {hidden} {proposalInfo} />
+      {/each}
+    </InfiniteScroll>
 
-      {#if nothingFound}
-        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
-      {/if}
+    {#if nothingFound}
+      <p class="no-proposals">{$i18n.voting.nothing_found}</p>
     {/if}
+  {/if}
 
-    {#if loading || !neuronsLoaded}
-      <div class="spinner">
-        <SkeletonCard />
-        <SkeletonCard />
-      </div>
-    {/if}
-  </section>
-</MainContentWrapper>
+  {#if loading || !neuronsLoaded}
+    <div class="spinner">
+      <SkeletonCard />
+      <SkeletonCard />
+    </div>
+  {/if}
+</section>
 
 <style lang="scss">
   .spinner {

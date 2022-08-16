@@ -29,8 +29,8 @@
 
 <style lang="scss">
   @use "../../themes/mixins/img";
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   .container {
     position: fixed;

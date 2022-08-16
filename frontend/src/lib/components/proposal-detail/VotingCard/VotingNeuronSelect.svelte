@@ -84,7 +84,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .headline {
     padding: var(--padding-0_5x) var(--padding) var(--padding-0_5x)
