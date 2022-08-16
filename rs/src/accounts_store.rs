@@ -30,7 +30,8 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-    pending_transactions: HashMap<AccountIdentifier, Vec<PendingTransaction>>,
+    // pending_transactions: HashMap<(from, to), TransactionType>
+    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
 
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
@@ -57,13 +58,6 @@ struct Account {
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
-}
-
-#[derive(CandidType, Deserialize, Clone)]
-pub struct PendingTransaction {
-    pub to: AccountIdentifier,
-    pub principal: PrincipalId,
-    pub transaction_type: TransactionType,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -244,7 +238,6 @@ pub struct AddPendingNotifySwapRequest {
 #[derive(CandidType)]
 pub enum AddPendingTransactionResponse {
     Ok,
-    TransactionTypeNotSupported,
 }
 
 impl AccountsStore {
@@ -466,50 +459,38 @@ impl AccountsStore {
         }
     }
 
-    // Adds a transactions to be handled by `get_transaction_type` when adding transactoins
-    // Only supports TransactionType::ParticipateSwap
+    // Adds a transactions to be handled by `get_transaction_type` when adding transactions
     // Used to add the Swap Canister Id for decentralized sale participations to the transaction
     // It's needed to notify the Swap Canister afterwards in the periodic_tasks_runner
     pub fn add_pending_transaction(
         &mut self,
-        principal: PrincipalId,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
         transaction_type: TransactionType,
-        account_identifier: AccountIdentifier,
     ) -> AddPendingTransactionResponse {
-        if let TransactionType::ParticipateSwap(_) = transaction_type {
-            self.pending_transactions
-                .entry(account_identifier)
-                .or_default()
-                .push(PendingTransaction::new(principal, account_identifier, transaction_type));
-            AddPendingTransactionResponse::Ok
-        } else {
-            AddPendingTransactionResponse::TransactionTypeNotSupported
-        }
+        self.pending_transactions.insert((from, to), transaction_type);
+        AddPendingTransactionResponse::Ok
     }
 
-    // Get first pending transaction
+    // Get pending transaction
     pub fn get_pending_transaction(
         &self,
-        account_identifier: AccountIdentifier,
-        principal: PrincipalId,
-    ) -> Option<&PendingTransaction> {
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+    ) -> Option<&TransactionType> {
         self.pending_transactions
-            .get(&account_identifier)
-            .and_then(|transactions| transactions.iter().find(|t| t.principal == principal))
+            .get(&(from, to))
     }
 
     pub fn complete_pending_transaction(
         &mut self,
+        from: AccountIdentifier,
         to: AccountIdentifier,
-        transaction_type: TransactionType,
-        principal: PrincipalId,
         block_height: BlockHeight,
     ) {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
-        if let Some(transactions) = self.pending_transactions.get_mut(&to) {
-            transactions.retain(|t| t.principal != principal && t.transaction_type != transaction_type);
-        }
+        self.pending_transactions.remove(&(from, to));
     }
 
     pub fn append_transaction(
@@ -1130,8 +1111,8 @@ impl AccountsStore {
             } else {
                 TransactionType::TopUpNeuron
             }
-        } else if let Some(pending_transaction) = self.get_pending_transaction(to, *principal) {
-            pending_transaction.transaction_type
+        } else if let Some(transaction_type) = self.get_pending_transaction(from, to) {
+            *transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1280,7 +1261,7 @@ impl AccountsStore {
                 self.multi_part_transactions_processor.push(
                     principal,
                     block_height,
-                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to, swap_canister_id),
+                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
                 );
             }
             TransactionType::StakeNeuron => {
@@ -1385,7 +1366,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<AccountIdentifier, Vec<PendingTransaction>>,
+            HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
@@ -1510,16 +1491,6 @@ impl NamedSubAccount {
             name,
             account_identifier,
             transactions: Vec::new(),
-        }
-    }
-}
-
-impl PendingTransaction {
-    pub fn new(principal: PrincipalId, to: AccountIdentifier, transaction_type: TransactionType) -> PendingTransaction {
-        PendingTransaction {
-            to,
-            principal,
-            transaction_type,
         }
     }
 }

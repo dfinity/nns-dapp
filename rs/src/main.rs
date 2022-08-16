@@ -204,9 +204,9 @@ pub fn add_pending_notify_swap() {
 fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
     STATE.with(|s| {
         s.accounts_store.borrow_mut().add_pending_transaction(
-            request.buyer,
-            TransactionType::ParticipateSwap(request.swap_canister_id),
+            AccountIdentifier::new(request.buyer, None),
             AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
+            TransactionType::ParticipateSwap(request.swap_canister_id),
         )
     })
 }

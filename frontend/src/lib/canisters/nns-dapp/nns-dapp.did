@@ -164,7 +164,6 @@ type AddPendingNotifySwapRequest =
 type AddPendingTransactionResponse =
     variant {
         Ok;
-        TransactionTypeNotSupported;
     };
 
 type DetachCanisterRequest =

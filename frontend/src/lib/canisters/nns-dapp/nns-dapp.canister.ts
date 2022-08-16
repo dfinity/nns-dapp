@@ -340,14 +340,6 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    // Edge case. `add_pending_notify_swap` uses a supported transaction
-    if ("TransactionTypeNotSupported" in response) {
-      throw new Error(
-        `Transaction type to be added not supported: ${JSON.stringify(
-          response
-        )}`
-      );
-    }
     // Edge case
     throw new Error(
       `Unknown response for add_pending_notify_swap ${JSON.stringify(response)}`

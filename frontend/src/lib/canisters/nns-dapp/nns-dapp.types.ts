@@ -13,9 +13,7 @@ export interface AddPendingNotifySwapRequest {
   swap_canister_id: Principal;
   buyer: Principal;
 }
-export type AddPendingTransactionResponse =
-  | { Ok: null }
-  | { TransactionTypeNotSupported: null };
+export type AddPendingTransactionResponse = { Ok: null };
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;

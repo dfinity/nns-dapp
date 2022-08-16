@@ -1,4 +1,4 @@
-use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs, TransactionType};
+use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use crate::canisters::ledger;
 use crate::canisters::{cmc, governance, swap};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
@@ -24,8 +24,8 @@ pub async fn run_periodic_tasks() {
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, to, swap_canister_id) => {
-                handle_participate_swap(block_height, principal, to, swap_canister_id).await;
+            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id) => {
+                handle_participate_swap(block_height, principal, from, to, swap_canister_id).await;
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(block_height, principal, memo).await;
@@ -63,6 +63,7 @@ pub async fn run_periodic_tasks() {
 async fn handle_participate_swap(
     block_height: BlockHeight,
     principal: PrincipalId,
+    from: AccountIdentifier,
     to: AccountIdentifier,
     swap_canister_id: CanisterId,
 ) {
@@ -72,9 +73,8 @@ async fn handle_participate_swap(
     if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
         STATE.with(|s| {
             s.accounts_store.borrow_mut().complete_pending_transaction(
+                from,
                 to,
-                TransactionType::ParticipateSwap(swap_canister_id),
-                principal,
                 block_height,
             )
         });
