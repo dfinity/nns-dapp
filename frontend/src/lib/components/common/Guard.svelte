@@ -16,9 +16,7 @@
 
 <!-- storage: on every change in local storage we sync the auth state -->
 <!-- popstate: browser back button has been clicked, we reflect the new browser url to the route -->
-<svelte:window
-  on:popstate={() => routeStore.update({ path: routePath() })}
-/>
+<svelte:window on:popstate={() => routeStore.update({ path: routePath() })} />
 
 {#await syncAuthStore()}
   <Spinner />

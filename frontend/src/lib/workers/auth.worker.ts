@@ -21,7 +21,10 @@ export const stopIdleTimer = () => {
 };
 
 const onIdleSignOut = async () => {
-  const [identity, delegation] = await Promise.all([checkIdentity(), checkDelegationChain()]);
+  const [identity, delegation] = await Promise.all([
+    checkIdentity(),
+    checkDelegationChain(),
+  ]);
 
   // Both identity and delegation are alright, so all good
   if (identity && delegation) {
@@ -49,8 +52,10 @@ const checkIdentity = async (): Promise<boolean> => {
 const checkDelegationChain = async (): Promise<boolean> => {
   const delegationChain = await getDelegationChain();
 
-  return delegationChain !== undefined &&
-      isDelegationValid(DelegationChain.fromJSON(delegationChain));
+  return (
+    delegationChain !== undefined &&
+    isDelegationValid(DelegationChain.fromJSON(delegationChain))
+  );
 };
 
 const logout = () => {
