@@ -493,11 +493,9 @@ impl AccountsStore {
         account_identifier: AccountIdentifier,
         principal: PrincipalId,
     ) -> Option<&PendingTransaction> {
-        self.pending_transactions.get(&account_identifier).and_then(|transactions|
-            transactions
-                .iter()
-                .find(|t| t.principal == principal),
-        )
+        self.pending_transactions
+            .get(&account_identifier)
+            .and_then(|transactions| transactions.iter().find(|t| t.principal == principal))
     }
 
     pub fn complete_pending_transaction(
@@ -510,8 +508,7 @@ impl AccountsStore {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
         if let Some(transactions) = self.pending_transactions.get_mut(&to) {
-            transactions
-                .retain(|t| t.principal != principal && t.transaction_type != transaction_type);
+            transactions.retain(|t| t.principal != principal && t.transaction_type != transaction_type);
         }
     }
 
