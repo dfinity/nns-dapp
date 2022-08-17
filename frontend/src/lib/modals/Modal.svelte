@@ -121,7 +121,12 @@
       max-width: var(--modal-big-max-width);
 
       height: var(--modal-big-height);
-      max-height: var(--modal-big-max-height);
+
+      max-height: var(--modal-big-max-height, 100%);
+
+      @supports (-webkit-touch-callout: none) {
+        max-height: -webkit-fill-available;
+      }
 
       border-radius: var(--modal-big-border-radius);
     }
