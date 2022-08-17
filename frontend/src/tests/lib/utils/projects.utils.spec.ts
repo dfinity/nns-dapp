@@ -333,6 +333,10 @@ describe("project-utils", () => {
       ...mockSnsFullProject,
       summary: {
         ...mockSnsFullProject.summary,
+        derived: {
+          buyer_total_icp_e8s: BigInt(0),
+          sns_tokens_per_icp: 1,
+        },
         swap: {
           ...mockSnsFullProject.summary.swap,
           state: {
@@ -451,6 +455,34 @@ describe("project-utils", () => {
       const { valid } = validParticipation({
         project,
         amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
+      });
+      expect(valid).toBe(false);
+    });
+
+    it("returns false if amount is larger than maximum left", () => {
+      const maxE8s = BigInt(1_000_000_000);
+      const participationE8s = BigInt(100_000_000);
+      const currentE8s = BigInt(950_000_000);
+      const project: SnsFullProject = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          derived: {
+            buyer_total_icp_e8s: currentE8s,
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...validProject.summary.swap,
+            init: {
+              ...validProject.summary.swap.init,
+              max_participant_icp_e8s: maxE8s,
+            },
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(participationE8s),
       });
       expect(valid).toBe(false);
     });
