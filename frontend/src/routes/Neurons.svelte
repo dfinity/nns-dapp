@@ -8,12 +8,6 @@
     isNnsProjectStore,
     selectedProjectStore,
   } from "../lib/derived/projects/selected-project.store";
-
-  $: {
-    console.log("in da Neurons route");
-    console.log($selectedProjectStore.toText());
-    console.log($isNnsProjectStore);
-  }
 </script>
 
 <main class="legacy">

@@ -207,9 +207,9 @@ export const validParticipation = ({
       },
     };
   }
-  const totalCommitment =
-    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) +
-    amount.toE8s();
+  const userCommitment =
+    project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0);
+  const totalCommitment = userCommitment + amount.toE8s();
   if (
     commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
   ) {
@@ -227,14 +227,14 @@ export const validParticipation = ({
   if (
     commitmentExceedsAmountLeft({
       summary: project.summary,
-      amountE8s: totalCommitment,
+      amountE8s: amount.toE8s(),
     })
   ) {
     return {
       valid: false,
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
+        $commitment: formatICP({ value: amount.toE8s() }),
         $remainingCommitment: formatICP({
           value:
             project.summary.swap.init.max_icp_e8s -

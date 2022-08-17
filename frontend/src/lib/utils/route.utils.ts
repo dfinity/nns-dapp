@@ -10,8 +10,8 @@ export const routePath = (): string => {
 };
 
 export const getQueryFromUrl = (): string | undefined => {
-  const { pathname } = window.location;
-  return pathname.split("?")[1];
+  const { hash } = window.location;
+  return hash.split("?")[1];
 };
 
 // e.g. #/accounts => accounts

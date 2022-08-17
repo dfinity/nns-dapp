@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
   import { i18n } from "../../stores/i18n";
   import { committedProjectsStore } from "../../stores/projects.store";
@@ -11,20 +11,14 @@
 
   let selectedCanisterId: string | undefined;
 
-  onMount(() => {
-    selectedCanisterId = $selectedProjectStore.toText();
-  });
-
   $: {
-    if (
-      selectedCanisterId !== undefined &&
-      $committedProjectsStore !== undefined
-    ) {
-      console.log("before navigating");
-      routeStore.navigate({
+    if (selectedCanisterId !== undefined && selectableProjects.length > 1) {
+      routeStore.replace({
         path: $routeStore.path,
         query: `project=${selectedCanisterId}`,
       });
+    } else if ($selectedProjectStore !== undefined) {
+      selectedCanisterId = $selectedProjectStore.toText();
     }
   }
 
@@ -57,8 +51,11 @@
   onDestroy(unsubscribe);
 </script>
 
-{#if $committedProjectsStore === undefined}
-  <Spinner />
+{#if selectableProjects.length === 1 || selectedCanisterId === undefined}
+  <!-- TODO: Improve with a skeleton -->
+  <div>
+    <Spinner />
+  </div>
 {:else}
   <Dropdown
     name="project"
@@ -70,3 +67,10 @@
     {/each}
   </Dropdown>
 {/if}
+
+<style lang="scss">
+  div {
+    position: relative;
+    padding: var(--padding-4x);
+  }
+</style>

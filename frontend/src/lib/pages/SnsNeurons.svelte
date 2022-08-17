@@ -19,12 +19,17 @@
 
   let loading = true;
 
+  // Avoid loading twice when store is updated but without actual changes.
+  let loadedProjectId: string | undefined;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
-        loading = true;
-        await loadSnsNeurons(selectedProjectCanisterId);
-        loading = false;
+        if (loadedProjectId !== selectedProjectCanisterId.toText()) {
+          loading = true;
+          await loadSnsNeurons(selectedProjectCanisterId);
+          loading = false;
+        }
+        loadedProjectId = selectedProjectCanisterId.toText();
       }
     }
   );
