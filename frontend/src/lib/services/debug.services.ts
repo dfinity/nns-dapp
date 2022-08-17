@@ -1,5 +1,4 @@
 import type { NeuronId } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { addHotkey } from "../api/governance.api";
 import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
@@ -73,10 +72,7 @@ export function triggerDebugReport(node: HTMLElement) {
           const neuronIdString = prompt(
             get(i18n).neurons.enter_neuron_id_prompt
           );
-          const hotkey = prompt(
-            get(i18n).neurons.enter_hotkey_principal_prompt
-          );
-          addHotkeyFromPrompt(neuronIdString, hotkey);
+          addHotkeyFromPrompt(neuronIdString);
           return;
         }
 
@@ -99,21 +95,14 @@ export function triggerDebugReport(node: HTMLElement) {
   };
 }
 
-const addHotkeyFromPrompt = async (
-  neuronIdString: string | null,
-  hotkey: string | null
-) => {
+const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
   try {
     if (neuronIdString === null) {
       throw new Error("You need to provide a neuron id.");
     }
-    if (hotkey === null) {
-      throw new Error("You need to provide a hotkey.");
-    }
     const neuronId = BigInt(neuronIdString) as NeuronId;
-    const principal = Principal.fromText(hotkey);
     const identity = await getIdentity();
-    await addHotkey({ neuronId, principal, identity });
+    await addHotkey({ neuronId, principal: identity.getPrincipal(), identity });
     toastsStore.success({
       labelKey: "neurons.add_hotkey_prompt_success",
     });
