@@ -143,7 +143,7 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<main class="legacy">
+<main class={VOTING_UI}>
   {#if VOTING_UI === "modern"}
     <ProposalsModern
       {loading}
