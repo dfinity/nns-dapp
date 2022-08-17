@@ -151,20 +151,22 @@
   // TODO(L2-838): if error redirect to launchpad and display error there
 </script>
 
-<div class="stretch-mobile">
-  {#if loadingSummary && loadingSwapState}
-    <Spinner />
-  {:else}
-    <TwoColumns>
-      <div slot="left">
-        <ProjectInfoSection />
-      </div>
-      <div slot="right">
-        <ProjectStatusSection />
-      </div>
-    </TwoColumns>
-  {/if}
-</div>
+<main>
+  <div class="stretch-mobile">
+    {#if loadingSummary && loadingSwapState}
+      <Spinner />
+    {:else}
+      <TwoColumns>
+        <div slot="left">
+          <ProjectInfoSection />
+        </div>
+        <div slot="right">
+          <ProjectStatusSection />
+        </div>
+      </TwoColumns>
+    {/if}
+  </div>
+</main>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

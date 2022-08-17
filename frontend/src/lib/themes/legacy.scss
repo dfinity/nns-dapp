@@ -1,0 +1,15 @@
+/**
+ * CSS styles that override gix-components preset for the "old ui"
+ */
+
+@use "@dfinity/gix-components/styles/mixins/media";
+
+main.legacy {
+  margin: inherit;
+  padding: inherit;
+  max-width: inherit;
+
+  @include media.min-width(medium) {
+    padding: inherit;
+  }
+}

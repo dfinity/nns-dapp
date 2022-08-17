@@ -143,20 +143,22 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-{#if VOTING_UI === "modern"}
-  <ProposalsModern
-    {loading}
-    {hidden}
-    {neuronsLoaded}
-    {nothingFound}
-    on:nnsIntersect={findNextProposals}
-  />
-{:else}
-  <ProposalsLegacy
-    {loading}
-    {hidden}
-    {neuronsLoaded}
-    {nothingFound}
-    on:nnsIntersect={findNextProposals}
-  />
-{/if}
+<main class="legacy">
+  {#if VOTING_UI === "modern"}
+    <ProposalsModern
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
+    />
+  {:else}
+    <ProposalsLegacy
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
+    />
+  {/if}
+</main>

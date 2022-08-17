@@ -188,33 +188,35 @@
     $selectedCanisterStore);
 </script>
 
-<section>
-  {#if canisterInfo !== undefined}
-    <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-    <CanisterCardSubTitle canister={canisterInfo} />
-    <div class="actions">
-      <DetachCanisterButton canisterId={canisterInfo.canister_id} />
-    </div>
-  {:else}
-    <div class="loader-title">
-      <SkeletonTitle />
-    </div>
-    <div class="loader-subtitle">
-      <SkeletonParagraph />
-    </div>
-  {/if}
-  {#if canisterDetails !== undefined}
-    <CyclesCard cycles={canisterDetails.cycles} />
-    <ControllersCard />
-  {:else if errorKey !== undefined}
-    <CardInfo testId="canister-details-error-card">
-      <p class="error-message">{translate({ labelKey: errorKey })}</p>
-    </CardInfo>
-  {:else}
-    <SkeletonCard />
-    <SkeletonCard />
-  {/if}
-</section>
+<main class="legacy">
+  <section>
+    {#if canisterInfo !== undefined}
+      <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+      <CanisterCardSubTitle canister={canisterInfo} />
+      <div class="actions">
+        <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+      </div>
+    {:else}
+      <div class="loader-title">
+        <SkeletonTitle />
+      </div>
+      <div class="loader-subtitle">
+        <SkeletonParagraph />
+      </div>
+    {/if}
+    {#if canisterDetails !== undefined}
+      <CyclesCard cycles={canisterDetails.cycles} />
+      <ControllersCard />
+    {:else if errorKey !== undefined}
+      <CardInfo testId="canister-details-error-card">
+        <p class="error-message">{translate({ labelKey: errorKey })}</p>
+      </CardInfo>
+    {:else}
+      <SkeletonCard />
+      <SkeletonCard />
+    {/if}
+  </section>
+</main>
 
 <Footer>
   <Toolbar>
