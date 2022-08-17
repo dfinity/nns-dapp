@@ -249,6 +249,10 @@ interface I18nNeurons {
   need_two_to_merge: string;
   irreversible_action: string;
   claim_seed_neurons_success: string;
+  enter_neuron_id_prompt: string;
+  enter_hotkey_principal_prompt: string;
+  add_hotkey_prompt_error: string;
+  add_hotkey_prompt_success: string;
   stake_amount: string;
 }
 

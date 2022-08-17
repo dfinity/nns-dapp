@@ -1,8 +1,12 @@
+import type { NeuronId } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import { addHotkey } from "../api/governance.api";
 import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { initDebugStore } from "../stores/debug.store";
 import { i18n } from "../stores/i18n";
+import { toastsStore } from "../stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
@@ -16,6 +20,7 @@ import {
 import { enumKeys } from "../utils/enum.utils";
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
+import { getIdentity } from "./auth.services";
 import { claimSeedNeurons } from "./seed-neurons.services";
 
 /**
@@ -32,6 +37,7 @@ export enum LogType {
   File = "f",
   FileOriginal = "fo",
   ClaimNeurons = "cn",
+  AddHotkey = "ah",
 }
 
 /**
@@ -63,6 +69,17 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
+        if (LogType.AddHotkey === logType) {
+          const neuronIdString = prompt(
+            get(i18n).neurons.enter_neuron_id_prompt
+          );
+          const hotkey = prompt(
+            get(i18n).neurons.enter_hotkey_principal_prompt
+          );
+          addHotkeyFromPrompt(neuronIdString, hotkey);
+          return;
+        }
+
         generateDebugLogProxy(logType);
       }
     } else {
@@ -81,6 +98,32 @@ export function triggerDebugReport(node: HTMLElement) {
     },
   };
 }
+
+const addHotkeyFromPrompt = async (
+  neuronIdString: string | null,
+  hotkey: string | null
+) => {
+  try {
+    if (neuronIdString === null) {
+      throw new Error("You need to provide a neuron id.");
+    }
+    if (hotkey === null) {
+      throw new Error("You need to provide a hotkey.");
+    }
+    const neuronId = BigInt(neuronIdString) as NeuronId;
+    const principal = Principal.fromText(hotkey);
+    const identity = await getIdentity();
+    await addHotkey({ neuronId, principal, identity });
+    toastsStore.success({
+      labelKey: "neurons.add_hotkey_prompt_success",
+    });
+  } catch (err) {
+    toastsStore.error({
+      labelKey: "neurons.add_hotkey_prompt_error",
+      err,
+    });
+  }
+};
 
 const anonymiseStoreState = async () => {
   const debugStore = initDebugStore();

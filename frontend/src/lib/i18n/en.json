@@ -239,6 +239,10 @@
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
     "claim_seed_neurons_success": "Seed neurons claimed successfully: $neurons",
+    "enter_neuron_id_prompt": "Enter neuron id",
+    "enter_hotkey_principal_prompt": "Enter hotkey",
+    "add_hotkey_prompt_error": "Error adding hotkey.",
+    "add_hotkey_prompt_success": "Hotkey added successfully.",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
