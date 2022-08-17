@@ -814,6 +814,21 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false));
+
+    it("returns false if identity is in hotkeys and is the controller", () =>
+      expect(
+        isHotKeyControllable({
+          neuron: {
+            ...mockNeuron,
+            fullNeuron: {
+              ...mockFullNeuron,
+              hotKeys: [mockIdentity.getPrincipal().toText()],
+              controller: mockIdentity.getPrincipal().toText(),
+            },
+          },
+          identity: mockIdentity,
+        })
+      ).toBe(false));
   });
 
   describe("isIdentityController", () => {
