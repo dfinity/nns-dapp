@@ -232,7 +232,7 @@ export const validParticipation = ({
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
         $commitment: formatICP({ value: totalCommitment }),
-        $maxCommitment: formatICP({
+        $remainingCommitment: formatICP({
           value:
             project.summary.swap.init.max_icp_e8s -
             project.summary.derived.buyer_total_icp_e8s,
