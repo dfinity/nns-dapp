@@ -3,7 +3,6 @@ import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { ToastLevel, ToastMsg } from "../types/toast";
-import { clearIdbAuthKeys } from "../utils/auth.utils";
 import { replaceHistory } from "../utils/route.utils";
 
 const msgParam: string = "msg";
@@ -20,11 +19,10 @@ export const logout = async ({
     appendMsgToUrl(msg);
   }
 
-  // We do not clear local storage. It contains anonymous information such as the selected theme.
-  // Information the user want to preserve across sign-in. e.g. if I select the light theme, logout and sign-in again, I am happy if the dapp still uses the light theme.
+  // Auth: Delegation and identity are cleared from indexedDB by agent-js so, we do not need to clear these
 
-  // We clear the delegation and identity from indexedDB
-  await clearIdbAuthKeys();
+  // Preferences: We do not clear local storage as well. It contains anonymous information such as the selected theme.
+  // Information the user want to preserve across sign-in. e.g. if I select the light theme, logout and sign-in again, I am happy if the dapp still uses the light theme.
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();

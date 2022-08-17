@@ -75,7 +75,6 @@
     "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@zondax/ledger-icp": "^0.6.0",
-    "idb-keyval": "^6.2.0"
+    "@zondax/ledger-icp": "^0.6.0"
   }
 }

@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { clear, createStore, get } from "idb-keyval";
+import { AuthClient } from "@dfinity/auth-client";
 
 /**
  * The user is signed in when the identity is not undefined and not null.
@@ -11,10 +11,15 @@ import { clear, createStore, get } from "idb-keyval";
 export const isSignedIn = (identity: Identity | undefined | null): boolean =>
   identity !== undefined && identity !== null;
 
-// Exported for test purpose
-export const customIdbAuthStore = createStore("auth-client-db", "ic-keyval");
-
-export const getIdbAuthKey = <T>(key: string): Promise<T | undefined> =>
-  get<T>(key, customIdbAuthStore);
-
-export const clearIdbAuthKeys = async () => clear(customIdbAuthStore);
+/**
+ * Create an AuthClient to manage authentication and identity.
+ * - Session duration is 30min (AUTH_SESSION_DURATION).
+ * - Disable idle manager that sign-out in case of inactivity after default 10min to avoid UX issues if multiple tabs are used as we observe the storage and sync the delegation on any changes
+ */
+export const createAuthClient = (): Promise<AuthClient> =>
+  AuthClient.create({
+    idleOptions: {
+      disableIdle: true,
+      disableDefaultIdleCallback: true,
+    },
+  });

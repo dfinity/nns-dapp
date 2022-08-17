@@ -1,7 +1,7 @@
+import { IdbStorage, type AuthClient } from "@dfinity/auth-client";
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
-import { getIdbAuthKey } from "../utils/auth.utils";
+import { createAuthClient } from "../utils/auth.utils";
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
@@ -21,13 +21,13 @@ export const stopIdleTimer = () => {
 };
 
 const onIdleSignOut = async () => {
-  const [identity, delegation] = await Promise.all([
-    checkIdentity(),
+  const [auth, delegation] = await Promise.all([
+    checkAuthentication(),
     checkDelegationChain(),
   ]);
 
   // Both identity and delegation are alright, so all good
-  if (identity && delegation) {
+  if (auth && delegation) {
     return;
   }
 
@@ -35,13 +35,13 @@ const onIdleSignOut = async () => {
 };
 
 /**
- * If there is no identity or if anonymous, then identity is not valid
+ * If user is no authenticated - i.e. no identity or anonymous and there is no delegation chain, then identity is not valid
  *
- * @returns true if identity is valid
+ * @returns true if authenticated
  */
-const checkIdentity = async (): Promise<boolean> => {
-  const identity = await getIdentity();
-  return identity !== undefined && !Principal.fromText(identity).isAnonymous();
+const checkAuthentication = async (): Promise<boolean> => {
+  const authClient: AuthClient = await createAuthClient();
+  return authClient.isAuthenticated();
 };
 
 /**
@@ -50,23 +50,19 @@ const checkIdentity = async (): Promise<boolean> => {
  * @returns true if delegation is valid
  */
 const checkDelegationChain = async (): Promise<boolean> => {
-  const delegationChain = await getDelegationChain();
+  const idbStorage: IdbStorage = new IdbStorage();
+  const delegationChain: string | null = await idbStorage.get("delegation");
 
   return (
-    delegationChain !== undefined &&
+    delegationChain !== null &&
     isDelegationValid(DelegationChain.fromJSON(delegationChain))
   );
 };
 
+// We do the logout on the client side because we reload the window to reload stores afterwards
 const logout = () => {
   // Clear timer to not emit sign-out multiple times
   stopIdleTimer();
 
   postMessage({ msg: "nnsSignOut" });
 };
-
-const getDelegationChain = async (): Promise<string | undefined> =>
-  getIdbAuthKey("delegation");
-
-const getIdentity = async (): Promise<string | undefined> =>
-  getIdbAuthKey("identity");
