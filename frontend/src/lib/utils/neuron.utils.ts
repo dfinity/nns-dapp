@@ -234,7 +234,8 @@ export const isHotKeyControllable = ({
 }): boolean =>
   fullNeuron?.hotKeys.find(
     (hotkey) => hotkey === identity?.getPrincipal().toText()
-  ) !== undefined;
+  ) !== undefined &&
+  fullNeuron.controller !== identity?.getPrincipal().toText();
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
