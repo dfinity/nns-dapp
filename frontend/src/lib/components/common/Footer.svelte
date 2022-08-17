@@ -6,11 +6,6 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
     height: var(--footer-height);
 
     will-change: transform;

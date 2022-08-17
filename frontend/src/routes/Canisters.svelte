@@ -61,31 +61,33 @@
   const closeModal = () => (modal = undefined);
 </script>
 
-<section>
-  <p>{$i18n.canisters.text}</p>
-  <p class="last-info">
-    {$i18n.canisters.principal_is}
-    <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
-  </p>
+<main class="legacy">
+  <section>
+    <p>{$i18n.canisters.text}</p>
+    <p class="last-info">
+      {$i18n.canisters.principal_is}
+      <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
+    </p>
 
-  {#each $canistersStore.canisters ?? [] as canister}
-    <CanisterCard
-      role="link"
-      ariaLabel={$i18n.neurons.aria_label_neuron_card}
-      on:click={goToCanisterDetails(canister.canister_id)}
-      {canister}
-    />
-  {/each}
+    {#each $canistersStore.canisters ?? [] as canister}
+      <CanisterCard
+        role="link"
+        ariaLabel={$i18n.neurons.aria_label_neuron_card}
+        on:click={goToCanisterDetails(canister.canister_id)}
+        {canister}
+      />
+    {/each}
 
-  {#if noCanisters}
-    <p>{$i18n.canisters.empty}</p>
-  {/if}
+    {#if noCanisters}
+      <p>{$i18n.canisters.empty}</p>
+    {/if}
 
-  {#if loading}
-    <SkeletonCard />
-    <SkeletonCard />
-  {/if}
-</section>
+    {#if loading}
+      <SkeletonCard />
+      <SkeletonCard />
+    {/if}
+  </section>
+</main>
 
 {#if modal === "CreateCanister"}
   <CreateCanisterModal on:nnsClose={closeModal} />

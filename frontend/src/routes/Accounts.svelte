@@ -50,49 +50,51 @@
   }
 </script>
 
-<section data-tid="accounts-body">
-  <div class="title">
-    <h1>{$i18n.accounts.title}</h1>
+<main class="legacy">
+  <section data-tid="accounts-body">
+    <div class="title">
+      <h1>{$i18n.accounts.title}</h1>
 
-    {#if accounts?.main}
-      <Tooltip
-        id="wallet-total-icp"
-        text={replacePlaceholders($i18n.accounts.current_balance_total, {
-          $amount: totalICP,
-        })}
+      {#if accounts?.main}
+        <Tooltip
+          id="wallet-total-icp"
+          text={replacePlaceholders($i18n.accounts.current_balance_total, {
+            $amount: totalICP,
+          })}
+        >
+          <ICPComponent icp={totalBalance} />
+        </Tooltip>
+      {/if}
+    </div>
+
+    {#if accounts?.main?.identifier}
+      <AccountCard
+        role="link"
+        on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+        showCopy
+        account={accounts?.main}>{$i18n.accounts.main}</AccountCard
       >
-        <ICPComponent icp={totalBalance} />
-      </Tooltip>
+      {#each accounts.subAccounts || [] as subAccount}
+        <AccountCard
+          role="link"
+          on:click={() => cardClick(subAccount.identifier)}
+          showCopy
+          account={subAccount}>{subAccount.name}</AccountCard
+        >
+      {/each}
+      {#each accounts.hardwareWallets || [] as walletAccount}
+        <AccountCard
+          role="link"
+          on:click={() => cardClick(walletAccount.identifier)}
+          showCopy
+          account={walletAccount}>{walletAccount.name}</AccountCard
+        >
+      {/each}
+    {:else}
+      <SkeletonCard />
     {/if}
-  </div>
-
-  {#if accounts?.main?.identifier}
-    <AccountCard
-      role="link"
-      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
-      showCopy
-      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
-    >
-    {#each accounts.subAccounts || [] as subAccount}
-      <AccountCard
-        role="link"
-        on:click={() => cardClick(subAccount.identifier)}
-        showCopy
-        account={subAccount}>{subAccount.name}</AccountCard
-      >
-    {/each}
-    {#each accounts.hardwareWallets || [] as walletAccount}
-      <AccountCard
-        role="link"
-        on:click={() => cardClick(walletAccount.identifier)}
-        showCopy
-        account={walletAccount}>{walletAccount.name}</AccountCard
-      >
-    {/each}
-  {:else}
-    <SkeletonCard />
-  {/if}
-</section>
+  </section>
+</main>
 
 {#if modal === "AddAccountModal"}
   <AddAcountModal on:nnsClose={closeModal} />

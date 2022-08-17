@@ -97,21 +97,23 @@
     });
 </script>
 
-<section data-tid="neuron-detail">
-  {#if neuron && !inVotingProcess}
-    <NeuronMetaInfoCard {neuron} />
-    <NeuronMaturityCard {neuron} />
-    <NeuronJoinFundCard {neuron} />
-    <NeuronFollowingCard {neuron} />
-    {#if IS_TESTNET}
-      <NeuronProposalsCard {neuron} />
+<main class="legacy">
+  <section data-tid="neuron-detail">
+    {#if neuron && !inVotingProcess}
+      <NeuronMetaInfoCard {neuron} />
+      <NeuronMaturityCard {neuron} />
+      <NeuronJoinFundCard {neuron} />
+      <NeuronFollowingCard {neuron} />
+      {#if IS_TESTNET}
+        <NeuronProposalsCard {neuron} />
+      {/if}
+      <NeuronHotkeysCard {neuron} />
+      <NeuronVotingHistoryCard {neuron} />
+    {:else}
+      <SkeletonCard size="large" cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
+      <SkeletonCard cardType="info" />
     {/if}
-    <NeuronHotkeysCard {neuron} />
-    <NeuronVotingHistoryCard {neuron} />
-  {:else}
-    <SkeletonCard size="large" cardType="info" />
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
-  {/if}
-</section>
+  </section>
+</main>

@@ -145,30 +145,32 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<section data-tid="proposals-tab">
-  <p class="description">{$i18n.voting.text}</p>
+<main class="legacy">
+  <section data-tid="proposals-tab">
+    <p class="description">{$i18n.voting.text}</p>
 
-  <ProposalsFilters />
+    <ProposalsFilters />
 
-  {#if neuronsLoaded}
-    <InfiniteScroll on:nnsIntersect={findNextProposals}>
-      {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-        <ProposalCard {hidden} {proposalInfo} />
-      {/each}
-    </InfiniteScroll>
+    {#if neuronsLoaded}
+      <InfiniteScroll on:nnsIntersect={findNextProposals}>
+        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
+          <ProposalCard {hidden} {proposalInfo} />
+        {/each}
+      </InfiniteScroll>
 
-    {#if nothingFound}
-      <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+      {#if nothingFound}
+        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+      {/if}
     {/if}
-  {/if}
 
-  {#if loading || !neuronsLoaded}
-    <div class="spinner">
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  {/if}
-</section>
+    {#if loading || !neuronsLoaded}
+      <div class="spinner">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    {/if}
+  </section>
+</main>
 
 <style lang="scss">
   .spinner {

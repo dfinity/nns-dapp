@@ -1,12 +1,8 @@
 <script lang="ts">
   import Banner from "../header/Banner.svelte";
   import MenuItems from "./MenuItems.svelte";
-  import {
-    layoutTitleStore,
-    layoutBackStore,
-    layoutMainStyleStore,
-  } from "../../stores/layout.store";
-  import { Layout } from "@dfinity/gix-components";
+  import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
+  import { Layout, HeaderTitle } from "@dfinity/gix-components";
   import AccountMenu from "../header/AccountMenu.svelte";
   import { triggerDebugReport } from "../../services/debug.services";
 
@@ -16,12 +12,10 @@
 
 <Banner />
 
-<Layout
-  {back}
-  modern={$layoutMainStyleStore === "modern"}
-  on:nnsBack={() => $layoutBackStore?.()}
->
-  <h4 use:triggerDebugReport slot="title">{$layoutTitleStore}</h4>
+<Layout {back} on:nnsBack={() => $layoutBackStore?.()}>
+  <div use:triggerDebugReport slot="title">
+    <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
+  </div>
 
   <MenuItems slot="menu-items" />
 
