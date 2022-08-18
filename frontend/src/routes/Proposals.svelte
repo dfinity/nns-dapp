@@ -1,7 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import ProposalsFilters from "../lib/components/proposals/ProposalsFilters.svelte";
-  import { i18n } from "../lib/stores/i18n";
   import {
     hasMatchingProposals,
     lastProposalId,
@@ -10,8 +8,6 @@
     proposalsFiltersStore,
     proposalsStore,
   } from "../lib/stores/proposals.store";
-  import InfiniteScroll from "../lib/components/ui/InfiniteScroll.svelte";
-  import ProposalCard from "../lib/components/proposals/ProposalCard.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "../lib/utils/utils";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -21,12 +17,14 @@
   } from "../lib/services/proposals.services";
   import { toastsStore } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
-  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import {
     definedNeuronsStore,
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
+  import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
+  import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
+  import { VOTING_UI } from "../lib/constants/environment.constants";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -145,41 +143,22 @@
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 </script>
 
-<main class="legacy">
-  <section data-tid="proposals-tab">
-    <p class="description">{$i18n.voting.text}</p>
-
-    <ProposalsFilters />
-
-    {#if neuronsLoaded}
-      <InfiniteScroll on:nnsIntersect={findNextProposals}>
-        {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-          <ProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
-
-      {#if nothingFound}
-        <p class="no-proposals">{$i18n.voting.nothing_found}</p>
-      {/if}
-    {/if}
-
-    {#if loading || !neuronsLoaded}
-      <div class="spinner">
-        <SkeletonCard />
-        <SkeletonCard />
-      </div>
-    {/if}
-  </section>
+<main class={VOTING_UI}>
+  {#if VOTING_UI === "modern"}
+    <ProposalsModern
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
+    />
+  {:else}
+    <ProposalsLegacy
+      {loading}
+      {hidden}
+      {neuronsLoaded}
+      {nothingFound}
+      on:nnsIntersect={findNextProposals}
+    />
+  {/if}
 </main>
-
-<style lang="scss">
-  .spinner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .no-proposals {
-    text-align: center;
-    margin: var(--padding-2x) 0;
-  }
-</style>
