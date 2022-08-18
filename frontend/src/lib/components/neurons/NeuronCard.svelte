@@ -95,6 +95,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
 
+  // TODO: avoid root global styling
   :global(div.modal article > div) {
     margin-bottom: 0;
   }

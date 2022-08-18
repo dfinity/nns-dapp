@@ -37,6 +37,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+
   .actions {
     display: flex;
     justify-content: flex-end;

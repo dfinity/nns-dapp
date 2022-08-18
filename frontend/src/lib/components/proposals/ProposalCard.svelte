@@ -142,7 +142,7 @@
   }
 
   /**
-   * TODO: status (L2-954) and counter (L2-955)
+   * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
    */
   .status {
     // Default color: Color.PRIMARY
