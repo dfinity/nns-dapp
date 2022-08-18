@@ -115,16 +115,36 @@ export const durationTillSwapStart = (
   return BigInt(nowInSeconds()) - start_timestamp_seconds;
 };
 
+// Returns the minimum between:
+// - user remaining commitment to reach user maximum
+// - remamining commitment to reach project maximum
+export const currentUserMaxCommitment = ({
+  summary: { swap, derived },
+  swapCommitment,
+}: SnsFullProject): bigint => {
+  const remainingProjectCommitment =
+    swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+  const remainingUserCommitment =
+    swap.init.max_participant_icp_e8s -
+    (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
+  return remainingProjectCommitment < remainingUserCommitment
+    ? remainingProjectCommitment
+    : remainingUserCommitment;
+};
+
 const isProjectOpen = (summary: SnsSummary): boolean =>
   summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
+// Checks whether the amount that the user wants to contiribute is lower than the minimum for the project.
+// It takes into account the current commitment of the user.
 const commitmentTooSmall = ({
-  project,
+  project: { summary, swapCommitment },
   amount,
 }: {
   project: SnsFullProject;
   amount: ICP;
 }): boolean =>
-  project.summary.swap.init.min_participant_icp_e8s > amount.toE8s();
+  summary.swap.init.min_participant_icp_e8s >
+  amount.toE8s() + (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
 const commitmentTooLarge = ({
   summary,
   amountE8s,
@@ -227,7 +247,7 @@ export const validParticipation = ({
   if (
     commitmentExceedsAmountLeft({
       summary: project.summary,
-      amountE8s: totalCommitment,
+      amountE8s: amount.toE8s(),
     })
   ) {
     return {

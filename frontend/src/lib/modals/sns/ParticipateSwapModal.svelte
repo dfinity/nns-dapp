@@ -6,26 +6,31 @@
   import ReviewParticipate from "../../components/project-detail/ReviewParticipate.svelte";
   import type { Account } from "../../types/account";
   import { ICP } from "@dfinity/nns";
-  import type { SnsSummary } from "../../types/sns";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSwapInit } from "@dfinity/sns";
+  import { currentUserMaxCommitment } from "../../utils/projects.utils";
+  import type { SnsFullProject } from "../../stores/projects.store";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let summary: SnsSummary;
+  let project: SnsFullProject;
   // type safety validation is done in ProjectDetail component
-  $: summary = $projectDetailStore.summary as SnsSummary;
+  $: project = $projectDetailStore as SnsFullProject;
+  let increasingParticipation: boolean = false;
+  $: increasingParticipation =
+    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) >
+    BigInt(0);
 
   let init: SnsSwapInit;
   $: ({
     swap: { init },
-  } = summary);
+  } = project.summary);
 
   const steps: Steps = [
     {
@@ -40,11 +45,25 @@
     },
   ];
 
+  let title: string | undefined;
+  $: title =
+    currentStep?.name === "Participate" && increasingParticipation
+      ? $i18n.sns_project_detail.increase_participation
+      : currentStep?.title;
+
   let currentStep: Step;
   let modal: WizardModal;
 
   let selectedAccount: Account | undefined;
   let amount: number | undefined;
+
+  let maxCommitment: ICP;
+  $: maxCommitment = ICP.fromE8s(currentUserMaxCommitment(project));
+
+  let minCommitment: ICP;
+  $: minCommitment = ICP.fromE8s(
+    increasingParticipation ? BigInt(0) : init.min_participant_icp_e8s
+  );
 
   const goNext = () => {
     modal.next();
@@ -55,15 +74,16 @@
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  <svelte:fragment slot="title">{title}</svelte:fragment>
   {#if currentStep.name === "Participate"}
     <ParticipateScreen
       bind:selectedAccount
       bind:amount
       on:nnsNext={goNext}
       on:nnsClose
-      minAmount={ICP.fromE8s(init.min_participant_icp_e8s)}
-      maxAmount={ICP.fromE8s(init.max_participant_icp_e8s)}
+      {increasingParticipation}
+      minAmount={minCommitment}
+      maxAmount={maxCommitment}
     />
   {/if}
   {#if currentStep.name === "ReviewTransaction" && selectedAccount !== undefined && amount !== undefined}

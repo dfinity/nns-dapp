@@ -601,6 +601,7 @@
     "completed": "Completed",
     "sale_start": "Sale Start",
     "sale_end": "Sale End",
+    "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached"
   },
   "sns_neuron_detail": {

@@ -11,6 +11,7 @@ import type { SnsSwapCommitment } from "../../../lib/types/sns";
 import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
+  currentUserMaxCommitment,
   durationTillSwapDeadline,
   durationTillSwapStart,
   filterActiveProjects,
@@ -327,6 +328,136 @@ describe("project-utils", () => {
     });
   });
 
+  describe("currentUserMaxCommitment", () => {
+    it("returns the user maximum when no participation yet", () => {
+      const projectMax = BigInt(10_000_000_000);
+      const userMax = BigInt(1_000_000_000);
+      const validProject: SnsFullProject = {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          derived: {
+            buyer_total_icp_e8s: BigInt(0),
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...mockSnsFullProject.summary.swap,
+            init: {
+              ...mockSnsFullProject.summary.swap.init,
+              min_participant_icp_e8s: BigInt(100_000_000),
+              max_participant_icp_e8s: userMax,
+              max_icp_e8s: projectMax,
+            },
+          },
+        },
+        swapCommitment: undefined,
+      };
+      expect(currentUserMaxCommitment(validProject)).toEqual(userMax);
+    });
+
+    it("returns the remainder to the user maximum if already participated", () => {
+      const projectMax = BigInt(10_000_000_000);
+      const userMax = BigInt(1_000_000_000);
+      const userCommitment = BigInt(400_000_000);
+      const validProject: SnsFullProject = {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          derived: {
+            buyer_total_icp_e8s: userCommitment,
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...mockSnsFullProject.summary.swap,
+            init: {
+              ...mockSnsFullProject.summary.swap.init,
+              min_participant_icp_e8s: BigInt(100_000_000),
+              max_participant_icp_e8s: userMax,
+              max_icp_e8s: projectMax,
+            },
+          },
+        },
+        swapCommitment: {
+          ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
+          myCommitment: {
+            ...(mockSnsFullProject.swapCommitment
+              ?.myCommitment as SnsSwapBuyerState),
+            amount_icp_e8s: userCommitment,
+          },
+        },
+      };
+      expect(currentUserMaxCommitment(validProject)).toEqual(
+        userMax - userCommitment
+      );
+    });
+
+    it("returns the remainder to the project maximum if remainder lower than user max", () => {
+      const projectMax = BigInt(10_000_000_000);
+      const userMax = BigInt(1_000_000_000);
+      const projectCommitment = BigInt(9_500_000_000);
+      const validProject: SnsFullProject = {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          derived: {
+            buyer_total_icp_e8s: projectCommitment,
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...mockSnsFullProject.summary.swap,
+            init: {
+              ...mockSnsFullProject.summary.swap.init,
+              min_participant_icp_e8s: BigInt(100_000_000),
+              max_participant_icp_e8s: userMax,
+              max_icp_e8s: projectMax,
+            },
+          },
+        },
+        swapCommitment: undefined,
+      };
+      expect(currentUserMaxCommitment(validProject)).toEqual(
+        projectMax - projectCommitment
+      );
+    });
+
+    it("returns the remainder to the user maximum even when current commitment minus max is lower than maximum per user", () => {
+      const projectMax = BigInt(10_000_000_000);
+      const userMax = BigInt(1_000_000_000);
+      const projectCommitment = BigInt(9_200_000_000);
+      const userCommitment = BigInt(400_000_000);
+      const validProject: SnsFullProject = {
+        ...mockSnsFullProject,
+        summary: {
+          ...mockSnsFullProject.summary,
+          derived: {
+            buyer_total_icp_e8s: projectCommitment,
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...mockSnsFullProject.summary.swap,
+            init: {
+              ...mockSnsFullProject.summary.swap.init,
+              min_participant_icp_e8s: BigInt(100_000_000),
+              max_participant_icp_e8s: userMax,
+              max_icp_e8s: projectMax,
+            },
+          },
+        },
+        swapCommitment: {
+          ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
+          myCommitment: {
+            ...(mockSnsFullProject.swapCommitment
+              ?.myCommitment as SnsSwapBuyerState),
+            amount_icp_e8s: userCommitment,
+          },
+        },
+      };
+      expect(currentUserMaxCommitment(validProject)).toEqual(
+        userMax - userCommitment
+      );
+    });
+  });
+
   describe("validParticipation", () => {
     const validAmountE8s = BigInt(1_000_000_000);
     const validProject: SnsFullProject = {
@@ -459,7 +590,7 @@ describe("project-utils", () => {
       expect(valid).toBe(false);
     });
 
-    it("returns false if amount is larger than maximum left", () => {
+    it("returns false if amount is larger than project remainder to get to maximum", () => {
       const maxE8s = BigInt(1_000_000_000);
       const participationE8s = BigInt(100_000_000);
       const currentE8s = BigInt(950_000_000);
@@ -485,6 +616,143 @@ describe("project-utils", () => {
         amount: ICP.fromE8s(participationE8s),
       });
       expect(valid).toBe(false);
+    });
+
+    it("returns false if amount is smaller than project remainder to get to maximum, but larger than user remainder until max", () => {
+      const maxProject = BigInt(100_000_000_000);
+      const minPerUser = BigInt(100_000_000);
+      const maxPerUser = BigInt(2_000_000_000);
+      const currentProjectParticipation = BigInt(99_500_000_000);
+      const currentUserParticipation = BigInt(800_000_000);
+      const newParticipation = BigInt(600_000_000);
+      const project: SnsFullProject = {
+        ...validProject,
+        summary: {
+          ...validProject.summary,
+          derived: {
+            buyer_total_icp_e8s: currentProjectParticipation,
+            sns_tokens_per_icp: 1,
+          },
+          swap: {
+            ...validProject.summary.swap,
+            init: {
+              ...validProject.summary.swap.init,
+              max_participant_icp_e8s: maxPerUser,
+              min_participant_icp_e8s: minPerUser,
+              max_icp_e8s: maxProject,
+            },
+          },
+        },
+        swapCommitment: {
+          ...(validProject.swapCommitment as SnsSwapCommitment),
+          myCommitment: {
+            ...(validProject.swapCommitment?.myCommitment as SnsSwapBuyerState),
+            amount_icp_e8s: currentUserParticipation,
+          },
+        },
+      };
+      const { valid } = validParticipation({
+        project,
+        amount: ICP.fromE8s(newParticipation),
+      });
+      expect(valid).toBe(false);
+    });
+  });
+
+  describe("validParticipation", () => {
+    const maxProject = BigInt(100_000_000_000);
+    const minPerUser = BigInt(100_000_000);
+    const maxPerUser = BigInt(2_000_000_000);
+    const project: SnsFullProject = {
+      ...mockSnsFullProject,
+      summary: {
+        ...mockSnsFullProject.summary,
+        derived: {
+          buyer_total_icp_e8s: BigInt(0),
+          sns_tokens_per_icp: 1,
+        },
+        swap: {
+          ...mockSnsFullProject.summary.swap,
+          state: {
+            ...mockSnsFullProject.summary.swap.state,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          init: {
+            ...mockSnsFullProject.summary.swap.init,
+            min_participant_icp_e8s: minPerUser,
+            max_participant_icp_e8s: maxPerUser,
+            max_icp_e8s: maxProject,
+          },
+        },
+      },
+      swapCommitment: undefined,
+    };
+    it("user flow check", () => {
+      // User can participate if amount is min per user;
+      const initialAmountUser = minPerUser;
+      const { valid: v1 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(initialAmountUser),
+      });
+      expect(v1).toBe(true);
+
+      // Increase user participation
+      project.swapCommitment = {
+        ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
+        myCommitment: {
+          ...(mockSnsFullProject.swapCommitment
+            ?.myCommitment as SnsSwapBuyerState),
+          amount_icp_e8s: initialAmountUser,
+        },
+      };
+
+      // User can participate with amount less than min
+      const secondAmountUser = BigInt(10);
+      const { valid: v2 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(secondAmountUser),
+      });
+      expect(v2).toBe(true);
+
+      // User can't participate if amount is greater than max per user
+      const { valid: v3 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(maxPerUser),
+      });
+      expect(v3).toBe(false);
+
+      // User can participate to user max
+      const { valid: v4 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(maxPerUser - initialAmountUser),
+      });
+      expect(v4).toBe(true);
+
+      // Increase project participation until the user can't participate with max per user
+      project.summary.derived.buyer_total_icp_e8s = maxProject - minPerUser;
+
+      // User can't participate to user max
+      const { valid: v5 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(maxPerUser - initialAmountUser),
+      });
+      expect(v5).toBe(false);
+
+      // User can participate to project max
+      const { valid: v6 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(
+          maxProject - project.summary.derived.buyer_total_icp_e8s
+        ),
+      });
+      expect(v6).toBe(true);
+
+      // User can't participate to above project max
+      const { valid: v7 } = validParticipation({
+        project,
+        amount: ICP.fromE8s(maxPerUser - initialAmountUser + BigInt(10_000)),
+      });
+      expect(v7).toBe(false);
     });
   });
 
