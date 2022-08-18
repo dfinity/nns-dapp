@@ -1,5 +1,6 @@
 import type {
-  Ballot, ExecuteNnsFunction,
+  Ballot,
+  ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -61,7 +62,9 @@ export const getExecuteNnsFunctionId = (
   }
 
   // 0 equals Unspecified
-  const {nnsFunctionId}: ExecuteNnsFunction = proposal?.action?.[action] ?? {nnsFunctionId: 0};
+  const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
+    nnsFunctionId: 0,
+  };
   return nnsFunctionId;
 };
 

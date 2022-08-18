@@ -102,7 +102,9 @@
 
         <p class="title-placeholder description">{title}</p>
 
-        <p class={`${color} status`}>{$i18n.status[ProposalStatus[status]] ?? ""}</p>
+        <p class={`${color} status`}>
+          {$i18n.status[ProposalStatus[status]] ?? ""}
+        </p>
       </Card>
     {/if}
   {/if}
