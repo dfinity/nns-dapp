@@ -87,6 +87,17 @@ describe("ProposalCard", () => {
     ).toBeInTheDocument();
   });
 
+  it("should render a proposal a type", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern"
+      },
+    });
+
+    expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+  });
+
   it("should render a specific color for the status", () => {
     proposalsFiltersStore.filterStatus([
       ...DEFAULT_PROPOSALS_FILTERS.status,

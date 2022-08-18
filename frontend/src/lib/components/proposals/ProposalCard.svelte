@@ -29,9 +29,9 @@
 
   let topic: string | undefined;
   let proposer: NeuronId | undefined;
-  let action: string | undefined;
+  let type: string | undefined;
 
-  $: ({ status, id, title, color, topic, proposer, action } =
+  $: ({ status, id, title, color, topic, proposer, type } =
     mapProposalInfo(proposalInfo));
 
   const showProposal = () => {
@@ -85,7 +85,7 @@
       >
         <div class="card-meta">
           <Value>{id}</Value>
-          <Value>{action}</Value>
+          <Value>{type}</Value>
         </div>
 
         <div class="card-meta">

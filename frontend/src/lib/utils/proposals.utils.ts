@@ -313,7 +313,7 @@ export const mapProposalInfo = (
   color: Color | undefined;
   status: ProposalStatus;
   deadline: bigint | undefined;
-  action: string | undefined;
+  type: string | undefined;
 } => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
@@ -334,15 +334,17 @@ export const mapProposalInfo = (
     color: PROPOSAL_COLOR[status],
     status,
     deadline,
-    action: mapProposalAction(proposal),
+    type: mapProposalType(proposal),
   };
 };
 
 /**
  * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
  * Otherwise, we map the action function itself.
+ *
+ * This outcome is called "the proposal type".
  */
-const mapProposalAction = (
+const mapProposalType = (
   proposal: Proposal | undefined
 ): string | undefined => {
   const { actions, nns_function_names } = get(i18n);
