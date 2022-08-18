@@ -1,5 +1,6 @@
 import type {
   Ballot,
+  ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -27,8 +28,8 @@ export const lastProposalId = (
 };
 
 export const proposalFirstActionKey = (
-  proposal: Proposal
-): string | undefined => Object.keys(proposal.action || {})[0];
+  proposal: Proposal | undefined
+): string | undefined => Object.keys(proposal?.action ?? {})[0];
 
 export const proposalActionFields = (
   proposal: Proposal
@@ -51,14 +52,20 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
-  const key = proposalFirstActionKey(proposal);
+export const getExecuteNnsFunctionId = (
+  proposal: Proposal | undefined
+): number | undefined => {
+  const action = proposalFirstActionKey(proposal);
 
-  if (key !== "ExecuteNnsFunction") {
+  if (action !== "ExecuteNnsFunction") {
     return undefined;
   }
 
-  return Object.values(proposal.action?.[key])?.[0] as number;
+  // 0 equals Unspecified
+  const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
+    nnsFunctionId: 0,
+  };
+  return nnsFunctionId;
 };
 
 export const hideProposal = ({
@@ -311,6 +318,7 @@ export const mapProposalInfo = (
   color: Color | undefined;
   status: ProposalStatus;
   deadline: bigint | undefined;
+  type: string | undefined;
 } => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
@@ -331,7 +339,34 @@ export const mapProposalInfo = (
     color: PROPOSAL_COLOR[status],
     status,
     deadline,
+    type: mapProposalType(proposal),
   };
+};
+
+/**
+ * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
+ * Otherwise, we map the action function itself.
+ *
+ * This outcome is called "the proposal type".
+ */
+const mapProposalType = (
+  proposal: Proposal | undefined
+): string | undefined => {
+  const { actions, execute_nns_functions } = get(i18n);
+
+  if (proposal === undefined) {
+    return undefined;
+  }
+
+  const nnsFunctionId = getExecuteNnsFunctionId(proposal);
+
+  if (nnsFunctionId !== undefined) {
+    return execute_nns_functions[nnsFunctionId];
+  }
+
+  const action = proposalFirstActionKey(proposal);
+
+  return action !== undefined ? actions[action] : undefined;
 };
 
 /**

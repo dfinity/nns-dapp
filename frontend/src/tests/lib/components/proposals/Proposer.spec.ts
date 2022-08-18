@@ -36,7 +36,7 @@ describe("Proposer", () => {
     });
 
     expect(container.querySelector("button")?.textContent).toEqual(
-      `${en.proposal_detail.proposer_prefix} ${mockProposalInfo.proposer}`
+      `${en.proposal_detail.proposer_prefix}: ${mockProposalInfo.proposer}`
     );
   });
 
