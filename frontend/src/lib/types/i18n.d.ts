@@ -416,6 +416,7 @@ interface I18nTransaction_names {
   topUpNeuron: string;
   createCanister: string;
   topUpCanister: string;
+  participateSwap: string;
 }
 
 interface I18nWallet {
