@@ -27,8 +27,8 @@ export const lastProposalId = (
 };
 
 export const proposalFirstActionKey = (
-  proposal: Proposal
-): string | undefined => Object.keys(proposal.action || {})[0];
+  proposal: Proposal | undefined
+): string | undefined => Object.keys(proposal?.action ?? {})[0];
 
 export const proposalActionFields = (
   proposal: Proposal
@@ -51,14 +51,16 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
+export const getNnsFunctionIndex = (
+  proposal: Proposal | undefined
+): number | undefined => {
   const key = proposalFirstActionKey(proposal);
 
   if (key !== "ExecuteNnsFunction") {
     return undefined;
   }
 
-  return Object.values(proposal.action?.[key])?.[0] as number;
+  return Object.values(proposal?.action?.[key])?.[0] as number;
 };
 
 export const hideProposal = ({
@@ -311,6 +313,7 @@ export const mapProposalInfo = (
   color: Color | undefined;
   status: ProposalStatus;
   deadline: bigint | undefined;
+  action: string | undefined;
 } => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
@@ -331,7 +334,32 @@ export const mapProposalInfo = (
     color: PROPOSAL_COLOR[status],
     status,
     deadline,
+    action: mapProposalAction(proposal),
   };
+};
+
+/**
+ * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
+ * Otherwise, we map the action function itself.
+ */
+const mapProposalAction = (
+  proposal: Proposal | undefined
+): string | undefined => {
+  const { actions, nns_function_names } = get(i18n);
+
+  if (proposal === undefined) {
+    return undefined;
+  }
+
+  const nnsFunctionId = getNnsFunctionIndex(proposal);
+
+  if (nnsFunctionId !== undefined) {
+    return nns_function_names[nnsFunctionId];
+  }
+
+  const action = proposalFirstActionKey(proposal);
+
+  return action !== undefined ? actions[action] : undefined;
 };
 
 /**

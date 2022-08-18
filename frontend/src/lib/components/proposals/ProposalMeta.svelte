@@ -28,7 +28,7 @@
   {/if}
   {#if showTopic}
     <li>
-      {$i18n.proposal_detail.topic_prefix}
+      {$i18n.proposal_detail.topic_prefix}:
       <Value>{topic}</Value>
     </li>
   {/if}

@@ -17,7 +17,7 @@
 {#if neuronsLoaded}
   <InfiniteScroll on:nnsIntersect layout="grid">
     {#each $proposalsStore.proposals as proposalInfo (proposalInfo.id)}
-      <ProposalCard {hidden} {proposalInfo} />
+      <ProposalCard {hidden} {proposalInfo} layout="modern" />
     {/each}
   </InfiniteScroll>
 

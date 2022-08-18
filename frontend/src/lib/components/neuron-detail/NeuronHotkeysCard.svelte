@@ -80,7 +80,7 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/card";
   .actions {
     display: flex;
     justify-content: flex-start;

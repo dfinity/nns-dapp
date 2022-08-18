@@ -393,6 +393,19 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nActions {
+  RegisterKnownNeuron: string;
+  ManageNeuron: string;
+  ApproveGenesisKyc: string;
+  ManageNetworkEconomics: string;
+  RewardNodeProvider: string;
+  RewardNodeProviders: string;
+  AddOrRemoveNodeProvider: string;
+  SetDefaultFollowees: string;
+  Motion: string;
+  SetSnsTokenSwapOpenTimeWindow: string;
+}
+
 interface I18nTransaction_names {
   receive: string;
   send: string;
@@ -465,6 +478,7 @@ interface I18nProposal_detail__ineligible {
 }
 
 interface I18nNns_function_names {
+  0: string;
   1: string;
   2: string;
   3: string;
@@ -494,6 +508,7 @@ interface I18nNns_function_names {
   27: string;
   28: string;
   29: string;
+  30: string;
 }
 
 interface I18nNeuron_detail {
@@ -725,6 +740,7 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;
+  actions: I18nActions;
   transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;

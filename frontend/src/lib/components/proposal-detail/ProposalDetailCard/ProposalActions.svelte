@@ -20,7 +20,7 @@
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 
   let nnsFunctionId: number | undefined;
-  $: nnsFunctionId = proposal && getNnsFunctionIndex(proposal);
+  $: nnsFunctionId = getNnsFunctionIndex(proposal);
 </script>
 
 <CardBlock limitHeight={false}>
