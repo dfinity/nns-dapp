@@ -1,5 +1,5 @@
 import type {
-  Ballot,
+  Ballot, ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
   Proposal,
@@ -51,16 +51,18 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunctionIndex = (
+export const getExecuteNnsFunctionId = (
   proposal: Proposal | undefined
 ): number | undefined => {
-  const key = proposalFirstActionKey(proposal);
+  const action = proposalFirstActionKey(proposal);
 
-  if (key !== "ExecuteNnsFunction") {
+  if (action !== "ExecuteNnsFunction") {
     return undefined;
   }
 
-  return Object.values(proposal?.action?.[key])?.[0] as number;
+  // 0 equals Unspecified
+  const {nnsFunctionId}: ExecuteNnsFunction = proposal?.action?.[action] ?? {nnsFunctionId: 0};
+  return nnsFunctionId;
 };
 
 export const hideProposal = ({
@@ -353,7 +355,7 @@ const mapProposalType = (
     return undefined;
   }
 
-  const nnsFunctionId = getNnsFunctionIndex(proposal);
+  const nnsFunctionId = getExecuteNnsFunctionId(proposal);
 
   if (nnsFunctionId !== undefined) {
     return nns_function_names[nnsFunctionId];

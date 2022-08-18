@@ -4,7 +4,7 @@
   import {
     proposalFirstActionKey,
     proposalActionFields,
-    getNnsFunctionIndex,
+    getExecuteNnsFunctionId,
   } from "../../../utils/proposals.utils";
   import Json from "../../common/Json.svelte";
   import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
@@ -20,7 +20,7 @@
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 
   let nnsFunctionId: number | undefined;
-  $: nnsFunctionId = getNnsFunctionIndex(proposal);
+  $: nnsFunctionId = getExecuteNnsFunctionId(proposal);
 </script>
 
 <CardBlock limitHeight={false}>
