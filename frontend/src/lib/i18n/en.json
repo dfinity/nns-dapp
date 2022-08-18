@@ -347,14 +347,14 @@
   },
   "topics": {
     "Unspecified": "Unspecified",
-    "ManageNeuron": "Manage neuron",
+    "ManageNeuron": "Neuron Management",
     "ExchangeRate": "Exchange Rate",
     "NetworkEconomics": "Network Economics",
     "Governance": "Governance",
     "NodeAdmin": "Node Admin",
     "ParticipantManagement": "Participant Management",
     "SubnetManagement": "Subnet Management",
-    "NetworkCanisterManagement": "Network Canister Management",
+    "NetworkCanisterManagement": "System Canister Management",
     "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Sale"
