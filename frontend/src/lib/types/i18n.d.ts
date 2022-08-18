@@ -249,6 +249,9 @@ interface I18nNeurons {
   need_two_to_merge: string;
   irreversible_action: string;
   claim_seed_neurons_success: string;
+  enter_neuron_id_prompt: string;
+  add_hotkey_prompt_error: string;
+  add_hotkey_prompt_success: string;
   stake_amount: string;
 }
 
@@ -699,6 +702,7 @@ interface I18nError__sns {
   project_not_open: string;
   not_enough_amount: string;
   commitment_too_large: string;
+  commitment_exceeds_current_allowed: string;
   cannot_participate: string;
   sns_add_hotkey: string;
 }
