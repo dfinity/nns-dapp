@@ -362,8 +362,8 @@
   "rewards": {
     "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
     "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
-    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Processing Votes",
-    "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
+    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Ready to Settle",
+    "PROPOSAL_REWARD_STATUS_SETTLED": "Settled",
     "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
   "status": {
