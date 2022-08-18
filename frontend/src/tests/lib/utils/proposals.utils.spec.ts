@@ -818,7 +818,7 @@ describe("proposals-utils", () => {
         },
       });
 
-      expect(en.nns_function_names["3"]).toEqual(type);
+      expect(en.execute_nns_functions["3"]).toEqual(type);
     });
   });
 

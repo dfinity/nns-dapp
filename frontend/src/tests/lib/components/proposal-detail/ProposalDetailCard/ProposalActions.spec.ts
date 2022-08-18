@@ -123,7 +123,7 @@ describe("ProposalActions", () => {
       });
 
       const id = getExecuteNnsFunctionId(proposalWithNnsFunctionAction);
-      const fnName = en.nns_function_names[`${id}`];
+      const fnName = en.execute_nns_functions[`${id}`];
 
       expect(getByText(fnName)).toBeInTheDocument();
     });

@@ -478,7 +478,7 @@ interface I18nProposal_detail__ineligible {
   reason_short: string;
 }
 
-interface I18nNns_function_names {
+interface I18nExecute_nns_functions {
   0: string;
   1: string;
   2: string;
@@ -748,7 +748,7 @@ interface I18n {
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
-  nns_function_names: I18nNns_function_names;
+  execute_nns_functions: I18nExecute_nns_functions;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;

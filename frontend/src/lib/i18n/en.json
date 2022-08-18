@@ -452,7 +452,7 @@
     "reason_since": "created after the proposal",
     "reason_short": "dissolve delay < 6 months"
   },
-  "nns_function_names": {
+  "execute_nns_functions": {
     "0": "Unspecified",
     "1": "Create Subnet",
     "2": "Add Node to Subnet",

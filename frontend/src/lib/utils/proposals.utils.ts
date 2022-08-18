@@ -349,7 +349,7 @@ export const mapProposalInfo = (
 const mapProposalType = (
   proposal: Proposal | undefined
 ): string | undefined => {
-  const { actions, nns_function_names } = get(i18n);
+  const { actions, execute_nns_functions } = get(i18n);
 
   if (proposal === undefined) {
     return undefined;
@@ -358,7 +358,7 @@ const mapProposalType = (
   const nnsFunctionId = getExecuteNnsFunctionId(proposal);
 
   if (nnsFunctionId !== undefined) {
-    return nns_function_names[nnsFunctionId];
+    return execute_nns_functions[nnsFunctionId];
   }
 
   const action = proposalFirstActionKey(proposal);
