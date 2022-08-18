@@ -1,3 +1,5 @@
+import type { QUERY_PARAM } from "../types/routes";
+
 /**
  * The pathname and the hash without base href and without the query string
  */
@@ -9,6 +11,7 @@ export const routePath = (): string => {
     .toLowerCase()}`;
 };
 
+// Cannot use location.search because it's after the hash and it's not present there.
 export const getQueryFromUrl = (): string | undefined => {
   const { hash } = window.location;
   return hash.split("?")[1];
@@ -78,10 +81,9 @@ export const getQueryParam = ({
   key,
   query,
 }: {
-  key: string;
+  key: QUERY_PARAM;
   query: string;
-}): string | undefined =>
-  query
-    .split("&")
-    .find((param) => param.startsWith(`${key}=`))
-    ?.split("=")[1];
+}): string | undefined => {
+  const params = new URLSearchParams(query);
+  return params.get(key) ?? undefined;
+};

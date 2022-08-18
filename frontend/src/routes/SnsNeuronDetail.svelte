@@ -20,6 +20,7 @@
   } from "../lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
+  import { QUERY_PARAM } from "../lib/types/routes";
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -77,10 +78,17 @@
     loadNeuron();
   });
 
-  const goBack = () =>
+  const goBack = () => {
     routeStore.navigate({
       path: AppPath.Neurons,
+      query:
+        $selectedSnsNeuronStore.selected !== undefined
+          ? `${
+              QUERY_PARAM.project
+            }=${$selectedSnsNeuronStore.selected.rootCanisterId.toText()}`
+          : undefined,
     });
+  };
 
   layoutBackStore.set(goBack);
 </script>

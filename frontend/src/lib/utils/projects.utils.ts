@@ -248,3 +248,6 @@ export const validParticipation = ({
 
 export const isNnsProject = (canisterId: Principal): boolean =>
   canisterId.toText() === OWN_CANISTER_ID.toText();
+
+export const isIdNnsProject = (canisterIdString: string): boolean =>
+  canisterIdString === OWN_CANISTER_ID.toText();

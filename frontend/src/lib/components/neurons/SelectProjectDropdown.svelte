@@ -8,6 +8,7 @@
   import DropdownItem from "../ui/DropdownItem.svelte";
   import { routeStore } from "../../stores/route.store";
   import Spinner from "../ui/Spinner.svelte";
+  import { isIdNnsProject } from "../../utils/projects.utils";
 
   let selectedCanisterId: string | undefined;
 
@@ -15,7 +16,9 @@
     if (selectedCanisterId !== undefined && selectableProjects.length > 1) {
       routeStore.replace({
         path: $routeStore.path,
-        query: `project=${selectedCanisterId}`,
+        query: isIdNnsProject(selectedCanisterId)
+          ? undefined
+          : `project=${selectedCanisterId}`,
       });
     } else if ($selectedProjectStore !== undefined) {
       selectedCanisterId = $selectedProjectStore.toText();
