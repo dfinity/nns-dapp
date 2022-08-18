@@ -24,8 +24,10 @@ import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
   AccountIdentifierString,
+  AddPendingNotifySwapRequest,
   CanisterDetails,
   CreateSubAccountResponse,
+  GetAccountResponse,
   GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
@@ -85,15 +87,15 @@ export class NNSDappCanister {
   }: {
     certified: boolean;
   }): Promise<AccountDetails> {
-    const { AccountNotFound, Ok } = await this.getNNSDappService(
+    const response: GetAccountResponse = await this.getNNSDappService(
       certified
     ).get_account();
-    if (AccountNotFound === null) {
+    if ("AccountNotFound" in response) {
       throw new AccountNotFoundError("error__account.not_found");
     }
 
-    if (Ok) {
-      return Ok;
+    if ("Ok" in response) {
+      return response.Ok;
     }
 
     // We should never reach here. Some of the previous properties should be present.
@@ -108,34 +110,28 @@ export class NNSDappCanister {
   }: {
     subAccountName: string;
   }): Promise<SubAccountDetails> {
-    const {
-      AccountNotFound,
-      NameTooLong,
-      SubAccountLimitExceeded,
-      Ok,
-    }: CreateSubAccountResponse = await this.certifiedService.create_sub_account(
-      subAccountName
-    );
+    const response: CreateSubAccountResponse =
+      await this.certifiedService.create_sub_account(subAccountName);
 
-    if (AccountNotFound === null) {
+    if ("AccountNotFound" in response) {
       throw new AccountNotFoundError("error__account.create_subaccount");
     }
 
-    if (NameTooLong === null) {
+    if ("NameTooLong" in response) {
       throw new NameTooLongError("error__account.subaccount_too_long", {
         $subAccountName: subAccountName,
       });
     }
 
-    if (SubAccountLimitExceeded === null) {
+    if ("SubAccountLimitExceeded" in response) {
       // Which is the limit of subaccounts?
       throw new SubAccountLimitExceededError(
         "error__account.create_subaccount_limit_exceeded"
       );
     }
 
-    if (Ok) {
-      return Ok;
+    if ("Ok" in response) {
+      return response.Ok;
     }
 
     // We should never reach here. Some of the previous properties should be present.
@@ -332,6 +328,21 @@ export class NNSDappCanister {
 
     throw new UnknownProposalPayloadError(
       errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
+    );
+  }
+
+  public async addPendingNotifySwap(
+    request: AddPendingNotifySwapRequest
+  ): Promise<void> {
+    const response = await this.certifiedService.add_pending_notify_swap(
+      request
+    );
+    if ("Ok" in response) {
+      return;
+    }
+    // Edge case
+    throw new Error(
+      `Unknown response for add_pending_notify_swap ${JSON.stringify(response)}`
     );
   }
 }

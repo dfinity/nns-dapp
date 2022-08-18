@@ -1,8 +1,8 @@
 use crate::accounts_store::{
-    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
-    RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse,
-    Stats,
+    AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
+    AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
+    GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
@@ -194,6 +194,21 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 #[export_name = "canister_update get_proposal_payload"]
 pub fn get_proposal_payload() {
     over_async(candid_one, proposals::get_proposal_payload)
+}
+
+#[export_name = "canister_update add_pending_notify_swap"]
+pub fn add_pending_notify_swap() {
+    over(candid_one, add_pending_notify_swap_impl);
+}
+
+fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
+    STATE.with(|s| {
+        s.accounts_store.borrow_mut().add_pending_transaction(
+            AccountIdentifier::new(request.buyer, request.buyer_sub_account),
+            AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
+            TransactionType::ParticipateSwap(request.swap_canister_id),
+        )
+    })
 }
 
 /// Gets the current status of a 'multi-part' action.

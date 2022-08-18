@@ -20,6 +20,7 @@ import {
   querySnsSwapStates,
   removeNeuronPermissions,
 } from "../../../lib/api/sns.api";
+import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -180,7 +181,11 @@ describe("sns-api", () => {
     });
   });
 
-  it("should participate in a swap by transferring and notifying", async () => {
+  it("should participate in a swap by notifying nnsdapp, transferring and notifying swap", async () => {
+    const nnsDappMock = mock<NNSDappCanister>();
+    nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
+    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
     await participateInSnsSwap({
       amount: ICP.fromString("10") as ICP,
       rootCanisterId: rootCanisterIdMock,
@@ -188,6 +193,7 @@ describe("sns-api", () => {
       controller: Principal.fromText("aaaaa-aa"),
     });
 
+    expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
     expect(ledgerCanisterMock.transfer).toBeCalled();
     expect(notifyParticipationSpy).toBeCalled();
   });
