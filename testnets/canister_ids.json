@@ -4,19 +4,22 @@
     "small11": "qhbym-qaaaa-aaaaa-aaafq-cai",
     "small12": "qhbym-qaaaa-aaaaa-aaafq-cai",
     "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
-    "unreal": "qhbym-qaaaa-aaaaa-aaafq-cai"
+    "unreal": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "medium09": "qhbym-qaaaa-aaaaa-aaafq-cai"
   },
   "internet_identity": {
     "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "medium09": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "nns-dapp": {
     "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small12": "qsgjb-riaaa-aaaaa-aaaga-cai",
-    "testnet": "qsgjb-riaaa-aaaaa-aaaga-cai"
+    "testnet": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "medium09": "qsgjb-riaaa-aaaaa-aaaga-cai"
   },
   "nns-governance": {
     "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -28,27 +31,32 @@
     "small06": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
+    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "medium09": "qvhpv-4qaaa-aaaaa-aaagq-cai"
   },
   "sns_governance": {
     "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
     "small11": "sgymv-uiaaa-aaaaa-aaaia-cai",
-    "testnet": "s24we-diaaa-aaaaa-aaaka-cai"
+    "testnet": "s24we-diaaa-aaaaa-aaaka-cai",
+    "medium09": "sgymv-uiaaa-aaaaa-aaaia-cai"
   },
   "sns_ledger": {
     "small06": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
     "small11": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
-    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
+    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai",
+    "medium09": "sbzkb-zqaaa-aaaaa-aaaiq-cai"
   },
   "sns_root": {
     "small06": "q3fc5-haaaa-aaaaa-aaahq-cai",
     "small11": "q3fc5-haaaa-aaaaa-aaahq-cai",
     "small12": "si2b5-pyaaa-aaaaa-aaaja-cai",
-    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
+    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai",
+    "medium09": "q3fc5-haaaa-aaaaa-aaahq-cai"
   },
   "sns_swap": {
     "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
-    "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
+    "testnet": "su63m-yyaaa-aaaaa-aaala-cai",
+    "medium09": "si2b5-pyaaa-aaaaa-aaaja-cai"
   }
 }
