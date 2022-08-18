@@ -40,7 +40,7 @@
     {$i18n.proposal_detail.topic_prefix}:
     <Value>{topic}</Value>
   </p>
-  <p>{$i18n.proposal_detail.id_prefix} <Value>{id}</Value></p>
+  <p>{$i18n.proposal_detail.id_prefix}: <Value>{id}</Value></p>
 </div>
 
 <style lang="scss">

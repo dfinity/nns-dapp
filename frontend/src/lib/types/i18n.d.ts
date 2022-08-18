@@ -436,6 +436,7 @@ interface I18nProposal_detail {
   title: string;
   summary: string;
   topic_prefix: string;
+  type_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
   open_voting_prefix: string;

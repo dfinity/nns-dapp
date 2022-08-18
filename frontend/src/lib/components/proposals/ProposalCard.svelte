@@ -84,8 +84,8 @@
         withArrow={true}
       >
         <div class="card-meta">
-          <Value>{id}</Value>
-          <Value>{type}</Value>
+          <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+          <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
         </div>
 
         <div class="card-meta">

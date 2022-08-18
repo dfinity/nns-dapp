@@ -91,11 +91,29 @@ describe("ProposalCard", () => {
     const { getByText } = render(ProposalCard, {
       props: {
         proposalInfo: mockProposals[0],
-        layout: "modern"
+        layout: "modern",
       },
     });
 
     expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+  });
+
+  it("should render accessible info without label", () => {
+    const { container } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern",
+      },
+    });
+
+    expect(
+      container.querySelector(`[aria-label="${en.proposal_detail.id_prefix}"]`)
+    ).not.toBeNull();
+    expect(
+      container.querySelector(
+        `[aria-label="${en.proposal_detail.type_prefix}"]`
+      )
+    ).not.toBeNull();
   });
 
   it("should render a specific color for the status", () => {

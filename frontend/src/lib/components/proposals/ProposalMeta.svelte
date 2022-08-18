@@ -33,7 +33,7 @@
     </li>
   {/if}
   <li>
-    {$i18n.proposal_detail.id_prefix}
+    {$i18n.proposal_detail.id_prefix}:
     <Value>{id}</Value>
   </li>
   {#if deadline !== undefined && deadline >= 0}
