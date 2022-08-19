@@ -34,6 +34,10 @@ jest.mock("../../../../lib/services/sns.services", () => {
   };
 });
 
+jest.mock("../../../../lib/utils/html.utils", () => ({
+  sanitizeHTML: (value) => Promise.resolve(value),
+}));
+
 describe("ParticipateSwapModal", () => {
   const reload = jest.fn();
 
