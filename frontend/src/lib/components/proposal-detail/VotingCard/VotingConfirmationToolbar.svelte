@@ -57,7 +57,8 @@
 
   let sanitizedTitle = "";
   let sanitizedTopic = "";
-  $: title, topic,
+  $: title,
+    topic,
     (async () => {
       const [cleanTitle, cleanTopic] = await Promise.all([
         sanitizeHTML(title ?? ""),
