@@ -135,7 +135,7 @@ jobs:
           path: nns-dapp_local.wasm
 
       - uses: pyTooling/Actions/releaser@r0
-        if: github.event.pull_request.merged
+        # if: github.event.pull_request.merged
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
