@@ -125,6 +125,8 @@ jobs:
 
       - name: Deploy
         run: |
+          dfx canister create internet_identity --no-wallet
+          dfx canister create nns-dapp --no-wallet
           ./deploy.sh --ii --nns-dapp local
           cp nns-dapp.wasm nns-dapp_local.wasm
 
@@ -135,7 +137,7 @@ jobs:
           path: nns-dapp_local.wasm
 
       - uses: pyTooling/Actions/releaser@r0
-        # if: github.event.pull_request.merged
+        if: github.event.pull_request.merged == "never"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
