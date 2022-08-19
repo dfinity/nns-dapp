@@ -123,6 +123,12 @@ jobs:
         run: |
           ./deploy.sh --ii --nns-dapp local
 
+      - name: 'Upload nns-dapp_local wasm module'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Local NNS backend wasm module
+          path: nns-dapp_local.wasm
+
       - name: Create initial state
         run: |
           ./deploy.sh --populate local

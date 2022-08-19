@@ -31,31 +31,46 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "nns-sns-wasm": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+        }
+      }
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -76,7 +91,9 @@
           "VOTING_UI": "legacy"
         }
       },
-      "providers": ["https://ic0.app/"],
+      "providers": [
+        "https://ic0.app/"
+      ],
       "type": "persistent"
     },
     "staging": {
@@ -90,7 +107,9 @@
           "VOTING_UI": "legacy"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "testnet": {
@@ -104,7 +123,9 @@
           "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small13": {
@@ -118,7 +139,9 @@
           "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small12": {
@@ -132,7 +155,9 @@
           "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
+      ],
       "type": "persistent"
     },
     "small11": {
@@ -146,7 +171,9 @@
           "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
       "type": "persistent"
     },
     "small06": {
@@ -160,7 +187,9 @@
           "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
       "type": "persistent"
     },
     "local": {
