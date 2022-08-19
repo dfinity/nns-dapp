@@ -38,18 +38,20 @@
     "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
     "small11": "sgymv-uiaaa-aaaaa-aaaia-cai",
     "testnet": "s24we-diaaa-aaaaa-aaaka-cai",
-    "medium09": "sgymv-uiaaa-aaaaa-aaaia-cai"
+    "medium09": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small12": "sgymv-uiaaa-aaaaa-aaaia-cai"
   },
   "sns_ledger": {
     "small06": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
     "small11": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
     "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai",
-    "medium09": "sbzkb-zqaaa-aaaaa-aaaiq-cai"
+    "medium09": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+    "small12": "sbzkb-zqaaa-aaaaa-aaaiq-cai"
   },
   "sns_root": {
     "small06": "q3fc5-haaaa-aaaaa-aaahq-cai",
     "small11": "q3fc5-haaaa-aaaaa-aaahq-cai",
-    "small12": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small12": "q3fc5-haaaa-aaaaa-aaahq-cai",
     "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai",
     "medium09": "q3fc5-haaaa-aaaaa-aaahq-cai"
   },
@@ -57,6 +59,7 @@
     "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
     "testnet": "su63m-yyaaa-aaaaa-aaala-cai",
-    "medium09": "si2b5-pyaaa-aaaaa-aaaja-cai"
+    "medium09": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small12": "si2b5-pyaaa-aaaaa-aaaja-cai"
   }
 }
