@@ -133,7 +133,7 @@ jobs:
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v2
         with:
-          name: Local NNS backend wasm module
+          name: nns-dapp_local
           path: nns-dapp_local.wasm
 
       #- uses: pyTooling/Actions/releaser@r0
