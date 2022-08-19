@@ -86,3 +86,8 @@ export const markdownToSanitizedHTML = async (
   ]);
   return convertMarkdownToHTML(sanitizeText(text ?? ""));
 };
+
+export const sanitizeHTML = async (text: string): Promise<string> => {
+  const sanitizeText = await sanitize();
+  return sanitizeText(text);
+}
