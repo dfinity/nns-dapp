@@ -23,7 +23,7 @@
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let minAmount: ICP;
   export let maxAmount: ICP;
-  export let increasingParticipation: boolean = false;
+  export let userHasParticipatedToSwap: boolean = false;
 
   let max: number = 0;
   $: max = maxICP({
@@ -85,7 +85,7 @@
   </div>
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    {#if increasingParticipation}
+    {#if userHasParticipatedToSwap}
       <p class="right">
         {$i18n.sns_project_detail.max_left}
         <IcpComponent singleLine icp={maxAmount} />

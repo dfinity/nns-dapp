@@ -20,7 +20,6 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
@@ -52,7 +51,6 @@ describe("ParticipateSwapModal", () => {
         store: writable<ProjectDetailStore>({
           summary: mockSnsFullProject.summary,
           swapCommitment,
-          rootCanisterId: mockPrincipal,
         }),
         reload,
       } as ProjectDetailContext,
@@ -239,7 +237,6 @@ describe("ParticipateSwapModal", () => {
           store: writable<ProjectDetailStore>({
             summary: mockSnsFullProject.summary,
             swapCommitment: undefined,
-            rootCanisterId: mockPrincipal,
           }),
           reload,
         } as ProjectDetailContext,

@@ -64,8 +64,6 @@
       return;
     }
     try {
-      $projectDetailStore.rootCanisterId = Principal.fromText(rootCanisterId);
-
       await Promise.all([
         loadSummary(rootCanisterId),
         loadSwapState(rootCanisterId),
@@ -79,7 +77,6 @@
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: undefined,
     swapCommitment: undefined,
-    rootCanisterId: undefined,
   });
 
   // TODO: add projectDetailStore to debug store

@@ -1,7 +1,10 @@
 import type { Writable } from "svelte/store";
-import type { SnsFullProject } from "../stores/projects.store";
+import type { SnsSummary, SnsSwapCommitment } from "./sns";
 
-export type ProjectDetailStore = Partial<SnsFullProject>;
+export type ProjectDetailStore = {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+};
 
 export interface ProjectDetailContext {
   store: Writable<ProjectDetailStore>;

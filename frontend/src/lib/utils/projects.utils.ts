@@ -121,7 +121,10 @@ export const durationTillSwapStart = (
 export const currentUserMaxCommitment = ({
   summary: { swap, derived },
   swapCommitment,
-}: SnsFullProject): bigint => {
+}: {
+  summary: SnsSummary;
+  swapCommitment: SnsSwapCommitment | undefined;
+}): bigint => {
   const remainingProjectCommitment =
     swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
   const remainingUserCommitment =

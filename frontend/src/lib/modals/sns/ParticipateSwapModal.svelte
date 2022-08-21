@@ -12,25 +12,32 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSwapInit } from "@dfinity/sns";
-  import { currentUserMaxCommitment } from "../../utils/projects.utils";
-  import type { SnsFullProject } from "../../stores/projects.store";
+  import {
+    currentUserMaxCommitment,
+    hasUserParticipatedToSwap,
+  } from "../../utils/projects.utils";
+  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let project: SnsFullProject;
+  let summary: SnsSummary;
+  let swapCommitment: SnsSwapCommitment | undefined;
   // type safety validation is done in ProjectDetail component
-  $: project = $projectDetailStore as SnsFullProject;
-  let increasingParticipation: boolean = false;
-  $: increasingParticipation =
-    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) >
-    BigInt(0);
+  $: summary = $projectDetailStore.summary as SnsSummary;
+  $: swapCommitment = $projectDetailStore.swapCommitment as
+    | SnsSwapCommitment
+    | undefined;
+  let userHasParticipatedToSwap: boolean = false;
+  $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
+    swapCommitment,
+  });
 
   let init: SnsSwapInit;
   $: ({
     swap: { init },
-  } = project.summary);
+  } = summary);
 
   const steps: Steps = [
     {
@@ -47,7 +54,7 @@
 
   let title: string | undefined;
   $: title =
-    currentStep?.name === "Participate" && increasingParticipation
+    currentStep?.name === "Participate" && userHasParticipatedToSwap
       ? $i18n.sns_project_detail.increase_participation
       : currentStep?.title;
 
@@ -58,11 +65,16 @@
   let amount: number | undefined;
 
   let maxCommitment: ICP;
-  $: maxCommitment = ICP.fromE8s(currentUserMaxCommitment(project));
+  $: maxCommitment = ICP.fromE8s(
+    currentUserMaxCommitment({
+      summary,
+      swapCommitment,
+    })
+  );
 
   let minCommitment: ICP;
   $: minCommitment = ICP.fromE8s(
-    increasingParticipation ? BigInt(0) : init.min_participant_icp_e8s
+    userHasParticipatedToSwap ? BigInt(0) : init.min_participant_icp_e8s
   );
 
   const goNext = () => {
@@ -74,14 +86,16 @@
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{title}</svelte:fragment>
+  <svelte:fragment slot="title"
+    >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
+  >
   {#if currentStep.name === "Participate"}
     <ParticipateScreen
       bind:selectedAccount
       bind:amount
       on:nnsNext={goNext}
       on:nnsClose
-      {increasingParticipation}
+      {userHasParticipatedToSwap}
       minAmount={minCommitment}
       maxAmount={maxCommitment}
     />
