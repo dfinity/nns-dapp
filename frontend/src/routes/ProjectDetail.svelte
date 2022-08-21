@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Principal } from "@dfinity/principal";
   import { onDestroy, onMount, setContext } from "svelte";
   import ProjectInfoSection from "../lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/project-detail/ProjectStatusSection.svelte";
