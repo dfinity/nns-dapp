@@ -38,7 +38,7 @@
       rootCanisterId,
       onError: () => {
         // hide unproven data
-        $projectDetailStore.summary = undefined;
+        $projectDetailStore.summary = null;
         goBack();
       },
     });
@@ -48,7 +48,7 @@
       rootCanisterId,
       onError: () => {
         // hide unproven data
-        $projectDetailStore.swapCommitment = undefined;
+        $projectDetailStore.swapCommitment = null;
         goBack();
       },
     });

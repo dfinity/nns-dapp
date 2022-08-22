@@ -123,7 +123,7 @@ export const currentUserMaxCommitment = ({
   swapCommitment,
 }: {
   summary: SnsSummary;
-  swapCommitment: SnsSwapCommitment | undefined;
+  swapCommitment: SnsSwapCommitment | undefined | null;
 }): bigint => {
   const remainingProjectCommitment =
     swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;

@@ -23,12 +23,10 @@
   );
 
   let summary: SnsSummary;
-  let swapCommitment: SnsSwapCommitment | undefined;
+  let swapCommitment: SnsSwapCommitment | undefined | null;
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
-  $: swapCommitment = $projectDetailStore.swapCommitment as
-    | SnsSwapCommitment
-    | undefined;
+  $: swapCommitment = $projectDetailStore.swapCommitment;
   let userHasParticipatedToSwap: boolean = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment,
