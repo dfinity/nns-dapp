@@ -139,9 +139,12 @@ jobs:
       - name: Release
         if: true
         run: |
-          git tag -f tip
-          git push origin tags/tip -f
-          gh release upload --repo dfinity/nns-dapp --clobber tip nns-dapp_local.wasm
+          for tag in $(git tag --points-at HEAD) ; do
+            if gh release view "$tag"
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
+            else gh release create --title "Latest main" --draft --notes "Build artefacts from the main branch.  Use with caution." "$tag" nns-dapp_local.wasm
+            fi
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

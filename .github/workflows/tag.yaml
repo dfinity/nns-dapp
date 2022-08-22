@@ -1,0 +1,30 @@
+# A Native build
+# XXX: This makes some of 'checks.yml' redundant. This will be fixed as soon as
+# we have end-to-end tests working.
+# https://dfinity.atlassian.net/browse/L2-191
+name: Native build
+
+# We use "push" events so that we have the actual commit. In "pull_request"
+# events we get a merge commit with main instead. The merge commit can be
+# useful to check that the code would pass tests once merged, but here it just
+# creates confusion and doesn't add anything since the branch must be up to
+# date before merge. It's also nice to have CI running on branches without PRs.
+on:
+  pull_request:
+    branches:    
+      - main
+    types:
+      - closed
+
+env:
+      NNS_CACHING_KEY: dv-0004
+
+jobs:
+  nns_canisters:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tag
+        run: |
+          git tag -f tip
+          git push origin tags/tip -f
