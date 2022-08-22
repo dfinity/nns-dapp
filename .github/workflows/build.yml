@@ -139,7 +139,7 @@ jobs:
             : Creates or updates a release for the tag
             if gh release view "$tag"
             then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
-            else gh release create --title "Latest main" --draft --notes "Build artefacts from the main branch.  Use with caution." "$tag" nns-dapp_local.wasm
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
             fi
           done
         env:
