@@ -136,12 +136,12 @@ jobs:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
 
-      #- uses: pyTooling/Actions/releaser@r0
-      #  if: github.event.pull_request.merged
-      #  with:
-      #    token: ${{ secrets.GITHUB_TOKEN }}
-      #    files: |
-      #      nns-dapp_local.wasm
+      - uses: pyTooling/Actions/releaser@r0
+        if: true #github.event.pull_request.merged
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            nns-dapp_local.wasm
 
       - name: Create initial state
         run: |
