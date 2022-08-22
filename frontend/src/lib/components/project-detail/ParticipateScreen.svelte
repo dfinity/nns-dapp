@@ -13,6 +13,7 @@
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
+  import IcpText from "../ic/ICPText.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
 
@@ -92,12 +93,12 @@
       </p>
     {:else}
       <KeyValuePair>
-        <span slot="key"
-          >{$i18n.core.min} <IcpComponent singleLine icp={minAmount} /></span
-        >
-        <span slot="value"
-          >{$i18n.core.max} <IcpComponent singleLine icp={maxAmount} /></span
-        >
+        <IcpText slot="key" icp={minAmount}>
+          {$i18n.core.min}
+        </IcpText>
+        <IcpText slot="value" icp={maxAmount}>
+          {$i18n.core.max}
+        </IcpText>
       </KeyValuePair>
     {/if}
     <p class="right">
