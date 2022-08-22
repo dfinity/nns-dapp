@@ -273,33 +273,36 @@ export const participateInSwap = async ({
 
     const accountIdentity = await getAccountIdentity(account.identifier);
 
-    await participateInSnsSwap({
-      identity: accountIdentity,
-      rootCanisterId,
-      amount,
-      controller: accountIdentity.getPrincipal(),
-      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
-    });
+    try {
+      await participateInSnsSwap({
+        identity: accountIdentity,
+        rootCanisterId,
+        amount,
+        controller: accountIdentity.getPrincipal(),
+        fromSubAccount:
+          "subAccount" in account ? account.subAccount : undefined,
+      });
+    } catch (error) {
+      // The last commitment might trigger this error
+      // because the backend is faster than the frontend at notifying the commitment.
+      if (
+        error.message?.includes("'open' state") !== true ||
+        (project?.summary !== undefined &&
+          // If it's the last commitment, it means that one more e8 is not a valid participation.
+          !commitmentExceedsAmountLeft({
+            summary: project?.summary,
+            amountE8s: amount.toE8s() + BigInt(1),
+          }))
+      ) {
+        throw error;
+      }
+    }
 
     success = true;
     await syncAccounts();
 
     return { success };
   } catch (error) {
-    // The last commitment might trigger this error
-    // because the backend is faster than the frontend at notifying the commitment.
-    if (
-      error.message?.includes("'open' state") === true &&
-      project?.summary !== undefined &&
-      // If it's the last commitment, it means that one more e8 is not a valid participation.
-      commitmentExceedsAmountLeft({
-        summary: project?.summary,
-        amountE8s: amount.toE8s() + BigInt(1),
-      })
-    ) {
-      await syncAccounts();
-      return { success: true };
-    }
     toastsStore.error(
       toToastError({
         err: error,
