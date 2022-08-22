@@ -289,9 +289,7 @@ export const participateInSwap = async ({
     // The last commitment might trigger this error
     // because the backend is faster than the frontend at notifying the commitment.
     if (
-      error !== undefined &&
-      "message" in error &&
-      error.message.includes("'open' state") &&
+      error.message?.includes("'open' state") === true &&
       project?.summary !== undefined &&
       // If it's the last commitment, it means that one more e8 is not a valid participation.
       commitmentExceedsAmountLeft({
