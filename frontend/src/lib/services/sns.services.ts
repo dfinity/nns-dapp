@@ -31,7 +31,10 @@ import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { validParticipation } from "../utils/projects.utils";
+import {
+  commitmentExceedsAmountLeft,
+  validParticipation,
+} from "../utils/projects.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -251,13 +254,14 @@ export const participateInSwap = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   let success = false;
+  let project: SnsFullProject | undefined;
   try {
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
-    const project = getProjectFromStore(rootCanisterId);
+    project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
       project,
       amount,
@@ -282,6 +286,22 @@ export const participateInSwap = async ({
 
     return { success };
   } catch (error) {
+    // The last commitment might trigger this error
+    // because the backend is faster than the frontend at notifying the commitment.
+    if (
+      error !== undefined &&
+      "message" in error &&
+      error.message.includes("'open' state") &&
+      project?.summary !== undefined &&
+      // If it's the last commitment, it means that one more e8 is not a valid participation.
+      commitmentExceedsAmountLeft({
+        summary: project?.summary,
+        amountE8s: amount.toE8s() + BigInt(1),
+      })
+    ) {
+      await syncAccounts();
+      return { success: true };
+    }
     toastsStore.error(
       toToastError({
         err: error,

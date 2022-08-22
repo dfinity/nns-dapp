@@ -157,10 +157,10 @@ const commitmentTooLarge = ({
   summary: SnsSummary;
   amountE8s: bigint;
 }): boolean => summary.swap.init.max_participant_icp_e8s < amountE8s;
-// Checks whether the amount that the user wants to contiribute
+// Checks whether the amount that the user wants to contribute
 // plus the amount that all users have contributed so far
 // exceeds the maximum amount that the project can accept.
-const commitmentExceedsAmountLeft = ({
+export const commitmentExceedsAmountLeft = ({
   summary: { swap, derived },
   amountE8s,
 }: {
