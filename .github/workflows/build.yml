@@ -11,11 +11,7 @@ name: Native build
 # date before merge. It's also nice to have CI running on branches without PRs.
 on:
   push:
-  pull_request:
-    branches:    
-      - main
-    types:
-      - closed
+
 
 env:
       NNS_CACHING_KEY: dv-0004
@@ -135,6 +131,7 @@ jobs:
         with:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
+          retention-days: 3
 
       - name: Release
         run: |
