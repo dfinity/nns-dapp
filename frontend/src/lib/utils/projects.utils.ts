@@ -115,9 +115,11 @@ export const durationTillSwapStart = (
   return BigInt(nowInSeconds()) - start_timestamp_seconds;
 };
 
-// Returns the minimum between:
-// - user remaining commitment to reach user maximum
-// - remamining commitment to reach project maximum
+/**
+ * Returns the minimum between:
+ * - user remaining commitment to reach user maximum
+ * - remaining commitment to reach project maximum
+ */
 export const currentUserMaxCommitment = ({
   summary: { swap, derived },
   swapCommitment,
