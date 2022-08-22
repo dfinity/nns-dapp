@@ -136,12 +136,14 @@ jobs:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
 
-      - uses: pyTooling/Actions/releaser@r0
-        if: true #github.event.pull_request.merged
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            nns-dapp_local.wasm
+      - name: Release
+        if: true
+        run: |
+          git tag -f tip
+          git push origin tags/tip -f
+          gh release upload --repo dfinity/nns-dapp --clobber tip nns-dapp_local.wasm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create initial state
         run: |
