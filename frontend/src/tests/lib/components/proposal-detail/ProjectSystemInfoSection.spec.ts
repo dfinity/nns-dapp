@@ -16,7 +16,7 @@ jest.mock("../../../../lib/utils/html.utils", () => ({
 describe("ProposalSystemInfoSection", () => {
   let renderResult: RenderResult;
 
-  const { type, type_description, topic_description, topic } =
+  const { type, typeDescription, topicDescription, topic } =
     mapProposalInfo(mockProposalInfo);
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe("ProposalSystemInfoSection", () => {
     expect(getByText(en.proposal_detail.type_prefix)).toBeInTheDocument();
 
     expect(type).not.toBeUndefined();
-    expect(type_description).not.toBeUndefined();
+    expect(typeDescription).not.toBeUndefined();
 
     await waitFor(() =>
       expect(getByTestId("proposal-system-info-type")?.textContent).toEqual(
@@ -48,7 +48,7 @@ describe("ProposalSystemInfoSection", () => {
     await waitFor(() =>
       expect(
         getByTestId("proposal-system-info-type-description")?.textContent
-      ).toEqual(type_description)
+      ).toEqual(typeDescription)
     );
   });
 
@@ -57,7 +57,7 @@ describe("ProposalSystemInfoSection", () => {
     expect(getByText(en.proposal_detail.type_prefix)).toBeInTheDocument();
 
     expect(topic).not.toBeUndefined();
-    expect(topic_description).not.toBeUndefined();
+    expect(topicDescription).not.toBeUndefined();
 
     await waitFor(() =>
       expect(getByTestId("proposal-system-info-topic")?.textContent).toEqual(
@@ -67,7 +67,7 @@ describe("ProposalSystemInfoSection", () => {
     await waitFor(() =>
       expect(
         getByTestId("proposal-system-info-topic-description")?.textContent
-      ).toEqual(topic_description)
+      ).toEqual(topicDescription)
     );
   });
 });

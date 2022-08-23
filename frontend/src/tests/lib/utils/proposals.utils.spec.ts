@@ -771,7 +771,7 @@ describe("proposals-utils", () => {
     it("should map proposalInfo fields", () => {
       const {
         topic,
-        topic_description,
+        topicDescription,
         color,
         deadline,
         proposer,
@@ -783,7 +783,7 @@ describe("proposals-utils", () => {
       });
 
       expect(topic).toEqual(en.topics.Governance);
-      expect(topic_description).toEqual(en.topics_description.Governance);
+      expect(topicDescription).toEqual(en.topics_description.Governance);
       expect(color).toEqual(
         PROPOSAL_COLOR[ProposalStatus.PROPOSAL_STATUS_OPEN]
       );
@@ -796,17 +796,17 @@ describe("proposals-utils", () => {
     });
 
     it("should map action to undefined", () => {
-      const { type, type_description } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal,
       });
 
       expect(type).toBeUndefined();
-      expect(type_description).toBeUndefined();
+      expect(typeDescription).toBeUndefined();
     });
 
     it("should map action to type", () => {
-      const { type, type_description } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
@@ -816,12 +816,12 @@ describe("proposals-utils", () => {
 
       expect(en.actions.RegisterKnownNeuron).toEqual(type);
       expect(en.actions_description.RegisterKnownNeuron).toEqual(
-        type_description
+        typeDescription
       );
     });
 
     it("should map nns function to type", () => {
-      const { type, type_description } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
@@ -833,7 +833,7 @@ describe("proposals-utils", () => {
 
       expect(en.execute_nns_functions["3"]).toEqual(type);
       expect(en.execute_nns_functions_description["3"]).toEqual(
-        type_description
+        typeDescription
       );
     });
   });

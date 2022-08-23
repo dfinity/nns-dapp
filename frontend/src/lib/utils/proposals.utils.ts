@@ -315,12 +315,12 @@ export const mapProposalInfo = (
   title: string | undefined;
   url: string | undefined;
   topic: string | undefined;
-  topic_description: string | undefined;
+  topicDescription: string | undefined;
   color: Color | undefined;
   status: ProposalStatus;
   deadline: bigint | undefined;
   type: string | undefined;
-  type_description: string | undefined;
+  typeDescription: string | undefined;
 } => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
@@ -339,7 +339,7 @@ export const mapProposalInfo = (
     proposal,
     title: proposal?.title,
     topic: topics[topicKey],
-    topic_description: topics_description[topicKey],
+    topicDescription: topics_description[topicKey],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
     status,
@@ -356,7 +356,7 @@ export const mapProposalInfo = (
  */
 const mapProposalType = (
   proposal: Proposal | undefined
-): { type: string | undefined; type_description: string | undefined } => {
+): { type: string | undefined; typeDescription: string | undefined } => {
   const {
     actions,
     actions_description,
@@ -364,7 +364,7 @@ const mapProposalType = (
     execute_nns_functions_description,
   } = get(i18n);
 
-  const NO_MATCH = { type: undefined, type_description: undefined };
+  const NO_MATCH = { type: undefined, typeDescription: undefined };
 
   if (proposal === undefined) {
     return NO_MATCH;
@@ -375,14 +375,14 @@ const mapProposalType = (
   if (nnsFunctionId !== undefined) {
     return {
       type: execute_nns_functions[nnsFunctionId],
-      type_description: execute_nns_functions_description[nnsFunctionId],
+      typeDescription: execute_nns_functions_description[nnsFunctionId],
     };
   }
 
   const action: string | undefined = proposalFirstActionKey(proposal);
 
   return action !== undefined
-    ? { type: actions[action], type_description: actions_description[action] }
+    ? { type: actions[action], typeDescription: actions_description[action] }
     : NO_MATCH;
 };
 

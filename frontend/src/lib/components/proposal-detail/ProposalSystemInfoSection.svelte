@@ -8,18 +8,17 @@
   export let proposalInfo: ProposalInfo;
 
   let type: string | undefined;
-  let type_description: string | undefined;
+  let typeDescription: string | undefined;
   let topic: string | undefined;
-  let topic_description: string | undefined;
-  $: ({ type, topic, type_description, topic_description } =
+  let topicDescription: string | undefined;
+  $: ({ type, topic, typeDescription, topicDescription } =
     mapProposalInfo(proposalInfo));
 
+  // We sanitize the type description because unlike the topic, it can contain HTML tags
   let sanitizedTypeDescription = "";
-  $: type_description,
+  $: typeDescription,
     (async () =>
-      (sanitizedTypeDescription = await sanitizeHTML(
-        type_description ?? ""
-      )))();
+      (sanitizedTypeDescription = await sanitizeHTML(typeDescription ?? "")))();
 </script>
 
 <h1>{type ?? ""}</h1>
@@ -45,7 +44,7 @@
       >{topic}</span
     >
     <p slot="info" data-tid="proposal-system-info-topic-description">
-      {topic_description}
+      {topicDescription}
     </p>
   </KeyValuePairInfo>
 </div>
