@@ -98,9 +98,6 @@
     align-items: flex-start;
     gap: var(--padding-1_5x);
 
-    // (>=3 lines x 1rem) + top/bottom paddings
-    height: calc(8.5 * var(--padding));
-
     border-radius: var(--border-radius);
     background: var(--card-background);
     box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));
@@ -133,7 +130,9 @@
       flex-grow: 1;
       align-self: center;
       word-break: break-word;
-      max-height: 100%;
+
+      // (>=3 lines x 1rem) + top/bottom paddings
+      max-height: calc(8.5 * var(--padding));
       overflow-y: auto;
     }
 
