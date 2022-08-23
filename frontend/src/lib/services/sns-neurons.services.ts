@@ -72,7 +72,7 @@ const getNeuronFromStoreByIdHex = ({
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
-}): { neuron?: SnsNeuron; certified?: boolean } => {
+}): { neuron?: SnsNeuron; certified: boolean } => {
   const projectData = getSnsNeuronsFromStoreByProject(rootCanisterId);
   const neuron = getSnsNeuronByHexId({
     neuronIdHex,
@@ -94,8 +94,20 @@ export const getSnsNeuron = async ({
   neuronIdHex: string;
   rootCanisterId: Principal;
   forceFetch?: boolean;
-  onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
-  onError?: ({ certified, error }) => void;
+  onLoad: ({
+    certified,
+    neuron,
+  }: {
+    certified: boolean;
+    neuron: SnsNeuron;
+  }) => void;
+  onError?: ({
+    certified,
+    error,
+  }: {
+    certified: boolean;
+    error: unknown;
+  }) => void;
 }): Promise<void> => {
   if (!forceFetch) {
     const { neuron, certified } = getNeuronFromStoreByIdHex({

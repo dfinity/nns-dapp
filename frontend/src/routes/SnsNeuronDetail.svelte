@@ -20,6 +20,9 @@
   } from "../lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
+  import { toastsStore } from "../lib/stores/toasts.store";
+  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -37,7 +40,10 @@
           }));
         },
         onError: () => {
-          console.error("Error loading neuron");
+          selectedSnsNeuronStore.update((store) => ({
+            ...store,
+            neuron: undefined,
+          }));
         },
       });
     }
@@ -64,7 +70,16 @@
       routeStore.replace({ path: AppPath.Neurons });
       return;
     }
-    const rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
+    let rootCanisterId: Principal | undefined;
+    try {
+      rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
+    } catch (error) {
+      toastsStore.error({
+        labelKey: "error__sns.project_not_found",
+      });
+      routeStore.replace({ path: AppPath.Neurons });
+      return;
+    }
     snsProjectSelectedStore.set(rootCanisterId);
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
@@ -73,7 +88,7 @@
         neuronIdHex: neuronIdMaybe,
         rootCanisterId,
       },
-      neuron: undefined,
+      neuron: null,
     });
     loadNeuron();
   });
@@ -84,11 +99,30 @@
     });
 
   layoutBackStore.set(goBack);
+
+  $: {
+    if ($selectedSnsNeuronStore.neuron === undefined) {
+      toastsStore.error({
+        labelKey: "error.neuron_not_found",
+      });
+      // Reset selected project
+      snsProjectSelectedStore.set(OWN_CANISTER_ID);
+      routeStore.replace({ path: AppPath.Neurons });
+    }
+  }
+
+  let loading: boolean;
+  $: loading = $selectedSnsNeuronStore.neuron === null;
 </script>
 
 <main>
   <section data-tid="sns-neuron-detail-page">
-    <SnsNeuronMetaInfoCard />
-    <SnsNeuronHotkeysCard />
+    {#if loading}
+      <SkeletonCard size="large" cardType="info" />
+      <SkeletonCard cardType="info" />
+    {:else}
+      <SnsNeuronMetaInfoCard />
+      <SnsNeuronHotkeysCard />
+    {/if}
   </section>
 </main>
