@@ -254,14 +254,13 @@ export const participateInSwap = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   let success = false;
-  let project: SnsFullProject | undefined;
   try {
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
-    project = getProjectFromStore(rootCanisterId);
+    const project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
       project,
       amount,
@@ -285,6 +284,7 @@ export const participateInSwap = async ({
     } catch (error) {
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.
+      // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
       if (
         error.message?.includes("'open' state") !== true ||
         (project?.summary !== undefined &&
