@@ -13,6 +13,7 @@
   import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
   import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../ic/ICP.svelte";
+  import IcpText from "../ic/ICPText.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
 
@@ -23,6 +24,7 @@
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let minAmount: ICP;
   export let maxAmount: ICP;
+  export let userHasParticipatedToSwap: boolean = false;
 
   let max: number = 0;
   $: max = maxICP({
@@ -84,14 +86,21 @@
   </div>
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    <KeyValuePair>
-      <span slot="key"
-        >{$i18n.core.min} <IcpComponent singleLine icp={minAmount} /></span
-      >
-      <span slot="value"
-        >{$i18n.core.max} <IcpComponent singleLine icp={maxAmount} /></span
-      >
-    </KeyValuePair>
+    {#if userHasParticipatedToSwap}
+      <p class="right">
+        {$i18n.sns_project_detail.max_left}
+        <IcpComponent singleLine icp={maxAmount} />
+      </p>
+    {:else}
+      <KeyValuePair>
+        <IcpText slot="key" icp={minAmount}>
+          {$i18n.core.min}
+        </IcpText>
+        <IcpText slot="value" icp={maxAmount}>
+          {$i18n.core.max}
+        </IcpText>
+      </KeyValuePair>
+    {/if}
     <p class="right">
       <span>{$i18n.accounts.transaction_fee}</span>
       <IcpComponent singleLine icp={$mainTransactionFeeStoreAsIcp} />

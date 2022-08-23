@@ -14,6 +14,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "../../../../lib/types/project-detail.context";
+import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
 import {
   mockAccountsStoreSubscribe,
@@ -40,21 +41,49 @@ jest.mock("../../../../lib/utils/html.utils", () => ({
 
 describe("ParticipateSwapModal", () => {
   const reload = jest.fn();
-
-  const renderSwapModal = () =>
+  const renderSwapModal = (
+    swapCommitment: SnsSwapCommitment | undefined = undefined
+  ) =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
       contextKey: PROJECT_DETAIL_CONTEXT_KEY,
       contextValue: {
         store: writable<ProjectDetailStore>({
           summary: mockSnsFullProject.summary,
-          swapCommitment: mockSnsFullProject.swapCommitment,
+          swapCommitment,
         }),
         reload,
       } as ProjectDetailContext,
     });
 
-  describe("when accountsStore is populated", () => {
+  const renderEnter10ICPAndNext = async (
+    swapCommitment: SnsSwapCommitment | undefined = undefined
+  ): Promise<RenderResult> => {
+    const result = await renderSwapModal(swapCommitment);
+
+    const { queryByText, getByTestId, container } = result;
+
+    const participateButton = getByTestId("sns-swap-participate-button-next");
+    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+    const icpAmount = "10";
+    const input = container.querySelector("input[name='amount']");
+    input && fireEvent.input(input, { target: { value: icpAmount } });
+    await waitFor(() =>
+      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+    );
+
+    fireEvent.click(participateButton);
+
+    await waitFor(() =>
+      expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
+    );
+    expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+    return result;
+  };
+
+  describe("when user has not participated", () => {
     beforeEach(() => {
       jest
         .spyOn(accountsStore, "subscribe")
@@ -106,31 +135,6 @@ describe("ParticipateSwapModal", () => {
         expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
       );
     });
-
-    const renderEnter10ICPAndNext = async (): Promise<RenderResult> => {
-      const result = await renderSwapModal();
-
-      const { queryByText, getByTestId, container } = result;
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const icpAmount = "10";
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: icpAmount } });
-      await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-      );
-
-      fireEvent.click(participateButton);
-
-      await waitFor(() =>
-        expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
-      );
-      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
-
-      return result;
-    };
 
     it("should move to the last step with ICP and disabled button", async () => {
       const { getByTestId } = await renderEnter10ICPAndNext();
@@ -202,7 +206,41 @@ describe("ParticipateSwapModal", () => {
     });
   });
 
+  describe("when user has participated", () => {
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      const { getByTestId, container } = await renderEnter10ICPAndNext(
+        mockSnsFullProject.swapCommitment
+      );
+
+      const confirmButton = getByTestId("sns-swap-participate-button-execute");
+      expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const acceptInput = container.querySelector("[type='checkbox']");
+      acceptInput && (await fireEvent.click(acceptInput));
+      await waitFor(() =>
+        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(reload).toHaveBeenCalled());
+    });
+  });
+
   describe("when accountsStore is empty", () => {
+    const renderSwapModal = () =>
+      renderModalContextWrapper({
+        Component: ParticipateSwapModal,
+        contextKey: PROJECT_DETAIL_CONTEXT_KEY,
+        contextValue: {
+          store: writable<ProjectDetailStore>({
+            summary: mockSnsFullProject.summary,
+            swapCommitment: undefined,
+          }),
+          reload,
+        } as ProjectDetailContext,
+      });
     it("should have disabled button if no account is selected", async () => {
       const { getByTestId, container } = await renderSwapModal();
 
