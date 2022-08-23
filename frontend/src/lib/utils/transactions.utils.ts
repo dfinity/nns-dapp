@@ -6,6 +6,7 @@ import type {
 import type { Account } from "../types/account";
 import { stringifyJson } from "./utils";
 
+// Value should match the key in i18n "transaction_names"
 export enum AccountTransactionType {
   Burn = "burn",
   Mint = "mint",
@@ -15,6 +16,7 @@ export enum AccountTransactionType {
   TopUpNeuron = "topUpNeuron",
   CreateCanister = "createCanister",
   TopUpCanister = "topUpCanister",
+  ParticipateSwap = "participateSwap",
 }
 
 export const accountName = ({
@@ -69,6 +71,8 @@ export const transactionType = (
     return AccountTransactionType.Burn;
   } else if ("Mint" in transaction_type[0]) {
     return AccountTransactionType.Mint;
+  } else if ("ParticipateSwap" in transaction_type[0]) {
+    return AccountTransactionType.ParticipateSwap;
   }
 
   throw new Error(

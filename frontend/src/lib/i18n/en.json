@@ -395,7 +395,8 @@
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
-    "topUpCanister": "Top-up Canister"
+    "topUpCanister": "Top-up Canister",
+    "participateSwap": "Decentralized Sale"
   },
   "wallet": {
     "title": "Account",
@@ -600,6 +601,7 @@
     "completed": "Completed",
     "sale_start": "Sale Start",
     "sale_end": "Sale End",
+    "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached"
   },
   "sns_neuron_detail": {
