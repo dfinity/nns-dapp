@@ -37,6 +37,7 @@ ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e
 ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }
 ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "b49b8f400746b7b00c14635efbc53ca4aa259a02" }
 ledger-canister = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c" }

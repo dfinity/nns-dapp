@@ -23,14 +23,14 @@
 </script>
 
 {#if loading}
-  <div class="grid">
+  <div class="card-grid">
     <SkeletonProposalCard />
     <SkeletonProposalCard />
   </div>
 {:else if $openSnsProposalsStore.length === 0}
   <p class="no-proposals">{$i18n.voting.nothing_found}</p>
 {:else}
-  <div class="grid">
+  <div class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
       <ProposalCard {proposalInfo} />
     {/each}

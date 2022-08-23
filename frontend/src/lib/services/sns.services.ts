@@ -31,7 +31,10 @@ import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
-import { validParticipation } from "../utils/projects.utils";
+import {
+  commitmentExceedsAmountLeft,
+  validParticipation,
+} from "../utils/projects.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
@@ -269,13 +272,31 @@ export const participateInSwap = async ({
 
     const accountIdentity = await getAccountIdentity(account.identifier);
 
-    await participateInSnsSwap({
-      identity: accountIdentity,
-      rootCanisterId,
-      amount,
-      controller: accountIdentity.getPrincipal(),
-      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
-    });
+    try {
+      await participateInSnsSwap({
+        identity: accountIdentity,
+        rootCanisterId,
+        amount,
+        controller: accountIdentity.getPrincipal(),
+        fromSubAccount:
+          "subAccount" in account ? account.subAccount : undefined,
+      });
+    } catch (error) {
+      // The last commitment might trigger this error
+      // because the backend is faster than the frontend at notifying the commitment.
+      // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
+      const openStateError = error.message?.includes("'open' state") === true;
+      // If it's the last commitment, it means that one more e8 is not a valid participation.
+      const lastCommitment =
+        project?.summary !== undefined &&
+        commitmentExceedsAmountLeft({
+          summary: project?.summary,
+          amountE8s: amount.toE8s() + BigInt(1),
+        });
+      if (!(openStateError && lastCommitment)) {
+        throw error;
+      }
+    }
 
     success = true;
     await syncAccounts();

@@ -14,6 +14,17 @@ export const mockProposals: ProposalInfo[] = [
       title: "Proposal1",
       summary:
         "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+      action: {
+        RegisterKnownNeuron: {
+          id: [{ id: BigInt(1) }],
+          known_neuron_data: [
+            {
+              name: "test",
+              description: [],
+            },
+          ],
+        },
+      },
     },
     status: ProposalStatus.PROPOSAL_STATUS_OPEN,
     rewardStatus: ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,

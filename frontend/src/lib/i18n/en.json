@@ -239,6 +239,9 @@
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
     "claim_seed_neurons_success": "Seed neurons claimed successfully: $neurons",
+    "enter_neuron_id_prompt": "Enter neuron id",
+    "add_hotkey_prompt_error": "Error adding hotkey.",
+    "add_hotkey_prompt_success": "Hotkey added successfully.",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
@@ -344,14 +347,14 @@
   },
   "topics": {
     "Unspecified": "Unspecified",
-    "ManageNeuron": "Manage neuron",
+    "ManageNeuron": "Neuron Management",
     "ExchangeRate": "Exchange Rate",
     "NetworkEconomics": "Network Economics",
     "Governance": "Governance",
     "NodeAdmin": "Node Admin",
     "ParticipantManagement": "Participant Management",
     "SubnetManagement": "Subnet Management",
-    "NetworkCanisterManagement": "Network Canister Management",
+    "NetworkCanisterManagement": "System Canister Management",
     "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Sale"
@@ -359,8 +362,8 @@
   "rewards": {
     "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
     "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
-    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Processing Votes",
-    "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
+    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Ready to Settle",
+    "PROPOSAL_REWARD_STATUS_SETTLED": "Settled",
     "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
   "status": {
@@ -371,6 +374,18 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "actions": {
+    "RegisterKnownNeuron": "Register Known Neuron",
+    "ManageNeuron": "Manage Neuron",
+    "ApproveGenesisKyc": "Approve Genesis KYC",
+    "ManageNetworkEconomics": "Manage Network Economics",
+    "RewardNodeProvider": "Reward Node Provider",
+    "RewardNodeProviders": "Reward Node Providers",
+    "AddOrRemoveNodeProvider": "Add or Remove Node Provider",
+    "SetDefaultFollowees": "Set Default Followees",
+    "Motion": "Motion",
+    "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale"
+  },
   "transaction_names": {
     "receive": "Received ICP",
     "send": "Sent ICP",
@@ -380,7 +395,8 @@
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
-    "topUpCanister": "Top-up Canister"
+    "topUpCanister": "Top-up Canister",
+    "participateSwap": "Decentralized Sale"
   },
   "wallet": {
     "title": "Account",
@@ -397,9 +413,10 @@
   "proposal_detail": {
     "title": "Proposal",
     "summary": "Proposal Summary",
-    "topic_prefix": "Topic:",
-    "id_prefix": "ID:",
-    "proposer_prefix": "Proposer:",
+    "topic_prefix": "Topic",
+    "type_prefix": "Type",
+    "id_prefix": "ID",
+    "proposer_prefix": "Proposer",
     "open_voting_prefix": "Voting open:",
     "adopt": "Adopt",
     "reject": "Reject",
@@ -436,36 +453,38 @@
     "reason_since": "created after the proposal",
     "reason_short": "dissolve delay < 6 months"
   },
-  "nns_function_names": {
-    "1": "Create subnet",
-    "2": "Add nodes to subnet",
-    "3": "Install NNS canister",
-    "4": "Upgrade NNS canister",
-    "5": "Bless replica version",
-    "6": "Recover subnet",
-    "7": "Update subnet config",
-    "8": "Assign node operator Id",
-    "9": "Update NNS root canister",
-    "10": "Update ICP/XDR conversion rate",
-    "11": "Update subnet replica version",
-    "12": "Clear provisional whitelist",
-    "13": "Remove nodes from subnet",
-    "14": "Set authorized subnetworks",
-    "15": "Change firewall config",
-    "16": "Update node operator config",
-    "17": "Start or stop NNS canister",
-    "18": "Remove nodes from registry",
-    "19": "Uninstall code from canister",
-    "20": "Update the node rewards table",
-    "21": "Add or remove data centers",
-    "22": "Update unassigned nodes config",
-    "23": "Remove node operators",
-    "24": "Reroute canister range",
-    "25": "Add firewall rules",
-    "26": "Remove firewall rules",
-    "27": "Update firewall rules",
+  "execute_nns_functions": {
+    "0": "Unspecified",
+    "1": "Create Subnet",
+    "2": "Add Node to Subnet",
+    "3": "NNS Canister Install",
+    "4": "NNS Canister Upgrade",
+    "5": "Bless Replica Version",
+    "6": "Recover Subnet",
+    "7": "Update Subnet Config",
+    "8": "Assign Node Operator ID (NOID)",
+    "9": "NNS Root Canister Upgrade",
+    "10": "ICP/XDR Conversion Rate",
+    "11": "Update Subnet Replica Version",
+    "12": "Clear Provisional Whitelist",
+    "13": "Remove Node from Subnet",
+    "14": "Set Authorized Subnets",
+    "15": "Set Firewall Config",
+    "16": "Update Node Operator Config",
+    "17": "Stop or Start NNS Canister",
+    "18": "Remove Nodes from Registry",
+    "19": "Uninstall Code",
+    "20": "Update Node Rewards Table",
+    "21": "Add or Remove Data Centers",
+    "22": "Update Unassigned Nodes Config",
+    "23": "Remove Node Operators",
+    "24": "Reroute Canister Ranges",
+    "25": "Add Firewall Rules",
+    "26": "Remove Firewall Rules",
+    "27": "Update Firewall Rules",
     "28": "Prepare Canister Migration",
-    "29": "Complete Canister Migration"
+    "29": "Complete Canister Migration",
+    "30": "Bless new SNS deployment"
   },
   "neuron_detail": {
     "title": "Neuron",
@@ -582,6 +601,7 @@
     "completed": "Completed",
     "sale_start": "Sale Start",
     "sale_end": "Sale End",
+    "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached"
   },
   "sns_neuron_detail": {
@@ -662,6 +682,7 @@
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
     "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
+    "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }

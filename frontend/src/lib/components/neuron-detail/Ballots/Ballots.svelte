@@ -3,7 +3,7 @@
   import BallotSummary from "./BallotSummary.svelte";
   import { i18n } from "../../../stores/i18n";
   import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
-  import InfiniteScroll from "../../ui/InfiniteScroll.svelte";
+  import { InfiniteScroll } from "@dfinity/gix-components";
   import { debounce } from "../../../utils/utils";
 
   export let neuron: NeuronInfo | undefined;

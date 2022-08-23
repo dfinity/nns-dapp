@@ -128,6 +128,10 @@
       flex-grow: 1;
       align-self: center;
       word-break: break-word;
+
+      // (>=3 lines x 1rem) + top/bottom paddings
+      max-height: calc(8.5 * var(--padding));
+      overflow-y: auto;
     }
 
     button.close {

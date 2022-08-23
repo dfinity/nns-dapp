@@ -249,6 +249,9 @@ interface I18nNeurons {
   need_two_to_merge: string;
   irreversible_action: string;
   claim_seed_neurons_success: string;
+  enter_neuron_id_prompt: string;
+  add_hotkey_prompt_error: string;
+  add_hotkey_prompt_success: string;
   stake_amount: string;
 }
 
@@ -390,6 +393,19 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nActions {
+  RegisterKnownNeuron: string;
+  ManageNeuron: string;
+  ApproveGenesisKyc: string;
+  ManageNetworkEconomics: string;
+  RewardNodeProvider: string;
+  RewardNodeProviders: string;
+  AddOrRemoveNodeProvider: string;
+  SetDefaultFollowees: string;
+  Motion: string;
+  SetSnsTokenSwapOpenTimeWindow: string;
+}
+
 interface I18nTransaction_names {
   receive: string;
   send: string;
@@ -400,6 +416,7 @@ interface I18nTransaction_names {
   topUpNeuron: string;
   createCanister: string;
   topUpCanister: string;
+  participateSwap: string;
 }
 
 interface I18nWallet {
@@ -420,6 +437,7 @@ interface I18nProposal_detail {
   title: string;
   summary: string;
   topic_prefix: string;
+  type_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
   open_voting_prefix: string;
@@ -461,7 +479,8 @@ interface I18nProposal_detail__ineligible {
   reason_short: string;
 }
 
-interface I18nNns_function_names {
+interface I18nExecute_nns_functions {
+  0: string;
   1: string;
   2: string;
   3: string;
@@ -491,6 +510,7 @@ interface I18nNns_function_names {
   27: string;
   28: string;
   29: string;
+  30: string;
 }
 
 interface I18nNeuron_detail {
@@ -611,6 +631,7 @@ interface I18nSns_project_detail {
   completed: string;
   sale_start: string;
   sale_end: string;
+  max_left: string;
   max_user_commitment_reached: string;
 }
 
@@ -699,6 +720,7 @@ interface I18nError__sns {
   project_not_open: string;
   not_enough_amount: string;
   commitment_too_large: string;
+  commitment_exceeds_current_allowed: string;
   cannot_participate: string;
   sns_add_hotkey: string;
 }
@@ -721,13 +743,14 @@ interface I18n {
   topics: I18nTopics;
   rewards: I18nRewards;
   status: I18nStatus;
+  actions: I18nActions;
   transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
-  nns_function_names: I18nNns_function_names;
+  execute_nns_functions: I18nExecute_nns_functions;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;

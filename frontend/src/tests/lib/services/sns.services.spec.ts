@@ -64,6 +64,42 @@ describe("sns-services", () => {
       expect(syncAccounts).toBeCalled();
     });
 
+    it.only("should return true when last commitment and still sync accounts", async () => {
+      const maxE8s = BigInt(1_000_000_000);
+      const participationE8s = BigInt(150_000_000);
+      const currentE8s = BigInt(850_000_000);
+      const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [SnsSwapLifecycle.Open],
+      });
+      // Prepare project data
+      querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = currentE8s;
+      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+        BigInt(20_000_000_000);
+      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+        BigInt(10_000_000);
+      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s = maxE8s;
+      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
+      snsQueryStore.setData([metadatas, querySnsSwapStates]);
+      const spyParticipate = jest
+        .spyOn(api, "participateInSnsSwap")
+        .mockImplementation(() =>
+          Promise.reject(
+            new Error(
+              "Sorry, There was an unexpected error while participating. Call was rejected: Request ID: a26e17bac91489a89f8b1aef858efeebe9993654ee1ace64efc46a60f3a219c8 Reject code: 5 Reject text: Canister tcvdh-niaaa-aaaaa-aaaoa-cai trapped explicitly: Panicked at 'The token amount can only be refreshed when the canister is in the 'open' state', sns/swap/canister/canister.rs:165:21"
+            )
+          )
+        );
+      const { success } = await participateInSwap({
+        amount: ICP.fromE8s(participationE8s),
+        rootCanisterId,
+        account: mockMainAccount,
+      });
+      expect(success).toBe(true);
+      expect(spyParticipate).toBeCalled();
+      expect(syncAccounts).toBeCalled();
+    });
+
     it("should return success false if api call fails", async () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
