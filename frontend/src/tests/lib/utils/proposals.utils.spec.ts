@@ -769,18 +769,11 @@ describe("proposals-utils", () => {
     } as Proposal;
 
     it("should map proposalInfo fields", () => {
-      const {
-        topic,
-        topicDescription,
-        color,
-        deadline,
-        proposer,
-        title,
-        url,
-      } = mapProposalInfo({
-        ...proposalInfo,
-        proposal,
-      });
+      const { topic, topicDescription, color, deadline, proposer, title, url } =
+        mapProposalInfo({
+          ...proposalInfo,
+          proposal,
+        });
 
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
