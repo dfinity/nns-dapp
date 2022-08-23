@@ -41,13 +41,11 @@ describe("auth-services", () => {
 
   describe("auth-client-mocked", () => {
     const mockAuthClient = mock<AuthClient>();
-    let spy;
 
-    beforeAll(
-      () =>
-        (spy = jest
-          .spyOn(AuthClient, "create")
-          .mockImplementation(async (): Promise<AuthClient> => mockAuthClient))
+    beforeAll(() =>
+      jest
+        .spyOn(AuthClient, "create")
+        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
     );
 
     it("should call auth-client logout on logout", async () => {
