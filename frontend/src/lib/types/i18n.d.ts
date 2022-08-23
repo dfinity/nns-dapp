@@ -631,6 +631,7 @@ interface I18nSns_project_detail {
   completed: string;
   sale_start: string;
   sale_end: string;
+  max_left: string;
   max_user_commitment_reached: string;
 }
 

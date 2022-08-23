@@ -1,0 +1,19 @@
+# Tags the latest main, to trigger a release.
+name: Tag main as tip
+on:
+  pull_request:
+    branches:    
+      - main
+    types:
+      - closed
+
+jobs:
+  tag_tip:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tag main as tip
+        run: |
+          git tag -f tip
+          git push origin tags/tip -f
