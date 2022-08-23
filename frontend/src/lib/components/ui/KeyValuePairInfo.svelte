@@ -5,21 +5,14 @@
 
   export let testId: string | undefined = undefined;
 
-  let collapsibleRef: Collapsible | undefined = undefined;
+  let toggleContent: () => void;
 </script>
 
-<Collapsible
-  expandButton={false}
-  externalToggle={true}
-  bind:this={collapsibleRef}
->
+<Collapsible expandButton={false} externalToggle={true} bind:toggleContent>
   <KeyValuePair {testId} slot="header">
     <div class="wrapper" slot="key">
       <slot name="key" />
-      <button
-        class="icon"
-        on:click|stopPropagation={() => collapsibleRef?.toggleContent()}
-      >
+      <button class="icon" on:click|stopPropagation={toggleContent}>
         <IconInfoOutline />
       </button>
     </div>
