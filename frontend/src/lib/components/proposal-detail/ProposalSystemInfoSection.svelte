@@ -24,7 +24,7 @@
 
 <h1>{type ?? ""}</h1>
 
-<div class="details">
+<div class="details" data-tid="proposal-system-info-details">
   <KeyValuePairInfo>
     <svelte:fragment slot="key"
       >{$i18n.proposal_detail.type_prefix}</svelte:fragment
