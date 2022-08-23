@@ -7,10 +7,11 @@ import {
 } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "../../../lib/stores/projects.store";
-import type { SnsSwapCommitment } from "../../../lib/types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "../../../lib/types/sns";
 import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
+  commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
   durationTillSwapDeadline,
   durationTillSwapStart,
@@ -753,6 +754,58 @@ describe("project-utils", () => {
         amount: ICP.fromE8s(maxPerUser - initialAmountUser + BigInt(10_000)),
       });
       expect(v7).toBe(false);
+    });
+  });
+
+  describe("commitmentExceedsAmountLeft", () => {
+    it("returns true if amount is larger than maximum left", () => {
+      const maxE8s = BigInt(1_000_000_000);
+      const participationE8s = BigInt(100_000_000);
+      const currentE8s = BigInt(950_000_000);
+      const summary: SnsSummary = {
+        ...mockSnsFullProject.summary,
+        derived: {
+          buyer_total_icp_e8s: currentE8s,
+          sns_tokens_per_icp: 1,
+        },
+        swap: {
+          ...mockSnsFullProject.summary.swap,
+          init: {
+            ...mockSnsFullProject.summary.swap.init,
+            max_icp_e8s: maxE8s,
+          },
+        },
+      };
+      const expected = commitmentExceedsAmountLeft({
+        summary,
+        amountE8s: participationE8s,
+      });
+      expect(expected).toBe(true);
+    });
+
+    it("returns false if amount is smaller than maximum left", () => {
+      const maxE8s = BigInt(1_000_000_000);
+      const participationE8s = BigInt(100_000_000);
+      const currentE8s = BigInt(850_000_000);
+      const summary: SnsSummary = {
+        ...mockSnsFullProject.summary,
+        derived: {
+          buyer_total_icp_e8s: currentE8s,
+          sns_tokens_per_icp: 1,
+        },
+        swap: {
+          ...mockSnsFullProject.summary.swap,
+          init: {
+            ...mockSnsFullProject.summary.swap.init,
+            max_icp_e8s: maxE8s,
+          },
+        },
+      };
+      const expected = commitmentExceedsAmountLeft({
+        summary,
+        amountE8s: participationE8s,
+      });
+      expect(expected).toBe(false);
     });
   });
 
