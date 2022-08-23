@@ -61,11 +61,15 @@
       // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
       return;
     }
-
-    await Promise.all([
-      loadSummary(rootCanisterId),
-      loadSwapState(rootCanisterId),
-    ]);
+    try {
+      await Promise.all([
+        loadSummary(rootCanisterId),
+        loadSwapState(rootCanisterId),
+      ]);
+    } catch (err) {
+      // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-958
+      console.error(err);
+    }
   };
 
   const projectDetailStore = writable<ProjectDetailStore>({
@@ -74,7 +78,6 @@
   });
 
   // TODO: add projectDetailStore to debug store
-
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
     reload,
@@ -92,7 +95,7 @@
             ({ rootCanisterId: rootCanister }) =>
               rootCanister?.toText() === rootCanisterId
           )
-        : null;
+        : undefined;
 
     $projectDetailStore.swapCommitment =
       rootCanisterId !== undefined
@@ -100,7 +103,7 @@
             (item) =>
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
-        : null;
+        : undefined;
   };
 
   /**

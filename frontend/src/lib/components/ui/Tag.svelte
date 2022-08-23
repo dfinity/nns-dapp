@@ -21,6 +21,8 @@
     border: 1px solid var(--badge-color);
     border-radius: var(--border-radius-5x);
 
+    height: fit-content;
+
     // Color.WARNING
     &.warning {
       --badge-color: var(--warning-emphasis);
