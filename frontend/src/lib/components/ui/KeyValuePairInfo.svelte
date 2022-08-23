@@ -5,7 +5,7 @@
 
   export let testId: string | undefined = undefined;
 
-  let collapsibleRef: typeof Collapsible | undefined = undefined;
+  let collapsibleRef: Collapsible | undefined = undefined;
 </script>
 
 <Collapsible
