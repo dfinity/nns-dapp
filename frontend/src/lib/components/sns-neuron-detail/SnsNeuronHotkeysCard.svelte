@@ -35,14 +35,15 @@
 
   let canManageHotkeys: boolean = true;
   $: canManageHotkeys =
-    neuron !== undefined
+    neuron !== undefined && neuron !== null
       ? canIdentityManageHotkeys({
           neuron,
           identity: $authStore.identity,
         })
       : false;
   let hotkeys: string[];
-  $: hotkeys = neuron !== undefined ? getSnsNeuronHotkeys(neuron) : [];
+  $: hotkeys =
+    neuron !== undefined && neuron !== null ? getSnsNeuronHotkeys(neuron) : [];
 
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
