@@ -27,7 +27,7 @@
 {/if}
 
 {#if loading || !neuronsLoaded}
-  <div class="grid" data-tid="proposals-loading">
+  <div class="card-grid" data-tid="proposals-loading">
     <SkeletonCard />
     <SkeletonCard />
     <SkeletonCard />
