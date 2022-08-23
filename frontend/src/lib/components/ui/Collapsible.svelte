@@ -63,8 +63,8 @@
   data-tid="collapsible-header"
   id={id !== undefined ? `heading${id}` : undefined}
   role="term"
-  class={`header ${externalToggle ? 'external' : ''}`}
-  on:click={() => externalToggle ? undefined : toggleContent()}
+  class={`header ${externalToggle ? "external" : ""}`}
+  on:click={() => (externalToggle ? undefined : toggleContent())}
 >
   <div class="header-content">
     <slot name="header" />

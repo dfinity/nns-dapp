@@ -8,11 +8,18 @@
   let collapsibleRef: typeof Collapsible | undefined = undefined;
 </script>
 
-<Collapsible expandButton={false} externalToggle={true} bind:this={collapsibleRef}>
+<Collapsible
+  expandButton={false}
+  externalToggle={true}
+  bind:this={collapsibleRef}
+>
   <KeyValuePair {testId} slot="header">
     <span class="wrapper" slot="key">
       <slot name="key" />
-      <button class="icon" on:click|stopPropagation={() => collapsibleRef?.toggleContent()}>
+      <button
+        class="icon"
+        on:click|stopPropagation={() => collapsibleRef?.toggleContent()}
+      >
         <IconInfoOutline />
       </button>
     </span>
