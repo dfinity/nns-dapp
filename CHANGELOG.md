@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXXXX
+* Fix android issues with modal.
+
 ## Proposal 76202
 * sanitize proposal title and account identifier for placeholders
 
