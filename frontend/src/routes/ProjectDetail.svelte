@@ -2,7 +2,6 @@
   import { onDestroy, onMount, setContext } from "svelte";
   import ProjectInfoSection from "../lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/project-detail/ProjectStatusSection.svelte";
-  import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
@@ -159,14 +158,14 @@
     {#if loadingSummary && loadingSwapState}
       <Spinner />
     {:else}
-      <TwoColumns>
-        <div slot="left">
+      <div class="content-grid">
+        <div class="content-a">
           <ProjectInfoSection />
         </div>
-        <div slot="right">
+        <div class="content-b">
           <ProjectStatusSection />
         </div>
-      </TwoColumns>
+      </div>
     {/if}
   </div>
 </main>
