@@ -285,15 +285,15 @@ export const participateInSwap = async ({
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.
       // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
-      if (
-        error.message?.includes("'open' state") !== true ||
-        (project?.summary !== undefined &&
-          // If it's the last commitment, it means that one more e8 is not a valid participation.
-          !commitmentExceedsAmountLeft({
-            summary: project?.summary,
-            amountE8s: amount.toE8s() + BigInt(1),
-          }))
-      ) {
+      const openStateError = error.message?.includes("'open' state") === true;
+      // If it's the last commitment, it means that one more e8 is not a valid participation.
+      const lastCommitment =
+        project?.summary !== undefined &&
+        commitmentExceedsAmountLeft({
+          summary: project?.summary,
+          amountE8s: amount.toE8s() + BigInt(1),
+        });
+      if (!(openStateError && lastCommitment)) {
         throw error;
       }
     }
