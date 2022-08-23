@@ -1,6 +1,9 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 76202
+* sanitize proposal title and account identifier for placeholders
+
+## Proposal 75912
 * Optimistic voting update
 * Toast redesign
 * Update nns-js, sns-js, agent-js (0.12.2) and integrate utils-js
