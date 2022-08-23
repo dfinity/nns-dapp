@@ -35,7 +35,7 @@ const onIdleSignOut = async () => {
 };
 
 /**
- * If user is no authenticated - i.e. no identity or anonymous and there is no delegation chain, then identity is not valid
+ * If user is not authenticated - i.e. no identity or anonymous and there is no valid delegation chain, then identity is not valid
  *
  * @returns true if authenticated
  */
