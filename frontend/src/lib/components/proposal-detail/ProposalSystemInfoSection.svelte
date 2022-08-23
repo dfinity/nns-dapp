@@ -29,24 +29,24 @@
     <svelte:fragment slot="key"
       >{$i18n.proposal_detail.type_prefix}</svelte:fragment
     >
-    <span
-      class="value"
-      slot="value"
-      data-tid="proposal-system-info-type">{type}</span
+    <span class="value" slot="value" data-tid="proposal-system-info-type"
+      >{type}</span
     >
-    <p slot="info" data-tid="proposal-system-info-type-description">{@html sanitizedTypeDescription}</p>
+    <p slot="info" data-tid="proposal-system-info-type-description">
+      {@html sanitizedTypeDescription}
+    </p>
   </KeyValuePairInfo>
 
   <KeyValuePairInfo>
     <svelte:fragment slot="key"
       >{$i18n.proposal_detail.topic_prefix}</svelte:fragment
     >
-    <span
-      class="value"
-      slot="value"
-      data-tid="proposal-system-info-topic">{topic}</span
+    <span class="value" slot="value" data-tid="proposal-system-info-topic"
+      >{topic}</span
     >
-    <p slot="info" data-tid="proposal-system-info-topic-description">{topic_description}</p>
+    <p slot="info" data-tid="proposal-system-info-topic-description">
+      {topic_description}
+    </p>
   </KeyValuePairInfo>
 </div>
 
