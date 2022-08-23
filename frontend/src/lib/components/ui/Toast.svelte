@@ -90,8 +90,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/text";
-
   .toast {
     display: flex;
     justify-content: space-between;
