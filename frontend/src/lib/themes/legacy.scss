@@ -12,4 +12,12 @@ main.legacy {
   @include media.min-width(medium) {
     padding: inherit;
   }
+
+  .card {
+    // solve title|icp line (e.g. neuron card)
+    .meta {
+      flex-wrap: wrap;
+      column-gap: var(--padding);
+    }
+  }
 }
