@@ -31,14 +31,14 @@
       <Spinner inline />
     </div>
   {:else}
-    <div class="grid">
+    <div class="card-grid">
       {#each Array(projectCount) as _}
         <SkeletonProjectCard />
       {/each}
     </div>
   {/if}
 {:else if projects !== undefined}
-  <div class="grid">
+  <div class="card-grid">
     {#each projects as project (project.rootCanisterId.toText())}
       <ProjectCard {project} />
     {/each}

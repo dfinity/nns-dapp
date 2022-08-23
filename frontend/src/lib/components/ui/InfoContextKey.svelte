@@ -3,7 +3,7 @@
   import Collapsible from "./Collapsible.svelte";
 </script>
 
-<Collapsible iconSize="none">
+<Collapsible expandButton={false}>
   <span class="wrapper" slot="header">
     <slot name="header" />
     <span class="icon">

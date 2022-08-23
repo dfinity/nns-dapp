@@ -315,31 +315,36 @@ export const mapProposalInfo = (
   title: string | undefined;
   url: string | undefined;
   topic: string | undefined;
+  topic_description: string | undefined;
   color: Color | undefined;
   status: ProposalStatus;
   deadline: bigint | undefined;
   type: string | undefined;
+  type_description: string | undefined;
 } => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
 
-  const { topics } = get(i18n);
+  const { topics, topics_description } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
       : deadlineTimestampSeconds - BigInt(nowInSeconds());
+
+  const topicKey: string = Topic[proposalInfo?.topic];
 
   return {
     id,
     proposer,
     proposal,
     title: proposal?.title,
-    topic: topics[Topic[proposalInfo?.topic]],
+    topic: topics[topicKey],
+    topic_description: topics_description[topicKey],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
     status,
     deadline,
-    type: mapProposalType(proposal),
+    ...mapProposalType(proposal),
   };
 };
 
@@ -351,22 +356,34 @@ export const mapProposalInfo = (
  */
 const mapProposalType = (
   proposal: Proposal | undefined
-): string | undefined => {
-  const { actions, execute_nns_functions } = get(i18n);
+): { type: string | undefined; type_description: string | undefined } => {
+  const {
+    actions,
+    actions_description,
+    execute_nns_functions,
+    execute_nns_functions_description,
+  } = get(i18n);
+
+  const NO_MATCH = { type: undefined, type_description: undefined };
 
   if (proposal === undefined) {
-    return undefined;
+    return NO_MATCH;
   }
 
   const nnsFunctionId = getExecuteNnsFunctionId(proposal);
 
   if (nnsFunctionId !== undefined) {
-    return execute_nns_functions[nnsFunctionId];
+    return {
+      type: execute_nns_functions[nnsFunctionId],
+      type_description: execute_nns_functions_description[nnsFunctionId],
+    };
   }
 
-  const action = proposalFirstActionKey(proposal);
+  const action: string | undefined = proposalFirstActionKey(proposal);
 
-  return action !== undefined ? actions[action] : undefined;
+  return action !== undefined
+    ? { type: actions[action], type_description: actions_description[action] }
+    : NO_MATCH;
 };
 
 /**

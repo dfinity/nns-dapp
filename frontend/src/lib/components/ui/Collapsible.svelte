@@ -8,7 +8,9 @@
   export let initiallyExpanded: boolean = false;
   export let maxContentHeight: number | undefined = undefined;
 
-  export let iconSize: "small" | "medium" | "none" = "small";
+  export let iconSize: "small" | "medium" = "small";
+  export let expandButton: boolean = true;
+  export let externalToggle: boolean = false;
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
@@ -20,11 +22,13 @@
   let maxHeight: number | undefined;
 
   const dispatchUpdate = () => dispatch("nnsToggle", { expanded });
-  const toggleContent = () => {
+
+  export const toggleContent = () => {
     userUpdated = true;
     expanded = !expanded;
     dispatchUpdate();
   };
+
   const calculateMaxContentHeight = (): number => {
     if (maxContentHeight !== undefined) return maxContentHeight;
     const height = offsetHeight === undefined ? 0 : offsetHeight;
@@ -59,13 +63,13 @@
   data-tid="collapsible-header"
   id={id !== undefined ? `heading${id}` : undefined}
   role="term"
-  class="header"
-  on:click={toggleContent}
+  class={`header ${externalToggle ? 'external' : ''}`}
+  on:click={() => externalToggle ? undefined : toggleContent()}
 >
   <div class="header-content">
     <slot name="header" />
   </div>
-  {#if iconSize !== "none"}
+  {#if expandButton}
     <button
       class="collapsible-expand-icon"
       class:size-medium={iconSize === "medium"}
@@ -103,8 +107,10 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .header {
-    @include interaction.tappable;
-    user-select: none;
+    &:not(.external) {
+      @include interaction.tappable;
+      user-select: none;
+    }
 
     position: relative;
 
