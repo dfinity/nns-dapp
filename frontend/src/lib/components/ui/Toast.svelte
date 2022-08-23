@@ -90,11 +90,16 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/text";
+
   .toast {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: var(--padding-1_5x);
+
+    // (>=3 lines x 1rem) + top/bottom paddings
+    height: calc(8.5 * var(--padding));
 
     border-radius: var(--border-radius);
     background: var(--card-background);
@@ -128,6 +133,8 @@
       flex-grow: 1;
       align-self: center;
       word-break: break-word;
+      max-height: 100%;
+      overflow-y: auto;
     }
 
     button.close {
