@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from "../ui/Spinner.svelte";
   import { i18n } from "../../stores/i18n";
-  import ProjectSystemInfoSection from "./ProjectSystemInfoSection.svelte";
+  import ProjectSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
