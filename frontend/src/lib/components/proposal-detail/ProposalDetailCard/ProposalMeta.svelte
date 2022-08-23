@@ -24,7 +24,7 @@
 
   {#if proposer !== undefined}
     <button class="text" on:click|stopPropagation={() => (modalOpen = true)}>
-      {$i18n.proposal_detail.proposer_prefix}
+      {$i18n.proposal_detail.proposer_prefix}:
       <Value>{proposer}</Value>
     </button>
 
@@ -37,10 +37,10 @@
   {/if}
 
   <p>
-    {$i18n.proposal_detail.topic_prefix}
+    {$i18n.proposal_detail.topic_prefix}:
     <Value>{topic}</Value>
   </p>
-  <p>{$i18n.proposal_detail.id_prefix} <Value>{id}</Value></p>
+  <p>{$i18n.proposal_detail.id_prefix}: <Value>{id}</Value></p>
 </div>
 
 <style lang="scss">

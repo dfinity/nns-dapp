@@ -69,17 +69,6 @@ describe("Proposals", () => {
         .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
     );
 
-    it("should render a description", () => {
-      const { getByText } = render(Proposals);
-
-      expect(
-        getByText(
-          "The Internet Computer network runs under the control of the Network Nervous System",
-          { exact: false }
-        )
-      ).toBeInTheDocument();
-    });
-
     it("should render filters", () => {
       const { getByText } = render(Proposals);
 
@@ -94,12 +83,12 @@ describe("Proposals", () => {
     });
 
     it("should render a spinner while searching proposals", async () => {
-      const { container } = render(Proposals);
+      const { getByTestId } = render(Proposals);
 
       proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
       await waitFor(() =>
-        expect(container.querySelector("div.spinner")).not.toBeNull()
+        expect(getByTestId("proposals-loading")).not.toBeNull()
       );
     });
 
@@ -119,10 +108,10 @@ describe("Proposals", () => {
       afterEach(() => jest.clearAllMocks());
 
       it("should render a spinner while loading neurons", async () => {
-        const { container } = render(Proposals);
+        const { getByTestId } = render(Proposals);
 
         await waitFor(() =>
-          expect(container.querySelector("div.spinner")).not.toBeNull()
+          expect(getByTestId("proposals-loading")).not.toBeNull()
         );
       });
     });

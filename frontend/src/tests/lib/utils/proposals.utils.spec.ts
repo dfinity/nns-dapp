@@ -1,10 +1,17 @@
-import type { Ballot, NeuronInfo, Proposal, ProposalInfo } from "@dfinity/nns";
+import type {
+  Ballot,
+  ExecuteNnsFunction,
+  NeuronInfo,
+  Proposal,
+  ProposalInfo,
+} from "@dfinity/nns";
 import {
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
 } from "@dfinity/nns";
+import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import {
   DEFAULT_PROPOSALS_FILTERS,
   PROPOSAL_COLOR,
@@ -13,7 +20,7 @@ import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  getNnsFunctionIndex,
+  getExecuteNnsFunctionId,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -747,16 +754,25 @@ describe("proposals-utils", () => {
   });
 
   describe("mapProposalInfo", () => {
-    it("should map proposalInfo fields", () => {
-      const now = nowInSeconds();
-      const deadlineTimestampSeconds = BigInt(now + 1000000);
-      const [proposal] = generateMockProposals(1, {
-        topic: Topic.Governance,
-        status: ProposalStatus.PROPOSAL_STATUS_OPEN,
-        deadlineTimestampSeconds,
-      });
+    const now = nowInSeconds();
+    const deadlineTimestampSeconds = BigInt(now + 1000000);
+    const [proposalInfo] = generateMockProposals(1, {
+      topic: Topic.Governance,
+      status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+      deadlineTimestampSeconds,
+      proposer: BigInt(1234),
+    });
 
-      const { topic, color, deadline } = mapProposalInfo(proposal);
+    const proposal = {
+      title: "test",
+      url: "https://test.com",
+    } as Proposal;
+
+    it("should map proposalInfo fields", () => {
+      const { topic, color, deadline, proposer, title, url } = mapProposalInfo({
+        ...proposalInfo,
+        proposal,
+      });
 
       expect(topic).toEqual(en.topics.Governance);
       expect(color).toEqual(
@@ -765,11 +781,49 @@ describe("proposals-utils", () => {
       expect(deadline).toEqual(
         deadlineTimestampSeconds - BigInt(nowInSeconds())
       );
+      expect(proposer).toEqual(BigInt(1234));
+      expect(title).toEqual(proposal.title);
+      expect(url).toEqual(proposal.url);
+    });
+
+    it("should map action to undefined", () => {
+      const { type } = mapProposalInfo({
+        ...proposalInfo,
+        proposal,
+      });
+
+      expect(type).toBeUndefined();
+    });
+
+    it("should map action to type", () => {
+      const { type } = mapProposalInfo({
+        ...proposalInfo,
+        proposal: {
+          ...proposal,
+          action: { RegisterKnownNeuron: {} as KnownNeuron },
+        },
+      });
+
+      expect(en.actions.RegisterKnownNeuron).toEqual(type);
+    });
+
+    it("should map nns function to type", () => {
+      const { type } = mapProposalInfo({
+        ...proposalInfo,
+        proposal: {
+          ...proposal,
+          action: {
+            ExecuteNnsFunction: { nnsFunctionId: 3 } as ExecuteNnsFunction,
+          },
+        },
+      });
+
+      expect(en.execute_nns_functions["3"]).toEqual(type);
     });
   });
 
   describe("concatenateUniqueProposals", () => {
-    it("should concatinate proposals", () => {
+    it("should concatenate proposals", () => {
       const proposals = generateMockProposals(10);
       const result = concatenateUniqueProposals({
         oldProposals: proposals.slice(0, 5),
@@ -968,7 +1022,7 @@ describe("proposals-utils", () => {
   describe("getNnsFunctionIndex", () => {
     it("should return nnsFunctionId from proposal", () => {
       expect(
-        getNnsFunctionIndex({
+        getExecuteNnsFunctionId({
           ...mockProposalInfo.proposal,
           action: {
             ExecuteNnsFunction: {
@@ -981,11 +1035,15 @@ describe("proposals-utils", () => {
 
     it("should return undefined if not ExecuteNnsFunction type", () => {
       expect(
-        getNnsFunctionIndex({
+        getExecuteNnsFunctionId({
           ...mockProposalInfo.proposal,
           action: {},
         } as Proposal)
       ).toBeUndefined();
+    });
+
+    it("should return undefined if undefined", () => {
+      expect(getExecuteNnsFunctionId(undefined)).toBeUndefined();
     });
   });
 

@@ -30,6 +30,8 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
+    // pending_transactions: HashMap<(from, to), TransactionType>
+    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
 
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
@@ -120,7 +122,7 @@ pub struct RefundTransactionArgs {
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-enum TransactionType {
+pub enum TransactionType {
     Burn,
     Mint,
     Transfer,
@@ -129,6 +131,7 @@ enum TransactionType {
     TopUpNeuron,
     CreateCanister,
     TopUpCanister(CanisterId),
+    ParticipateSwap(CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize)]
@@ -224,6 +227,18 @@ pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
     AccountNotFound,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct AddPendingNotifySwapRequest {
+    pub swap_canister_id: CanisterId,
+    pub buyer: PrincipalId,
+    pub buyer_sub_account: Option<Subaccount>,
+}
+
+#[derive(CandidType)]
+pub enum AddPendingTransactionResponse {
+    Ok,
 }
 
 impl AccountsStore {
@@ -443,6 +458,35 @@ impl AccountsStore {
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
+    }
+
+    // Adds a transactions to be handled by `get_transaction_type` when adding transactions
+    // Used to add the Swap Canister Id for decentralized sale participations to the transaction
+    // It's needed to notify the Swap Canister afterwards in the periodic_tasks_runner
+    pub fn add_pending_transaction(
+        &mut self,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        transaction_type: TransactionType,
+    ) -> AddPendingTransactionResponse {
+        self.pending_transactions.insert((from, to), transaction_type);
+        AddPendingTransactionResponse::Ok
+    }
+
+    // Get pending transaction
+    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<&TransactionType> {
+        self.pending_transactions.get(&(from, to))
+    }
+
+    pub fn complete_pending_transaction(
+        &mut self,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        block_height: BlockHeight,
+    ) {
+        self.multi_part_transactions_processor
+            .update_status(block_height, MultiPartTransactionStatus::Complete);
+        self.pending_transactions.remove(&(from, to));
     }
 
     pub fn append_transaction(
@@ -1063,6 +1107,8 @@ impl AccountsStore {
             } else {
                 TransactionType::TopUpNeuron
             }
+        } else if let Some(transaction_type) = self.get_pending_transaction(from, to) {
+            *transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1207,6 +1253,13 @@ impl AccountsStore {
         block_height: BlockHeight,
     ) {
         match transaction_type {
+            TransactionType::ParticipateSwap(swap_canister_id) => {
+                self.multi_part_transactions_processor.push(
+                    principal,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
+                );
+            }
             TransactionType::StakeNeuron => {
                 let neuron_details = NeuronDetails {
                     account_identifier: to,
@@ -1282,6 +1335,7 @@ impl StableState for AccountsStore {
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
+            &self.pending_transactions,
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
@@ -1298,6 +1352,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1307,6 +1362,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
+            HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
@@ -1339,6 +1395,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,

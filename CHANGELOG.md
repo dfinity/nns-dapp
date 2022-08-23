@@ -1,5 +1,19 @@
 # Changelog
 
+## Proposal 76202
+* sanitize proposal title and account identifier for placeholders
+
+## Proposal 75912
+* Optimistic voting update
+* Toast redesign
+* Update nns-js, sns-js, agent-js (0.12.2) and integrate utils-js
+* bump IC to the latest version
+* extract some ui components and integrate gix-components
+* replace .ttf with .woff2 fonts
+* add org package.json "name" field
+* various improvements in build scripts
+* light cleanup of README.md
+
 ## Proposal 72733
 * Update on maturity text info.
 * Upgrade sns-js
