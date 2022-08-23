@@ -27,7 +27,7 @@
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined;
+  let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
   let neuronId: SnsNeuronId | undefined;
   $: neuronId =
@@ -67,7 +67,7 @@
   };
 </script>
 
-{#if neuron !== undefined}
+{#if neuron !== undefined && neuron !== null}
   <CardInfo testId="sns-hotkeys-card">
     <div class="title" slot="start">
       <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
