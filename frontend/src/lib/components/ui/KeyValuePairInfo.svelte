@@ -14,7 +14,7 @@
   bind:this={collapsibleRef}
 >
   <KeyValuePair {testId} slot="header">
-    <span class="wrapper" slot="key">
+    <div class="wrapper" slot="key">
       <slot name="key" />
       <button
         class="icon"
@@ -22,7 +22,7 @@
       >
         <IconInfoOutline />
       </button>
-    </span>
+    </div>
 
     <svelte:fragment slot="value"><slot name="value" /></svelte:fragment>
   </KeyValuePair>
