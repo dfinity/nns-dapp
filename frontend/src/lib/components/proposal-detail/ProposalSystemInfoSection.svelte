@@ -32,9 +32,9 @@
     <span
       class="value"
       slot="value"
-      data-tid="sns-project-detail-info-token-name">{type}</span
+      data-tid="proposal-system-info-type">{type}</span
     >
-    <p slot="info">{@html sanitizedTypeDescription}</p>
+    <p slot="info" data-tid="proposal-system-info-type-description">{@html sanitizedTypeDescription}</p>
   </KeyValuePairInfo>
 
   <KeyValuePairInfo>
@@ -44,9 +44,9 @@
     <span
       class="value"
       slot="value"
-      data-tid="sns-project-detail-info-token-name">{topic}</span
+      data-tid="proposal-system-info-topic">{topic}</span
     >
-    <p slot="info">{topic_description}</p>
+    <p slot="info" data-tid="proposal-system-info-topic-description">{topic_description}</p>
   </KeyValuePairInfo>
 </div>
 
