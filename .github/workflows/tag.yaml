@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Tag main as tip
         run: |
+          set -x
           git rev-parse HEAD
           git remote -v
           git tag -f tip
