@@ -16,7 +16,6 @@
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -27,6 +26,7 @@
   import { snsSummariesStore } from "../lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
   import { toastsStore } from "../lib/stores/toasts.store";
+  import SkeletonDetails from "../lib/components/ui/SkeletonDetails.svelte";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -184,7 +184,14 @@
   <div class="stretch-mobile">
     <!-- notFound redirects to launchpad but we show the spinner until redirection occurs -->
     {#if loading || notFound}
-      <Spinner />
+      <div class="content-grid">
+        <div class="content-a">
+          <SkeletonDetails />
+        </div>
+        <div class="content-b">
+          <SkeletonDetails />
+        </div>
+      </div>
     {:else}
       <div class="content-grid">
         <div class="content-a">
