@@ -18,7 +18,7 @@
       proposalId !== undefined
         ? $proposalPayloadsStore.get(proposalId)
         : undefined);
-  $: if (proposalId !== undefined && !$proposalPayloadsStore.has(proposalId)) {
+  $: if (proposalId !== undefined && nnsFunctionId !== undefined && !$proposalPayloadsStore.has(proposalId)) {
     loadProposalPayload({
       proposalId,
     });

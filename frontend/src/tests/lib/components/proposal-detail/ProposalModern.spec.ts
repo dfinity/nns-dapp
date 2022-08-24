@@ -8,6 +8,7 @@ import ProposalModernTest from "./ProposalModernTest.svelte";
 
 jest.mock("../../../../lib/utils/html.utils", () => ({
   sanitizeHTML: (value) => Promise.resolve(value),
+  markdownToSanitizedHTML: (value) => Promise.resolve(value),
 }));
 
 describe("ProposalModern", () => {
@@ -37,6 +38,20 @@ describe("ProposalModern", () => {
     const { queryByTestId } = renderProposalModern(true);
     await waitFor(() =>
       expect(queryByTestId("proposal-system-info-details")).toBeInTheDocument()
+    );
+  });
+
+  it("should render proposer proposal info", async () => {
+    const { queryByTestId } = renderProposalModern(true);
+    await waitFor(() =>
+        expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument()
+    );
+  });
+
+  it("should render proposer proposal data", async () => {
+    const { queryByTestId } = renderProposalModern(true);
+    await waitFor(() =>
+        expect(queryByTestId("proposal-proposer-actions-entry-title")).toBeInTheDocument()
     );
   });
 });
