@@ -18,16 +18,4 @@ describe("Guard", () => {
     expect(container.querySelector("svg")).not.toBeNull();
     expect(container.querySelector("circle")).not.toBeNull();
   });
-
-  it("should sync auth on localstorage changes", () => {
-    const spy = jest
-      .spyOn(authStore, "sync")
-      .mockImplementation(() => Promise.resolve());
-
-    render(Guard);
-
-    window.localStorage.setItem("test", "test");
-
-    expect(spy).toHaveBeenCalled();
-  });
 });
