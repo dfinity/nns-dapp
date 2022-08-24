@@ -7,7 +7,7 @@
   export let proposalInfo: ProposalInfo;
 
   let title: string | undefined;
-  export let proposal: Proposal | undefined;
+  let proposal: Proposal | undefined;
 
   $: ({ title, proposal } = mapProposalInfo(proposalInfo));
 </script>
