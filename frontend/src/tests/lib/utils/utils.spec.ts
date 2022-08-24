@@ -19,9 +19,14 @@ describe("utils", () => {
   const callback = jest.fn();
 
   beforeEach(() => {
-    jest.useFakeTimers();
     jest.spyOn(global, "setTimeout");
   });
+
+  beforeAll(() => {
+    jest.useFakeTimers("modern").setSystemTime(Date.now());
+  });
+
+  afterAll(() => jest.useRealTimers());
 
   it("should debounce function with timeout", () => {
     const testDebounce = debounce(callback, 100);
