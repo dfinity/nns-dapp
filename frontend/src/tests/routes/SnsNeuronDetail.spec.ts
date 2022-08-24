@@ -75,7 +75,7 @@ describe("SnsNeuronDetail", () => {
       jest.spyOn(routeStore, "replace");
     });
 
-    it("should get neuron", async () => {
+    it("should redirect", async () => {
       render(SnsNeuronDetail);
 
       await waitFor(() => expect(routeStore.replace).toBeCalled());
@@ -96,7 +96,7 @@ describe("SnsNeuronDetail", () => {
       jest.spyOn(routeStore, "replace");
     });
 
-    it("should get neuron", async () => {
+    it("should redirect", async () => {
       validNeuron = false;
       render(SnsNeuronDetail);
 

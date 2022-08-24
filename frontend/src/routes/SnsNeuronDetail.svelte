@@ -75,7 +75,10 @@
       rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
     } catch (error) {
       toastsStore.error({
-        labelKey: "error__sns.project_not_found",
+        labelKey: "error__sns.invalid_root_canister_id",
+        substitutions: {
+          $canisterId: rootCanisterIdMaybe,
+        },
       });
       routeStore.replace({ path: AppPath.Neurons });
       return;
