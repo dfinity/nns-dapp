@@ -17,6 +17,7 @@ import {
 } from "../../../lib/constants/neurons.constants";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
 import type { Step } from "../../../lib/stores/steps.state";
+import { nowInSeconds } from "../../../lib/utils/date.utils";
 import { enumValues } from "../../../lib/utils/enum.utils";
 import {
   ageMultiplier,
@@ -71,6 +72,10 @@ import {
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 
 describe("neuron-utils", () => {
+  beforeAll(() => jest.useFakeTimers("modern").setSystemTime(Date.now()));
+
+  afterAll(() => jest.useRealTimers());
+
   describe("votingPower", () => {
     it("should return zero for delays less than six months", () => {
       expect(
@@ -254,7 +259,7 @@ describe("neuron-utils", () => {
     });
 
     it("returns duration from today until dissolving time", () => {
-      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const todayInSeconds = BigInt(nowInSeconds());
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron = {
         ...mockNeuron,
