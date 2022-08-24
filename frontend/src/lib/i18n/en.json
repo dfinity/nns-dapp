@@ -743,6 +743,7 @@
     "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
     "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
+    "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }
