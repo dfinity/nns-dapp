@@ -9,7 +9,6 @@ import { proposalFirstActionKey } from "../../../../lib/utils/proposals.utils";
 import {
   mockProposalInfo,
   proposalActionMotion,
-  proposalActionNnsFunction21,
   proposalActionRewardNodeProvider,
 } from "../../../mocks/proposal.mock";
 

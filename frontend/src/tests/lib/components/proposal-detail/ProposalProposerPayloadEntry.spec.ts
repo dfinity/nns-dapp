@@ -12,7 +12,6 @@ import { getExecuteNnsFunctionId } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProposalInfo,
-  proposalActionMotion,
   proposalActionNnsFunction21,
 } from "../../../mocks/proposal.mock";
 
