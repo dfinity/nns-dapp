@@ -784,6 +784,7 @@ interface I18nError__sns {
   commitment_too_large: string;
   commitment_exceeds_current_allowed: string;
   cannot_participate: string;
+  invalid_root_canister_id: string;
   sns_add_hotkey: string;
 }
 
