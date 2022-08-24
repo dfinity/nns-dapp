@@ -8,7 +8,12 @@ import type {
   ProposalInfo,
   Tally,
 } from "@dfinity/nns";
-import {ProposalRewardStatus, ProposalStatus, Topic, Vote} from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
@@ -313,6 +318,11 @@ export type ProposalInfoMap = {
   title: string | undefined;
   url: string | undefined;
   color: Color | undefined;
+
+  created: bigint;
+  decided: bigint | undefined;
+  executed: bigint | undefined;
+  failed: bigint | undefined;
   deadline: bigint | undefined;
 
   topic: string | undefined;
@@ -330,10 +340,27 @@ export type ProposalInfoMap = {
 export const mapProposalInfo = (
   proposalInfo: ProposalInfo
 ): ProposalInfoMap => {
-  const { proposal, proposer, id, status, rewardStatus, deadlineTimestampSeconds } =
-    proposalInfo;
+  const {
+    proposal,
+    proposer,
+    id,
+    status,
+    rewardStatus,
+    deadlineTimestampSeconds,
+    proposalTimestampSeconds,
+    decidedTimestampSeconds,
+    executedTimestampSeconds,
+    failedTimestampSeconds,
+  } = proposalInfo;
 
-  const { topics, topics_description, status_description, status: statusLabels, rewards, rewards_description } = get(i18n);
+  const {
+    topics,
+    topics_description,
+    status_description,
+    status: statusLabels,
+    rewards,
+    rewards_description,
+  } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
@@ -351,7 +378,14 @@ export const mapProposalInfo = (
     title: proposal?.title,
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
+
+    created: proposalTimestampSeconds,
+    decided: decidedTimestampSeconds > 0 ? decidedTimestampSeconds : undefined,
+    executed:
+      executedTimestampSeconds > 0 ? executedTimestampSeconds : undefined,
+    failed: failedTimestampSeconds > 0 ? failedTimestampSeconds : undefined,
     deadline,
+
     topic: topics[topicKey],
     topicDescription: topics_description[topicKey],
     status,

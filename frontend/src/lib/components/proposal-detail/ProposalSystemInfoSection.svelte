@@ -2,6 +2,8 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
+  import { secondsToDateTime } from "../../utils/date.utils";
+  import { i18n } from "../../stores/i18n";
 
   export let proposalInfo: ProposalInfo;
 
@@ -14,6 +16,11 @@
   let rewardStatusString: string;
   let rewardStatusDescription: string | undefined;
 
+  let created: bigint | undefined;
+  let decided: bigint | undefined;
+  let executed: bigint | undefined;
+  let failed: bigint | undefined;
+
   $: ({
     type,
     topic,
@@ -23,6 +30,10 @@
     topicDescription,
     statusDescription,
     rewardStatusDescription,
+    created,
+    decided,
+    executed,
+    failed,
   } = mapProposalInfo(proposalInfo));
 </script>
 
@@ -56,6 +67,42 @@
     value={rewardStatusString}
     description={rewardStatusDescription}
   />
+
+  {#if created !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="created_prefix"
+      testId="proposal-system-info-created"
+      value={secondsToDateTime(created)}
+      description={$i18n.proposal_detail.created_description}
+    />
+  {/if}
+
+  {#if decided !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="decided_prefix"
+      testId="proposal-system-info-decided"
+      value={secondsToDateTime(decided)}
+      description={$i18n.proposal_detail.decided_description}
+    />
+  {/if}
+
+  {#if executed !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="executed_prefix"
+      testId="proposal-system-info-executed"
+      value={secondsToDateTime(executed)}
+      description={$i18n.proposal_detail.executed_description}
+    />
+  {/if}
+
+  {#if failed !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="failed_prefix"
+      testId="proposal-system-info-failed"
+      value={secondsToDateTime(failed)}
+      description={$i18n.proposal_detail.failed_description}
+    />
+  {/if}
 </div>
 
 <style lang="scss">

@@ -469,7 +469,15 @@
     "nns_function_name": "nnsFunctionName",
     "payload": "Payload",
     "summary_toggle_view": "$toggleView summary",
-    "vote": "Vote"
+    "vote": "Vote",
+    "created_prefix": "Created",
+    "created_description": "The date when this proposal was created.",
+    "decided_prefix": "Decided",
+    "decided_description": "The date when this proposal was adopted or rejected.",
+    "executed_prefix": "Executed",
+    "executed_description": "The date when this adopted proposal was executed.",
+    "failed_prefix": "Failed",
+    "failed_description": "The date when this adopted proposal failed to be executed."
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",

@@ -497,6 +497,14 @@ interface I18nProposal_detail {
   payload: string;
   summary_toggle_view: string;
   vote: string;
+  created_prefix: string;
+  created_description: string;
+  decided_prefix: string;
+  decided_description: string;
+  executed_prefix: string;
+  executed_description: string;
+  failed_prefix: string;
+  failed_description: string;
 }
 
 interface I18nProposal_detail__vote {
