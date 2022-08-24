@@ -3,7 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
-  import ProposalProposerPayloadSection from "./ProposalProposerPayloadSection.svelte";
+  import ProposalProposerDataSection from "./ProposalProposerDataSection.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
@@ -28,7 +28,7 @@
         <ProposalProposerInfoSection proposalInfo={$store.proposal} />
       </div>
       <div class="content-e">
-        <ProposalProposerPayloadSection proposalInfo={$store.proposal} />
+        <ProposalProposerDataSection proposalInfo={$store.proposal} />
       </div>
     </div>
   {:else}
