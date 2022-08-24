@@ -1,0 +1,87 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import type { Proposal } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
+import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import ProposalActions from "../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
+import { proposalPayloadsStore } from "../../../../lib/stores/proposals.store";
+import {
+  getExecuteNnsFunctionId,
+  proposalFirstActionKey,
+} from "../../../../lib/utils/proposals.utils";
+import en from "../../../mocks/i18n.mock";
+import {
+  mockProposalInfo,
+  proposalActionMotion,
+  proposalActionNnsFunction21,
+  proposalActionRewardNodeProvider,
+} from "../../../mocks/proposal.mock";
+
+const proposalWithMotionAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionMotion,
+} as Proposal;
+
+const proposalWithRewardNodeProviderAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionRewardNodeProvider,
+} as Proposal;
+
+const proposalWithNnsFunctionAction = {
+  ...mockProposalInfo.proposal,
+  action: proposalActionNnsFunction21,
+} as Proposal;
+
+describe("ProposalProposerActionsEntry", () => {
+  it("should render action key", () => {
+    const { getByText } = render(ProposalActions, {
+      props: {
+        proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
+      },
+    });
+
+    const key = proposalFirstActionKey(proposalWithMotionAction) as string;
+    expect(getByText(key)).toBeInTheDocument();
+  });
+
+  it("should render action fields", () => {
+    const { getByText } = render(ProposalActions, {
+      props: {
+        proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
+      },
+    });
+
+    const [key, value] = Object.entries(
+      (proposalWithMotionAction?.action as { Motion: object }).Motion
+    )[0];
+    expect(getByText(key)).toBeInTheDocument();
+    expect(getByText(value)).toBeInTheDocument();
+  });
+
+  it("should render object fields as JSON", () => {
+    const nodeProviderActions = render(ProposalActions, {
+      props: {
+        proposal: proposalWithRewardNodeProviderAction,
+        proposalId: mockProposalInfo.id,
+      },
+    });
+
+    expect(nodeProviderActions.queryAllByTestId("json").length).toBe(2);
+  });
+
+  it("should render text fields as plane text", () => {
+    const motionActions = render(ProposalActions, {
+      props: {
+        proposal: proposalWithMotionAction,
+        proposalId: mockProposalInfo.id,
+      },
+    });
+
+    expect(motionActions.queryAllByTestId("json").length).toBe(0);
+  });
+});
