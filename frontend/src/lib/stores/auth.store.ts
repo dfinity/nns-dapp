@@ -1,27 +1,15 @@
 import type { Identity } from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
+import type { AuthClient } from "@dfinity/auth-client";
 import { writable } from "svelte/store";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
 } from "../constants/identity.constants";
+import { createAuthClient } from "../utils/auth.utils";
 
 export interface AuthStore {
   identity: Identity | undefined | null;
 }
-
-/**
- * Create an AuthClient to manage authentication and identity.
- * - Session duration is 30min (AUTH_SESSION_DURATION).
- * - Disable idle manager that sign-out in case of inactivity after default 10min to avoid UX issues if multiple tabs are used as we observe the storage and sync the delegation on any changes
- */
-const createAuthClient = (): Promise<AuthClient> =>
-  AuthClient.create({
-    idleOptions: {
-      disableIdle: true,
-      disableDefaultIdleCallback: true,
-    },
-  });
 
 /**
  * A store to handle authentication and the identity of the user.
@@ -38,7 +26,7 @@ const createAuthClient = (): Promise<AuthClient> =>
  *
  * - signOut: call auth-client log out and set null in the store. started with a user interaction ("click on a button")
  *
- * note: clearing the local storage does not happen in the state management but afterwards in its caller function (see <Logout/>)
+ * note: clearing idb auth keys does not happen in the state management but afterwards in its caller function (see <Logout/>)
  *
  */
 const initAuthStore = () => {
