@@ -759,6 +759,7 @@ describe("proposals-utils", () => {
     const [proposalInfo] = generateMockProposals(1, {
       topic: Topic.Governance,
       status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+      rewardStatus: ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       deadlineTimestampSeconds,
       proposer: BigInt(1234),
     });
@@ -769,11 +770,24 @@ describe("proposals-utils", () => {
     } as Proposal;
 
     it("should map proposalInfo fields", () => {
-      const { topic, topicDescription, color, deadline, proposer, title, url } =
-        mapProposalInfo({
-          ...proposalInfo,
-          proposal,
-        });
+      const {
+        topic,
+        topicDescription,
+        color,
+        deadline,
+        proposer,
+        title,
+        url,
+        status,
+        statusString,
+        statusDescription,
+        rewardStatus,
+        rewardStatusString,
+        rewardStatusDescription,
+      } = mapProposalInfo({
+        ...proposalInfo,
+        proposal,
+      });
 
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
@@ -786,6 +800,22 @@ describe("proposals-utils", () => {
       expect(proposer).toEqual(BigInt(1234));
       expect(title).toEqual(proposal.title);
       expect(url).toEqual(proposal.url);
+
+      expect(status).toEqual(proposalInfo.status);
+      expect(statusString).toEqual(
+        en.status[ProposalStatus[proposalInfo.status]]
+      );
+      expect(statusDescription).toEqual(
+        en.status_description[ProposalStatus[proposalInfo.status]]
+      );
+
+      expect(rewardStatus).toEqual(proposalInfo.rewardStatus);
+      expect(rewardStatusString).toEqual(
+        en.rewards[ProposalRewardStatus[proposalInfo.rewardStatus]]
+      );
+      expect(rewardStatusDescription).toEqual(
+        en.rewards_description[ProposalRewardStatus[proposalInfo.rewardStatus]]
+      );
     });
 
     it("should map action to undefined", () => {
