@@ -19,5 +19,9 @@ main.legacy {
       flex-wrap: wrap;
       column-gap: var(--padding);
     }
+    
+    &[data-tid="proposal-card"] .meta {
+      flex-wrap: nowrap;
+    }
   }
 }
