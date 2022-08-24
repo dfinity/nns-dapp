@@ -24,7 +24,7 @@ describe("ProposalSystemInfoSection", () => {
     statusString,
     rewardStatusString,
     rewardStatusDescription,
-      proposer
+    proposer,
   } = mapProposalInfo(mockProposalInfo);
 
   it("should render type title", () => {
@@ -230,7 +230,6 @@ describe("ProposalSystemInfoSection", () => {
     });
   });
 
-
   it("should render proposer info", async () => {
     const renderResult = render(ProposalSystemInfoSection, {
       props: {
@@ -252,7 +251,7 @@ describe("ProposalSystemInfoSection", () => {
       props: {
         proposalInfo: {
           ...mockProposalInfo,
-          proposer: undefined
+          proposer: undefined,
         },
       },
     });

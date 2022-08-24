@@ -12,7 +12,9 @@
 
   $: description,
     (async () =>
-      (sanitizedDescription = await sanitizeHTML(description ?? $i18n.proposal_detail.no_more_info)))();
+      (sanitizedDescription = await sanitizeHTML(
+        description ?? $i18n.proposal_detail.no_more_info
+      )))();
 </script>
 
 <KeyValuePairInfo>
