@@ -769,12 +769,14 @@ describe("proposals-utils", () => {
     } as Proposal;
 
     it("should map proposalInfo fields", () => {
-      const { topic, color, deadline, proposer, title, url } = mapProposalInfo({
-        ...proposalInfo,
-        proposal,
-      });
+      const { topic, topicDescription, color, deadline, proposer, title, url } =
+        mapProposalInfo({
+          ...proposalInfo,
+          proposal,
+        });
 
       expect(topic).toEqual(en.topics.Governance);
+      expect(topicDescription).toEqual(en.topics_description.Governance);
       expect(color).toEqual(
         PROPOSAL_COLOR[ProposalStatus.PROPOSAL_STATUS_OPEN]
       );
@@ -787,16 +789,17 @@ describe("proposals-utils", () => {
     });
 
     it("should map action to undefined", () => {
-      const { type } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal,
       });
 
       expect(type).toBeUndefined();
+      expect(typeDescription).toBeUndefined();
     });
 
     it("should map action to type", () => {
-      const { type } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
@@ -805,10 +808,13 @@ describe("proposals-utils", () => {
       });
 
       expect(en.actions.RegisterKnownNeuron).toEqual(type);
+      expect(en.actions_description.RegisterKnownNeuron).toEqual(
+        typeDescription
+      );
     });
 
     it("should map nns function to type", () => {
-      const { type } = mapProposalInfo({
+      const { type, typeDescription } = mapProposalInfo({
         ...proposalInfo,
         proposal: {
           ...proposal,
@@ -819,6 +825,9 @@ describe("proposals-utils", () => {
       });
 
       expect(en.execute_nns_functions["3"]).toEqual(type);
+      expect(en.execute_nns_functions_description["3"]).toEqual(
+        typeDescription
+      );
     });
   });
 

@@ -376,6 +376,21 @@ interface I18nTopics {
   SnsDecentralizationSale: string;
 }
 
+interface I18nTopics_description {
+  Unspecified: string;
+  ManageNeuron: string;
+  ExchangeRate: string;
+  NetworkEconomics: string;
+  Governance: string;
+  NodeAdmin: string;
+  ParticipantManagement: string;
+  SubnetManagement: string;
+  NetworkCanisterManagement: string;
+  Kyc: string;
+  NodeProviderRewards: string;
+  SnsDecentralizationSale: string;
+}
+
 interface I18nRewards {
   PROPOSAL_REWARD_STATUS_UNKNOWN: string;
   PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
@@ -394,6 +409,19 @@ interface I18nStatus {
 }
 
 interface I18nActions {
+  RegisterKnownNeuron: string;
+  ManageNeuron: string;
+  ApproveGenesisKyc: string;
+  ManageNetworkEconomics: string;
+  RewardNodeProvider: string;
+  RewardNodeProviders: string;
+  AddOrRemoveNodeProvider: string;
+  SetDefaultFollowees: string;
+  Motion: string;
+  SetSnsTokenSwapOpenTimeWindow: string;
+}
+
+interface I18nActions_description {
   RegisterKnownNeuron: string;
   ManageNeuron: string;
   ApproveGenesisKyc: string;
@@ -480,6 +508,40 @@ interface I18nProposal_detail__ineligible {
 }
 
 interface I18nExecute_nns_functions {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+  7: string;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+  12: string;
+  13: string;
+  14: string;
+  15: string;
+  16: string;
+  17: string;
+  18: string;
+  19: string;
+  20: string;
+  21: string;
+  22: string;
+  23: string;
+  24: string;
+  25: string;
+  26: string;
+  27: string;
+  28: string;
+  29: string;
+  30: string;
+}
+
+interface I18nExecute_nns_functions_description {
   0: string;
   1: string;
   2: string;
@@ -741,9 +803,11 @@ interface I18n {
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   topics: I18nTopics;
+  topics_description: I18nTopics_description;
   rewards: I18nRewards;
   status: I18nStatus;
   actions: I18nActions;
+  actions_description: I18nActions_description;
   transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
@@ -751,6 +815,7 @@ interface I18n {
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   execute_nns_functions: I18nExecute_nns_functions;
+  execute_nns_functions_description: I18nExecute_nns_functions_description;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
