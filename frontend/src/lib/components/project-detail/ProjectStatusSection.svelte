@@ -56,14 +56,15 @@
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
 {#if displayStatusSection}
-  <div class="wrapper" data-tid="sns-project-detail-status">
+  <div data-tid="sns-project-detail-status">
     <ProjectStatus />
 
-    <div class="content">
+    <div class="content content-cell-details">
       <ProjectCommitment />
 
       <ProjectTimeline />
     </div>
+
     <div class="actions">
       {#if myCommitmentIcp !== undefined}
         <div>
@@ -87,13 +88,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-
-  .wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-3x);
-  }
 
   .content {
     display: flex;
