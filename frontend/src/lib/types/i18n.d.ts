@@ -408,6 +408,15 @@ interface I18nStatus {
   PROPOSAL_STATUS_FAILED: string;
 }
 
+interface I18nStatus_description {
+  PROPOSAL_STATUS_UNKNOWN: string;
+  PROPOSAL_STATUS_OPEN: string;
+  PROPOSAL_STATUS_REJECTED: string;
+  PROPOSAL_STATUS_ACCEPTED: string;
+  PROPOSAL_STATUS_EXECUTED: string;
+  PROPOSAL_STATUS_FAILED: string;
+}
+
 interface I18nActions {
   RegisterKnownNeuron: string;
   ManageNeuron: string;
@@ -465,6 +474,7 @@ interface I18nProposal_detail {
   title: string;
   summary: string;
   topic_prefix: string;
+  status_prefix: string;
   type_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
@@ -807,6 +817,7 @@ interface I18n {
   topics_description: I18nTopics_description;
   rewards: I18nRewards;
   status: I18nStatus;
+  status_description: I18nStatus_description;
   actions: I18nActions;
   actions_description: I18nActions_description;
   transaction_names: I18nTransaction_names;

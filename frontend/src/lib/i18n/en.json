@@ -388,6 +388,14 @@
     "PROPOSAL_STATUS_EXECUTED": "Executed",
     "PROPOSAL_STATUS_FAILED": "Failed"
   },
+  "status_description": {
+    "PROPOSAL_STATUS_UNKNOWN": "",
+    "PROPOSAL_STATUS_OPEN": "A decision has not yet been made to adopt or reject the proposal.",
+    "PROPOSAL_STATUS_REJECTED": "The proposal has been rejected.",
+    "PROPOSAL_STATUS_ACCEPTED": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
+    "PROPOSAL_STATUS_EXECUTED": "The proposal was adopted and successfully executed.",
+    "PROPOSAL_STATUS_FAILED": "The proposal was adopted, but execution failed."
+  },
   "actions": {
     "RegisterKnownNeuron": "Register Known Neuron",
     "ManageNeuron": "Manage Neuron",
@@ -440,6 +448,7 @@
     "title": "Proposal",
     "summary": "Proposal Summary",
     "topic_prefix": "Topic",
+    "status_prefix": "Status",
     "type_prefix": "Type",
     "id_prefix": "ID",
     "proposer_prefix": "Proposer",

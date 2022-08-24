@@ -16,8 +16,14 @@ jest.mock("../../../../lib/utils/html.utils", () => ({
 describe("ProposalSystemInfoSection", () => {
   let renderResult: RenderResult;
 
-  const { type, typeDescription, topicDescription, topic } =
-    mapProposalInfo(mockProposalInfo);
+  const {
+    type,
+    typeDescription,
+    topicDescription,
+    topic,
+    statusDescription,
+    statusString,
+  } = mapProposalInfo(mockProposalInfo);
 
   beforeEach(() => {
     renderResult = render(ProposalSystemInfoSection, {
@@ -33,41 +39,54 @@ describe("ProposalSystemInfoSection", () => {
     expect(container.querySelector("h1")?.textContent).toEqual(type);
   });
 
-  it("should render type info", async () => {
+  const expectRenderedInfo = async ({
+    label,
+    value,
+    description,
+    testId,
+  }: {
+    label: string;
+    value: string | undefined;
+    description: string | undefined;
+    testId: string;
+  }) => {
     const { getByText, getByTestId } = renderResult;
-    expect(getByText(en.proposal_detail.type_prefix)).toBeInTheDocument();
+    expect(getByText(label)).toBeInTheDocument();
 
-    expect(type).not.toBeUndefined();
-    expect(typeDescription).not.toBeUndefined();
+    expect(value).not.toBeUndefined();
+    expect(description).not.toBeUndefined();
 
     await waitFor(() =>
-      expect(getByTestId("proposal-system-info-type")?.textContent).toEqual(
-        type
+      expect(getByTestId(`${testId}-value`)?.textContent).toEqual(value)
+    );
+    await waitFor(() =>
+      expect(getByTestId(`${testId}-description`)?.textContent).toEqual(
+        description
       )
     );
-    await waitFor(() =>
-      expect(
-        getByTestId("proposal-system-info-type-description")?.textContent
-      ).toEqual(typeDescription)
-    );
-  });
+  };
 
-  it("should render topic info", async () => {
-    const { getByText, getByTestId } = renderResult;
-    expect(getByText(en.proposal_detail.type_prefix)).toBeInTheDocument();
+  it("should render type info", async () =>
+    await expectRenderedInfo({
+      label: en.proposal_detail.type_prefix,
+      value: type,
+      description: typeDescription,
+      testId: "proposal-system-info-type",
+    }));
 
-    expect(topic).not.toBeUndefined();
-    expect(topicDescription).not.toBeUndefined();
+  it("should render topic info", async () =>
+    await expectRenderedInfo({
+      label: en.proposal_detail.topic_prefix,
+      value: topic,
+      description: topicDescription,
+      testId: "proposal-system-info-topic",
+    }));
 
-    await waitFor(() =>
-      expect(getByTestId("proposal-system-info-topic")?.textContent).toEqual(
-        topic
-      )
-    );
-    await waitFor(() =>
-      expect(
-        getByTestId("proposal-system-info-topic-description")?.textContent
-      ).toEqual(topicDescription)
-    );
-  });
+  it("should render status info", async () =>
+      await expectRenderedInfo({
+        label: en.proposal_detail.status_prefix,
+        value: statusString,
+        description: statusDescription,
+        testId: "proposal-system-info-status",
+      }));
 });

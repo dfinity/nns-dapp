@@ -306,26 +306,31 @@ export const excludeProposals = ({
   return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
 };
 
-export const mapProposalInfo = (
-  proposalInfo: ProposalInfo
-): {
+export type ProposalInfoMap = {
   id: ProposalId | undefined;
   proposal: Proposal | undefined;
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
+  color: Color | undefined;
+  deadline: bigint | undefined;
+
   topic: string | undefined;
   topicDescription: string | undefined;
-  color: Color | undefined;
-  status: ProposalStatus;
-  deadline: bigint | undefined;
   type: string | undefined;
   typeDescription: string | undefined;
-} => {
+  status: ProposalStatus;
+  statusString: string;
+  statusDescription: string | undefined;
+};
+
+export const mapProposalInfo = (
+  proposalInfo: ProposalInfo
+): ProposalInfoMap => {
   const { proposal, proposer, id, status, deadlineTimestampSeconds } =
     proposalInfo;
 
-  const { topics, topics_description } = get(i18n);
+  const { topics, topics_description, status_description, status: statusLabels } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
@@ -333,17 +338,21 @@ export const mapProposalInfo = (
 
   const topicKey: string = Topic[proposalInfo?.topic];
 
+  const statusKey: string = ProposalStatus[status];
+
   return {
     id,
     proposer,
     proposal,
     title: proposal?.title,
-    topic: topics[topicKey],
-    topicDescription: topics_description[topicKey],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
-    status,
     deadline,
+    topic: topics[topicKey],
+    topicDescription: topics_description[topicKey],
+    status,
+    statusString: statusLabels[statusKey],
+    statusDescription: status_description[statusKey],
     ...mapProposalType(proposal),
   };
 };
@@ -356,7 +365,7 @@ export const mapProposalInfo = (
  */
 const mapProposalType = (
   proposal: Proposal | undefined
-): { type: string | undefined; typeDescription: string | undefined } => {
+): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
   const {
     actions,
     actions_description,
