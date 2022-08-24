@@ -6,7 +6,7 @@
   import { i18n } from "../../stores/i18n";
   import SkeletonParagraph from "../ui/SkeletonParagraph.svelte";
   import type { Proposal } from "@dfinity/nns";
-  import {getExecuteNnsFunctionId} from '../../utils/proposals.utils';
+  import { getExecuteNnsFunctionId } from "../../utils/proposals.utils";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
@@ -18,7 +18,11 @@
       proposalId !== undefined
         ? $proposalPayloadsStore.get(proposalId)
         : undefined);
-  $: if (proposalId !== undefined && nnsFunctionId !== undefined && !$proposalPayloadsStore.has(proposalId)) {
+  $: if (
+    proposalId !== undefined &&
+    nnsFunctionId !== undefined &&
+    !$proposalPayloadsStore.has(proposalId)
+  ) {
     loadProposalPayload({
       proposalId,
     });
@@ -29,7 +33,12 @@
 </script>
 
 {#if nnsFunctionId !== undefined && proposalId !== undefined}
-  <h2 class="content-cell-title" data-tid="proposal-proposer-payload-entry-title">{$i18n.proposal_detail.payload}</h2>
+  <h2
+    class="content-cell-title"
+    data-tid="proposal-proposer-payload-entry-title"
+  >
+    {$i18n.proposal_detail.payload}
+  </h2>
 
   <div class="content-cell-details">
     {#if payload !== undefined}

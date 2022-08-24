@@ -27,7 +27,7 @@ describe("ProposalProposerDataSection", () => {
       props: {
         proposalInfo: {
           ...mockProposalInfo,
-          proposal: proposalWithNnsFunctionAction
+          proposal: proposalWithNnsFunctionAction,
         },
       },
     });
