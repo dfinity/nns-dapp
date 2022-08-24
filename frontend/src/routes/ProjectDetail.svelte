@@ -133,6 +133,7 @@
         return;
       }
 
+      // Edge case, the previous check already ensures that `routePathRootCanisterId` will return a defined value.
       const rootCanisterId = routePathRootCanisterId(path);
       if (rootCanisterId === undefined) {
         return;
@@ -164,7 +165,8 @@
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
   let loading: boolean;
-  $: loading = $snsSummariesStore.length === 0;
+  $: loading =
+    $snsSummariesStore.length === 0 || isNullish($snsSwapCommitmentsStore);
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;
 
