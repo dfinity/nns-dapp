@@ -17,7 +17,9 @@
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 </script>
 
-<h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">{actionKey ?? ""}</h2>
+<h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">
+  {actionKey ?? ""}
+</h2>
 
 <div class="content-cell-details">
   {#each actionFields as [key, value]}

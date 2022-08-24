@@ -12,7 +12,9 @@
   $: ({ title, proposal } = mapProposalInfo(proposalInfo));
 </script>
 
-<h2 class="content-cell-title" data-tid="proposal-proposer-info-title">{title ?? ""}</h2>
+<h2 class="content-cell-title" data-tid="proposal-proposer-info-title">
+  {title ?? ""}
+</h2>
 
 <div class="content-cell-details">
   <ProposalSummary {proposal} />

@@ -44,14 +44,16 @@ describe("ProposalModern", () => {
   it("should render proposer proposal info", async () => {
     const { queryByTestId } = renderProposalModern(true);
     await waitFor(() =>
-        expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument()
+      expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument()
     );
   });
 
   it("should render proposer proposal data", async () => {
     const { queryByTestId } = renderProposalModern(true);
     await waitFor(() =>
-        expect(queryByTestId("proposal-proposer-actions-entry-title")).toBeInTheDocument()
+      expect(
+        queryByTestId("proposal-proposer-actions-entry-title")
+      ).toBeInTheDocument()
     );
   });
 });
