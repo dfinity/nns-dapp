@@ -51,7 +51,7 @@ export const secondsToDateTime = (seconds: bigint): string => {
   };
   const milliseconds = Number(seconds) * 1000;
   // We only support english for now.
-  return new Intl.DateTimeFormat('en', options).format(new Date(milliseconds));
+  return new Intl.DateTimeFormat("en", options).format(new Date(milliseconds));
 };
 
 export const secondsToDate = (seconds: number): string => {

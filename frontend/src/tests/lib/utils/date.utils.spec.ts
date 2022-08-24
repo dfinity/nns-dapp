@@ -1,5 +1,6 @@
 import {
-  secondsToDate, secondsToDateTime,
+  secondsToDate,
+  secondsToDateTime,
   secondsToDuration,
   secondsToTime,
 } from "../../../lib/utils/date.utils";
@@ -51,7 +52,7 @@ describe("secondsToDateTime", () => {
     // We only support english for now
     const march25of2022InSeconds = Math.round(1648200639061 / 1000);
     const expectedDateText = secondsToDateTime(BigInt(march25of2022InSeconds));
-    expect(expectedDateText).toEqual('March 25, 2022 at 9:30 AM')
+    expect(expectedDateText).toEqual("March 25, 2022 at 9:30 AM");
   });
 });
 
