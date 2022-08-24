@@ -23,11 +23,6 @@ const proposalWithRewardNodeProviderAction = {
   action: proposalActionRewardNodeProvider,
 } as Proposal;
 
-const proposalWithNnsFunctionAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionNnsFunction21,
-} as Proposal;
-
 describe("ProposalProposerActionsEntry", () => {
   it("should render action key", () => {
     const { getByText } = render(ProposalActions, {
