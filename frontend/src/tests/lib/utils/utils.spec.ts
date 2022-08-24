@@ -16,17 +16,15 @@ import {
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
-  const callback = jest.fn();
+  let callback: jest.Mock;
 
   beforeEach(() => {
+    jest.useFakeTimers("modern");
     jest.spyOn(global, "setTimeout");
+    callback = jest.fn();
   });
 
-  beforeAll(() => {
-    jest.useFakeTimers("modern").setSystemTime(Date.now());
-  });
-
-  afterAll(() => jest.useRealTimers());
+  afterEach(() => jest.useRealTimers());
 
   it("should debounce function with timeout", () => {
     const testDebounce = debounce(callback, 100);
@@ -37,6 +35,11 @@ describe("utils", () => {
 
     expect(setTimeout).toHaveBeenCalledTimes(3);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 100);
+    expect(callback).not.toBeCalled();
+
+    jest.runAllTimers();
+
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it("should debounce one function call", () => {
