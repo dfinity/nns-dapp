@@ -487,6 +487,7 @@ interface I18nProposal_detail {
   reward_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
+  proposer_description: string;
   open_voting_prefix: string;
   adopt: string;
   reject: string;

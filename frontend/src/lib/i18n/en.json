@@ -460,6 +460,7 @@
     "reward_prefix": "Reward Status",
     "id_prefix": "ID",
     "proposer_prefix": "Proposer",
+    "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
     "adopt": "Adopt",
     "reject": "Reject",

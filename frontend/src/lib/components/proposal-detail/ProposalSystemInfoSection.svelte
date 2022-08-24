@@ -4,6 +4,7 @@
   import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
   import { secondsToDateTime } from "../../utils/date.utils";
   import { i18n } from "../../stores/i18n";
+  import type { NeuronId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 
@@ -21,6 +22,8 @@
   let executed: bigint | undefined;
   let failed: bigint | undefined;
 
+  let proposer: NeuronId | undefined;
+
   $: ({
     type,
     topic,
@@ -34,6 +37,7 @@
     decided,
     executed,
     failed,
+    proposer
   } = mapProposalInfo(proposalInfo));
 </script>
 
@@ -101,6 +105,15 @@
       testId="proposal-system-info-failed"
       value={secondsToDateTime(failed)}
       description={$i18n.proposal_detail.failed_description}
+    />
+  {/if}
+
+  {#if proposer !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="proposer_prefix"
+      testId="proposal-system-info-proposer"
+      value={`${proposer}`}
+      description={$i18n.proposal_detail.proposer_description}
     />
   {/if}
 </div>

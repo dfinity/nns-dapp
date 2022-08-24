@@ -24,6 +24,7 @@ describe("ProposalSystemInfoSection", () => {
     statusString,
     rewardStatusString,
     rewardStatusDescription,
+      proposer
   } = mapProposalInfo(mockProposalInfo);
 
   it("should render type title", () => {
@@ -227,5 +228,37 @@ describe("ProposalSystemInfoSection", () => {
       description: en.proposal_detail.failed_description,
       testId: "proposal-system-info-failed",
     });
+  });
+
+
+  it("should render proposer info", async () => {
+    const renderResult = render(ProposalSystemInfoSection, {
+      props: {
+        proposalInfo: mockProposalInfo,
+      },
+    });
+
+    await expectRenderedInfo({
+      renderResult,
+      label: en.proposal_detail.proposer_prefix,
+      value: `${proposer}`,
+      description: en.proposal_detail.proposer_description,
+      testId: "proposal-system-info-proposer",
+    });
+  });
+
+  it("should not render proposer if no defined", async () => {
+    const renderResult = render(ProposalSystemInfoSection, {
+      props: {
+        proposalInfo: {
+          ...mockProposalInfo,
+          proposer: undefined
+        },
+      },
+    });
+
+    const { getByTestId } = renderResult;
+
+    expect(() => getByTestId(`proposal-system-info-proposer-value`)).toThrow();
   });
 });
