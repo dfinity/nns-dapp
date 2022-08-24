@@ -1,7 +1,9 @@
 <script lang="ts">
   import Spinner from "../ui/Spinner.svelte";
   import { i18n } from "../../stores/i18n";
-  import ProjectSystemInfoSection from "./ProposalSystemInfoSection.svelte";
+  import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
+  import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
+  import ProposalProposerPayloadSection from "./ProposalProposerPayloadSection.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
@@ -19,15 +21,19 @@
   {#if $store?.proposal !== undefined}
     <div class="content-grid" data-tid="proposal-details-grid">
       <div class="content-a">
-        <ProjectSystemInfoSection proposalInfo={$store.proposal} />
+        <ProposalSystemInfoSection proposalInfo={$store.proposal} />
       </div>
-      <div class="content-b">TODO: Vote Info</div>
-      <div class="content-c">TODO: Proposal User Info</div>
-      <div class="content-d">TODO: Cast Vote</div>
+      <div class="content-b">TODO: Vote Info and Cast Vote</div>
+      <div class="content-c">
+        <ProposalProposerInfoSection proposalInfo={$store.proposal} />
+      </div>
+      <div class="content-e">
+        <ProposalProposerPayloadSection proposalInfo={$store.proposal} />
+      </div>
     </div>
   {:else}
     <div class="content-grid">
-      <div class="content-a">TODO skeleton</div>
+      <div class="content-a">TODO skeleton - use SkeletonDetails component</div>
     </div>
   {/if}
 {:else}
