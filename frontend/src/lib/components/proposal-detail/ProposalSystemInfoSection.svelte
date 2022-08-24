@@ -37,26 +37,30 @@
     decided,
     executed,
     failed,
-    proposer
+    proposer,
   } = mapProposalInfo(proposalInfo));
 </script>
 
 <h1>{type ?? ""}</h1>
 
 <div class="details" data-tid="proposal-system-info-details">
-  <ProposalSystemInfoEntry
-    labelKey="type_prefix"
-    testId="proposal-system-info-type"
-    value={type}
-    description={typeDescription}
-  />
+  {#if type !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="type_prefix"
+      testId="proposal-system-info-type"
+      value={type}
+      description={typeDescription}
+    />
+  {/if}
 
-  <ProposalSystemInfoEntry
-    labelKey="topic_prefix"
-    testId="proposal-system-info-topic"
-    value={topic}
-    description={topicDescription}
-  />
+  {#if topic !== undefined}
+    <ProposalSystemInfoEntry
+      labelKey="topic_prefix"
+      testId="proposal-system-info-topic"
+      value={topic}
+      description={topicDescription}
+    />
+  {/if}
 
   <ProposalSystemInfoEntry
     labelKey="status_prefix"

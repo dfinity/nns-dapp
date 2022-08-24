@@ -478,7 +478,8 @@
     "executed_prefix": "Executed",
     "executed_description": "The date when this adopted proposal was executed.",
     "failed_prefix": "Failed",
-    "failed_description": "The date when this adopted proposal failed to be executed."
+    "failed_description": "The date when this adopted proposal failed to be executed.",
+    "no_more_info": "No particular information."
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",

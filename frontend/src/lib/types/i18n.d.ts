@@ -506,6 +506,7 @@ interface I18nProposal_detail {
   executed_description: string;
   failed_prefix: string;
   failed_description: string;
+  no_more_info: string;
 }
 
 interface I18nProposal_detail__vote {

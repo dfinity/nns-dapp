@@ -6,13 +6,13 @@
   export let labelKey: string;
   export let testId: string;
   export let value: string;
-  export let description: string;
+  export let description: string | undefined;
 
   let sanitizedDescription = "";
 
   $: description,
     (async () =>
-      (sanitizedDescription = await sanitizeHTML(description ?? "")))();
+      (sanitizedDescription = await sanitizeHTML(description ?? $i18n.proposal_detail.no_more_info)))();
 </script>
 
 <KeyValuePairInfo>
