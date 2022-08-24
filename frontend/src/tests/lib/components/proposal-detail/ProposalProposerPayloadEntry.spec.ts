@@ -22,11 +22,6 @@ const proposalWithMotionAction = {
   action: proposalActionMotion,
 } as Proposal;
 
-const proposalWithRewardNodeProviderAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
-} as Proposal;
-
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
   action: proposalActionNnsFunction21,

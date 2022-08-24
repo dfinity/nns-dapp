@@ -11,7 +11,7 @@
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
-  export let payload: object | undefined | null;
+  let payload: object | undefined | null;
 
   $: $proposalPayloadsStore,
     (payload =
@@ -29,7 +29,7 @@
 </script>
 
 {#if nnsFunctionId !== undefined && proposalId !== undefined}
-  <h2 class="content-cell-title">{$i18n.proposal_detail.payload}</h2>
+  <h2 class="content-cell-title" data-tid="proposal-proposer-payload-entry-title">{$i18n.proposal_detail.payload}</h2>
 
   <div class="content-cell-details">
     {#if payload !== undefined}
