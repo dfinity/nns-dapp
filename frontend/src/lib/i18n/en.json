@@ -380,6 +380,13 @@
     "PROPOSAL_REWARD_STATUS_SETTLED": "Settled",
     "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
   },
+  "rewards_description": {
+    "PROPOSAL_REWARD_STATUS_UNKNOWN": "",
+    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "The proposal is still accepting votes, for the purpose of voting rewards.",
+    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "The proposal is no longer accepting votes. It is due to settle in the next reward event.",
+    "PROPOSAL_REWARD_STATUS_SETTLED": "The proposal has been taken into account in a reward event.",
+    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "The proposal is not eligible to be taken into account in a reward event."
+  },
   "status": {
     "PROPOSAL_STATUS_UNKNOWN": "Unknown",
     "PROPOSAL_STATUS_OPEN": "Open",
@@ -450,6 +457,7 @@
     "topic_prefix": "Topic",
     "status_prefix": "Status",
     "type_prefix": "Type",
+    "reward_prefix": "Reward Status",
     "id_prefix": "ID",
     "proposer_prefix": "Proposer",
     "open_voting_prefix": "Voting open:",

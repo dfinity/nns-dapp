@@ -11,14 +11,18 @@
   let topicDescription: string | undefined;
   let statusString: string;
   let statusDescription: string | undefined;
+  let rewardStatusString: string;
+  let rewardStatusDescription: string | undefined;
 
   $: ({
     type,
     topic,
     statusString,
+    rewardStatusString,
     typeDescription,
     topicDescription,
     statusDescription,
+    rewardStatusDescription,
   } = mapProposalInfo(proposalInfo));
 </script>
 
@@ -44,6 +48,13 @@
     testId="proposal-system-info-status"
     value={statusString}
     description={statusDescription}
+  />
+
+  <ProposalSystemInfoEntry
+    labelKey="reward_prefix"
+    testId="proposal-system-info-reward"
+    value={rewardStatusString}
+    description={rewardStatusDescription}
   />
 </div>
 

@@ -399,6 +399,14 @@ interface I18nRewards {
   PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
 }
 
+interface I18nRewards_description {
+  PROPOSAL_REWARD_STATUS_UNKNOWN: string;
+  PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
+  PROPOSAL_REWARD_STATUS_READY_TO_SETTLE: string;
+  PROPOSAL_REWARD_STATUS_SETTLED: string;
+  PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
+}
+
 interface I18nStatus {
   PROPOSAL_STATUS_UNKNOWN: string;
   PROPOSAL_STATUS_OPEN: string;
@@ -476,6 +484,7 @@ interface I18nProposal_detail {
   topic_prefix: string;
   status_prefix: string;
   type_prefix: string;
+  reward_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
   open_voting_prefix: string;
@@ -816,6 +825,7 @@ interface I18n {
   topics: I18nTopics;
   topics_description: I18nTopics_description;
   rewards: I18nRewards;
+  rewards_description: I18nRewards_description;
   status: I18nStatus;
   status_description: I18nStatus_description;
   actions: I18nActions;

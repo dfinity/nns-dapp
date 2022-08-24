@@ -8,7 +8,7 @@ import type {
   ProposalInfo,
   Tally,
 } from "@dfinity/nns";
-import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import {ProposalRewardStatus, ProposalStatus, Topic, Vote} from "@dfinity/nns";
 import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
@@ -322,15 +322,18 @@ export type ProposalInfoMap = {
   status: ProposalStatus;
   statusString: string;
   statusDescription: string | undefined;
+  rewardStatus: ProposalRewardStatus;
+  rewardStatusString: string;
+  rewardStatusDescription: string | undefined;
 };
 
 export const mapProposalInfo = (
   proposalInfo: ProposalInfo
 ): ProposalInfoMap => {
-  const { proposal, proposer, id, status, deadlineTimestampSeconds } =
+  const { proposal, proposer, id, status, rewardStatus, deadlineTimestampSeconds } =
     proposalInfo;
 
-  const { topics, topics_description, status_description, status: statusLabels } = get(i18n);
+  const { topics, topics_description, status_description, status: statusLabels, rewards, rewards_description } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
@@ -339,6 +342,7 @@ export const mapProposalInfo = (
   const topicKey: string = Topic[proposalInfo?.topic];
 
   const statusKey: string = ProposalStatus[status];
+  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
 
   return {
     id,
@@ -353,6 +357,9 @@ export const mapProposalInfo = (
     status,
     statusString: statusLabels[statusKey],
     statusDescription: status_description[statusKey],
+    rewardStatus,
+    rewardStatusString: rewards[rewardStatusKey],
+    rewardStatusDescription: rewards_description[rewardStatusKey],
     ...mapProposalType(proposal),
   };
 };

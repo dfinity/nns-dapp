@@ -23,6 +23,8 @@ describe("ProposalSystemInfoSection", () => {
     topic,
     statusDescription,
     statusString,
+    rewardStatusString,
+    rewardStatusDescription,
   } = mapProposalInfo(mockProposalInfo);
 
   beforeEach(() => {
@@ -83,10 +85,18 @@ describe("ProposalSystemInfoSection", () => {
     }));
 
   it("should render status info", async () =>
-      await expectRenderedInfo({
-        label: en.proposal_detail.status_prefix,
-        value: statusString,
-        description: statusDescription,
-        testId: "proposal-system-info-status",
-      }));
+    await expectRenderedInfo({
+      label: en.proposal_detail.status_prefix,
+      value: statusString,
+      description: statusDescription,
+      testId: "proposal-system-info-status",
+    }));
+
+  it("should render reward status info", async () =>
+    await expectRenderedInfo({
+      label: en.proposal_detail.reward_prefix,
+      value: rewardStatusString,
+      description: rewardStatusDescription,
+      testId: "proposal-system-info-reward",
+    }));
 });
