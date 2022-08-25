@@ -28,10 +28,7 @@ const generate = () => {
   const rootData = mapKeys(en);
   const governanceData = mapKeys(en_governance);
 
-  const data = [
-    ...rootData,
-    ...governanceData,
-  ];
+  const data = [...rootData, ...governanceData];
 
   const lang = `lang: Languages;`;
 
