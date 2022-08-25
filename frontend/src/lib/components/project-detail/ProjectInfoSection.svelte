@@ -36,15 +36,15 @@
   <div data-tid="sns-project-detail-info">
     <div class="title">
       <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
-      <h1>{metadata.name}</h1>
+      <h1 class="content-cell-title">{metadata.name}</h1>
     </div>
-    <p class="value">
+    <p class="value content-cell-details">
       {metadata.description}
     </p>
     <a href={metadata.url} target="_blank" rel="noopener noreferrer"
       >{metadata.url}</a
     >
-    <div class="details">
+    <div>
       <KeyValuePair>
         <svelte:fragment slot="key"
           >{$i18n.sns_project_detail.token_name}</svelte:fragment
@@ -76,24 +76,11 @@
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
-    margin-bottom: var(--padding);
-
-    h1 {
-      margin: 0;
-      line-height: var(--line-height-standard);
-    }
   }
+
   a {
     font-size: inherit;
 
     color: var(--primary);
-  }
-
-  .details {
-    margin-top: var(--padding-2x);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
   }
 </style>

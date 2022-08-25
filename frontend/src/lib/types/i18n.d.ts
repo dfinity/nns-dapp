@@ -399,7 +399,24 @@ interface I18nRewards {
   PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
 }
 
+interface I18nRewards_description {
+  PROPOSAL_REWARD_STATUS_UNKNOWN: string;
+  PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
+  PROPOSAL_REWARD_STATUS_READY_TO_SETTLE: string;
+  PROPOSAL_REWARD_STATUS_SETTLED: string;
+  PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
+}
+
 interface I18nStatus {
+  PROPOSAL_STATUS_UNKNOWN: string;
+  PROPOSAL_STATUS_OPEN: string;
+  PROPOSAL_STATUS_REJECTED: string;
+  PROPOSAL_STATUS_ACCEPTED: string;
+  PROPOSAL_STATUS_EXECUTED: string;
+  PROPOSAL_STATUS_FAILED: string;
+}
+
+interface I18nStatus_description {
   PROPOSAL_STATUS_UNKNOWN: string;
   PROPOSAL_STATUS_OPEN: string;
   PROPOSAL_STATUS_REJECTED: string;
@@ -465,9 +482,12 @@ interface I18nProposal_detail {
   title: string;
   summary: string;
   topic_prefix: string;
+  status_prefix: string;
   type_prefix: string;
+  reward_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
+  proposer_description: string;
   open_voting_prefix: string;
   adopt: string;
   reject: string;
@@ -478,6 +498,15 @@ interface I18nProposal_detail {
   payload: string;
   summary_toggle_view: string;
   vote: string;
+  created_prefix: string;
+  created_description: string;
+  decided_prefix: string;
+  decided_description: string;
+  executed_prefix: string;
+  executed_description: string;
+  failed_prefix: string;
+  failed_description: string;
+  no_more_info: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -806,7 +835,9 @@ interface I18n {
   topics: I18nTopics;
   topics_description: I18nTopics_description;
   rewards: I18nRewards;
+  rewards_description: I18nRewards_description;
   status: I18nStatus;
+  status_description: I18nStatus_description;
   actions: I18nActions;
   actions_description: I18nActions_description;
   transaction_names: I18nTransaction_names;
