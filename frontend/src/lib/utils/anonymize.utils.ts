@@ -287,7 +287,7 @@ export const anonymizeProposal = async (
   };
 };
 
-const anonymiseBuyer = async ([buyer, state]) => [
+const anonymizeBuyer = async ([buyer, state]) => [
   buyer,
   {
     ...state,
@@ -311,7 +311,7 @@ export const anonymizeSnsSummary = async (
   if (originalSummary !== undefined && originalSummary !== null) {
     const anonymizedBuyers = await mapPromises(
       originalSummary?.swap.state.buyers,
-      anonymiseBuyer
+      anonymizeBuyer
     );
     return {
       ...originalSummary,
