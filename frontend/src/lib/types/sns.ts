@@ -57,5 +57,5 @@ export interface SnsSummary {
 
 export interface SnsSwapCommitment {
   rootCanisterId: Principal;
-  myCommitment: SnsSwapBuyerState | undefined; // e8s
+  myCommitment: SnsSwapBuyerState | undefined;
 }
