@@ -22,7 +22,7 @@
   let nnsFunctionId: number | undefined;
   $: nnsFunctionId = getExecuteNnsFunctionId(proposal);
 
-  // TODO(L2-965): delete legacy component - duplicated by new component <ProposalActions />
+  // TODO(L2-965): delete legacy component - duplicated by the new component <ProposalActions />
 </script>
 
 <CardBlock limitHeight={false}>
