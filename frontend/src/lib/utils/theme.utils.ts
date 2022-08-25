@@ -8,6 +8,7 @@ export const initTheme = (): Theme => {
     return Theme.DARK;
   }
 
+  // This is set in the index.html file
   const theme: string | null = document.documentElement.getAttribute("theme");
 
   const initialTheme: Theme = enumFromStringExists({
@@ -17,18 +18,10 @@ export const initTheme = (): Theme => {
     ? (theme as Theme)
     : Theme.DARK;
 
-  applyTheme({ theme: initialTheme, preserve: false });
-
   return initialTheme;
 };
 
-export const applyTheme = ({
-  theme,
-  preserve = true,
-}: {
-  theme: Theme;
-  preserve?: boolean;
-}) => {
+export const applyTheme = ({ theme }: { theme: Theme }) => {
   const { documentElement, head } = document;
 
   documentElement.setAttribute("theme", theme);
@@ -41,8 +34,4 @@ export const applyTheme = ({
   head?.children
     ?.namedItem("theme-color")
     ?.setAttribute("content", color.trim());
-
-  if (preserve) {
-    localStorage.setItem("theme", theme);
-  }
 };

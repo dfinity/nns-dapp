@@ -87,6 +87,7 @@
         "(prefers-color-scheme: dark)"
       ).matches;
 
+      // `theme` must match storeLocalStorageKey.Theme
       document.documentElement.setAttribute(
         "theme",
         localStorage.theme ?? (isDarkPreferred ? "dark" : "light")
