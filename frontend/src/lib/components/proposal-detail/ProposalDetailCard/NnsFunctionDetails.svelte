@@ -22,6 +22,8 @@
       proposalId,
     });
   }
+
+  // TODO(L2-965): delete legacy component - duplicated by the new component <ProposalPayload />
 </script>
 
 <dt>{$i18n.proposal_detail.nns_function_name}</dt>

@@ -8,7 +8,12 @@ import type {
   ProposalInfo,
   Tally,
 } from "@dfinity/nns";
-import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
@@ -306,26 +311,56 @@ export const excludeProposals = ({
   return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
 };
 
-export const mapProposalInfo = (
-  proposalInfo: ProposalInfo
-): {
+export type ProposalInfoMap = {
   id: ProposalId | undefined;
   proposal: Proposal | undefined;
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
+  color: Color | undefined;
+
+  created: bigint;
+  decided: bigint | undefined;
+  executed: bigint | undefined;
+  failed: bigint | undefined;
+  deadline: bigint | undefined;
+
   topic: string | undefined;
   topicDescription: string | undefined;
-  color: Color | undefined;
-  status: ProposalStatus;
-  deadline: bigint | undefined;
   type: string | undefined;
   typeDescription: string | undefined;
-} => {
-  const { proposal, proposer, id, status, deadlineTimestampSeconds } =
-    proposalInfo;
+  status: ProposalStatus;
+  statusString: string;
+  statusDescription: string | undefined;
+  rewardStatus: ProposalRewardStatus;
+  rewardStatusString: string;
+  rewardStatusDescription: string | undefined;
+};
 
-  const { topics, topics_description } = get(i18n);
+export const mapProposalInfo = (
+  proposalInfo: ProposalInfo
+): ProposalInfoMap => {
+  const {
+    proposal,
+    proposer,
+    id,
+    status,
+    rewardStatus,
+    deadlineTimestampSeconds,
+    proposalTimestampSeconds,
+    decidedTimestampSeconds,
+    executedTimestampSeconds,
+    failedTimestampSeconds,
+  } = proposalInfo;
+
+  const {
+    topics,
+    topics_description,
+    status_description,
+    status: statusLabels,
+    rewards,
+    rewards_description,
+  } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
@@ -333,17 +368,32 @@ export const mapProposalInfo = (
 
   const topicKey: string = Topic[proposalInfo?.topic];
 
+  const statusKey: string = ProposalStatus[status];
+  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
+
   return {
     id,
     proposer,
     proposal,
     title: proposal?.title,
-    topic: topics[topicKey],
-    topicDescription: topics_description[topicKey],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
-    status,
+
+    created: proposalTimestampSeconds,
+    decided: decidedTimestampSeconds > 0 ? decidedTimestampSeconds : undefined,
+    executed:
+      executedTimestampSeconds > 0 ? executedTimestampSeconds : undefined,
+    failed: failedTimestampSeconds > 0 ? failedTimestampSeconds : undefined,
     deadline,
+
+    topic: topics[topicKey],
+    topicDescription: topics_description[topicKey],
+    status,
+    statusString: statusLabels[statusKey],
+    statusDescription: status_description[statusKey],
+    rewardStatus,
+    rewardStatusString: rewards[rewardStatusKey],
+    rewardStatusDescription: rewards_description[rewardStatusKey],
     ...mapProposalType(proposal),
   };
 };
@@ -356,7 +406,7 @@ export const mapProposalInfo = (
  */
 const mapProposalType = (
   proposal: Proposal | undefined
-): { type: string | undefined; typeDescription: string | undefined } => {
+): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
   const {
     actions,
     actions_description,
