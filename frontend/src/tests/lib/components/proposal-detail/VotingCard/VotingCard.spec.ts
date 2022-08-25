@@ -17,10 +17,6 @@ import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 import VotingCardTest from "./VotingCardTest.svelte";
 
-jest.mock("../../../../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
-
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
   const proposalInfo: ProposalInfo = {

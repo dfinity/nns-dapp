@@ -25,7 +25,7 @@
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
-  import { sanitizeHTML } from "../../utils/html.utils";
+  import {sanitize} from "../../utils/html.utils";
 
   export let account: Account;
   export let amount: number;
@@ -73,11 +73,6 @@
   const back = () => {
     dispatcher("nnsBack");
   };
-
-  let sanitizedIdentifier = "";
-  $: account,
-    (async () =>
-      (sanitizedIdentifier = await sanitizeHTML(account.identifier)))();
 </script>
 
 <div data-tid="sns-swap-participate-step-2">
@@ -89,7 +84,7 @@
     <div>
       <p data-tid="sns-swap-participate-main-account">
         {@html replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: valueSpan(sanitizedIdentifier),
+          $identifier: valueSpan(sanitize(account.identifier)),
         })}
       </p>
     </div>

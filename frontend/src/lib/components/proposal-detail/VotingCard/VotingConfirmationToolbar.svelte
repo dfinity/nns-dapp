@@ -12,7 +12,7 @@
   import { busy } from "../../../stores/busy.store";
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
-  import { sanitizeHTML } from "../../../utils/html.utils";
+  import {sanitize} from "../../../utils/html.utils";
 
   const dispatch = createEventDispatcher();
 
@@ -54,27 +54,13 @@
       voteType: selectedVoteType,
     });
   };
-
-  let sanitizedTitle = "";
-  let sanitizedTopic = "";
-  $: title,
-    topic,
-    (async () => {
-      const [cleanTitle, cleanTopic] = await Promise.all([
-        sanitizeHTML(title ?? ""),
-        sanitizeHTML(topic ?? ""),
-      ]);
-
-      sanitizedTopic = cleanTopic;
-      sanitizedTitle = cleanTitle;
-    })();
 </script>
 
 <p class="question">
   {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
     $id: `${id ?? ""}`,
-    $title: sanitizedTitle,
-    $topic: sanitizedTopic,
+    $title: sanitize(title),
+    $topic: sanitize(topic),
   })}
 </p>
 

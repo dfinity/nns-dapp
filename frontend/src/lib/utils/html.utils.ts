@@ -1,3 +1,4 @@
+import { sanitize as DOMPurifySanitize } from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
 
 type Marked = typeof markedTypes;
@@ -65,29 +66,16 @@ export const markdownToHTML = async (): Promise<(text: string) => string> => {
 };
 
 /**
- * Sanitize HTML using DOMPurify
- * @see {@link https://github.com/cure53/DOMPurify}
- */
-export const sanitize = async (): Promise<(text: string) => string> => {
-  const url = "/assets/libs/purify.min.js";
-  const { sanitize: purify } = (await import(url)).default;
-  return purify;
-};
-
-/**
- * Sanitize markdown text and convert it to HTML
+ * Sanitize Markdown text and convert it to HTML
  */
 export const markdownToSanitizedHTML = async (
   text: string
 ): Promise<string> => {
-  const [sanitizeText, convertMarkdownToHTML] = await Promise.all([
-    sanitize(),
-    markdownToHTML(),
-  ]);
-  return convertMarkdownToHTML(sanitizeText(text ?? ""));
+  const convertMarkdownToHTML = await markdownToHTML();
+  return convertMarkdownToHTML(sanitize(text ?? ""));
 };
 
-export const sanitizeHTML = async (text: string): Promise<string> => {
-  const sanitizeText = await sanitize();
-  return sanitizeText(text);
-};
+export const sanitize = (text: string): string => {
+  const isBrowser = typeof window !== 'undefined';
+  return isBrowser ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
+}
