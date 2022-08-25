@@ -76,6 +76,6 @@ export const markdownToSanitizedHTML = async (
 };
 
 export const sanitize = (text: string): string => {
-  const isBrowser = typeof window !== 'undefined';
+  const isBrowser = typeof window !== "undefined";
   return isBrowser ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
-}
+};

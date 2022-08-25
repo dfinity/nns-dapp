@@ -12,7 +12,7 @@
   import { busy } from "../../../stores/busy.store";
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
-  import {sanitize} from "../../../utils/html.utils";
+  import { sanitize } from "../../../utils/html.utils";
 
   const dispatch = createEventDispatcher();
 

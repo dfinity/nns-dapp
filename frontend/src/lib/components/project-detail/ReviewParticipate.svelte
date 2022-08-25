@@ -25,7 +25,7 @@
   import Checkbox from "../ui/Checkbox.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
-  import {sanitize} from "../../utils/html.utils";
+  import { sanitize } from "../../utils/html.utils";
 
   export let account: Account;
   export let amount: number;

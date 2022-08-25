@@ -8,7 +8,7 @@ import ProposalModernTest from "./ProposalModernTest.svelte";
 
 jest.mock("../../../../lib/utils/html.utils", () => ({
   markdownToSanitizedHTML: (value) => Promise.resolve(value),
-  sanitize: (value) => value
+  sanitize: (value) => value,
 }));
 
 describe("ProposalModern", () => {

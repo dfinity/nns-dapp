@@ -31,6 +31,6 @@ configure({
 });
 
 const DOMPurify = require("dompurify");
-const { JSDOM } = require('jsdom');
+const { JSDOM } = require("jsdom");
 const { window } = new JSDOM("<!DOCTYPE html>");
 global.DOMPurify = DOMPurify(window);
