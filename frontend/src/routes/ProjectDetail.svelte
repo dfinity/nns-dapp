@@ -26,7 +26,6 @@
   import { snsSummariesStore } from "../lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import SkeletonDetails from "../lib/components/ui/SkeletonDetails.svelte";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -164,9 +163,6 @@
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let loading: boolean;
-  $: loading =
-    $snsSummariesStore.length === 0 || isNullish($snsSwapCommitmentsStore);
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;
 
@@ -182,26 +178,14 @@
 
 <main>
   <div class="stretch-mobile">
-    <!-- notFound redirects to launchpad but we show the spinner until redirection occurs -->
-    {#if loading || notFound}
-      <div class="content-grid">
-        <div class="content-a">
-          <SkeletonDetails />
-        </div>
-        <div class="content-b">
-          <SkeletonDetails />
-        </div>
+    <div class="content-grid">
+      <div class="content-a">
+        <ProjectInfoSection />
       </div>
-    {:else}
-      <div class="content-grid">
-        <div class="content-a">
-          <ProjectInfoSection />
-        </div>
-        <div class="content-b">
-          <ProjectStatusSection />
-        </div>
+      <div class="content-b">
+        <ProjectStatusSection />
       </div>
-    {/if}
+    </div>
   </div>
 </main>
 
