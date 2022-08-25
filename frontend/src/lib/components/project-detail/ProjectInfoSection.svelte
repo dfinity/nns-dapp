@@ -13,8 +13,8 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
-  import Spinner from "../../../lib/components/ui/Spinner.svelte";
   import { isNullish } from "../../utils/utils";
+  import SkeletonDetails from "../ui/SkeletonDetails.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -31,8 +31,7 @@
 </script>
 
 {#if isNullish(metadata) || isNullish(token)}
-  <!-- TODO: replace with a skeleton -->
-  <Spinner inline />
+  <SkeletonDetails />
 {:else}
   <div data-tid="sns-project-detail-info">
     <div class="title">

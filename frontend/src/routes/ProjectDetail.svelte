@@ -16,7 +16,6 @@
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -164,9 +163,6 @@
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let loading: boolean;
-  $: loading =
-    $snsSummariesStore.length === 0 || isNullish($snsSwapCommitmentsStore);
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;
 
@@ -182,19 +178,14 @@
 
 <main>
   <div class="stretch-mobile">
-    <!-- notFound redirects to launchpad but we show the spinner until redirection occurs -->
-    {#if loading || notFound}
-      <Spinner />
-    {:else}
-      <div class="content-grid">
-        <div class="content-a">
-          <ProjectInfoSection />
-        </div>
-        <div class="content-b">
-          <ProjectStatusSection />
-        </div>
+    <div class="content-grid">
+      <div class="content-a">
+        <ProjectInfoSection />
       </div>
-    {/if}
+      <div class="content-b">
+        <ProjectStatusSection />
+      </div>
+    </div>
   </div>
 </main>
 
