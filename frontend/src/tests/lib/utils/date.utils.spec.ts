@@ -45,14 +45,14 @@ describe("secondsToDate", () => {
 
 describe("secondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(secondsToDateTime(BigInt(0))).toEqual("January 1, 1970 at 12:00 AM");
+    expect(secondsToDateTime(BigInt(0))).toEqual("January 1, 1970 12:00 AM");
   });
 
   it("should return formatted date and time", () => {
     // We only support english for now
     const march25of2022InSeconds = Math.round(1648200639061 / 1000);
     const expectedDateText = secondsToDateTime(BigInt(march25of2022InSeconds));
-    expect(expectedDateText).toEqual("March 25, 2022 at 9:30 AM");
+    expect(expectedDateText).toEqual("March 25, 2022 9:30 AM");
   });
 });
 
