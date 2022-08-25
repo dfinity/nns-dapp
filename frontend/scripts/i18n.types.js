@@ -2,16 +2,15 @@
 
 const { writeFileSync } = require("fs");
 const prettier = require("prettier");
-const en = require("../src/lib/i18n/en.json");
 
-/**
- * Generate the TypeScript interfaces from the english translation file.
- *
- * Note: only supports "a one child depth" in the data structure.
- */
-const generate = () => {
-  const data = Object.keys(en).map((key) => {
-    const properties = Object.keys(en[key]).map((prop) => `${prop}: string;`);
+const en = require("../src/lib/i18n/en.json");
+const en_governance = require("../src/lib/i18n/en.governance.json");
+
+const mapKeys = (entries) =>
+  Object.keys(entries).map((key) => {
+    const properties = Object.keys(entries[key]).map(
+      (prop) => `${prop}: string;`
+    );
 
     return {
       key,
@@ -19,6 +18,20 @@ const generate = () => {
       properties,
     };
   });
+
+/**
+ * Generate the TypeScript interfaces from the english translation file.
+ *
+ * Note: only supports "a one child depth" in the data structure.
+ */
+const generate = () => {
+  const rootData = mapKeys(en);
+  const governanceData = mapKeys(en_governance);
+
+  const data = [
+    ...rootData,
+    ...governanceData,
+  ];
 
   const lang = `lang: Languages;`;
 
