@@ -77,8 +77,11 @@
 
     <link rel="stylesheet" href="./build/bundle.css" />
 
+    <!-- BASE_HREF -->
+    <!-- CONTENT_SECURITY_POLICY -->
+
     <!-- Init theme as fast as possible -->
-    <script nonce="main-bc619616-7c54-4009-abff-493dd9b42bac">
+    <script>
       const isDarkPreferred = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
@@ -89,14 +92,12 @@
       );
     </script>
 
-    <script
-      type="module"
-      src="./build/main.js"
-      nonce="main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25"
-    ></script>
-
-    <!-- BASE_HREF -->
-    <!-- CONTENT_SECURITY_POLICY -->
+    <script>
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "./build/main.js";
+      document.head.appendChild(loader);
+    </script>
   </head>
 
   <body></body>
