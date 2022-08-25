@@ -22,6 +22,7 @@ main.legacy {
     
     &[data-tid="proposal-card"] .meta {
       flex-wrap: nowrap;
+      align-items: baseline;
     }
   }
 }
