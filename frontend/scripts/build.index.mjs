@@ -40,7 +40,7 @@ const updateBaseHref = (content) =>
  * 2. nns-js auto-generated proto js code (base_types_pb.js and ledger_pb.js) require 'unsafe-eval' as well
  *
  * - script-src and usage of 'integrity':
- * Ideally we would like to secure the scripts that are loaded with the 'integrity=sha256-...' hashes - e.g. https://stackoverflow.com/a/68492689/5404186.
+ * Ideally we would like to secure the scripts that are loaded with the 'integrity=sha256-...' hashes attributes - e.g. https://stackoverflow.com/a/68492689/5404186.
  * However, this is currently only supported by Chrome. Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1409200
  * To overcome this, we include within the index.html a first script which, when executed at app boot time, add a script that actually loads the main.js.
  * We generate the hash for that particular first script and set 'strict-dynamic' to trust those scripts that will be loaded per extension - the chunks used by the app.
