@@ -3,10 +3,10 @@ set -euxo pipefail
 
 export DFX_NETWORK=small12
 TESTNET=small12
-IC_COMMIT=3982db093a87e90cbe0595877a4110e4f37ac740 # Master
+IC_COMMIT=08716da25d35ffcf7cc190ca952ad52e269c57a2 # master Thu Aug 25 12:40:41 2022 +0000
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME"/dfn/ic-github/
-ND_COMMIT=70d8e6cf733c61f0155bb91b20cdeab4b89abb68 # branch no-legacy Thu Aug 11 15:46:15 2022 +0200
+ND_COMMIT=ef5d3fb805bfc8b3828b0eb70fdd44719800fc81 # main Thu Aug 25 14:02:34 2022 +0200
 ND_DIR="$HOME"/dfn/nns-dapp/branches/testnet-environments
 OC_COMMIT=896b202b597d07fc6e3b6fb4b8f477f690d37320
 OC_DIR="$HOME"/dfn/open-chat
