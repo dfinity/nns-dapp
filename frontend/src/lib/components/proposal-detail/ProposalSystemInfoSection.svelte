@@ -41,9 +41,9 @@
   } = mapProposalInfo(proposalInfo));
 </script>
 
-<h1>{type ?? ""}</h1>
+<h1 class="content-cell-title">{type ?? ""}</h1>
 
-<div class="details" data-tid="proposal-system-info-details">
+<div class="content-cell-details" data-tid="proposal-system-info-details">
   {#if type !== undefined}
     <ProposalSystemInfoEntry
       labelKey="type_prefix"
@@ -121,18 +121,3 @@
     />
   {/if}
 </div>
-
-<style lang="scss">
-  h1 {
-    margin: 0;
-    line-height: var(--line-height-standard);
-  }
-
-  .details {
-    margin-top: var(--padding-2x);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-</style>
