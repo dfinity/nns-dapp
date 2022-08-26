@@ -74,10 +74,18 @@ export const listProposals = async (): Promise<void> => {
   });
 };
 
+/**
+ * List the nex proposals in a paginated way.
+ * @param {beforeProposal: ProposalId | undefined; loadFinished: (paginationOver: boolean) => void;} params
+ * @param {ProposalId | undefined} params.beforeProposal Pagination starting proposal. Undefined for first results
+ * @param {(paginationOver: boolean) => void;} params.loadFinished Triggered when the loading is over. `paginationOver` equals `true` if all pages of the list have been queried.
+ */
 export const listNextProposals = async ({
   beforeProposal,
+  loadFinished,
 }: {
   beforeProposal: ProposalId | undefined;
+  loadFinished: (params: {paginationOver: boolean, certified: boolean}) => void;
 }): Promise<void> =>
   findProposals({
     beforeProposal,
@@ -85,9 +93,12 @@ export const listNextProposals = async ({
       if (proposals.length === 0) {
         // There is no more proposals to fetch for the current filters.
         // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+        // We can also tell the UI that everything was loaded, useful to disable the infinite scroll.
+        loadFinished({paginationOver: true, certified});
         return;
       }
       proposalsStore.pushProposals({ proposals, certified });
+      loadFinished({paginationOver: false, certified});
     },
     onError: handleFindProposalsError,
   });
