@@ -80,6 +80,9 @@ describe("proposals-services", () => {
     it("should call the canister to list the next proposals", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
 
       expect(spyQueryProposals).toHaveBeenCalled();
@@ -96,6 +99,9 @@ describe("proposals-services", () => {
     it("should push new proposals to the list", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        }
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(2);
     });
@@ -163,6 +169,9 @@ describe("proposals-services", () => {
       const spy = jest.spyOn(proposalsStore, "pushProposals");
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
       expect(spy).toHaveBeenCalledTimes(0);
       spy.mockClear();
@@ -558,6 +567,9 @@ describe("proposals-services", () => {
       const call = async () =>
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
+          loadFinished: () => {
+            // do nothing here
+          },
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));

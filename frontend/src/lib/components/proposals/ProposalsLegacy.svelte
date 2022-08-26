@@ -29,7 +29,7 @@
     </InfiniteScroll>
 
     {#if loadingAnimation === "spinner"}
-      <div class="spinner">
+      <div class="spinner" data-tid="proposals-spinner">
         <Spinner inline />
       </div>
     {/if}

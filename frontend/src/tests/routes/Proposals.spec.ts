@@ -88,7 +88,7 @@ describe("Proposals", () => {
       proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
       await waitFor(() =>
-        expect(getByTestId("proposals-loading")).not.toBeNull()
+        expect(getByTestId("proposals-spinner")).not.toBeNull()
       );
     });
 
