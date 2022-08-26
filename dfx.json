@@ -59,6 +59,14 @@
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
+    "sns_ledger_archive": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-archive.did",
+      "wasm": "target/ic/ic-icrc1-archive.wasm",
+      "type": "custom"
+    },
     "sns_swap": {
       "build": [
         "true"

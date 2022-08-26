@@ -50,6 +50,7 @@ COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.di
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
 COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.did
 COPY --from=builder /ic/rs/rosetta-api/icrc1/ledger/icrc1.did /ic-icrc1-ledger.did
+COPY --from=builder /ic/rs/rosetta-api/icrc1/archive/archive.did /ic-icrc1-archive.did
 COPY --from=builder /ic/rs/nns/gtc/canister/gtc.did /genesis_token.did
 COPY --from=builder /ic/rs/nns/cmc/cmc.did /cmc.did
 COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns_wasm.did

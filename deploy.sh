@@ -305,7 +305,7 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
-    for canister in root governance ledger swap; do
+    for canister in root governance ledger swap ic-icrc1-archive; do
       ./target/ic/sns add-sns-wasm-for-tests \
         --network "$DFX_NETWORK" \
         --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" \
