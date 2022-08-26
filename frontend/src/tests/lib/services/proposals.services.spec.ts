@@ -101,7 +101,7 @@ describe("proposals-services", () => {
         beforeProposal: mockProposals[mockProposals.length - 1].id,
         loadFinished: () => {
           // do nothing here
-        }
+        },
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(2);
     });

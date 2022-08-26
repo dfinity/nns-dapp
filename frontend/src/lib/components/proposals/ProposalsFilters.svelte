@@ -7,7 +7,7 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { enumsExclude } from "../../utils/enum.utils";
   import FiltersButton from "../ui/FiltersButton.svelte";
-  import {VOTING_UI} from "../../constants/environment.constants";
+  import { VOTING_UI } from "../../constants/environment.constants";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 

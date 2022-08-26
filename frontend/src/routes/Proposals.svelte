@@ -25,7 +25,7 @@
   import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
   import { VOTING_UI } from "../lib/constants/environment.constants";
-  import {sortedProposals} from '../lib/derived/proposals.derived';
+  import { sortedProposals } from "../lib/derived/proposals.derived";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -38,7 +38,7 @@
     try {
       await listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
-        loadFinished: ({paginationOver}) => {
+        loadFinished: ({ paginationOver }) => {
           loading = false;
           disableInfiniteScroll = paginationOver;
         },
