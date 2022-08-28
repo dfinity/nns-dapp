@@ -1,14 +1,14 @@
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
-export type VotingStatus =
+export type VoteRegistrationStatus =
   | undefined
   | "vote-registration"
   | "post-update"
   | "complete";
 
-export interface VoteInProgress {
-  status: VotingStatus;
+export interface VoteRegistration {
+  status: VoteRegistrationStatus;
   proposalInfo: ProposalInfo;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
@@ -16,8 +16,8 @@ export interface VoteInProgress {
   toastId: symbol | undefined;
 }
 
-export interface VoteInProgressStore {
-  votes: VoteInProgress[];
+export interface VoteRegistrationStore {
+  registrations: VoteRegistration[];
 }
 
 // TODO: think about having an abstract store for the basic CRUD
@@ -26,9 +26,9 @@ export interface VoteInProgressStore {
  * A store that contain votes in progress data (proposals and neurons that were not confirmed by `update` calls)
  * Is used for optimistic UI update
  */
-const initVoteInProgressStore = () => {
-  const { subscribe, update, set } = writable<VoteInProgressStore>({
-    votes: [],
+const initVoteRegistrationStore = () => {
+  const { subscribe, update, set } = writable<VoteRegistrationStore>({
+    registrations: [],
   });
 
   return {
@@ -44,8 +44,8 @@ const initVoteInProgressStore = () => {
       proposalInfo: ProposalInfo;
       neuronIds: NeuronId[];
       toastId: symbol;
-    }): VoteInProgress {
-      const newEntry: VoteInProgress = {
+    }): VoteRegistration {
+      const newEntry: VoteRegistration = {
         status: undefined,
         proposalInfo,
         neuronIds,
@@ -54,7 +54,7 @@ const initVoteInProgressStore = () => {
         toastId,
       };
 
-      update(({ votes }) => {
+      update(({ registrations: votes }) => {
         if (votes.find(({ proposalInfo: { id } }) => id === proposalInfo.id)) {
           // Proposal `id` is used for the store entries indentification
           // Simultaneous voting for the same proposal is blocked by UI. But this is so critical that the throw was added. Otherwise potential errors would be extremely difficult to detect.
@@ -62,7 +62,7 @@ const initVoteInProgressStore = () => {
         }
 
         return {
-          votes: [...votes, newEntry],
+          registrations: [...votes, newEntry],
         };
       });
 
@@ -76,18 +76,18 @@ const initVoteInProgressStore = () => {
       proposalId: ProposalId;
       neuronId: NeuronId;
     }) {
-      update(({ votes }) => {
+      update(({ registrations: votes }) => {
         const item = votes.find(
           ({ proposalInfo: { id } }) => id === proposalId
         );
 
         if (item === undefined) {
           console.error("updating not voting item", votes, proposalId);
-          return { votes };
+          return { registrations: votes };
         }
 
         return {
-          votes: [
+          registrations: [
             ...votes.filter(({ proposalInfo: { id } }) => id !== proposalId),
             {
               ...item,
@@ -101,15 +101,15 @@ const initVoteInProgressStore = () => {
     },
 
     updateStatus({
-      voteInProgress,
+      voteRegistration,
       status,
     }: {
-      voteInProgress: VoteInProgress;
-      status: VotingStatus;
+      voteRegistration: VoteRegistration;
+      status: VoteRegistrationStatus;
     }) {
-      update(({ votes }) => ({
-        votes: votes.map((storeVote) =>
-          storeVote.proposalInfo.id === voteInProgress.proposalInfo.id
+      update(({ registrations: votes }) => ({
+        registrations: votes.map((storeVote) =>
+          storeVote.proposalInfo.id === voteRegistration.proposalInfo.id
             ? { ...storeVote, status }
             : storeVote
         ),
@@ -117,15 +117,15 @@ const initVoteInProgressStore = () => {
     },
 
     removeCompleted() {
-      update(({ votes }) => ({
-        votes: votes.filter(({ status }) => status !== "complete"),
+      update(({ registrations: votes }) => ({
+        registrations: votes.filter(({ status }) => status !== "complete"),
       }));
     },
 
     reset() {
-      set({ votes: [] });
+      set({ registrations: [] });
     },
   };
 };
 
-export const voteInProgressStore = initVoteInProgressStore();
+export const voteRegistrationStore = initVoteRegistrationStore();
