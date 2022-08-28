@@ -393,14 +393,16 @@ const createRegisterVotesToast = ({
 const neuronRegistrationComplete = ({
   neuronId,
   proposalId,
+  updateProposalContext,
 }: {
   neuronId: NeuronId;
   proposalId: ProposalId;
+  updateProposalContext: (proposal: ProposalInfo) => void;
 }) => {
   const voteInProgress = get(voteInProgressStore).votes.find(
     ({ proposalInfo: { id } }) => id === proposalId
   ) as VoteInProgress;
-  const { vote, proposalInfo, updateProposalContext } = voteInProgress;
+  const { vote, proposalInfo } = voteInProgress;
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
     ({ neuronId: id }) => id === neuronId
@@ -487,7 +489,6 @@ export const registerVotes = async ({
       vote,
       proposalInfo,
       neuronIds,
-      updateProposalContext,
       toastId,
     });
 
@@ -496,7 +497,7 @@ export const registerVotes = async ({
       status: "vote-registration",
     });
 
-    await registerNeuronsVote(voteInProgress);
+    await registerNeuronsVote({ voteInProgress, updateProposalContext });
 
     voteInProgressStore.updateStatus({
       voteInProgress,
@@ -527,23 +528,53 @@ export const registerVotes = async ({
   }
 };
 
-const registerNeuronsVote = async (voteInProgress: VoteInProgress) => {
+const registerNeuronsVote = async ({
+  voteInProgress,
+  updateProposalContext,
+}: {
+  voteInProgress: VoteInProgress;
+  updateProposalContext: (proposal: ProposalInfo) => void;
+}) => {
   const identity: Identity = await getIdentity();
   const { neuronIds, proposalInfo, vote } = voteInProgress;
   const { id, topic } = proposalInfo;
+  const proposalId = id as ProposalId;
 
   try {
-    await requestRegisterVotes({
+    const requests = neuronIds.map(
+      (neuronId: NeuronId, index): Promise<void> =>
+        // TODO: to remove after local test
+        waitForMilliseconds(index * 1000).then(() =>
+          registerVote({
+            neuronId,
+            vote,
+            proposalId,
+            identity,
+          })
+            // call it only after successful registration
+            .then(() =>
+              neuronRegistrationComplete({
+                neuronId,
+                proposalId,
+                updateProposalContext,
+              })
+            )
+        )
+    );
+
+    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
+
+    const registerVoteResponses = await Promise.allSettled(requests);
+
+    logWithTimestamp(
+      `Registering [${neuronIds.map(hashCode)}] votes complete.`
+    );
+
+    processRegisterVoteErrors({
+      registerVoteResponses,
       neuronIds,
-      proposalId: id as bigint,
-      identity,
-      vote,
+      proposalId,
       topic,
-      registerVoteCallback: (neuronId) =>
-        neuronRegistrationComplete({
-          neuronId,
-          proposalId: id as ProposalId,
-        }),
     });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
@@ -551,6 +582,55 @@ const registerNeuronsVote = async (voteInProgress: VoteInProgress) => {
     toastsStore.error({
       labelKey: "error.register_vote_unknown",
       err,
+    });
+  }
+};
+
+export const processRegisterVoteErrors = ({
+  registerVoteResponses,
+  neuronIds,
+  proposalId,
+  topic,
+}: {
+  registerVoteResponses: PromiseSettledResult<void>[];
+  neuronIds: NeuronId[];
+  proposalId: ProposalId;
+  topic: Topic;
+}) => {
+  const rejectedResponses = registerVoteResponses.filter(
+    (response: PromiseSettledResult<void>) => {
+      const { status } = response;
+
+      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
+      // 1. the error truly means the neuron has already voted.
+      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
+      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
+      const hasAlreadyVoted: boolean =
+        "reason" in response &&
+        response.reason?.detail?.error_message ===
+          "Neuron already voted on proposal.";
+
+      return status === "rejected" && !hasAlreadyVoted;
+    }
+  );
+
+  if (rejectedResponses.length > 0) {
+    const details: string[] = registerVoteErrorDetails({
+      responses: registerVoteResponses,
+      neuronIds,
+    });
+    const $i18n = get(i18n);
+
+    console.error("vote", rejectedResponses);
+
+    toastsStore.show({
+      labelKey: "error.register_vote",
+      level: "error",
+      substitutions: {
+        $proposalId: `${proposalId}`,
+        $topic: $i18n.topics[Topic[topic]],
+      },
+      detail: details.join(", "),
     });
   }
 };
@@ -574,77 +654,4 @@ const updateAfterVoting = async (
     }),
     reloadProposal(),
   ]).then(([_, proposal]) => proposal);
-};
-
-export const requestRegisterVotes = async ({
-  neuronIds,
-  proposalId,
-  identity,
-  vote,
-  topic,
-  registerVoteCallback,
-}: {
-  neuronIds: bigint[];
-  proposalId: ProposalId;
-  identity: Identity;
-  vote: Vote;
-  topic: Topic;
-  registerVoteCallback: (neuronId: NeuronId) => void;
-}): Promise<void> => {
-  const requests = neuronIds.map(
-    (neuronId: NeuronId, index): Promise<void> =>
-      waitForMilliseconds(index * 1000).then(() =>
-        registerVote({
-          neuronId,
-          vote,
-          proposalId,
-          identity,
-        })
-          // call it only after successful registration
-          .then(() => registerVoteCallback(neuronId))
-      )
-  );
-
-  logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
-
-  const responses = await Promise.allSettled(requests);
-
-  logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes complete.`);
-
-  const rejectedResponses = responses.filter(
-    (response: PromiseSettledResult<void>) => {
-      const { status } = response;
-
-      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
-      // 1. the error truly means the neuron has already voted.
-      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
-      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
-      const hasAlreadyVoted: boolean =
-        "reason" in response &&
-        response.reason?.detail?.error_message ===
-          "Neuron already voted on proposal.";
-
-      return status === "rejected" && !hasAlreadyVoted;
-    }
-  );
-
-  if (rejectedResponses.length > 0) {
-    const details: string[] = registerVoteErrorDetails({
-      responses,
-      neuronIds,
-    });
-    const $i18n = get(i18n);
-
-    console.error("vote", rejectedResponses);
-
-    toastsStore.show({
-      labelKey: "error.register_vote",
-      level: "error",
-      substitutions: {
-        $proposalId: `${proposalId}`,
-        $topic: $i18n.topics[Topic[topic]],
-      },
-      detail: details.join(", "),
-    });
-  }
 };

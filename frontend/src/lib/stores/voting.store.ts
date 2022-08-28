@@ -14,8 +14,6 @@ export interface VoteInProgress {
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
   toastId: symbol | undefined;
-  updateProposalContext: (proposal: ProposalInfo) => void;
-  // neuronRegistrationComplete: ({ neuronId }: { neuronId: NeuronId }) => void;
 }
 
 export interface VoteInProgressStore {
@@ -40,13 +38,11 @@ const initVoteInProgressStore = () => {
       vote,
       proposalInfo,
       neuronIds,
-      updateProposalContext,
       toastId,
     }: {
       vote: Vote;
       proposalInfo: ProposalInfo;
       neuronIds: NeuronId[];
-      updateProposalContext: (proposal: ProposalInfo) => void;
       toastId: symbol;
     }): VoteInProgress {
       const newEntry: VoteInProgress = {
@@ -56,7 +52,6 @@ const initVoteInProgressStore = () => {
         successfullyVotedNeuronIds: [],
         vote,
         toastId,
-        updateProposalContext,
       };
 
       update(({ votes }) => {
