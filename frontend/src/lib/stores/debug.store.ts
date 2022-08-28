@@ -17,6 +17,7 @@ import {
   votingNeuronSelectStore,
 } from "./proposals.store";
 import { toastsStore } from "./toasts.store";
+import { voteInProgressStore } from "./voting.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
   derived(store, (store) => store);
@@ -71,6 +72,7 @@ export const initDebugStore = () =>
       selectedAccountStore,
       selectedCanisterStore,
       selectedProposalStore,
+      voteInProgressStore,
     ],
     ([
       $busyStore,
@@ -89,6 +91,7 @@ export const initDebugStore = () =>
       $selectedAccountStore,
       $selectedCanisterStore,
       $selectedProposalStore,
+      $voteInProgressStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -106,5 +109,6 @@ export const initDebugStore = () =>
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
       selectedProposal: $selectedProposalStore,
+      voteInProgressStore: $voteInProgressStore,
     })
   );

@@ -470,8 +470,10 @@
     "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?",
     "cast_vote_neuronId": "Neuron ID $neuronId",
     "cast_vote_votingPower": "Voting power of $votingPower",
-    "vote_adopt_in_progress": "Adopting proposal $topic ($proposalId). Please do not leave until completed.",
-    "vote_reject_in_progress": "Rejecting proposal $topic ($proposalId). Please do not leave until completed."
+    "vote_adopt_in_progress": "Adopting proposal $topic ($proposalId). $status",
+    "vote_reject_in_progress": "Rejecting proposal $topic ($proposalId). $status",
+    "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
+    "vote_status_updating": "Updating proposal state..."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",

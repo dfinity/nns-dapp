@@ -498,6 +498,8 @@ interface I18nProposal_detail__vote {
   cast_vote_votingPower: string;
   vote_adopt_in_progress: string;
   vote_reject_in_progress: string;
+  vote_status_registering: string;
+  vote_status_updating: string;
 }
 
 interface I18nProposal_detail__ineligible {

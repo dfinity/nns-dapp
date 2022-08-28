@@ -28,6 +28,28 @@ const initToastsStore = () => {
       return id;
     },
 
+    updateToastContent({
+      toastId,
+      content,
+    }: {
+      toastId: symbol;
+      content: Partial<Omit<ToastMsg, "id">>;
+    }): void {
+      update((messages: ToastMsg[]) =>
+        // use map to preserve order
+        messages.map((message) => {
+          if (message.id !== toastId) {
+            return message;
+          }
+
+          return {
+            ...message,
+            ...content,
+          };
+        })
+      );
+    },
+
     success({
       labelKey,
       substitutions,

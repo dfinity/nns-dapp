@@ -1,17 +1,28 @@
-import type { NeuronId, ProposalId, Vote } from "@dfinity/nns";
+import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
+export type VotingStatus =
+  | undefined
+  | "vote-registration"
+  | "post-update"
+  | "complete";
+
 export interface VoteInProgress {
-  proposalId: ProposalId;
+  status: VotingStatus;
+  proposalInfo: ProposalInfo;
   neuronIds: NeuronId[];
-  // TODO(L2-941): use it in the upcomming message details
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
+  toastId: symbol | undefined;
+  updateProposalContext: (proposal: ProposalInfo) => void;
+  // neuronRegistrationComplete: ({ neuronId }: { neuronId: NeuronId }) => void;
 }
 
 export interface VoteInProgressStore {
   votes: VoteInProgress[];
 }
+
+// TODO: think about having an abstract store for the basic CRUD
 
 /**
  * A store that contain votes in progress data (proposals and neurons that were not confirmed by `update` calls)
@@ -25,17 +36,40 @@ const initVoteInProgressStore = () => {
   return {
     subscribe,
 
-    add(vote: VoteInProgress) {
+    create({
+      vote,
+      proposalInfo,
+      neuronIds,
+      updateProposalContext,
+    }: {
+      vote: Vote;
+      proposalInfo: ProposalInfo;
+      neuronIds: NeuronId[];
+      updateProposalContext: (proposal: ProposalInfo) => void;
+    }): VoteInProgress {
+      const newEntry: VoteInProgress = {
+        status: undefined,
+        proposalInfo,
+        neuronIds,
+        successfullyVotedNeuronIds: [],
+        vote,
+        toastId: undefined,
+        updateProposalContext,
+      };
+
       update(({ votes }) => {
-        if (votes.find(({ proposalId }) => proposalId === vote.proposalId)) {
-          // Simultaneous voting is blocked by UI. This check was added here only because otherwise this type of error would be extremely difficult to detect.
+        if (votes.find(({ proposalInfo: { id } }) => id === proposalInfo.id)) {
+          // Proposal `id` is used for the store entries indentification
+          // Simultaneous voting for the same proposal is blocked by UI. But this is so critical that the throw was added. Otherwise potential errors would be extremely difficult to detect.
           throw new Error("Simultaneous proposal voting");
         }
 
         return {
-          votes: [...votes, vote],
+          votes: [...votes, newEntry],
         };
       });
+
+      return newEntry;
     },
 
     addSuccessfullyVotedNeuronId({
@@ -46,7 +80,9 @@ const initVoteInProgressStore = () => {
       neuronId: NeuronId;
     }) {
       update(({ votes }) => {
-        const item = votes.find(({ proposalId: id }) => id === proposalId);
+        const item = votes.find(
+          ({ proposalInfo: { id } }) => id === proposalId
+        );
 
         if (item === undefined) {
           console.error("updating not voting item", votes, proposalId);
@@ -55,7 +91,7 @@ const initVoteInProgressStore = () => {
 
         return {
           votes: [
-            ...votes.filter(({ proposalId: id }) => id !== proposalId),
+            ...votes.filter(({ proposalInfo: { id } }) => id !== proposalId),
             {
               ...item,
               successfullyVotedNeuronIds: Array.from(
@@ -67,10 +103,17 @@ const initVoteInProgressStore = () => {
       });
     },
 
-    // TODO(L2-941): use entry status for removing (rename to e.g. `removeCompleted`)
-    remove(proposalId: ProposalId) {
+    update(vote: VoteInProgress) {
       update(({ votes }) => ({
-        votes: votes.filter(({ proposalId: id }) => id !== proposalId),
+        votes: votes.map((storeVote) =>
+          storeVote.proposalInfo.id === vote.proposalInfo.id ? vote : storeVote
+        ),
+      }));
+    },
+
+    removeCompleted() {
+      update(({ votes }) => ({
+        votes: votes.filter(({ status }) => status !== "complete"),
       }));
     },
 
