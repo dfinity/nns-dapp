@@ -359,16 +359,23 @@ const registerVotesStatus = ({
     : $i18n.proposal_detail__vote.vote_status_updating;
 };
 
-const createRegisterVotesToast = (voteInProgress: VoteInProgress): symbol => {
+const createRegisterVotesToast = ({
+  vote,
+  proposalInfo,
+  neuronIds,
+}: {
+  vote: Vote;
+  proposalInfo: ProposalInfo;
+  neuronIds: NeuronId[];
+}): symbol => {
   const $i18n = get(i18n);
-  const { vote, proposalInfo, neuronIds, successfullyVotedNeuronIds } =
-    voteInProgress;
   const { id, topic } = proposalInfo;
+  const totalNeurons = neuronIds.length;
 
   return toastsStore.show({
     labelKey:
       vote === Vote.YES
-        ? "proposal_detail__vote.vote_adopt_in_progress"
+        ? "proåposal_detail__vote.vote_adopt_in_progress"
         : "proposal_detail__vote.vote_reject_in_progress",
     level: "info",
     spinner: true,
@@ -376,8 +383,8 @@ const createRegisterVotesToast = (voteInProgress: VoteInProgress): symbol => {
       $proposalId: `${id}`,
       $topic: $i18n.topics[Topic[topic]],
       $status: registerVotesStatus({
-        totalNeurons: neuronIds.length,
-        completeNeurons: successfullyVotedNeuronIds.length,
+        totalNeurons,
+        completeNeurons: 0,
       }),
     },
   });
@@ -475,24 +482,24 @@ export const registerVotes = async ({
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
   try {
+    const toastId = createRegisterVotesToast({ vote, proposalInfo, neuronIds });
     const voteInProgress: VoteInProgress = voteInProgressStore.create({
       vote,
       proposalInfo,
       neuronIds,
       updateProposalContext,
-    });
-    const toastId = createRegisterVotesToast(voteInProgress);
-
-    voteInProgressStore.update({
-      ...voteInProgress,
-      status: "vote-registration",
       toastId,
+    });
+
+    voteInProgressStore.updateStatus({
+      voteInProgress,
+      status: "vote-registration",
     });
 
     await registerNeuronsVote(voteInProgress);
 
-    voteInProgressStore.update({
-      ...voteInProgress,
+    voteInProgressStore.updateStatus({
+      voteInProgress,
       status: "post-update",
     });
 
@@ -502,8 +509,8 @@ export const registerVotes = async ({
     proposalsStore.replaceProposals([updatedProposalInfo]);
     updateProposalContext(updatedProposalInfo);
 
-    voteInProgressStore.update({
-      ...voteInProgress,
+    voteInProgressStore.updateStatus({
+      voteInProgress,
       status: "complete",
     });
 

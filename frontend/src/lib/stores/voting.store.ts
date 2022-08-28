@@ -41,11 +41,13 @@ const initVoteInProgressStore = () => {
       proposalInfo,
       neuronIds,
       updateProposalContext,
+      toastId,
     }: {
       vote: Vote;
       proposalInfo: ProposalInfo;
       neuronIds: NeuronId[];
       updateProposalContext: (proposal: ProposalInfo) => void;
+      toastId: symbol;
     }): VoteInProgress {
       const newEntry: VoteInProgress = {
         status: undefined,
@@ -53,7 +55,7 @@ const initVoteInProgressStore = () => {
         neuronIds,
         successfullyVotedNeuronIds: [],
         vote,
-        toastId: undefined,
+        toastId,
         updateProposalContext,
       };
 
@@ -103,10 +105,18 @@ const initVoteInProgressStore = () => {
       });
     },
 
-    update(vote: VoteInProgress) {
+    updateStatus({
+      voteInProgress,
+      status,
+    }: {
+      voteInProgress: VoteInProgress;
+      status: VotingStatus;
+    }) {
       update(({ votes }) => ({
         votes: votes.map((storeVote) =>
-          storeVote.proposalInfo.id === vote.proposalInfo.id ? vote : storeVote
+          storeVote.proposalInfo.id === voteInProgress.proposalInfo.id
+            ? { ...storeVote, status }
+            : storeVote
         ),
       }));
     },
