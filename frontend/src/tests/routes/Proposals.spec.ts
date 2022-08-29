@@ -131,6 +131,16 @@ describe("Proposals", () => {
       ).toBeInTheDocument();
     });
 
+    it("should disable infinite scroll when all proposals loaded", () => {
+      mockLoadProposals();
+
+      const { container } = render(Proposals);
+
+      const ul = container.querySelector("ul") as HTMLUListElement;
+
+      expect(ul.hasAttribute("disabled")).toBeTruthy();
+    });
+
     it("should not render not found text on init", () => {
       const { container } = render(Proposals);
 
