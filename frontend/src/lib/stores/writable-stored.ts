@@ -1,5 +1,9 @@
-import { writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 import type { storeLocalStorageKey } from "../constants/stores.constants";
+
+type StoredWritable<T> = Writable<T> & {
+  unsubscribeStorage: () => void;
+};
 
 export const writableStored = <T>({
   key,
@@ -7,7 +11,7 @@ export const writableStored = <T>({
 }: {
   key: storeLocalStorageKey;
   defaultValue: T;
-}) => {
+}): StoredWritable<T> => {
   const getInitialValue = (): T => {
     // Do not break UI if local storage fails
     try {
@@ -28,7 +32,7 @@ export const writableStored = <T>({
 
   const store = writable<T>(getInitialValue());
 
-  store.subscribe((store: T) => {
+  const unsubscribeStorage = store.subscribe((store: T) => {
     // Do not break UI if local storage fails
     try {
       localStorage.setItem(key, JSON.stringify(store));
@@ -37,5 +41,8 @@ export const writableStored = <T>({
     }
   });
 
-  return store;
+  return {
+    ...store,
+    unsubscribeStorage,
+  };
 };

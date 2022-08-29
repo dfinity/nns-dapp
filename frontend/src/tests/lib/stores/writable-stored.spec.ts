@@ -48,4 +48,23 @@ describe("writableStored", () => {
 
     expect(get(store)).toEqual(defaultValue);
   });
+
+  it("unsubscribes storing in local storage", async () => {
+    const defaultValue = { filter: "all" };
+    const store = writableStored({
+      key: storeLocalStorageKey.ProposalFilters,
+      defaultValue,
+    });
+    const newState = { filter: "active" };
+    store.set(newState);
+    expect(
+      window.localStorage.getItem(storeLocalStorageKey.ProposalFilters)
+    ).toEqual(JSON.stringify(newState));
+
+    store.unsubscribeStorage();
+    store.set(defaultValue);
+    expect(
+      window.localStorage.getItem(storeLocalStorageKey.ProposalFilters)
+    ).toEqual(JSON.stringify(newState));
+  });
 });
