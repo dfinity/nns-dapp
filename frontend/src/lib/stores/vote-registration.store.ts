@@ -101,15 +101,15 @@ const initVoteRegistrationStore = () => {
     },
 
     updateStatus({
-      voteRegistration,
+      proposalId,
       status,
     }: {
-      voteRegistration: VoteRegistration;
+      proposalId: ProposalId;
       status: VoteRegistrationStatus;
     }) {
       update(({ registrations: votes }) => ({
         registrations: votes.map((storeVote) =>
-          storeVote.proposalInfo.id === voteRegistration.proposalInfo.id
+          storeVote.proposalInfo.id === proposalId
             ? { ...storeVote, status }
             : storeVote
         ),
