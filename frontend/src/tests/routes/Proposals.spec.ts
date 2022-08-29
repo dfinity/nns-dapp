@@ -107,7 +107,7 @@ describe("Proposals", () => {
       });
       afterEach(() => jest.clearAllMocks());
 
-      it("should render a spinner while loading neurons", async () => {
+      it("should render skeletons while loading neurons", async () => {
         const { getByTestId } = render(Proposals);
 
         await waitFor(() =>
