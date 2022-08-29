@@ -105,6 +105,17 @@ describe("proposals-services", () => {
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(2);
     });
+
+
+    it("should call callback when load finished", async () => {
+      const spy = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spy
+      });
+      expect(spy).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe("load", () => {
@@ -175,6 +186,22 @@ describe("proposals-services", () => {
       });
       expect(spy).toHaveBeenCalledTimes(0);
       spy.mockClear();
+    });
+
+    it("should call callback with pagination over", async () => {
+      jest
+          .spyOn(api, "queryProposals")
+          .mockImplementation(() => Promise.resolve([]));
+
+      const spyCallback = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spyCallback,
+      });
+
+      expect(spyCallback).toHaveBeenCalledTimes(2);
+      expect(spyCallback).toHaveBeenLastCalledWith({paginationOver: true, certified: true});
     });
   });
 
