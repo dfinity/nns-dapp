@@ -215,11 +215,6 @@ interface I18nNeurons {
   may_take_while: string;
   create: string;
   edit_source: string;
-  status_locked: string;
-  status_spawning: string;
-  status_unspecified: string;
-  status_dissolved: string;
-  status_dissolving: string;
   community_fund: string;
   hotkey_control: string;
   stake: string;
@@ -659,6 +654,14 @@ interface I18nError__sns {
   sns_add_hotkey: string;
 }
 
+interface I18nNeuron_state {
+  Unspecified: string;
+  Locked: string;
+  Spawning: string;
+  Dissolved: string;
+  Dissolving: string;
+}
+
 interface I18nTopics {
   Unspecified: string;
   ManageNeuron: string;
@@ -850,6 +853,7 @@ interface I18n {
   error__canister: I18nError__canister;
   theme: I18nTheme;
   error__sns: I18nError__sns;
+  neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
   rewards: I18nRewards;

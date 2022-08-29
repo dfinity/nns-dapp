@@ -2,8 +2,13 @@
   import { i18n } from "../../stores/i18n";
 
   import type { StateInfo } from "../../utils/neuron.utils";
+  import {NeuronState} from '@dfinity/nns';
+  import {getStateInfo} from '../../utils/neuron.utils';
 
-  export let stateInfo: StateInfo | undefined;
+  export let state: NeuronState;
+
+  let stateInfo: StateInfo | undefined;
+  $: stateInfo = getStateInfo(state);
 
   let iconStyle: string;
   $: iconStyle =
@@ -13,7 +18,7 @@
 {#if stateInfo !== undefined}
   <div class="info">
     <p style={iconStyle} class="status">
-      {$i18n.neurons[`status_${stateInfo.textKey}`]}
+      {$i18n.neuron_state[[NeuronState[state]]]}
       <svelte:component this={stateInfo.Icon} />
     </p>
   </div>

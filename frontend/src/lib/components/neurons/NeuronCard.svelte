@@ -11,7 +11,6 @@
     isSpawning,
     neuronStake,
   } from "../../utils/neuron.utils";
-  import type { StateInfo } from "../../utils/neuron.utils";
   import ICPComponent from "../ic/ICP.svelte";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
@@ -29,8 +28,6 @@
   export let disabled: boolean = false;
   export let cardType: CardType = "card";
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: ICP;
@@ -80,7 +77,7 @@
     {/if}
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuron.state} />
 
   <NeuronStateRemainingTime
     state={neuron.state}

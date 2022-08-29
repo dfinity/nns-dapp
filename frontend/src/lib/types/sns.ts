@@ -60,6 +60,3 @@ export interface SnsSwapCommitment {
   rootCanisterId: Principal;
   myCommitment: SnsSwapBuyerState | undefined; // e8s
 }
-
-// To differentiate SNS and NNS Neuron types, but for now, they have the same states.
-export type SnsNeuronState = NeuronState;

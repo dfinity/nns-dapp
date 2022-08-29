@@ -1,17 +1,15 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import {ICP, NeuronState} from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { CardType } from "../../types/card";
-  import type { StateInfo } from "../../utils/neuron.utils";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
-    getSnsStateInfo,
     isUserHotkey,
   } from "../../utils/sns-neuron.utils";
   import IcpComponent from "../ic/ICP.svelte";
@@ -38,8 +36,8 @@
   let neuronICP: ICP;
   $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getSnsStateInfo(neuron);
+  let neuronState: NeuronState;
+  $: neuronState = getSnsNeuronState(neuron);
 
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
@@ -64,7 +62,7 @@
     />
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuronState} />
 
   <NeuronStateRemainingTime
     state={getSnsNeuronState(neuron)}

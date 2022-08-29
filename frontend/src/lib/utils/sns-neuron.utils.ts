@@ -3,7 +3,6 @@ import { NeuronState } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { AppPath } from "../constants/routes.constants";
-import type { SnsNeuronState } from "../types/sns";
 import {
   getLastPathDetail,
   getParentPathDetail,
@@ -11,7 +10,6 @@ import {
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
-import { stateTextMapper, type StateInfo } from "./neuron.utils";
 import { bytesToHexString, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -24,9 +22,10 @@ export const sortSnsNeuronsByCreatedTimestamp = (
     ) => Number(created2 - created1)
   );
 
+// For now, both nns neurons and sns neurons have the same states.
 export const getSnsNeuronState = ({
   dissolve_state,
-}: SnsNeuron): SnsNeuronState => {
+}: SnsNeuron): NeuronState => {
   const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
     return NeuronState.Dissolved;
@@ -38,11 +37,6 @@ export const getSnsNeuronState = ({
     return NeuronState.Dissolving;
   }
   return NeuronState.Unspecified;
-};
-
-export const getSnsStateInfo = (neuron: SnsNeuron): StateInfo => {
-  const state = getSnsNeuronState(neuron);
-  return stateTextMapper[state] ?? stateTextMapper[NeuronState.Unspecified];
 };
 
 export const getSnsDissolvingTimeInSeconds = (

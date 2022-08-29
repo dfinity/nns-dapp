@@ -1,4 +1,11 @@
 {
+  "neuron_state": {
+    "Unspecified": "",
+    "Locked": "Locked",
+    "Spawning": "Spawning",
+    "Dissolved": "Unlocked",
+    "Dissolving": "Dissolving"
+  },
   "topics": {
     "Unspecified": "Unspecified",
     "ManageNeuron": "Neuron Management",
