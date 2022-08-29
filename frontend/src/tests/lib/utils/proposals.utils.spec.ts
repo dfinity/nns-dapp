@@ -6,11 +6,11 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import {
-    NnsFunction,
-    ProposalRewardStatus,
-    ProposalStatus,
-    Topic,
-    Vote,
+  NnsFunction,
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
 } from "@dfinity/nns";
 import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import {
@@ -47,7 +47,6 @@ import {
   proposalActionRewardNodeProvider,
 } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
-import {enumFromStringExists} from '../../../lib/utils/enum.utils';
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
@@ -306,9 +305,7 @@ describe("proposals-utils", () => {
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
-            rewards: [
-              ProposalRewardStatus.ReadyToSettle,
-            ],
+            rewards: [ProposalRewardStatus.ReadyToSettle],
             excludeVotedProposals: false,
           },
           neurons,
@@ -793,9 +790,7 @@ describe("proposals-utils", () => {
 
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
-      expect(color).toEqual(
-        PROPOSAL_COLOR[ProposalStatus.Open]
-      );
+      expect(color).toEqual(PROPOSAL_COLOR[ProposalStatus.Open]);
       expect(deadline).toEqual(
         deadlineTimestampSeconds - BigInt(nowInSeconds())
       );

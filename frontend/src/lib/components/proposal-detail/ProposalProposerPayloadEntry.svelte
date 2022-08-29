@@ -7,7 +7,7 @@
   import SkeletonParagraph from "../ui/SkeletonParagraph.svelte";
   import type { Proposal } from "@dfinity/nns";
   import { getNnsFunction } from "../../utils/proposals.utils";
-  import type {NnsFunction} from '@dfinity/nns';
+  import type { NnsFunction } from "@dfinity/nns";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;

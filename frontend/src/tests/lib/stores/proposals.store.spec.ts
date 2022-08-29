@@ -143,10 +143,7 @@ describe("proposals-store", () => {
     });
 
     it("should update topic status", () => {
-      const filter = [
-        ProposalStatus.Open,
-        ProposalStatus.Rejected,
-      ];
+      const filter = [ProposalStatus.Open, ProposalStatus.Rejected];
       proposalsFiltersStore.filterStatus(filter);
 
       const filters = get(proposalsFiltersStore);

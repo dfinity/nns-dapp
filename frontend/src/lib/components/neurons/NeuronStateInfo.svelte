@@ -2,8 +2,8 @@
   import { i18n } from "../../stores/i18n";
 
   import type { StateInfo } from "../../utils/neuron.utils";
-  import {NeuronState} from '@dfinity/nns';
-  import {getStateInfo} from '../../utils/neuron.utils';
+  import { NeuronState } from "@dfinity/nns";
+  import { getStateInfo } from "../../utils/neuron.utils";
 
   export let state: NeuronState;
 

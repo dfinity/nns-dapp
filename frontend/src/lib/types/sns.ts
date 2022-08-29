@@ -1,4 +1,3 @@
-import type { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwapBuyerState,

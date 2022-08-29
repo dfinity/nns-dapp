@@ -8,7 +8,7 @@
   } from "../../../utils/proposals.utils";
   import Json from "../../common/Json.svelte";
   import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
-  import type {NnsFunction} from '@dfinity/nns';
+  import type { NnsFunction } from "@dfinity/nns";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;

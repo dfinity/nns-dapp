@@ -5,7 +5,7 @@
   import Spinner from "../../ui/Spinner.svelte";
   import { i18n } from "../../../stores/i18n";
   import { proposalPayloadsStore } from "../../../stores/proposals.store";
-  import type {NnsFunction} from '@dfinity/nns';
+  import type { NnsFunction } from "@dfinity/nns";
 
   export let proposalId: ProposalId;
   export let nnsFunction: NnsFunction;
