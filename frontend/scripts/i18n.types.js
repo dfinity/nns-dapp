@@ -19,6 +19,16 @@ const mapKeys = (entries) =>
     };
   });
 
+const assertUniqueKeys = ({ governance, core }) => {
+  const coreKeys = core.map(({ key }) => key);
+  const diff = governance.filter(({ key }) => coreKeys.includes(key));
+
+  if (diff.length) {
+    console.log("Duplicate keys:", diff.map(({ key }) => key).join(","));
+    throw new Error("Some i18n governance keys are declared in the core keys.");
+  }
+};
+
 /**
  * Generate the TypeScript interfaces from the english translation file.
  *
@@ -28,10 +38,9 @@ const generate = () => {
   const rootData = mapKeys(en);
   const governanceData = mapKeys(en_governance);
 
-  const data = [
-    ...rootData,
-    ...governanceData,
-  ];
+  assertUniqueKeys({ governance: governanceData, core: rootData });
+
+  const data = [...rootData, ...governanceData];
 
   const lang = `lang: Languages;`;
 
@@ -51,4 +60,8 @@ const generate = () => {
   writeFileSync("./src/lib/types/i18n.d.ts", output);
 };
 
-generate();
+try {
+  generate();
+} catch (e) {
+  console.error(e);
+}
