@@ -37,7 +37,11 @@
         >{$i18n.neurons.merge_neurons}</button
       >
     {:else}
-      <Tooltip id="merge-neurons-info" text={$i18n.neurons.need_two_to_merge}>
+      <Tooltip
+        id="merge-neurons-info"
+        top
+        text={$i18n.neurons.need_two_to_merge}
+      >
         <button
           disabled
           data-tid="merge-neurons-button"
