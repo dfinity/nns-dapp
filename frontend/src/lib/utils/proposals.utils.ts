@@ -422,7 +422,7 @@ const mapProposalType = (
     return NO_MATCH;
   }
 
-  const nnsFunction = getNnsFunction(proposal);
+  const nnsFunction: NnsFunction | undefined = getNnsFunction(proposal);
 
   if (nnsFunction !== undefined) {
     return {

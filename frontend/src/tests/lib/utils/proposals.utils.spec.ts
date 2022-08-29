@@ -47,6 +47,7 @@ import {
   proposalActionRewardNodeProvider,
 } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
+import {enumFromStringExists} from '../../../lib/utils/enum.utils';
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
@@ -855,8 +856,8 @@ describe("proposals-utils", () => {
         },
       });
 
-      expect(en.nns_functions["3"]).toEqual(type);
-      expect(en.nns_functions_description["3"]).toEqual(
+      expect(en.nns_functions.NnsCanisterInstall).toEqual(type);
+      expect(en.nns_functions_description.NnsCanisterInstall).toEqual(
         typeDescription
       );
     });
@@ -1070,7 +1071,7 @@ describe("proposals-utils", () => {
             },
           },
         } as Proposal)
-      ).toBe(NnsFunction.NnsCanisterUpgrade);
+      ).toBe(NnsFunction[NnsFunction.NnsCanisterUpgrade]);
     });
 
     it("should return undefined if not ExecuteNnsFunction type", () => {
