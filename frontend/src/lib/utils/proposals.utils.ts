@@ -9,6 +9,7 @@ import type {
   Tally,
 } from "@dfinity/nns";
 import {
+  NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
@@ -57,9 +58,9 @@ export const proposalActionFields = (
   });
 };
 
-export const getExecuteNnsFunctionId = (
+export const getNnsFunction = (
   proposal: Proposal | undefined
-): number | undefined => {
+): NnsFunction | undefined => {
   const action = proposalFirstActionKey(proposal);
 
   if (action !== "ExecuteNnsFunction") {
@@ -70,7 +71,8 @@ export const getExecuteNnsFunctionId = (
   const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
     nnsFunctionId: 0,
   };
-  return nnsFunctionId;
+
+  return NnsFunction[nnsFunctionId] as unknown as NnsFunction;
 };
 
 export const hideProposal = ({
@@ -410,8 +412,8 @@ const mapProposalType = (
   const {
     actions,
     actions_description,
-    execute_nns_functions,
-    execute_nns_functions_description,
+    nns_functions,
+    nns_functions_description,
   } = get(i18n);
 
   const NO_MATCH = { type: undefined, typeDescription: undefined };
@@ -420,12 +422,12 @@ const mapProposalType = (
     return NO_MATCH;
   }
 
-  const nnsFunctionId = getExecuteNnsFunctionId(proposal);
+  const nnsFunction = getNnsFunction(proposal);
 
-  if (nnsFunctionId !== undefined) {
+  if (nnsFunction !== undefined) {
     return {
-      type: execute_nns_functions[nnsFunctionId],
-      typeDescription: execute_nns_functions_description[nnsFunctionId],
+      type: nns_functions[nnsFunction],
+      typeDescription: nns_functions_description[nnsFunction],
     };
   }
 

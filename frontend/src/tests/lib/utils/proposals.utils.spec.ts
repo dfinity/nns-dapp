@@ -6,10 +6,11 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import {
-  ProposalRewardStatus,
-  ProposalStatus,
-  Topic,
-  Vote,
+    NnsFunction,
+    ProposalRewardStatus,
+    ProposalStatus,
+    Topic,
+    Vote,
 } from "@dfinity/nns";
 import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import {
@@ -20,7 +21,7 @@ import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  getExecuteNnsFunctionId,
+  getNnsFunction,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -854,8 +855,8 @@ describe("proposals-utils", () => {
         },
       });
 
-      expect(en.execute_nns_functions["3"]).toEqual(type);
-      expect(en.execute_nns_functions_description["3"]).toEqual(
+      expect(en.nns_functions["3"]).toEqual(type);
+      expect(en.nns_functions_description["3"]).toEqual(
         typeDescription
       );
     });
@@ -1059,9 +1060,9 @@ describe("proposals-utils", () => {
   });
 
   describe("getNnsFunctionIndex", () => {
-    it("should return nnsFunctionId from proposal", () => {
+    it("should return nnsFunction from proposal", () => {
       expect(
-        getExecuteNnsFunctionId({
+        getNnsFunction({
           ...mockProposalInfo.proposal,
           action: {
             ExecuteNnsFunction: {
@@ -1069,12 +1070,12 @@ describe("proposals-utils", () => {
             },
           },
         } as Proposal)
-      ).toBe(4);
+      ).toBe(NnsFunction.NnsCanisterUpgrade);
     });
 
     it("should return undefined if not ExecuteNnsFunction type", () => {
       expect(
-        getExecuteNnsFunctionId({
+        getNnsFunction({
           ...mockProposalInfo.proposal,
           action: {},
         } as Proposal)
@@ -1082,7 +1083,7 @@ describe("proposals-utils", () => {
     });
 
     it("should return undefined if undefined", () => {
-      expect(getExecuteNnsFunctionId(undefined)).toBeUndefined();
+      expect(getNnsFunction(undefined)).toBeUndefined();
     });
   });
 

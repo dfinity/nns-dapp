@@ -4,10 +4,11 @@
   import {
     proposalFirstActionKey,
     proposalActionFields,
-    getExecuteNnsFunctionId,
+    getNnsFunction,
   } from "../../../utils/proposals.utils";
   import Json from "../../common/Json.svelte";
   import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
+  import type {NnsFunction} from '@dfinity/nns';
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
@@ -19,8 +20,8 @@
   $: actionFields =
     (proposal !== undefined && proposalActionFields(proposal)) || [];
 
-  let nnsFunctionId: number | undefined;
-  $: nnsFunctionId = getExecuteNnsFunctionId(proposal);
+  let nnsFunction: NnsFunction | undefined;
+  $: nnsFunction = getNnsFunction(proposal);
 
   // TODO(L2-965): delete legacy component - duplicated by the new component <ProposalActions />
 </script>
@@ -37,8 +38,8 @@
       {/if}
     {/each}
 
-    {#if nnsFunctionId !== undefined && proposalId !== undefined}
-      <NnsFunctionDetails {proposalId} {nnsFunctionId} />
+    {#if nnsFunction !== undefined && proposalId !== undefined}
+      <NnsFunctionDetails {proposalId} {nnsFunction} />
     {/if}
   </dl>
 </CardBlock>

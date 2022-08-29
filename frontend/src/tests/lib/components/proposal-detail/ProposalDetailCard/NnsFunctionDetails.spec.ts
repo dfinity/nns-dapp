@@ -41,7 +41,7 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    expect(getByText(en.execute_nns_functions["1"])).toBeInTheDocument();
+    expect(getByText(en.nns_functions["1"])).toBeInTheDocument();
   });
 
   it("should display spinner if no payload", () => {
