@@ -245,7 +245,7 @@ export const poll = async <T>({
       throw error;
     }
     // Log swallowed errors
-    console.log(`Error polling: ${errorToString(error)}`);
+    console.error(`Error polling: ${errorToString(error)}`);
   }
   await waitForMilliseconds(500);
   return poll({
