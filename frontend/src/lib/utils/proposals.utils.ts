@@ -133,7 +133,7 @@ const isExcludedVotedProposal = ({
         // TODO: This is temporary solution. Will be replaced with L2-507
         // ignore neuronIds in ballots that are not in the neuron list of the user.
         // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
-        belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
+        belongsToValidNeuron(neuronId) && vote === Vote.Unspecified
     ) !== undefined;
 
   return (
@@ -507,11 +507,11 @@ export const updateProposalVote = ({
     latestTally: {
       ...(proposalInfo.latestTally as Tally),
       yes:
-        vote === Vote.YES
+        vote === Vote.Yes
           ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
           : proposalInfo.latestTally?.yes ?? BigInt(0),
       no:
-        vote === Vote.NO
+        vote === Vote.No
           ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
           : proposalInfo.latestTally?.no ?? BigInt(0),
     },

@@ -78,7 +78,7 @@ describe("proposals-utils", () => {
       ballots: [
         {
           neuronId: BigInt(0),
-          vote: vote ?? Vote.UNSPECIFIED,
+          vote: vote ?? Vote.Unspecified,
         } as Ballot,
       ],
     });
@@ -140,7 +140,7 @@ describe("proposals-utils", () => {
             ballots: [
               {
                 neuronId: BigInt(0),
-                vote: Vote.UNSPECIFIED,
+                vote: Vote.Unspecified,
               } as Ballot,
             ],
           },
@@ -159,7 +159,7 @@ describe("proposals-utils", () => {
             ballots: [
               {
                 neuronId: BigInt(0),
-                vote: Vote.UNSPECIFIED,
+                vote: Vote.Unspecified,
               } as Ballot,
             ],
           },
@@ -199,7 +199,7 @@ describe("proposals-utils", () => {
         hideProposal({
           proposalInfo: proposalWithBallot({
             proposal: mockProposals[0],
-            vote: Vote.YES,
+            vote: Vote.Yes,
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
@@ -213,7 +213,7 @@ describe("proposals-utils", () => {
         hideProposal({
           proposalInfo: proposalWithBallot({
             proposal: mockProposals[0],
-            vote: Vote.NO,
+            vote: Vote.No,
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
@@ -336,7 +336,7 @@ describe("proposals-utils", () => {
             ballots: [
               {
                 neuronId: BigInt(0),
-                vote: Vote.UNSPECIFIED,
+                vote: Vote.Unspecified,
               } as Ballot,
             ],
           },
@@ -357,7 +357,7 @@ describe("proposals-utils", () => {
             ballots: [
               {
                 neuronId: BigInt(0),
-                vote: Vote.UNSPECIFIED,
+                vote: Vote.Unspecified,
               } as Ballot,
             ],
           },
@@ -401,7 +401,7 @@ describe("proposals-utils", () => {
             ballots: [
               {
                 neuronId: BigInt(0),
-                vote: Vote.UNSPECIFIED,
+                vote: Vote.Unspecified,
               } as Ballot,
             ],
           })),
@@ -422,7 +422,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.UNSPECIFIED,
+                  vote: Vote.Unspecified,
                 } as Ballot,
               ],
             },
@@ -444,7 +444,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.UNSPECIFIED,
+                  vote: Vote.Unspecified,
                 } as Ballot,
               ],
             },
@@ -466,7 +466,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.UNSPECIFIED,
+                  vote: Vote.Unspecified,
                 } as Ballot,
               ],
             },
@@ -488,7 +488,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.UNSPECIFIED,
+                  vote: Vote.Unspecified,
                 } as Ballot,
               ],
             },
@@ -522,7 +522,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.YES,
+                  vote: Vote.Yes,
                 } as Ballot,
               ],
             },
@@ -543,7 +543,7 @@ describe("proposals-utils", () => {
               ballots: [
                 {
                   neuronId: BigInt(0),
-                  vote: Vote.NO,
+                  vote: Vote.No,
                 } as Ballot,
               ],
             },
@@ -591,7 +591,7 @@ describe("proposals-utils", () => {
       ballots: neurons.map(({ neuronId, votingPower }) => ({
         neuronId,
         votingPower: votingPower - BigInt(1),
-        vote: Vote.NO,
+        vote: Vote.No,
       })),
     });
 
@@ -986,7 +986,7 @@ describe("proposals-utils", () => {
       const ballot: Ballot = {
         neuronId,
         votingPower: BigInt(30),
-        vote: Vote.YES,
+        vote: Vote.Yes,
       };
       const proposal = {
         ...mockProposalInfo,
@@ -1005,7 +1005,7 @@ describe("proposals-utils", () => {
       const ballot: Ballot = {
         neuronId: BigInt(400),
         votingPower: BigInt(30),
-        vote: Vote.YES,
+        vote: Vote.Yes,
       };
       const proposal = {
         ...mockProposalInfo,
@@ -1030,7 +1030,7 @@ describe("proposals-utils", () => {
       const ballot: Ballot = {
         neuronId,
         votingPower: BigInt(30),
-        vote: Vote.YES,
+        vote: Vote.Yes,
       };
       const proposal = {
         ...mockProposalInfo,

@@ -213,7 +213,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -227,7 +227,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -260,7 +260,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -282,7 +282,7 @@ describe("proposals-services", () => {
         registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             done();
           },
@@ -323,7 +323,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -336,14 +336,14 @@ describe("proposals-services", () => {
           expect($voteInProgressStore.votes[0].proposalId).toEqual(
             proposalInfo.id
           );
-          expect($voteInProgressStore.votes[0].vote).toEqual(Vote.YES);
+          expect($voteInProgressStore.votes[0].vote).toEqual(Vote.Yes);
         });
 
         it("should update successfullyVotedNeuronIds in voteInProgressStore", async () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -360,7 +360,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -379,7 +379,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.NO,
+            vote: Vote.No,
             reloadProposalCallback: () => {
               //
             },
@@ -398,7 +398,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -445,7 +445,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds: null as unknown as NeuronId[],
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -463,7 +463,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -481,7 +481,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -499,7 +499,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -517,7 +517,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -580,7 +580,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds: [],
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -621,7 +621,7 @@ describe("proposals-services", () => {
       await registerVotes({
         neuronIds,
         proposalInfo,
-        vote: Vote.NO,
+        vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
         },

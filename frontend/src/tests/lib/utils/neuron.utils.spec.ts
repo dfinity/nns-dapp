@@ -573,11 +573,11 @@ describe("neuron-utils", () => {
 
   describe("ballotsWithDefinedProposal", () => {
     const ballot: BallotInfo = {
-      vote: Vote.YES,
+      vote: Vote.Yes,
       proposalId: undefined,
     };
     const ballotWithProposalId: BallotInfo = {
-      vote: Vote.YES,
+      vote: Vote.Yes,
       proposalId: BigInt(0),
     };
 
@@ -1453,22 +1453,22 @@ describe("neuron-utils", () => {
       const ballot1 = {
         neuronId: neuronId1,
         votingPower: BigInt(40),
-        vote: Vote.NO,
+        vote: Vote.No,
       };
       const ballot2 = {
         neuronId: neuronId2,
         votingPower: BigInt(50),
-        vote: Vote.YES,
+        vote: Vote.Yes,
       };
       const neuron1 = {
         ...mockNeuron,
         neuronId: neuronId1,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const neuron2 = {
         ...mockNeuron,
         neuronId: neuronId2,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const proposal = {
         ...mockProposalInfo,
@@ -1493,7 +1493,7 @@ describe("neuron-utils", () => {
       const neuron1 = {
         ...mockNeuron,
         neuronId: neuronId1,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const neuron2 = {
         ...mockNeuron,
@@ -1503,7 +1503,7 @@ describe("neuron-utils", () => {
       const ballot1 = {
         neuronId: neuronId1,
         votingPower: BigInt(40),
-        vote: Vote.NO,
+        vote: Vote.No,
       };
       const proposal = {
         ...mockProposalInfo,

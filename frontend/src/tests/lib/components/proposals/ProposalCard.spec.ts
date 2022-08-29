@@ -145,7 +145,7 @@ describe("ProposalCard", () => {
           ...mockProposals[0],
           ballots: [
             {
-              vote: Vote.YES,
+              vote: Vote.Yes,
             } as Ballot,
           ],
         },

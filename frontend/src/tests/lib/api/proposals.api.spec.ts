@@ -90,7 +90,7 @@ describe("proposals-api", () => {
       await registerVote({
         neuronId: neuronId,
         proposalId,
-        vote: Vote.YES,
+        vote: Vote.Yes,
         identity,
       });
       expect(spyRegisterVote).toHaveBeenCalled();
