@@ -85,7 +85,10 @@ export const listNextProposals = async ({
   loadFinished,
 }: {
   beforeProposal: ProposalId | undefined;
-  loadFinished: (params: {paginationOver: boolean, certified: boolean}) => void;
+  loadFinished: (params: {
+    paginationOver: boolean;
+    certified: boolean;
+  }) => void;
 }): Promise<void> =>
   findProposals({
     beforeProposal,
@@ -94,11 +97,11 @@ export const listNextProposals = async ({
         // There is no more proposals to fetch for the current filters.
         // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
         // We can also tell the UI that everything was loaded, useful to disable the infinite scroll.
-        loadFinished({paginationOver: true, certified});
+        loadFinished({ paginationOver: true, certified });
         return;
       }
       proposalsStore.pushProposals({ proposals, certified });
-      loadFinished({paginationOver: false, certified});
+      loadFinished({ paginationOver: false, certified });
     },
     onError: handleFindProposalsError,
   });
