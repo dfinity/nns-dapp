@@ -38,6 +38,7 @@ const generate = () => {
   const rootData = mapKeys(en);
   const governanceData = mapKeys(en_governance);
 
+  // Ensure there are no keys in en.governance.json that duplicates en.json
   assertUniqueKeys({ governance: governanceData, core: rootData });
 
   const data = [...rootData, ...governanceData];
