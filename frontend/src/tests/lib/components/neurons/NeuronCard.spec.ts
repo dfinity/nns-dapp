@@ -86,7 +86,7 @@ describe("NeuronCard", () => {
   it("doesn't render the neuron stake but the stacked line chart icon", async () => {
     const neuron = {
       ...mockNeuron,
-      state: NeuronState.SPAWNING,
+      state: NeuronState.Spawning,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
@@ -138,7 +138,7 @@ describe("NeuronCard", () => {
         neuron: {
           ...mockNeuron,
           dissolveDelaySeconds: BigInt(MORE_THAN_ONE_YEAR),
-          state: NeuronState.LOCKED,
+          state: NeuronState.Locked,
         },
       },
     });
@@ -152,7 +152,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.DISSOLVED,
+          state: NeuronState.Dissolved,
         },
       },
     });
@@ -165,7 +165,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.SPAWNING,
+          state: NeuronState.Spawning,
           fullNeuron: {
             ...mockFullNeuron,
             spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
@@ -183,7 +183,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.DISSOLVING,
+          state: NeuronState.Dissolving,
           fullNeuron: {
             ...mockFullNeuron,
             dissolveState: {

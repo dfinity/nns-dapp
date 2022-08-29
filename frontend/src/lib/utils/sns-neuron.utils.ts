@@ -29,20 +29,20 @@ export const getSnsNeuronState = ({
 }: SnsNeuron): SnsNeuronState => {
   const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
-    return NeuronState.DISSOLVED;
+    return NeuronState.Dissolved;
   }
   if ("DissolveDelaySeconds" in dissolveState) {
-    return NeuronState.LOCKED;
+    return NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    return NeuronState.DISSOLVING;
+    return NeuronState.Dissolving;
   }
-  return NeuronState.UNSPECIFIED;
+  return NeuronState.Unspecified;
 };
 
 export const getSnsStateInfo = (neuron: SnsNeuron): StateInfo => {
   const state = getSnsNeuronState(neuron);
-  return stateTextMapper[state] ?? stateTextMapper[NeuronState.UNSPECIFIED];
+  return stateTextMapper[state] ?? stateTextMapper[NeuronState.Unspecified];
 };
 
 export const getSnsDissolvingTimeInSeconds = (
@@ -51,7 +51,7 @@ export const getSnsDissolvingTimeInSeconds = (
   const neuronState = getSnsNeuronState(neuron);
   const dissolveState = fromNullable(neuron.dissolve_state);
   if (
-    neuronState === NeuronState.DISSOLVING &&
+    neuronState === NeuronState.Dissolving &&
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
@@ -65,7 +65,7 @@ export const getSnsLockedTimeInSeconds = (
   const neuronState = getSnsNeuronState(neuron);
   const dissolveState = fromNullable(neuron.dissolve_state);
   if (
-    neuronState === NeuronState.LOCKED &&
+    neuronState === NeuronState.Locked &&
     dissolveState !== undefined &&
     "DissolveDelaySeconds" in dissolveState
   ) {

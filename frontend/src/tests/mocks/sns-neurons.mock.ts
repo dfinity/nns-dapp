@@ -23,7 +23,7 @@ export const createMockSnsNeuron = ({
     state === undefined
       ? []
       : [
-          state === NeuronState.DISSOLVING
+          state === NeuronState.Dissolving
             ? {
                 WhenDissolvedTimestampSeconds: BigInt(
                   Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
