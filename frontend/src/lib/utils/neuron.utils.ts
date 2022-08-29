@@ -34,7 +34,7 @@ import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
-import type { VoteInProgressStore } from "../stores/voting.store";
+import type { VoteRegistrationStore } from "../stores/vote-registration.store";
 import type { Account } from "../types/account";
 import {
   getAccountByPrincipal,
@@ -688,13 +688,13 @@ export const updateNeuronsVote = ({
 
 /** Is a neuron currently in a vote registration process */
 export const neuronVoting = ({
-  voteInProgressStore: { votes },
+  store: { registrations },
   neuronId,
 }: {
-  voteInProgressStore: VoteInProgressStore;
+  store: VoteRegistrationStore;
   neuronId: NeuronId;
 }): boolean =>
-  votes.find(
+  registrations.find(
     ({ neuronIds, successfullyVotedNeuronIds }) =>
       neuronIds.includes(neuronId) &&
       !successfullyVotedNeuronIds.includes(neuronId)

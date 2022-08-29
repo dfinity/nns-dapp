@@ -6,14 +6,14 @@ import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import NnsNeuronsFooter from "../../../../lib/components/neurons/NnsNeuronsFooter.svelte";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import { voteInProgressStore } from "../../../../lib/stores/voting.store";
+import { voteRegistrationStore } from "../../../../lib/stores/vote-registration.store";
 import en from "../../../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
 } from "../../../mocks/neurons.mock";
-import { mockVotingInProgressItem } from "../../../mocks/proposal.mock";
+import { mockVoteRegistration } from "../../../mocks/proposal.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
@@ -66,7 +66,7 @@ describe("NnsNeurons", () => {
       const stakeNeuronButton = queryByTestId("stake-neuron-button");
       expect(stakeNeuronButton).not.toBeNull();
 
-      voteInProgressStore.add(mockVotingInProgressItem);
+      voteRegistrationStore.create(mockVoteRegistration);
 
       waitFor(() =>
         expect(stakeNeuronButton?.getAttribute("disabled")).not.toBeNull()

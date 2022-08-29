@@ -2,7 +2,6 @@
   import type { ProposalInfo, Vote } from "@dfinity/nns";
   import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
   import { getContext, onDestroy } from "svelte";
-  import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
@@ -15,9 +14,10 @@
   } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
   import {
-    voteInProgressStore,
-    type VoteInProgress,
-  } from "../../../stores/voting.store";
+    voteRegistrationStore,
+    type VoteRegistration,
+  } from "../../../stores/vote-registration.store";
+  import { registerVotes } from "../../../services/vote-registration.services";
 
   export let proposalInfo: ProposalInfo;
 
@@ -26,13 +26,14 @@
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     });
+
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteInProgress: VoteInProgress | undefined = undefined;
+  let voteInProgress: VoteRegistration | undefined = undefined;
 
-  $: voteInProgress = $voteInProgressStore.votes.find(
-    ({ proposalId }) => proposalInfo.id === proposalId
+  $: voteInProgress = $voteRegistrationStore.registrations.find(
+    ({ proposalInfo: { id } }) => proposalInfo.id === id
   );
 
   $: $definedNeuronsStore,
@@ -53,7 +54,6 @@
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
-
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,

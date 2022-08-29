@@ -6,10 +6,10 @@ import { render, waitFor } from "@testing-library/svelte";
 import { AppPath } from "../../lib/constants/routes.constants";
 import { neuronsStore } from "../../lib/stores/neurons.store";
 import { routeStore } from "../../lib/stores/route.store";
-import { voteInProgressStore } from "../../lib/stores/voting.store";
+import { voteRegistrationStore } from "../../lib/stores/vote-registration.store";
 import NeuronDetail from "../../routes/NeuronDetail.svelte";
 import { mockNeuron } from "../mocks/neurons.mock";
-import { mockVotingInProgressItem } from "../mocks/proposal.mock";
+import { mockVoteRegistration } from "../mocks/proposal.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 jest.mock("../../lib/services/knownNeurons.services", () => {
@@ -43,7 +43,7 @@ describe("NeuronDetail", () => {
 
   afterEach(() => {
     neuronsStore.reset();
-    voteInProgressStore.reset();
+    voteRegistrationStore.reset();
 
     jest.clearAllMocks();
   });
@@ -69,8 +69,8 @@ describe("NeuronDetail", () => {
 
     waitFor(() => expect(querySkeleton(container)).toBeNull());
 
-    voteInProgressStore.add({
-      ...mockVotingInProgressItem,
+    voteRegistrationStore.create({
+      ...mockVoteRegistration,
       neuronIds: [neuronId],
     });
 

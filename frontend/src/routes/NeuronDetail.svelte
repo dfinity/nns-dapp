@@ -25,7 +25,7 @@
   import { layoutBackStore } from "../lib/stores/layout.store";
   import NeuronJoinFundCard from "../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsStore } from "../lib/stores/toasts.store";
-  import { voteInProgressStore } from "../lib/stores/voting.store";
+  import { voteRegistrationStore } from "../lib/stores/vote-registration.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -93,7 +93,7 @@
     neuron !== undefined &&
     neuronVoting({
       neuronId: neuron.neuronId,
-      voteInProgressStore: $voteInProgressStore,
+      store: $voteRegistrationStore,
     });
 </script>
 

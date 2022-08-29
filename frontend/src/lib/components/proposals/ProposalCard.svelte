@@ -15,12 +15,12 @@
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import type { Color } from "../../types/theme";
   import Tag from "../ui/Tag.svelte";
-  import { voteInProgressStore } from "../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "../ui/Value.svelte";
+  import { voteRegistrationStore } from "../../stores/vote-registration.store";
 
   let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
   let id: ProposalId | undefined;
@@ -57,8 +57,8 @@
       neurons: $definedNeuronsStore,
     }) ||
     // hide proposals that are currently in the voting state
-    $voteInProgressStore.votes.find(
-      ({ proposalId }) => proposalInfo.id === proposalId
+    $voteRegistrationStore.registrations.find(
+      ({ proposalInfo: { id } }) => proposalInfo.id === id
     ) !== undefined;
 </script>
 

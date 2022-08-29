@@ -13,7 +13,7 @@ export interface VoteRegistration {
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
-  toastId: symbol | undefined;
+  toastId: symbol;
 }
 
 export interface VoteRegistrationStore {

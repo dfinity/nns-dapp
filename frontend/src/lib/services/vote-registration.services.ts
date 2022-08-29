@@ -45,56 +45,47 @@ export const registerVotes = async ({
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  try {
-    const toastId = createRegisterVotesToast({ vote, proposalInfo, neuronIds });
-    const voteRegistration: VoteRegistration = voteRegistrationStore.create({
-      vote,
-      proposalInfo,
-      neuronIds,
-      toastId,
-    });
+  const toastId = createRegisterVotesToast({ vote, proposalInfo, neuronIds });
+  const voteRegistration: VoteRegistration = voteRegistrationStore.create({
+    vote,
+    proposalInfo,
+    neuronIds,
+    toastId,
+  });
 
-    voteRegistrationStore.updateStatus({
-      voteRegistration,
-      status: "vote-registration",
-    });
+  voteRegistrationStore.updateStatus({
+    voteRegistration,
+    status: "vote-registration",
+  });
 
-    await registerNeuronsVote({
-      neuronIds,
-      proposalInfo,
-      vote,
-      updateProposalContext,
-    });
+  await registerNeuronsVote({
+    neuronIds,
+    proposalInfo,
+    vote,
+    updateProposalContext,
+  });
 
-    voteRegistrationStore.updateStatus({
-      voteRegistration,
-      status: "post-update",
-    });
+  voteRegistrationStore.updateStatus({
+    voteRegistration,
+    status: "post-update",
+  });
 
-    updateVoteRegistrationToastMessage(voteRegistration);
+  updateVoteRegistrationToastMessage(voteRegistration);
 
-    const updatedProposalInfo = await updateAfterVoteRegistration(
-      proposalInfo.id as ProposalId
-    );
-    proposalsStore.replaceProposals([updatedProposalInfo]);
-    updateProposalContext(updatedProposalInfo);
+  const updatedProposalInfo = await updateAfterVoteRegistration(
+    proposalInfo.id as ProposalId
+  );
+  proposalsStore.replaceProposals([updatedProposalInfo]);
+  updateProposalContext(updatedProposalInfo);
 
-    voteRegistrationStore.updateStatus({
-      voteRegistration,
-      status: "complete",
-    });
+  voteRegistrationStore.updateStatus({
+    voteRegistration,
+    status: "complete",
+  });
 
-    toastsStore.hide(toastId);
+  toastsStore.hide(toastId);
 
-    voteRegistrationStore.removeCompleted();
-  } catch (err) {
-    console.error("process voting unknown", err);
-
-    toastsStore.error({
-      labelKey: "error.register_vote_unknown",
-      err,
-    });
-  }
+  voteRegistrationStore.removeCompleted();
 };
 
 const registerVotesStatus = ({

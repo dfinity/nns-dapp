@@ -12,9 +12,9 @@
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { initApp } from "./lib/services/app.services";
-  import { voteInProgressStore } from "./lib/stores/voting.store";
   import { syncBeforeUnload } from "./lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "./lib/utils/proposals.utils";
+  import { voteRegistrationStore } from "./lib/stores/vote-registration.store";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -38,9 +38,10 @@
     }
   );
 
-  const unsubscribeVoteInProgress: Unsubscriber = voteInProgressStore.subscribe(
-    ({ votes }) => syncBeforeUnload(voteRegistrationActive(votes))
-  );
+  const unsubscribeVoteInProgress: Unsubscriber =
+    voteRegistrationStore.subscribe(({ registrations }) =>
+      syncBeforeUnload(voteRegistrationActive(registrations))
+    );
 
   onDestroy(() => {
     unsubscribeAuth();
