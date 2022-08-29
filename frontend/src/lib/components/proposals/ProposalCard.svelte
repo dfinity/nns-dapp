@@ -64,7 +64,7 @@
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 {#if !hide}
-  <li class:hidden data-id={proposalInfo.id}>
+  <li class:hidden>
     {#if layout === "legacy"}
       <Card role="link" on:click={showProposal} testId="proposal-card">
         <div slot="start" class="title-container">
