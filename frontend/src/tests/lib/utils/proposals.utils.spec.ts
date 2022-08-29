@@ -290,7 +290,7 @@ describe("proposals-utils", () => {
           }),
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
-            status: [ProposalStatus.PROPOSAL_STATUS_EXECUTED],
+            status: [ProposalStatus.Executed],
             excludeVotedProposals: false,
           },
           neurons,
@@ -305,7 +305,7 @@ describe("proposals-utils", () => {
           filters: {
             ...DEFAULT_PROPOSALS_FILTERS,
             rewards: [
-              ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+              ProposalRewardStatus.ReadyToSettle,
             ],
             excludeVotedProposals: false,
           },
@@ -758,8 +758,8 @@ describe("proposals-utils", () => {
     const deadlineTimestampSeconds = BigInt(now + 1000000);
     const [proposalInfo] = generateMockProposals(1, {
       topic: Topic.Governance,
-      status: ProposalStatus.PROPOSAL_STATUS_OPEN,
-      rewardStatus: ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      status: ProposalStatus.Open,
+      rewardStatus: ProposalRewardStatus.AcceptVotes,
       deadlineTimestampSeconds,
       proposer: BigInt(1234),
     });
@@ -792,7 +792,7 @@ describe("proposals-utils", () => {
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
       expect(color).toEqual(
-        PROPOSAL_COLOR[ProposalStatus.PROPOSAL_STATUS_OPEN]
+        PROPOSAL_COLOR[ProposalStatus.Open]
       );
       expect(deadline).toEqual(
         deadlineTimestampSeconds - BigInt(nowInSeconds())

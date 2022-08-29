@@ -35,34 +35,34 @@
     "SnsDecentralizationSale": "SNS Decentralization Sale"
   },
   "rewards": {
-    "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
-    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
-    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Ready to Settle",
-    "PROPOSAL_REWARD_STATUS_SETTLED": "Settled",
-    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
+    "Unknown": "Unknown",
+    "AcceptVotes": "Accepting Votes",
+    "ReadyToSettle": "Ready to Settle",
+    "Settled": "Settled",
+    "Ineligible": "Ineligible"
   },
   "rewards_description": {
-    "PROPOSAL_REWARD_STATUS_UNKNOWN": "",
-    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "The proposal is still accepting votes, for the purpose of voting rewards.",
-    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "The proposal is no longer accepting votes. It is due to settle in the next reward event.",
-    "PROPOSAL_REWARD_STATUS_SETTLED": "The proposal has been taken into account in a reward event.",
-    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "The proposal is not eligible to be taken into account in a reward event."
+    "Unknown": "",
+    "AcceptVotes": "The proposal is still accepting votes, for the purpose of voting rewards.",
+    "ReadyToSettle": "The proposal is no longer accepting votes. It is due to settle in the next reward event.",
+    "Settled": "The proposal has been taken into account in a reward event.",
+    "Ineligible": "The proposal is not eligible to be taken into account in a reward event."
   },
   "status": {
-    "PROPOSAL_STATUS_UNKNOWN": "Unknown",
-    "PROPOSAL_STATUS_OPEN": "Open",
-    "PROPOSAL_STATUS_REJECTED": "Rejected",
-    "PROPOSAL_STATUS_ACCEPTED": "Adopted",
-    "PROPOSAL_STATUS_EXECUTED": "Executed",
-    "PROPOSAL_STATUS_FAILED": "Failed"
+    "Unknown": "Unknown",
+    "Open": "Open",
+    "Rejected": "Rejected",
+    "Accepted": "Adopted",
+    "Executed": "Executed",
+    "Failed": "Failed"
   },
   "status_description": {
-    "PROPOSAL_STATUS_UNKNOWN": "",
-    "PROPOSAL_STATUS_OPEN": "A decision has not yet been made to adopt or reject the proposal.",
-    "PROPOSAL_STATUS_REJECTED": "The proposal has been rejected.",
-    "PROPOSAL_STATUS_ACCEPTED": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
-    "PROPOSAL_STATUS_EXECUTED": "The proposal was adopted and successfully executed.",
-    "PROPOSAL_STATUS_FAILED": "The proposal was adopted, but execution failed."
+    "Unknown": "",
+    "Open": "A decision has not yet been made to adopt or reject the proposal.",
+    "Rejected": "The proposal has been rejected.",
+    "Accepted": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
+    "Executed": "The proposal was adopted and successfully executed.",
+    "Failed": "The proposal was adopted, but execution failed."
   },
   "actions": {
     "RegisterKnownNeuron": "Register Known Neuron",

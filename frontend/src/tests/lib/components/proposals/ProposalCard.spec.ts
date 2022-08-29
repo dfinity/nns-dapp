@@ -119,14 +119,14 @@ describe("ProposalCard", () => {
   it("should render a specific color for the status", () => {
     proposalsFiltersStore.filterStatus([
       ...DEFAULT_PROPOSALS_FILTERS.status,
-      ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+      ProposalStatus.Executed,
     ]);
 
     const { queryByTestId } = render(ProposalCard, {
       props: {
         proposalInfo: {
           ...mockProposals[1],
-          status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+          status: ProposalStatus.Executed,
         },
       },
     });
