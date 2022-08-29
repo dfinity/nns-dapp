@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXXXX
+* Increase security with CSP.
+* Improve logging.
+
 ## Proposal 77051
 * Fix android issues with modal.
 * Add pending transaction state in canister.

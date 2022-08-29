@@ -1,0 +1,2 @@
+git fetch --tags --force
+git tag -f release-candidate && git push origin --tags -f
