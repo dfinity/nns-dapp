@@ -91,8 +91,6 @@
       return;
     }
 
-    proposalsFiltersStore.reset();
-
     await findProposals();
 
     initDebounceFindProposals();
