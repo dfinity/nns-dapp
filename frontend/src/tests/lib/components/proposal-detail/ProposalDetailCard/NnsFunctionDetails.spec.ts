@@ -42,7 +42,9 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    await waitFor(() => expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument()
+    );
   });
 
   it("should display spinner if no payload", () => {
