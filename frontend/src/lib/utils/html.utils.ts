@@ -1,6 +1,6 @@
 import { sanitize as DOMPurifySanitize } from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
-import { isNode } from "./dev.utils";
+import {isNode} from './dev.utils';
 
 type Marked = typeof markedTypes;
 
@@ -77,7 +77,9 @@ export const markdownToSanitizedHTML = async (
 };
 
 /**
- * DOMPurify needs a workaround to work in the NodeJS context - i.e. for our jest test suite.
+ * Sanitize a text with DOMPurify.
+ *
+ * Note: this library needs a workaround to work in the NodeJS context - i.e. for our jest test suite.
  * See the jest-setup.ts for details.
  */
 export const sanitize = (text: string): string => {
