@@ -30,6 +30,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/svelte": "^3.1.1",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/dompurify": "^2.3.4",
     "@types/jest": "^27.5.0",
     "@types/marked": "^4.0.3",
     "@types/wicg-file-system-access": "^2020.9.5",
@@ -75,6 +76,7 @@
     "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
-    "@zondax/ledger-icp": "^0.6.0"
+    "@zondax/ledger-icp": "^0.6.0",
+    "dompurify": "^2.4.0"
   }
 }

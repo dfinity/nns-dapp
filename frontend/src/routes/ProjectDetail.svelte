@@ -73,7 +73,7 @@
     summary: null,
     swapCommitment: null,
   });
-  console.log("adding to debug store");
+
   debugSelectedProjectStore(projectDetailStore);
 
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
