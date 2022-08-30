@@ -92,7 +92,6 @@
     display: flex;
     justify-content: space-between;
 
-    font-size: var(--font-size-h4);
     border-bottom: 1px solid currentColor;
 
     // hide voting-power-headline because of the layout
@@ -131,13 +130,6 @@
       }
     }
 
-    .neuron-id {
-      font-size: var(--font-size-h5);
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-h4);
-      }
-    }
     .neuron-voting-power {
       font-size: var(--font-size-ultra-small);
 
@@ -158,11 +150,6 @@
     border-top: 1px solid currentColor;
 
     text-align: right;
-    font-size: var(--font-size-h5);
-
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h4);
-    }
 
     span {
       margin-right: var(--padding);

@@ -62,19 +62,15 @@
     flex-direction: column;
     justify-content: space-between;
 
-    font-size: var(--font-size-h5);
-
     @include media.min-width(small) {
       margin: var(--padding-0_5x) 0;
       flex-direction: row;
       align-items: center;
     }
 
-    @include media.min-width(medium) {
-      font-size: var(--font-size-h4);
-    }
     small {
       font-size: var(--font-size-ultra-small);
+
       @include media.min-width(medium) {
         font-size: var(--font-size-small);
       }
