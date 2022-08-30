@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { NnsFunction } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
