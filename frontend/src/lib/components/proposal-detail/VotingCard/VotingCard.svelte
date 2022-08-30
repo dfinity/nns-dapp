@@ -82,7 +82,7 @@
 
 {#if visible}
   <svelte:component this={cmp}>
-    <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
+    <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
     <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
     <VotingConfirmationToolbar
       {proposalInfo}

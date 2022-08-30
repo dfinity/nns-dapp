@@ -1,6 +1,6 @@
-<h2 class="content-cell-title">
+<div class="content-cell-title">
   <slot name="start" />
-</h2>
+</div>
 
 <div class="content-cell-details">
   <slot />
