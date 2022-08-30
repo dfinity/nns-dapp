@@ -21,7 +21,7 @@ import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  getNnsFunction,
+  getNnsFunctionKey,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -1056,9 +1056,9 @@ describe("proposals-utils", () => {
   });
 
   describe("getNnsFunctionIndex", () => {
-    it("should return nnsFunction from proposal", () => {
+    it("should return nnsFunctionKey from proposal", () => {
       expect(
-        getNnsFunction({
+        getNnsFunctionKey({
           ...mockProposalInfo.proposal,
           action: {
             ExecuteNnsFunction: {
@@ -1071,7 +1071,7 @@ describe("proposals-utils", () => {
 
     it("should return undefined if not ExecuteNnsFunction type", () => {
       expect(
-        getNnsFunction({
+        getNnsFunctionKey({
           ...mockProposalInfo.proposal,
           action: {},
         } as Proposal)
@@ -1079,7 +1079,7 @@ describe("proposals-utils", () => {
     });
 
     it("should return undefined if undefined", () => {
-      expect(getNnsFunction(undefined)).toBeUndefined();
+      expect(getNnsFunctionKey(undefined)).toBeUndefined();
     });
   });
 

@@ -58,9 +58,9 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunction = (
+export const getNnsFunctionKey = (
   proposal: Proposal | undefined
-): NnsFunction | undefined => {
+): string | undefined => {
   const action = proposalFirstActionKey(proposal);
 
   if (action !== "ExecuteNnsFunction") {
@@ -72,7 +72,7 @@ export const getNnsFunction = (
     nnsFunctionId: 0,
   };
 
-  return NnsFunction[nnsFunctionId] as unknown as NnsFunction;
+  return NnsFunction[nnsFunctionId];
 };
 
 export const hideProposal = ({
@@ -422,12 +422,12 @@ const mapProposalType = (
     return NO_MATCH;
   }
 
-  const nnsFunction: NnsFunction | undefined = getNnsFunction(proposal);
+  const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
 
-  if (nnsFunction !== undefined) {
+  if (nnsFunctionKey !== undefined) {
     return {
-      type: nns_functions[nnsFunction],
-      typeDescription: nns_functions_description[nnsFunction],
+      type: nns_functions[nnsFunctionKey],
+      typeDescription: nns_functions_description[nnsFunctionKey],
     };
   }
 

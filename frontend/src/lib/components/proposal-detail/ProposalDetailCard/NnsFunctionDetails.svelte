@@ -5,15 +5,14 @@
   import Spinner from "../../ui/Spinner.svelte";
   import { i18n } from "../../../stores/i18n";
   import { proposalPayloadsStore } from "../../../stores/proposals.store";
-  import { NnsFunction } from "@dfinity/nns";
 
   export let proposalId: ProposalId;
-  export let nnsFunction: NnsFunction;
+  export let nnsFunctionKey: string;
 
   // Source of indexes and names: https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L349
   let nnsFunctionName: string;
   $: nnsFunctionName =
-    $i18n.nns_functions[nnsFunction] ??
+    $i18n.nns_functions[nnsFunctionKey] ??
     $i18n.proposal_detail.unknown_nns_function;
 
   let payload: object | undefined | null;
