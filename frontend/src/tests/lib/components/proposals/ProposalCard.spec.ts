@@ -48,7 +48,7 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(en.status.PROPOSAL_STATUS_OPEN)).toBeInTheDocument();
+    expect(getByText(en.status.Open)).toBeInTheDocument();
   });
 
   it("should render a proposer", () => {

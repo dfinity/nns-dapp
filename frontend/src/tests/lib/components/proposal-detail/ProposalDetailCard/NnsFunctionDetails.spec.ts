@@ -9,6 +9,7 @@ import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.
 import NnsFunctionDetails from "../../../../../lib/components/proposal-detail/ProposalDetailCard/NnsFunctionDetails.svelte";
 import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
 import en from "../../../../mocks/i18n.mock";
+import {NnsFunction} from '@dfinity/nns';
 
 describe("NnsFunctionDetails", () => {
   const mockPayload = { data: "test" };
@@ -26,7 +27,7 @@ describe("NnsFunctionDetails", () => {
     const { getByText } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -37,7 +38,7 @@ describe("NnsFunctionDetails", () => {
     const { getByText } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -48,7 +49,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -64,7 +65,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -77,7 +78,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -94,7 +95,7 @@ describe("NnsFunctionDetails", () => {
     render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -116,7 +117,7 @@ describe("NnsFunctionDetails", () => {
     render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -134,7 +135,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
@@ -150,7 +151,7 @@ describe("NnsFunctionDetails", () => {
     const { container } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunction: NnsFunction.CreateSubnet,
       },
     });
 
