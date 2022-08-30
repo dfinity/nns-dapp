@@ -18,6 +18,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
 import { AppPath } from "../constants/routes.constants";
 import { i18n } from "../stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
@@ -65,11 +66,23 @@ const handleFindProposalsError = ({ error: err, certified }) => {
   }
 };
 
-export const listProposals = async (): Promise<void> => {
+export const listProposals = async ({
+  loadFinished,
+}: {
+  loadFinished: (params: {
+    paginationOver: boolean;
+    certified: boolean;
+  }) => void;
+}): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
-    onLoad: ({ response: proposals, certified }) =>
-      proposalsStore.setProposals({ proposals, certified }),
+    onLoad: ({ response: proposals, certified }) => {
+      proposalsStore.setProposals({ proposals, certified });
+      loadFinished({
+        paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
+        certified,
+      });
+    },
     onError: handleFindProposalsError,
   });
 };
@@ -93,15 +106,11 @@ export const listNextProposals = async ({
   findProposals({
     beforeProposal,
     onLoad: ({ response: proposals, certified }) => {
-      if (proposals.length === 0) {
-        // There is no more proposals to fetch for the current filters.
-        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
-        // We can also tell the UI that everything was loaded, useful to disable the infinite scroll.
-        loadFinished({ paginationOver: true, certified });
-        return;
-      }
       proposalsStore.pushProposals({ proposals, certified });
-      loadFinished({ paginationOver: false, certified });
+      loadFinished({
+        paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
+        certified,
+      });
     },
     onError: handleFindProposalsError,
   });

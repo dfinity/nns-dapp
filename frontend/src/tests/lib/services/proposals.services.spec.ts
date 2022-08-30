@@ -69,7 +69,11 @@ describe("proposals-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
@@ -92,7 +96,11 @@ describe("proposals-services", () => {
     });
 
     it("should not clear the list proposals before query", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
       expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
@@ -587,7 +595,12 @@ describe("proposals-services", () => {
     });
 
     it("should not list proposals if no identity", async () => {
-      const call = async () => await listProposals();
+      const call = async () =>
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
@@ -696,7 +709,11 @@ describe("proposals-services", () => {
     it("should not call the canister if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
@@ -706,7 +723,11 @@ describe("proposals-services", () => {
     it("should reset the proposal store if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       const { proposals } = get(proposalsStore);
       expect(proposals).toEqual([]);

@@ -131,14 +131,16 @@ describe("Proposals", () => {
       ).toBeInTheDocument();
     });
 
-    it("should disable infinite scroll when all proposals loaded", () => {
+    it("should disable infinite scroll when all proposals loaded", async () => {
       mockLoadProposals();
 
       const { container } = render(Proposals);
 
-      const ul = container.querySelector("ul") as HTMLUListElement;
+      await waitFor(() => {
+        const ul = container.querySelector("ul") as HTMLUListElement;
 
-      expect(ul.hasAttribute("disabled")).toBeTruthy();
+        expect(ul.hasAttribute("disabled")).toBeTruthy();
+      });
     });
 
     it("should not render not found text on init", () => {

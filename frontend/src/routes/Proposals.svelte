@@ -32,25 +32,31 @@
   let initialized: boolean = false;
   let disableInfiniteScroll: boolean = false;
 
+  const loadFinished = ({ paginationOver }) => {
+    loading = false;
+    disableInfiniteScroll = paginationOver;
+  };
+
+  const loadError = (err: unknown) => {
+    loading = false;
+    disableInfiniteScroll = true;
+
+    toastsStore.error({
+      labelKey: "error.list_proposals",
+      err,
+    });
+  };
+
   const findNextProposals = async () => {
     loading = true;
 
     try {
       await listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
-        loadFinished: ({ paginationOver }) => {
-          loading = false;
-          disableInfiniteScroll = paginationOver;
-        },
+        loadFinished,
       });
     } catch (err: unknown) {
-      loading = false;
-      disableInfiniteScroll = true;
-
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
+      loadError(err);
     }
   };
 
@@ -58,17 +64,10 @@
     loading = true;
 
     try {
-      await listProposals();
+      await listProposals({ loadFinished });
     } catch (err: unknown) {
-      disableInfiniteScroll = true;
-
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
+      loadError(err);
     }
-
-    loading = false;
   };
 
   let debounceFindProposals: () => void | undefined;
