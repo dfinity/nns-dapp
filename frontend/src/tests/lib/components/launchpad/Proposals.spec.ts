@@ -56,9 +56,7 @@ describe("Proposals", () => {
   });
 
   it("should display proposal cards", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { queryAllByTestId } = render(Proposals);
 
@@ -68,9 +66,7 @@ describe("Proposals", () => {
   });
 
   it("should hide skeletons", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { container } = render(Proposals);
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo, Vote } from "@dfinity/nns";
   import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
-  import { getContext, onDestroy } from "svelte";
+  import { getContext, onDestroy, SvelteComponent } from "svelte";
   import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
@@ -18,6 +18,8 @@
     voteInProgressStore,
     type VoteInProgress,
   } from "../../../stores/voting.store";
+  import { VOTING_UI } from "../../../constants/environment.constants";
+  import ContentCell from "../../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -72,16 +74,20 @@
     unsubscribe();
     votingNeuronSelectStore.reset();
   });
+
+  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
+  let cmp: typeof SvelteComponent =
+    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
 {#if visible}
-  <CardInfo>
-    <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
+  <svelte:component this={cmp}>
+    <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
     <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
     <VotingConfirmationToolbar
       {proposalInfo}
       {voteInProgress}
       on:nnsConfirm={vote}
     />
-  </CardInfo>
+  </svelte:component>
 {/if}

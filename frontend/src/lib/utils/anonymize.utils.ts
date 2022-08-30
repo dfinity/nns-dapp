@@ -8,10 +8,22 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import type {
+  SnsSwapBuyerState,
+  SnsSwapDerivedState,
+  SnsSwapState,
+} from "@dfinity/sns";
+import type {
   CanisterDetails,
   Transaction,
 } from "../canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "../types/account";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+  SnsTokenMetadata,
+} from "../types/sns";
 import { digestText } from "./dev.utils";
 import { mapTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";
@@ -273,4 +285,81 @@ export const anonymizeProposal = async (
     ...originalProposal,
     ballots: await mapPromises(ballots, anonymizeBallot),
   };
+};
+
+const anonymizeBuyer = async ([buyer, state]) => [
+  buyer,
+  {
+    ...state,
+    amount_icp_e8s: (await anonymizeAmount(state.amount_icp_e8s)) ?? BigInt(0),
+    amount_sns_e8s: (await anonymizeAmount(state.amount_sns_e8s)) ?? BigInt(0),
+  },
+];
+
+type AnonymizedSnsSummary = {
+  rootCanisterId?: string;
+  swapCanisterId?: string;
+  metadata: SnsSummaryMetadata;
+  token: SnsTokenMetadata;
+  swap: SnsSummarySwap;
+  derived: SnsSwapDerivedState;
+};
+
+export const anonymizeSnsSummary = async (
+  originalSummary: SnsSummary | undefined | null
+): Promise<AnonymizedSnsSummary | undefined> => {
+  if (originalSummary !== undefined && originalSummary !== null) {
+    const anonymizedBuyers = await mapPromises(
+      originalSummary?.swap.state.buyers,
+      anonymizeBuyer
+    );
+    return {
+      ...originalSummary,
+      rootCanisterId: await anonymize(originalSummary.rootCanisterId),
+      swapCanisterId: await anonymize(originalSummary.swapCanisterId),
+      swap: {
+        ...originalSummary.swap,
+        state: {
+          ...originalSummary.swap.state,
+          buyers: anonymizedBuyers,
+        } as SnsSwapState,
+      },
+      derived: {
+        ...originalSummary.derived,
+        buyer_total_icp_e8s: (await anonymizeAmount(
+          originalSummary.derived.buyer_total_icp_e8s
+        )) as bigint,
+      },
+    };
+  }
+};
+
+type AnonymizedSwapCommitment = {
+  rootCanisterId?: string;
+  myCommitment: SnsSwapBuyerState | undefined;
+};
+
+export const anonymizeSnsSwapCommitment = async (
+  originalSwapCommitment: SnsSwapCommitment | undefined | null
+): Promise<AnonymizedSwapCommitment | undefined> => {
+  if (
+    originalSwapCommitment !== undefined &&
+    originalSwapCommitment !== null &&
+    originalSwapCommitment.myCommitment !== undefined
+  ) {
+    return {
+      rootCanisterId: await anonymize(originalSwapCommitment.rootCanisterId),
+      myCommitment: {
+        ...originalSwapCommitment.myCommitment,
+        amount_sns_e8s:
+          (await anonymizeAmount(
+            originalSwapCommitment.myCommitment?.amount_sns_e8s
+          )) ?? BigInt(0),
+        amount_icp_e8s:
+          (await anonymizeAmount(
+            originalSwapCommitment.myCommitment?.amount_icp_e8s
+          )) ?? BigInt(0),
+      },
+    };
+  }
 };
