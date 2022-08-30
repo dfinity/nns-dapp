@@ -159,7 +159,7 @@
     : "skeleton";
 </script>
 
-<main class={VOTING_UI}>
+<main class={VOTING_UI} data-tid={`proposals-scroll-${disableInfiniteScroll ? 'off' : 'on'}`}>
   {#if VOTING_UI === "modern"}
     <ProposalsModern
       {hidden}

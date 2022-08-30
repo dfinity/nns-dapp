@@ -134,13 +134,11 @@ describe("Proposals", () => {
     it("should disable infinite scroll when all proposals loaded", async () => {
       mockLoadProposals();
 
-      const { container } = render(Proposals);
+      const { getByTestId } = render(Proposals);
 
-      await waitFor(() => {
-        const ul = container.querySelector("ul") as HTMLUListElement;
-
-        expect(ul.hasAttribute("disabled")).toBeTruthy();
-      });
+      await waitFor(() =>
+        expect(getByTestId("proposals-scroll-off")).not.toBeNull()
+      );
     });
 
     it("should not render not found text on init", () => {
