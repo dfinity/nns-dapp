@@ -34,7 +34,7 @@ describe("NnsFunctionDetails", () => {
     expect(getByText(en.proposal_detail.nns_function_name)).toBeInTheDocument();
   });
 
-  it("should render nnsFunction name", () => {
+  it("should render nnsFunction name", async () => {
     const { getByText } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
@@ -42,7 +42,7 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument();
+    await waitFor(() => expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument());
   });
 
   it("should display spinner if no payload", () => {

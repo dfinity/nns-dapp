@@ -143,7 +143,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons_state.Locked)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Locked)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
@@ -157,7 +157,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons_state.Dissolved)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolved)).toBeInTheDocument();
   });
 
   it("renders proper text when status is SPAWNING", async () => {
@@ -174,7 +174,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons_state.Spawning)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Spawning)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
@@ -194,7 +194,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons_state.Dissolving)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
