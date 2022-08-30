@@ -59,8 +59,8 @@
 <p class="question">
   {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
     $id: `${id ?? ""}`,
-    $title: sanitize(title),
-    $topic: sanitize(topic),
+    $title: sanitize(title ?? ""),
+    $topic: sanitize(topic ?? ""),
   })}
 </p>
 
