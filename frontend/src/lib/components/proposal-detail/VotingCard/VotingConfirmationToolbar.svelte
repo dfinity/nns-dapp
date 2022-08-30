@@ -83,7 +83,7 @@
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary"
+    class="primary small"
   >
     {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
@@ -95,7 +95,7 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger"
+    class="danger small"
   >
     {#if voteInProgress?.vote === Vote.No}
       <Spinner size="small" />
@@ -125,5 +125,9 @@
   .question {
     margin: 0 0 var(--padding-2x);
     word-break: break-word;
+  }
+
+  button {
+    min-width: calc(48px + (2 * var(--padding-2x)));
   }
 </style>
