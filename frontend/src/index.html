@@ -83,19 +83,26 @@
 
     <!-- Init theme as fast as possible -->
     <script>
-      const isDarkPreferred = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      const currentTheme =
-        localStorage.nnsTheme === null || localStorage.nnsTheme === undefined
-          ? undefined
-          : JSON.parse(localStorage.nnsTheme);
+      try {
+        const isDarkPreferred = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const currentTheme =
+          localStorage.nnsTheme === null ||
+          localStorage.nnsTheme === undefined ||
+          localStorage.nnsTheme === ""
+            ? undefined
+            : JSON.parse(localStorage.nnsTheme);
 
-      // Attribute is the value of THEME_ATTRIBUTE constant
-      document.documentElement.setAttribute(
-        "theme",
-        currentTheme ?? (isDarkPreferred ? "dark" : "light")
-      );
+        // Attribute is the value of THEME_ATTRIBUTE constant
+        document.documentElement.setAttribute(
+          "theme",
+          currentTheme ?? (isDarkPreferred ? "dark" : "light")
+        );
+      } catch (error) {
+        console.log("Error initializing theme");
+        console.log(error);
+      }
     </script>
 
     <script>

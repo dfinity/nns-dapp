@@ -1,7 +1,7 @@
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
 import type { storeLocalStorageKey } from "../constants/stores.constants";
 
-type StoredWritable<T> = Writable<T> & {
+type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;
 };
 
@@ -11,7 +11,7 @@ export const writableStored = <T>({
 }: {
   key: storeLocalStorageKey;
   defaultValue: T;
-}): StoredWritable<T> => {
+}): WritableStored<T> => {
   const getInitialValue = (): T => {
     // Do not break UI if local storage fails
     try {
