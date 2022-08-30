@@ -10,10 +10,6 @@ import { mapProposalInfo } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-jest.mock("../../../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
-
 describe("ProposalSystemInfoSection", () => {
   const {
     type,

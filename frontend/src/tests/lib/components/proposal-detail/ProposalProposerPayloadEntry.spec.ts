@@ -8,7 +8,7 @@ import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import ProposalActions from "../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
 import { proposalPayloadsStore } from "../../../../lib/stores/proposals.store";
-import { getExecuteNnsFunctionId } from "../../../../lib/utils/proposals.utils";
+import { getNnsFunctionKey } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProposalInfo,
@@ -57,8 +57,8 @@ describe("ProposalProposerActionsEntry", () => {
       },
     });
 
-    const id = getExecuteNnsFunctionId(proposalWithNnsFunctionAction);
-    const fnName = en.execute_nns_functions[`${id}`];
+    const nnsFunctionKey = getNnsFunctionKey(proposalWithNnsFunctionAction);
+    const fnName = en.nns_functions[nnsFunctionKey as string];
 
     expect(getByText(fnName)).toBeInTheDocument();
   });

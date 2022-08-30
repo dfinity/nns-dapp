@@ -28,7 +28,7 @@ describe("DissolveActionButton", () => {
     const { getByText } = render(DissolveActionButton, {
       props: {
         neuronId: BigInt(10),
-        neuronState: NeuronState.LOCKED,
+        neuronState: NeuronState.Locked,
       },
     });
 
@@ -39,7 +39,7 @@ describe("DissolveActionButton", () => {
     const { getByText } = render(DissolveActionButton, {
       props: {
         neuronId: BigInt(10),
-        neuronState: NeuronState.DISSOLVING,
+        neuronState: NeuronState.Dissolving,
       },
     });
 
@@ -50,7 +50,7 @@ describe("DissolveActionButton", () => {
     const { container, queryByTestId } = render(DissolveActionButton, {
       props: {
         neuronId: BigInt(10),
-        neuronState: NeuronState.LOCKED,
+        neuronState: NeuronState.Locked,
       },
     });
 
@@ -75,7 +75,7 @@ describe("DissolveActionButton", () => {
     const { container, queryByTestId } = render(DissolveActionButton, {
       props: {
         neuronId: BigInt(10),
-        neuronState: NeuronState.DISSOLVING,
+        neuronState: NeuronState.Dissolving,
       },
     });
 

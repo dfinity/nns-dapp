@@ -13,6 +13,8 @@ import {
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
+  anonymizeSnsSummary,
+  anonymizeSnsSwapCommitment,
   anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
@@ -132,6 +134,7 @@ const anonymiseStoreState = async () => {
     transaction,
     selectedAccount,
     selectedProposal,
+    selectedProject,
   } = get(debugStore);
 
   return {
@@ -189,6 +192,12 @@ const anonymiseStoreState = async () => {
             transaction,
             account: selectedAccount?.account,
           })
+      ),
+    },
+    selectedProject: {
+      summary: await anonymizeSnsSummary(selectedProject.summary),
+      swapCommitment: await anonymizeSnsSwapCommitment(
+        selectedProject.swapCommitment
       ),
     },
   };

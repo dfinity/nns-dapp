@@ -29,11 +29,11 @@
   }).length;
   let totalFiltersProposalRewardStatus = enumsExclude({
     obj: ProposalRewardStatus as unknown as ProposalRewardStatus,
-    values: [ProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNKNOWN],
+    values: [ProposalRewardStatus.Unknown],
   }).length;
   let totalFiltersProposalStatus = enumsExclude({
     obj: ProposalStatus as unknown as ProposalStatus,
-    values: [ProposalStatus.PROPOSAL_STATUS_UNKNOWN],
+    values: [ProposalStatus.Unknown],
   }).length;
 </script>
 

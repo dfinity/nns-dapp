@@ -26,6 +26,7 @@
   import { snsSummariesStore } from "../lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
   import { toastsStore } from "../lib/stores/toasts.store";
+  import { debugSelectedProjectStore } from "../lib/stores/debug.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -73,7 +74,8 @@
     swapCommitment: null,
   });
 
-  // TODO: add projectDetailStore to debug store
+  debugSelectedProjectStore(projectDetailStore);
+
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
     reload,

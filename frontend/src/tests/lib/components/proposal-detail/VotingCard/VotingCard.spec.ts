@@ -13,13 +13,10 @@ import { neuronsStore } from "../../../../../lib/stores/neurons.store";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
+import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 import VotingCardTest from "./VotingCardTest.svelte";
-
-jest.mock("../../../../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
@@ -27,7 +24,7 @@ describe("VotingCard", () => {
     ...mockProposalInfo,
     ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
     proposalTimestampSeconds: BigInt(2000),
-    status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+    status: ProposalStatus.Open,
   };
   const neurons: NeuronInfo[] = neuronIds.map((neuronId) => ({
     ...mockNeuron,
@@ -62,8 +59,10 @@ describe("VotingCard", () => {
 
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { queryByTestId } = renderVotingCard();
-    await waitFor(() => expect(queryByTestId("card")).toBeInTheDocument());
+    const { queryByText } = renderVotingCard();
+    await waitFor(() =>
+      expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument()
+    );
   });
 
   it("should disable action buttons if no neurons selected", async () => {
@@ -120,7 +119,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
-          vote: Vote.YES,
+          vote: Vote.Yes,
           proposalId: proposalInfo.id,
         })
       );
@@ -133,7 +132,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
-          vote: Vote.NO,
+          vote: Vote.No,
           proposalId: proposalInfo.id,
         })
       );

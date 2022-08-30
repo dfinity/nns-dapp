@@ -29,3 +29,8 @@ process.env.FEATURE_FLAGS = JSON.stringify({
 configure({
   testIdAttribute: "data-tid",
 });
+
+const DOMPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+const { window } = new JSDOM("<!DOCTYPE html>");
+global.DOMPurify = DOMPurify(window);

@@ -32,7 +32,7 @@ describe("VotingNeuronSelect", () => {
   const ballots = neurons.map(({ neuronId, votingPower }) => ({
     neuronId,
     votingPower: votingPower - BigInt(E8S_PER_ICP),
-    vote: Vote.NO,
+    vote: Vote.No,
   }));
   const proposalInfo = {
     ...mockProposalInfo,

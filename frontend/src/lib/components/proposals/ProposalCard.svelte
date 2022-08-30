@@ -22,7 +22,7 @@
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "../ui/Value.svelte";
 
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: Color | undefined;

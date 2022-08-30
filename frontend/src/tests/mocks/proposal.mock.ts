@@ -74,5 +74,5 @@ export const mockVotingInProgressItem = {
   proposalId: BigInt(0),
   neuronIds: [BigInt(0)],
   successfullyVotedNeuronIds: [],
-  vote: Vote.NO,
+  vote: Vote.No,
 };

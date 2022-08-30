@@ -421,7 +421,7 @@ export const registerVotes = async ({
   const $i18n = get(i18n);
   const toastMessage = toastsStore.show({
     labelKey:
-      vote === Vote.YES
+      vote === Vote.Yes
         ? "proposal_detail__vote.vote_adopt_in_progress"
         : "proposal_detail__vote.vote_reject_in_progress",
     level: "info",

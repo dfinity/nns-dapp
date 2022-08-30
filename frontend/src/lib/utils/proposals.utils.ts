@@ -9,6 +9,7 @@ import type {
   Tally,
 } from "@dfinity/nns";
 import {
+  NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
@@ -57,9 +58,9 @@ export const proposalActionFields = (
   });
 };
 
-export const getExecuteNnsFunctionId = (
+export const getNnsFunctionKey = (
   proposal: Proposal | undefined
-): number | undefined => {
+): string | undefined => {
   const action = proposalFirstActionKey(proposal);
 
   if (action !== "ExecuteNnsFunction") {
@@ -70,7 +71,8 @@ export const getExecuteNnsFunctionId = (
   const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
     nnsFunctionId: 0,
   };
-  return nnsFunctionId;
+
+  return NnsFunction[nnsFunctionId];
 };
 
 export const hideProposal = ({
@@ -133,7 +135,7 @@ const isExcludedVotedProposal = ({
         // TODO: This is temporary solution. Will be replaced with L2-507
         // ignore neuronIds in ballots that are not in the neuron list of the user.
         // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
-        belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
+        belongsToValidNeuron(neuronId) && vote === Vote.Unspecified
     ) !== undefined;
 
   return (
@@ -417,8 +419,8 @@ const mapProposalType = (
   const {
     actions,
     actions_description,
-    execute_nns_functions,
-    execute_nns_functions_description,
+    nns_functions,
+    nns_functions_description,
   } = get(i18n);
 
   const NO_MATCH = { type: undefined, typeDescription: undefined };
@@ -427,12 +429,12 @@ const mapProposalType = (
     return NO_MATCH;
   }
 
-  const nnsFunctionId = getExecuteNnsFunctionId(proposal);
+  const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
 
-  if (nnsFunctionId !== undefined) {
+  if (nnsFunctionKey !== undefined) {
     return {
-      type: execute_nns_functions[nnsFunctionId],
-      typeDescription: execute_nns_functions_description[nnsFunctionId],
+      type: nns_functions[nnsFunctionKey],
+      typeDescription: nns_functions_description[nnsFunctionKey],
     };
   }
 
@@ -514,11 +516,11 @@ export const updateProposalVote = ({
     latestTally: {
       ...(proposalInfo.latestTally as Tally),
       yes:
-        vote === Vote.YES
+        vote === Vote.Yes
           ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
           : proposalInfo.latestTally?.yes ?? BigInt(0),
       no:
-        vote === Vote.NO
+        vote === Vote.No
           ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
           : proposalInfo.latestTally?.no ?? BigInt(0),
     },
