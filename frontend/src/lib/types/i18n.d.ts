@@ -215,11 +215,6 @@ interface I18nNeurons {
   may_take_while: string;
   create: string;
   edit_source: string;
-  status_locked: string;
-  status_spawning: string;
-  status_unspecified: string;
-  status_dissolved: string;
-  status_dissolving: string;
   community_fund: string;
   hotkey_control: string;
   stake: string;
@@ -361,96 +356,6 @@ interface I18nCanister_detail {
   add_controller: string;
 }
 
-interface I18nTopics {
-  Unspecified: string;
-  ManageNeuron: string;
-  ExchangeRate: string;
-  NetworkEconomics: string;
-  Governance: string;
-  NodeAdmin: string;
-  ParticipantManagement: string;
-  SubnetManagement: string;
-  NetworkCanisterManagement: string;
-  Kyc: string;
-  NodeProviderRewards: string;
-  SnsDecentralizationSale: string;
-}
-
-interface I18nTopics_description {
-  Unspecified: string;
-  ManageNeuron: string;
-  ExchangeRate: string;
-  NetworkEconomics: string;
-  Governance: string;
-  NodeAdmin: string;
-  ParticipantManagement: string;
-  SubnetManagement: string;
-  NetworkCanisterManagement: string;
-  Kyc: string;
-  NodeProviderRewards: string;
-  SnsDecentralizationSale: string;
-}
-
-interface I18nRewards {
-  PROPOSAL_REWARD_STATUS_UNKNOWN: string;
-  PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
-  PROPOSAL_REWARD_STATUS_READY_TO_SETTLE: string;
-  PROPOSAL_REWARD_STATUS_SETTLED: string;
-  PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
-}
-
-interface I18nRewards_description {
-  PROPOSAL_REWARD_STATUS_UNKNOWN: string;
-  PROPOSAL_REWARD_STATUS_ACCEPT_VOTES: string;
-  PROPOSAL_REWARD_STATUS_READY_TO_SETTLE: string;
-  PROPOSAL_REWARD_STATUS_SETTLED: string;
-  PROPOSAL_REWARD_STATUS_INELIGIBLE: string;
-}
-
-interface I18nStatus {
-  PROPOSAL_STATUS_UNKNOWN: string;
-  PROPOSAL_STATUS_OPEN: string;
-  PROPOSAL_STATUS_REJECTED: string;
-  PROPOSAL_STATUS_ACCEPTED: string;
-  PROPOSAL_STATUS_EXECUTED: string;
-  PROPOSAL_STATUS_FAILED: string;
-}
-
-interface I18nStatus_description {
-  PROPOSAL_STATUS_UNKNOWN: string;
-  PROPOSAL_STATUS_OPEN: string;
-  PROPOSAL_STATUS_REJECTED: string;
-  PROPOSAL_STATUS_ACCEPTED: string;
-  PROPOSAL_STATUS_EXECUTED: string;
-  PROPOSAL_STATUS_FAILED: string;
-}
-
-interface I18nActions {
-  RegisterKnownNeuron: string;
-  ManageNeuron: string;
-  ApproveGenesisKyc: string;
-  ManageNetworkEconomics: string;
-  RewardNodeProvider: string;
-  RewardNodeProviders: string;
-  AddOrRemoveNodeProvider: string;
-  SetDefaultFollowees: string;
-  Motion: string;
-  SetSnsTokenSwapOpenTimeWindow: string;
-}
-
-interface I18nActions_description {
-  RegisterKnownNeuron: string;
-  ManageNeuron: string;
-  ApproveGenesisKyc: string;
-  ManageNetworkEconomics: string;
-  RewardNodeProvider: string;
-  RewardNodeProviders: string;
-  AddOrRemoveNodeProvider: string;
-  SetDefaultFollowees: string;
-  Motion: string;
-  SetSnsTokenSwapOpenTimeWindow: string;
-}
-
 interface I18nTransaction_names {
   receive: string;
   send: string;
@@ -534,74 +439,6 @@ interface I18nProposal_detail__ineligible {
   text: string;
   reason_since: string;
   reason_short: string;
-}
-
-interface I18nExecute_nns_functions {
-  0: string;
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
-  7: string;
-  8: string;
-  9: string;
-  10: string;
-  11: string;
-  12: string;
-  13: string;
-  14: string;
-  15: string;
-  16: string;
-  17: string;
-  18: string;
-  19: string;
-  20: string;
-  21: string;
-  22: string;
-  23: string;
-  24: string;
-  25: string;
-  26: string;
-  27: string;
-  28: string;
-  29: string;
-  30: string;
-}
-
-interface I18nExecute_nns_functions_description {
-  0: string;
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
-  7: string;
-  8: string;
-  9: string;
-  10: string;
-  11: string;
-  12: string;
-  13: string;
-  14: string;
-  15: string;
-  16: string;
-  17: string;
-  18: string;
-  19: string;
-  20: string;
-  21: string;
-  22: string;
-  23: string;
-  24: string;
-  25: string;
-  26: string;
-  27: string;
-  28: string;
-  29: string;
-  30: string;
 }
 
 interface I18nNeuron_detail {
@@ -817,6 +654,172 @@ interface I18nError__sns {
   sns_add_hotkey: string;
 }
 
+interface I18nNeuron_state {
+  Unspecified: string;
+  Locked: string;
+  Spawning: string;
+  Dissolved: string;
+  Dissolving: string;
+}
+
+interface I18nTopics {
+  Unspecified: string;
+  ManageNeuron: string;
+  ExchangeRate: string;
+  NetworkEconomics: string;
+  Governance: string;
+  NodeAdmin: string;
+  ParticipantManagement: string;
+  SubnetManagement: string;
+  NetworkCanisterManagement: string;
+  Kyc: string;
+  NodeProviderRewards: string;
+  SnsDecentralizationSale: string;
+}
+
+interface I18nTopics_description {
+  Unspecified: string;
+  ManageNeuron: string;
+  ExchangeRate: string;
+  NetworkEconomics: string;
+  Governance: string;
+  NodeAdmin: string;
+  ParticipantManagement: string;
+  SubnetManagement: string;
+  NetworkCanisterManagement: string;
+  Kyc: string;
+  NodeProviderRewards: string;
+  SnsDecentralizationSale: string;
+}
+
+interface I18nRewards {
+  Unknown: string;
+  AcceptVotes: string;
+  ReadyToSettle: string;
+  Settled: string;
+  Ineligible: string;
+}
+
+interface I18nRewards_description {
+  Unknown: string;
+  AcceptVotes: string;
+  ReadyToSettle: string;
+  Settled: string;
+  Ineligible: string;
+}
+
+interface I18nStatus {
+  Unknown: string;
+  Open: string;
+  Rejected: string;
+  Accepted: string;
+  Executed: string;
+  Failed: string;
+}
+
+interface I18nStatus_description {
+  Unknown: string;
+  Open: string;
+  Rejected: string;
+  Accepted: string;
+  Executed: string;
+  Failed: string;
+}
+
+interface I18nActions {
+  RegisterKnownNeuron: string;
+  ManageNeuron: string;
+  ApproveGenesisKyc: string;
+  ManageNetworkEconomics: string;
+  RewardNodeProvider: string;
+  RewardNodeProviders: string;
+  AddOrRemoveNodeProvider: string;
+  SetDefaultFollowees: string;
+  Motion: string;
+  SetSnsTokenSwapOpenTimeWindow: string;
+}
+
+interface I18nActions_description {
+  RegisterKnownNeuron: string;
+  ManageNeuron: string;
+  ApproveGenesisKyc: string;
+  ManageNetworkEconomics: string;
+  RewardNodeProvider: string;
+  RewardNodeProviders: string;
+  AddOrRemoveNodeProvider: string;
+  SetDefaultFollowees: string;
+  Motion: string;
+  SetSnsTokenSwapOpenTimeWindow: string;
+}
+
+interface I18nNns_functions {
+  Unspecified: string;
+  CreateSubnet: string;
+  AddNodeToSubnet: string;
+  NnsCanisterInstall: string;
+  NnsCanisterUpgrade: string;
+  BlessReplicaVersion: string;
+  RecoverSubnet: string;
+  UpdateConfigOfSubnet: string;
+  AssignNoid: string;
+  NnsRootUpgrade: string;
+  IcpXdrConversionRate: string;
+  UpdateSubnetReplicaVersion: string;
+  ClearProvisionalWhitelist: string;
+  RemoveNodesFromSubnet: string;
+  SetAuthorizedSubnetworks: string;
+  SetFirewallConfig: string;
+  UpdateNodeOperatorConfig: string;
+  StopOrStartNnsCanister: string;
+  RemoveNodes: string;
+  UninstallCode: string;
+  UpdateNodeRewardsTable: string;
+  AddOrRemoveDataCenters: string;
+  UpdateUnassignedNodesConfig: string;
+  RemoveNodeOperators: string;
+  RerouteCanisterRanges: string;
+  AddFirewallRules: string;
+  RemoveFirewallRules: string;
+  UpdateFirewallRules: string;
+  PrepareCanisterMigration: string;
+  CompleteCanisterMigration: string;
+  AddSnsWasm: string;
+}
+
+interface I18nNns_functions_description {
+  Unspecified: string;
+  CreateSubnet: string;
+  AddNodeToSubnet: string;
+  NnsCanisterInstall: string;
+  NnsCanisterUpgrade: string;
+  BlessReplicaVersion: string;
+  RecoverSubnet: string;
+  UpdateConfigOfSubnet: string;
+  AssignNoid: string;
+  NnsRootUpgrade: string;
+  IcpXdrConversionRate: string;
+  UpdateSubnetReplicaVersion: string;
+  ClearProvisionalWhitelist: string;
+  RemoveNodesFromSubnet: string;
+  SetAuthorizedSubnetworks: string;
+  SetFirewallConfig: string;
+  UpdateNodeOperatorConfig: string;
+  StopOrStartNnsCanister: string;
+  RemoveNodes: string;
+  UninstallCode: string;
+  UpdateNodeRewardsTable: string;
+  AddOrRemoveDataCenters: string;
+  UpdateUnassignedNodesConfig: string;
+  RemoveNodeOperators: string;
+  RerouteCanisterRanges: string;
+  AddFirewallRules: string;
+  RemoveFirewallRules: string;
+  UpdateFirewallRules: string;
+  PrepareCanisterMigration: string;
+  CompleteCanisterMigration: string;
+  AddSnsWasm: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -832,22 +835,12 @@ interface I18n {
   voting: I18nVoting;
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
-  topics: I18nTopics;
-  topics_description: I18nTopics_description;
-  rewards: I18nRewards;
-  rewards_description: I18nRewards_description;
-  status: I18nStatus;
-  status_description: I18nStatus_description;
-  actions: I18nActions;
-  actions_description: I18nActions_description;
   transaction_names: I18nTransaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;
   proposal_detail__vote: I18nProposal_detail__vote;
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
-  execute_nns_functions: I18nExecute_nns_functions;
-  execute_nns_functions_description: I18nExecute_nns_functions_description;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
@@ -860,4 +853,15 @@ interface I18n {
   error__canister: I18nError__canister;
   theme: I18nTheme;
   error__sns: I18nError__sns;
+  neuron_state: I18nNeuron_state;
+  topics: I18nTopics;
+  topics_description: I18nTopics_description;
+  rewards: I18nRewards;
+  rewards_description: I18nRewards_description;
+  status: I18nStatus;
+  status_description: I18nStatus_description;
+  actions: I18nActions;
+  actions_description: I18nActions_description;
+  nns_functions: I18nNns_functions;
+  nns_functions_description: I18nNns_functions_description;
 }

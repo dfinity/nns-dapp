@@ -22,7 +22,7 @@
   let buttonKey: string;
   let descriptionKey: string;
   $: {
-    isDissolving = neuronState === NeuronState.DISSOLVING;
+    isDissolving = neuronState === NeuronState.Dissolving;
     buttonKey = isDissolving ? "stop_dissolving" : "start_dissolving";
     descriptionKey = isDissolving
       ? "stop_dissolve_description"

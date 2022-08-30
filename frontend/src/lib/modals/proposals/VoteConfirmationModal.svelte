@@ -13,7 +13,7 @@
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
   <div>
-    {#if voteType === Vote.YES}
+    {#if voteType === Vote.Yes}
       <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
       <p>

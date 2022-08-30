@@ -49,7 +49,7 @@ const initOpenSnsProposalsStore = () =>
     isNullish($snsProposalsStore)
       ? []
       : $snsProposalsStore.proposals.filter(
-          ({ status }) => status === ProposalStatus.PROPOSAL_STATUS_OPEN
+          ({ status }) => status === ProposalStatus.Open
         )
   );
 

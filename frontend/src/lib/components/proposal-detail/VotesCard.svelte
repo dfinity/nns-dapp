@@ -27,16 +27,16 @@
   $: sum = yes + no;
 
   const voteIconMapper = {
-    [Vote.NO]: IconThumbDown,
-    [Vote.YES]: IconThumbUp,
-    [Vote.UNSPECIFIED]: undefined,
+    [Vote.No]: IconThumbDown,
+    [Vote.Yes]: IconThumbUp,
+    [Vote.Unspecified]: undefined,
   };
 
   const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
     const stringMapper = {
-      [Vote.NO]: $i18n.core.no,
-      [Vote.YES]: $i18n.core.yes,
-      [Vote.UNSPECIFIED]: "",
+      [Vote.No]: $i18n.core.no,
+      [Vote.Yes]: $i18n.core.yes,
+      [Vote.Unspecified]: "",
     };
 
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
