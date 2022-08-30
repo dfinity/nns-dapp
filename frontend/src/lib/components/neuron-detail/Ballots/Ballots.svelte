@@ -18,6 +18,8 @@
   $: ballots = neuron === undefined ? [] : ballotsWithDefinedProposal(neuron);
   $: ballotsToShow = ballots.slice(0, ballotsIndex);
 
+  let disableInfiniteScroll = false;
+
   // We fake fetching the next `PAGE_LIMIT` ballots.
   const nextPage = debounce(() => {
     ballotsIndex += PAGE_LIMIT;
@@ -29,6 +31,7 @@
       return;
     }
     if (ballotsIndex >= ballots.length) {
+      disableInfiniteScroll = true;
       return;
     }
     fakeLoading = true;
@@ -45,7 +48,7 @@
       <span>{$i18n.neuron_detail.vote}</span>
     </h4>
 
-    <InfiniteScroll pageLimit={PAGE_LIMIT} on:nnsIntersect={showMore}>
+    <InfiniteScroll on:nnsIntersect={showMore} disabled={disableInfiniteScroll}>
       {#each ballotsToShow as ballot}
         <li>
           <BallotSummary {ballot} />

@@ -20,11 +20,11 @@ describe("VoteHistoryCard", () => {
       ...mockNeuron,
       recentBallots: [
         {
-          vote: Vote.YES,
+          vote: Vote.Yes,
           proposalId: mockProposals[0].id,
         },
         {
-          vote: Vote.NO,
+          vote: Vote.No,
           proposalId: mockProposals[1].id,
         },
       ],

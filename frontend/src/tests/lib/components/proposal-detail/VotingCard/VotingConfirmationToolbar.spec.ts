@@ -15,10 +15,6 @@ import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
-jest.mock("../../../../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
-
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
   const neuron = {
@@ -50,7 +46,7 @@ describe("VotingConfirmationToolbar", () => {
     );
   });
 
-  it("should display Vote.YES modal", async () => {
+  it("should display Vote.Yes modal", async () => {
     const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
@@ -62,7 +58,7 @@ describe("VotingConfirmationToolbar", () => {
     );
   });
 
-  it("should display Vote.NO modal", async () => {
+  it("should display Vote.No modal", async () => {
     const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(container.querySelector('[data-tid="vote-no"]') as Element);
     await waitFor(() =>
@@ -121,7 +117,7 @@ describe("VotingConfirmationToolbar", () => {
     const { component, container } = render(VotingConfirmationToolbar, {
       props,
     });
-    let calledVoteType: Vote = Vote.UNSPECIFIED;
+    let calledVoteType: Vote = Vote.Unspecified;
     const onConfirm = jest.fn((ev) => (calledVoteType = ev?.detail?.voteType));
     component.$on("nnsConfirm", onConfirm);
 
@@ -138,7 +134,7 @@ describe("VotingConfirmationToolbar", () => {
       ).not.toBeInTheDocument()
     );
     expect(onConfirm).toBeCalled();
-    expect(calledVoteType).toBe(Vote.NO);
+    expect(calledVoteType).toBe(Vote.No);
   });
 
   it("should display a question that repeats id and topic", async () => {

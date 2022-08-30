@@ -16,15 +16,10 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .markdown {
-    font-size: var(--font-size-small);
     overflow-wrap: break-word;
 
-    @include media.min-width(medium) {
-      font-size: var(--font-size-small);
-    }
-
     :global(a) {
-      font-size: var(--font-size-small);
+      font-size: inherit;
       color: var(--primary-tint);
       text-decoration: none;
     }
@@ -32,6 +27,15 @@
     :global(pre) {
       // make the <code> scrollable
       overflow-x: auto;
+    }
+
+    :global(h1),
+    :global(h2),
+    :global(h3),
+    :global(h4),
+    :global(h5),
+    :global(h6) {
+      line-height: var(--line-height-standard);
     }
   }
 </style>

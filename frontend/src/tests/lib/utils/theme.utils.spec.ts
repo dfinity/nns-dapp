@@ -3,7 +3,7 @@
  */
 
 import { Theme } from "../../../lib/types/theme";
-import { applyTheme } from "../../../lib/utils/theme.utils";
+import { applyTheme, THEME_ATTRIBUTE } from "../../../lib/utils/theme.utils";
 
 describe("theme-utils", () => {
   it("should apply theme to root html element", () => {
@@ -11,8 +11,10 @@ describe("theme-utils", () => {
 
     const { documentElement } = document;
 
-    expect(documentElement).toHaveAttribute("theme");
-    expect(documentElement.getAttribute("theme")).toContain(`${Theme.DARK}`);
+    expect(documentElement).toHaveAttribute(THEME_ATTRIBUTE);
+    expect(documentElement.getAttribute(THEME_ATTRIBUTE)).toContain(
+      `${Theme.DARK}`
+    );
   });
 
   it("should update meta theme color in head element", () => {
