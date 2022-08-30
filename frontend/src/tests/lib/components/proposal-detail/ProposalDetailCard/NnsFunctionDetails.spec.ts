@@ -42,7 +42,7 @@ describe("NnsFunctionDetails", () => {
       },
     });
 
-    expect(getByText(en.nns_functions["1"])).toBeInTheDocument();
+    expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument();
   });
 
   it("should display spinner if no payload", () => {
