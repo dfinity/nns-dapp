@@ -76,6 +76,10 @@ export const markdownToSanitizedHTML = async (
   return convertMarkdownToHTML(sanitize(text ?? ""));
 };
 
+/**
+ * DOMPurify needs a workaround to work in the NodeJS context - i.e. for our jest test suite.
+ * See the jest-setup.ts for details.
+ */
 export const sanitize = (text: string): string => {
   return !isNode() ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
 };
