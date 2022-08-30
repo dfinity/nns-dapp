@@ -15,10 +15,6 @@ import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
-jest.mock("../../../../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
-
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
   const neuron = {
