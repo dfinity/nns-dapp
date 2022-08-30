@@ -5,7 +5,6 @@
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
-    getStateInfo,
     hasJoinedCommunityFund,
     isHotKeyControllable,
     isSpawning,
