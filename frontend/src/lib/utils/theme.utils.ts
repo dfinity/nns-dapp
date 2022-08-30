@@ -2,6 +2,8 @@ import { Theme } from "../types/theme";
 import { isNode } from "./dev.utils";
 import { enumFromStringExists } from "./enum.utils";
 
+export const THEME_ATTRIBUTE = "theme";
+
 export const initTheme = (): Theme => {
   // Jest NodeJS environment has no document
   if (isNode()) {
@@ -9,7 +11,8 @@ export const initTheme = (): Theme => {
   }
 
   // This is set in the index.html file
-  const theme: string | null = document.documentElement.getAttribute("theme");
+  const theme: string | null =
+    document.documentElement.getAttribute(THEME_ATTRIBUTE);
 
   const initialTheme: Theme = enumFromStringExists({
     obj: Theme as unknown as Theme,
@@ -24,7 +27,7 @@ export const initTheme = (): Theme => {
 export const applyTheme = ({ theme }: { theme: Theme }) => {
   const { documentElement, head } = document;
 
-  documentElement.setAttribute("theme", theme);
+  documentElement.setAttribute(THEME_ATTRIBUTE, theme);
 
   const color: string =
     getComputedStyle(documentElement).getPropertyValue("--card-background");

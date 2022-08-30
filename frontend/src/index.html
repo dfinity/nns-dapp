@@ -87,11 +87,11 @@
         "(prefers-color-scheme: dark)"
       ).matches;
       const currentTheme =
-        localStorage.theme !== null
-          ? JSON.parse(localStorage.theme)
-          : undefined;
+        localStorage.nnsTheme === null
+          ? undefined
+          : JSON.parse(localStorage.nnsTheme);
 
-      // `theme` must match storeLocalStorageKey.Theme
+      // Attribute is the value of THEME_ATTRIBUTE constant
       document.documentElement.setAttribute(
         "theme",
         currentTheme ?? (isDarkPreferred ? "dark" : "light")
