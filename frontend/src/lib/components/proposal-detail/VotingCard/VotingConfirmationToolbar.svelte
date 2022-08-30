@@ -83,7 +83,7 @@
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary full-width"
+    class="primary"
   >
     {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
@@ -95,7 +95,7 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger full-width"
+    class="danger"
   >
     {#if voteInProgress?.vote === Vote.No}
       <Spinner size="small" />

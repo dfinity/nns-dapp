@@ -15,6 +15,9 @@
     type CompactNeuronInfo,
   } from "../../utils/neuron.utils";
   import Value from "../ui/Value.svelte";
+  import { SvelteComponent } from "svelte";
+  import { VOTING_UI } from "../../constants/environment.constants";
+  import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -52,9 +55,13 @@
       proposal: proposalInfo,
     });
   }
+
+  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
+  let cmp: typeof SvelteComponent =
+    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
-<CardInfo>
+<svelte:component this={cmp}>
   <h3 slot="start" class="title">Voting Results</h3>
   <div class="latest-tally">
     <h4 class="label yes">
@@ -95,7 +102,7 @@
       {/each}
     </ul>
   {/if}
-</CardInfo>
+</svelte:component>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

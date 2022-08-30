@@ -3,6 +3,9 @@
   import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
+  import { SvelteComponent } from "svelte";
+  import { VOTING_UI } from "../../constants/environment.constants";
+  import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let neurons: NeuronInfo[];
@@ -20,10 +23,14 @@
     createdTimestampSeconds > proposalInfo.proposalTimestampSeconds
       ? $i18n.proposal_detail__ineligible.reason_since
       : $i18n.proposal_detail__ineligible.reason_short;
+
+  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
+  let cmp: typeof SvelteComponent =
+    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
 {#if visible}
-  <CardInfo>
+  <svelte:component this={cmp}>
     <h3 slot="start">{$i18n.proposal_detail__ineligible.headline}</h3>
     <p class="description">{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
@@ -33,7 +40,7 @@
         </li>
       {/each}
     </ul>
-  </CardInfo>
+  </svelte:component>
 {/if}
 
 <style lang="scss">

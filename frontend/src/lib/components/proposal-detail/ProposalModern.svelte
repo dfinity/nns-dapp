@@ -3,6 +3,7 @@
   import { i18n } from "../../stores/i18n";
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
+  import ProposalVotingSection from "./ProposalVotingSection.svelte";
   import ProposalProposerDataSection from "./ProposalProposerDataSection.svelte";
   import { getContext } from "svelte";
   import {
@@ -23,7 +24,9 @@
       <div class="content-a">
         <ProposalSystemInfoSection proposalInfo={$store.proposal} />
       </div>
-      <div class="content-b">TODO: Vote Info and Cast Vote</div>
+      <div class="content-b expand-content-b">
+        <ProposalVotingSection proposalInfo={$store.proposal} />
+      </div>
       <div class="content-c">
         <ProposalProposerInfoSection proposalInfo={$store.proposal} />
       </div>
@@ -44,6 +47,8 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   .loader {
     position: absolute;
     top: 50%;
@@ -55,5 +60,12 @@
     display: inline-block;
     position: relative;
     vertical-align: middle;
+  }
+
+  @include media.min-width(medium) {
+    // If this would be use elsewhere, we can extract some utility to gix-components
+    .content-b.expand-content-b {
+      grid-row-end: content-e;
+    }
   }
 </style>
