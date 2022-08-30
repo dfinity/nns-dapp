@@ -65,7 +65,7 @@
       <ProjectTimeline />
     </div>
 
-    <div class="actions">
+    <div class="actions content-cell-details">
       {#if myCommitmentIcp !== undefined}
         <div>
           <KeyValuePair>
@@ -99,10 +99,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    padding-top: var(--padding-2x);
 
     @include media.min-width(medium) {
-      padding: 0;
       align-items: flex-start;
     }
   }
