@@ -87,7 +87,7 @@
         "(prefers-color-scheme: dark)"
       ).matches;
       const currentTheme =
-        localStorage.nnsTheme === null
+        localStorage.nnsTheme === null || localStorage.nnsTheme === undefined
           ? undefined
           : JSON.parse(localStorage.nnsTheme);
 
