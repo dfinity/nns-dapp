@@ -56,7 +56,7 @@ describe("VotesCard", () => {
       recentBallots: [
         {
           proposalId: mockProposalInfo.id,
-          vote: Vote.NO,
+          vote: Vote.No,
         },
       ],
     };
@@ -66,7 +66,7 @@ describe("VotesCard", () => {
       recentBallots: [
         {
           proposalId: mockProposalInfo.id,
-          vote: Vote.YES,
+          vote: Vote.Yes,
         },
       ],
     };
@@ -76,7 +76,7 @@ describe("VotesCard", () => {
       ballots: votedNeurons.map(({ neuronId, votingPower }) => ({
         neuronId,
         votingPower,
-        vote: Vote.UNSPECIFIED,
+        vote: Vote.Unspecified,
       })),
     };
     it("should have title when proposal has been voted by some owned neuron", () => {

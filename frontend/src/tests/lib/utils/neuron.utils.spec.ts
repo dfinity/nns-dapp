@@ -241,7 +241,7 @@ describe("neuron-utils", () => {
     it("returns undefined if neuron not dissolving", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.DISSOLVED,
+        state: NeuronState.Dissolved,
       };
       expect(getDissolvingTimeInSeconds(neuron)).toBeUndefined();
     });
@@ -249,7 +249,7 @@ describe("neuron-utils", () => {
     it("returns undefined if dissolve state has no timestamp", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.DISSOLVING,
+        state: NeuronState.Dissolving,
         fullNeuron: {
           ...mockFullNeuron,
           dissolveState: undefined,
@@ -263,7 +263,7 @@ describe("neuron-utils", () => {
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.DISSOLVING,
+        state: NeuronState.Dissolving,
         fullNeuron: {
           ...mockFullNeuron,
           dissolveState: {
@@ -279,7 +279,7 @@ describe("neuron-utils", () => {
     it("returns undefined if neuron not spawning", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.LOCKED,
+        state: NeuronState.Locked,
       };
       expect(getSpawningTimeInSeconds(neuron)).toBeUndefined();
     });
@@ -287,7 +287,7 @@ describe("neuron-utils", () => {
     it("returns undefined if spawnAtTimesSeconds is undefined", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.SPAWNING,
+        state: NeuronState.Spawning,
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: undefined,
@@ -301,7 +301,7 @@ describe("neuron-utils", () => {
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.SPAWNING,
+        state: NeuronState.Spawning,
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: delayInSeconds,
@@ -573,11 +573,11 @@ describe("neuron-utils", () => {
 
   describe("ballotsWithDefinedProposal", () => {
     const ballot: BallotInfo = {
-      vote: Vote.YES,
+      vote: Vote.Yes,
       proposalId: undefined,
     };
     const ballotWithProposalId: BallotInfo = {
-      vote: Vote.YES,
+      vote: Vote.Yes,
       proposalId: BigInt(0),
     };
 
@@ -900,7 +900,7 @@ describe("neuron-utils", () => {
     it("returns true if neuron is spawning", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.SPAWNING,
+        state: NeuronState.Spawning,
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: BigInt(123123113),
@@ -912,7 +912,7 @@ describe("neuron-utils", () => {
     it("returns false if neuron is not spawning", () => {
       const neuron = {
         ...mockNeuron,
-        status: NeuronState.LOCKED,
+        status: NeuronState.Locked,
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: undefined,
@@ -988,7 +988,7 @@ describe("neuron-utils", () => {
     it("wraps mergeable neurons with false if neuron is spawning", () => {
       const neuron = {
         ...mockNeuron,
-        state: NeuronState.SPAWNING,
+        state: NeuronState.Spawning,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
@@ -1453,22 +1453,22 @@ describe("neuron-utils", () => {
       const ballot1 = {
         neuronId: neuronId1,
         votingPower: BigInt(40),
-        vote: Vote.NO,
+        vote: Vote.No,
       };
       const ballot2 = {
         neuronId: neuronId2,
         votingPower: BigInt(50),
-        vote: Vote.YES,
+        vote: Vote.Yes,
       };
       const neuron1 = {
         ...mockNeuron,
         neuronId: neuronId1,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const neuron2 = {
         ...mockNeuron,
         neuronId: neuronId2,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const proposal = {
         ...mockProposalInfo,
@@ -1493,7 +1493,7 @@ describe("neuron-utils", () => {
       const neuron1 = {
         ...mockNeuron,
         neuronId: neuronId1,
-        recentBallots: [{ vote: Vote.NO, proposalId }],
+        recentBallots: [{ vote: Vote.No, proposalId }],
       };
       const neuron2 = {
         ...mockNeuron,
@@ -1503,7 +1503,7 @@ describe("neuron-utils", () => {
       const ballot1 = {
         neuronId: neuronId1,
         votingPower: BigInt(40),
-        vote: Vote.NO,
+        vote: Vote.No,
       };
       const proposal = {
         ...mockProposalInfo,

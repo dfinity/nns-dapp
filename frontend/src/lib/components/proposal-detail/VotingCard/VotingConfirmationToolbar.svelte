@@ -27,7 +27,7 @@
   let total: bigint;
   let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote = Vote.YES;
+  let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
@@ -40,11 +40,11 @@
     voteInProgress !== undefined;
 
   const showAdoptConfirmation = () => {
-    selectedVoteType = Vote.YES;
+    selectedVoteType = Vote.Yes;
     showConfirmationModal = true;
   };
   const showRejectConfirmation = () => {
-    selectedVoteType = Vote.NO;
+    selectedVoteType = Vote.No;
     showConfirmationModal = true;
   };
   const cancel = () => (showConfirmationModal = false);
@@ -85,7 +85,7 @@
     on:click={showAdoptConfirmation}
     class="primary full-width"
   >
-    {#if voteInProgress?.vote === Vote.YES}
+    {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.adopt}
@@ -97,7 +97,7 @@
     on:click={showRejectConfirmation}
     class="danger full-width"
   >
-    {#if voteInProgress?.vote === Vote.NO}
+    {#if voteInProgress?.vote === Vote.No}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.reject}

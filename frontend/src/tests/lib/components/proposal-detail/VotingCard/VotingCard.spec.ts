@@ -27,7 +27,7 @@ describe("VotingCard", () => {
     ...mockProposalInfo,
     ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
     proposalTimestampSeconds: BigInt(2000),
-    status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+    status: ProposalStatus.Open,
   };
   const neurons: NeuronInfo[] = neuronIds.map((neuronId) => ({
     ...mockNeuron,
@@ -120,7 +120,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
-          vote: Vote.YES,
+          vote: Vote.Yes,
           proposalId: proposalInfo.id,
         })
       );
@@ -133,7 +133,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
-          vote: Vote.NO,
+          vote: Vote.No,
           proposalId: proposalInfo.id,
         })
       );
