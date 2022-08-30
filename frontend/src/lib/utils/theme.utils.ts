@@ -10,7 +10,7 @@ export const initTheme = (): Theme => {
     return Theme.DARK;
   }
 
-  // This is set in the index.html file
+  // Initial attribute value is set in the index.html
   const theme: string | null =
     document.documentElement.getAttribute(THEME_ATTRIBUTE);
 
