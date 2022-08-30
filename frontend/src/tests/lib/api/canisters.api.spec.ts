@@ -39,7 +39,7 @@ describe("canisters-api", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
 
   beforeAll(() =>
-      jest.spyOn(console, "error").mockImplementation(() => undefined)
+    jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   afterAll(() => jest.resetAllMocks());
