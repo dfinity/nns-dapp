@@ -24,7 +24,7 @@ const assertUniqueKeys = ({ governance, core }) => {
   const diff = governance.filter(({ key }) => coreKeys.includes(key));
 
   if (diff.length) {
-    console.log("Duplicate keys:", diff.map(({ key }) => key).join(","));
+    console.error("Duplicate keys:", diff.map(({ key }) => key).join(","));
     throw new Error("Some i18n governance keys are declared in the core keys.");
   }
 };
