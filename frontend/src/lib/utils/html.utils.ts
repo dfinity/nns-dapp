@@ -1,5 +1,6 @@
 import { sanitize as DOMPurifySanitize } from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
+import {isNode} from './dev.utils';
 
 type Marked = typeof markedTypes;
 
@@ -76,6 +77,5 @@ export const markdownToSanitizedHTML = async (
 };
 
 export const sanitize = (text: string): string => {
-  const isBrowser = typeof window !== "undefined";
-  return isBrowser ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
+  return !isNode() ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
 };
