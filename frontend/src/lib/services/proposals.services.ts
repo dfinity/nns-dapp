@@ -106,6 +106,13 @@ export const listNextProposals = async ({
   findProposals({
     beforeProposal,
     onLoad: ({ response: proposals, certified }) => {
+      if (proposals.length === 0) {
+        // There is no more proposals to fetch for the current filters.
+        // We do not update the store with empty ([]) because we can spare the re-render of the items.
+        loadFinished({ paginationOver: true, certified });
+        return;
+      }
+
       proposalsStore.pushProposals({ proposals, certified });
       loadFinished({
         paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
