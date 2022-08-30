@@ -99,10 +99,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    padding-top: var(--padding-2x);
+    padding-top: var(--padding-4x);
 
     @include media.min-width(medium) {
-      padding: 0;
+      padding-top: var(--padding-2x);
       align-items: flex-start;
     }
   }
