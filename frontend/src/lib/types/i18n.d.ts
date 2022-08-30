@@ -412,6 +412,7 @@ interface I18nProposal_detail {
   failed_prefix: string;
   failed_description: string;
   no_more_info: string;
+  voting_results: string;
 }
 
 interface I18nProposal_detail__vote {

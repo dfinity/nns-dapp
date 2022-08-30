@@ -13,6 +13,7 @@ import { neuronsStore } from "../../../../../lib/stores/neurons.store";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
+import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 import VotingCardTest from "./VotingCardTest.svelte";
@@ -58,8 +59,10 @@ describe("VotingCard", () => {
 
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { queryByTestId } = renderVotingCard();
-    await waitFor(() => expect(queryByTestId("card")).toBeInTheDocument());
+    const { queryByText } = renderVotingCard();
+    await waitFor(() =>
+      expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument()
+    );
   });
 
   it("should disable action buttons if no neurons selected", async () => {
