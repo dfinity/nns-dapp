@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { NnsFunction } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
@@ -9,7 +10,6 @@ import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.
 import NnsFunctionDetails from "../../../../../lib/components/proposal-detail/ProposalDetailCard/NnsFunctionDetails.svelte";
 import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
 import en from "../../../../mocks/i18n.mock";
-import {NnsFunction} from '@dfinity/nns';
 
 describe("NnsFunctionDetails", () => {
   const mockPayload = { data: "test" };
