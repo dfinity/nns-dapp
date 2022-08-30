@@ -248,7 +248,7 @@ export const concatenateUniqueProposals = ({
 ];
 
 /**
- * Compares proposals by "id"
+ * Compares proposals by "id" and replace those existing then append the remaining new proposals.
  */
 export const replaceAndConcatenateProposals = ({
   oldProposals,
@@ -257,14 +257,21 @@ export const replaceAndConcatenateProposals = ({
   oldProposals: ProposalInfo[];
   newProposals: ProposalInfo[];
 }): ProposalInfo[] => {
-  const updatedProposals = (oldProposals = oldProposals.map(
+  const updatedProposals = oldProposals.map(
     (stateProposal) =>
-      newProposals.find(({ id }) => stateProposal.id === id) || stateProposal
-  ));
+      newProposals.find(({ id }) => stateProposal.id === id) ?? stateProposal
+  );
+
+  const newStateProposalsIds: (ProposalId | undefined)[] = updatedProposals.map(
+    ({ id }) => id
+  );
+  const brandNewProposals: ProposalInfo[] = newProposals.filter(
+    ({ id }) => !newStateProposalsIds.includes(id)
+  );
 
   return concatenateUniqueProposals({
     oldProposals: updatedProposals,
-    newProposals,
+    newProposals: brandNewProposals,
   });
 };
 

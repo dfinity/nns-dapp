@@ -25,41 +25,49 @@
   import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
   import { VOTING_UI } from "../lib/constants/environment.constants";
+  import { sortedProposals } from "../lib/derived/proposals.derived";
 
   let loading: boolean = false;
   let hidden: boolean = false;
   let initialized: boolean = false;
+  let disableInfiniteScroll: boolean = false;
+
+  const loadFinished = ({ paginationOver }) => {
+    loading = false;
+    disableInfiniteScroll = paginationOver;
+  };
+
+  const loadError = (err: unknown) => {
+    loading = false;
+    disableInfiniteScroll = true;
+
+    toastsStore.error({
+      labelKey: "error.list_proposals",
+      err,
+    });
+  };
 
   const findNextProposals = async () => {
     loading = true;
 
     try {
       await listNextProposals({
-        beforeProposal: lastProposalId($proposalsStore.proposals),
+        beforeProposal: lastProposalId($sortedProposals.proposals),
+        loadFinished,
       });
     } catch (err: unknown) {
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
+      loadError(err);
     }
-
-    loading = false;
   };
 
   const findProposals = async () => {
     loading = true;
 
     try {
-      await listProposals();
+      await listProposals({ loadFinished });
     } catch (err: unknown) {
-      toastsStore.error({
-        labelKey: "error.list_proposals",
-        err,
-      });
+      loadError(err);
     }
-
-    loading = false;
   };
 
   let debounceFindProposals: () => void | undefined;
@@ -73,7 +81,7 @@
     const reload: boolean = reloadRouteData({
       expectedPreviousPath: AppPath.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
-      currentData: $proposalsStore.proposals,
+      currentData: $sortedProposals.proposals,
     });
 
     if (!reload) {
@@ -103,6 +111,9 @@
         return;
       }
 
+      // We are about to fetch again, we can enable the infinite scroll observer again in case it was disabled because we would have fetched all proposals previously
+      disableInfiniteScroll = false;
+
       // Show spinner right away avoiding debounce
       loading = true;
       proposalsStore.setProposals({ proposals: [], certified: undefined });
@@ -115,7 +126,7 @@
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($proposalsStore.certified === false) {
+    if ($sortedProposals.certified === false) {
       if (loading) nothingFound = false;
       return;
     }
@@ -124,7 +135,7 @@
       initialized &&
       !loading &&
       !hasMatchingProposals({
-        proposals: $proposalsStore.proposals,
+        proposals: $sortedProposals.proposals,
         filters: $proposalsFiltersStore,
         neurons: $definedNeuronsStore,
       });
@@ -134,28 +145,41 @@
   $: initialized,
     loading,
     neuronsLoaded,
-    $proposalsStore,
+    $sortedProposals,
     (() => updateNothingFound())();
 
   let neuronsLoaded: boolean;
   $: neuronsLoaded = $neuronsStore.neurons !== undefined;
+
+  let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
+  $: loadingAnimation = !loading
+    ? undefined
+    : $sortedProposals.proposals.length > 0
+    ? "spinner"
+    : "skeleton";
 </script>
 
-<main class={VOTING_UI}>
+<main
+  class={VOTING_UI}
+  data-tid={`proposals-scroll-${disableInfiniteScroll ? "off" : "on"}`}
+>
   {#if VOTING_UI === "modern"}
     <ProposalsModern
-      {loading}
       {hidden}
       {neuronsLoaded}
       {nothingFound}
+      {disableInfiniteScroll}
+      {loading}
+      {loadingAnimation}
       on:nnsIntersect={findNextProposals}
     />
   {:else}
     <ProposalsLegacy
-      {loading}
       {hidden}
       {neuronsLoaded}
       {nothingFound}
+      {disableInfiniteScroll}
+      {loadingAnimation}
       on:nnsIntersect={findNextProposals}
     />
   {/if}

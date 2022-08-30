@@ -100,8 +100,7 @@
           currentTheme ?? (isDarkPreferred ? "dark" : "light")
         );
       } catch (error) {
-        console.log("Error initializing theme");
-        console.log(error);
+        console.error("Error initializing theme", error);
       }
     </script>
 

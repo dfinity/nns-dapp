@@ -18,6 +18,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "../canisters/nns-dapp/nns-dapp.errors";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
 import { AppPath } from "../constants/routes.constants";
 import { i18n } from "../stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
@@ -65,29 +66,58 @@ const handleFindProposalsError = ({ error: err, certified }) => {
   }
 };
 
-export const listProposals = async (): Promise<void> => {
+export const listProposals = async ({
+  loadFinished,
+}: {
+  loadFinished: (params: {
+    paginationOver: boolean;
+    certified: boolean;
+  }) => void;
+}): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
-    onLoad: ({ response: proposals, certified }) =>
-      proposalsStore.setProposals({ proposals, certified }),
+    onLoad: ({ response: proposals, certified }) => {
+      proposalsStore.setProposals({ proposals, certified });
+      loadFinished({
+        paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
+        certified,
+      });
+    },
     onError: handleFindProposalsError,
   });
 };
 
+/**
+ * List the nex proposals in a paginated way.
+ * @param {beforeProposal: ProposalId | undefined; loadFinished: (paginationOver: boolean) => void;} params
+ * @param {ProposalId | undefined} params.beforeProposal Pagination starting proposal. Undefined for first results
+ * @param {(paginationOver: boolean) => void;} params.loadFinished Triggered when the loading is over. `paginationOver` equals `true` if all pages of the list have been queried.
+ */
 export const listNextProposals = async ({
   beforeProposal,
+  loadFinished,
 }: {
   beforeProposal: ProposalId | undefined;
+  loadFinished: (params: {
+    paginationOver: boolean;
+    certified: boolean;
+  }) => void;
 }): Promise<void> =>
   findProposals({
     beforeProposal,
     onLoad: ({ response: proposals, certified }) => {
       if (proposals.length === 0) {
         // There is no more proposals to fetch for the current filters.
-        // We do not update the store with empty ([]) otherwise it will re-render the component and therefore triggers the Infinite Scrolling again.
+        // We do not update the store with empty ([]) because we can spare the re-render of the items.
+        loadFinished({ paginationOver: true, certified });
         return;
       }
+
       proposalsStore.pushProposals({ proposals, certified });
+      loadFinished({
+        paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
+        certified,
+      });
     },
     onError: handleFindProposalsError,
   });

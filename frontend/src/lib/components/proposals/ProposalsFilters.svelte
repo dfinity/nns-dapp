@@ -7,6 +7,7 @@
   import { proposalsFiltersStore } from "../../stores/proposals.store";
   import { enumsExclude } from "../../utils/enum.utils";
   import FiltersButton from "../ui/FiltersButton.svelte";
+  import { VOTING_UI } from "../../constants/environment.constants";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -36,7 +37,7 @@
   }).length;
 </script>
 
-<div class="filters">
+<div class={`filters ${VOTING_UI}`}>
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
@@ -92,7 +93,12 @@
   .filters {
     display: flex;
     flex-wrap: wrap;
-    padding: var(--padding-2x) 0 var(--padding);
+    padding: 0 0 var(--padding-3x);
+
+    // TODO(L2-965): delete legacy style
+    &.legacy {
+      padding: var(--padding) 0;
+    }
 
     --select-flex-direction: row-reverse;
 
