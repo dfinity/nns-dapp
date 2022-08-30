@@ -5,7 +5,7 @@
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { fireEvent, screen } from "@testing-library/dom";
-import {getByText, render, waitFor} from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { SECONDS_IN_YEAR } from "../../../../../lib/constants/constants";
 import { authStore } from "../../../../../lib/stores/auth.store";
@@ -13,10 +13,10 @@ import { neuronsStore } from "../../../../../lib/stores/neurons.store";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
+import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 import VotingCardTest from "./VotingCardTest.svelte";
-import en from "../../../../mocks/i18n.mock";
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
@@ -60,7 +60,9 @@ describe("VotingCard", () => {
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { queryByText } = renderVotingCard();
-    await waitFor(() => expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument()
+    );
   });
 
   it("should disable action buttons if no neurons selected", async () => {
