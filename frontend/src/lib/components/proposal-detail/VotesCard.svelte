@@ -62,7 +62,7 @@
 </script>
 
 <svelte:component this={cmp}>
-  <h3 slot="start" class="title">Voting Results</h3>
+  <h3 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h3>
   <div class="latest-tally">
     <h4 class="label yes">
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
