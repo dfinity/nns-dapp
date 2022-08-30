@@ -5,7 +5,7 @@ export const isNode = (): boolean =>
 
 /**
  *
- * console.log with time prefix (e.g. "[15:22:55.438] message text")
+ * console.debug with time prefix (e.g. "[15:22:55.438] message text")
  */
 export const logWithTimestamp = <T>(...args: T[]): void => {
   if (isNode() === true) return;
