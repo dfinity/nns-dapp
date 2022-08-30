@@ -138,7 +138,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_locked)).toBeInTheDocument();
+    expect(getByText(en.neurons_state.Locked)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
@@ -153,7 +153,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolved)).toBeInTheDocument();
+    expect(getByText(en.neurons_state.Dissolved)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
@@ -172,7 +172,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
+    expect(getByText(en.neurons_state.Dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
