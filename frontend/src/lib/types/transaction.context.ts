@@ -8,6 +8,12 @@ export interface TransactionStore {
   amount: ICP | undefined;
 }
 
+export type NewTransaction = {
+  sourceAccount: Account;
+  destinationAddress: string;
+  amount: number;
+};
+
 export interface TransactionContext {
   store: Writable<TransactionStore>;
   next: () => void;
