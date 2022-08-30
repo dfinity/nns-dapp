@@ -86,11 +86,15 @@
       const isDarkPreferred = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
+      const currentTheme =
+        localStorage.theme !== null
+          ? JSON.parse(localStorage.theme)
+          : undefined;
 
       // `theme` must match storeLocalStorageKey.Theme
       document.documentElement.setAttribute(
         "theme",
-        localStorage.theme ?? (isDarkPreferred ? "dark" : "light")
+        currentTheme ?? (isDarkPreferred ? "dark" : "light")
       );
     </script>
 
