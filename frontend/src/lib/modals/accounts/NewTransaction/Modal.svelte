@@ -2,7 +2,7 @@
   import WizardModal from "../../WizardModal.svelte";
   import type { Step, Steps } from "../../../stores/steps.state";
   import type { Account } from "../../../types/account";
-  import TransactionForm from "./TransactionForm.svelte";
+  import Form from "./Form.svelte";
   import Review from "./Review.svelte";
 
   export let currentStep: Step | undefined = undefined;
@@ -38,14 +38,9 @@
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
-    <TransactionForm
-      bind:selectedAccount
-      bind:amount
-      on:nnsNext={goNext}
-      on:nnsClose
-    >
+    <Form bind:selectedAccount bind:amount on:nnsNext={goNext} on:nnsClose>
       <slot name="additional-info-form" slot="additional-info" />
-    </TransactionForm>
+    </Form>
   {/if}
   {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined}
     <Review
