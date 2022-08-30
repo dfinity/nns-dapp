@@ -326,10 +326,9 @@ export const anonymizeSnsSummary = async (
       },
       derived: {
         ...originalSummary.derived,
-        buyer_total_icp_e8s:
-          (await anonymizeAmount(
-            originalSummary.derived.buyer_total_icp_e8s
-          )) ?? BigInt(0),
+        buyer_total_icp_e8s: (await anonymizeAmount(
+          originalSummary.derived.buyer_total_icp_e8s
+        )) as bigint,
       },
     };
   }
