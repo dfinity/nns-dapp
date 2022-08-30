@@ -1,6 +1,6 @@
 import { sanitize as DOMPurifySanitize } from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
-import {isNode} from './dev.utils';
+import { isNode } from "./dev.utils";
 
 type Marked = typeof markedTypes;
 
