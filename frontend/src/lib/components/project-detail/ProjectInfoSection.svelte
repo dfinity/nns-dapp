@@ -44,7 +44,7 @@
     <a href={metadata.url} target="_blank" rel="noopener noreferrer"
       >{metadata.url}</a
     >
-    <div>
+    <div class="content-cell-details">
       <KeyValuePair>
         <svelte:fragment slot="key"
           >{$i18n.sns_project_detail.token_name}</svelte:fragment
