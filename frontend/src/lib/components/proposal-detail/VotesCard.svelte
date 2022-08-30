@@ -15,7 +15,7 @@
     type CompactNeuronInfo,
   } from "../../utils/neuron.utils";
   import Value from "../ui/Value.svelte";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import { VOTING_UI } from "../../constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
 

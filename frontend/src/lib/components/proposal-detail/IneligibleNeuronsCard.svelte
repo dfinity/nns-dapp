@@ -3,7 +3,7 @@
   import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import { VOTING_UI } from "../../constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
 
