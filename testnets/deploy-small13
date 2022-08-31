@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+# sdk has broken; this branch should fix it.
+export PATH="/home/max/dfn/sdk/branches/spofford/global-args/target/debug:$PATH"
+
 export DFX_NETWORK=small13
 TESTNET=small13
 IC_COMMIT=51b8f11db27c70c252eedc5b4b75aa6417636772 # master Wed Aug 31 10:46:12 2022 +0000
