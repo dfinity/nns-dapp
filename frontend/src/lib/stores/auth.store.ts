@@ -11,7 +11,7 @@ export interface AuthStore {
   identity: Identity | undefined | null;
 }
 
-// We have to keep the authClient object in memory because calling the `authClient.login` feature should be performed by a user interaction without any async callbacks call before calling `window.open` to open II
+// We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
 // @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
 let authClient: AuthClient | undefined;
 
