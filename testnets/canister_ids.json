@@ -5,21 +5,24 @@
     "small12": "qhbym-qaaaa-aaaaa-aaafq-cai",
     "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
     "unreal": "qhbym-qaaaa-aaaaa-aaafq-cai",
-    "medium09": "qhbym-qaaaa-aaaaa-aaafq-cai"
+    "medium09": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small13": "vj4vq-xyaaa-aaaaa-aaaza-cai"
   },
   "internet_identity": {
     "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
     "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-    "medium09": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+    "medium09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "small13": "va76m-bqaaa-aaaaa-aaayq-cai"
   },
   "nns-dapp": {
     "small06": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small11": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "small12": "qsgjb-riaaa-aaaaa-aaaga-cai",
     "testnet": "qsgjb-riaaa-aaaaa-aaaga-cai",
-    "medium09": "qsgjb-riaaa-aaaaa-aaaga-cai"
+    "medium09": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "small13": "vo5te-2aaaa-aaaaa-aaazq-cai"
   },
   "nns-governance": {
     "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -32,7 +35,8 @@
     "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
     "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai",
-    "medium09": "qvhpv-4qaaa-aaaaa-aaagq-cai"
+    "medium09": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small13": "v32cj-3iaaa-aaaaa-aaa2a-cai"
   },
   "sns_governance": {
     "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
