@@ -2,7 +2,7 @@
   import type { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import IconSouth from "../../../icons/IconSouth.svelte";
-  import FooterModal from "../../../modals/FooterModal.svelte";
+  import FooterModal from "../../FooterModal.svelte";
   import { busy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
   import { mainTransactionFeeStoreAsIcp } from "../../../stores/transaction-fees.store";
@@ -114,6 +114,12 @@
       justify-content: flex-end;
       align-items: flex-start;
     }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 
   .actions {

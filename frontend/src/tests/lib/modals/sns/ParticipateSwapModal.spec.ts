@@ -5,7 +5,7 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { writable } from "svelte/store";
-import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
+import ParticipateSwapModal from "../../../../lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
 import { participateInSwap } from "../../../../lib/services/sns.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {

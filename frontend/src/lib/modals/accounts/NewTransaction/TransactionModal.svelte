@@ -2,8 +2,8 @@
   import WizardModal from "../../WizardModal.svelte";
   import type { Step, Steps } from "../../../stores/steps.state";
   import type { Account } from "../../../types/account";
-  import Form from "./Form.svelte";
-  import Review from "./Review.svelte";
+  import TransactionForm from "./TransactionForm.svelte";
+  import TransactionReview from "./TransactionReview.svelte";
 
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string;
@@ -38,12 +38,17 @@
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
-    <Form bind:selectedAccount bind:amount on:nnsNext={goNext} on:nnsClose>
+    <TransactionForm
+      bind:selectedAccount
+      bind:amount
+      on:nnsNext={goNext}
+      on:nnsClose
+    >
       <slot name="additional-info-form" slot="additional-info" />
-    </Form>
+    </TransactionForm>
   {/if}
   {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined}
-    <Review
+    <TransactionReview
       sourceAccount={selectedAccount}
       {amount}
       {destinationAddress}
@@ -55,6 +60,6 @@
       <slot name="additional-info-review" slot="additional-info" />
       <slot name="destination-info" slot="destination-info" />
       <slot name="description" slot="description" />
-    </Review>
+    </TransactionReview>
   {/if}
 </WizardModal>
