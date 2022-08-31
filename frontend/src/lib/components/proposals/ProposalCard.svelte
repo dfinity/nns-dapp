@@ -1,7 +1,11 @@
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { type NeuronId, ProposalStatus } from "@dfinity/nns";
+  import {
+    type ProposalInfo,
+    type NeuronId,
+    type ProposalId,
+    ProposalStatus,
+  } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
@@ -10,7 +14,6 @@
     type ProposalsFiltersStore,
   } from "../../stores/proposals.store";
   import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
-  import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import type { Color } from "../../types/theme";

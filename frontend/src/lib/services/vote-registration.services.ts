@@ -71,13 +71,14 @@ export const registerVotes = async ({
     status: "post-update",
   });
 
-  const voteRegistration = voteRegistrationByProposal(proposalId);
+  const { successfullyVotedNeuronIds, status } =
+    voteRegistrationByProposal(proposalId);
   updateVoteRegistrationToastMessage({
     toastId,
     proposalInfo,
     neuronIds,
-    successfullyVotedNeuronIds: voteRegistration.successfullyVotedNeuronIds,
-    registrationDone: voteRegistration.status === "post-update",
+    successfullyVotedNeuronIds,
+    registrationDone: status === "post-update",
   });
 
   const updatedProposalInfo = await updateAfterVoteRegistration(
@@ -96,22 +97,6 @@ export const registerVotes = async ({
   voteRegistrationStore.removeCompleted();
 };
 
-const registerVotesStatus = ({
-  totalNeurons,
-  completeNeurons,
-}: {
-  totalNeurons: number;
-  completeNeurons: number;
-}): string => {
-  const $i18n = get(i18n);
-  return completeNeurons <= totalNeurons
-    ? replacePlaceholders($i18n.proposal_detail__vote.vote_status_registering, {
-        $completed: `${completeNeurons}`,
-        $amount: `${totalNeurons}`,
-      })
-    : $i18n.proposal_detail__vote.vote_status_updating;
-};
-
 const createRegisterVotesToast = ({
   vote,
   proposalInfo,
@@ -124,10 +109,17 @@ const createRegisterVotesToast = ({
   const $i18n = get(i18n);
   const { id, topic } = proposalInfo;
   const totalNeurons = neuronIds.length;
+  const status = replacePlaceholders(
+    $i18n.proposal_detail__vote.vote_status_registering,
+    {
+      $completed: `0`,
+      $amount: `${totalNeurons}`,
+    }
+  );
 
   return toastsStore.show({
     labelKey:
-      vote === Vote.YES
+      vote === Vote.Yes
         ? "proposal_detail__vote.vote_adopt_in_progress"
         : "proposal_detail__vote.vote_reject_in_progress",
     level: "info",
@@ -135,18 +127,22 @@ const createRegisterVotesToast = ({
     substitutions: {
       $proposalId: `${id}`,
       $topic: $i18n.topics[Topic[topic]],
-      $status: registerVotesStatus({
-        totalNeurons,
-        completeNeurons: 0,
-      }),
+      $status: status,
     },
   });
 };
 
-const voteRegistrationByProposal = (proposalId: ProposalId): VoteRegistration =>
-  get(voteRegistrationStore).registrations.find(
+const voteRegistrationByProposal = (
+  proposalId: ProposalId
+): VoteRegistration => {
+  const registration = get(voteRegistrationStore).registrations.find(
     ({ proposalInfo: { id } }) => id === proposalId
-  ) as VoteRegistration;
+  );
+
+  assertNonNullish(registration);
+
+  return registration;
+};
 
 const neuronRegistrationComplete = ({
   neuronId,
@@ -166,8 +162,6 @@ const neuronRegistrationComplete = ({
 
   // TODO: remove after live testing. In theory it should be always defined here.
   assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
-
-  assertNonNullish(proposalId);
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalId,
@@ -229,8 +223,6 @@ const updateVoteRegistrationToastMessage = ({
         $completed: `${completeNeurons}`,
         $amount: `${totalNeurons}`,
       });
-
-  console.log("completeNeurons", completeNeurons);
 
   toastsStore.updateToastContent({
     toastId: toastId as symbol,
