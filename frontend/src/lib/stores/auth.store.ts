@@ -11,6 +11,10 @@ export interface AuthStore {
   identity: Identity | undefined | null;
 }
 
+// We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
+// @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
+let authClient: AuthClient | undefined;
+
 /**
  * A store to handle authentication and the identity of the user.
  *
@@ -38,7 +42,7 @@ const initAuthStore = () => {
     subscribe,
 
     sync: async () => {
-      const authClient: AuthClient = await createAuthClient();
+      authClient = authClient ?? (await createAuthClient());
       const isAuthenticated: boolean = await authClient.isAuthenticated();
 
       set({
@@ -48,27 +52,32 @@ const initAuthStore = () => {
 
     signIn: () =>
       new Promise<void>((resolve, reject) => {
-        createAuthClient().then((authClient: AuthClient) => {
-          authClient.login({
-            identityProvider: IDENTITY_SERVICE_URL,
-            maxTimeToLive: AUTH_SESSION_DURATION,
-            onSuccess: () => {
-              update((state: AuthStore) => ({
-                ...state,
-                identity: authClient.getIdentity(),
-              }));
+        // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
+        // @see `Guard.svelte`
+        if (authClient === undefined) {
+          reject();
+          return;
+        }
 
-              resolve();
-            },
-            onError: reject,
-          });
+        authClient?.login({
+          identityProvider: IDENTITY_SERVICE_URL,
+          maxTimeToLive: AUTH_SESSION_DURATION,
+          onSuccess: () => {
+            update((state: AuthStore) => ({
+              ...state,
+              identity: authClient?.getIdentity(),
+            }));
+
+            resolve();
+          },
+          onError: reject,
         });
       }),
 
     signOut: async () => {
-      const authClient: AuthClient = await createAuthClient();
+      const client: AuthClient = authClient ?? (await createAuthClient());
 
-      await authClient.logout();
+      await client.logout();
 
       update((state: AuthStore) => ({
         ...state,
