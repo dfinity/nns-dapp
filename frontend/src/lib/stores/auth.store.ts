@@ -42,7 +42,7 @@ const initAuthStore = () => {
     subscribe,
 
     sync: async () => {
-      authClient = authClient ?? await createAuthClient();
+      authClient = authClient ?? (await createAuthClient());
       const isAuthenticated: boolean = await authClient.isAuthenticated();
 
       set({
@@ -75,7 +75,7 @@ const initAuthStore = () => {
       }),
 
     signOut: async () => {
-      const client: AuthClient = authClient ?? await createAuthClient();
+      const client: AuthClient = authClient ?? (await createAuthClient());
 
       await client.logout();
 
