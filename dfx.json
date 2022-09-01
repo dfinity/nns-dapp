@@ -14,6 +14,7 @@
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -140,7 +141,7 @@
         }
       },
       "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
       ],
       "type": "persistent"
     },
