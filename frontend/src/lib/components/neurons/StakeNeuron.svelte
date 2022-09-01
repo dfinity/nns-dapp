@@ -5,7 +5,10 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { formattedTransactionFeeICP, maxICP } from "../../utils/icp.utils";
+  import {
+    formattedTransactionFeeICP,
+    maxE8sToNumber,
+  } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
@@ -45,8 +48,8 @@
   };
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: account.balance,
+  $: max = maxE8sToNumber({
+    e8s: account.balance.toE8s(),
     fee: $mainTransactionFeeStore,
   });
 

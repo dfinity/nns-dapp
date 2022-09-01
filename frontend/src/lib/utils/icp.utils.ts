@@ -58,8 +58,22 @@ export const formattedTransactionFeeICP = (fee: number): string =>
     value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });
 
-export const maxICP = ({ icp, fee }: { icp?: ICP; fee: number }): number =>
-  Math.max((Number(icp?.toE8s() ?? 0) - fee) / E8S_PER_ICP, 0);
+export const maxE8sToNumber = ({
+  e8s,
+  fee,
+}: {
+  e8s?: bigint;
+  fee: number;
+}): number => Math.max((Number(e8s ?? 0) - fee) / E8S_PER_ICP, 0);
+
+export const minE8s = (e8s1?: bigint, e8s2?: bigint): bigint =>
+  e8s1 === undefined
+    ? e8s2 ?? BigInt(0)
+    : e8s2 === undefined
+    ? e8s1
+    : e8s1 > e8s2
+    ? e8s2
+    : e8s1;
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);

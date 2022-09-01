@@ -9,7 +9,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICP } from "@dfinity/nns";
-  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
+  import { convertNumberToICP, maxE8sToNumber } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
@@ -24,8 +24,8 @@
     : undefined;
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: $store.selectedAccount?.balance,
+  $: max = maxE8sToNumber({
+    e8s: $store.selectedAccount?.balance.toE8s(),
     fee: $mainTransactionFeeStore,
   });
 

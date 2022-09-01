@@ -7,7 +7,8 @@ import {
   convertTCyclesToIcpNumber,
   formatICP,
   formattedTransactionFeeICP,
-  maxICP,
+  maxE8sToNumber,
+  minE8s,
   sumICPs,
 } from "../../../lib/utils/icp.utils";
 
@@ -80,32 +81,41 @@ describe("icp-utils", () => {
       "0.0001"
     ));
 
-  it("should max ICP value", () => {
-    expect(maxICP({ fee: DEFAULT_TRANSACTION_FEE_E8S })).toEqual(0);
+  it("should max taking into account fee and converted to a number", () => {
+    expect(maxE8sToNumber({ fee: DEFAULT_TRANSACTION_FEE_E8S })).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0") as ICP,
+      maxE8sToNumber({
+        e8s: BigInt(0),
         fee: DEFAULT_TRANSACTION_FEE_E8S,
       })
     ).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0.0001") as ICP,
+      maxE8sToNumber({
+        e8s: BigInt(10_000),
         fee: DEFAULT_TRANSACTION_FEE_E8S,
       })
     ).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0.00011") as ICP,
+      maxE8sToNumber({
+        e8s: BigInt(11_000),
         fee: DEFAULT_TRANSACTION_FEE_E8S,
       })
     ).toEqual(0.00001);
     expect(
-      maxICP({
-        icp: ICP.fromString("1") as ICP,
+      maxE8sToNumber({
+        e8s: BigInt(100_000_000),
         fee: DEFAULT_TRANSACTION_FEE_E8S,
       })
     ).toEqual(0.9999);
+  });
+
+  it("should return the minimum of two bigints ignoring undefined", () => {
+    expect(minE8s(undefined, undefined)).toEqual(BigInt(0));
+    expect(minE8s(BigInt(10), undefined)).toEqual(BigInt(10));
+    expect(minE8s(undefined, BigInt(12))).toEqual(BigInt(12));
+    expect(minE8s(BigInt(10), BigInt(12))).toEqual(BigInt(10));
+    expect(minE8s(BigInt(15), BigInt(12))).toEqual(BigInt(12));
+    expect(minE8s(BigInt(15), BigInt(15))).toEqual(BigInt(15));
   });
 
   describe("convertNumberToICP", () => {
