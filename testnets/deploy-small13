@@ -14,6 +14,11 @@ ND_DIR="$HOME"/dfn/nns-dapp/branches/testnet-environments
 OC_COMMIT=896b202b597d07fc6e3b6fb4b8f477f690d37320
 OC_DIR="$HOME"/dfn/open-chat
 
+# Older values, known to work:
+IC_COMMIT=08716da25d35ffcf7cc190ca952ad52e269c57a2 # master Thu Aug 25 12:40:41 2022 +0000
+ND_COMMIT=ef5d3fb805bfc8b3828b0eb70fdd44719800fc81 # main Thu Aug 25 14:02:34 2022 +0200
+
+
 
 cd "$ND_DIR"
 dfx identity use default
