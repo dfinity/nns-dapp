@@ -11,7 +11,7 @@
 </script>
 
 {#if proposer !== undefined}
-  <KeyValuePairInfo>
+  <KeyValuePairInfo testId="proposal-system-info-proposer">
     <svelte:fragment slot="key"
       >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
     >
@@ -26,9 +26,9 @@
       >
     </button>
 
-    <p slot="info" data-tid="proposal-system-info-proposer-description" class="description">
+    <svelte:fragment slot="info">
       {@html sanitize($i18n.proposal_detail.proposer_description)}
-    </p>
+    </svelte:fragment>
   </KeyValuePairInfo>
 
   {#if modalOpen}

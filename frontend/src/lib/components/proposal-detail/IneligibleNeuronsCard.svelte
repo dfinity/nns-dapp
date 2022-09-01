@@ -46,11 +46,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  p {
-    margin: 0 0 var(--padding-2x);
-    font-size: var(--font-size-h5);
-  }
-
   ul {
     list-style: none;
     padding: 0;
