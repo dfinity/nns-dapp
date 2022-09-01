@@ -26,7 +26,11 @@
       >
     </button>
 
-    <p slot="info" data-tid="proposal-system-info-proposer-description" class="description">
+    <p
+      slot="info"
+      data-tid="proposal-system-info-proposer-description"
+      class="description"
+    >
       {@html sanitize($i18n.proposal_detail.proposer_description)}
     </p>
   </KeyValuePairInfo>
