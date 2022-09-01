@@ -16,7 +16,7 @@
     "test": "TZ=UTC jest",
     "test:watch": "TZ=UTC npm run test -- --watchAll",
     "update:next": "npm update @dfinity/nns @dfinity/sns @dfinity/utils",
-    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/sns @dfinity/utils && npm i @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns@next @dfinity/sns@next @dfinity/utils@next",
+    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/sns @dfinity/utils && npm i @dfinity/agent@beta @dfinity/auth-client@beta @dfinity/authentication@beta @dfinity/candid@beta @dfinity/identity@beta @dfinity/principal@beta @dfinity/nns@next @dfinity/sns@next @dfinity/utils@next",
     "update:gix": "npm update @dfinity/gix-components"
   },
   "devDependencies": {
@@ -64,14 +64,14 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
-    "@dfinity/agent": "^0.13.2",
-    "@dfinity/auth-client": "^0.13.2",
-    "@dfinity/authentication": "^0.13.2",
-    "@dfinity/candid": "^0.13.2",
+    "@dfinity/agent": "^1.0.0-beta.0",
+    "@dfinity/auth-client": "^1.0.0-beta.0",
+    "@dfinity/authentication": "^1.0.0-beta.0",
+    "@dfinity/candid": "^1.0.0-beta.0",
     "@dfinity/gix-components": "next",
-    "@dfinity/identity": "^0.13.2",
+    "@dfinity/identity": "^1.0.0-beta.0",
     "@dfinity/nns": "next",
-    "@dfinity/principal": "^0.13.2",
+    "@dfinity/principal": "^1.0.0-beta.0",
     "@dfinity/sns": "next",
     "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.1",
