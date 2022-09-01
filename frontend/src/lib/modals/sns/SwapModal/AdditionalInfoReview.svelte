@@ -4,7 +4,8 @@
   import IconWarning from "../../../icons/IconWarning.svelte";
   import { i18n } from "../../../stores/i18n";
 
-  export let accepted: boolean;
+  export let accepted: boolean = false;
+  const toggelAccept = () => (accepted = !accepted);
 </script>
 
 <div class="additional-info-review">
@@ -12,7 +13,12 @@
     <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
     <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
   </div>
-  <Checkbox text="block" inputId="agree" checked={accepted} on:nnsChange>
+  <Checkbox
+    text="block"
+    inputId="agree"
+    checked={accepted}
+    on:nnsChange={toggelAccept}
+  >
     {$i18n.sns_project_detail.understand_agree}
   </Checkbox>
 </div>

@@ -54,6 +54,7 @@
     swap: { init },
   } = summary);
 
+  let currentStep: Step;
   let title: string | undefined;
   $: title =
     currentStep?.name === "Form"
@@ -61,8 +62,6 @@
         ? $i18n.sns_project_detail.increase_participation
         : $i18n.sns_project_detail.participate
       : $i18n.accounts.review_transaction;
-
-  let currentStep: Step;
 
   let maxCommitment: ICP;
   $: maxCommitment = ICP.fromE8s(
@@ -77,8 +76,7 @@
     userHasParticipatedToSwap ? BigInt(0) : init.min_participant_icp_e8s
   );
 
-  let accepted: boolean = false;
-  const toggelAccept = () => (accepted = !accepted);
+  let accepted: boolean;
 
   const dispatcher = createEventDispatcher();
   const participate = async ({
@@ -124,11 +122,7 @@
       {maxCommitment}
       userHasParticipated={userHasParticipatedToSwap}
     />
-    <AdditionalInfoReview
-      slot="additional-info-review"
-      {accepted}
-      on:nnsChange={toggelAccept}
-    />
+    <AdditionalInfoReview slot="additional-info-review" bind:accepted />
     <p slot="destination-info" data-tid="sns-swap-participate-project-name">
       {$projectDetailStore.summary?.metadata.name}
     </p>

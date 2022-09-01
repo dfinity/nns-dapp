@@ -49,10 +49,12 @@
   {/if}
   {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined}
     <TransactionReview
-      sourceAccount={selectedAccount}
-      {amount}
-      {destinationAddress}
-      disabled={disableSubmit}
+      transaction={{
+        destinationAddress,
+        sourceAccount: selectedAccount,
+        amount,
+      }}
+      {disableSubmit}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose

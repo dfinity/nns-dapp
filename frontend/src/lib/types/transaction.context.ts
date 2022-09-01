@@ -2,6 +2,8 @@ import type { ICP } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
 import type { Account } from "./account";
 
+// @deprecated
+// https://dfinity.atlassian.net/browse/L2-841
 export interface TransactionStore {
   selectedAccount: Account | undefined;
   destinationAddress: string | undefined;

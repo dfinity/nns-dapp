@@ -15,22 +15,20 @@
   import { sanitize } from "../../../utils/html.utils";
   import type { NewTransaction } from "../../../types/transaction.context";
 
-  export let sourceAccount: Account;
-  export let amount: number;
-  export let destinationAddress: string;
-  export let disabled: boolean;
+  export let transaction: NewTransaction;
+  export let disableSubmit: boolean;
+
+  let sourceAccount: Account;
+  let amount: number;
+  let destinationAddress: string;
+  $: ({ sourceAccount, amount, destinationAddress } = transaction);
 
   let icpAmount: ICP;
   $: icpAmount = convertNumberToICP(amount);
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
-    const data: NewTransaction = {
-      sourceAccount,
-      amount,
-      destinationAddress,
-    };
-    dispatcher("nnsSubmit", data);
+    dispatcher("nnsSubmit", transaction);
   };
 
   const back = () => {
@@ -84,7 +82,7 @@
       <button
         class="small primary"
         data-tid="transaction-button-execute"
-        disabled={$busy || disabled}
+        disabled={$busy || disableSubmit}
         on:click={submit}>{$i18n.accounts.execute}</button
       >
     </FooterModal>

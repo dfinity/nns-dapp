@@ -16,6 +16,8 @@
   import type { Account } from "../../types/account";
   import { debugTransactionStore } from "../../stores/debug.store";
 
+  // TODO: Remove when implementing https://dfinity.atlassian.net/browse/L2-841
+
   export let selectedAccount: Account | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
   export let onTransactionComplete: (() => Promise<void>) | undefined =
