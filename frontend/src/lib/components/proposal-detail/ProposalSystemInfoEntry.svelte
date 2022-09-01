@@ -13,7 +13,7 @@
   <svelte:fragment slot="key">{$i18n.proposal_detail[labelKey]}</svelte:fragment
   >
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
-  <p slot="info" data-tid={`${testId}-description`}>
+  <p slot="info" data-tid={`${testId}-description`} class="description">
     {@html sanitize(description ?? $i18n.proposal_detail.no_more_info)}
   </p>
 </KeyValuePairInfo>
