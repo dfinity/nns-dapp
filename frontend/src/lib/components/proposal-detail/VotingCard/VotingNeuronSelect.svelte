@@ -92,7 +92,7 @@
     display: flex;
     justify-content: space-between;
 
-    border-bottom: 1px solid currentColor;
+    border-bottom: 1px solid var(--line);
 
     // hide voting-power-headline because of the layout
     :last-child {
@@ -147,7 +147,7 @@
     align-items: center;
     justify-content: end;
 
-    border-top: 1px solid currentColor;
+    border-top: 1px solid var(--line);
 
     text-align: right;
 
