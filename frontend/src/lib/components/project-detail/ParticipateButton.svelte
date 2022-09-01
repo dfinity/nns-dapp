@@ -6,7 +6,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
-  import ParticipateSwapModal from "../../modals/sns/ParticipateSwapModal.svelte";
+  import ParticipateSwapModal from "../../modals/sns/SwapModal/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
