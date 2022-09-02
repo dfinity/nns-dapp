@@ -58,6 +58,7 @@
       font-size: var(--font-size-h5);
     }
 
+    :global(h3),
     :global(h4),
     :global(h5),
     :global(h6) {
