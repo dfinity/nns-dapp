@@ -7,12 +7,15 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import {
     formattedTransactionFeeICP,
-    maxE8sToNumber,
+    getMaxTransactionAmount,
   } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import {
+    mainTransactionFeeStore,
+    transactionsFeesStore,
+  } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
   import Value from "../ui/Value.svelte";
 
@@ -48,9 +51,9 @@
   };
 
   let max: number = 0;
-  $: max = maxE8sToNumber({
-    e8s: account.balance.toE8s(),
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: account.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
   });
 
   const stakeMaximum = () => (amount = max);

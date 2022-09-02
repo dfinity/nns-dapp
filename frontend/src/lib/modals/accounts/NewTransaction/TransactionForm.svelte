@@ -4,15 +4,14 @@
   import { i18n } from "../../../stores/i18n";
   import {
     mainTransactionFeeStoreAsIcp,
-    mainTransactionFeeStore,
+    transactionsFeesStore,
   } from "../../../stores/transaction-fees.store";
   import type { Account } from "../../../types/account";
   import { InvalidAmountError } from "../../../types/neurons.errors";
   import { assertEnoughAccountFunds } from "../../../utils/accounts.utils";
   import {
     convertNumberToICP,
-    maxE8sToNumber,
-    minE8s,
+    getMaxTransactionAmount,
   } from "../../../utils/icp.utils";
   import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../../../components/ic/ICP.svelte";
@@ -27,12 +26,10 @@
   export let maxAmount: bigint | undefined = undefined;
 
   let max: number = 0;
-  $: max = maxE8sToNumber({
-    e8s: minE8s(
-      selectedAccount?.balance.toE8s(),
-      (maxAmount ?? BigInt(0)) + $mainTransactionFeeStoreAsIcp.toE8s()
-    ),
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: selectedAccount?.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
+    maxAmount,
   });
   const addMax = () => (amount = max);
 
