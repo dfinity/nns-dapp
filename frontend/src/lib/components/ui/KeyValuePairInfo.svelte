@@ -20,7 +20,9 @@
     <svelte:fragment slot="value"><slot name="value" /></svelte:fragment>
   </KeyValuePair>
 
-  <slot name="info" />
+  <p class="description" data-tid={`${testId}-description`}>
+    <slot name="info" />
+  </p>
 </Collapsible>
 
 <style lang="scss">
@@ -36,5 +38,9 @@
     align-items: center;
     justify-content: center;
     padding: 0;
+  }
+
+  p {
+    margin: 0;
   }
 </style>
