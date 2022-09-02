@@ -5,11 +5,17 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { formattedTransactionFeeICP, maxICP } from "../../utils/icp.utils";
+  import {
+    formattedTransactionFeeICP,
+    getMaxTransactionAmount,
+  } from "../../utils/icp.utils";
   import AmountInput from "../ui/AmountInput.svelte";
   import CurrentBalance from "../accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import {
+    mainTransactionFeeStore,
+    transactionsFeesStore,
+  } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
   import Value from "../ui/Value.svelte";
 
@@ -45,9 +51,9 @@
   };
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: account.balance,
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: account.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
   });
 
   const stakeMaximum = () => (amount = max);

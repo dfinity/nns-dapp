@@ -20,6 +20,7 @@ import {
   hasUserParticipatedToSwap,
   isNnsProject,
   openTimeWindow,
+  projectRemainingAmount,
   swapDuration,
   validParticipation,
 } from "../../../lib/utils/projects.utils";
@@ -455,6 +456,32 @@ describe("project-utils", () => {
       };
       expect(currentUserMaxCommitment(validProject)).toEqual(
         userMax - userCommitment
+      );
+    });
+  });
+
+  describe("projectRemainingAmount", () => {
+    it("returns remaining amount taking into account current commitment", () => {
+      const projectMax = BigInt(10_000_000_000);
+      const projectCommitment = BigInt(9_200_000_000);
+      const summary: SnsSummary = {
+        ...mockSnsFullProject.summary,
+        derived: {
+          buyer_total_icp_e8s: projectCommitment,
+          sns_tokens_per_icp: 1,
+        },
+        swap: {
+          ...mockSnsFullProject.summary.swap,
+          init: {
+            ...mockSnsFullProject.summary.swap.init,
+            min_participant_icp_e8s: BigInt(100_000_000),
+            max_participant_icp_e8s: BigInt(1_000_000_000),
+            max_icp_e8s: projectMax,
+          },
+        },
+      };
+      expect(projectRemainingAmount(summary)).toEqual(
+        projectMax - projectCommitment
       );
     });
   });

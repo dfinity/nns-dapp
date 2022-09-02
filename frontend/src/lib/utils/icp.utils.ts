@@ -58,8 +58,31 @@ export const formattedTransactionFeeICP = (fee: number): string =>
     value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });
 
-export const maxICP = ({ icp, fee }: { icp?: ICP; fee: number }): number =>
-  Math.max((Number(icp?.toE8s() ?? 0) - fee) / E8S_PER_ICP, 0);
+/**
+ * Calculates the maximum amount for a transaction.
+ *
+ * @param balanceE8s The balance of the account in E8S.
+ * @param fee The fee of the transaction in E8S.
+ * @param maxAmount The maximum amount of the transaction not counting the fees.
+ * @returns
+ */
+export const getMaxTransactionAmount = ({
+  balance = BigInt(0),
+  fee = BigInt(0),
+  maxAmount,
+}: {
+  balance?: bigint;
+  fee?: bigint;
+  maxAmount?: bigint;
+}): number => {
+  if (maxAmount === undefined) {
+    return Math.max(Number(balance - fee), 0) / E8S_PER_ICP;
+  }
+  return (
+    Math.min(Number(maxAmount), Math.max(Number(balance - fee), 0)) /
+    E8S_PER_ICP
+  );
+};
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);
