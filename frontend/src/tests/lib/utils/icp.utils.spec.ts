@@ -127,6 +127,19 @@ describe("icp-utils", () => {
         maxAmount: BigInt(500_000_000),
       })
     ).toEqual(0.9999);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(0),
+        fee,
+        maxAmount: BigInt(500_000_000),
+      })
+    ).toEqual(0);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(0),
+        fee,
+      })
+    ).toEqual(0);
   });
 
   describe("convertNumberToICP", () => {

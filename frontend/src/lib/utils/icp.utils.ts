@@ -78,7 +78,10 @@ export const getMaxTransactionAmount = ({
   if (maxAmount === undefined) {
     return Math.max(Number(balance - fee), 0) / E8S_PER_ICP;
   }
-  return Math.min(Number(maxAmount), Number(balance - fee)) / E8S_PER_ICP;
+  return (
+    Math.min(Number(maxAmount), Math.max(Number(balance - fee), 0)) /
+    E8S_PER_ICP
+  );
 };
 
 export const isValidICPFormat = (text: string) =>
