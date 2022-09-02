@@ -4,12 +4,15 @@
   import { i18n } from "../../../stores/i18n";
   import {
     mainTransactionFeeStoreAsIcp,
-    mainTransactionFeeStore,
+    transactionsFeesStore,
   } from "../../../stores/transaction-fees.store";
   import type { Account } from "../../../types/account";
   import { InvalidAmountError } from "../../../types/neurons.errors";
   import { assertEnoughAccountFunds } from "../../../utils/accounts.utils";
-  import { convertNumberToICP, maxICP } from "../../../utils/icp.utils";
+  import {
+    convertNumberToICP,
+    getMaxTransactionAmount,
+  } from "../../../utils/icp.utils";
   import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
   import IcpComponent from "../../../components/ic/ICP.svelte";
   import AmountInput from "../../../components/ui/AmountInput.svelte";
@@ -20,11 +23,13 @@
   export let selectedAccount: Account | undefined = undefined;
   export let amount: number | undefined = undefined;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
+  export let maxAmount: bigint | undefined = undefined;
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: selectedAccount?.balance,
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: selectedAccount?.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
+    maxAmount,
   });
   const addMax = () => (amount = max);
 
