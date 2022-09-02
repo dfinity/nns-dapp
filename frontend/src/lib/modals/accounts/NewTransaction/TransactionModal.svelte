@@ -8,6 +8,9 @@
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string;
   export let disableSubmit: boolean = false;
+  // Max amount accepted by the transaction wihout fees
+  export let maxAmount: bigint | undefined = undefined;
+  // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   const steps: Steps = [
     {
@@ -41,6 +44,7 @@
     <TransactionForm
       bind:selectedAccount
       bind:amount
+      {maxAmount}
       on:nnsNext={goNext}
       on:nnsClose
     >

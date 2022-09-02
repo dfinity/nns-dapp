@@ -9,9 +9,12 @@
   import { toastsStore } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICP } from "@dfinity/nns";
-  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
+  import {
+    convertNumberToICP,
+    getMaxTransactionAmount,
+  } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import { transactionsFeesStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
@@ -24,9 +27,9 @@
     : undefined;
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: $store.selectedAccount?.balance,
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: $store.selectedAccount?.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
   });
 
   let validForm: boolean;
