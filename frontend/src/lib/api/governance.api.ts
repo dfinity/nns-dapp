@@ -199,7 +199,7 @@ export const splitNeuron = async ({
 
   const response = await canister.splitNeuron({
     neuronId,
-    amount,
+    amount: amount.toE8s(),
   });
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) complete.`);
   return response;
@@ -324,7 +324,7 @@ export const stakeNeuron = async ({
   });
 
   const response = await canister.stakeNeuron({
-    stake,
+    stake: stake.toE8s(),
     principal: controller,
     fromSubAccount,
     ledgerCanister,
