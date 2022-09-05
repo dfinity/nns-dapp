@@ -37,3 +37,12 @@ main.legacy {
     }
   }
 }
+
+html[theme="light"] {
+  // TODO(L2-965): legacy CSS
+  main.legacy {
+    --json-string-color: var(--brand-flamingo);
+    --json-principal-color: var(--warning-emphasis);
+    --json-hash-color: var(--warning-emphasis);
+  }
+}
