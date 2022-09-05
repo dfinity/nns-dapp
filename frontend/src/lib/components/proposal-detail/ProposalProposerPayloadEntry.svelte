@@ -42,7 +42,7 @@
 
   <div class="content-cell-details">
     {#if payload !== undefined}
-      <div>
+      <div class="json">
         <Json json={payload} />
       </div>
     {:else}
@@ -56,5 +56,9 @@
 <style lang="scss">
   .content-cell-title {
     margin-top: var(--padding-8x);
+  }
+
+  .json {
+    word-break: break-word;
   }
 </style>
