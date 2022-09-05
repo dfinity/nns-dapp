@@ -30,8 +30,10 @@
 
     <ProposalMeta {proposalInfo} />
 
-    <button data-tid="vote-for-sns" class="primary small" on:click={showProposal}
-    >{$i18n.proposal_detail.vote}</button
+    <button
+      data-tid="vote-for-sns"
+      class="primary small"
+      on:click={showProposal}>{$i18n.proposal_detail.vote}</button
     >
   </Card>
 </li>
