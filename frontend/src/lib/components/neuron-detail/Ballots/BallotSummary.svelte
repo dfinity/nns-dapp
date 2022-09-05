@@ -5,7 +5,7 @@
   import { Vote } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
   import ProposalSummary from "../../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
-  import SkeletonParagraph from "../../ui/SkeletonParagraph.svelte";
+  import {SkeletonText} from "@dfinity/gix-components";
 
   export let ballot: Required<BallotInfo>;
 
@@ -31,14 +31,14 @@
     <ProposalSummary proposal={proposal.proposal} />
   </div>
 {:else}
-  <SkeletonParagraph />
+  <SkeletonText />
 
-  <SkeletonParagraph />
+  <SkeletonText />
 
   <div class="summary">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
+    <SkeletonText />
   </div>
 {/if}
 

@@ -4,7 +4,7 @@
   import { loadProposalPayload } from "../../services/proposals.services";
   import { proposalPayloadsStore } from "../../stores/proposals.store";
   import { i18n } from "../../stores/i18n";
-  import SkeletonParagraph from "../ui/SkeletonParagraph.svelte";
+  import {SkeletonText} from "@dfinity/gix-components";
   import type { Proposal } from "@dfinity/nns";
   import { getNnsFunctionKey } from "../../utils/proposals.utils";
 
@@ -46,9 +46,9 @@
         <Json json={payload} />
       </div>
     {:else}
-      <SkeletonParagraph />
-      <SkeletonParagraph />
-      <SkeletonParagraph />
+      <SkeletonText />
+      <SkeletonText />
+      <SkeletonText />
     {/if}
   </div>
 {/if}

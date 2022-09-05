@@ -12,11 +12,10 @@
   import { routeStore } from "../lib/stores/route.store";
   import { canistersStore } from "../lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "../lib/utils/i18n.utils";
-  import SkeletonParagraph from "../lib/components/ui/SkeletonParagraph.svelte";
+  import {SkeletonText} from "@dfinity/gix-components";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "../lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "../lib/components/canister-detail/ControllersCard.svelte";
-  import SkeletonTitle from "../lib/components/ui/SkeletonTitle.svelte";
   import { writable } from "svelte/store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
@@ -198,10 +197,10 @@
       </div>
     {:else}
       <div class="loader-title">
-        <SkeletonTitle />
+        <SkeletonText tagName="h1" />
       </div>
       <div class="loader-subtitle">
-        <SkeletonParagraph />
+        <SkeletonText />
       </div>
     {/if}
     {#if canisterDetails !== undefined}
