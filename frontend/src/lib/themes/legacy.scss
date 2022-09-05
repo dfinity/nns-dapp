@@ -31,7 +31,7 @@ main.legacy {
       column-gap: var(--padding);
     }
 
-    &[data-tid="proposal-card"]>.meta {
+    &[data-tid="proposal-card"] > .meta {
       flex-wrap: nowrap;
       align-items: baseline;
     }
