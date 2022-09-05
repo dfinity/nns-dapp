@@ -13,7 +13,6 @@ import {
 import type { SnsSummary } from "../../../../lib/types/sns";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
-import en from '../../../mocks/i18n.mock';
 
 describe("ProjectInfoSection", () => {
   const renderProjectInfoSection = (summary: SnsSummary | undefined) =>
