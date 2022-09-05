@@ -7,7 +7,7 @@
 </div>
 
 <style lang="scss">
-  .content-cell-details {
+  .content-cell-details:not(:last-of-type) {
     margin-bottom: var(--row-gap);
   }
 </style>

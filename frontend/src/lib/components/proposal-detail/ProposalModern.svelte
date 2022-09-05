@@ -29,8 +29,7 @@
       </div>
       <div class="content-c">
         <ProposalProposerInfoSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-e">
+
         <ProposalProposerDataSection proposalInfo={$store.proposal} />
       </div>
     </div>
@@ -65,7 +64,7 @@
   @include media.min-width(medium) {
     // If this would be use elsewhere, we can extract some utility to gix-components
     .content-b.expand-content-b {
-      grid-row-end: content-e;
+      grid-row-end: content-c;
     }
   }
 </style>

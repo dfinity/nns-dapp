@@ -35,3 +35,9 @@
     </KeyValuePair>
   {/each}
 </div>
+
+<style lang="scss">
+  .content-cell-title {
+    margin-top: var(--padding-8x);
+  }
+</style>
