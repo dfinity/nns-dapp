@@ -37,7 +37,7 @@
       {#if VOTING_UI === "legacy"}
         <ProjectProposalCard {proposalInfo} />
       {:else}
-        <ProposalCard {proposalInfo} layout="modern " />
+        <ProposalCard {proposalInfo} layout="modern" />
       {/if}
     {/each}
   </ul>
