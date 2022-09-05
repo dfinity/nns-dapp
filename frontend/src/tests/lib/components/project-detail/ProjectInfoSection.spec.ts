@@ -13,6 +13,7 @@ import {
 import type { SnsSummary } from "../../../../lib/types/sns";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
+import en from '../../../mocks/i18n.mock';
 
 describe("ProjectInfoSection", () => {
   const renderProjectInfoSection = (summary: SnsSummary | undefined) =>
@@ -50,8 +51,9 @@ describe("ProjectInfoSection", () => {
   });
 
   it("should not render content if the summary is not yet defined", async () => {
-    const { container } = renderProjectInfoSection(undefined);
-    expect(container.querySelector("h1")).not.toBeInTheDocument();
+    const { getByTestId } = renderProjectInfoSection(undefined);
+    const call = () => getByTestId("sns-project-detail-info");
+    expect(call).toThrow();
   });
 
   it("should render project description", async () => {
