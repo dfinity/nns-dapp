@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { ICP, TokenAmount } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
   import { formatICP } from "../../utils/icp.utils";
 
   // TODO: Remove ICP reference
@@ -22,9 +21,7 @@
   <span data-tid="icp-value" class="value"
     >{`${sign}${formatICP({ value: amount.toE8s(), detailed })}`}</span
   >
-  <span class="label"
-    >{label !== undefined ? label : amount.token.symbol ?? $i18n.core.icp}</span
-  >
+  <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
 </div>
 
 <style lang="scss">
