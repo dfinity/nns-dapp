@@ -9,8 +9,9 @@
 
   let title: string | undefined;
   let proposal: Proposal | undefined;
+  let url: string | undefined;
 
-  $: ({ title, proposal } = mapProposalInfo(proposalInfo));
+  $: ({ title, proposal, url } = mapProposalInfo(proposalInfo));
 </script>
 
 <h2 class="content-cell-title" data-tid="proposal-proposer-info-title">
@@ -19,7 +20,13 @@
 
 <div class="content-cell-details">
   <ProposalSummary {proposal}>
-    <svelte:fragment slot="title">{title ?? ""}</svelte:fragment>
+    <svelte:fragment slot="title">
+      <h1>{title ?? ""}</h1>
+
+      {#if url}
+        <a target="_blank" href={url}>{url}</a>
+      {/if}
+    </svelte:fragment>
   </ProposalSummary>
 </div>
 
