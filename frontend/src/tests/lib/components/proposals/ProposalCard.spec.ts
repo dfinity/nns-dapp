@@ -9,6 +9,7 @@ import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svel
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
+import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
@@ -96,6 +97,25 @@ describe("ProposalCard", () => {
     });
 
     expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+  });
+
+  it("should render deadline", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern",
+      },
+    });
+
+    const durationTillDeadline =
+      (mockProposals[0].deadlineTimestampSeconds as bigint) -
+      BigInt(Math.round(Date.now() / 1000));
+
+    const text = `${secondsToDuration(durationTillDeadline)} ${
+      en.proposal_detail.remaining
+    }`;
+
+    expect(getByText(text)).toBeInTheDocument();
   });
 
   it("should render accessible info without label", () => {

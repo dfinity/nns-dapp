@@ -397,7 +397,8 @@
     "failed_prefix": "Failed",
     "failed_description": "The date when this adopted proposal failed to be executed.",
     "no_more_info": "No particular information.",
-    "voting_results": "Voting Results"
+    "voting_results": "Voting Results",
+    "remaining": "remaining"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
@@ -551,7 +552,9 @@
     "hour": "hour",
     "hour_plural": "hours",
     "minute": "minute",
-    "minute_plural": "minutes"
+    "minute_plural": "minutes",
+    "second": "second",
+    "second_plural": "seconds"
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",

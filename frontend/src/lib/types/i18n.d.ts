@@ -417,6 +417,7 @@ interface I18nProposal_detail {
   failed_description: string;
   no_more_info: string;
   voting_results: string;
+  remaining: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -579,6 +580,8 @@ interface I18nTime {
   hour_plural: string;
   minute: string;
   minute_plural: string;
+  second: string;
+  second_plural: string;
 }
 
 interface I18nError__ledger {
