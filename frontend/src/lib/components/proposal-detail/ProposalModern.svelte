@@ -10,6 +10,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "../../types/selected-proposal.context";
+  import SkeletonDetails from "../ui/SkeletonDetails.svelte";
 
   export let neuronsReady = false;
 
@@ -35,7 +36,7 @@
     </div>
   {:else}
     <div class="content-grid">
-      <div class="content-a">TODO skeleton - use SkeletonDetails component</div>
+      <div class="content-a"><SkeletonDetails /></div>
     </div>
   {/if}
 {:else}

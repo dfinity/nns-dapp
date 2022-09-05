@@ -1,31 +1,14 @@
 <script lang="ts">
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
-  import SkeletonTitle from "./SkeletonTitle.svelte";
+  import {SkeletonText} from "@dfinity/gix-components";
 </script>
 
-<div class="loader-title">
-  <SkeletonTitle />
+<div class="content-cell-title">
+  <SkeletonText tagName="h1" />
 </div>
-<div class="loader-content">
-  <SkeletonParagraph />
-  <SkeletonParagraph />
-  <SkeletonParagraph />
+<div class="content-cell-details">
+  <SkeletonText />
+  <SkeletonText />
+  <SkeletonText />
+  <SkeletonText />
+  <SkeletonText />
 </div>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  .loader-title {
-    width: 100%;
-    margin-bottom: var(--padding-2x);
-
-    @include media.min-width(medium) {
-      width: 50%;
-    }
-  }
-
-  .loader-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-</style>
