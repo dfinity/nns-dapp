@@ -7,7 +7,22 @@
   import {
     isNnsProjectStore,
     snsProjectSelectedStore,
-  } from "../lib/stores/projects.store";
+  } from "../lib/derived/selected-project.derived";
+  import { onMount } from "svelte";
+  import { routeStore } from "../lib/stores/route.store";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
+  import { AppPath } from "../lib/constants/routes.constants";
+  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
+
+  // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
+  onMount(() => {
+    if (
+      ENABLE_SNS &&
+      isRoutePath({ path: AppPath.LegacyNeurons, routePath: $routeStore.path })
+    ) {
+      routeStore.changeContext(OWN_CANISTER_ID.toText());
+    }
+  });
 </script>
 
 <main class="legacy">

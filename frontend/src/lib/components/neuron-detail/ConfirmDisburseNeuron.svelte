@@ -36,7 +36,7 @@
         labelKey: "neuron_detail.disburse_success",
       });
       routeStore.replace({
-        path: AppPath.Neurons,
+        path: AppPath.LegacyNeurons,
       });
     }
     dispatcher("nnsClose");

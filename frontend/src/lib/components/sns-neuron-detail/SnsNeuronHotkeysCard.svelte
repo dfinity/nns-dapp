@@ -8,7 +8,7 @@
   import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,

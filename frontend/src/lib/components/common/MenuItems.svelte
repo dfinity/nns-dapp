@@ -42,7 +42,12 @@
     },
     {
       context: "neurons",
-      selected: isSelectedPath([AppPath.Neurons, AppPath.NeuronDetail]),
+      selected: isSelectedPath([
+        AppPath.LegacyNeurons,
+        AppPath.LegacyNeuronDetail,
+        AppPath.NeuronDetail,
+        AppPath.Neurons,
+      ]),
       label: "neurons",
       icon: IconLockOpen,
     },

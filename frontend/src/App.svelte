@@ -53,16 +53,17 @@
 <Guard>
   <Route path={AppPath.Authentication} />
   <PrivateRoute path={AppPath.Accounts} />
+  <PrivateRoute path={AppPath.LegacyNeurons} />
   <PrivateRoute path={AppPath.Neurons} />
   <PrivateRoute path={AppPath.Proposals} />
   <PrivateRoute path={AppPath.Canisters} />
   <PrivateRoute path={AppPath.Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} />
-  <PrivateRoute path={AppPath.NeuronDetail} />
+  <PrivateRoute path={AppPath.LegacyNeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} />
   <PrivateRoute path={AppPath.Launchpad} />
   <PrivateRoute path={AppPath.ProjectDetail} />
-  <PrivateRoute path={AppPath.SnsNeuronDetail} />
+  <PrivateRoute path={AppPath.NeuronDetail} />
 </Guard>
 
 <Toasts />

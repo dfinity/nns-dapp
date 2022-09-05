@@ -4,6 +4,7 @@
 
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
+import { AppPath } from "../../lib/constants/routes.constants";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
@@ -37,7 +38,9 @@ describe("ProjectDetail", () => {
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
         mockRouteStoreSubscribe(
-          `/#/project/${mockSnsFullProject.rootCanisterId.toText()}`
+          `${
+            AppPath.ProjectDetail
+          }/${mockSnsFullProject.rootCanisterId.toText()}`
         )
       );
 
@@ -94,7 +97,7 @@ describe("ProjectDetail", () => {
     jest
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
-        mockRouteStoreSubscribe("/#/project/invalid-project")
+        mockRouteStoreSubscribe(`${AppPath.ProjectDetail}/invalid-project`)
       );
     jest.spyOn(routeStore, "replace");
     it("should rediret to launchpad", () => {
@@ -107,7 +110,9 @@ describe("ProjectDetail", () => {
   describe("not found canister id", () => {
     jest
       .spyOn(routeStore, "subscribe")
-      .mockImplementation(mockRouteStoreSubscribe("/#/project/aaaaa-aa"));
+      .mockImplementation(
+        mockRouteStoreSubscribe(`${AppPath.ProjectDetail}/aaaaa-aa`)
+      );
     jest.spyOn(routeStore, "replace");
     it("should rediret to launchpad", () => {
       render(ProjectDetail);

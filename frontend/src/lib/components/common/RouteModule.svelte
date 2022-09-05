@@ -17,6 +17,7 @@
     switch (path) {
       case AppPath.Accounts:
         return (await import("../../../routes/Accounts.svelte")).default;
+      case AppPath.LegacyNeurons:
       case AppPath.Neurons:
         return (await import("../../../routes/Neurons.svelte")).default;
       case AppPath.Proposals:
@@ -27,16 +28,17 @@
         return (await import("../../../routes/Wallet.svelte")).default;
       case AppPath.ProposalDetail:
         return (await import("../../../routes/ProposalDetail.svelte")).default;
-      case AppPath.NeuronDetail:
-        return (await import("../../../routes/NeuronDetail.svelte")).default;
+      case AppPath.LegacyNeuronDetail:
+        return (await import("../../../routes/LegacyNeuronDetail.svelte"))
+          .default;
       case AppPath.CanisterDetail:
         return (await import("../../../routes/CanisterDetail.svelte")).default;
       case AppPath.Launchpad:
         return (await import("../../../routes/Launchpad.svelte")).default;
       case AppPath.ProjectDetail:
         return (await import("../../../routes/ProjectDetail.svelte")).default;
-      case AppPath.SnsNeuronDetail:
-        return (await import("../../../routes/SnsNeuronDetail.svelte")).default;
+      case AppPath.NeuronDetail:
+        return (await import("../../../routes/NeuronDetail.svelte")).default;
       default:
         return (await import("../../../routes/Auth.svelte")).default;
     }
@@ -48,6 +50,9 @@
     },
     [AppPath.Accounts]: {
       title: $i18n.navigation.accounts,
+    },
+    [AppPath.LegacyNeurons]: {
+      title: $i18n.navigation.neurons,
     },
     [AppPath.Neurons]: {
       title: $i18n.navigation.neurons,
@@ -62,7 +67,7 @@
     [AppPath.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
     },
-    [AppPath.NeuronDetail]: {
+    [AppPath.LegacyNeuronDetail]: {
       title: $i18n.neuron_detail.title,
     },
     [AppPath.CanisterDetail]: {
@@ -71,7 +76,7 @@
     [AppPath.Launchpad]: {
       title: $i18n.sns_launchpad.header,
     },
-    [AppPath.SnsNeuronDetail]: {
+    [AppPath.NeuronDetail]: {
       title: $i18n.sns_neuron_detail.header,
     },
     [AppPath.ProjectDetail]: { title: "" },

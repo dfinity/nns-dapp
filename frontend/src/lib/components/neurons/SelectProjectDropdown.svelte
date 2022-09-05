@@ -1,26 +1,40 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { Principal } from "@dfinity/principal";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import { i18n } from "../../stores/i18n";
-  import {
-    committedProjectsStore,
-    snsProjectSelectedStore,
-  } from "../../stores/projects.store";
+  import { committedProjectsStore } from "../../stores/projects.store";
+  import { routeStore } from "../../stores/route.store";
   import Dropdown from "../ui/Dropdown.svelte";
   import DropdownItem from "../ui/DropdownItem.svelte";
+  import Spinner from "../ui/Spinner.svelte";
 
   let selectedCanisterId: string | undefined;
 
   onMount(() => {
-    selectedCanisterId = $snsProjectSelectedStore.toText();
+    updateSelectedCanisterId();
   });
+
+  // We wait until the selected project is loaded in the store. And therefore, selectable.
+  // Setting the selected value before it's available in `selectableProjects` was not setting it as selected in the dropdown.
+  const updateSelectedCanisterId = () => {
+    if (
+      selectableProjects.find(
+        ({ canisterId }) => $snsProjectSelectedStore.toText() === canisterId
+      ) !== undefined
+    ) {
+      selectedCanisterId = $snsProjectSelectedStore.toText();
+    }
+  };
 
   $: {
     if (selectedCanisterId !== undefined) {
-      snsProjectSelectedStore.set(Principal.fromText(selectedCanisterId));
+      routeStore.changeContext(selectedCanisterId);
     }
   }
+
+  // Update the selected canister id when we selectableProjects are loaded
+  $: selectableProjects, updateSelectedCanisterId();
 
   type SelectableProject = {
     name: string;
@@ -51,12 +65,18 @@
   onDestroy(unsubscribe);
 </script>
 
-<Dropdown
-  name="project"
-  bind:selectedValue={selectedCanisterId}
-  testId="select-project-dropdown"
->
-  {#each selectableProjects as { canisterId, name } (canisterId)}
-    <DropdownItem value={canisterId}>{name}</DropdownItem>
-  {/each}
-</Dropdown>
+<!-- We don't want to render the dropdown until we have a selected canister id. -->
+<!-- Otherwise, it will default always to NNS before the projects are loaded and redirect themeStore. -->
+{#if selectedCanisterId !== undefined}
+  <Dropdown
+    name="project"
+    bind:selectedValue={selectedCanisterId}
+    testId="select-project-dropdown"
+  >
+    {#each selectableProjects as { canisterId, name } (canisterId)}
+      <DropdownItem value={canisterId}>{name}</DropdownItem>
+    {/each}
+  </Dropdown>
+{:else}
+  <Spinner inline />
+{/if}
