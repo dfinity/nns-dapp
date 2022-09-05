@@ -9,6 +9,17 @@ main.legacy {
   padding: inherit;
   max-width: inherit;
 
+  // TODO(L2-965): legacy CSS
+  --json-bracket-color: var(--background-shade);
+  --json-value-color: var(--background-tint);
+  --json-string-color: var(--brand-sea-buckthorn);
+  --json-number-color: var(--brand-picton-blue);
+  --json-null-color: var(--background-shade);
+  --json-principal-color: var(--warning-emphasis);
+  --json-hash-color: var(--warning-emphasis);
+  --json-bigint-color: var(--brand-picton-blue);
+  --json-boolean-color: var(--brand-picton-blue);
+
   @include media.min-width(medium) {
     padding: inherit;
   }
@@ -24,5 +35,14 @@ main.legacy {
       flex-wrap: nowrap;
       align-items: baseline;
     }
+  }
+}
+
+html[theme="light"] {
+  // TODO(L2-965): legacy CSS
+  main.legacy {
+    --json-string-color: var(--brand-flamingo);
+    --json-principal-color: var(--warning-emphasis);
+    --json-hash-color: var(--warning-emphasis);
   }
 }

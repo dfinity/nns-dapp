@@ -22,7 +22,8 @@ describe("ProposalMeta", () => {
         showUrl: true,
       },
     });
-    expect(getByText("url").getAttribute("href")).toBe("url");
+    const url = mockProposalInfo.proposal?.url as string;
+    expect(getByText(url).getAttribute("href")).toBe(url);
   });
 
   it("should not render proposal url by default", () => {

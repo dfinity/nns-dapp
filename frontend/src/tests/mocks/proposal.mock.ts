@@ -50,7 +50,7 @@ export const mockProposalInfo: ProposalInfo = {
   id: BigInt(10000),
   proposal: {
     title: "title",
-    url: "url",
+    url: "https://url.com",
     action: proposalActionMotion,
     summary: "summary-content",
   },

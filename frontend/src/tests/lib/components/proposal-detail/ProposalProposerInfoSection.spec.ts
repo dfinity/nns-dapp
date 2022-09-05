@@ -12,7 +12,7 @@ jest.mock("../../../../lib/utils/html.utils", () => ({
 }));
 
 describe("ProposalProposerInfoSection", () => {
-  const { title, proposal } = mapProposalInfo(mockProposalInfo);
+  const { title, proposal, url } = mapProposalInfo(mockProposalInfo);
 
   it("should render title", () => {
     const renderResult = render(ProposalProposerInfoSection, {
@@ -36,5 +36,16 @@ describe("ProposalProposerInfoSection", () => {
     await waitFor(() =>
       expect(getByText(proposal?.summary as string)).toBeInTheDocument()
     );
+  });
+
+  it("should render url", async () => {
+    const renderResult = render(ProposalProposerInfoSection, {
+      props: {
+        proposalInfo: mockProposalInfo,
+      },
+    });
+
+    const { getByText } = renderResult;
+    await waitFor(() => expect(getByText(url as string)).toBeInTheDocument());
   });
 });

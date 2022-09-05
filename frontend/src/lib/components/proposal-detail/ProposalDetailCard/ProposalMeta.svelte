@@ -22,7 +22,7 @@
 
 <div>
   {#if url}
-    <a target="_blank" href={url}>{url}</a>
+    <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
   {/if}
 
   {#if proposer !== undefined}

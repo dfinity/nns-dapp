@@ -1,8 +1,7 @@
-<!-- adapted source: https://github.com/ionic-team/ionic-framework/tree/main/core/src/components/skeleton-text -->
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import type { CardType } from "../../types/card";
 
@@ -17,19 +16,19 @@
 
 <svelte:component this={cards[cardType]} testId="skeleton-card">
   <div class="small" slot="start">
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="small" slot="end">
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="content">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
     {#if size === "large"}
-      <SkeletonParagraph />
-      <SkeletonParagraph />
-      <SkeletonParagraph />
-      <SkeletonParagraph />
+      <SkeletonText />
+      <SkeletonText />
+      <SkeletonText />
+      <SkeletonText />
     {/if}
   </div>
 </svelte:component>

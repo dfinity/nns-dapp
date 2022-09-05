@@ -13,7 +13,7 @@
 
 <div class="markdown value">
   {#if showTitle}
-    <h1 class="title"><slot name="title" /></h1>
+    <div class="title"><slot name="title" /></div>
   {/if}
 
   <Markdown text={summary} />
