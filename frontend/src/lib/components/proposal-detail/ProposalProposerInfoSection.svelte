@@ -24,7 +24,7 @@
       <h1>{title ?? ""}</h1>
 
       {#if url}
-        <a target="_blank" href={url}>{url}</a>
+        <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
       {/if}
     </svelte:fragment>
   </ProposalSummary>
