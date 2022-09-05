@@ -88,7 +88,7 @@ describe("VoteHistoryCard", () => {
     });
 
     expect(
-      container.querySelectorAll('[data-tid="skeleton-paragraph"]').length
+      container.querySelectorAll('[data-tid="skeleton-text"]').length
     ).toEqual(props.neuron.recentBallots.length * 5);
   });
 });
