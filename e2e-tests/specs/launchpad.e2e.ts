@@ -41,11 +41,13 @@ describe("Launchpad", () => {
 
     await launchpad.getElement(cardGridSelector, "Getting the card grid", {
       timeout: 30_000,
-    })
+    });
 
     await browser.waitUntil(async () => {
-      const elements = await browser.$$(`${cardGridSelector} article:not([data-tid="skeleton-card"])`);
-      return elements.length > 0
+      const elements = await browser.$$(
+        `${cardGridSelector} article:not([data-tid="skeleton-card"])`
+      );
+      return elements.length > 0;
     });
   });
 });
