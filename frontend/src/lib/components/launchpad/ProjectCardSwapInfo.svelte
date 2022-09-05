@@ -12,7 +12,7 @@
   import { ICP } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  import Icp from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import DateSeconds from "../ui/DateSeconds.svelte";
   import {
     SnsSwapLifecycle,
@@ -76,7 +76,7 @@
 
   {#if myCommitment !== undefined}
     <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
-    <dd><Icp icp={myCommitment} singleLine inheritSize /></dd>
+    <dd><AmountTokens amount={myCommitment} singleLine inheritSize /></dd>
   {/if}
 </dl>
 

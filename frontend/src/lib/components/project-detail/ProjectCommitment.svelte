@@ -2,7 +2,7 @@
   import { ICP } from "@dfinity/nns";
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
-  import Icp from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
@@ -41,7 +41,7 @@
     {$i18n.sns_project_detail.current_overall_commitment}
   </span>
 
-  <Icp slot="value" icp={buyersTotalCommitmentIcp} singleLine />
+  <AmountTokens slot="value" amount={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar

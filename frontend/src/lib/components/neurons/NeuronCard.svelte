@@ -10,7 +10,7 @@
     isSpawning,
     neuronStake,
   } from "../../utils/neuron.utils";
-  import ICPComponent from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
@@ -66,13 +66,13 @@
     {#if isSpawning(neuron)}
       <IconStackedLineChart />
     {:else if proposerNeuron}
-      <ICPComponent
+      <AmountTokens
         label={$i18n.neurons.voting_power}
-        icp={ICP.fromE8s(neuron.votingPower)}
+        amount={ICP.fromE8s(neuron.votingPower)}
         detailed
       />
     {:else if neuronICP}
-      <ICPComponent icp={neuronICP} detailed />
+      <AmountTokens amount={neuronICP} detailed />
     {/if}
   </div>
 

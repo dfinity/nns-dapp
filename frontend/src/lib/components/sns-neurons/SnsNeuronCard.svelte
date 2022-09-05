@@ -12,7 +12,7 @@
     getSnsNeuronState,
     isUserHotkey,
   } from "../../utils/sns-neuron.utils";
-  import IcpComponent from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
@@ -55,8 +55,8 @@
   </div>
 
   <div slot="end" class="currency">
-    <IcpComponent
-      icp={neuronICP}
+    <AmountTokens
+      amount={neuronICP}
       detailed
       label={$snsTokenSymbolSelectedStore}
     />

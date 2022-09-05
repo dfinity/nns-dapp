@@ -1,6 +1,6 @@
 <script lang="ts">
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import ICP from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import { ICP as ICPType } from "@dfinity/nns";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import type { TransactionContext } from "../../types/transaction.context";
@@ -64,7 +64,7 @@
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
-    <ICP inline={true} icp={amount} detailed />
+    <AmountTokens inline={true} {amount} detailed />
   </div>
 
   <NewTransactionInfo />

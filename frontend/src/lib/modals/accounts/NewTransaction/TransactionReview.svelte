@@ -10,7 +10,7 @@
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { convertNumberToICP } from "../../../utils/icp.utils";
   import { valueSpan } from "../../../utils/utils";
-  import Icp from "../../../components/ic/ICP.svelte";
+  import AmountTokens from "../../../components/ic/AmountTokens.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import { sanitize } from "../../../utils/html.utils";
   import type { NewTransaction } from "../../../types/transaction.context";
@@ -40,7 +40,7 @@
   <div class="info">
     <KeyValuePair>
       <span slot="key">{$i18n.accounts.source}</span>
-      <Icp slot="value" singleLine icp={sourceAccount.balance} />
+      <AmountTokens slot="value" singleLine amount={sourceAccount.balance} />
     </KeyValuePair>
     <div>
       <p data-tid="transaction-review-source-account">
@@ -54,9 +54,9 @@
         <IconSouth />
       </span>
       <div class="align-right">
-        <Icp icp={icpAmount} inline />
+        <AmountTokens amount={icpAmount} inline />
         <span>
-          <Icp icp={$mainTransactionFeeStoreAsIcp} singleLine />
+          <AmountTokens amount={$mainTransactionFeeStoreAsIcp} singleLine />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>

@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Account } from "../../types/account";
   import { Card } from "@dfinity/gix-components";
-  import ICP from "../ic/ICP.svelte";
+  import AmountTokens from "../ic/AmountTokens.svelte";
   import Identifier from "../ui/Identifier.svelte";
-  import type { ICP as ICPType } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
 
   export let account: Account;
@@ -11,7 +11,7 @@
   export let role: "button" | "link" | undefined = undefined;
 
   let identifier: string;
-  let balance: ICPType;
+  let balance: TokenAmount;
 
   $: ({ identifier, balance } = account);
 </script>
@@ -21,7 +21,7 @@
     <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
   </div>
-  <ICP slot="end" icp={balance} />
+  <AmountTokens slot="end" amount={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
 

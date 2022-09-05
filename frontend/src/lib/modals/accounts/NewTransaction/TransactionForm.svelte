@@ -14,7 +14,7 @@
     getMaxTransactionAmount,
   } from "../../../utils/icp.utils";
   import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
-  import IcpComponent from "../../../components/ic/ICP.svelte";
+  import AmountTokens from "../../../components/ic/AmountTokens.svelte";
   import AmountInput from "../../../components/ui/AmountInput.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
 
@@ -79,7 +79,11 @@
     {#if selectedAccount !== undefined}
       <KeyValuePair>
         <span slot="key">{$i18n.accounts.source}</span>
-        <IcpComponent slot="value" singleLine icp={selectedAccount?.balance} />
+        <AmountTokens
+          slot="value"
+          singleLine
+          amount={selectedAccount?.balance}
+        />
       </KeyValuePair>
     {/if}
     <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
