@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXXXX
+* Set CSP rules.
+* Persist proposal filters in local storage.
+* Upgrade agent-js.
+* Upgrade nns-js.
+
 ## Proposal 77051
 * Fix android issues with modal.
 * Add pending transaction state in canister.
