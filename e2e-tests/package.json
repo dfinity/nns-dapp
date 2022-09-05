@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "wdio run ./wdio.conf.ts",
+    "test": "wdio run ./wdio.conf.ts --exclude ./specs/launchpad.e2e.ts",
+    "launchpad": "wdio run ./wdio.conf.ts --spec ./specs/launchpad.e2e.ts",
     "lint": "npx tsc --noEmit true --project . && eslint --max-warnings 0 './**/*.{js,ts}'",
     "format": "prettier --write --plugin-search-dir=. ."
   },
