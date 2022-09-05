@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
@@ -48,8 +48,14 @@ export const formatICP = ({
     .replace(/,/g, "'");
 };
 
-export const sumICPs = (...icps: ICP[]): ICP =>
-  ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
+export const sumTokenAmounts = (...amountTokens: TokenAmount[]): TokenAmount =>
+  TokenAmount.fromE8s({
+    amount: amountTokens.reduce<bigint>(
+      (acc, icp) => acc + icp.toE8s(),
+      BigInt(0)
+    ),
+    token: amountTokens[0].token,
+  });
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001

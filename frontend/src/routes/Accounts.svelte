@@ -10,8 +10,8 @@
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
-  import { ICP } from "@dfinity/nns";
-  import { formatICP, sumICPs } from "../lib/utils/icp.utils";
+  import { TokenAmount } from "@dfinity/nns";
+  import { formatICP, sumTokenAmounts } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
@@ -34,11 +34,14 @@
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
 
-  let totalBalance: ICP;
+  let totalBalance: TokenAmount;
   let totalICP: string;
-  const zeroICPs = ICP.fromE8s(BigInt(0));
+  const zeroICPs = TokenAmount.fromE8s({
+    amount: BigInt(0),
+    token: accounts?.main?.balance.token,
+  });
   $: {
-    totalBalance = sumICPs(
+    totalBalance = sumTokenAmounts(
       accounts?.main?.balance || zeroICPs,
       ...(accounts?.subAccounts || []).map(({ balance }) => balance),
       ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
