@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
-  import {SkeletonText} from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import type { CardType } from "../../types/card";
 

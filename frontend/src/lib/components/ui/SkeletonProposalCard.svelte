@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
-  import {SkeletonText} from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <Card testId="skeleton-card">

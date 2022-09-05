@@ -12,7 +12,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { canistersStore } from "../lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "../lib/utils/i18n.utils";
-  import {SkeletonText} from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "../lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "../lib/components/canister-detail/ControllersCard.svelte";

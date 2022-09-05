@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {SkeletonText} from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <div class="content-cell-title">

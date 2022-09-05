@@ -46,8 +46,6 @@ describe("ProposalProposerInfoSection", () => {
     });
 
     const { getByText } = renderResult;
-    await waitFor(() =>
-        expect(getByText(url as string)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(url as string)).toBeInTheDocument());
   });
 });

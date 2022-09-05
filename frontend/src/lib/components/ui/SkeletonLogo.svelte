@@ -1,5 +1,5 @@
 <script>
-  import {SkeletonText} from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <div>
