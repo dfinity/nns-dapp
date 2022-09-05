@@ -61,7 +61,7 @@ describe("Proposals", () => {
     const { queryAllByTestId } = render(Proposals);
 
     await waitFor(() =>
-      expect(queryAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(queryAllByTestId("proposal-card").length).toBeGreaterThan(0)
     );
   });
 
@@ -72,7 +72,7 @@ describe("Proposals", () => {
 
     await waitFor(() =>
       expect(
-        container.querySelectorAll('[data-tid="sns-proposal-card"]').length
+        container.querySelectorAll('[data-tid="proposal-card"]').length
       ).toBeGreaterThan(0)
     );
 

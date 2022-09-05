@@ -20,21 +20,28 @@
       path: `${AppPath.ProposalDetail}/${id}`,
     });
   };
+
+  // TODO(L2-965): delete legacy component
 </script>
 
-<Card testId="sns-proposal-card">
-  <h3 slot="start">{title}</h3>
+<li>
+  <Card testId="sns-proposal-card">
+    <h3 slot="start">{title}</h3>
 
-  <ProposalMeta {proposalInfo} />
+    <ProposalMeta {proposalInfo} />
 
-  <button data-tid="vote-for-sns" class="primary small" on:click={showProposal}
-    >{$i18n.proposal_detail.vote}</button
-  >
-</Card>
+    <button
+      data-tid="vote-for-sns"
+      class="primary small"
+      on:click={showProposal}>{$i18n.proposal_detail.vote}</button
+    >
+  </Card>
+</li>
 
 <style lang="scss">
   h3 {
     line-height: var(--line-height-standard);
+    word-break: break-word;
   }
 
   button {

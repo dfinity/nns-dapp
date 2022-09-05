@@ -19,6 +19,7 @@
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
+  // TODO(L2-965): delete property and use modern
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "../ui/Value.svelte";
 
