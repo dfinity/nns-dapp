@@ -341,9 +341,9 @@ fn only_caller_can_add_pending_transaction() {
     let mut store = setup_test_store();
 
     let is_allowed1 = store.check_pending_transaction_buyer(buyer, buyer);
-    assert_eq!(is_allowed1, true);
+    assert!(is_allowed1);
     let is_allowed2 = store.check_pending_transaction_buyer(buyer, buyer2);
-    assert_eq!(is_allowed2, false)
+    assert!(!is_allowed2)
 }
 
 #[test]
