@@ -4,7 +4,7 @@
 import { Vote } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
-import VotesCard from "../../../../lib/components/proposal-detail/VotesCard.svelte";
+import VotesResults from "../../../../lib/components/proposal-detail/VotesResults.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
 import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import { formatNumber } from "../../../../lib/utils/format.utils";
@@ -13,13 +13,13 @@ import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-describe("VotesCard", () => {
+describe("VotesResults", () => {
   describe("Adopt-Reject section", () => {
     let renderResult: RenderResult;
     let yes: number, no: number;
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      renderResult = render(VotesCard, {
+      renderResult = render(VotesResults, {
         props: {
           proposalInfo: mockProposalInfo,
         },
@@ -81,7 +81,7 @@ describe("VotesCard", () => {
     };
     it("should have title when proposal has been voted by some owned neuron", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { getByText } = render(VotesCard, {
+      const { getByText } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },
@@ -91,7 +91,7 @@ describe("VotesCard", () => {
 
     it("should not have title when proposal has not been voted by some owned neuron", () => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      const { getByText } = render(VotesCard, {
+      const { getByText } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },
@@ -101,7 +101,7 @@ describe("VotesCard", () => {
 
     it("should render an item per voted neuron", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { container } = render(VotesCard, {
+      const { container } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },
@@ -114,7 +114,7 @@ describe("VotesCard", () => {
 
     it("should render the proper icon item for YES and NO", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { container } = render(VotesCard, {
+      const { container } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },
@@ -132,7 +132,7 @@ describe("VotesCard", () => {
 
     it("should have title attribute per voted neuron for YES or NO", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { getByTitle } = render(VotesCard, {
+      const { getByTitle } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },
@@ -159,7 +159,7 @@ describe("VotesCard", () => {
 
     it("should have aria-label attribute", () => {
       neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
-      const { container } = render(VotesCard, {
+      const { container } = render(VotesResults, {
         props: {
           proposalInfo: proposal,
         },

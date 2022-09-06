@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import VotesCard from "./VotesCard.svelte";
+  import VotesResults from "./VotesResults.svelte";
+  import MyVotes from "./MyVotes.svelte";
   import VotingCard from "./VotingCard/VotingCard.svelte";
 
   export let proposalInfo: ProposalInfo;
 </script>
 
-<VotesCard {proposalInfo} />
+<VotesResults {proposalInfo} />
 <VotingCard {proposalInfo} />
+<MyVotes {proposalInfo} />
