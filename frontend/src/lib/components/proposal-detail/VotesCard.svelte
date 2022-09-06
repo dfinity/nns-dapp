@@ -123,11 +123,11 @@
       text-align: center;
 
       &.yes {
-        color: var(--primary-shade);
+        color: var(--positive-emphasis);
       }
 
       &.no {
-        color: var(--negative-emphasis-light);
+        color: var(--negative-emphasis);
       }
 
       span {
@@ -145,7 +145,7 @@
     .progressbar {
       position: relative;
       height: 10px;
-      background: var(--negative-emphasis-light);
+      background: var(--negative-emphasis);
 
       border-radius: var(--border-radius);
       overflow: hidden;
@@ -156,8 +156,19 @@
         bottom: 0;
         left: 0;
 
-        background: var(--primary-gradient-fallback);
-        background: var(--primary-gradient);
+        // TODO(L2-931): delete legacy style
+        --positive-emphasis-gradient: linear-gradient(
+          99.27deg,
+          var(--positive-emphasis) -0.11%,
+          #026500 100.63%
+        );
+        --positive-emphasis-gradient-fallback: var(--positive-emphasis);
+        --positive-emphasis-gradient-contrast: var(
+          --positive-emphasis-contrast
+        );
+
+        background: var(--positive-emphasis-gradient-fallback);
+        background: var(--positive-emphasis-gradient);
       }
     }
   }
