@@ -174,10 +174,8 @@
 
   .content {
     // to not stick the content to the bottom
-    padding-bottom: var(--padding-2x);
+    padding-bottom: var(--padding);
     // to respect children margins in contentHeight calculation
     overflow: auto;
-    // scrollbar
-    padding-right: var(--padding);
   }
 </style>

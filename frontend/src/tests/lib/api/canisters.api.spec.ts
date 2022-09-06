@@ -234,7 +234,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -318,7 +318,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();

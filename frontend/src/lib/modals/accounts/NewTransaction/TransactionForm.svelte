@@ -1,35 +1,35 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import FooterModal from "../../../modals/FooterModal.svelte";
+  import { i18n } from "../../../stores/i18n";
   import {
     mainTransactionFeeStoreAsIcp,
-    mainTransactionFeeStore,
-  } from "../../stores/transaction-fees.store";
-  import type { Account } from "../../types/account";
-  import { InvalidAmountError } from "../../types/neurons.errors";
-  import { assertEnoughAccountFunds } from "../../utils/accounts.utils";
-  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
-  import SelectAccountDropdown from "../accounts/SelectAccountDropdown.svelte";
-  import IcpComponent from "../ic/ICP.svelte";
-  import IcpText from "../ic/ICPText.svelte";
-  import AmountInput from "../ui/AmountInput.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+    transactionsFeesStore,
+  } from "../../../stores/transaction-fees.store";
+  import type { Account } from "../../../types/account";
+  import { InvalidAmountError } from "../../../types/neurons.errors";
+  import { assertEnoughAccountFunds } from "../../../utils/accounts.utils";
+  import {
+    convertNumberToICP,
+    getMaxTransactionAmount,
+  } from "../../../utils/icp.utils";
+  import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
+  import IcpComponent from "../../../components/ic/ICP.svelte";
+  import AmountInput from "../../../components/ui/AmountInput.svelte";
+  import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
 
-  // Tested in the ParticipateSwapModal
+  // Tested in the TransactionModal
 
   export let selectedAccount: Account | undefined = undefined;
   export let amount: number | undefined = undefined;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
-  export let minAmount: ICP;
-  export let maxAmount: ICP;
-  export let userHasParticipatedToSwap: boolean = false;
+  export let maxAmount: bigint | undefined = undefined;
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: selectedAccount?.balance,
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: selectedAccount?.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
+    maxAmount,
   });
   const addMax = () => (amount = max);
 
@@ -73,7 +73,7 @@
 <form
   on:submit|preventDefault={goNext}
   class="wrapper"
-  data-tid="sns-swap-participate-step-1"
+  data-tid="transaction-step-1"
 >
   <div class="select-account">
     {#if selectedAccount !== undefined}
@@ -86,36 +86,18 @@
   </div>
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    {#if userHasParticipatedToSwap}
-      <p class="right">
-        {$i18n.sns_project_detail.max_left}
-        <IcpComponent singleLine icp={maxAmount} />
-      </p>
-    {:else}
-      <KeyValuePair>
-        <IcpText slot="key" icp={minAmount}>
-          {$i18n.core.min}
-        </IcpText>
-        <IcpText slot="value" icp={maxAmount}>
-          {$i18n.core.max}
-        </IcpText>
-      </KeyValuePair>
-    {/if}
-    <p class="right">
-      <span>{$i18n.accounts.transaction_fee}</span>
-      <IcpComponent singleLine icp={$mainTransactionFeeStoreAsIcp} />
-    </p>
+    <slot name="additional-info" />
   </div>
   <FooterModal>
     <button
       class="small secondary"
-      data-tid="sns-swap-participate-button-cancel"
+      data-tid="transaction-button-cancel"
       type="button"
       on:click={close}>{$i18n.core.cancel}</button
     >
     <button
       class="small primary"
-      data-tid="sns-swap-participate-button-next"
+      data-tid="transaction-button-next"
       disabled={disableButton}
       type="submit">{$i18n.sns_project_detail.participate}</button
     >
@@ -123,7 +105,7 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
+  @use "../../../themes/mixins/modal";
 
   .select-account {
     display: flex;
@@ -141,13 +123,5 @@
     &.info {
       gap: var(--padding-2x);
     }
-  }
-
-  p {
-    margin: 0;
-  }
-
-  .right {
-    text-align: right;
   }
 </style>

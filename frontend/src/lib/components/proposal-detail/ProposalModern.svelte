@@ -10,6 +10,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "../../types/selected-proposal.context";
+  import SkeletonDetails from "../ui/SkeletonDetails.svelte";
 
   export let neuronsReady = false;
 
@@ -29,14 +30,13 @@
       </div>
       <div class="content-c">
         <ProposalProposerInfoSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-e">
+
         <ProposalProposerDataSection proposalInfo={$store.proposal} />
       </div>
     </div>
   {:else}
     <div class="content-grid">
-      <div class="content-a">TODO skeleton - use SkeletonDetails component</div>
+      <div class="content-a"><SkeletonDetails /></div>
     </div>
   {/if}
 {:else}
@@ -65,7 +65,7 @@
   @include media.min-width(medium) {
     // If this would be use elsewhere, we can extract some utility to gix-components
     .content-b.expand-content-b {
-      grid-row-end: content-e;
+      grid-row-end: content-c;
     }
   }
 </style>

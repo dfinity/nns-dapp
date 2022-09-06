@@ -2,6 +2,7 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { mapProposalInfo } from "../../utils/proposals.utils";
   import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
+  import ProposalSystemInfoProposerEntry from "./ProposalSystemInfoProposerEntry.svelte";
   import { secondsToDateTime } from "../../utils/date.utils";
   import { i18n } from "../../stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
@@ -112,12 +113,5 @@
     />
   {/if}
 
-  {#if proposer !== undefined}
-    <ProposalSystemInfoEntry
-      labelKey="proposer_prefix"
-      testId="proposal-system-info-proposer"
-      value={`${proposer}`}
-      description={$i18n.proposal_detail.proposer_description}
-    />
-  {/if}
+  <ProposalSystemInfoProposerEntry {proposer} />
 </div>

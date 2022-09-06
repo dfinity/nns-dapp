@@ -7,7 +7,7 @@ import {
   convertTCyclesToIcpNumber,
   formatICP,
   formattedTransactionFeeICP,
-  maxICP,
+  getMaxTransactionAmount,
   sumICPs,
 } from "../../../lib/utils/icp.utils";
 
@@ -80,32 +80,66 @@ describe("icp-utils", () => {
       "0.0001"
     ));
 
-  it("should max ICP value", () => {
-    expect(maxICP({ fee: DEFAULT_TRANSACTION_FEE_E8S })).toEqual(0);
+  it("getMaxTransactionAmount should max taking into account fee, maxAmount and converte it to a number", () => {
+    const fee = BigInt(DEFAULT_TRANSACTION_FEE_E8S);
+    expect(getMaxTransactionAmount({ fee })).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0") as ICP,
-        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      getMaxTransactionAmount({
+        balance: BigInt(0),
+        fee,
       })
     ).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0.0001") as ICP,
-        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      getMaxTransactionAmount({
+        balance: BigInt(10_000),
+        fee,
       })
     ).toEqual(0);
     expect(
-      maxICP({
-        icp: ICP.fromString("0.00011") as ICP,
-        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      getMaxTransactionAmount({
+        balance: BigInt(11_000),
+        fee,
       })
     ).toEqual(0.00001);
     expect(
-      maxICP({
-        icp: ICP.fromString("1") as ICP,
-        fee: DEFAULT_TRANSACTION_FEE_E8S,
+      getMaxTransactionAmount({
+        balance: BigInt(100_000_000),
+        fee,
       })
     ).toEqual(0.9999);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(1_000_000_000),
+        maxAmount: BigInt(500_000_000),
+      })
+    ).toEqual(5);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(1_000_000_000),
+        fee,
+        maxAmount: BigInt(500_000_000),
+      })
+    ).toEqual(5);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(100_000_000),
+        fee,
+        maxAmount: BigInt(500_000_000),
+      })
+    ).toEqual(0.9999);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(0),
+        fee,
+        maxAmount: BigInt(500_000_000),
+      })
+    ).toEqual(0);
+    expect(
+      getMaxTransactionAmount({
+        balance: BigInt(0),
+        fee,
+      })
+    ).toEqual(0);
   });
 
   describe("convertNumberToICP", () => {

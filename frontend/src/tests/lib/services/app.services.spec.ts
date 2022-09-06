@@ -1,4 +1,4 @@
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import { initApp } from "../../../lib/services/app.services";
@@ -39,9 +39,7 @@ describe("app-services", () => {
 
   const mockCanisters = () => {
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(
-      ICP.fromString("1") as ICP
-    );
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     mockGovernanceCanister.listNeurons.mockResolvedValue([mockNeuron]);
   };
 

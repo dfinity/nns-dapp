@@ -2,7 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { HOST, IS_TESTNET } from "../constants/environment.constants";
 import { governanceCanister } from "./governance.api";
 
@@ -40,7 +40,7 @@ export const acquireICPTs = async ({
   const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
 
   return ledgerCanister.transfer({
-    amount: ICP.fromE8s(e8s),
+    amount: e8s,
     to: AccountIdentifier.fromHex(accountIdentifier),
   });
 };

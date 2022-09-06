@@ -9,11 +9,12 @@
   export let description: string | undefined;
 </script>
 
-<KeyValuePairInfo>
+<KeyValuePairInfo {testId}>
   <svelte:fragment slot="key">{$i18n.proposal_detail[labelKey]}</svelte:fragment
   >
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
-  <p slot="info" data-tid={`${testId}-description`}>
+
+  <svelte:fragment slot="info">
     {@html sanitize(description ?? $i18n.proposal_detail.no_more_info)}
-  </p>
+  </svelte:fragment>
 </KeyValuePairInfo>

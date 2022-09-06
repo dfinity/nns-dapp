@@ -168,6 +168,7 @@ interface I18nAccounts {
   destination: string;
   hardware_wallet_text: string;
   transaction_fee: string;
+  new_transaction_fee: string;
   review_transaction: string;
   edit_destination: string;
   current_balance: string;
@@ -184,6 +185,9 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
   current_balance_total: string;
+  description: string;
+  edit_transaction: string;
+  execute: string;
   current_balance_detail: string;
 }
 
@@ -548,13 +552,9 @@ interface I18nSns_project_detail {
   status_aborted: string;
   status_pending: string;
   status_unspecified: string;
-  transaction_fee: string;
-  description: string;
   participate_swap_description: string;
   participate_swap_warning: string;
   understand_agree: string;
-  edit_transaction: string;
-  execute: string;
   participate_success: string;
   participate: string;
   increase_participation: string;
