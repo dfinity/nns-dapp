@@ -48,14 +48,24 @@ export const formatICP = ({
     .replace(/,/g, "'");
 };
 
-export const sumTokenAmounts = (...amountTokens: TokenAmount[]): TokenAmount =>
-  TokenAmount.fromE8s({
+export const sumTokenAmounts = (
+  ...amountTokens: TokenAmount[]
+): TokenAmount => {
+  if (
+    amountTokens.some(
+      (amountToken) => amountToken.token.symbol !== amountTokens[0].token.symbol
+    )
+  ) {
+    throw new Error("Token symbols must be equal");
+  }
+  return TokenAmount.fromE8s({
     amount: amountTokens.reduce<bigint>(
       (acc, icp) => acc + icp.toE8s(),
       BigInt(0)
     ),
     token: amountTokens[0].token,
   });
+};
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
