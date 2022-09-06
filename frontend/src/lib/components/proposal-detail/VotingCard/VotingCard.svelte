@@ -87,6 +87,7 @@
         {proposalInfo}
         {voteInProgress}
         on:nnsConfirm={vote}
+        layout="legacy"
       />
     </CardInfo>
   {:else}
@@ -95,6 +96,7 @@
         {proposalInfo}
         {voteInProgress}
         on:nnsConfirm={vote}
+        layout="modern"
       />
       <VotingNeuronSelect {proposalInfo} {voteInProgress} />
     </BottomSheet>

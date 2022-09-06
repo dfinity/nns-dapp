@@ -13,12 +13,12 @@
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
   import { sanitize } from "../../../utils/html.utils";
-  import { VOTING_UI } from "../../../constants/environment.constants";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
   export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let layout: "legacy" | "modern";
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -59,7 +59,7 @@
   // TODO(L2-965): delete question
 </script>
 
-{#if VOTING_UI === "legacy"}
+{#if layout === "legacy"}
   <p class="question">
     {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
       $id: `${id ?? ""}`,
@@ -69,7 +69,7 @@
   </p>
 {/if}
 
-<div role="toolbar" class={`${VOTING_UI}`}>
+<div role="toolbar" class={`${layout}`}>
   <button
     data-tid="vote-yes"
     {disabled}
