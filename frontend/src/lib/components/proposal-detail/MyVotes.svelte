@@ -51,8 +51,8 @@
     VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
-<svelte:component this={cmp}>
-  {#if neuronsVotedForProposal.length}
+{#if neuronsVotedForProposal.length}
+  <svelte:component this={cmp}>
     <h2 class="my-votes">{$i18n.proposal_detail.my_votes}</h2>
     <ul>
       {#each neuronsVotedForProposal as neuron}
@@ -71,8 +71,8 @@
         </li>
       {/each}
     </ul>
-  {/if}
-</svelte:component>
+  </svelte:component>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
