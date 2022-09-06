@@ -54,6 +54,8 @@
 </Collapsible>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   .total {
     display: flex;
     justify-content: space-between;
@@ -61,6 +63,10 @@
     width: 100%;
     margin-top: var(--padding-3x);
     padding: var(--padding) var(--padding-2x);
+
+    @include media.min-width(large) {
+      padding: 0 var(--padding-2x);
+    }
   }
 
   .total-neurons,

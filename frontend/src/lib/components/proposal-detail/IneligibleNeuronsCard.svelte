@@ -31,7 +31,7 @@
 
 {#if visible}
   <svelte:component this={cmp}>
-    <h2 slot="start">{$i18n.proposal_detail__ineligible.headline}</h2>
+    <h4 slot="start">{$i18n.proposal_detail__ineligible.headline}</h4>
     <p class="description">{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
       {#each ineligibleNeurons as neuron}

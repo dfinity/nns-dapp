@@ -40,10 +40,10 @@
 
     :global(div.content-cell-title) {
       margin-top: var(--padding-4x);
+    }
 
-      @include media.min-width(large) {
-        margin-top: var(--padding-8x);
-      }
+    :global(div.content-cell-details) {
+      margin-top: 0;
     }
   }
 </style>

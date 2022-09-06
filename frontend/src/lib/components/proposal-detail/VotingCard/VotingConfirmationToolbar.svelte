@@ -109,16 +109,18 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   [role="toolbar"] {
-    padding: var(--padding-2x) var(--padding-2x) 0;
+    padding: var(--padding) 0 0 ;
 
     display: flex;
     gap: var(--padding);
 
     &.modern {
+      padding: var(--padding-2x) var(--padding-2x) 0;
       justify-content: center;
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
+        padding: 0 var(--padding-2x);
         justify-content: flex-start;
         gap: var(--padding);
       }
