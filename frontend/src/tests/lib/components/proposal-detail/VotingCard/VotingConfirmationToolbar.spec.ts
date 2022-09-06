@@ -25,7 +25,7 @@ describe("VotingConfirmationToolbar", () => {
 
   const props = {
     proposalInfo: mockProposalInfo,
-    layout: "modern"
+    layout: "modern",
   };
 
   beforeEach(() => {
@@ -142,7 +142,7 @@ describe("VotingConfirmationToolbar", () => {
     const { container } = render(VotingConfirmationToolbar, {
       props: {
         ...props,
-        layout: "legacy"
+        layout: "legacy",
       },
     });
 
@@ -151,7 +151,7 @@ describe("VotingConfirmationToolbar", () => {
       {
         $id: `${mockProposalInfo.id}`,
         $title: `${(mockProposalInfo.proposal as Proposal).title}`,
-        $topic: en.topics[Topic[mockProposalInfo.topic]]
+        $topic: en.topics[Topic[mockProposalInfo.topic]],
       }
     )
       .replace(/<strong>/g, "")
