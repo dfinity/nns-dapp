@@ -109,7 +109,7 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   [role="toolbar"] {
-    padding: var(--padding) 0 0 ;
+    padding: var(--padding) 0 0;
 
     display: flex;
     gap: var(--padding);
@@ -128,7 +128,7 @@
   }
 
   .question {
-    margin:  var(--padding-4x) 0  var(--padding-2x);
+    margin: var(--padding-4x) 0 var(--padding-2x);
     word-break: break-word;
   }
 

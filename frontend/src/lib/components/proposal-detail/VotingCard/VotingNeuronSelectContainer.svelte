@@ -1,19 +1,19 @@
 <script lang="ts">
-    import VotingNeuronSelectList from "./VotingNeuronSelectList.svelte";
-    import type {ProposalInfo} from '@dfinity/nns';
-    import IneligibleNeuronsCard from "../IneligibleNeuronsCard.svelte";
-    import {definedNeuronsStore} from "../../../stores/neurons.store";
+  import VotingNeuronSelectList from "./VotingNeuronSelectList.svelte";
+  import type { ProposalInfo } from "@dfinity/nns";
+  import IneligibleNeuronsCard from "../IneligibleNeuronsCard.svelte";
+  import { definedNeuronsStore } from "../../../stores/neurons.store";
 
-    export let proposalInfo: ProposalInfo;
-    export let disabled: boolean;
+  export let proposalInfo: ProposalInfo;
+  export let disabled: boolean;
 
-    // TODO(L2-965): remove :global selector and move style to component
+  // TODO(L2-965): remove :global selector and move style to component
 </script>
 
 <div class="neurons">
-    <VotingNeuronSelectList {proposalInfo} {disabled} />
+  <VotingNeuronSelectList {proposalInfo} {disabled} />
 
-    <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />
+  <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />
 </div>
 
 <style lang="scss">

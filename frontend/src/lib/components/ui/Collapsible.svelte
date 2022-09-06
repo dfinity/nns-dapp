@@ -96,7 +96,8 @@
   <div
     {id}
     aria-labelledby={id !== undefined ? `heading${id}` : undefined}
-    class="content" class:wrapHeight
+    class="content"
+    class:wrapHeight
     bind:offsetHeight
   >
     <slot />

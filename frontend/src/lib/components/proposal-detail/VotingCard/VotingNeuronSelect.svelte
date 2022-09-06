@@ -26,8 +26,16 @@
 
 {#if $votingNeuronSelectStore.neurons.length > 0}
   {#if VOTING_UI === "legacy"}
-    <VotingNeuronSelectLegacy {proposalInfo} {disabled} {totalNeuronsVotingPower} />
+    <VotingNeuronSelectLegacy
+      {proposalInfo}
+      {disabled}
+      {totalNeuronsVotingPower}
+    />
   {:else}
-    <VotingNeuronSelectModern {proposalInfo} {disabled} {totalNeuronsVotingPower} />
+    <VotingNeuronSelectModern
+      {proposalInfo}
+      {disabled}
+      {totalNeuronsVotingPower}
+    />
   {/if}
 {/if}
