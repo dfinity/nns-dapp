@@ -3,6 +3,7 @@
   import { nowInSeconds, secondsToDuration } from "../../utils/date.utils";
   import { i18n } from "../../stores/i18n";
   import type { ProposalInfo } from "@dfinity/nns";
+  import { AUTH_SESSION_DURATION } from "../../constants/identity.constants";
 
   export let proposalInfo: ProposalInfo;
 
@@ -33,7 +34,17 @@
 
     countdown = proposalInfo.deadlineTimestampSeconds - BigInt(nowInSeconds());
 
-    // No need to schedule an update if we already know the countdown is over
+    // No need to schedule an update if the countdown is longer than an hour plus the auth session duration because even if we refresh,
+    // the display value would remain the same until the end of the session
+    if (
+      countdown >
+      AUTH_SESSION_DURATION / BigInt(1_000_000_000) + BigInt(3600)
+    ) {
+      clearCountdown();
+      return;
+    }
+
+    // No need to re-schedule an update if we already know the countdown is over
     if (countdown < ZERO) {
       return;
     }
