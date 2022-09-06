@@ -14,6 +14,7 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  NotAuthorizedError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
@@ -339,6 +340,9 @@ export class NNSDappCanister {
     );
     if ("Ok" in response) {
       return;
+    }
+    if ("NotAuthorized" in response) {
+      throw new NotAuthorizedError();
     }
     // Edge case
     throw new Error(

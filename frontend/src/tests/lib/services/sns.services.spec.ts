@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { AccountIdentifier, ICP } from "@dfinity/nns";
+import { AccountIdentifier, ICP, ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import * as api from "../../../lib/api/sns.api";
@@ -174,7 +174,10 @@ describe("sns-services", () => {
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromE8s(BigInt(100_000_000)),
+        balance: TokenAmount.fromE8s({
+          amount: BigInt(100_000_000),
+          token: ICPToken,
+        }),
       };
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")

@@ -1,5 +1,11 @@
 import type { Identity } from "@dfinity/agent";
-import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
+import {
+  ICP,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+  Topic,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
@@ -271,7 +277,10 @@ describe("neurons-services", () => {
         amount,
         account: {
           ...mockMainAccount,
-          balance: ICP.fromString(String(amount - 1)) as ICP,
+          balance: TokenAmount.fromString({
+            amount: String(amount - 1),
+            token: ICPToken,
+          }) as TokenAmount,
         },
       });
 
