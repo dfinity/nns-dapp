@@ -475,7 +475,7 @@ impl AccountsStore {
     }
 
     pub fn check_pending_transaction_buyer(&mut self, caller: PrincipalId, buyer: PrincipalId) -> bool {
-        // TODO: To support hardware wallets, check that the buyer is a principal of the caller's hardware walleet.
+        // TODO: To support hardware wallets, check that the buyer is either the caller's principal or the principal of a hardware wallet linked to the caller's account.
         caller == buyer
     }
 

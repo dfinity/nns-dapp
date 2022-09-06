@@ -208,13 +208,14 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
             .borrow_mut()
             .check_pending_transaction_buyer(caller, request.buyer)
         {
-            return s.accounts_store.borrow_mut().add_pending_transaction(
+            s.accounts_store.borrow_mut().add_pending_transaction(
                 AccountIdentifier::new(request.buyer, request.buyer_sub_account),
                 AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
                 TransactionType::ParticipateSwap(request.swap_canister_id),
-            );
+            )
+        } else {
+            AddPendingTransactionResponse::NotAuthorized
         }
-        AddPendingTransactionResponse::NotAuthorized
     })
 }
 
