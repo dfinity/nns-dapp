@@ -24,40 +24,43 @@ describe("voting-store", () => {
       id: BigInt(2),
     },
   };
-  const createArgs = ({
-    vote,
-    proposalInfo,
-    neuronIds,
-    toastId,
-  }: VoteRegistration) => ({
-    vote,
-    proposalInfo,
-    neuronIds,
-    toastId,
-  });
 
   afterEach(() => {
     voteRegistrationStore.reset();
   });
 
   it("should set voting items", () => {
-    voteRegistrationStore.create(createArgs(voteA));
+    voteRegistrationStore.create(voteA);
 
     expect(get(voteRegistrationStore)).toEqual({ registrations: [voteA] });
 
-    voteRegistrationStore.create(createArgs(voteB));
+    voteRegistrationStore.create(voteB);
 
     expect(get(voteRegistrationStore)).toEqual({
       registrations: [voteA, voteB],
     });
   });
 
-  it("should remove completed voting items", () => {
-    voteRegistrationStore.create(createArgs(voteA));
-    voteRegistrationStore.create(createArgs(voteB));
+  it("should update status", () => {
+    voteRegistrationStore.reset();
+    voteRegistrationStore.create(voteA);
 
     voteRegistrationStore.updateStatus({
-      voteRegistration: voteA,
+      proposalId: voteA.proposalInfo.id as ProposalId,
+      status: "complete",
+    });
+
+    expect(get(voteRegistrationStore).registrations[0].status).toEqual(
+      "complete"
+    );
+  });
+
+  it("should remove completed voting items", () => {
+    voteRegistrationStore.create(voteA);
+    voteRegistrationStore.create(voteB);
+
+    voteRegistrationStore.updateStatus({
+      proposalId: voteA.proposalInfo.id as ProposalId,
       status: "complete",
     });
 
@@ -67,8 +70,8 @@ describe("voting-store", () => {
   });
 
   it("should reset votes", () => {
-    voteRegistrationStore.create(createArgs(voteA));
-    voteRegistrationStore.create(createArgs(voteB));
+    voteRegistrationStore.create(voteA);
+    voteRegistrationStore.create(voteB);
 
     voteRegistrationStore.reset();
 
@@ -78,8 +81,8 @@ describe("voting-store", () => {
   it("should update successfullyVotedNeuronIds", () => {
     const successfullyVotedNeuronIds = [BigInt(0), BigInt(2)];
 
-    voteRegistrationStore.create(createArgs(voteA));
-    voteRegistrationStore.create(createArgs(voteB));
+    voteRegistrationStore.create(voteA);
+    voteRegistrationStore.create(voteB);
 
     for (const neuronId of successfullyVotedNeuronIds) {
       voteRegistrationStore.addSuccessfullyVotedNeuronId({

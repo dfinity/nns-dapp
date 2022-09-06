@@ -75,7 +75,7 @@ export const mockVoteRegistration = {
   proposalInfo: { ...mockProposalInfo },
   neuronIds: [BigInt(0)],
   successfullyVotedNeuronIds: [],
-  vote: Vote.NO,
+  vote: Vote.No,
   toastId: Symbol(),
   status: undefined,
 } as VoteRegistration;

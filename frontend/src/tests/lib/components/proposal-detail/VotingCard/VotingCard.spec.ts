@@ -153,7 +153,7 @@ describe("VotingCard", () => {
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith({
           neuronId: neuronIds[1],
-          vote: Vote.NO,
+          vote: Vote.No,
           proposalId: proposalInfo.id,
         })
       );
