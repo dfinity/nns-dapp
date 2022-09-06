@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
@@ -74,7 +74,7 @@
               summary={$projectDetailStore.summary}
               {swapCommitment}
             />
-            <AmountTokens slot="value" amount={myCommitmentIcp} singleLine />
+            <AmountDisplay slot="value" amount={myCommitmentIcp} singleLine />
           </KeyValuePair>
         </div>
       {/if}

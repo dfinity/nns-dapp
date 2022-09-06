@@ -2,7 +2,7 @@
   import type { Account } from "../../types/account";
   import CardInfo from "../ui/CardInfo.svelte";
   import DateSeconds from "../ui/DateSeconds.svelte";
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import type { ICP as ICPType } from "@dfinity/nns";
   import type {
@@ -75,7 +75,7 @@
     <h3>{headline}</h3>
   </div>
 
-  <AmountTokens
+  <AmountDisplay
     slot="end"
     amount={displayAmount}
     sign={isReceive || toSelfTransaction ? "+" : "-"}

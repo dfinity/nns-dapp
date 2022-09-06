@@ -2,7 +2,7 @@
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "../../utils/transactions.utils";
   import { i18n } from "../../stores/i18n";
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { getContext } from "svelte";
@@ -44,7 +44,7 @@
       $amount: detailedICP,
     })}
   >
-    <AmountTokens amount={accountBalance} />
+    <AmountDisplay amount={accountBalance} />
   </Tooltip>
 </div>
 <div class="address">

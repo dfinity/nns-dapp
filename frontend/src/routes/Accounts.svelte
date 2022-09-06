@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "../lib/stores/accounts.store";
   import type { AccountsStore } from "../lib/stores/accounts.store";
-  import AmountTokens from "../lib/components/ic/AmountTokens.svelte";
+  import AmountDisplay from "../lib/components/ic/AmountDisplay.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
@@ -65,7 +65,7 @@
             $amount: totalICP,
           })}
         >
-          <AmountTokens amount={totalBalance} />
+          <AmountDisplay amount={totalBalance} />
         </Tooltip>
       {/if}
     </div>

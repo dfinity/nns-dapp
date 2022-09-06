@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Account } from "../../types/account";
   import { Card } from "@dfinity/gix-components";
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import type { TokenAmount } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
@@ -21,7 +21,7 @@
     <h3 data-tid="account-name"><slot /></h3>
     <AccountBadge {account} />
   </div>
-  <AmountTokens slot="end" amount={balance} />
+  <AmountDisplay slot="end" amount={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
 

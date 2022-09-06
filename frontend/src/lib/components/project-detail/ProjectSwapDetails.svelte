@@ -7,7 +7,7 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { i18n } from "../../stores/i18n";
   import type { SnsSwapInit } from "@dfinity/sns";
   import { openTimeWindow } from "../../utils/projects.utils";
@@ -43,11 +43,11 @@
 
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-  <AmountTokens slot="value" amount={minCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
-  <AmountTokens slot="value" amount={maxCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.sale_start} </span>

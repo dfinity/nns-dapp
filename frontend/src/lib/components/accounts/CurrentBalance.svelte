@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AmountTokens from "../ic/AmountTokens.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import type { ICP, TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
 
@@ -8,7 +8,7 @@
 
 <div>
   <p>{$i18n.accounts.current_balance}:</p>
-  <AmountTokens inline={true} amount={balance} />
+  <AmountDisplay inline={true} amount={balance} />
 </div>
 
 <style lang="scss">

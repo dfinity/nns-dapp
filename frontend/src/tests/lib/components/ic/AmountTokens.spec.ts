@@ -4,15 +4,15 @@
 
 import type { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import AmountTokens from "../../../../lib/components/ic/AmountTokens.svelte";
+import AmountDisplay from "../../../../lib/components/ic/AmountDisplay.svelte";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
-describe("AmountTokens", () => {
+describe("AmountDisplay", () => {
   const props: { amount: TokenAmount } = { amount: mockMainAccount.balance };
 
   it("should render an token amount", () => {
-    const { container } = render(AmountTokens, {
+    const { container } = render(AmountDisplay, {
       props,
     });
 
@@ -24,7 +24,7 @@ describe("AmountTokens", () => {
   });
 
   it("should render an token symbol", () => {
-    const { getByText } = render(AmountTokens, {
+    const { getByText } = render(AmountDisplay, {
       props,
     });
 
@@ -32,7 +32,7 @@ describe("AmountTokens", () => {
   });
 
   it("should render + sign", () => {
-    const { container } = render(AmountTokens, {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         sign: "+",
@@ -47,7 +47,7 @@ describe("AmountTokens", () => {
   });
 
   it("should render - sign", () => {
-    const { container } = render(AmountTokens, {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         sign: "-",
@@ -61,7 +61,7 @@ describe("AmountTokens", () => {
   });
 
   it("should render a detailed token amount", () => {
-    const { container } = render(AmountTokens, {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         detailed: true,

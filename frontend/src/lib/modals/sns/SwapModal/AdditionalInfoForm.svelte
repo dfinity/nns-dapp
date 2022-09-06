@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ICP } from "@dfinity/nns";
-  import AmountTokens from "../../../components/ic/AmountTokens.svelte";
+  import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import IcpText from "../../../components/ic/ICPText.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import { i18n } from "../../../stores/i18n";
@@ -14,7 +14,7 @@
 {#if userHasParticipated}
   <p class="right">
     {$i18n.sns_project_detail.max_left}
-    <AmountTokens singleLine amount={maxCommitment} />
+    <AmountDisplay singleLine amount={maxCommitment} />
   </p>
 {:else}
   <KeyValuePair>
@@ -28,7 +28,7 @@
 {/if}
 <p class="right">
   <span>{$i18n.accounts.transaction_fee}</span>
-  <AmountTokens singleLine amount={$mainTransactionFeeStoreAsIcp} />
+  <AmountDisplay singleLine amount={$mainTransactionFeeStoreAsIcp} />
 </p>
 
 <style lang="scss">
