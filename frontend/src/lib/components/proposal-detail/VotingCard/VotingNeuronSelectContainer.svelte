@@ -20,7 +20,7 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .neurons {
-    padding: var(--padding) var(--padding) 0;
+    padding: var(--padding-1_5x) var(--padding) 0;
     max-height: 30vh;
     overflow-y: auto;
 
