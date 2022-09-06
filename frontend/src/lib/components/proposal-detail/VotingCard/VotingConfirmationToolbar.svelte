@@ -116,9 +116,11 @@
 
     &.modern {
       justify-content: center;
+      gap: var(--padding-2x);
 
       @include media.min-width(large) {
         justify-content: flex-start;
+        gap: var(--padding);
       }
     }
   }
@@ -129,6 +131,10 @@
   }
 
   button {
-    min-width: calc(48px + (2 * var(--padding-2x)));
+    width: calc(100% - (2 * var(--padding)));
+
+    @include media.min-width(small) {
+      width: inherit;
+    }
   }
 </style>
