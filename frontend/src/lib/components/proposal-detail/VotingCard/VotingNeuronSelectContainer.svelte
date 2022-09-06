@@ -20,10 +20,19 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .neurons {
-    border-top: 1px solid var(--line);
-    padding-top: var(--padding-0_5x);
+    padding: var(--padding) var(--padding) 0;
     max-height: 30vh;
     overflow-y: auto;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 50%;
+      border-top: 1px solid var(--line);
+      width: calc(100% - (4 * var(--padding)));
+      transform: translate(50%, 0);
+    }
 
     @include media.min-width(large) {
       max-height: inherit;

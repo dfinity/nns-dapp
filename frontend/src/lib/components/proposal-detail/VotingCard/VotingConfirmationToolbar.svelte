@@ -109,7 +109,7 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   [role="toolbar"] {
-    margin-top: var(--padding);
+    padding: var(--padding-2x) var(--padding-2x) 0;
 
     display: flex;
     gap: var(--padding);

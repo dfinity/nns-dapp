@@ -24,8 +24,9 @@
   externalToggle={true}
   bind:toggleContent
   bind:expanded
+  wrapHeight
 >
-  <div slot="header" class="total">
+  <div slot="header" class="total" class:expanded>
     <div class="total-neurons">
       <span class="value"
         >{$i18n.proposal_detail__vote.neurons} ({totalNeurons})</span
@@ -59,7 +60,7 @@
     gap: var(--padding);
     width: 100%;
     margin-top: var(--padding-3x);
-    padding: 0 var(--padding);
+    padding: var(--padding) var(--padding-2x);
   }
 
   .total-neurons,
