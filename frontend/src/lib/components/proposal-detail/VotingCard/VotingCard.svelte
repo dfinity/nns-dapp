@@ -35,15 +35,15 @@
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteInProgress: VoteRegistration | undefined = undefined;
+  let voteRegistration: VoteRegistration | undefined = undefined;
 
-  $: voteInProgress = $voteRegistrationStore.registrations.find(
+  $: voteRegistration = $voteRegistrationStore.registrations.find(
     ({ proposalInfo: { id } }) => proposalInfo.id === id
   );
 
   $: $definedNeuronsStore,
     (visible =
-      voteInProgress !== undefined ||
+      voteRegistration !== undefined ||
       (votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
@@ -86,10 +86,10 @@
 {#if visible}
   <svelte:component this={cmp}>
     <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
-    <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
+    <CastVoteCardNeuronSelect {proposalInfo} {voteRegistration} />
     <VotingConfirmationToolbar
       {proposalInfo}
-      {voteInProgress}
+      {voteRegistration}
       on:nnsConfirm={vote}
     />
   </svelte:component>

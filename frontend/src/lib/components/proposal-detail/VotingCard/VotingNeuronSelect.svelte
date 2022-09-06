@@ -10,15 +10,15 @@
   import Checkbox from "../../ui/Checkbox.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import Value from "../../ui/Value.svelte";
-  import type { VoteInProgress } from "../../../stores/voting.store";
+  import type { VoteRegistration } from "../../../stores/vote-registration.store";
 
   export let proposalInfo: ProposalInfo;
-  export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let total: bigint;
   let disabled: boolean = false;
 
-  $: disabled = voteInProgress !== undefined;
+  $: disabled = voteRegistration !== undefined;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,

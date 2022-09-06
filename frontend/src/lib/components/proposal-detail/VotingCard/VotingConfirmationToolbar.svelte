@@ -10,14 +10,14 @@
   } from "../../../utils/proposals.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { busy } from "../../../stores/busy.store";
-  import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
   import { sanitize } from "../../../utils/html.utils";
+  import type { VoteRegistration } from "../../../stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
-  export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -37,7 +37,7 @@
   $: disabled =
     $votingNeuronSelectStore.selectedIds.length === 0 ||
     $busy ||
-    voteInProgress !== undefined;
+    voteRegistration !== undefined;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.Yes;
@@ -71,7 +71,7 @@
     on:click={showAdoptConfirmation}
     class="primary small"
   >
-    {#if voteInProgress?.vote === Vote.Yes}
+    {#if voteRegistration?.vote === Vote.Yes}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.adopt}
@@ -83,7 +83,7 @@
     on:click={showRejectConfirmation}
     class="danger small"
   >
-    {#if voteInProgress?.vote === Vote.No}
+    {#if voteRegistration?.vote === Vote.No}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.reject}
