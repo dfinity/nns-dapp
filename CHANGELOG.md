@@ -1,10 +1,13 @@
 # Changelog
 
 ## Proposal XXXXX
-* Set CSP rules.
-* Persist proposal filters in local storage.
-* Upgrade agent-js.
-* Upgrade nns-js.
+* Persist proposal filters in local storage
+* Upgrade agent-js v0.13.x (uses indexeddb instead of localstorage)
+* Upgrade nns-js
+* Improve CSP rules and script loader
+* Infinite scrolling observer modified to handle list of cards
+* Governance labels and descriptions reviewed
+* Console output moves to debug information
 
 ## Proposal 77051
 * Fix android issues with modal.
