@@ -124,7 +124,7 @@
   }
 
   .question {
-    margin: 0 0 var(--padding-2x);
+    margin:  var(--padding-4x) 0  var(--padding-2x);
     word-break: break-word;
   }
 
