@@ -120,7 +120,7 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        padding: 0 var(--padding-2x);
+        padding: 0;
         justify-content: flex-start;
         gap: var(--padding);
       }

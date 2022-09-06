@@ -36,6 +36,7 @@
 
     @include media.min-width(large) {
       max-height: inherit;
+      padding: var(--padding) 0;
     }
 
     :global(div.content-cell-title) {

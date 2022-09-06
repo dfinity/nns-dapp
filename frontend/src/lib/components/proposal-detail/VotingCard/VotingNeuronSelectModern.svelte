@@ -65,7 +65,7 @@
     padding: var(--padding) var(--padding-2x);
 
     @include media.min-width(large) {
-      padding: 0 var(--padding-2x);
+      padding: 0 var(--padding) 0 0;
     }
   }
 
