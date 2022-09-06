@@ -1,6 +1,6 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { BlockHeight, TokenAmount } from "@dfinity/nns";
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
 import { HOST } from "../constants/environment.constants";

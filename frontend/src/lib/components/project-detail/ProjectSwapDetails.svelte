@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
   import { getContext } from "svelte";
   import {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
   import Modal from "../Modal.svelte";
-  import { ICP, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
