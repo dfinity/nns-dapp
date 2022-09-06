@@ -21,7 +21,7 @@
 
   .neurons {
     padding: var(--padding-1_5x) var(--padding) 0;
-    max-height: 30vh;
+    max-height: var(--voting-bottom-sheet-content-max-height);
     overflow-y: auto;
 
     &:before {

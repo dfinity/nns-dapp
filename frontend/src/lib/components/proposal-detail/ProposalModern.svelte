@@ -62,6 +62,14 @@
     vertical-align: middle;
   }
 
+  .content-c {
+    padding-bottom: var(--voting-bottom-sheet-header-height);
+
+    @include media.min-width(medium) {
+      padding-bottom: 0;
+    }
+  }
+
   @include media.min-width(medium) {
     // If this would be use elsewhere, we can extract some utility to gix-components
     .content-b.expand-content-b {
