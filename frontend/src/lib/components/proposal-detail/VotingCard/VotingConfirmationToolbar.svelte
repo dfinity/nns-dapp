@@ -13,6 +13,7 @@
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
   import { sanitize } from "../../../utils/html.utils";
+  import { VOTING_UI } from "../../../constants/environment.constants";
 
   const dispatch = createEventDispatcher();
 
@@ -54,22 +55,26 @@
       voteType: selectedVoteType,
     });
   };
+
+  // TODO(L2-965): delete question
 </script>
 
-<p class="question">
-  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-    $id: `${id ?? ""}`,
-    $title: sanitize(title ?? ""),
-    $topic: sanitize(topic ?? ""),
-  })}
-</p>
+{#if VOTING_UI === "legacy"}
+  <p class="question">
+    {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
+      $id: `${id ?? ""}`,
+      $title: sanitize(title ?? ""),
+      $topic: sanitize(topic ?? ""),
+    })}
+  </p>
+{/if}
 
-<div role="toolbar">
+<div role="toolbar" class={`${VOTING_UI}`}>
   <button
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary small"
+    class="success small"
   >
     {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
@@ -101,11 +106,21 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   [role="toolbar"] {
     margin-top: var(--padding);
 
     display: flex;
     gap: var(--padding);
+
+    &.modern {
+      justify-content: center;
+
+      @include media.min-width(large) {
+        justify-content: flex-start;
+      }
+    }
   }
 
   .question {

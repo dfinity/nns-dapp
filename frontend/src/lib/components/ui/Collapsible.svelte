@@ -16,7 +16,7 @@
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
 
-  let expanded: boolean = initiallyExpanded;
+  export let expanded: boolean = initiallyExpanded;
   let offsetHeight: number | undefined;
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;

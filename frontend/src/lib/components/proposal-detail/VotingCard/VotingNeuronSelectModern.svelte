@@ -1,0 +1,65 @@
+<script lang="ts">
+    import type {ProposalInfo} from '@dfinity/nns';
+    import Collapsible from "../../ui/Collapsible.svelte";
+    import IconExpandCircleDown from "../../../icons/IconExpandCircleDown.svelte";
+    import {i18n} from "../../../stores/i18n";
+    import {votingNeuronSelectStore} from '../../../stores/proposals.store';
+
+    export let proposalInfo: ProposalInfo;
+    export let disabled: boolean;
+    export let totalNeuronsVotingPower: bigint;
+
+    let toggleContent: () => void;
+    let expanded: boolean;
+
+    let totalNeurons: number;
+    $: totalNeurons = $votingNeuronSelectStore.neurons.length;
+</script>
+
+<Collapsible expandButton={false} externalToggle={true} bind:toggleContent bind:expanded>
+    <div slot="header" class="total">
+        <div class="total-neurons">
+            <span class="value">{$i18n.proposal_detail__vote.neurons} ({totalNeurons})</span>
+            <button class="icon" class:expanded on:click|stopPropagation={toggleContent}>
+                <IconExpandCircleDown />
+            </button>
+        </div>
+
+        <div class="total-voting-power">
+            <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+            <span class="value">{totalNeuronsVotingPower}</span>
+        </div>
+    </div>
+
+    <div>Content</div>
+</Collapsible>
+
+<style lang="scss">
+  .total {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--padding);
+    width: 100%;
+    margin-top: var(--padding-3x);
+  }
+
+  .total-neurons, .total-voting-power {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+  }
+
+  .icon {
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+
+    transition: transform ease-in 0.25s;
+
+    &.expanded {
+      transform: rotate(-180deg);
+    }
+  }
+</style>
