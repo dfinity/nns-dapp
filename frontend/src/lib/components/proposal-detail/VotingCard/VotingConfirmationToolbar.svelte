@@ -133,6 +133,7 @@
   }
 
   button {
+    min-width: calc(48px + (2 * var(--padding-2x)));
     width: calc(100% - (2 * var(--padding)));
 
     @include media.min-width(small) {
