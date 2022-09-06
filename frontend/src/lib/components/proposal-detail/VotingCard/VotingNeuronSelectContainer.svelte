@@ -6,6 +6,8 @@
 
     export let proposalInfo: ProposalInfo;
     export let disabled: boolean;
+
+    // TODO(L2-965): remove :global selector and move style to component
 </script>
 
 <div class="neurons">
@@ -25,6 +27,14 @@
 
     @include media.min-width(large) {
       max-height: inherit;
+    }
+
+    :global(div.content-cell-title) {
+      margin-top: var(--padding-4x);
+
+      @include media.min-width(large) {
+        margin-top: var(--padding-8x);
+      }
     }
   }
 </style>

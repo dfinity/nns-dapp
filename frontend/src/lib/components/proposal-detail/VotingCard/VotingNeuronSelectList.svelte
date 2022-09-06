@@ -35,7 +35,7 @@
           )}>{`${neuron.neuronId}`}</span
         >
         <span
-          class="value"
+          class="voting-power value"
           aria-label={replacePlaceholders(
             $i18n.proposal_detail__vote.cast_vote_votingPower,
             {
@@ -60,12 +60,6 @@
     list-style: none;
     padding: 0;
 
-    margin-bottom: var(--padding-4x);
-
-    @include media.min-width(large) {
-      margin-bottom: var(--padding-8x);
-    }
-
     // checkbox restyling
     :global(.neuron-checkbox) {
       padding: var(--padding);
@@ -77,15 +71,18 @@
       margin-left: var(--padding-0_5x);
 
       display: flex;
-      flex-direction: column;
       justify-content: space-between;
+      grid-gap: var(--padding);
 
       order: 1;
-
-      @include media.min-width(small) {
-        flex-direction: row;
-        align-items: center;
-      }
     }
+  }
+
+  span {
+    word-break: break-word;
+  }
+
+  .voting-power {
+    text-align: right;
   }
 </style>
