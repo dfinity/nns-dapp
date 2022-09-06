@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { ICP } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
@@ -379,7 +379,10 @@ describe("canisters-services", () => {
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 5,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -394,7 +397,10 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -409,7 +415,10 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -439,7 +448,10 @@ describe("canisters-services", () => {
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 5,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -454,7 +466,10 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -469,7 +484,10 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,

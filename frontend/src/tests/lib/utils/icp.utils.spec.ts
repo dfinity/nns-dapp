@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/nns";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
@@ -8,7 +8,7 @@ import {
   formatICP,
   formattedTransactionFeeICP,
   getMaxTransactionAmount,
-  sumICPs,
+  sumTokenAmounts,
 } from "../../../lib/utils/icp.utils";
 
 describe("icp-utils", () => {
@@ -60,19 +60,38 @@ describe("icp-utils", () => {
     ).toEqual(`2'000'000.00`);
   });
 
-  it("should add ICPs", () => {
-    const icp0 = ICP.fromString("0") as ICP;
-    const icp1 = ICP.fromString("1") as ICP;
-    const icp15 = ICP.fromString("1.5") as ICP;
-    const icp2 = ICP.fromString("2") as ICP;
-    const icp3 = ICP.fromString("3") as ICP;
-    const icp35 = ICP.fromString("3.5") as ICP;
-    const icp6 = ICP.fromString("6") as ICP;
+  describe("sumTokenAmounts", () => {
+    it("should add amounts of token", () => {
+      const icp0 = TokenAmount.fromString({ amount: "0" }) as TokenAmount;
+      const icp1 = TokenAmount.fromString({ amount: "1" }) as TokenAmount;
+      const icp15 = TokenAmount.fromString({ amount: "1.5" }) as TokenAmount;
+      const icp2 = TokenAmount.fromString({ amount: "2" }) as TokenAmount;
+      const icp3 = TokenAmount.fromString({ amount: "3" }) as TokenAmount;
+      const icp35 = TokenAmount.fromString({ amount: "3.5" }) as TokenAmount;
+      const icp6 = TokenAmount.fromString({ amount: "6" }) as TokenAmount;
 
-    expect(sumICPs(icp0, icp1)).toEqual(icp1);
-    expect(sumICPs(icp1, icp2)).toEqual(icp3);
-    expect(sumICPs(icp1, icp2, icp3)).toEqual(icp6);
-    expect(sumICPs(icp15, icp2)).toEqual(icp35);
+      expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
+      expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);
+      expect(sumTokenAmounts(icp1, icp2, icp3)).toEqual(icp6);
+      expect(sumTokenAmounts(icp15, icp2)).toEqual(icp35);
+    });
+
+    it("should raise error if different tokens", () => {
+      const icp0 = TokenAmount.fromString({
+        amount: "1",
+        token: { symbol: "ICP", name: "ICP" },
+      }) as TokenAmount;
+      const icp1 = TokenAmount.fromString({
+        amount: "2",
+        token: { symbol: "OC", name: "Open Chat" },
+      }) as TokenAmount;
+      const icp2 = TokenAmount.fromString({
+        amount: "1",
+        token: { symbol: "ICP", name: "ICP" },
+      }) as TokenAmount;
+      const call = () => sumTokenAmounts(icp0, icp1, icp2);
+      expect(call).toThrow();
+    });
   });
 
   it("should format a specific transaction fee", () =>

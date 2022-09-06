@@ -8,7 +8,7 @@
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { toastsStore } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import { ICP } from "@dfinity/nns";
+  import { ICP, ICPToken, TokenAmount } from "@dfinity/nns";
   import {
     convertNumberToICP,
     getMaxTransactionAmount,
@@ -35,9 +35,9 @@
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
 
-  let balance: ICP;
+  let balance: TokenAmount;
   $: ({ balance } = $store.selectedAccount ?? {
-    balance: ICP.fromE8s(BigInt(0)),
+    balance: TokenAmount.fromE8s({ amount: BigInt(0), token: ICPToken }),
   });
 
   const onMax = () => (amount = max);

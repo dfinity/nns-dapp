@@ -1,8 +1,7 @@
 <script lang="ts">
   import { ICP } from "@dfinity/nns";
-
   import { i18n } from "../../stores/i18n";
-  import Icp from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
 
   export let max: bigint;
@@ -26,7 +25,7 @@
         </span>
 
         <span data-tid="commitment-max-indicator-value">
-          <Icp icp={ICP.fromE8s(max)} singleLine />
+          <AmountDisplay amount={ICP.fromE8s(max)} singleLine />
         </span>
       </p>
       <div class="indicator-wrapper">
@@ -51,7 +50,7 @@
           </span>
           <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
           <span data-tid="commitment-min-indicator-value">
-            <Icp icp={ICP.fromE8s(minimumIndicator)} singleLine />
+            <AmountDisplay amount={ICP.fromE8s(minimumIndicator)} singleLine />
           </span>
         </p>
       {/if}
