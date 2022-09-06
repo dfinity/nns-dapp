@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import IcpText from "../../../components/ic/ICPText.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsIcp } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStoreAsToken } from "../../../stores/transaction-fees.store";
 
   export let userHasParticipated: boolean;
-  export let minCommitment: ICP;
-  export let maxCommitment: ICP;
+  export let minCommitment: TokenAmount;
+  export let maxCommitment: TokenAmount;
 </script>
 
 {#if userHasParticipated}
@@ -28,7 +28,7 @@
 {/if}
 <p class="right">
   <span>{$i18n.accounts.transaction_fee}</span>
-  <AmountDisplay singleLine amount={$mainTransactionFeeStoreAsIcp} />
+  <AmountDisplay singleLine amount={$mainTransactionFeeStoreAsToken} />
 </p>
 
 <style lang="scss">

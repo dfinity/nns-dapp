@@ -1,5 +1,5 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { BlockHeight } from "@dfinity/nns";
+import type { BlockHeight, TokenAmount } from "@dfinity/nns";
 import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -26,7 +26,7 @@ export const sendICP = async ({
 }: {
   identity: Identity;
   to: string;
-  amount: ICP;
+  amount: TokenAmount;
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
 }): Promise<BlockHeight> => {

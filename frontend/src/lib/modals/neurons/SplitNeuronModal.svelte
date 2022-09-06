@@ -1,7 +1,7 @@
 <script lang="ts">
   import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
   import Modal from "../Modal.svelte";
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import { ICP, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
@@ -22,8 +22,8 @@
   let stakeE8s: bigint;
   $: stakeE8s = neuronStake(neuron);
 
-  let balance: ICP;
-  $: balance = ICP.fromE8s(stakeE8s);
+  let balance: TokenAmount;
+  $: balance = TokenAmount.fromE8s({ amount: stakeE8s });
 
   let max: number = 0;
   $: max =
