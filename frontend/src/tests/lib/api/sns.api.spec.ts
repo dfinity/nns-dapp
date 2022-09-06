@@ -21,6 +21,7 @@ import {
   removeNeuronPermissions,
 } from "../../../lib/api/sns.api";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { NotAuthorizedError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -196,6 +197,28 @@ describe("sns-api", () => {
     expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
     expect(ledgerCanisterMock.transfer).toBeCalled();
     expect(notifyParticipationSpy).toBeCalled();
+  });
+
+  it("should not participate in a swap if notifying nnsdapp fails", async () => {
+    const nnsDappMock = mock<NNSDappCanister>();
+    nnsDappMock.addPendingNotifySwap.mockRejectedValue(
+      new NotAuthorizedError()
+    );
+    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+
+    const call = () =>
+      participateInSnsSwap({
+        amount: ICP.fromString("10") as ICP,
+        rootCanisterId: rootCanisterIdMock,
+        identity: mockIdentity,
+        controller: Principal.fromText("aaaaa-aa"),
+      });
+
+    // We need to wait until the call has finished to check the call to nnsDappMock
+    await expect(call).rejects.toThrow();
+    expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
+    expect(ledgerCanisterMock.transfer).not.toBeCalled();
+    expect(notifyParticipationSpy).not.toBeCalled();
   });
 
   it("should query sns neurons", async () => {
