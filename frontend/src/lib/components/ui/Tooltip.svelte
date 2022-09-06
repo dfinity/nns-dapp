@@ -7,6 +7,7 @@
   export let id: string;
   export let text = "";
   export let noWrap: boolean = false;
+  export let top: boolean = false;
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
   let target: HTMLDivElement | undefined = undefined;
@@ -70,6 +71,7 @@
     role="tooltip"
     {id}
     class:noWrap
+    class:top
     bind:this={tooltipComponent}
     style={tooltipStyle}
   >
@@ -114,6 +116,12 @@
 
     &.noWrap {
       white-space: nowrap;
+    }
+
+    &.top {
+      bottom: unset;
+      top: calc(-1 * var(--padding));
+      transform: translate(var(--tooltip-transform-x, -50%), -100%);
     }
 
     pointer-events: none;

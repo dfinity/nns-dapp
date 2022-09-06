@@ -451,7 +451,7 @@ export const participateInSnsSwap = async ({
 
   // Send amount to the ledger
   await nnsLedger.transfer({
-    amount,
+    amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
   });

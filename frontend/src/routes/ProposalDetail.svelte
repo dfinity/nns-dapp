@@ -7,16 +7,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
-  import ProposalDetailCard from "../lib/components/proposal-detail/ProposalDetailCard/ProposalDetailCard.svelte";
-  import VotesCard from "../lib/components/proposal-detail/VotesCard.svelte";
-  import VotingCard from "../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
-  import IneligibleNeuronsCard from "../lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import { i18n } from "../lib/stores/i18n";
-  import {
-    definedNeuronsStore,
-    neuronsStore,
-  } from "../lib/stores/neurons.store";
-  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
+  import { neuronsStore } from "../lib/stores/neurons.store";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import { get, writable } from "svelte/store";
   import type {
@@ -26,6 +17,9 @@
   import { debugSelectedProposalStore } from "../lib/stores/debug.store";
   import type { ProposalId } from "@dfinity/nns";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../lib/types/selected-proposal.context";
+  import { VOTING_UI } from "../lib/constants/environment.constants";
+  import ProposalLegacy from "../lib/components/proposal-detail/ProposalLegacy.svelte";
+  import ProposalModern from "../lib/components/proposal-detail/ProposalModern.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -125,44 +119,10 @@
   layoutBackStore.set(goBack);
 </script>
 
-<main class="legacy">
-  <section>
-    {#if $selectedProposalStore.proposal !== undefined}
-      <ProposalDetailCard proposalInfo={$selectedProposalStore.proposal} />
-
-      {#if neuronsReady}
-        <VotesCard proposalInfo={$selectedProposalStore.proposal} />
-        <VotingCard proposalInfo={$selectedProposalStore.proposal} />
-        <IneligibleNeuronsCard
-          proposalInfo={$selectedProposalStore.proposal}
-          neurons={$definedNeuronsStore}
-        />
-      {:else}
-        <div class="loader">
-          <SkeletonCard cardType="info" />
-          <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-        </div>
-      {/if}
-    {:else}
-      <div class="loader">
-        <SkeletonCard cardType="info" />
-        <span><small>{$i18n.proposal_detail.loading_neurons}</small></span>
-      </div>
-    {/if}
-  </section>
+<main class={VOTING_UI}>
+  {#if VOTING_UI === "modern"}
+    <ProposalModern {neuronsReady} />
+  {:else}
+    <ProposalLegacy {neuronsReady} />
+  {/if}
 </main>
-
-<style lang="scss">
-  .loader {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--padding-2x) 0;
-
-    span {
-      text-align: center;
-    }
-  }
-</style>

@@ -58,7 +58,7 @@ describe("ParticipateButton", () => {
 
     await clickByTestId(getByTestId, "sns-project-participate-button");
     await waitFor(() =>
-      expect(getByTestId("sns-swap-participate-step-1")).toBeInTheDocument()
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
     );
   });
 

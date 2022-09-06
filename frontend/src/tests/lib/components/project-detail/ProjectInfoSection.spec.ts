@@ -50,8 +50,9 @@ describe("ProjectInfoSection", () => {
   });
 
   it("should not render content if the summary is not yet defined", async () => {
-    const { container } = renderProjectInfoSection(undefined);
-    expect(container.querySelector("h1")).not.toBeInTheDocument();
+    const { getByTestId } = renderProjectInfoSection(undefined);
+    const call = () => getByTestId("sns-project-detail-info");
+    expect(call).toThrow();
   });
 
   it("should render project description", async () => {

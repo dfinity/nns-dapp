@@ -33,7 +33,7 @@ describe("ledger-api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount,
+        amount: amount.toE8s(),
       });
     });
 
@@ -51,7 +51,7 @@ describe("ledger-api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount,
       });
     });
@@ -67,7 +67,7 @@ describe("ledger-api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount,
+        amount: amount.toE8s(),
         memo,
       });
     });

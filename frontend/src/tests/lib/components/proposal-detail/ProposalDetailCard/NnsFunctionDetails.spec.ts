@@ -26,29 +26,31 @@ describe("NnsFunctionDetails", () => {
     const { getByText } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
     expect(getByText(en.proposal_detail.nns_function_name)).toBeInTheDocument();
   });
 
-  it("should render nnsFunction name", () => {
+  it("should render nnsFunction name", async () => {
     const { getByText } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
-    expect(getByText(en.execute_nns_functions["1"])).toBeInTheDocument();
+    await waitFor(() =>
+      expect(getByText(en.nns_functions.CreateSubnet)).toBeInTheDocument()
+    );
   });
 
   it("should display spinner if no payload", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -64,7 +66,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -77,7 +79,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -94,7 +96,7 @@ describe("NnsFunctionDetails", () => {
     render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -116,7 +118,7 @@ describe("NnsFunctionDetails", () => {
     render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -134,7 +136,7 @@ describe("NnsFunctionDetails", () => {
     const { queryByTestId } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 
@@ -150,7 +152,7 @@ describe("NnsFunctionDetails", () => {
     const { container } = render(NnsFunctionDetails, {
       props: {
         proposalId: BigInt(0),
-        nnsFunctionId: BigInt(1),
+        nnsFunctionKey: "CreateSubnet",
       },
     });
 

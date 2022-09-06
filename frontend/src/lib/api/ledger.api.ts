@@ -35,7 +35,7 @@ export const sendICP = async ({
 
   const response = await canister.transfer({
     to: AccountIdentifier.fromHex(to),
-    amount,
+    amount: amount.toE8s(),
     fromSubAccount,
     memo,
   });

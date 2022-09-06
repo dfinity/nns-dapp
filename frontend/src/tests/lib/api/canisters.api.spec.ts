@@ -38,6 +38,12 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
+  beforeAll(() =>
+    jest.spyOn(console, "error").mockImplementation(() => undefined)
+  );
+
+  afterAll(() => jest.resetAllMocks());
+
   beforeEach(() => {
     jest
       .spyOn(NNSDappCanister, "create")
@@ -228,7 +234,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -312,7 +318,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();

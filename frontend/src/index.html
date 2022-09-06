@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- CONTENT_SECURITY_POLICY -->
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
@@ -77,26 +79,37 @@
 
     <link rel="stylesheet" href="./build/bundle.css" />
 
-    <!-- Init theme as fast as possible -->
-    <script nonce="main-bc619616-7c54-4009-abff-493dd9b42bac">
-      const isDarkPreferred = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
+    <!-- BASE_HREF -->
 
-      document.documentElement.setAttribute(
-        "theme",
-        localStorage.theme ?? (isDarkPreferred ? "dark" : "light")
-      );
+    <!-- Init theme as fast as possible -->
+    <script>
+      try {
+        const isDarkPreferred = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const currentTheme =
+          localStorage.nnsTheme === null ||
+          localStorage.nnsTheme === undefined ||
+          localStorage.nnsTheme === ""
+            ? undefined
+            : JSON.parse(localStorage.nnsTheme);
+
+        // Attribute is the value of THEME_ATTRIBUTE constant
+        document.documentElement.setAttribute(
+          "theme",
+          currentTheme ?? (isDarkPreferred ? "dark" : "light")
+        );
+      } catch (error) {
+        console.error("Error initializing theme", error);
+      }
     </script>
 
-    <script
-      type="module"
-      src="./build/main.js"
-      nonce="main-31858fd0-b02b-4e0b-bf0b-c49e9b515a25"
-    ></script>
-
-    <!-- BASE_HREF -->
-    <!-- CONTENT_SECURITY_POLICY -->
+    <script>
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "./build/main.js";
+      document.head.appendChild(loader);
+    </script>
   </head>
 
   <body></body>

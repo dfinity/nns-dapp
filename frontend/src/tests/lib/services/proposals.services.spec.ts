@@ -69,7 +69,11 @@ describe("proposals-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
@@ -80,6 +84,9 @@ describe("proposals-services", () => {
     it("should call the canister to list the next proposals", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
 
       expect(spyQueryProposals).toHaveBeenCalled();
@@ -89,15 +96,32 @@ describe("proposals-services", () => {
     });
 
     it("should not clear the list proposals before query", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
       expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
     it("should push new proposals to the list", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(2);
+    });
+
+    it("should call callback when load finished", async () => {
+      const spy = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spy,
+      });
+      expect(spy).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -163,9 +187,31 @@ describe("proposals-services", () => {
       const spy = jest.spyOn(proposalsStore, "pushProposals");
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
       expect(spy).toHaveBeenCalledTimes(0);
       spy.mockClear();
+    });
+
+    it("should call callback with pagination over", async () => {
+      jest
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => Promise.resolve([]));
+
+      const spyCallback = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spyCallback,
+      });
+
+      expect(spyCallback).toHaveBeenCalledTimes(2);
+      expect(spyCallback).toHaveBeenLastCalledWith({
+        paginationOver: true,
+        certified: true,
+      });
     });
   });
 
@@ -213,7 +259,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -227,7 +273,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -260,7 +306,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -282,7 +328,7 @@ describe("proposals-services", () => {
         registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             done();
           },
@@ -323,7 +369,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -336,14 +382,14 @@ describe("proposals-services", () => {
           expect($voteInProgressStore.votes[0].proposalId).toEqual(
             proposalInfo.id
           );
-          expect($voteInProgressStore.votes[0].vote).toEqual(Vote.YES);
+          expect($voteInProgressStore.votes[0].vote).toEqual(Vote.Yes);
         });
 
         it("should update successfullyVotedNeuronIds in voteInProgressStore", async () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -360,7 +406,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -379,7 +425,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.NO,
+            vote: Vote.No,
             reloadProposalCallback: () => {
               //
             },
@@ -398,7 +444,7 @@ describe("proposals-services", () => {
           await registerVotes({
             neuronIds,
             proposalInfo,
-            vote: Vote.YES,
+            vote: Vote.Yes,
             reloadProposalCallback: () => {
               //
             },
@@ -445,7 +491,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds: null as unknown as NeuronId[],
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -463,7 +509,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -481,7 +527,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -499,7 +545,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -517,7 +563,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds,
           proposalInfo,
-          vote: Vote.NO,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -549,7 +595,12 @@ describe("proposals-services", () => {
     });
 
     it("should not list proposals if no identity", async () => {
-      const call = async () => await listProposals();
+      const call = async () =>
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
@@ -558,6 +609,9 @@ describe("proposals-services", () => {
       const call = async () =>
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
+          loadFinished: () => {
+            // do nothing here
+          },
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
@@ -580,7 +634,7 @@ describe("proposals-services", () => {
         await registerVotes({
           neuronIds: [],
           proposalInfo,
-          vote: Vote.YES,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -621,7 +675,7 @@ describe("proposals-services", () => {
       await registerVotes({
         neuronIds,
         proposalInfo,
-        vote: Vote.NO,
+        vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
         },
@@ -655,7 +709,11 @@ describe("proposals-services", () => {
     it("should not call the canister if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
@@ -665,7 +723,11 @@ describe("proposals-services", () => {
     it("should reset the proposal store if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       const { proposals } = get(proposalsStore);
       expect(proposals).toEqual([]);

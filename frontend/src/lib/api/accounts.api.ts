@@ -21,11 +21,13 @@ export const loadAccounts = async ({
   certified: boolean;
 }): Promise<AccountsStore> => {
   // Helper
-  const getAccountBalance = async (identifierString: string): Promise<ICP> =>
-    ledger.accountBalance({
+  const getAccountBalance = async (identifierString: string): Promise<ICP> => {
+    const e8sBalance = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(identifierString),
       certified,
     });
+    return ICP.fromE8s(e8sBalance);
+  };
 
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 

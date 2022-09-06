@@ -11,13 +11,13 @@
 </script>
 
 {#if timeInSeconds !== undefined}
-  {#if state === NeuronState.DISSOLVING || state === NeuronState.SPAWNING}
+  {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     <p class="duration">
       {@html replacePlaceholders($i18n.neurons.remaining, {
         $duration: valueSpan(secondsToDuration(timeInSeconds)),
       })}
     </p>
-  {:else if state === NeuronState.LOCKED}
+  {:else if state === NeuronState.Locked}
     <p class="duration">
       <Value>{secondsToDuration(timeInSeconds)}</Value>
       - {$i18n.neurons.dissolve_delay_title}

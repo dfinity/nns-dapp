@@ -86,7 +86,7 @@ describe("NeuronCard", () => {
   it("doesn't render the neuron stake but the stacked line chart icon", async () => {
     const neuron = {
       ...mockNeuron,
-      state: NeuronState.SPAWNING,
+      state: NeuronState.Spawning,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
@@ -138,12 +138,12 @@ describe("NeuronCard", () => {
         neuron: {
           ...mockNeuron,
           dissolveDelaySeconds: BigInt(MORE_THAN_ONE_YEAR),
-          state: NeuronState.LOCKED,
+          state: NeuronState.Locked,
         },
       },
     });
 
-    expect(getByText(en.neurons.status_locked)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Locked)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
@@ -152,12 +152,12 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.DISSOLVED,
+          state: NeuronState.Dissolved,
         },
       },
     });
 
-    expect(getByText(en.neurons.status_dissolved)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolved)).toBeInTheDocument();
   });
 
   it("renders proper text when status is SPAWNING", async () => {
@@ -165,7 +165,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.SPAWNING,
+          state: NeuronState.Spawning,
           fullNeuron: {
             ...mockFullNeuron,
             spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
@@ -174,7 +174,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_spawning)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Spawning)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
@@ -183,7 +183,7 @@ describe("NeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          state: NeuronState.DISSOLVING,
+          state: NeuronState.Dissolving,
           fullNeuron: {
             ...mockFullNeuron,
             dissolveState: {
@@ -194,7 +194,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 

@@ -15,6 +15,9 @@
     type CompactNeuronInfo,
   } from "../../utils/neuron.utils";
   import Value from "../ui/Value.svelte";
+  import type { SvelteComponent } from "svelte";
+  import { VOTING_UI } from "../../constants/environment.constants";
+  import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -27,16 +30,16 @@
   $: sum = yes + no;
 
   const voteIconMapper = {
-    [Vote.NO]: IconThumbDown,
-    [Vote.YES]: IconThumbUp,
-    [Vote.UNSPECIFIED]: undefined,
+    [Vote.No]: IconThumbDown,
+    [Vote.Yes]: IconThumbUp,
+    [Vote.Unspecified]: undefined,
   };
 
   const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
     const stringMapper = {
-      [Vote.NO]: $i18n.core.no,
-      [Vote.YES]: $i18n.core.yes,
-      [Vote.UNSPECIFIED]: "",
+      [Vote.No]: $i18n.core.no,
+      [Vote.Yes]: $i18n.core.yes,
+      [Vote.Unspecified]: "",
     };
 
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
@@ -52,10 +55,14 @@
       proposal: proposalInfo,
     });
   }
+
+  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
+  let cmp: typeof SvelteComponent =
+    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
-<CardInfo>
-  <h3 slot="start" class="title">Voting Results</h3>
+<svelte:component this={cmp}>
+  <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
   <div class="latest-tally">
     <h4 class="label yes">
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
@@ -95,7 +102,7 @@
       {/each}
     </ul>
   {/if}
-</CardInfo>
+</svelte:component>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

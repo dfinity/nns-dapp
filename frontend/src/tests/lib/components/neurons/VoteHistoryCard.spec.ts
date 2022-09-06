@@ -20,11 +20,11 @@ describe("VoteHistoryCard", () => {
       ...mockNeuron,
       recentBallots: [
         {
-          vote: Vote.YES,
+          vote: Vote.Yes,
           proposalId: mockProposals[0].id,
         },
         {
-          vote: Vote.NO,
+          vote: Vote.No,
           proposalId: mockProposals[1].id,
         },
       ],
@@ -88,7 +88,7 @@ describe("VoteHistoryCard", () => {
     });
 
     expect(
-      container.querySelectorAll('[data-tid="skeleton-paragraph"]').length
+      container.querySelectorAll('[data-tid="skeleton-text"]').length
     ).toEqual(props.neuron.recentBallots.length * 5);
   });
 });

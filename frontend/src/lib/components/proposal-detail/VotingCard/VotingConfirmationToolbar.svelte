@@ -12,7 +12,7 @@
   import { busy } from "../../../stores/busy.store";
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
-  import { sanitizeHTML } from "../../../utils/html.utils";
+  import { sanitize } from "../../../utils/html.utils";
 
   const dispatch = createEventDispatcher();
 
@@ -27,7 +27,7 @@
   let total: bigint;
   let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote = Vote.YES;
+  let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
@@ -40,11 +40,11 @@
     voteInProgress !== undefined;
 
   const showAdoptConfirmation = () => {
-    selectedVoteType = Vote.YES;
+    selectedVoteType = Vote.Yes;
     showConfirmationModal = true;
   };
   const showRejectConfirmation = () => {
-    selectedVoteType = Vote.NO;
+    selectedVoteType = Vote.No;
     showConfirmationModal = true;
   };
   const cancel = () => (showConfirmationModal = false);
@@ -54,27 +54,13 @@
       voteType: selectedVoteType,
     });
   };
-
-  let sanitizedTitle = "";
-  let sanitizedTopic = "";
-  $: title,
-    topic,
-    (async () => {
-      const [cleanTitle, cleanTopic] = await Promise.all([
-        sanitizeHTML(title ?? ""),
-        sanitizeHTML(topic ?? ""),
-      ]);
-
-      sanitizedTopic = cleanTopic;
-      sanitizedTitle = cleanTitle;
-    })();
 </script>
 
 <p class="question">
   {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
     $id: `${id ?? ""}`,
-    $title: sanitizedTitle,
-    $topic: sanitizedTopic,
+    $title: sanitize(title ?? ""),
+    $topic: sanitize(topic ?? ""),
   })}
 </p>
 
@@ -83,9 +69,9 @@
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary full-width"
+    class="primary small"
   >
-    {#if voteInProgress?.vote === Vote.YES}
+    {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.adopt}
@@ -95,9 +81,9 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger full-width"
+    class="danger small"
   >
-    {#if voteInProgress?.vote === Vote.NO}
+    {#if voteInProgress?.vote === Vote.No}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.reject}
@@ -125,5 +111,9 @@
   .question {
     margin: 0 0 var(--padding-2x);
     word-break: break-word;
+  }
+
+  button {
+    min-width: calc(48px + (2 * var(--padding-2x)));
   }
 </style>

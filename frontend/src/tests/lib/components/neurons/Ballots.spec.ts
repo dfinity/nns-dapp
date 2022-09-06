@@ -16,7 +16,7 @@ import { silentConsoleErrors } from "../../../mocks/utils.mock";
 
 describe("Ballots", () => {
   const mockBallot: BallotInfo = {
-    vote: Vote.YES,
+    vote: Vote.Yes,
     proposalId: mockProposals[0].id,
   };
 

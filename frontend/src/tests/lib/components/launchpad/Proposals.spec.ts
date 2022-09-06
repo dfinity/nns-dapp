@@ -56,27 +56,23 @@ describe("Proposals", () => {
   });
 
   it("should display proposal cards", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { queryAllByTestId } = render(Proposals);
 
     await waitFor(() =>
-      expect(queryAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(queryAllByTestId("proposal-card").length).toBeGreaterThan(0)
     );
   });
 
   it("should hide skeletons", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { container } = render(Proposals);
 
     await waitFor(() =>
       expect(
-        container.querySelectorAll('[data-tid="sns-proposal-card"]').length
+        container.querySelectorAll('[data-tid="proposal-card"]').length
       ).toBeGreaterThan(0)
     );
 

@@ -28,7 +28,7 @@ export const mockNeuron: NeuronInfo = {
   dissolveDelaySeconds: BigInt(11111),
   recentBallots: [],
   createdTimestampSeconds: BigInt(10),
-  state: NeuronState.LOCKED,
+  state: NeuronState.Locked,
   joinedCommunityFundTimestampSeconds: undefined,
   retrievedAtTimestampSeconds: BigInt(10),
   votingPower: BigInt(300_000_000),

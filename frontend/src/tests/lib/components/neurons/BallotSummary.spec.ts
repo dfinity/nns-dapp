@@ -16,7 +16,7 @@ import { silentConsoleErrors } from "../../../mocks/utils.mock";
 
 describe("BallotSummary", () => {
   const mockBallot: BallotInfo = {
-    vote: Vote.YES,
+    vote: Vote.Yes,
     proposalId: mockProposals[0].id,
   };
 
@@ -78,10 +78,10 @@ describe("BallotSummary", () => {
     expect(getByText(en.core[Vote[vote].toLowerCase()])).toBeInTheDocument();
   };
 
-  it("should render ballot vote yes", async () => await testVote(Vote.YES));
+  it("should render ballot vote yes", async () => await testVote(Vote.Yes));
 
-  it("should render ballot vote no", async () => await testVote(Vote.NO));
+  it("should render ballot vote no", async () => await testVote(Vote.No));
 
   it("should render ballot vote unspecified", async () =>
-    await testVote(Vote.UNSPECIFIED));
+    await testVote(Vote.Unspecified));
 });
