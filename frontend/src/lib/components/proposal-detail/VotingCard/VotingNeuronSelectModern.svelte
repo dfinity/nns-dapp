@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import Collapsible from "../../ui/Collapsible.svelte";
-  import IconExpandCircleDown from "../../../icons/IconExpandCircleDown.svelte";
+  import { IconExpandCircleDown } from "@dfinity/gix-components";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
