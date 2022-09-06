@@ -445,8 +445,7 @@ export const participateInSnsSwap = async ({
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
   await nnsDapp.addPendingNotifySwap({
     swap_canister_id: swapCanisterId,
-    buyer: controller,
-    buyer_sub_account: toNullable(fromSubAccount),
+    from_sub_account: toNullable(fromSubAccount),
   });
 
   // Send amount to the ledger

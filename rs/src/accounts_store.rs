@@ -232,8 +232,7 @@ pub enum DetachCanisterResponse {
 #[derive(CandidType, Deserialize)]
 pub struct AddPendingNotifySwapRequest {
     pub swap_canister_id: CanisterId,
-    pub buyer: PrincipalId,
-    pub buyer_sub_account: Option<Subaccount>,
+    pub from_sub_account: Option<Subaccount>,
 }
 
 #[derive(CandidType)]

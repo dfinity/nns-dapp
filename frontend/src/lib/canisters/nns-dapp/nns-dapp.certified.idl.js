@@ -4,8 +4,7 @@ export const idlFactory = ({ IDL }) => {
   const SubAccount = IDL.Vec(IDL.Nat8);
   const AddPendingNotifySwapRequest = IDL.Record({
     swap_canister_id: IDL.Principal,
-    buyer_sub_account: IDL.Opt(SubAccount),
-    buyer: IDL.Principal,
+    from_sub_account: IDL.Opt(SubAccount),
   });
   const AddPendingTransactionResponse = IDL.Variant({
     Ok: IDL.Null,

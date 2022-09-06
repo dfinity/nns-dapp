@@ -202,10 +202,11 @@ pub fn add_pending_notify_swap() {
 }
 
 fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
+    let principal = dfn_core::api::caller();
     STATE.with(|s| {
         s.accounts_store.borrow_mut().add_pending_transaction(
-            AccountIdentifier::new(request.buyer, request.buyer_sub_account),
-            AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
+            AccountIdentifier::new(principal, request.from_sub_account),
+            AccountIdentifier::new(request.swap_canister_id.get(), Some((&principal).into())),
             TransactionType::ParticipateSwap(request.swap_canister_id),
         )
     })
