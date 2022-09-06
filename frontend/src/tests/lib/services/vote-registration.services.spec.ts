@@ -187,13 +187,9 @@ describe("vote-registration-services", () => {
           proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
-
-        // await waitFor(() =>
-        //   expect(get(voteRegistrationStore).registrations[0]).toBeDefined()
-        // );
 
         await waitFor(() =>
           expect(spyOnAddSuccessfullyVotedNeuronId).toBeCalledTimes(3)
@@ -213,7 +209,7 @@ describe("vote-registration-services", () => {
           proposalInfo: proposalInfo(),
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
 
@@ -230,7 +226,7 @@ describe("vote-registration-services", () => {
           proposalInfo: proposalInfo(),
           vote: Vote.No,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
 
@@ -247,7 +243,7 @@ describe("vote-registration-services", () => {
           proposalInfo: proposalInfo(),
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
 
@@ -266,8 +262,6 @@ describe("vote-registration-services", () => {
       };
 
     beforeAll(() => {
-      // spyToastError.mockClear();
-
       jest
         .spyOn(proposalsApi, "registerVote")
         .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
@@ -298,10 +292,6 @@ describe("vote-registration-services", () => {
   });
 
   describe("register vote errors", () => {
-    // jest
-    //   .spyOn(neuronsServices, "listNeurons")
-    //   .mockImplementation(() => Promise.resolve());
-
     const mockRegisterVoteError = async (): Promise<void> => {
       throw new Error("test");
     };
