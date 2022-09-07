@@ -40,7 +40,7 @@ describe("ProposalVotingSection", () => {
   });
 
   it("should render vote blocks", async () => {
-    const { queryByText } = render(ProposalVotingSectionTest, {
+    const { queryByText, getByTestId } = render(ProposalVotingSectionTest, {
       props: {
         proposalInfo: {
           ...mockProposalInfo,
@@ -52,7 +52,7 @@ describe("ProposalVotingSection", () => {
     });
 
     expect(queryByText(en.proposal_detail.voting_results)).toBeInTheDocument();
-    expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
     expect(
       queryByText(en.proposal_detail__ineligible.headline)
     ).toBeInTheDocument();

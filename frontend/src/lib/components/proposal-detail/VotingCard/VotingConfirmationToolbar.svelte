@@ -69,7 +69,7 @@
   </p>
 {/if}
 
-<div role="toolbar" class={`${layout}`}>
+<div role="toolbar" class={`${layout}`} data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
