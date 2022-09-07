@@ -13,7 +13,10 @@ import { replacePlaceholders } from "../../../../../lib/utils/i18n.utils";
 import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import {
+  mockProposalInfo,
+  mockVoteRegistration,
+} from "../../../../mocks/proposal.mock";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
@@ -70,7 +73,7 @@ describe("VotingConfirmationToolbar", () => {
 
   it("should disable Adapt/Reject buttons when voteInProgress", async () => {
     const { getByTestId } = render(VotingConfirmationToolbar, {
-      props: { ...props, voteInProgress: true },
+      props: { ...props, voteRegistration: mockVoteRegistration },
     });
     const adaptButton = getByTestId("vote-yes");
     const rejectButton = getByTestId("vote-no");
