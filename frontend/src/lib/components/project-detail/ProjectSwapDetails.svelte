@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
   import { getContext } from "svelte";
   import {
@@ -35,10 +35,14 @@
     end_timestamp_seconds: undefined,
   });
 
-  let minCommitmentIcp: ICP;
-  $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);
-  let maxCommitmentIcp: ICP;
-  $: maxCommitmentIcp = ICP.fromE8s(init.max_participant_icp_e8s);
+  let minCommitmentIcp: TokenAmount;
+  $: minCommitmentIcp = TokenAmount.fromE8s({
+    amount: init.min_participant_icp_e8s,
+  });
+  let maxCommitmentIcp: TokenAmount;
+  $: maxCommitmentIcp = TokenAmount.fromE8s({
+    amount: init.max_participant_icp_e8s,
+  });
 </script>
 
 <KeyValuePair>

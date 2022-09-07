@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
   import type { Step } from "../../../stores/steps.state";
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -64,18 +64,20 @@
         : $i18n.sns_project_detail.participate
       : $i18n.accounts.review_transaction;
 
-  let maxCommitment: ICP;
-  $: maxCommitment = ICP.fromE8s(
-    currentUserMaxCommitment({
+  let maxCommitment: TokenAmount;
+  $: maxCommitment = TokenAmount.fromE8s({
+    amount: currentUserMaxCommitment({
       summary,
       swapCommitment,
-    })
-  );
+    }),
+  });
 
-  let minCommitment: ICP;
-  $: minCommitment = ICP.fromE8s(
-    userHasParticipatedToSwap ? BigInt(0) : init.min_participant_icp_e8s
-  );
+  let minCommitment: TokenAmount;
+  $: minCommitment = TokenAmount.fromE8s({
+    amount: userHasParticipatedToSwap
+      ? BigInt(0)
+      : init.min_participant_icp_e8s,
+  });
 
   let accepted: boolean;
 
