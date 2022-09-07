@@ -1,14 +1,13 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import IconSouth from "../../../icons/IconSouth.svelte";
   import FooterModal from "../../FooterModal.svelte";
   import { busy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsIcp } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
   import { valueSpan } from "../../../utils/utils";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
@@ -23,8 +22,9 @@
   let destinationAddress: string;
   $: ({ sourceAccount, amount, destinationAddress } = transaction);
 
-  let icpAmount: ICP;
-  $: icpAmount = convertNumberToICP(amount);
+  // If we made it this far, the number is valid.
+  let icpAmount: TokenAmount;
+  $: icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -56,7 +56,7 @@
       <div class="align-right">
         <AmountDisplay amount={icpAmount} inline />
         <span>
-          <AmountDisplay amount={$mainTransactionFeeStoreAsIcp} singleLine />
+          <AmountDisplay amount={$mainTransactionFeeStoreAsToken} singleLine />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>

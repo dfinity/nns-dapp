@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { ICP, TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { formatICP } from "../../utils/icp.utils";
 
-  // TODO: Remove ICP reference
-  export let amount: TokenAmount | ICP;
+  export let amount: TokenAmount;
   export let label: string | undefined = undefined;
   export let inline: boolean = false;
   export let singleLine: boolean = false;

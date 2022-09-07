@@ -1,9 +1,9 @@
 <script lang="ts">
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import type { ICP, TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
 
-  export let balance: TokenAmount | ICP;
+  export let balance: TokenAmount;
 </script>
 
 <div>

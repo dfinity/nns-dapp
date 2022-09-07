@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
@@ -26,9 +26,11 @@
   let myCommitment: bigint | undefined;
   $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
 
-  let myCommitmentIcp: ICP | undefined;
+  let myCommitmentIcp: TokenAmount | undefined;
   $: myCommitmentIcp =
-    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
+    myCommitment !== undefined
+      ? TokenAmount.fromE8s({ amount: myCommitment })
+      : undefined;
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);

@@ -1,4 +1,4 @@
-import type { ICP } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
 import type { Account } from "./account";
 
@@ -7,7 +7,7 @@ import type { Account } from "./account";
 export interface TransactionStore {
   selectedAccount: Account | undefined;
   destinationAddress: string | undefined;
-  amount: ICP | undefined;
+  amount: TokenAmount | undefined;
 }
 
 export type NewTransaction = {
