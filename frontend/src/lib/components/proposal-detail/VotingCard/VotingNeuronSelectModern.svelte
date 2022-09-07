@@ -83,7 +83,7 @@
     justify-content: center;
     padding: 0;
 
-    transition: transform ease-in 0.25s;
+    transition: transform ease-in var(--animation-time-normal);
 
     &.expanded {
       transform: rotate(-180deg);
