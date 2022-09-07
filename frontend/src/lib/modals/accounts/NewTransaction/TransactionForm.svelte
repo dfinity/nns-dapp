@@ -17,10 +17,12 @@
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import AmountInput from "../../../components/ui/AmountInput.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
+  import SelecteDestinationAddress from "../../../components/accounts/SelecteDestinationAddress.svelte";
 
   // Tested in the TransactionModal
-
   export let selectedAccount: Account | undefined = undefined;
+  export let canSelectDestination: boolean;
+  export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
@@ -92,6 +94,10 @@
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
+  {#if canSelectDestination}
+    <SelecteDestinationAddress bind:selectedDestinationAddress />
+  {/if}
+
   <FooterModal>
     <button
       class="small secondary"
