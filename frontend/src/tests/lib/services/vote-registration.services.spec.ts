@@ -4,6 +4,7 @@
 
 import {
   GovernanceError,
+  Topic,
   Vote,
   type NeuronId,
   type ProposalInfo,
@@ -17,8 +18,10 @@ import { neuronsStore } from "../../../lib/stores/neurons.store";
 import { toastsStore } from "../../../lib/stores/toasts.store";
 import { voteRegistrationStore } from "../../../lib/stores/vote-registration.store";
 import type { ToastMsg } from "../../../lib/types/toast";
+import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import { waitForMilliseconds } from "../../../lib/utils/utils";
 import { resetIdentity, setNoIdentity } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 
@@ -110,6 +113,11 @@ describe("vote-registration-services", () => {
     });
 
     describe("voting in progress", () => {
+      const spyOnUpdateToastContent = jest.spyOn(
+        toastsStore,
+        "updateToastContent"
+      );
+
       beforeAll(() => {
         jest
           .spyOn(neuronsServices, "listNeurons")
@@ -131,7 +139,10 @@ describe("vote-registration-services", () => {
         neuronsStore.reset();
       });
 
-      beforeEach(() => toastsStore.reset());
+      beforeEach(() => {
+        toastsStore.reset();
+        spyOnUpdateToastContent.mockClear();
+      });
 
       it("should update store with a new vote registration", (done) => {
         const proposal = proposalInfo();
@@ -237,6 +248,66 @@ describe("vote-registration-services", () => {
         );
       });
 
+      it("should display voted neurons count", async () => {
+        const proposal = proposalInfo();
+
+        expect(spyOnUpdateToastContent).toBeCalledTimes(0);
+
+        await registerVotes({
+          neuronIds,
+          proposalInfo: proposal,
+          vote: Vote.No,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
+        });
+
+        for (let i = 1; i <= neuronIds.length; i++) {
+          expect(spyOnUpdateToastContent).toBeCalledWith({
+            content: {
+              substitutions: {
+                $proposalId: expect.any(String),
+                $status: replacePlaceholders(
+                  en.proposal_detail__vote.vote_status_registering,
+                  {
+                    $completed: `${i}`,
+                    $amount: `${neuronIds.length}`,
+                  }
+                ),
+                $topic: en.topics[Topic[proposal.topic]],
+              },
+            },
+            toastId: expect.any(Symbol),
+          });
+        }
+      });
+
+      it("should display updating... message", async () => {
+        const proposal = proposalInfo();
+
+        expect(spyOnUpdateToastContent).toBeCalledTimes(0);
+
+        await registerVotes({
+          neuronIds,
+          proposalInfo: proposal,
+          vote: Vote.No,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
+        });
+
+        expect(spyOnUpdateToastContent).toBeCalledWith({
+          content: {
+            substitutions: {
+              $proposalId: expect.any(String),
+              $status: en.proposal_detail__vote.vote_status_updating,
+              $topic: en.topics[Topic[proposal.topic]],
+            },
+          },
+          toastId: expect.any(Symbol),
+        });
+      });
+
       it("should hide the vote in progress toast after voting", async () => {
         await registerVotes({
           neuronIds,
@@ -301,6 +372,10 @@ describe("vote-registration-services", () => {
         error_type: 0,
       });
     };
+
+    beforeAll(() => {
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
 
     beforeEach(() => {
       toastsStore.reset();
