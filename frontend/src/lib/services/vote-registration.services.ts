@@ -59,6 +59,7 @@ export const registerVotes = async ({
       status: "vote-registration",
     });
 
+    // make register vote calls (one per neuron)
     await registerNeuronsVote({
       neuronIds,
       proposalInfo,
@@ -72,6 +73,7 @@ export const registerVotes = async ({
       status: "post-update",
     });
 
+    // update the toast state (voting -> updating the data)
     const { successfullyVotedNeuronIds, status } =
       voteRegistrationByProposal(proposalId);
     updateVoteRegistrationToastMessage({
@@ -82,6 +84,7 @@ export const registerVotes = async ({
       registrationDone: status === "post-update",
     });
 
+    // reload and replace proposal and neurons (`update` call) to display the actual backend state
     const updatedProposalInfo = await updateAfterVoteRegistration(
       proposalInfo.id as ProposalId
     );
@@ -94,6 +97,7 @@ export const registerVotes = async ({
       status: "complete",
     });
 
+    // cleanup
     toastsStore.hide(toastId);
 
     voteRegistrationStore.removeCompleted();

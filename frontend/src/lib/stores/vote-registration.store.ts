@@ -2,13 +2,12 @@ import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
 export type VoteRegistrationStatus =
-  | undefined
   | "vote-registration"
   | "post-update"
   | "complete";
 
 export interface VoteRegistration {
-  status: VoteRegistrationStatus;
+  status: VoteRegistrationStatus | undefined;
   proposalInfo: ProposalInfo;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
