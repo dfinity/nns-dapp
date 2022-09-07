@@ -52,7 +52,6 @@ export const registerVotes = async ({
       vote,
       proposalInfo,
       neuronIds,
-      toastId,
     });
 
     voteRegistrationStore.updateStatus({
@@ -65,6 +64,7 @@ export const registerVotes = async ({
       proposalInfo,
       vote,
       updateProposalContext,
+      toastId,
     });
 
     voteRegistrationStore.updateStatus({
@@ -158,12 +158,14 @@ const neuronRegistrationComplete = ({
   neuronId,
   proposalId,
   updateProposalContext,
+  toastId,
 }: {
   neuronId: NeuronId;
   proposalId: ProposalId;
   updateProposalContext: (proposal: ProposalInfo) => void;
+  toastId: symbol;
 }) => {
-  const { toastId, vote, proposalInfo, neuronIds, status } =
+  const { vote, proposalInfo, neuronIds, status } =
     voteRegistrationByProposal(proposalId);
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
@@ -235,7 +237,7 @@ const updateVoteRegistrationToastMessage = ({
       });
 
   toastsStore.updateToastContent({
-    toastId: toastId as symbol,
+    toastId,
     content: {
       substitutions: {
         $proposalId: `${id}`,
@@ -251,11 +253,13 @@ const registerNeuronsVote = async ({
   proposalInfo,
   vote,
   updateProposalContext,
+  toastId,
 }: {
   neuronIds: NeuronId[];
   proposalInfo: ProposalInfo;
   vote: Vote;
   updateProposalContext: (proposal: ProposalInfo) => void;
+  toastId: symbol;
 }) => {
   const identity: Identity = await getIdentity();
   const { id, topic } = proposalInfo;
@@ -276,6 +280,7 @@ const registerNeuronsVote = async ({
               neuronId: neuronIds[index],
               proposalId,
               updateProposalContext,
+              toastId,
             })
           )
       // )

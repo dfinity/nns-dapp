@@ -13,7 +13,6 @@ export interface VoteRegistration {
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
-  toastId: symbol;
 }
 
 export interface VoteRegistrationStore {
@@ -38,12 +37,10 @@ const initVoteRegistrationStore = () => {
       vote,
       proposalInfo,
       neuronIds,
-      toastId,
     }: {
       vote: Vote;
       proposalInfo: ProposalInfo;
       neuronIds: NeuronId[];
-      toastId: symbol;
     }): VoteRegistration {
       const newEntry: VoteRegistration = {
         status: undefined,
@@ -51,7 +48,6 @@ const initVoteRegistrationStore = () => {
         neuronIds,
         successfullyVotedNeuronIds: [],
         vote,
-        toastId,
       };
 
       update(({ registrations: votes }) => {
