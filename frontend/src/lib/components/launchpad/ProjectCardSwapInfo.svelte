@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     openTimeWindow,
   } from "../../utils/projects.utils";
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -48,11 +48,13 @@
     end_timestamp_seconds: undefined,
   });
 
-  export let myCommitment: ICP | undefined = undefined;
+  export let myCommitment: TokenAmount | undefined = undefined;
   $: myCommitment =
     swapCommitment?.myCommitment === undefined
       ? undefined
-      : ICP.fromE8s(swapCommitment.myCommitment.amount_icp_e8s);
+      : TokenAmount.fromE8s({
+          amount: swapCommitment.myCommitment.amount_icp_e8s,
+        });
 </script>
 
 <dl>

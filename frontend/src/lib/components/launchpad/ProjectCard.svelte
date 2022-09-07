@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 
@@ -27,7 +27,7 @@
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
-  let myCommitment: ICP | undefined;
+  let myCommitment: TokenAmount | undefined;
 
   const showProject = () => {
     routeStore.navigate({

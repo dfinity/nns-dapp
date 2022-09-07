@@ -107,7 +107,7 @@ describe("SnsNeuronCard", () => {
     });
     const token = get(snsTokenSymbolSelectedStore);
     expect(token).not.toBeUndefined();
-    token !== undefined && expect(getByText(token)).toBeInTheDocument();
+    token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
 
     const stakeText = formatICP({
