@@ -2,17 +2,17 @@
  * @jest-environment jsdom
  */
 
-import type { ICP as ICPModel } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ICP from "../../../../lib/components/ic/ICP.svelte";
+import AmountDisplay from "../../../../lib/components/ic/AmountDisplay.svelte";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
-describe("ICP", () => {
-  const props: { icp: ICPModel } = { icp: mockMainAccount.balance };
+describe("AmountDisplay", () => {
+  const props: { amount: TokenAmount } = { amount: mockMainAccount.balance };
 
-  it("should render an ICP value", () => {
-    const { container } = render(ICP, {
+  it("should render an token amount", () => {
+    const { container } = render(AmountDisplay, {
       props,
     });
 
@@ -23,8 +23,8 @@ describe("ICP", () => {
     );
   });
 
-  it("should render an ICP text", () => {
-    const { getByText } = render(ICP, {
+  it("should render an token symbol", () => {
+    const { getByText } = render(AmountDisplay, {
       props,
     });
 
@@ -32,7 +32,7 @@ describe("ICP", () => {
   });
 
   it("should render + sign", () => {
-    const { container } = render(ICP, {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         sign: "+",
@@ -47,7 +47,7 @@ describe("ICP", () => {
   });
 
   it("should render - sign", () => {
-    const { container } = render(ICP, {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         sign: "-",
@@ -60,8 +60,8 @@ describe("ICP", () => {
     );
   });
 
-  it("should render a detailed ICP value", () => {
-    const { container } = render(ICP, {
+  it("should render a detailed token amount", () => {
+    const { container } = render(AmountDisplay, {
       props: {
         ...props,
         detailed: true,

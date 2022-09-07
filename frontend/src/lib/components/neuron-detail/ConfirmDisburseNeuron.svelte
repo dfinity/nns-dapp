@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
   import { startBusyNeuron } from "../../services/busy.services";
@@ -10,7 +10,7 @@
   import { toastsStore } from "../../stores/toasts.store";
   import { neuronStake } from "../../utils/neuron.utils";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
-  import IcpComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Spinner from "../ui/Spinner.svelte";
 
   export let neuron: NeuronInfo;
@@ -49,7 +49,10 @@
   data-tid="confirm-disburse-screen"
 >
   <div class="amount">
-    <IcpComponent inline={true} icp={ICP.fromE8s(neuronStake(neuron))} />
+    <AmountDisplay
+      inline
+      amount={TokenAmount.fromE8s({ amount: neuronStake(neuron) })}
+    />
   </div>
 
   <TransactionInfo

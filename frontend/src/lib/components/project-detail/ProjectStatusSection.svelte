@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
-  import Icp from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
@@ -26,9 +26,11 @@
   let myCommitment: bigint | undefined;
   $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
 
-  let myCommitmentIcp: ICP | undefined;
+  let myCommitmentIcp: TokenAmount | undefined;
   $: myCommitmentIcp =
-    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
+    myCommitment !== undefined
+      ? TokenAmount.fromE8s({ amount: myCommitment })
+      : undefined;
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
@@ -74,9 +76,7 @@
               summary={$projectDetailStore.summary}
               {swapCommitment}
             />
-            <svelte:fragment slot="value">
-              <Icp icp={myCommitmentIcp} singleLine />
-            </svelte:fragment>
+            <AmountDisplay slot="value" amount={myCommitmentIcp} singleLine />
           </KeyValuePair>
         </div>
       {/if}

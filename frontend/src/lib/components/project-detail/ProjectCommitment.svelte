@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
-  import Icp from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
@@ -32,8 +32,10 @@
   let buyersTotalCommitment: bigint;
   $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
 
-  let buyersTotalCommitmentIcp: ICP;
-  $: buyersTotalCommitmentIcp = ICP.fromE8s(buyersTotalCommitment);
+  let buyersTotalCommitmentIcp: TokenAmount;
+  $: buyersTotalCommitmentIcp = TokenAmount.fromE8s({
+    amount: buyersTotalCommitment,
+  });
 </script>
 
 <KeyValuePair testId="sns-project-current-commitment">
@@ -41,7 +43,7 @@
     {$i18n.sns_project_detail.current_overall_commitment}
   </span>
 
-  <Icp slot="value" icp={buyersTotalCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar

@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   assertEnoughAccountFunds,
@@ -141,7 +141,10 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: ICP.fromE8s(amountE8s),
+            balance: TokenAmount.fromE8s({
+              amount: amountE8s,
+              token: ICPToken,
+            }),
           },
           amountE8s: amountE8s + BigInt(10_000),
         });
@@ -154,7 +157,10 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: ICP.fromE8s(amountE8s),
+            balance: TokenAmount.fromE8s({
+              amount: amountE8s,
+              token: ICPToken,
+            }),
           },
           amountE8s: amountE8s - BigInt(10_000),
         });
