@@ -1,6 +1,7 @@
 <script lang="ts">
   import ProposalDetailCard from "./ProposalDetailCard/ProposalDetailCard.svelte";
-  import VotesCard from "./VotesCard.svelte";
+  import VotesResults from "./VotesResults.svelte";
+  import MyVotes from "./MyVotes.svelte";
   import VotingCard from "./VotingCard/VotingCard.svelte";
   import IneligibleNeuronsCard from "./IneligibleNeuronsCard.svelte";
   import { i18n } from "../../stores/i18n";
@@ -24,7 +25,8 @@
     <ProposalDetailCard proposalInfo={$store.proposal} />
 
     {#if neuronsReady}
-      <VotesCard proposalInfo={$store.proposal} />
+      <VotesResults proposalInfo={$store.proposal} />
+      <MyVotes proposalInfo={$store.proposal} />
       <VotingCard proposalInfo={$store.proposal} />
       <IneligibleNeuronsCard
         proposalInfo={$store.proposal}

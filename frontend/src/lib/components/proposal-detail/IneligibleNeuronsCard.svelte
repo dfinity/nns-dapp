@@ -31,7 +31,7 @@
 
 {#if visible}
   <svelte:component this={cmp}>
-    <h2 slot="start">{$i18n.proposal_detail__ineligible.headline}</h2>
+    <h4 slot="start">{$i18n.proposal_detail__ineligible.headline}</h4>
     <p class="description">{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
       {#each ineligibleNeurons as neuron}
@@ -52,13 +52,12 @@
   }
 
   li {
-    margin: var(--padding) 0;
+    margin: var(--padding-2x) 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     @include media.min-width(small) {
-      margin: var(--padding-0_5x) 0;
       flex-direction: row;
       align-items: center;
     }
