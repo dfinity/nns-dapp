@@ -5,9 +5,16 @@ import { snsSummariesStore } from "../../stores/sns.store";
 
 export const snsTokenSymbolSelectedStore: Readable<Token | undefined> = derived(
   [snsProjectSelectedStore, snsSummariesStore],
-  ([selectedRootCanisterId, summaries]) =>
-    summaries.find(
+  ([selectedRootCanisterId, summaries]) => {
+    const selectedTokenMetadata = summaries.find(
       ({ rootCanisterId }) =>
         rootCanisterId.toText() === selectedRootCanisterId.toText()
-    )?.token
+    )?.token;
+    if (selectedTokenMetadata !== undefined) {
+      return {
+        symbol: selectedTokenMetadata.symbol,
+        name: selectedTokenMetadata.name,
+      };
+    }
+  }
 );

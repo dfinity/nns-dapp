@@ -4,7 +4,7 @@
   import IcpText from "../../../components/ic/ICPText.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsToken } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
 
   export let userHasParticipated: boolean;
   export let minCommitment: TokenAmount;

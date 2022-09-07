@@ -5,7 +5,7 @@
   import FooterModal from "../../FooterModal.svelte";
   import { busy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsToken } from "../../../stores/transaction-fees.store";
+  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { valueSpan } from "../../../utils/utils";
