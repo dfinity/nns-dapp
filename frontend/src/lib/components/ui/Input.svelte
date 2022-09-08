@@ -179,6 +179,10 @@
   .info {
     display: flex;
     justify-content: space-between;
+
+    label {
+      color: var(--label-color);
+    }
   }
 
   input {

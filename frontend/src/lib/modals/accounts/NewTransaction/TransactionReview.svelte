@@ -37,20 +37,14 @@
 <div data-tid="transaction-step-2">
   <div class="info">
     <KeyValuePair>
-      <span slot="key">{$i18n.accounts.source}</span>
+      <span class="label" slot="key">{$i18n.accounts.source}</span>
       <AmountDisplay slot="value" singleLine amount={sourceAccount.balance} />
     </KeyValuePair>
     <div>
-      <p data-tid="transaction-review-source-account">
-        {#if sourceAccount.type === "main"}
-          {$i18n.accounts.main_account}
-        {:else}
-          {replacePlaceholders($i18n.accounts.account_name, {
-            $name: sourceAccount.name ?? "",
-          })}
-        {/if}
-        <span class="account-identifier">{sourceAccount.identifier}</span>
+      <p class="label" data-tid="transaction-review-source-account">
+        {sourceAccount.name ?? $i18n.accounts.main}
       </p>
+      <p class="account-identifier">{sourceAccount.identifier}</p>
     </div>
     <div class="highlight">
       <span class="icon">
@@ -65,12 +59,13 @@
       </div>
     </div>
     <div>
-      <h5>{$i18n.accounts.destination}</h5>
+      <p class="label">{$i18n.accounts.destination}</p>
+      <p />
       <slot name="destination-info" />
       <p class="account-identifier">{destinationAddress}</p>
     </div>
     <div>
-      <h5>{$i18n.accounts.description}</h5>
+      <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
     </div>
   </div>
@@ -135,5 +130,9 @@
     gap: var(--padding);
 
     --select-padding: var(--padding-2x) 0;
+  }
+
+  .label {
+    color: var(--label-color);
   }
 </style>

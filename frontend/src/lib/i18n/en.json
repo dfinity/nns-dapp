@@ -128,8 +128,6 @@
   "accounts": {
     "total": "Total",
     "main": "Main",
-    "main_account": "Main Account",
-    "account_name": "Account $name",
     "new_transaction": "New Transaction",
     "icp_transaction_description": "ICP Transaction",
     "review_action": "Review",
@@ -184,7 +182,7 @@
     "description": "Description",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
-    "dropdown": "Dropdown",
+    "select": "Select",
     "manual": "Manual",
     "current_balance_detail": "Current balance: $amount ICP"
   },

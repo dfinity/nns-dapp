@@ -14,7 +14,11 @@
   };
 
   let showManualInput: boolean = false;
-  const onToggleManualInput = () => (showManualInput = !showManualInput);
+  const onToggleManualInput = () => {
+    showManualInput = !showManualInput;
+    selectedDestinationAddress = undefined;
+    selectedAccount = undefined;
+  };
 
   let selectedAccount: Account | undefined = undefined;
   $: {
@@ -26,9 +30,9 @@
 
 <div>
   <div class="title">
-    <p>{$i18n.accounts.select_destination}</p>
+    <p class="label">{$i18n.accounts.destination}</p>
     <div class="toggle">
-      <p>{$i18n.accounts.dropdown}</p>
+      <p>{$i18n.accounts.select}</p>
       <Toggle
         bind:checked={showManualInput}
         on:nnsToggle={onToggleManualInput}
@@ -55,5 +59,9 @@
       align-items: center;
       gap: var(--padding);
     }
+  }
+
+  .label {
+    color: var(--label-color);
   }
 </style>

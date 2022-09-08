@@ -10,6 +10,7 @@
   import { InvalidAmountError } from "../../../types/neurons.errors";
   import {
     assertEnoughAccountFunds,
+    invalidAddress,
     isAccountHardwareWallet,
   } from "../../../utils/accounts.utils";
   import {
@@ -52,6 +53,7 @@
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
+    invalidAddress(selectedDestinationAddress) ||
     errorMessage !== undefined;
 
   let errorMessage: string | undefined = undefined;
@@ -67,6 +69,7 @@
         account: selectedAccount,
         amountE8s: icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s(),
       });
+      errorMessage = undefined;
     } catch (error) {
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
@@ -92,7 +95,7 @@
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
-        <span slot="key">{$i18n.accounts.source}</span>
+        <span slot="key" class="label">{$i18n.accounts.source}</span>
         <AmountDisplay
           slot="value"
           singleLine
@@ -148,5 +151,9 @@
     &.info {
       gap: var(--padding-2x);
     }
+  }
+
+  .label {
+    color: var(--label-color);
   }
 </style>
