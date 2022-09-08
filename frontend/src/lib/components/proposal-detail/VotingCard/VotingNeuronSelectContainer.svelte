@@ -40,6 +40,10 @@
     @include media.min-width(large) {
       max-height: inherit;
       padding: var(--padding) 0;
+
+      &:before {
+        width: 100%;
+      }
     }
 
     :global(div.content-cell-title) {

@@ -53,7 +53,7 @@
 
 {#if neuronsVotedForProposal.length}
   <svelte:component this={cmp}>
-    <h4 class="my-votes">{$i18n.proposal_detail.my_votes}</h4>
+    <h4 slot="start">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li
@@ -76,10 +76,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-
-  .my-votes {
-    padding-top: var(--padding-3x);
-  }
 
   ul {
     list-style-type: none;
