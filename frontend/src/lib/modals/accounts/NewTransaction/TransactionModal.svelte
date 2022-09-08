@@ -10,6 +10,7 @@
   export let disableSubmit: boolean = false;
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
+  export let skipHardwareWallets: boolean = false;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   let selectedDestinationAddress: string | undefined = destinationAddress;
@@ -47,6 +48,7 @@
       bind:selectedDestinationAddress
       bind:selectedAccount
       bind:amount
+      {skipHardwareWallets}
       {maxAmount}
       on:nnsNext={goNext}
       on:nnsClose
@@ -54,10 +56,10 @@
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
   {/if}
-  {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined && destinationAddress !== undefined}
+  {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined && selectedDestinationAddress !== undefined}
     <TransactionReview
       transaction={{
-        destinationAddress,
+        destinationAddress: selectedDestinationAddress,
         sourceAccount: selectedAccount,
         amount,
       }}

@@ -8,7 +8,7 @@
   import DropdownItem from "../ui/DropdownItem.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
-  export let skipHardwareWallets: boolean = false;
+  export let filterAccounts: (account: Account) => boolean = () => true;
 
   let selectedAccountIdentifier: string;
   $: selectedAccount = getAccountFromStore({
@@ -16,20 +16,27 @@
     accountsStore: $accountsStore,
   });
 
-  let selectableAccounts: Account[] = [];
+  let accounts: Account[] = [];
+  $: selectableAccounts = accounts.filter(filterAccounts);
   const unsubscribe = accountsStore.subscribe(
     ({ main, subAccounts, hardwareWallets }) => {
       if (main !== undefined) {
         selectedAccountIdentifier =
           selectedAccountIdentifier ?? main.identifier;
-        selectableAccounts = [
-          main,
-          ...(subAccounts ?? []),
-          ...(skipHardwareWallets ? [] : hardwareWallets ?? []),
-        ];
+        accounts = [main, ...(subAccounts ?? []), ...(hardwareWallets ?? [])];
       }
     }
   );
+
+  $: {
+    if (
+      selectableAccounts.find(
+        ({ identifier }) => identifier === selectedAccountIdentifier
+      ) === undefined
+    ) {
+      selectedAccountIdentifier = selectableAccounts[0]?.identifier;
+    }
+  }
 
   onDestroy(unsubscribe);
 </script>

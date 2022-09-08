@@ -115,6 +115,7 @@
     on:nnsSubmit={participate}
     {destinationAddress}
     disableSubmit={!accepted}
+    skipHardwareWallets
     maxAmount={projectRemainingAmount(summary)}
   >
     <svelte:fragment slot="title"

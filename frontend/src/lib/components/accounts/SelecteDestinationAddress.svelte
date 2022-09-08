@@ -1,14 +1,17 @@
 <script lang="ts">
+  import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import Toggle from "../ui/Toggle.svelte";
-
-  import Address from "./Address.svelte";
+  import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
 
   export let selectedDestinationAddress: string | undefined = undefined;
+  export let filterAccounts: (account: Account) => boolean = () => true;
 
   let address: string;
-  const onEnterAddress = () => (selectedDestinationAddress = address);
+  const setDestination = () => {
+    selectedDestinationAddress = address;
+  };
 
   let showManualInput: boolean = false;
   const onToggleManualInput = () => (showManualInput = !showManualInput);
@@ -22,21 +25,35 @@
 </script>
 
 <div>
-  <div>
-    <p>Manual Address</p>
-    <Toggle
-      bind:checked={showManualInput}
-      on:nnsToggle={onToggleManualInput}
-      ariaLabel="change"
-    />
-    <p>Select Account</p>
+  <div class="title">
+    <p>{$i18n.accounts.select_destination}</p>
+    <div class="toggle">
+      <p>{$i18n.accounts.dropdown}</p>
+      <Toggle
+        bind:checked={showManualInput}
+        on:nnsToggle={onToggleManualInput}
+        ariaLabel="change"
+      />
+      <p>{$i18n.accounts.manual}</p>
+    </div>
   </div>
   {#if showManualInput}
-    <Address
-      bind:address={selectedDestinationAddress}
-      on:submit={onEnterAddress}
-    />
+    <AddressInput bind:address on:nnsBlur={setDestination} />
   {:else}
-    <SelectAccountDropdown bind:selectedAccount />
+    <SelectAccountDropdown {filterAccounts} bind:selectedAccount />
   {/if}
 </div>
+
+<style lang="scss">
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .toggle {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--padding);
+    }
+  }
+</style>

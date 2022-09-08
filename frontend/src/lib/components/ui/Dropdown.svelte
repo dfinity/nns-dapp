@@ -50,6 +50,8 @@
 
       appearance: none;
 
+      font-size: inherit;
+
       &:focus {
         outline: none;
       }
@@ -65,9 +67,10 @@
       // Place the caret inside the select.
       margin-left: calc(-1 * var(--padding-3x));
 
+      // To match the line-height when font-size is 16px
       :global(svg) {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
       }
     }
   }

@@ -138,7 +138,10 @@ interface I18nAccounts {
   total: string;
   main: string;
   main_account: string;
+  account_name: string;
   new_transaction: string;
+  icp_transaction_description: string;
+  review_action: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -190,6 +193,8 @@ interface I18nAccounts {
   description: string;
   edit_transaction: string;
   execute: string;
+  dropdown: string;
+  manual: string;
   current_balance_detail: string;
 }
 

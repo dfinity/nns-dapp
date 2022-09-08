@@ -8,7 +8,10 @@
   } from "../../../stores/transaction-fees.store";
   import type { Account } from "../../../types/account";
   import { InvalidAmountError } from "../../../types/neurons.errors";
-  import { assertEnoughAccountFunds } from "../../../utils/accounts.utils";
+  import {
+    assertEnoughAccountFunds,
+    isAccountHardwareWallet,
+  } from "../../../utils/accounts.utils";
   import {
     convertNumberToICP,
     getMaxTransactionAmount,
@@ -26,6 +29,15 @@
   export let amount: number | undefined = undefined;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
+  export let skipHardwareWallets: boolean = false;
+
+  let filterDestinationAccounts: (account: Account) => boolean;
+  $: filterDestinationAccounts = (account: Account) => {
+    return (
+      account.identifier !== selectedAccount?.identifier ||
+      (skipHardwareWallets && isAccountHardwareWallet(account))
+    );
+  };
 
   let max: number = 0;
   $: max = getMaxTransactionAmount({
@@ -88,14 +100,17 @@
         />
       </KeyValuePair>
     {/if}
-    <SelectAccountDropdown bind:selectedAccount skipHardwareWallets />
+    <SelectAccountDropdown bind:selectedAccount />
   </div>
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
   {#if canSelectDestination}
-    <SelecteDestinationAddress bind:selectedDestinationAddress />
+    <SelecteDestinationAddress
+      filterAccounts={filterDestinationAccounts}
+      bind:selectedDestinationAddress
+    />
   {/if}
 
   <FooterModal>
@@ -109,7 +124,7 @@
       class="small primary"
       data-tid="transaction-button-next"
       disabled={disableButton}
-      type="submit">{$i18n.sns_project_detail.participate}</button
+      type="submit">{$i18n.accounts.review_action}</button
     >
   </FooterModal>
 </form>
@@ -120,7 +135,7 @@
   .select-account {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
+    gap: var(--padding);
   }
 
   .wrapper {

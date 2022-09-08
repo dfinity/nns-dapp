@@ -8,10 +8,8 @@
   import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { valueSpan } from "../../../utils/utils";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import { sanitize } from "../../../utils/html.utils";
   import type { NewTransaction } from "../../../types/transaction.context";
 
   export let transaction: NewTransaction;
@@ -44,9 +42,14 @@
     </KeyValuePair>
     <div>
       <p data-tid="transaction-review-source-account">
-        {@html replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: valueSpan(sanitize(destinationAddress)),
-        })}
+        {#if sourceAccount.type === "main"}
+          {$i18n.accounts.main_account}
+        {:else}
+          {replacePlaceholders($i18n.accounts.account_name, {
+            $name: sourceAccount.name ?? "",
+          })}
+        {/if}
+        <span class="account-identifier">{sourceAccount.identifier}</span>
       </p>
     </div>
     <div class="highlight">
@@ -64,7 +67,7 @@
     <div>
       <h5>{$i18n.accounts.destination}</h5>
       <slot name="destination-info" />
-      <p class="value">{destinationAddress}</p>
+      <p class="account-identifier">{destinationAddress}</p>
     </div>
     <div>
       <h5>{$i18n.accounts.description}</h5>
@@ -91,6 +94,10 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/modal";
+
+  .account-identifier {
+    word-break: break-all;
+  }
 
   .highlight {
     padding: var(--padding-2x);
