@@ -34,9 +34,8 @@
 >
   <div slot="header" class="total" class:expanded>
     <div class="total-neurons">
-      <span class="value"
-        >{$i18n.proposal_detail__vote.neurons}
-        {#if displayNeuronsInfo}
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons"
+        >{$i18n.proposal_detail__vote.neurons}{#if displayNeuronsInfo}
           &nbsp;({selectedVotingNeurons} / {totalVotingNeurons})
         {/if}
       </span>
@@ -50,7 +49,10 @@
     </div>
 
     {#if displayNeuronsInfo}
-      <div class="total-voting-power">
+      <div
+        class="total-voting-power"
+        data-tid="voting-collapsible-toolbar-voting-power"
+      >
         <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
         <Value
           >{formatVotingPower(
