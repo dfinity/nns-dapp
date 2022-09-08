@@ -11,12 +11,13 @@
   export let iconSize: "small" | "medium" = "small";
   export let expandButton: boolean = true;
   export let externalToggle: boolean = false;
+  export let wrapHeight: boolean = false;
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
 
-  let expanded: boolean = initiallyExpanded;
+  export let expanded: boolean = initiallyExpanded;
   let offsetHeight: number | undefined;
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;
@@ -96,6 +97,7 @@
     {id}
     aria-labelledby={id !== undefined ? `heading${id}` : undefined}
     class="content"
+    class:wrapHeight
     bind:offsetHeight
   >
     <slot />
@@ -173,9 +175,12 @@
   }
 
   .content {
-    // to not stick the content to the bottom
-    padding-bottom: var(--padding);
     // to respect children margins in contentHeight calculation
     overflow: auto;
+
+    &:not(.wrapHeight) {
+      // to not stick the content to the bottom
+      padding-bottom: var(--padding);
+    }
   }
 </style>

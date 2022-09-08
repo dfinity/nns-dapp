@@ -28,6 +28,7 @@ describe("VotingConfirmationToolbar", () => {
 
   const props = {
     proposalInfo: mockProposalInfo,
+    layout: "modern",
   };
 
   beforeEach(() => {
@@ -142,7 +143,10 @@ describe("VotingConfirmationToolbar", () => {
 
   it("should display a question that repeats id and topic", async () => {
     const { container } = render(VotingConfirmationToolbar, {
-      props,
+      props: {
+        ...props,
+        layout: "legacy",
+      },
     });
 
     const testLabel = replacePlaceholders(

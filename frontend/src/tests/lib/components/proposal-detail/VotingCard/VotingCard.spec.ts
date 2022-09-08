@@ -20,7 +20,6 @@ import {
 } from "../../../../../lib/types/selected-proposal.context";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
-import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
@@ -76,9 +75,9 @@ describe("VotingCard", () => {
 
   it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
-    const { queryByText } = renderVotingCard();
+    const { getByTestId } = renderVotingCard();
     await waitFor(() =>
-      expect(queryByText(en.proposal_detail__vote.headline)).toBeInTheDocument()
+      expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument()
     );
   });
 

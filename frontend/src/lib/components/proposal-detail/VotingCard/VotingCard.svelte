@@ -4,13 +4,14 @@
     type Vote,
     votableNeurons as getVotableNeurons,
   } from "@dfinity/nns";
-  import { getContext, onDestroy, SvelteComponent } from "svelte";
+
+  import { getContext, onDestroy } from "svelte";
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
+  import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
@@ -22,7 +23,7 @@
   } from "../../../stores/vote-registration.store";
   import { registerVotes } from "../../../services/vote-registration.services";
   import { VOTING_UI } from "../../../constants/environment.constants";
-  import ContentCell from "../../ui/ContentCell.svelte";
+  import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;
 
@@ -78,19 +79,30 @@
     votingNeuronSelectStore.reset();
   });
 
-  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
-  let cmp: typeof SvelteComponent =
-    VOTING_UI === "legacy" ? CardInfo : ContentCell;
+  // TODO(L2-965): delete legacy component <CardInfo />
 </script>
 
 {#if visible}
-  <svelte:component this={cmp}>
-    <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
-    <CastVoteCardNeuronSelect {proposalInfo} {voteRegistration} />
-    <VotingConfirmationToolbar
-      {proposalInfo}
-      {voteRegistration}
-      on:nnsConfirm={vote}
-    />
-  </svelte:component>
+  {#if VOTING_UI === "legacy"}
+    <CardInfo>
+      <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
+      <VotingNeuronSelect {proposalInfo} {voteRegistration} />
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteRegistration}
+        on:nnsConfirm={vote}
+        layout="legacy"
+      />
+    </CardInfo>
+  {:else}
+    <BottomSheet>
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteRegistration}
+        on:nnsConfirm={vote}
+        layout="modern"
+      />
+      <VotingNeuronSelect {proposalInfo} {voteRegistration} />
+    </BottomSheet>
+  {/if}
 {/if}
