@@ -61,7 +61,7 @@ describe("VotingNeuronSelectModern", () => {
       expect(
         getByTestId("voting-collapsible-toolbar-neurons")
           ?.textContent?.trim()
-          .includes(`(${neurons.length} / ${neurons.length})`)
+          .includes(`(${neurons.length}/${neurons.length})`)
       ).toBeTruthy();
     });
   });

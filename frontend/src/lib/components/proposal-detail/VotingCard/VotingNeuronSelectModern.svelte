@@ -36,7 +36,7 @@
     <div class="total-neurons">
       <span class="value" data-tid="voting-collapsible-toolbar-neurons"
         >{$i18n.proposal_detail__vote.neurons}{#if displayNeuronsInfo}
-          &nbsp;({selectedVotingNeurons} / {totalVotingNeurons})
+          &nbsp;({selectedVotingNeurons}/{totalVotingNeurons})
         {/if}
       </span>
       <button
