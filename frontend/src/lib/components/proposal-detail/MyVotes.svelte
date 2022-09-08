@@ -53,7 +53,7 @@
 
 {#if neuronsVotedForProposal.length}
   <svelte:component this={cmp}>
-    <h2 class="my-votes">{$i18n.proposal_detail.my_votes}</h2>
+    <h4 class="my-votes">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li

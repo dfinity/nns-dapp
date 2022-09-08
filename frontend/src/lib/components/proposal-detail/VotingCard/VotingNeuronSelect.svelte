@@ -24,18 +24,18 @@
   // TODO(L2-965): delete legacy component - VotingNeuronSelectLegacy - (and inline VotingNeuronSelectModern?)
 </script>
 
-{#if $votingNeuronSelectStore.neurons.length > 0}
-  {#if VOTING_UI === "legacy"}
+{#if VOTING_UI === "legacy"}
+  {#if $votingNeuronSelectStore.neurons.length > 0}
     <VotingNeuronSelectLegacy
       {proposalInfo}
       {disabled}
       {totalNeuronsVotingPower}
     />
-  {:else}
-    <VotingNeuronSelectModern
-      {proposalInfo}
-      {disabled}
-      {totalNeuronsVotingPower}
-    />
   {/if}
+{:else}
+  <VotingNeuronSelectModern
+    {proposalInfo}
+    {disabled}
+    {totalNeuronsVotingPower}
+  />
 {/if}
