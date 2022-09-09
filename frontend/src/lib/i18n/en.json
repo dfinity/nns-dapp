@@ -184,6 +184,7 @@
     "execute": "Execute",
     "select": "Select",
     "manual": "Manual",
+    "no_account_select": "No accounts to select",
     "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {

@@ -13,7 +13,7 @@
     selectedDestinationAddress = address;
   };
 
-  let showManualInput: boolean = false;
+  let showManualInput: boolean = true;
   const onToggleManualInput = () => {
     showManualInput = !showManualInput;
     selectedDestinationAddress = undefined;
@@ -28,7 +28,7 @@
   }
 </script>
 
-<div>
+<div data-tid="select-destination">
   <div class="title">
     <p class="label">{$i18n.accounts.destination}</p>
     <div class="toggle">

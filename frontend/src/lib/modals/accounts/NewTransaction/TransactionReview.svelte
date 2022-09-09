@@ -41,10 +41,15 @@
       <AmountDisplay slot="value" singleLine amount={sourceAccount.balance} />
     </KeyValuePair>
     <div>
-      <p class="label" data-tid="transaction-review-source-account">
+      <p class="label">
         {sourceAccount.name ?? $i18n.accounts.main}
       </p>
-      <p class="account-identifier">{sourceAccount.identifier}</p>
+      <p
+        data-tid="transaction-review-source-account"
+        class="account-identifier"
+      >
+        {sourceAccount.identifier}
+      </p>
     </div>
     <div class="highlight">
       <span class="icon">

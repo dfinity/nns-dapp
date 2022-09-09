@@ -1,16 +1,17 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-
   import { transferICP } from "../../services/accounts.services";
-
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import type { Step } from "../../stores/steps.state";
   import { toastsStore } from "../../stores/toasts.store";
+  import type { Account } from "../../types/account";
   import type { NewTransaction } from "../../types/transaction.context";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+
+  export let selectedAccount: Account | undefined = undefined;
 
   let currentStep: Step;
 
@@ -56,7 +57,12 @@
   };
 </script>
 
-<TransactionModal on:nnsSubmit={transfer} on:nnsClose bind:currentStep>
+<TransactionModal
+  on:nnsSubmit={transfer}
+  on:nnsClose
+  bind:currentStep
+  sourceAccount={selectedAccount}
+>
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >

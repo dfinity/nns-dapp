@@ -21,11 +21,12 @@
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import AmountInput from "../../../components/ui/AmountInput.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import SelecteDestinationAddress from "../../../components/accounts/SelecteDestinationAddress.svelte";
+  import SelectDestinationAddress from "../../../components/accounts/SelectDestinationAddress.svelte";
 
   // Tested in the TransactionModal
   export let selectedAccount: Account | undefined = undefined;
   export let canSelectDestination: boolean;
+  export let canSelectSource: boolean;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
@@ -103,14 +104,25 @@
         />
       </KeyValuePair>
     {/if}
-    <SelectAccountDropdown bind:selectedAccount />
+    {#if canSelectSource}
+      <SelectAccountDropdown bind:selectedAccount />
+    {:else}
+      <div>
+        <p class="label">
+          {selectedAccount?.name ?? $i18n.accounts.main}
+        </p>
+        <p class="account-identifier">
+          {selectedAccount?.identifier}
+        </p>
+      </div>
+    {/if}
   </div>
   <div class="wrapper info">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
   {#if canSelectDestination}
-    <SelecteDestinationAddress
+    <SelectDestinationAddress
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
     />
@@ -155,5 +167,9 @@
 
   .label {
     color: var(--label-color);
+  }
+
+  .account-identifier {
+    word-break: break-all;
   }
 </style>

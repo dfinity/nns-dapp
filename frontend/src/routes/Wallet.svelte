@@ -29,6 +29,7 @@
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
   import { layoutBackStore } from "../lib/stores/layout.store";
+  import IcpTransactionModal from "../lib/modals/accounts/IcpTransactionModal.svelte";
 
   const goBack = () =>
     routeStore.navigate({
@@ -145,7 +146,7 @@
 </Footer>
 
 {#if showNewTransactionModal}
-  <NewTransactionModal
+  <IcpTransactionModal
     on:nnsClose={() => (showNewTransactionModal = false)}
     selectedAccount={$selectedAccountStore.account}
   />

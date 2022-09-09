@@ -193,6 +193,7 @@ interface I18nAccounts {
   execute: string;
   select: string;
   manual: string;
+  no_account_select: string;
   current_balance_detail: string;
 }
 

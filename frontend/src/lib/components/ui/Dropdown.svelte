@@ -6,10 +6,11 @@
   export let selectedValue: string | undefined = undefined;
   export let name: string;
   export let testId: string | undefined = undefined;
+  export let disabled: boolean = false;
 </script>
 
 <div>
-  <select bind:value={selectedValue} {name} data-tid={testId}>
+  <select {disabled} bind:value={selectedValue} {name} data-tid={testId}>
     <slot />
   </select>
   <span class="icon">
@@ -33,7 +34,7 @@
     border-radius: var(--element-border-radius);
     box-shadow: var(--box-shadow);
 
-    padding: var(--padding-2x) var(--padding-3x);
+    padding: var(--padding-2x);
     // Click on <select> does not trigger "focus" on parent div.
     // https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within
     // Matches an element if the element or any of its descendants are focused.

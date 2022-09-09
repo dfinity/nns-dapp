@@ -41,14 +41,27 @@
   onDestroy(unsubscribe);
 </script>
 
-<Dropdown
-  name="account"
-  bind:selectedValue={selectedAccountIdentifier}
-  testId="select-account-dropdown"
->
-  {#each selectableAccounts as { identifier, name } (identifier)}
-    <DropdownItem value={identifier}>
-      {name ?? $i18n.accounts.main}
+{#if selectableAccounts.length === 0}
+  <Dropdown
+    name="account"
+    disabled
+    selectedValue="no-accounts"
+    testId="select-account-dropdown"
+  >
+    <DropdownItem value="no-accounts">
+      {$i18n.accounts.no_account_select}
     </DropdownItem>
-  {/each}
-</Dropdown>
+  </Dropdown>
+{:else}
+  <Dropdown
+    name="account"
+    bind:selectedValue={selectedAccountIdentifier}
+    testId="select-account-dropdown"
+  >
+    {#each selectableAccounts as { identifier, name } (identifier)}
+      <DropdownItem value={identifier}>
+        {name ?? $i18n.accounts.main}
+      </DropdownItem>
+    {/each}
+  </Dropdown>
+{/if}

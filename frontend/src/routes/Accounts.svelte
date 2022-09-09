@@ -105,7 +105,6 @@
   <AddAcountModal on:nnsClose={closeModal} />
 {/if}
 {#if modal === "NewTransaction"}
-  <!-- <NewTransactionModal on:nnsClose={closeModal} /> -->
   <IcpTransactionModal on:nnsClose={closeModal} />
 {/if}
 
