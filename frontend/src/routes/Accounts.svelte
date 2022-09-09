@@ -12,12 +12,10 @@
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
   import { TokenAmount } from "@dfinity/nns";
   import { formatICP, sumTokenAmounts } from "../lib/utils/icp.utils";
-  import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
   import Tooltip from "../lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
-  import TransactionModal from "../lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import IcpTransactionModal from "../lib/modals/accounts/IcpTransactionModal.svelte";
 
   let accounts: AccountsStore | undefined;

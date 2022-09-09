@@ -5,7 +5,6 @@
   import Footer from "../lib/components/common/Footer.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import {
     getAccountTransactions,
     routePathAccountIdentifier,

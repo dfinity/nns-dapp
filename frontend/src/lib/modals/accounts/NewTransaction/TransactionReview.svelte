@@ -7,7 +7,6 @@
   import { i18n } from "../../../stores/i18n";
   import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import type { NewTransaction } from "../../../types/transaction.context";
