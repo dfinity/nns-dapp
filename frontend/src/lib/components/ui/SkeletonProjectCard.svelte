@@ -1,21 +1,21 @@
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
   import SkeletonLogo from "./SkeletonLogo.svelte";
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <Card testId="skeleton-card">
   <div class="title" slot="start">
     <SkeletonLogo />
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="desc">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
   </div>
   <div class="fields">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
   </div>
 </Card>
 

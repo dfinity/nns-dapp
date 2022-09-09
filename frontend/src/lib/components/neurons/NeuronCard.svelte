@@ -1,18 +1,15 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
-    getStateInfo,
     hasJoinedCommunityFund,
     isHotKeyControllable,
     isSpawning,
     neuronStake,
   } from "../../utils/neuron.utils";
-  import type { StateInfo } from "../../utils/neuron.utils";
-  import ICPComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
@@ -29,12 +26,10 @@
   export let disabled: boolean = false;
   export let cardType: CardType = "card";
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
-  let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuronStake(neuron));
+  let neuronICP: TokenAmount;
+  $: neuronICP = TokenAmount.fromE8s({ amount: neuronStake(neuron) });
   let isHotKeyControl: boolean;
   $: isHotKeyControl = isHotKeyControllable({
     neuron,
@@ -70,17 +65,17 @@
     {#if isSpawning(neuron)}
       <IconStackedLineChart />
     {:else if proposerNeuron}
-      <ICPComponent
+      <AmountDisplay
         label={$i18n.neurons.voting_power}
-        icp={ICP.fromE8s(neuron.votingPower)}
+        amount={TokenAmount.fromE8s({ amount: neuron.votingPower })}
         detailed
       />
     {:else if neuronICP}
-      <ICPComponent icp={neuronICP} detailed />
+      <AmountDisplay amount={neuronICP} detailed />
     {/if}
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuron.state} />
 
   <NeuronStateRemainingTime
     state={neuron.state}

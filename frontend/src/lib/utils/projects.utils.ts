@@ -137,6 +137,9 @@ export const currentUserMaxCommitment = ({
     : remainingUserCommitment;
 };
 
+export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
+  swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+
 const isProjectOpen = (summary: SnsSummary): boolean =>
   summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
 // Checks whether the amount that the user wants to contiribute is lower than the minimum for the project.
@@ -161,12 +164,12 @@ const commitmentTooLarge = ({
 // plus the amount that all users have contributed so far
 // exceeds the maximum amount that the project can accept.
 export const commitmentExceedsAmountLeft = ({
-  summary: { swap, derived },
+  summary,
   amountE8s,
 }: {
   summary: SnsSummary;
   amountE8s: bigint;
-}): boolean => swap.init.max_icp_e8s - derived.buyer_total_icp_e8s < amountE8s;
+}): boolean => projectRemainingAmount(summary) < amountE8s;
 
 /**
  * To participate to a swap:

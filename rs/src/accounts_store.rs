@@ -239,6 +239,7 @@ pub struct AddPendingNotifySwapRequest {
 #[derive(CandidType)]
 pub enum AddPendingTransactionResponse {
     Ok,
+    NotAuthorized,
 }
 
 impl AccountsStore {
@@ -471,6 +472,11 @@ impl AccountsStore {
     ) -> AddPendingTransactionResponse {
         self.pending_transactions.insert((from, to), transaction_type);
         AddPendingTransactionResponse::Ok
+    }
+
+    pub fn check_pending_transaction_buyer(&mut self, caller: PrincipalId, buyer: PrincipalId) -> bool {
+        // TODO: To support hardware wallets, check that the buyer is either the caller's principal or the principal of a hardware wallet linked to the caller's account.
+        caller == buyer
     }
 
     // Get pending transaction

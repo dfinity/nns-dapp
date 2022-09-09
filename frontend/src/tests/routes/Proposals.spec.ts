@@ -88,7 +88,7 @@ describe("Proposals", () => {
       proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
       await waitFor(() =>
-        expect(getByTestId("proposals-loading")).not.toBeNull()
+        expect(getByTestId("proposals-spinner")).not.toBeNull()
       );
     });
 
@@ -107,7 +107,7 @@ describe("Proposals", () => {
       });
       afterEach(() => jest.clearAllMocks());
 
-      it("should render a spinner while loading neurons", async () => {
+      it("should render skeletons while loading neurons", async () => {
         const { getByTestId } = render(Proposals);
 
         await waitFor(() =>
@@ -129,6 +129,16 @@ describe("Proposals", () => {
       expect(
         getByText((secondProposal.proposal as Proposal).title as string)
       ).toBeInTheDocument();
+    });
+
+    it("should disable infinite scroll when all proposals loaded", async () => {
+      mockLoadProposals();
+
+      const { getByTestId } = render(Proposals);
+
+      await waitFor(() =>
+        expect(getByTestId("proposals-scroll-off")).not.toBeNull()
+      );
     });
 
     it("should not render not found text on init", () => {

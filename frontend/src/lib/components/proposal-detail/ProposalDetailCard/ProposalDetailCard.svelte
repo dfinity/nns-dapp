@@ -15,7 +15,7 @@
   let proposal: Proposal | undefined;
   let id: ProposalId | undefined;
   let title: string | undefined;
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let status: ProposalStatus = ProposalStatus.Unknown;
   let color: Color | undefined;
 
   $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));

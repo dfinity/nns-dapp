@@ -2,9 +2,9 @@
   import type { Account } from "../../types/account";
   import CardInfo from "../ui/CardInfo.svelte";
   import DateSeconds from "../ui/DateSeconds.svelte";
-  import ICP from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Identifier from "../ui/Identifier.svelte";
-  import type { ICP as ICPType } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import type {
     AccountIdentifierString,
     Transaction,
@@ -26,7 +26,7 @@
   let isSend: boolean;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
-  let displayAmount: ICPType;
+  let displayAmount: TokenAmount;
   let date: Date;
 
   $: account,
@@ -75,9 +75,9 @@
     <h3>{headline}</h3>
   </div>
 
-  <ICP
+  <AmountDisplay
     slot="end"
-    icp={displayAmount}
+    amount={displayAmount}
     sign={isReceive || toSelfTransaction ? "+" : "-"}
     detailed
   />

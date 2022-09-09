@@ -4,6 +4,7 @@ import { configure } from "@testing-library/svelte";
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
+import localStorageMock from "./src/tests/mocks/local-storage.mock";
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
@@ -25,7 +26,14 @@ process.env.FEATURE_FLAGS = JSON.stringify({
   VOTING_UI: "modern",
 });
 
+global.localStorage = localStorageMock;
+
 // testing-library setup
 configure({
   testIdAttribute: "data-tid",
 });
+
+const DOMPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+const { window } = new JSDOM("<!DOCTYPE html>");
+global.DOMPurify = DOMPurify(window);

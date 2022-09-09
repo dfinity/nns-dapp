@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
-  import Icp from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
@@ -26,9 +26,11 @@
   let myCommitment: bigint | undefined;
   $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
 
-  let myCommitmentIcp: ICP | undefined;
+  let myCommitmentIcp: TokenAmount | undefined;
   $: myCommitmentIcp =
-    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
+    myCommitment !== undefined
+      ? TokenAmount.fromE8s({ amount: myCommitment })
+      : undefined;
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
@@ -56,15 +58,16 @@
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
 {#if displayStatusSection}
-  <div class="wrapper" data-tid="sns-project-detail-status">
+  <div data-tid="sns-project-detail-status">
     <ProjectStatus />
 
-    <div class="content">
+    <div class="content content-cell-details">
       <ProjectCommitment />
 
       <ProjectTimeline />
     </div>
-    <div class="actions">
+
+    <div class="actions content-cell-details">
       {#if myCommitmentIcp !== undefined}
         <div>
           <KeyValuePair>
@@ -73,9 +76,7 @@
               summary={$projectDetailStore.summary}
               {swapCommitment}
             />
-            <svelte:fragment slot="value">
-              <Icp icp={myCommitmentIcp} singleLine />
-            </svelte:fragment>
+            <AmountDisplay slot="value" amount={myCommitmentIcp} singleLine />
           </KeyValuePair>
         </div>
       {/if}
@@ -88,13 +89,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  .wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-3x);
-  }
-
   .content {
     display: flex;
     flex-direction: column;
@@ -105,10 +99,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    padding-top: var(--padding-2x);
 
     @include media.min-width(medium) {
-      padding: 0;
       align-items: flex-start;
     }
   }

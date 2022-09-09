@@ -1,3 +1,4 @@
+import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
@@ -18,6 +19,7 @@ import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsStore } from "../stores/toasts.store";
 import type { Account } from "../types/account";
+import { LedgerErrorMessage } from "../types/ledger.errors";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { isController } from "../utils/canisters.utils";
@@ -25,7 +27,6 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "../utils/error.utils";
-import { convertNumberToICP } from "../utils/icp.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -70,7 +71,10 @@ export const createCanister = async ({
   account: Account;
 }): Promise<Principal | undefined> => {
   try {
-    const icpAmount = convertNumberToICP(amount);
+    const icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+    if (!(icpAmount instanceof TokenAmount)) {
+      throw new LedgerErrorMessage("error.amount_not_valid");
+    }
     assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
@@ -102,7 +106,10 @@ export const topUpCanister = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
-    const icpAmount = convertNumberToICP(amount);
+    const icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+    if (!(icpAmount instanceof TokenAmount)) {
+      throw new LedgerErrorMessage("error.amount_not_valid");
+    }
     assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);

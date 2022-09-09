@@ -13,9 +13,12 @@ import {
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
+  anonymizeSnsSummary,
+  anonymizeSnsSwapCommitment,
   anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 import { enumKeys } from "../utils/enum.utils";
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
@@ -131,6 +134,7 @@ const anonymiseStoreState = async () => {
     transaction,
     selectedAccount,
     selectedProposal,
+    selectedProject,
   } = get(debugStore);
 
   return {
@@ -190,6 +194,12 @@ const anonymiseStoreState = async () => {
           })
       ),
     },
+    selectedProject: {
+      summary: await anonymizeSnsSummary(selectedProject.summary),
+      swapCommitment: await anonymizeSnsSwapCommitment(
+        selectedProject.swapCommitment
+      ),
+    },
   };
 };
 
@@ -203,10 +213,9 @@ export const generateDebugLog = async (logType: LogType) => {
   const anonymise = [LogType.Console, LogType.File].includes(logType);
   const saveToFile = [LogType.File, LogType.FileOriginal].includes(logType);
   const state = anonymise ? await anonymiseStoreState() : get(debugStore);
-  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
 
   if (logType === LogType.ConsoleOriginalObject) {
-    console.log(date, state);
+    logWithTimestamp(state);
     return;
   }
 
@@ -215,11 +224,13 @@ export const generateDebugLog = async (logType: LogType) => {
   });
 
   if (saveToFile) {
+    const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
+
     saveToJSONFile({
       blob: new Blob([stringifiedState]),
       filename: `${date}_nns-local-state.json`,
     });
   } else {
-    console.log(date, stringifiedState);
+    logWithTimestamp(stringifiedState);
   }
 };

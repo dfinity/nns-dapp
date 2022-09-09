@@ -7,12 +7,12 @@
   import { proposalPayloadsStore } from "../../../stores/proposals.store";
 
   export let proposalId: ProposalId;
-  export let nnsFunctionId: number;
+  export let nnsFunctionKey: string;
 
   // Source of indexes and names: https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L349
   let nnsFunctionName: string;
   $: nnsFunctionName =
-    $i18n.execute_nns_functions[nnsFunctionId] ??
+    $i18n.nns_functions[nnsFunctionKey] ??
     $i18n.proposal_detail.unknown_nns_function;
 
   let payload: object | undefined | null;
@@ -22,6 +22,8 @@
       proposalId,
     });
   }
+
+  // TODO(L2-965): delete legacy component - duplicated by the new component <ProposalPayload />
 </script>
 
 <dt>{$i18n.proposal_detail.nns_function_name}</dt>

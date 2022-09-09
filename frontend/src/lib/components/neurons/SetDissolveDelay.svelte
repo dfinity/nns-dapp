@@ -60,7 +60,7 @@
       })}
     </p>
 
-    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
+    {#if neuron.state === NeuronState.Locked && neuron.dissolveDelaySeconds}
       <h5>{$i18n.neurons.current_dissolve_delay}</h5>
       <p class="duration">
         {@html valueSpan(secondsToDuration(neuron.dissolveDelaySeconds))} - {$i18n

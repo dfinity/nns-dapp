@@ -335,6 +335,18 @@ fn add_and_complete_multiple_pending_transactions() {
 }
 
 #[test]
+fn only_caller_can_add_pending_transaction() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let buyer2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let mut store = setup_test_store();
+
+    let is_allowed1 = store.check_pending_transaction_buyer(buyer, buyer);
+    assert!(is_allowed1);
+    let is_allowed2 = store.check_pending_transaction_buyer(buyer, buyer2);
+    assert!(!is_allowed2)
+}
+
+#[test]
 fn rename_sub_account() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();

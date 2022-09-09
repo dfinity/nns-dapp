@@ -15,11 +15,14 @@
   $: ({ proposer, id, url, topic } = mapProposalInfo(proposalInfo));
 
   let modalOpen = false;
+
+  // TODO(L2-965): delete legacy component
+  // TODO(L2-974): where does the url finds place in new design?
 </script>
 
 <div>
   {#if url}
-    <a target="_blank" href={url}>{url}</a>
+    <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
   {/if}
 
   {#if proposer !== undefined}

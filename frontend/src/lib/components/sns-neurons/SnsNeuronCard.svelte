@@ -1,20 +1,18 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import type { CardType } from "../../types/card";
-  import type { StateInfo } from "../../utils/neuron.utils";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
-    getSnsStateInfo,
     isUserHotkey,
   } from "../../utils/sns-neuron.utils";
-  import IcpComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
@@ -35,11 +33,14 @@
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
+  let neuronStake: TokenAmount;
+  $: neuronStake = TokenAmount.fromE8s({
+    amount: getSnsNeuronStake(neuron),
+    token: $snsTokenSymbolSelectedStore,
+  });
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getSnsStateInfo(neuron);
+  let neuronState: NeuronState;
+  $: neuronState = getSnsNeuronState(neuron);
 
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
@@ -57,14 +58,10 @@
   </div>
 
   <div slot="end" class="currency">
-    <IcpComponent
-      icp={neuronICP}
-      detailed
-      label={$snsTokenSymbolSelectedStore}
-    />
+    <AmountDisplay amount={neuronStake} detailed />
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuronState} />
 
   <NeuronStateRemainingTime
     state={getSnsNeuronState(neuron)}

@@ -32,7 +32,7 @@ describe("currentSnsTokenLabelStore", () => {
         : undefined;
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
-    expect(expectedToken).toBe(symbol);
+    expect(expectedToken?.symbol).toBe(symbol);
   });
 
   it("returns undefined if selected project is NNS", () => {

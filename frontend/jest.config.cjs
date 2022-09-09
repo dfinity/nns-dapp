@@ -23,4 +23,5 @@ module.exports = {
   transformIgnorePatterns: [
     "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
   ],
+  setupFiles: ["fake-indexeddb/auto"],
 };

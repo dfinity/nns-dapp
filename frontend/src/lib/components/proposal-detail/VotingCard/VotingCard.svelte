@@ -8,7 +8,7 @@
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
+  import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
@@ -18,6 +18,8 @@
     voteInProgressStore,
     type VoteInProgress,
   } from "../../../stores/voting.store";
+  import { VOTING_UI } from "../../../constants/environment.constants";
+  import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;
 
@@ -72,16 +74,31 @@
     unsubscribe();
     votingNeuronSelectStore.reset();
   });
+
+  // TODO(L2-965): delete legacy component <CardInfo />
 </script>
 
 {#if visible}
-  <CardInfo>
-    <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect {proposalInfo} {voteInProgress} />
-    <VotingConfirmationToolbar
-      {proposalInfo}
-      {voteInProgress}
-      on:nnsConfirm={vote}
-    />
-  </CardInfo>
+  {#if VOTING_UI === "legacy"}
+    <CardInfo>
+      <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
+      <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteInProgress}
+        on:nnsConfirm={vote}
+        layout="legacy"
+      />
+    </CardInfo>
+  {:else}
+    <BottomSheet>
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteInProgress}
+        on:nnsConfirm={vote}
+        layout="modern"
+      />
+      <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+    </BottomSheet>
+  {/if}
 {/if}

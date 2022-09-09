@@ -17,10 +17,6 @@ import {
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
 
-jest.mock("../../lib/utils/html.utils", () => ({
-  sanitizeHTML: (value) => Promise.resolve(value),
-}));
-
 describe("Accounts", () => {
   let accountsStoreMock: jest.SpyInstance;
 

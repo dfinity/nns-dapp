@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal 77051
+* Fix android issues with modal.
+* Add pending transaction state in canister.
+
 ## Proposal 76202
 * sanitize proposal title and account identifier for placeholders
 

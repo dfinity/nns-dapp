@@ -13,21 +13,21 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.NodeProviderRewards,
   ],
   rewards: [
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_INELIGIBLE,
+    ProposalRewardStatus.AcceptVotes,
+    ProposalRewardStatus.ReadyToSettle,
+    ProposalRewardStatus.Settled,
+    ProposalRewardStatus.Ineligible,
   ],
-  status: [ProposalStatus.PROPOSAL_STATUS_OPEN],
+  status: [ProposalStatus.Open],
   excludeVotedProposals: false,
   lastAppliedFilter: undefined,
 };
 
 export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
-  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: Color.SUCCESS,
-  [ProposalStatus.PROPOSAL_STATUS_OPEN]: Color.WARNING,
-  [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
+  [ProposalStatus.Executed]: Color.SUCCESS,
+  [ProposalStatus.Open]: Color.WARNING,
+  [ProposalStatus.Unknown]: undefined,
+  [ProposalStatus.Rejected]: undefined,
+  [ProposalStatus.Accepted]: undefined,
+  [ProposalStatus.Failed]: undefined,
 };

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type {
-  ICP,
   LedgerCanister,
   ListProposalsRequest,
   ListProposalsResponse,
@@ -97,7 +96,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
     principal,
     ledgerCanister,
   }: {
-    stake: ICP;
+    stake: bigint;
     principal: Principal;
     ledgerCanister: LedgerCanister;
   }): Promise<NeuronId> => {

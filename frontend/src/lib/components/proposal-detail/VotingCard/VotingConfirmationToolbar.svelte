@@ -12,12 +12,13 @@
   import { busy } from "../../../stores/busy.store";
   import type { VoteInProgress } from "../../../stores/voting.store";
   import Spinner from "../../ui/Spinner.svelte";
-  import { sanitizeHTML } from "../../../utils/html.utils";
+  import { sanitize } from "../../../utils/html.utils";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
   export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let layout: "legacy" | "modern";
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -27,7 +28,7 @@
   let total: bigint;
   let disabled: boolean = true;
   let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote = Vote.YES;
+  let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
@@ -40,11 +41,11 @@
     voteInProgress !== undefined;
 
   const showAdoptConfirmation = () => {
-    selectedVoteType = Vote.YES;
+    selectedVoteType = Vote.Yes;
     showConfirmationModal = true;
   };
   const showRejectConfirmation = () => {
-    selectedVoteType = Vote.NO;
+    selectedVoteType = Vote.No;
     showConfirmationModal = true;
   };
   const cancel = () => (showConfirmationModal = false);
@@ -55,37 +56,27 @@
     });
   };
 
-  let sanitizedTitle = "";
-  let sanitizedTopic = "";
-  $: title,
-    topic,
-    (async () => {
-      const [cleanTitle, cleanTopic] = await Promise.all([
-        sanitizeHTML(title ?? ""),
-        sanitizeHTML(topic ?? ""),
-      ]);
-
-      sanitizedTopic = cleanTopic;
-      sanitizedTitle = cleanTitle;
-    })();
+  // TODO(L2-965): delete question
 </script>
 
-<p class="question">
-  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-    $id: `${id ?? ""}`,
-    $title: sanitizedTitle,
-    $topic: sanitizedTopic,
-  })}
-</p>
+{#if layout === "legacy"}
+  <p class="question">
+    {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
+      $id: `${id ?? ""}`,
+      $title: sanitize(title ?? ""),
+      $topic: sanitize(topic ?? ""),
+    })}
+  </p>
+{/if}
 
-<div role="toolbar">
+<div role="toolbar" class={`${layout}`} data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary full-width"
+    class="success small"
   >
-    {#if voteInProgress?.vote === Vote.YES}
+    {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.adopt}
@@ -95,9 +86,9 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger full-width"
+    class="danger small"
   >
-    {#if voteInProgress?.vote === Vote.NO}
+    {#if voteInProgress?.vote === Vote.No}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.reject}
@@ -115,15 +106,38 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   [role="toolbar"] {
-    margin-top: var(--padding);
+    padding: var(--padding) 0 0;
 
     display: flex;
     gap: var(--padding);
+
+    &.modern {
+      padding: var(--padding-2x) var(--padding-2x) 0;
+      justify-content: center;
+      gap: var(--padding-2x);
+
+      @include media.min-width(large) {
+        padding: 0;
+        justify-content: flex-start;
+        gap: var(--padding);
+      }
+    }
   }
 
   .question {
-    margin: 0 0 var(--padding-2x);
+    margin: var(--padding-4x) 0 var(--padding-2x);
     word-break: break-word;
+  }
+
+  button {
+    min-width: calc(48px + (2 * var(--padding-2x)));
+    width: calc(100% - (2 * var(--padding)));
+
+    @include media.min-width(small) {
+      width: inherit;
+    }
   }
 </style>

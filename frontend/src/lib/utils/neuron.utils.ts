@@ -58,27 +58,27 @@ type StateMapper = {
   [key: number]: StateInfo;
 };
 export const stateTextMapper: StateMapper = {
-  [NeuronState.LOCKED]: {
+  [NeuronState.Locked]: {
     textKey: "locked",
     Icon: IconLockClock,
     status: "ok",
   },
-  [NeuronState.UNSPECIFIED]: {
+  [NeuronState.Unspecified]: {
     textKey: "unspecified",
     status: "ok",
   },
-  [NeuronState.DISSOLVED]: {
+  [NeuronState.Dissolved]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
     status: "ok",
   },
-  [NeuronState.DISSOLVING]: {
+  [NeuronState.Dissolving]: {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
     color: "var(--warning-emphasis)",
   },
-  [NeuronState.SPAWNING]: {
+  [NeuronState.Spawning]: {
     textKey: "spawning",
     Icon: IconHistoryToggleOff,
     status: "spawning",
@@ -127,7 +127,7 @@ export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
-  neuron.state === NeuronState.DISSOLVING &&
+  neuron.state === NeuronState.Dissolving &&
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
@@ -321,7 +321,7 @@ export const isEnoughMaturityToSpawn = ({
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>
-  neuron.state === NeuronState.SPAWNING;
+  neuron.state === NeuronState.Spawning;
 
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({

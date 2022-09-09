@@ -48,7 +48,7 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(en.status.PROPOSAL_STATUS_OPEN)).toBeInTheDocument();
+    expect(getByText(en.status.Open)).toBeInTheDocument();
   });
 
   it("should render a proposer", () => {
@@ -119,14 +119,14 @@ describe("ProposalCard", () => {
   it("should render a specific color for the status", () => {
     proposalsFiltersStore.filterStatus([
       ...DEFAULT_PROPOSALS_FILTERS.status,
-      ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+      ProposalStatus.Executed,
     ]);
 
     const { queryByTestId } = render(ProposalCard, {
       props: {
         proposalInfo: {
           ...mockProposals[1],
-          status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+          status: ProposalStatus.Executed,
         },
       },
     });
@@ -145,7 +145,7 @@ describe("ProposalCard", () => {
           ...mockProposals[0],
           ballots: [
             {
-              vote: Vote.YES,
+              vote: Vote.Yes,
             } as Ballot,
           ],
         },

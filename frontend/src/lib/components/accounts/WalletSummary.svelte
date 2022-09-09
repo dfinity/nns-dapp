@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "../../utils/transactions.utils";
   import { i18n } from "../../stores/i18n";
-  import ICPComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Identifier from "../ui/Identifier.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { getContext } from "svelte";
@@ -12,7 +13,6 @@
   import { formatICP } from "../../utils/icp.utils";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { ICP } from "@dfinity/nns";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -24,8 +24,10 @@
     mainName: $i18n.accounts.main,
   });
 
-  let accountBalance: ICP;
-  $: accountBalance = $store.account?.balance ?? (ICP.fromString("0") as ICP);
+  let accountBalance: TokenAmount;
+  $: accountBalance =
+    $store.account?.balance ??
+    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
 
   let detailedICP: string;
   $: detailedICP = formatICP({
@@ -42,7 +44,7 @@
       $amount: detailedICP,
     })}
   >
-    <ICPComponent icp={accountBalance} />
+    <AmountDisplay amount={accountBalance} />
   </Tooltip>
 </div>
 <div class="address">

@@ -32,60 +32,87 @@ jest.mock("../../lib/services/sns.services", () => {
 });
 
 describe("ProjectDetail", () => {
-  jest
-    .spyOn(routeStore, "subscribe")
-    .mockImplementation(
-      mockRouteStoreSubscribe(
-        `/#/project/${mockSnsFullProject.rootCanisterId.toText()}`
-      )
-    );
+  describe("present project in store", () => {
+    jest
+      .spyOn(routeStore, "subscribe")
+      .mockImplementation(
+        mockRouteStoreSubscribe(
+          `/#/project/${mockSnsFullProject.rootCanisterId.toText()}`
+        )
+      );
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+    beforeEach(() => {
+      jest.clearAllMocks();
 
-    snsQueryStore.setData(
-      snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
+      snsQueryStore.setData(
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        })
+      );
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         certified: true,
-      })
-    );
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-      certified: true,
+      });
+    });
+
+    afterEach(() => {
+      snsQueryStore.reset();
+      snsSwapCommitmentsStore.reset();
+      jest.clearAllMocks();
+    });
+    it("should load summary", () => {
+      render(ProjectDetail);
+
+      waitFor(() => expect(loadSnsSummary).toBeCalled());
+    });
+
+    it("should load swap state", () => {
+      render(ProjectDetail);
+
+      waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+    });
+
+    it("should render info section", async () => {
+      const { queryByTestId } = render(ProjectDetail);
+
+      await waitFor(() =>
+        expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
+      );
+    });
+
+    it("should render status section", async () => {
+      const { queryByTestId } = render(ProjectDetail);
+
+      await waitFor(() =>
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
+      );
     });
   });
 
-  afterEach(() => {
-    snsQueryStore.reset();
-    snsSwapCommitmentsStore.reset();
-    jest.clearAllMocks();
+  describe("invalid root canister id", () => {
+    jest
+      .spyOn(routeStore, "subscribe")
+      .mockImplementation(
+        mockRouteStoreSubscribe("/#/project/invalid-project")
+      );
+    jest.spyOn(routeStore, "replace");
+    it("should rediret to launchpad", () => {
+      render(ProjectDetail);
+
+      waitFor(() => expect(routeStore.replace).toBeCalled());
+    });
   });
 
-  it("should load summary", () => {
-    render(ProjectDetail);
+  describe("not found canister id", () => {
+    jest
+      .spyOn(routeStore, "subscribe")
+      .mockImplementation(mockRouteStoreSubscribe("/#/project/aaaaa-aa"));
+    jest.spyOn(routeStore, "replace");
+    it("should rediret to launchpad", () => {
+      render(ProjectDetail);
 
-    waitFor(() => expect(loadSnsSummary).toBeCalled());
-  });
-
-  it("should load swap state", () => {
-    render(ProjectDetail);
-
-    waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
-  });
-
-  it("should render info section", async () => {
-    const { queryByTestId } = render(ProjectDetail);
-
-    await waitFor(() =>
-      expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
-    );
-  });
-
-  it("should render status section", async () => {
-    const { queryByTestId } = render(ProjectDetail);
-
-    await waitFor(() =>
-      expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
-    );
+      waitFor(() => expect(routeStore.replace).toBeCalled());
+    });
   });
 });

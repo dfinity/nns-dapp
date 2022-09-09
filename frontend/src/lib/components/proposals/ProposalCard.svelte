@@ -19,10 +19,11 @@
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
+  // TODO(L2-965): delete property and use modern
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "../ui/Value.svelte";
 
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: Color | undefined;
@@ -63,8 +64,8 @@
 </script>
 
 <!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
-<li class:hidden>
-  {#if !hide}
+{#if !hide}
+  <li class:hidden>
     {#if layout === "legacy"}
       <Card role="link" on:click={showProposal} testId="proposal-card">
         <div slot="start" class="title-container">
@@ -107,8 +108,8 @@
         </p>
       </Card>
     {/if}
-  {/if}
-</li>
+  </li>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/text";

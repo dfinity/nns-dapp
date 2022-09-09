@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
-  import Icp from "./ICP.svelte";
+  import type { TokenAmount } from "@dfinity/nns";
+  import AmountDisplay from "./AmountDisplay.svelte";
 
-  export let icp: ICP;
+  export let amount: TokenAmount;
 </script>
 
-<span><slot /> <Icp singleLine {icp} /></span>
+<span><slot /> <AmountDisplay singleLine {amount} /></span>
