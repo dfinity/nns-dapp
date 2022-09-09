@@ -200,7 +200,7 @@
         "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "VOTING_UI": "modern"
         }
       },
