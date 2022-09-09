@@ -8,7 +8,7 @@
   import type { AuthStore } from "./lib/stores/auth.store";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
-  import Toasts from "./lib/components/ui/Toasts.svelte";
+  import { Toasts } from "@dfinity/gix-components";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { initApp } from "./lib/services/app.services";

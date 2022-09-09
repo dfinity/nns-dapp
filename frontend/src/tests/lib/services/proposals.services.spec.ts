@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { toastsStore, type ToastMsg } from "@dfinity/gix-components";
 import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
@@ -27,18 +28,19 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsFunctions from "../../../lib/stores/toasts.store";
 import { voteInProgressStore } from "../../../lib/stores/voting.store";
-import type { ToastMsg } from "../../../lib/types/toast";
 import { waitForMilliseconds } from "../../../lib/utils/utils";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
+import {toastsReset} from '../../../lib/stores/toasts.store';
 
 describe("proposals-services", () => {
   const firstErrorMessage = () => {
@@ -269,7 +271,7 @@ describe("proposals-services", () => {
       });
 
       it("should not display errors on successful vote registration", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
         await registerVotes({
           neuronIds,
           proposalInfo,
@@ -360,7 +362,7 @@ describe("proposals-services", () => {
         afterEach(() => {
           jest.clearAllMocks();
 
-          toastsStore.reset();
+          toastsReset();
           voteInProgressStore.reset();
           neuronsStore.reset();
         });
@@ -416,8 +418,8 @@ describe("proposals-services", () => {
             ({ spinner }) => spinner === true
           );
           expect(message).toBeDefined();
-          expect(message?.labelKey).toEqual(
-            "proposal_detail__vote.vote_adopt_in_progress"
+          expect(message?.text).toEqual(
+            en.proposal_detail__vote.vote_adopt_in_progress
           );
         });
 
@@ -435,8 +437,8 @@ describe("proposals-services", () => {
             ({ spinner }) => spinner === true
           );
           expect(message).toBeDefined();
-          expect(message?.labelKey).toEqual(
-            "proposal_detail__vote.vote_reject_in_progress"
+          expect(message?.text).toEqual(
+            en.proposal_detail__vote.vote_reject_in_progress
           );
         });
 
@@ -477,7 +479,7 @@ describe("proposals-services", () => {
 
       const resetToasts = () => {
         const toasts = get(toastsStore);
-        toasts.forEach(() => toastsStore.hide());
+        toasts.forEach(({ id }) => toastsStore.hide(id));
       };
 
       beforeEach(resetToasts);
@@ -499,7 +501,7 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error.labelKey).toBe("error.register_vote_unknown");
+        expect(error.text).toBe(en.error.register_vote_unknown);
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -517,10 +519,10 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error.labelKey).toBe("error.register_vote");
+        expect(error.text).toBe(en.error.register_vote);
       });
 
-      it("should display proopsalId in error detail", async () => {
+      it("should display propsalId in error detail", async () => {
         jest
           .spyOn(api, "registerVote")
           .mockImplementation(mockRegisterVoteError);
@@ -535,7 +537,7 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error?.substitutions?.$proposalId).toBe("0");
+        expect(error?.text).toContain("0");
       });
 
       it("should show reason per neuron Error in detail", async () => {
@@ -553,7 +555,9 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
+        for (const neuronId of neuronIds) {
+          expect(error?.text).toContain(`${neuronId}`);
+        }
       });
 
       it("should show reason per neuron GovernanceError in detail", async () => {
@@ -571,9 +575,9 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error?.detail?.split(/governance-error/).length).toBe(
-          neuronIds.length + 1
-        );
+        for (const neuronId of neuronIds) {
+          expect(error?.text).toContain(`${neuronId}`);
+        }
       });
     });
   });
@@ -665,7 +669,7 @@ describe("proposals-services", () => {
         .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
 
       spyToastError = jest
-        .spyOn(toastsStore, "error")
+        .spyOn(toastsFunctions, "toastsError")
         .mockImplementation(jest.fn());
     });
 

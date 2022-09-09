@@ -24,8 +24,8 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
     toastsStore: {
-      show: jest.fn(),
-      success: jest.fn(),
+      toastsShow: jest.fn(),
+      toastsSuccess: jest.fn(),
     },
   };
 });

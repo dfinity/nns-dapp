@@ -2,7 +2,7 @@
   import type { ProposalId } from "@dfinity/nns";
   import Json from "../../common/Json.svelte";
   import { loadProposalPayload } from "../../../services/proposals.services";
-  import Spinner from "../../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "../../../stores/i18n";
   import { proposalPayloadsStore } from "../../../stores/proposals.store";
 

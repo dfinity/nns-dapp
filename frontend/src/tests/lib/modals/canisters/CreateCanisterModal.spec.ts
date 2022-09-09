@@ -11,7 +11,7 @@ import {
   getIcpToCyclesExchangeRate,
 } from "../../../../lib/services/canisters.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
+import { toastsShow } from "../../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -32,10 +32,8 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -96,7 +94,7 @@ describe("CreateCanisterModal", () => {
 
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();
-    expect(toastsStore.show).toBeCalled();
+    expect(toastsShow).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.

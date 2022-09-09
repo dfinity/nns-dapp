@@ -69,11 +69,9 @@ jest.mock("../../../../lib/services/accounts.services", () => {
 
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      error: jest.fn(),
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsError: jest.fn(),
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 

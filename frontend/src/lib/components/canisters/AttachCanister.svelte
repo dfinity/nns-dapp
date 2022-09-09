@@ -4,7 +4,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { attachCanister } from "../../services/canisters.services";
   import { createEventDispatcher } from "svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import PrincipalInput from "../ui/PrincipalInput.svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
 
@@ -14,7 +14,7 @@
   const attach = async () => {
     // Edge case: button is only enabled when principal is defined
     if (principal === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.principal_not_valid",
       });
       return;
@@ -23,7 +23,7 @@
     const { success } = await attachCanister(principal);
     stopBusy("attach-canister");
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "canisters.link_canister_success",
         substitutions: {
           $canisterId: principal.toText(),
