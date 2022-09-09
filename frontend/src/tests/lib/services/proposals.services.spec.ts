@@ -29,7 +29,9 @@ import {
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
 import * as toastsFunctions from "../../../lib/stores/toasts.store";
+import { toastsReset } from "../../../lib/stores/toasts.store";
 import { voteInProgressStore } from "../../../lib/stores/voting.store";
+import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import { waitForMilliseconds } from "../../../lib/utils/utils";
 import {
   mockIdentityErrorMsg,
@@ -40,7 +42,6 @@ import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
-import {toastsReset} from '../../../lib/stores/toasts.store';
 
 describe("proposals-services", () => {
   const firstErrorMessage = () => {
@@ -161,14 +162,14 @@ describe("proposals-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should show error message in details", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "show");
+      const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
 
       await loadProposal({
         proposalId: BigInt(0),
         setProposal: jest.fn,
       });
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
+      expect(toastsShow).toBeCalled();
+      expect(toastsShow).toBeCalledWith({
         detail: 'id: "0". test-message',
         labelKey: "error.proposal_not_found",
         level: "error",
@@ -419,7 +420,13 @@ describe("proposals-services", () => {
           );
           expect(message).toBeDefined();
           expect(message?.text).toEqual(
-            en.proposal_detail__vote.vote_adopt_in_progress
+            replacePlaceholders(
+              en.proposal_detail__vote.vote_adopt_in_progress,
+              {
+                $topic: "System Canister Management",
+                $proposalId: "0",
+              }
+            )
           );
         });
 
@@ -438,7 +445,13 @@ describe("proposals-services", () => {
           );
           expect(message).toBeDefined();
           expect(message?.text).toEqual(
-            en.proposal_detail__vote.vote_reject_in_progress
+            replacePlaceholders(
+              en.proposal_detail__vote.vote_reject_in_progress,
+              {
+                $topic: "System Canister Management",
+                $proposalId: "0",
+              }
+            )
           );
         });
 
@@ -501,7 +514,7 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error.text).toBe(en.error.register_vote_unknown);
+        expect(error.text).toContain(en.error.register_vote_unknown);
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -519,7 +532,12 @@ describe("proposals-services", () => {
 
         const error = firstErrorMessage();
 
-        expect(error.text).toBe(en.error.register_vote);
+        expect(error.text).toContain(
+          replacePlaceholders(en.error.register_vote, {
+            $topic: "System Canister Management",
+            $proposalId: "0",
+          })
+        );
       });
 
       it("should display propsalId in error detail", async () => {
