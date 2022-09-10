@@ -1,5 +1,6 @@
 import {
   ICP,
+  TokenAmount,
   type Ballot,
   type Followees,
   type KnownNeuron,
@@ -54,7 +55,7 @@ export const anonymizeAmount = async (
     : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
 
 export const anonymizeICP = async (
-  icp: ICP | undefined
+  icp: ICP | TokenAmount | undefined
 ): Promise<ICP | undefined> =>
   icp === undefined
     ? undefined

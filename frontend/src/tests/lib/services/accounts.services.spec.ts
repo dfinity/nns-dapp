@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as accountsApi from "../../../lib/api/accounts.api";
 import * as ledgerApi from "../../../lib/api/ledger.api";
@@ -102,7 +102,7 @@ describe("accounts-services", () => {
     const transferICPParams: TransactionStore = {
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: ICP.fromE8s(BigInt(1)),
+      amount: TokenAmount.fromE8s({ amount: BigInt(1) }),
     };
 
     it("should transfer ICP", async () => {

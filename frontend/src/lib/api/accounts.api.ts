@@ -1,5 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+} from "@dfinity/nns";
 import type {
   AccountDetails,
   AccountIdentifierString,
@@ -21,12 +26,14 @@ export const loadAccounts = async ({
   certified: boolean;
 }): Promise<AccountsStore> => {
   // Helper
-  const getAccountBalance = async (identifierString: string): Promise<ICP> => {
+  const getAccountBalance = async (
+    identifierString: string
+  ): Promise<TokenAmount> => {
     const e8sBalance = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(identifierString),
       certified,
     });
-    return ICP.fromE8s(e8sBalance);
+    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
   };
 
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);

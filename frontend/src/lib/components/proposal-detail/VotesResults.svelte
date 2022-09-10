@@ -1,20 +1,9 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
-  import { Vote } from "@dfinity/nns";
+  import type { ProposalInfo } from "@dfinity/nns";
   import CardInfo from "../ui/CardInfo.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
-  import IconThumbDown from "../../icons/IconThumbDown.svelte";
-  import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import {
-    formatVotingPower,
-    votedNeuronDetails,
-    type CompactNeuronInfo,
-  } from "../../utils/neuron.utils";
-  import Value from "../ui/Value.svelte";
   import type { SvelteComponent } from "svelte";
   import { VOTING_UI } from "../../constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
@@ -28,33 +17,6 @@
   $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   $: sum = yes + no;
-
-  const voteIconMapper = {
-    [Vote.No]: IconThumbDown,
-    [Vote.Yes]: IconThumbUp,
-    [Vote.Unspecified]: undefined,
-  };
-
-  const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
-    const stringMapper = {
-      [Vote.No]: $i18n.core.no,
-      [Vote.Yes]: $i18n.core.yes,
-      [Vote.Unspecified]: "",
-    };
-
-    return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
-      $neuronId: neuron.toString(),
-      $vote: stringMapper[vote],
-    });
-  };
-
-  let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: {
-    neuronsVotedForProposal = votedNeuronDetails({
-      neurons: $definedNeuronsStore,
-      proposal: proposalInfo,
-    });
-  }
 
   // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
   let cmp: typeof SvelteComponent =
@@ -81,27 +43,6 @@
       {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
     </h4>
   </div>
-
-  {#if neuronsVotedForProposal.length}
-    <h4 class="my-votes">{$i18n.proposal_detail.my_votes}</h4>
-    <ul>
-      {#each neuronsVotedForProposal as neuron}
-        <li
-          data-tid="neuron-data"
-          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
-          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
-        >
-          <p class="value">{neuron.id}</p>
-          <p class="vote-details">
-            <Value>{formatVotingPower(neuron.votingPower)}</Value>
-            {#if voteIconMapper[neuron.vote]}
-              <svelte:component this={voteIconMapper[neuron.vote]} />
-            {/if}
-          </p>
-        </li>
-      {/each}
-    </ul>
-  {/if}
 </svelte:component>
 
 <style lang="scss">
@@ -123,11 +64,11 @@
       text-align: center;
 
       &.yes {
-        color: var(--primary-shade);
+        color: var(--positive-emphasis);
       }
 
       &.no {
-        color: var(--negative-emphasis-light);
+        color: var(--negative-emphasis);
       }
 
       span {
@@ -145,7 +86,7 @@
     .progressbar {
       position: relative;
       height: 10px;
-      background: var(--negative-emphasis-light);
+      background: var(--negative-emphasis);
 
       border-radius: var(--border-radius);
       overflow: hidden;
@@ -156,29 +97,20 @@
         bottom: 0;
         left: 0;
 
-        background: var(--primary-gradient-fallback);
-        background: var(--primary-gradient);
+        // TODO(L2-931): delete legacy style
+        --positive-emphasis-gradient: linear-gradient(
+          99.27deg,
+          var(--positive-emphasis) -0.11%,
+          #026500 100.63%
+        );
+        --positive-emphasis-gradient-fallback: var(--positive-emphasis);
+        --positive-emphasis-gradient-contrast: var(
+          --positive-emphasis-contrast
+        );
+
+        background: var(--positive-emphasis-gradient-fallback);
+        background: var(--positive-emphasis-gradient);
       }
-    }
-  }
-
-  .my-votes {
-    padding-top: var(--padding-3x);
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: flex;
-    justify-content: space-between;
-
-    .vote-details {
-      display: flex;
-      align-items: center;
-      gap: var(--padding);
     }
   }
 

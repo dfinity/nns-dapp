@@ -9,6 +9,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const AddPendingTransactionResponse = IDL.Variant({
     Ok: IDL.Null,
+    NotAuthorized: IDL.Null,
   });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,

@@ -1,13 +1,12 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import VotesCard from "./VotesCard.svelte";
+  import VotesResults from "./VotesResults.svelte";
+  import MyVotes from "./MyVotes.svelte";
   import VotingCard from "./VotingCard/VotingCard.svelte";
-  import IneligibleNeuronsCard from "./IneligibleNeuronsCard.svelte";
 
   export let proposalInfo: ProposalInfo;
 </script>
 
-<VotesCard {proposalInfo} />
+<VotesResults {proposalInfo} />
 <VotingCard {proposalInfo} />
-<IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />
+<MyVotes {proposalInfo} />

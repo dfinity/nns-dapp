@@ -14,7 +14,9 @@ export interface AddPendingNotifySwapRequest {
   buyer_sub_account: [] | [SubAccountArray];
   buyer: Principal;
 }
-export type AddPendingTransactionResponse = { Ok: null };
+export type AddPendingTransactionResponse =
+  | { Ok: null }
+  | { NotAuthorized: null };
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;

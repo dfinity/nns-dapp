@@ -1,4 +1,4 @@
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister, TokenAmount } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { sendICP, transactionFee } from "../../../lib/api/ledger.api";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
@@ -9,7 +9,7 @@ describe("ledger-api", () => {
     let spyTransfer;
 
     const { identifier: accountIdentifier } = mockMainAccount;
-    const amount = ICP.fromE8s(BigInt(11_000));
+    const amount = TokenAmount.fromE8s({ amount: BigInt(11_000) });
 
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();

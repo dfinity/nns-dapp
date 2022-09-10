@@ -18,6 +18,7 @@
 
   export let proposalInfo: ProposalInfo;
   export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let layout: "legacy" | "modern";
 
   let id: ProposalId | undefined;
   let topic: string | undefined;
@@ -54,22 +55,26 @@
       voteType: selectedVoteType,
     });
   };
+
+  // TODO(L2-965): delete question
 </script>
 
-<p class="question">
-  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-    $id: `${id ?? ""}`,
-    $title: sanitize(title ?? ""),
-    $topic: sanitize(topic ?? ""),
-  })}
-</p>
+{#if layout === "legacy"}
+  <p class="question">
+    {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
+      $id: `${id ?? ""}`,
+      $title: sanitize(title ?? ""),
+      $topic: sanitize(topic ?? ""),
+    })}
+  </p>
+{/if}
 
-<div role="toolbar">
+<div role="toolbar" class={`${layout}`} data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary small"
+    class="success small"
   >
     {#if voteInProgress?.vote === Vote.Yes}
       <Spinner size="small" />
@@ -101,19 +106,38 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   [role="toolbar"] {
-    margin-top: var(--padding);
+    padding: var(--padding) 0 0;
 
     display: flex;
     gap: var(--padding);
+
+    &.modern {
+      padding: var(--padding-2x) var(--padding-2x) 0;
+      justify-content: center;
+      gap: var(--padding-2x);
+
+      @include media.min-width(large) {
+        padding: 0;
+        justify-content: flex-start;
+        gap: var(--padding);
+      }
+    }
   }
 
   .question {
-    margin: 0 0 var(--padding-2x);
+    margin: var(--padding-4x) 0 var(--padding-2x);
     word-break: break-word;
   }
 
   button {
     min-width: calc(48px + (2 * var(--padding-2x)));
+    width: calc(100% - (2 * var(--padding)));
+
+    @include media.min-width(small) {
+      width: inherit;
+    }
   }
 </style>

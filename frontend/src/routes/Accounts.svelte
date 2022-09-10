@@ -3,15 +3,15 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "../lib/stores/accounts.store";
   import type { AccountsStore } from "../lib/stores/accounts.store";
-  import ICPComponent from "../lib/components/ic/ICP.svelte";
+  import AmountDisplay from "../lib/components/ic/AmountDisplay.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
-  import { ICP } from "@dfinity/nns";
-  import { formatICP, sumICPs } from "../lib/utils/icp.utils";
+  import { TokenAmount } from "@dfinity/nns";
+  import { formatICP, sumTokenAmounts } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
@@ -34,11 +34,14 @@
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
 
-  let totalBalance: ICP;
+  let totalBalance: TokenAmount;
   let totalICP: string;
-  const zeroICPs = ICP.fromE8s(BigInt(0));
+  const zeroICPs = TokenAmount.fromE8s({
+    amount: BigInt(0),
+    token: accounts?.main?.balance.token,
+  });
   $: {
-    totalBalance = sumICPs(
+    totalBalance = sumTokenAmounts(
       accounts?.main?.balance || zeroICPs,
       ...(accounts?.subAccounts || []).map(({ balance }) => balance),
       ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
@@ -62,7 +65,7 @@
             $amount: totalICP,
           })}
         >
-          <ICPComponent icp={totalBalance} />
+          <AmountDisplay amount={totalBalance} />
         </Tooltip>
       {/if}
     </div>
