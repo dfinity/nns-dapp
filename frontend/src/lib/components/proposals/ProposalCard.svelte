@@ -22,6 +22,7 @@
   // TODO(L2-965): delete property and use modern
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "../ui/Value.svelte";
+  import ProposalCountdown from "./ProposalCountdown.svelte";
 
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
@@ -103,9 +104,13 @@
 
         <p class="title-placeholder description">{title}</p>
 
-        <p class={`${color} status`}>
-          {$i18n.status[ProposalStatus[status]] ?? ""}
-        </p>
+        <div class="card-meta">
+          <p class={`${color} status`}>
+            {$i18n.status[ProposalStatus[status]] ?? ""}
+          </p>
+
+          <ProposalCountdown {proposalInfo} />
+        </div>
       </Card>
     {/if}
   </li>

@@ -26,6 +26,14 @@ describe("secondsToDuration", () => {
     const MORE_THAN_ONE_MINUTE = BigInt(60 * 4);
     expect(secondsToDuration(MORE_THAN_ONE_MINUTE)).toContain(en.time.minute);
   });
+
+  it("should give seconds details", () => {
+    expect(secondsToDuration(BigInt(56))).toContain(en.time.second_plural);
+  });
+
+  it("should give a second details", () => {
+    expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
+  });
 });
 
 describe("secondsToDate", () => {
