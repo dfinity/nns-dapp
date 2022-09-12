@@ -5,7 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import { sortedProposals } from "../../derived/proposals.derived";
+  import {filteredProposals} from "../../derived/proposals.derived";
 
   export let neuronsLoaded: boolean;
   export let nothingFound: boolean;
@@ -23,7 +23,7 @@
     layout="grid"
     disabled={disableInfiniteScroll || loading}
   >
-    {#each $sortedProposals.proposals as proposalInfo (proposalInfo.id)}
+    {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
       <ProposalCard {hidden} {proposalInfo} layout="modern" />
     {/each}
   </InfiniteScroll>
