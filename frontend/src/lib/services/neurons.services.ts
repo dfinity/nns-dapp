@@ -31,7 +31,7 @@ import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsShow, toastsSuccess } from "../stores/toasts.store";
 import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
@@ -198,7 +198,7 @@ export const stakeNeuron = async ({
     });
 
     if (!isEnoughToStakeNeuron({ stake })) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.amount_not_enough_stake_neuron",
       });
       return;
@@ -228,7 +228,7 @@ export const stakeNeuron = async ({
 
     return newNeuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
     return;
   }
 };
@@ -263,7 +263,7 @@ export const listNeurons = async ({
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons({ neurons: [], certified });
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.get_neurons",
         err: error,
       });
@@ -312,7 +312,7 @@ export const updateDelay = async ({
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
     // To inform there was an error
     return undefined;
   }
@@ -339,7 +339,7 @@ export const toggleCommunityFund = async (
 
     return neuron.neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return undefined;
@@ -378,7 +378,7 @@ export const mergeNeurons = async ({
 
     return targetNeuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
@@ -415,7 +415,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
 
     stopBusy("add-hotkey-neuron");
 
-    toastsStore.success({
+    toastsSuccess({
       labelKey: "neurons.add_user_as_hotkey_success",
     });
 
@@ -427,7 +427,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
 
     const toastMsg = mapNeuronErrorToToastMessage(err);
 
-    toastsStore.show(toastMsg);
+    toastsShow(toastMsg);
 
     // To inform there was an error
     return { success: false, err: toastMsg.labelKey };
@@ -452,7 +452,7 @@ export const addHotkey = async ({
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return undefined;
@@ -470,7 +470,7 @@ export const removeHotkey = async ({
   try {
     principal = Principal.fromText(principalString);
   } catch {
-    toastsStore.error({
+    toastsError({
       labelKey: "neuron_detail.invalid_hotkey",
     });
     return;
@@ -500,7 +500,7 @@ export const removeHotkey = async ({
         : undefined;
     }
 
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     // To inform there was an error
     return undefined;
@@ -533,7 +533,7 @@ export const splitNeuron = async ({
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
     return undefined;
   }
 };
@@ -556,7 +556,7 @@ export const disburse = async ({
 
     return { success: true };
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     return { success: false };
   }
@@ -585,7 +585,7 @@ export const mergeMaturity = async ({
 
     return { success: true };
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     return { success: false };
   }
@@ -613,7 +613,7 @@ export const spawnNeuron = async ({
 
     return newNeuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     return undefined;
   }
@@ -633,7 +633,7 @@ export const startDissolving = async (
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     return undefined;
   }
@@ -653,7 +653,7 @@ export const stopDissolving = async (
 
     return neuronId;
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
 
     return undefined;
   }
@@ -691,7 +691,7 @@ const setFolloweesHelper = async ({
     });
     await getAndLoadNeuron(neuron.neuronId);
   } catch (err) {
-    toastsStore.show(mapNeuronErrorToToastMessage(err));
+    toastsShow(mapNeuronErrorToToastMessage(err));
   }
 };
 
@@ -706,7 +706,7 @@ export const addFollowee = async ({
 }): Promise<void> => {
   // Do not allow a neuron to follow itself
   if (followee === neuronId) {
-    toastsStore.error({
+    toastsError({
       labelKey: "new_followee.same_neuron",
     });
     return;
@@ -716,7 +716,7 @@ export const addFollowee = async ({
   const topicFollowees = followeesByTopic({ neuron, topic });
   // Do not allow to add a neuron id who is already followed
   if (topicFollowees !== undefined && topicFollowees.includes(followee)) {
-    toastsStore.error({
+    toastsError({
       labelKey: "new_followee.already_followed",
     });
     return;
@@ -749,7 +749,7 @@ export const removeFollowee = async ({
   });
   if (topicFollowees === undefined) {
     // Followee in that topic does not exist.
-    toastsStore.error({
+    toastsError({
       labelKey: "error.followee_does_not_exist",
     });
     return;
@@ -784,12 +784,12 @@ export const loadNeuron = ({
 }): Promise<void> => {
   const catchError = (err: unknown) => {
     if (err instanceof NotFoundError) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.neuron_not_found",
         err,
       });
     } else {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.neuron_load",
         err,
       });
@@ -870,13 +870,13 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
       identity,
       swapCanisterId: pendingProject?.swapCanisterId.toText(),
     });
-    toastsStore.success({
+    toastsSuccess({
       labelKey: "neuron_detail.dummy_proposal_success",
     });
     return;
   } catch (error) {
     console.error(error);
-    toastsStore.show(mapNeuronErrorToToastMessage(error));
+    toastsShow(mapNeuronErrorToToastMessage(error));
   }
 };
 

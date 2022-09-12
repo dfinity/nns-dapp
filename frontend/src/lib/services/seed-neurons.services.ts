@@ -5,7 +5,7 @@ import type { Secp256k1PublicKey } from "../keys/secp256k1";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { accountsStore } from "../stores/accounts.store";
 import { startBusy, stopBusy } from "../stores/busy.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsShow } from "../stores/toasts.store";
 import { createAgent } from "../utils/agent.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
@@ -44,7 +44,7 @@ export const claimSeedNeurons = async () => {
     const hexPubKey = buf2hex(bufferKey.toRaw());
     const isHex = hexPubKey.match("^[0-9a-fA-F]+$");
     if (!isHex) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.pub_key_not_hex_string",
         substitutions: {
           $key: hexPubKey,
@@ -54,14 +54,14 @@ export const claimSeedNeurons = async () => {
     }
 
     if (hexPubKey.length < 130 || hexPubKey.length > 150) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.pub_key_hex_string_invalid_length",
       });
       return;
     }
     const ids = await governance.claimNeurons({ hexPubKey });
 
-    toastsStore.show({
+    toastsShow({
       labelKey: "neurons.claim_seed_neurons_success",
       level: "success",
       substitutions: {
@@ -70,7 +70,7 @@ export const claimSeedNeurons = async () => {
     });
   } catch (error) {
     const toastError = mapNeuronErrorToToastMessage(error);
-    toastsStore.show(toastError);
+    toastsShow(toastError);
     const message = translate({ labelKey: toastError.labelKey });
     console.error("Error during claiming neurons");
     console.error(message);

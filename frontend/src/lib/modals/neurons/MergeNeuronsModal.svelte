@@ -9,7 +9,7 @@
     checkInvalidState,
     type InvalidState,
   } from "../../utils/neuron.utils";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
 
@@ -38,7 +38,7 @@
       isInvalid: (s?: NeuronInfo[]) =>
         s === undefined || s.length !== MAX_NEURONS_MERGED,
       onInvalid: () => {
-        toastsStore.error({
+        toastsError({
           labelKey: "error.unknown",
         });
         dispatcher("nnsClose");
