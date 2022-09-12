@@ -14,7 +14,7 @@ import {
   transferICP,
 } from "../../../lib/services/accounts.services";
 import { accountsStore } from "../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsFunctions from "../../../lib/stores/toasts.store";
 import type { TransactionStore } from "../../../lib/types/transaction.context";
 import {
   mockHardwareWalletAccount,
@@ -84,7 +84,7 @@ describe("accounts-services", () => {
     });
 
     it("should not add subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -177,7 +177,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -198,7 +198,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no selected account", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -214,7 +214,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if type is not subaccount", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -293,7 +293,7 @@ describe("accounts-services", () => {
       });
 
       it("should display toast error", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
         await getAccountTransactions({
           accountIdentifier: "",

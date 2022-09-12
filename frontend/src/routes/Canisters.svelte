@@ -4,7 +4,7 @@
   import { i18n } from "../lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import { authStore } from "../lib/stores/auth.store";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { listCanisters } from "../lib/services/canisters.services";
   import { canistersStore } from "../lib/stores/canisters.store";
   import { AppPath } from "../lib/constants/routes.constants";
@@ -23,7 +23,7 @@
         clearBeforeQuery: true,
       });
     } catch (err: unknown) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.list_canisters",
         err,
       });

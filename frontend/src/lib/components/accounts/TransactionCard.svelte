@@ -15,7 +15,7 @@
     mapTransaction,
     transactionName,
   } from "../../utils/transactions.utils";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
 
   export let account: Account;
   export let transaction: Transaction;
@@ -40,7 +40,7 @@
             account,
           }));
       } catch (err: unknown) {
-        toastsStore.error(
+        toastsError(
           err instanceof Error
             ? { labelKey: err.message }
             : { labelKey: "error.unknown", err }

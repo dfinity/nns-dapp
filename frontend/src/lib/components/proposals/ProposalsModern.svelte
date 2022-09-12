@@ -4,7 +4,7 @@
   import ProposalsFilters from "./ProposalsFilters.svelte";
   import { i18n } from "../../stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { sortedProposals } from "../../derived/proposals.derived";
 
   export let neuronsLoaded: boolean;

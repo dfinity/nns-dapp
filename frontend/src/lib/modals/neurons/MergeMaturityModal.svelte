@@ -5,7 +5,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { stopBusy } from "../../stores/busy.store";
   import { mergeMaturity } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
@@ -45,7 +45,7 @@
     });
 
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.merge_maturity_success",
       });
       close();

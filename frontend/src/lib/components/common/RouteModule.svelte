@@ -2,7 +2,7 @@
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
   import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";

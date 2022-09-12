@@ -17,7 +17,7 @@ import type {
 import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsShow } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import { LedgerErrorMessage } from "../types/ledger.errors";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
@@ -54,7 +54,7 @@ export const listCanisters = async ({
       // Explicitly handle only UPDATE errors
       canistersStore.setCanisters({ canisters: [], certified: true });
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.list_canisters",
         err,
       });
@@ -89,7 +89,7 @@ export const createCanister = async ({
     syncAccounts();
     return canisterId;
   } catch (error) {
-    toastsStore.show(
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
     return;
@@ -124,7 +124,7 @@ export const topUpCanister = async ({
     syncAccounts();
     return { success: true };
   } catch (error) {
-    toastsStore.show(
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
     );
     return { success: false };
@@ -139,7 +139,7 @@ export const addController = async ({
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
   if (isController({ controller, canisterDetails })) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error.controller_already_present",
       substitutions: {
         $principal: controller,
@@ -166,7 +166,7 @@ export const removeController = async ({
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
   if (!isController({ controller, canisterDetails })) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error.controller_not_present",
     });
     return { success: false };
@@ -201,7 +201,7 @@ export const updateSettings = async ({
     });
     return { success: true };
   } catch (error) {
-    toastsStore.show(
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_update_settings")
     );
     return { success: false };
@@ -220,7 +220,7 @@ export const attachCanister = async (
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };
   } catch (err) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
         fallbackErrorLabelKey: "error__canister.unknown_attach",
@@ -244,7 +244,7 @@ export const detachCanister = async (
     await listCanisters({ clearBeforeQuery: false });
     return { success };
   } catch (err) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
         fallbackErrorLabelKey: "error__canister.unknown_detach",
@@ -289,7 +289,7 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
     const identity = await getIdentity();
     return await getIcpToCyclesExchangeRateApi(identity);
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__canister.get_exchange_rate",
       err,
     });

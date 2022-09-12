@@ -9,7 +9,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
   import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
@@ -47,7 +47,7 @@
 
       if (success) {
         await onTransactionComplete?.();
-        toastsStore.success({ labelKey: "accounts.transaction_success" });
+        toastsSuccess({ labelKey: "accounts.transaction_success" });
       }
 
       stopBusy("accounts");

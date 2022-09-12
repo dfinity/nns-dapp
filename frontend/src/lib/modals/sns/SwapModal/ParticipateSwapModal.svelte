@@ -21,7 +21,7 @@
     getSwapAccount,
     participateInSwap,
   } from "../../../services/sns.services";
-  import { toastsStore } from "../../../stores/toasts.store";
+  import { toastsSuccess } from "../../../stores/toasts.store";
   import type { NewTransaction } from "../../../types/transaction.context";
   import { convertNumberToICP } from "../../../utils/icp.utils";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
@@ -97,7 +97,7 @@
       if (success) {
         await reload();
 
-        toastsStore.success({
+        toastsSuccess({
           labelKey: "sns_project_detail.participate_success",
         });
         dispatcher("nnsClose");

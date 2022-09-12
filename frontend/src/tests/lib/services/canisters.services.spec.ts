@@ -18,7 +18,7 @@ import {
   updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import { toastsError, toastsShow } from "../../../lib/stores/toasts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
@@ -51,11 +51,9 @@ jest.mock("../../../lib/services/accounts.services", () => {
 
 jest.mock("../../../lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      error: jest.fn(),
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsError: jest.fn(),
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -233,7 +231,7 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsError).toBeCalled();
     });
 
     it("should not update settings if no identity", async () => {
@@ -287,7 +285,7 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsError).toBeCalled();
     });
 
     it("should not update settings if no identity", async () => {
@@ -425,7 +423,7 @@ describe("canisters-services", () => {
         account,
       });
       expect(canisterId).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
+      expect(toastsShow).toBeCalled();
     });
 
     it("should return undefined if no identity", async () => {
@@ -495,7 +493,7 @@ describe("canisters-services", () => {
         account,
       });
       expect(success).toBe(false);
-      expect(toastsStore.show).toBeCalled();
+      expect(toastsShow).toBeCalled();
     });
 
     it("should return success false if no identity", async () => {

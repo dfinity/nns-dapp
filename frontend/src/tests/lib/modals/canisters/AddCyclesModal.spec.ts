@@ -9,7 +9,7 @@ import {
   topUpCanister,
 } from "../../../../lib/services/canisters.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
+import { toastsSuccess } from "../../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -28,9 +28,7 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 
 jest.mock("../../../../lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      success: jest.fn(),
-    },
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -161,7 +159,7 @@ describe("AddCyclesModal", () => {
     await waitFor(() => expect(done).toBeCalled());
     expect(topUpCanister).toBeCalled();
     expect(reloadDetails).toBeCalled();
-    expect(toastsStore.success).toBeCalled();
+    expect(toastsSuccess).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.

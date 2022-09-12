@@ -5,7 +5,7 @@ import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { initDebugStore } from "../stores/debug.store";
 import { i18n } from "../stores/i18n";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsSuccess } from "../stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
@@ -106,11 +106,11 @@ const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
     const neuronId = BigInt(neuronIdString) as NeuronId;
     const identity = await getIdentity();
     await addHotkey({ neuronId, principal: identity.getPrincipal(), identity });
-    toastsStore.success({
+    toastsSuccess({
       labelKey: "neurons.add_hotkey_prompt_success",
     });
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "neurons.add_hotkey_prompt_error",
       err,
     });

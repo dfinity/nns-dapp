@@ -10,7 +10,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../FooterModal.svelte";
   import Value from "../../components/ui/Value.svelte";
@@ -41,7 +41,7 @@
   const split = async () => {
     // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
     if (!validForm || amount === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.amount_not_valid",
       });
       return;
@@ -53,7 +53,7 @@
       amount,
     });
     if (id !== undefined) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.split_neuron_success",
       });
     }

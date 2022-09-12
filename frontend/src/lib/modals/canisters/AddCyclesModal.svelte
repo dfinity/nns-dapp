@@ -12,7 +12,7 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import type { Account } from "../../types/account";
   import WizardModal from "../WizardModal.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
@@ -76,7 +76,7 @@
       account === undefined ||
       canisterId === undefined
     ) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;
@@ -94,7 +94,7 @@
     }
     stopBusy("top-up-canister");
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "canister_detail.top_up_successful",
       });
       dispatcher("nnsClose");
