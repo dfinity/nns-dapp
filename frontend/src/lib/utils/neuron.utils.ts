@@ -33,6 +33,10 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "../constants/neurons.constants";
+<<<<<<< HEAD
+=======
+import { IconHistoryToggleOff,  IconLockClock, IconLockOpen} from "@dfinity/gix-components";
+>>>>>>> 0c201af5 (Imported remaining icons from @dfinity/gix-components library)
 import type { AccountsStore } from "../stores/accounts.store";
 import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";

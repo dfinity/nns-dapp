@@ -5,6 +5,7 @@
     IconLockOpen,
     IconHowToVote,
     IconSettingsApplications,
+    IconRocketLaunch
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
@@ -12,7 +13,6 @@
   import { isRoutePath } from "../../utils/app-path.utils";
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
-  import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
   import {
     ENABLE_SNS,
     IS_TESTNET,
