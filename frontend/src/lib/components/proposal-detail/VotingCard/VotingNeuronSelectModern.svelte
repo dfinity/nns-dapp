@@ -15,8 +15,14 @@
   let toggleContent: () => void;
   let expanded: boolean;
 
-  let totalNeurons: number;
-  $: totalNeurons = $votingNeuronSelectStore.neurons.length;
+  let totalVotingNeurons: number;
+  $: totalVotingNeurons = $votingNeuronSelectStore.neurons.length;
+
+  let selectedVotingNeurons: number;
+  $: selectedVotingNeurons = $votingNeuronSelectStore.selectedIds.length;
+
+  let displayNeuronsInfo: boolean;
+  $: displayNeuronsInfo = totalVotingNeurons > 0;
 </script>
 
 <Collapsible
@@ -28,9 +34,11 @@
 >
   <div slot="header" class="total" class:expanded>
     <div class="total-neurons">
-      <span class="value"
-        >{$i18n.proposal_detail__vote.neurons} ({totalNeurons})</span
-      >
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons"
+        >{$i18n.proposal_detail__vote.neurons}{#if displayNeuronsInfo}
+          &nbsp;({selectedVotingNeurons}/{totalVotingNeurons})
+        {/if}
+      </span>
       <button
         class="icon"
         class:expanded
@@ -40,14 +48,19 @@
       </button>
     </div>
 
-    <div class="total-voting-power">
-      <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
-      <Value
-        >{formatVotingPower(
-          totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
-        )}</Value
+    {#if displayNeuronsInfo}
+      <div
+        class="total-voting-power"
+        data-tid="voting-collapsible-toolbar-voting-power"
       >
-    </div>
+        <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+        <Value
+          >{formatVotingPower(
+            totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
+          )}</Value
+        >
+      </div>
+    {/if}
   </div>
 
   <VotingNeuronSelectContainer {proposalInfo} {disabled} />
