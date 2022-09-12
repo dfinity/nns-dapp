@@ -58,7 +58,7 @@
 
   ul {
     list-style: none;
-    padding: 0;
+    padding: 0 0 var(--padding-1_5x);
 
     // checkbox restyling
     :global(.neuron-checkbox) {
