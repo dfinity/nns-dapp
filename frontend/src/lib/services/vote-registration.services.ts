@@ -48,15 +48,10 @@ export const registerVotes = async ({
   try {
     const toastId = createRegisterVotesToast({ vote, proposalInfo, neuronIds });
     const proposalId = proposalInfo.id as bigint;
-    voteRegistrationStore.create({
+    voteRegistrationStore.add({
       vote,
       proposalInfo,
       neuronIds,
-    });
-
-    voteRegistrationStore.updateStatus({
-      proposalId,
-      status: "vote-registration",
     });
 
     // make register vote calls (one per neuron)
@@ -74,14 +69,14 @@ export const registerVotes = async ({
     });
 
     // update the toast state (voting -> updating the data)
-    const { successfullyVotedNeuronIds, status } =
+    const { successfullyVotedNeuronIds } =
       voteRegistrationByProposal(proposalId);
     updateVoteRegistrationToastMessage({
       toastId,
       proposalInfo,
       neuronIds,
       successfullyVotedNeuronIds,
-      registrationDone: status === "post-update",
+      registrationDone: true,
     });
 
     // reload and replace proposal and neurons (`update` call) to display the actual backend state
@@ -92,15 +87,9 @@ export const registerVotes = async ({
     proposalsStore.replaceProposals([updatedProposalInfo]);
     updateProposalContext(updatedProposalInfo);
 
-    voteRegistrationStore.updateStatus({
-      proposalId,
-      status: "complete",
-    });
-
     // cleanup
     toastsStore.hide(toastId);
-
-    voteRegistrationStore.removeCompleted();
+    voteRegistrationStore.remove(proposalId);
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
@@ -169,7 +158,7 @@ const neuronRegistrationComplete = ({
   updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
-  const { vote, proposalInfo, neuronIds, status } =
+  const { vote, proposalInfo, neuronIds } =
     voteRegistrationByProposal(proposalId);
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
@@ -208,7 +197,7 @@ const neuronRegistrationComplete = ({
     toastId,
     proposalInfo,
     neuronIds,
-    registrationDone: status === "post-update",
+    registrationDone: false,
     // use the most actual value
     successfullyVotedNeuronIds:
       voteRegistrationByProposal(proposalId).successfullyVotedNeuronIds,
@@ -271,7 +260,7 @@ const registerNeuronsVote = async ({
 
   try {
     const requests = neuronIds.map(
-      (neuronId: NeuronId, index): Promise<void> =>
+      (neuronId: NeuronId): Promise<void> =>
         registerVote({
           neuronId,
           vote,
@@ -281,7 +270,7 @@ const registerNeuronsVote = async ({
           // call it only after successful registration
           .then(() =>
             neuronRegistrationComplete({
-              neuronId: neuronIds[index],
+              neuronId,
               proposalId,
               updateProposalContext,
               toastId,

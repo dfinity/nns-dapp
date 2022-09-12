@@ -69,7 +69,7 @@ describe("NeuronDetail", () => {
 
     waitFor(() => expect(querySkeleton(container)).toBeNull());
 
-    voteRegistrationStore.create({
+    voteRegistrationStore.add({
       ...mockVoteRegistration,
       neuronIds: [neuronId],
     });

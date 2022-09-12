@@ -7,7 +7,7 @@ export type VoteRegistrationStatus =
   | "complete";
 
 export interface VoteRegistration {
-  status: VoteRegistrationStatus | undefined;
+  status: VoteRegistrationStatus;
   proposalInfo: ProposalInfo;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
@@ -32,7 +32,7 @@ const initVoteRegistrationStore = () => {
   return {
     subscribe,
 
-    create({
+    add({
       vote,
       proposalInfo,
       neuronIds,
@@ -42,7 +42,7 @@ const initVoteRegistrationStore = () => {
       neuronIds: NeuronId[];
     }): VoteRegistration {
       const newEntry: VoteRegistration = {
-        status: undefined,
+        status: "vote-registration",
         proposalInfo,
         neuronIds,
         successfullyVotedNeuronIds: [],
@@ -111,9 +111,11 @@ const initVoteRegistrationStore = () => {
       }));
     },
 
-    removeCompleted() {
+    remove(proposalId: ProposalId) {
       update(({ registrations: votes }) => ({
-        registrations: votes.filter(({ status }) => status !== "complete"),
+        registrations: votes.filter(
+          ({ proposalInfo: { id } }) => id !== proposalId
+        ),
       }));
     },
 

@@ -66,7 +66,7 @@ describe("NnsNeurons", () => {
       const stakeNeuronButton = queryByTestId("stake-neuron-button");
       expect(stakeNeuronButton).not.toBeNull();
 
-      voteRegistrationStore.create(mockVoteRegistration);
+      voteRegistrationStore.add(mockVoteRegistration);
 
       waitFor(() =>
         expect(stakeNeuronButton?.getAttribute("disabled")).not.toBeNull()

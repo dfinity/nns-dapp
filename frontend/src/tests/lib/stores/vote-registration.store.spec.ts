@@ -30,11 +30,11 @@ describe("voting-store", () => {
   });
 
   it("should set voting items", () => {
-    voteRegistrationStore.create(voteA);
+    voteRegistrationStore.add(voteA);
 
     expect(get(voteRegistrationStore)).toEqual({ registrations: [voteA] });
 
-    voteRegistrationStore.create(voteB);
+    voteRegistrationStore.add(voteB);
 
     expect(get(voteRegistrationStore)).toEqual({
       registrations: [voteA, voteB],
@@ -43,7 +43,7 @@ describe("voting-store", () => {
 
   it("should update status", () => {
     voteRegistrationStore.reset();
-    voteRegistrationStore.create(voteA);
+    voteRegistrationStore.add(voteA);
 
     voteRegistrationStore.updateStatus({
       proposalId: voteA.proposalInfo.id as ProposalId,
@@ -56,22 +56,22 @@ describe("voting-store", () => {
   });
 
   it("should remove completed voting items", () => {
-    voteRegistrationStore.create(voteA);
-    voteRegistrationStore.create(voteB);
+    voteRegistrationStore.add(voteA);
+    voteRegistrationStore.add(voteB);
 
     voteRegistrationStore.updateStatus({
-      proposalId: voteA.proposalInfo.id as ProposalId,
       status: "complete",
+      proposalId: voteA.proposalInfo.id as ProposalId,
     });
 
-    voteRegistrationStore.removeCompleted();
+    voteRegistrationStore.remove(voteA.proposalInfo.id as ProposalId);
 
     expect(get(voteRegistrationStore)).toEqual({ registrations: [voteB] });
   });
 
   it("should reset votes", () => {
-    voteRegistrationStore.create(voteA);
-    voteRegistrationStore.create(voteB);
+    voteRegistrationStore.add(voteA);
+    voteRegistrationStore.add(voteB);
 
     voteRegistrationStore.reset();
 
@@ -81,8 +81,8 @@ describe("voting-store", () => {
   it("should update successfullyVotedNeuronIds", () => {
     const successfullyVotedNeuronIds = [BigInt(0), BigInt(2)];
 
-    voteRegistrationStore.create(voteA);
-    voteRegistrationStore.create(voteB);
+    voteRegistrationStore.add(voteA);
+    voteRegistrationStore.add(voteB);
 
     for (const neuronId of successfullyVotedNeuronIds) {
       voteRegistrationStore.addSuccessfullyVotedNeuronId({
