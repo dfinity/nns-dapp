@@ -1,5 +1,10 @@
 import type { Identity } from "@dfinity/agent";
 import {
+  IconHistoryToggleOff,
+  IconLockClock,
+  IconLockOpen,
+} from "@dfinity/gix-components";
+import {
   ICP,
   NeuronState,
   Topic,
@@ -28,7 +33,6 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "../constants/neurons.constants";
-import { IconHistoryToggleOff,  IconLockClock, IconLockOpen} from "@dfinity/gix-components";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";

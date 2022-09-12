@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Vote } from "@dfinity/nns";
-  import { IconThumbDown, IconThumbUp }  from "@dfinity/gix-components";
+  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatVotingPower } from "../../utils/neuron.utils";
