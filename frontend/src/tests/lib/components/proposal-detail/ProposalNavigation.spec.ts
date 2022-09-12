@@ -8,6 +8,39 @@ import { proposalsStore } from "../../../../lib/stores/proposals.store";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("ProposalNavigation", () => {
+  const props = { proposalInfo: mockProposals[0] };
+
+  describe("not rendered", () => {
+    it("should not render buttons if no proposal", () => {
+      proposalsStore.setProposals({ proposals: [], certified: true });
+
+      const { getByTestId } = render(ProposalNavigation, {
+        props,
+      });
+
+      expect(() => getByTestId("proposal-nav-previous")).toThrow();
+      expect(() => getByTestId("proposal-nav-next")).toThrow();
+
+      proposalsStore.setProposals({ proposals: [], certified: undefined });
+    });
+
+    it("should not render buttons if very last proposal", () => {
+      proposalsStore.setProposals({
+        proposals: [mockProposals[0]],
+        certified: true,
+      });
+
+      const { getByTestId } = render(ProposalNavigation, {
+        props,
+      });
+
+      expect(() => getByTestId("proposal-nav-previous")).toThrow();
+      expect(() => getByTestId("proposal-nav-next")).toThrow();
+
+      proposalsStore.setProposals({ proposals: [], certified: undefined });
+    });
+  });
+
   describe("display", () => {
     const propsPrevious = { proposalInfo: mockProposals[0] };
     const propsNext = { proposalInfo: mockProposals[1] };
@@ -39,7 +72,7 @@ describe("ProposalNavigation", () => {
       ).toBeTruthy();
     });
 
-    it("should render next", () => {
+    it("should display next", () => {
       const { getByTestId } = render(ProposalNavigation, {
         props: propsPrevious,
       });
@@ -57,7 +90,7 @@ describe("ProposalNavigation", () => {
       ).not.toBeTruthy();
     });
 
-    it("should render next", () => {
+    it("should display next", () => {
       const { getByTestId } = render(ProposalNavigation, {
         props: propsNext,
       });
