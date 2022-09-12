@@ -10,6 +10,7 @@
     uiProposals,
   } from "../../derived/proposals.derived";
   import { onDestroy } from "svelte";
+  import { i18n } from "../../stores/i18n";
 
   export let proposalInfo: ProposalInfo | undefined;
 
@@ -79,11 +80,11 @@
     <button
       class="ghost"
       type="button"
+      aria-label={$i18n.proposal_detail.previous}
       on:click={previous}
-      class:loading={proposalInfo === undefined}
       class:hidden={proposalInfo !== undefined &&
         previousProposal === undefined}
-      disabled={previousProposal === undefined}
+      disabled={proposalInfo !== undefined && previousProposal === undefined}
       data-tid="proposal-nav-previous"
     >
       <IconWest />
@@ -93,10 +94,10 @@
     <button
       class="ghost"
       type="button"
+      aria-label={$i18n.proposal_detail.next}
       on:click={next}
-      class:loading={proposalInfo === undefined}
       class:hidden={proposalInfo !== undefined && nextProposal === undefined}
-      disabled={nextProposal === undefined}
+      disabled={proposalInfo !== undefined && nextProposal === undefined}
       data-tid="proposal-nav-next"
     >
       {en.core.next}
@@ -123,12 +124,6 @@
     &.hidden {
       visibility: hidden;
       opacity: 0;
-    }
-
-    &.loading {
-      color: var(--disable-contrast);
-      pointer-events: none;
-      cursor: default;
     }
   }
 </style>

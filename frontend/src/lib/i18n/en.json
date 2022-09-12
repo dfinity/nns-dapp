@@ -400,7 +400,9 @@
     "failed_description": "The date when this adopted proposal failed to be executed.",
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
-    "remaining": "remaining"
+    "remaining": "remaining",
+    "next": "Navigate to next proposal",
+    "previous": "Navigate to previous proposal"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
