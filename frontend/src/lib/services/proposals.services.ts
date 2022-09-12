@@ -71,11 +71,12 @@ export const listProposals = async ({
 }: {
   loadFinished: (params: {
     paginationOver: boolean;
-    certified: boolean;
+    certified: boolean | undefined;
   }) => void;
 }): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
+    loadFinished,
     onLoad: ({ response: proposals, certified }) => {
       proposalsStore.setProposals({ proposals, certified });
       loadFinished({
@@ -100,11 +101,12 @@ export const listNextProposals = async ({
   beforeProposal: ProposalId | undefined;
   loadFinished: (params: {
     paginationOver: boolean;
-    certified: boolean;
+    certified: boolean | undefined;
   }) => void;
 }): Promise<void> =>
   findProposals({
     beforeProposal,
+    loadFinished,
     onLoad: ({ response: proposals, certified }) => {
       if (proposals.length === 0) {
         // There is no more proposals to fetch for the current filters.
@@ -126,10 +128,15 @@ const findProposals = async ({
   beforeProposal,
   onLoad,
   onError,
+  loadFinished,
 }: {
   beforeProposal: ProposalId | undefined;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
   onError: QueryAndUpdateOnError<unknown>;
+  loadFinished: (params: {
+    paginationOver: boolean;
+    certified: boolean | undefined;
+  }) => void;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
@@ -141,6 +148,11 @@ const findProposals = async ({
   // This is covered by our utils "hideProposal" but to avoid glitch, like displaying a spinner appearing and disappearing for a while, we "just" do not query the canister and empty the store if one of the filter is empty.
   if (topics.length === 0 || rewards.length === 0 || status.length === 0) {
     proposalsStore.setProposals({ proposals: [], certified: undefined });
+
+    loadFinished({
+      paginationOver: true,
+      certified: undefined,
+    });
     return;
   }
 
