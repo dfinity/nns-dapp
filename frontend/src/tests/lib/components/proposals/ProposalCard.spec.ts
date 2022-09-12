@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import type { Ballot, Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import type { Proposal, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
@@ -156,25 +156,6 @@ describe("ProposalCard", () => {
     expect(tag?.classList.contains("success")).toBe(true);
 
     proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
-  });
-
-  it("should hide card if already voted", async () => {
-    const { container } = render(ProposalCard, {
-      props: {
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.Yes,
-            } as Ballot,
-          ],
-        },
-      },
-    });
-
-    proposalsFiltersStore.toggleExcludeVotedProposals();
-
-    await waitFor(() => expect(container.querySelector("article")).toBeNull());
   });
 
   it("should open neuron modal", async () => {

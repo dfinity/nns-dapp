@@ -23,6 +23,7 @@ import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
+import {buildMockNeuronsStoreSubscribe, mockNeuron} from "../mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -129,6 +130,24 @@ describe("Proposals", () => {
       expect(
         getByText((secondProposal.proposal as Proposal).title as string)
       ).toBeInTheDocument();
+    });
+
+    it("should hide proposal card if already voted", async () => {
+      mockLoadProposals();
+
+      jest
+          .spyOn(neuronsStore, "subscribe")
+          .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+
+      const { container } = render(Proposals);
+
+      proposalsFiltersStore.toggleExcludeVotedProposals();
+
+      await waitFor(() =>
+        expect(container.querySelectorAll("article").length).toBe(
+          mockProposals.length - 1
+        )
+      );
     });
 
     it("should disable infinite scroll when all proposals loaded", async () => {
