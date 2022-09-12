@@ -27,6 +27,8 @@ interface I18nCore {
   copy: string;
   badgeNew: string;
   nns: string;
+  previous: string;
+  next: string;
 }
 
 interface I18nError {
@@ -418,6 +420,8 @@ interface I18nProposal_detail {
   no_more_info: string;
   voting_results: string;
   remaining: string;
+  next: string;
+  previous: string;
 }
 
 interface I18nProposal_detail__vote {

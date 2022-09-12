@@ -5,6 +5,7 @@
   import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
   import ProposalVotingSection from "./ProposalVotingSection.svelte";
   import ProposalProposerDataSection from "./ProposalProposerDataSection.svelte";
+  import ProposalNavigation from "./ProposalNavigation.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
@@ -20,6 +21,8 @@
 </script>
 
 {#if neuronsReady}
+  <ProposalNavigation proposalInfo={$store.proposal} />
+
   {#if $store?.proposal !== undefined}
     <div class="content-grid" data-tid="proposal-details-grid">
       <div class="content-a">
@@ -36,7 +39,11 @@
     </div>
   {:else}
     <div class="content-grid">
-      <div class="content-a"><SkeletonDetails /></div>
+      <div class="content-a">
+        <div class="skeleton">
+          <SkeletonDetails />
+        </div>
+      </div>
     </div>
   {/if}
 {:else}

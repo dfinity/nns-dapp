@@ -23,7 +23,9 @@
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard",
     "badgeNew": "New",
-    "nns": "Network Nervous System"
+    "nns": "Network Nervous System",
+    "previous": "Previous",
+    "next": "Next"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -398,7 +400,9 @@
     "failed_description": "The date when this adopted proposal failed to be executed.",
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
-    "remaining": "remaining"
+    "remaining": "remaining",
+    "next": "Navigate to next proposal",
+    "previous": "Navigate to previous proposal"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
