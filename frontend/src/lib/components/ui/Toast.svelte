@@ -13,11 +13,7 @@
   import type { ToastLevel, ToastMsg } from "../../types/toast";
   import { onDestroy, onMount, SvelteComponent } from "svelte";
   import Spinner from "./Spinner.svelte";
-  import IconWarning from "../../icons/IconWarning.svelte";
-  import { IconClose } from "@dfinity/gix-components";
-  import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
-  import IconCheckCircleOutline from "../../icons/IconCheckCircleOutline.svelte";
-  import IconError from "../../icons/IconError.svelte";
+  import { IconClose , IconWarning, IconInfoOutline, IconCheckCircleOutline, IconError } from "@dfinity/gix-components";
 
   export let msg: ToastMsg;
 

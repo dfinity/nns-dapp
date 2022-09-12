@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconFiberNew from "../../icons/IconFiberNew.svelte";
+  import { IconFiberNew }from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
 </script>
 

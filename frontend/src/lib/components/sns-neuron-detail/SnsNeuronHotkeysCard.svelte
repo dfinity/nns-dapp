@@ -3,9 +3,7 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
-  import { IconClose } from "@dfinity/gix-components";
-  import IconInfo from "../../icons/IconInfo.svelte";
-  import IconWarning from "../../icons/IconWarning.svelte";
+  import { IconClose, IconInfo, IconWarning } from "@dfinity/gix-components";
   import { removeHotkey } from "../../services/sns-neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";

@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { MenuItem } from "@dfinity/gix-components";
-  import IconWallet from "../../icons/IconWallet.svelte";
-  import IconLockOpen from "../../icons/IconLockOpen.svelte";
-  import IconHowToVote from "../../icons/IconHowToVote.svelte";
-  import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
+  import { MenuItem, IconWallet, IconLockOpen, IconHowToVote, IconSettingsApplications } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { baseHref } from "../../utils/route.utils";

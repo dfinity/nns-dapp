@@ -7,7 +7,7 @@
   import { getICPs } from "../../services/dev.services";
   import Spinner from "../ui/Spinner.svelte";
   import { toastsStore } from "../../stores/toasts.store";
-  import IconAccountBalance from "../../icons/IconAccountBalance.svelte";
+  import { IconAccountBalance } from "@dfinity/gix-components";
 
   let visible: boolean = false;
   let transferring: boolean = false;
