@@ -49,7 +49,7 @@ describe("VotingNeuronSelectModern", () => {
       ).not.toBeNull();
     });
 
-    it("should display voting power", () => {
+    it("should display selectable neurons for voting power", () => {
       const { getByTestId } = render(VotingNeuronSelectModern, {
         props: {
           proposalInfo: mockProposalInfo,
