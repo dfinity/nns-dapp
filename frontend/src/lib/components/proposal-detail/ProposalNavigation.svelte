@@ -116,6 +116,8 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
+    font-size: inherit;
+
     &.hidden {
       visibility: hidden;
       opacity: 0;
