@@ -61,7 +61,12 @@ const hide = ({
   // hide proposals that are currently in the voting state
   votes.find(({ proposalId }) => proposalInfo.id === proposalId) !== undefined;
 
-export const filteredProposals: Readable<ProposalsStore> = derived(
+export interface UIProposalsStore {
+  proposals: (ProposalInfo & { hidden: boolean })[];
+  certified: boolean | undefined;
+}
+
+export const uiProposals: Readable<UIProposalsStore> = derived(
   [
     sortedProposals,
     proposalsFiltersStore,
@@ -69,9 +74,18 @@ export const filteredProposals: Readable<ProposalsStore> = derived(
     voteInProgressStore,
   ],
   ([{ proposals, certified }, filters, neurons, { votes }]) => ({
-    proposals: proposals.filter(
-      (proposalInfo) => !hide({ proposalInfo, filters, neurons, votes })
-    ),
+    proposals: proposals.map((proposalInfo) => ({
+      ...proposalInfo,
+      hidden: hide({ proposalInfo, filters, neurons, votes }),
+    })),
+    certified,
+  })
+);
+
+export const filteredProposals: Readable<ProposalsStore> = derived(
+  [uiProposals],
+  ([{ proposals, certified }]) => ({
+    proposals: proposals.filter((proposalInfo) => !proposalInfo.hidden),
     certified,
   })
 );

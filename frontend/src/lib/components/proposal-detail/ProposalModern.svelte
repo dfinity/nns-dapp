@@ -21,9 +21,9 @@
 </script>
 
 {#if neuronsReady}
-  {#if $store?.proposal !== undefined}
-    <ProposalNavigation />
+  <ProposalNavigation proposalInfo={$store.proposal} />
 
+  {#if $store?.proposal !== undefined}
     <div class="content-grid" data-tid="proposal-details-grid">
       <div class="content-a">
         <ProposalSystemInfoSection proposalInfo={$store.proposal} />
