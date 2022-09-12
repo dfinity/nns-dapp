@@ -83,15 +83,4 @@
       grid-row-end: content-c;
     }
   }
-
-  // On smaller devices we most probably gonna display more content than screen height, therefore render a scrollbar.
-  // To avoid a shaky display when users use "Previous" and "Next" navigation, we "force" the screen to overflow even when loading so that a scrollbar is displayed even when the with the skeleton is rendered.
-  // Pragmatic solution. In the future we might use a layout store to set `overflow-y: scroll` programmatically instead of `overflow-y: scroll` on the scroll area.
-  .skeleton {
-    min-height: 100vh;
-
-    @include media.min-width(large) {
-      min-height: inherit;
-    }
-  }
 </style>
