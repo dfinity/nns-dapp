@@ -84,6 +84,7 @@
       class:hidden={proposalInfo !== undefined &&
         previousProposal === undefined}
       disabled={previousProposal === undefined}
+      data-tid="proposal-nav-previous"
     >
       <IconWest />
       {en.core.previous}</button
@@ -96,6 +97,7 @@
       class:loading={proposalInfo === undefined}
       class:hidden={proposalInfo !== undefined && nextProposal === undefined}
       disabled={nextProposal === undefined}
+      data-tid="proposal-nav-next"
     >
       {en.core.next}
       <IconEast />
