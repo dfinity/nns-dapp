@@ -1,7 +1,6 @@
 <script lang="ts">
   import en from "../../../tests/mocks/i18n.mock";
-  import IconEast from "../../icons/IconEast.svelte";
-  import IconWest from "../../icons/IconWest.svelte";
+  import { IconWest, IconEast } from "@dfinity/gix-components";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
