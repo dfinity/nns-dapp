@@ -22,7 +22,7 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsFunctions from "../../../lib/stores/toasts.store";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
@@ -142,14 +142,14 @@ describe("proposals-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should show error message in details", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "show");
+      const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
 
       await loadProposal({
         proposalId: BigInt(0),
         setProposal: jest.fn,
       });
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
+      expect(toastsShow).toBeCalled();
+      expect(toastsShow).toBeCalledWith({
         detail: 'id: "0". test-message',
         labelKey: "error.proposal_not_found",
         level: "error",

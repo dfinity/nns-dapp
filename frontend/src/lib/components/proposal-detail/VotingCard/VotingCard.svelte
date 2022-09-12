@@ -82,8 +82,8 @@
   // TODO(L2-965): delete legacy component <CardInfo />
 </script>
 
-{#if visible}
-  {#if VOTING_UI === "legacy"}
+{#if VOTING_UI === "legacy"}
+  {#if visible}
     <CardInfo>
       <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
       <VotingNeuronSelect {proposalInfo} {voteRegistration} />
@@ -94,15 +94,18 @@
         layout="legacy"
       />
     </CardInfo>
-  {:else}
-    <BottomSheet>
+  {/if}
+{:else}
+  <BottomSheet>
+    {#if visible}
       <VotingConfirmationToolbar
         {proposalInfo}
         {voteRegistration}
         on:nnsConfirm={vote}
         layout="modern"
       />
-      <VotingNeuronSelect {proposalInfo} {voteRegistration} />
-    </BottomSheet>
-  {/if}
+    {/if}
+
+    <VotingNeuronSelect {proposalInfo} {voteRegistration} />
+  </BottomSheet>
 {/if}

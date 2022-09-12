@@ -6,7 +6,7 @@ import { nnsDappCanister } from "../api/nns-dapp.api";
 import { LedgerConnectionState } from "../constants/ledger.constants";
 import { LedgerIdentity } from "../identities/ledger.identity";
 import { i18n } from "../stores/i18n";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { toToastError } from "../utils/error.utils";
@@ -43,7 +43,7 @@ export const connectToHardwareWallet = async (
   } catch (err: unknown) {
     const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
 
-    toastsStore.error({
+    toastsError({
       labelKey: ledgerErrorKey
         ? (err as LedgerErrorKey).message
         : "error__ledger.unexpected",
@@ -59,14 +59,14 @@ export const registerHardwareWallet = async ({
   ledgerIdentity,
 }: RegisterHardwareWalletParams): Promise<void> => {
   if (name === undefined) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__attach_wallet.no_name",
     });
     return;
   }
 
   if (ledgerIdentity === undefined) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__attach_wallet.no_identity",
     });
     return;
@@ -144,7 +144,7 @@ const toastUnexpectedError = ({
   fallbackErrorLabelKey: string;
   err: unknown;
 }) =>
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey,

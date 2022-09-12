@@ -15,7 +15,7 @@
     listNextProposals,
     listProposals,
   } from "../lib/services/proposals.services";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { routeStore } from "../lib/stores/route.store";
   import {
     definedNeuronsStore,
@@ -41,7 +41,7 @@
     loading = false;
     disableInfiniteScroll = true;
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.list_proposals",
       err,
     });

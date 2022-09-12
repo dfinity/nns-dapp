@@ -7,7 +7,7 @@
   import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
@@ -34,7 +34,7 @@
     const canisterDetails: CanisterDetails | undefined = $store.details;
     if (canisterDetails === undefined) {
       // Edge case
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;

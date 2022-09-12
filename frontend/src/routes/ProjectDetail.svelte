@@ -25,7 +25,7 @@
   import { writable } from "svelte/store";
   import { snsSummariesStore } from "../lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "../lib/stores/debug.store";
 
   onMount(() => {
@@ -170,7 +170,7 @@
 
   $: {
     if (notFound) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error__sns.project_not_found",
       });
       routeStore.replace({ path: AppPath.Launchpad });

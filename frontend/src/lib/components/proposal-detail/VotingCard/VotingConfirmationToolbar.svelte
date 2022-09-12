@@ -10,7 +10,7 @@
   } from "../../../utils/proposals.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { busy } from "../../../stores/busy.store";
-  import Spinner from "../../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { sanitize } from "../../../utils/html.utils";
   import type { VoteRegistration } from "../../../stores/vote-registration.store";
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";

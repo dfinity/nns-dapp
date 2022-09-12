@@ -18,7 +18,7 @@ import {
   proposalsStore,
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsShow } from "../stores/toasts.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { hashCode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
@@ -41,7 +41,7 @@ const handleFindProposalsError = ({ error: err, certified }) => {
   if (certified === true) {
     proposalsStore.setProposals({ proposals: [], certified });
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.list_proposals",
       err,
     });
@@ -233,7 +233,7 @@ export const loadProposal = async ({
 
     if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);
-      toastsStore.show({
+      toastsShow({
         labelKey: "error.proposal_not_found",
         level: "error",
         detail: `id: "${proposalId}"${
@@ -322,7 +322,7 @@ export const loadProposalPayload = async ({
       return;
     }
     if (err instanceof ProposalPayloadNotFoundError) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.proposal_payload_not_found",
         substitutions: {
           $proposal_id: proposalId.toString(),
@@ -335,7 +335,7 @@ export const loadProposalPayload = async ({
       return;
     }
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.proposal_payload",
       err,
     });

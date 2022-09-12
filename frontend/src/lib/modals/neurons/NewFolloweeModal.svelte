@@ -3,7 +3,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";

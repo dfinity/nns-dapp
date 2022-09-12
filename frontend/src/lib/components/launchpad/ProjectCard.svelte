@@ -8,7 +8,7 @@
   import type { SnsFullProject } from "../../stores/projects.store";
   import { Card } from "@dfinity/gix-components";
   import Logo from "../ui/Logo.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;

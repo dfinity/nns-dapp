@@ -7,7 +7,7 @@ import {
 } from "../constants/constants";
 import { i18n } from "../stores/i18n";
 
-type LabelKey = "year" | "day" | "hour" | "minute";
+type LabelKey = "year" | "day" | "hour" | "minute" | "second";
 type LabelInfo = {
   labelKey: LabelKey;
   amount: number;
@@ -29,7 +29,11 @@ export const secondsToDuration = (seconds: bigint): string => {
     createLabel("day", days),
     createLabel("hour", hours),
     createLabel("minute", minutes),
+    ...(seconds > BigInt(0) && seconds < BigInt(60)
+      ? [createLabel("second", seconds)]
+      : []),
   ];
+
   return periods
     .filter(({ amount }) => amount > 0)
     .slice(0, 2)

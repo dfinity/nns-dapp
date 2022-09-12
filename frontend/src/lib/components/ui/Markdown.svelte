@@ -1,7 +1,7 @@
 <script lang="ts">
   import { markdownToSanitizedHTML } from "../../utils/html.utils";
 
-  import Spinner from "./Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let text: string | undefined;
 

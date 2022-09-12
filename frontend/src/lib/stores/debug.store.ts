@@ -1,3 +1,4 @@
+import { toastsStore } from "@dfinity/gix-components";
 import { derived, readable, type Readable, type Writable } from "svelte/store";
 import type { AddAccountStore } from "../types/add-account.context";
 import type { SelectCanisterDetailsStore } from "../types/canister-detail.context";
@@ -17,7 +18,6 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "./proposals.store";
-import { toastsStore } from "./toasts.store";
 import { voteRegistrationStore } from "./vote-registration.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>

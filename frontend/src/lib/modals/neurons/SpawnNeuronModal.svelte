@@ -7,7 +7,7 @@
   import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsShow } from "../../stores/toasts.store";
   import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
   import { startBusyNeuron } from "../../services/busy.services";
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
@@ -62,7 +62,7 @@
         : percentageToSpawn,
     });
     if (newNeuronId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
         labelKey: "neuron_detail.spawn_maturity_success",
         substitutions: {

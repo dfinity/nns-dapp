@@ -7,7 +7,7 @@
   import { addHotkey } from "../../services/neurons.services";
   import { createEventDispatcher } from "svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
 
   export let neuronId: NeuronId;
@@ -18,7 +18,7 @@
   const add = async () => {
     // Edge case: button is only enabled when principal is defined
     if (principal === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.principal_not_valid",
       });
       return;

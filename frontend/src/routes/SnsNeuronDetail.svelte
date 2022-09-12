@@ -20,7 +20,7 @@
   } from "../lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
 
@@ -74,7 +74,7 @@
     try {
       rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
     } catch (error) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error__sns.invalid_root_canister_id",
         substitutions: {
           $canisterId: rootCanisterIdMaybe,
@@ -105,7 +105,7 @@
 
   $: {
     if ($selectedSnsNeuronStore.neuron === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.neuron_not_found",
       });
       // Reset selected project

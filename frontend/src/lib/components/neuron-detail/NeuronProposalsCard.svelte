@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { makeDummyProposals } from "../../services/neurons.services";
   import CardInfo from "../ui/CardInfo.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 

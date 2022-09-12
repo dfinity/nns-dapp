@@ -6,7 +6,7 @@
   import CurrentBalance from "./CurrentBalance.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { FromStringToTokenError, ICPToken, TokenAmount } from "@dfinity/nns";
   import { getMaxTransactionAmount } from "../../utils/icp.utils";
@@ -41,7 +41,7 @@
   const onSubmit = () => {
     // TS not smart enough to know that validForm also covers `amount === undefiend`
     if (!validForm || amount === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.transaction_invalid_amount",
       });
       return;
@@ -52,7 +52,7 @@
     });
 
     if (icp === undefined || !(icp instanceof TokenAmount)) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.amount_not_valid",
       });
       return;
