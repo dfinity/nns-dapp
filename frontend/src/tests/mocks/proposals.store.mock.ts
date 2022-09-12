@@ -1,8 +1,14 @@
 import type { ProposalInfo } from "@dfinity/nns";
-import {type Ballot, ProposalRewardStatus, ProposalStatus, Topic, Vote} from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+  type Ballot,
+} from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
 import type { ProposalsStore } from "../../lib/stores/proposals.store";
-import {mockKnownNeuron, mockNeuron} from './neurons.mock';
+import { mockNeuron } from "./neurons.mock";
 
 export const deadlineTimestampSeconds = BigInt(
   Math.round(new Date().getTime() / 1000 + 10000)
@@ -30,10 +36,12 @@ export const mockProposals: ProposalInfo[] = [
     status: ProposalStatus.Open,
     rewardStatus: ProposalRewardStatus.AcceptVotes,
     topic: Topic.Governance,
-    ballots: [{
-      vote: Vote.Unspecified,
-      neuronId: mockNeuron.neuronId
-    } as Ballot],
+    ballots: [
+      {
+        vote: Vote.Unspecified,
+        neuronId: mockNeuron.neuronId,
+      } as Ballot,
+    ],
     proposer: BigInt(123456789),
     deadlineTimestampSeconds,
   },
@@ -50,7 +58,7 @@ export const mockProposals: ProposalInfo[] = [
     ballots: [
       {
         vote: Vote.Yes,
-        neuronId: mockNeuron.neuronId
+        neuronId: mockNeuron.neuronId,
       } as Ballot,
     ],
     proposer: BigInt(987654321),

@@ -5,7 +5,7 @@
   import ProposalCard from "./ProposalCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import Spinner from "../ui/Spinner.svelte";
-  import {filteredProposals} from "../../derived/proposals.derived";
+  import { filteredProposals } from "../../derived/proposals.derived";
 
   export let neuronsLoaded: boolean;
   export let nothingFound: boolean;

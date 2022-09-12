@@ -23,7 +23,10 @@ import Proposals from "../../routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
-import {buildMockNeuronsStoreSubscribe, mockNeuron} from "../mocks/neurons.mock";
+import {
+  buildMockNeuronsStoreSubscribe,
+  mockNeuron,
+} from "../mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -136,8 +139,8 @@ describe("Proposals", () => {
       mockLoadProposals();
 
       jest
-          .spyOn(neuronsStore, "subscribe")
-          .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
       const { container } = render(Proposals);
 
