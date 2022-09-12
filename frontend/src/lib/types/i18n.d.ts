@@ -27,6 +27,8 @@ interface I18nCore {
   copy: string;
   badgeNew: string;
   nns: string;
+  previous: string;
+  next: string;
 }
 
 interface I18nError {
