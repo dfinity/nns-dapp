@@ -5,7 +5,7 @@
   import ProposalCard from "./ProposalCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import { sortedProposals } from "../../derived/proposals.derived";
+  import { filteredProposals } from "../../derived/proposals.derived";
 
   export let neuronsLoaded: boolean;
   export let nothingFound: boolean;
@@ -23,7 +23,7 @@
 
   {#if neuronsLoaded}
     <InfiniteScroll on:nnsIntersect disabled={disableInfiniteScroll}>
-      {#each $sortedProposals.proposals as proposalInfo (proposalInfo.id)}
+      {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
         <ProposalCard {hidden} {proposalInfo} />
       {/each}
     </InfiniteScroll>

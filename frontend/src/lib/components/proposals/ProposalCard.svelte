@@ -5,17 +5,11 @@
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import {
-    proposalsFiltersStore,
-    type ProposalsFiltersStore,
-  } from "../../stores/proposals.store";
-  import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
   import type { Color } from "../../types/theme";
   import Tag from "../ui/Tag.svelte";
-  import { voteInProgressStore } from "../../stores/voting.store";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
@@ -41,80 +35,54 @@
       path: `${AppPath.ProposalDetail}/${id}`,
     });
   };
-
-  // HACK:
-  //
-  // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-  // 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
-  // 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-  //
-  // That's why we hide and re-process these proposals delivered by the backend on the client side.
-  //
-  // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
-  let hide: boolean;
-  $: hide =
-    hideProposal({
-      filters: $proposalsFiltersStore as ProposalsFiltersStore,
-      proposalInfo,
-      neurons: $definedNeuronsStore,
-    }) ||
-    // hide proposals that are currently in the voting state
-    $voteInProgressStore.votes.find(
-      ({ proposalId }) => proposalInfo.id === proposalId
-    ) !== undefined;
 </script>
 
-<!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
-{#if !hide}
-  <li class:hidden>
-    {#if layout === "legacy"}
-      <Card role="link" on:click={showProposal} testId="proposal-card">
-        <div slot="start" class="title-container">
-          <p class="title" {title}>{title}</p>
-        </div>
-        <Tag slot="end" {color}
-          >{$i18n.status[ProposalStatus[status]] ?? ""}</Tag
-        >
+<li class:hidden>
+  {#if layout === "legacy"}
+    <Card role="link" on:click={showProposal} testId="proposal-card">
+      <div slot="start" class="title-container">
+        <p class="title" {title}>{title}</p>
+      </div>
+      <Tag slot="end" {color}>{$i18n.status[ProposalStatus[status]] ?? ""}</Tag>
 
-        <ProposalMeta {proposalInfo} showTopic />
-      </Card>
-    {:else}
-      <Card
-        role="link"
-        on:click={showProposal}
-        testId="proposal-card"
-        withArrow={true}
-      >
+      <ProposalMeta {proposalInfo} showTopic />
+    </Card>
+  {:else}
+    <Card
+      role="link"
+      on:click={showProposal}
+      testId="proposal-card"
+      withArrow={true}
+    >
+      <div class="card-meta">
+        <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+        <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
+      </div>
+
+      <div class="card-meta">
+        <span>{$i18n.proposal_detail.topic_prefix}</span>
+        <Value>{topic ?? ""}</Value>
+      </div>
+
+      {#if proposer !== undefined}
         <div class="card-meta">
-          <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
-          <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
+          <span>{$i18n.proposal_detail.proposer_prefix}</span>
+          <Value>{proposer}</Value>
         </div>
+      {/if}
 
-        <div class="card-meta">
-          <span>{$i18n.proposal_detail.topic_prefix}</span>
-          <Value>{topic ?? ""}</Value>
-        </div>
+      <p class="title-placeholder description">{title}</p>
 
-        {#if proposer !== undefined}
-          <div class="card-meta">
-            <span>{$i18n.proposal_detail.proposer_prefix}</span>
-            <Value>{proposer}</Value>
-          </div>
-        {/if}
+      <div class="card-meta">
+        <p class={`${color} status`}>
+          {$i18n.status[ProposalStatus[status]] ?? ""}
+        </p>
 
-        <p class="title-placeholder description">{title}</p>
-
-        <div class="card-meta">
-          <p class={`${color} status`}>
-            {$i18n.status[ProposalStatus[status]] ?? ""}
-          </p>
-
-          <ProposalCountdown {proposalInfo} />
-        </div>
-      </Card>
-    {/if}
-  </li>
-{/if}
+        <ProposalCountdown {proposalInfo} />
+      </div>
+    </Card>
+  {/if}
+</li>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/text";

@@ -1,6 +1,17 @@
+import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
-import type { ProposalsStore } from "../stores/proposals.store";
-import { proposalsStore } from "../stores/proposals.store";
+import { definedNeuronsStore } from "../stores/neurons.store";
+import type {
+  ProposalsFiltersStore,
+  ProposalsStore,
+} from "../stores/proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../stores/proposals.store";
+import type { VoteInProgress } from "../stores/voting.store";
+import { voteInProgressStore } from "../stores/voting.store";
+import { hideProposal } from "../utils/proposals.utils";
 
 /**
  * A derived store of the proposals store that ensure the proposals are sorted by their proposal ids descendant (as provided back by the backend)
@@ -18,6 +29,63 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
     proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
       Number((proposalIdB ?? BigInt(0)) - (proposalIdA ?? BigInt(0)))
     ),
+    certified,
+  })
+);
+
+// HACK:
+//
+// 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
+// 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
+// 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
+//
+// In addition, we have implemented an "optimistic voting" feature.
+//
+// That's why we hide and re-process these proposals delivered by the backend on the client side.
+const hide = ({
+  proposalInfo,
+  filters,
+  neurons,
+  votes,
+}: {
+  proposalInfo: ProposalInfo;
+  filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
+  votes: VoteInProgress[];
+}): boolean =>
+  hideProposal({
+    filters,
+    proposalInfo,
+    neurons,
+  }) ||
+  // hide proposals that are currently in the voting state
+  votes.find(({ proposalId }) => proposalInfo.id === proposalId) !== undefined;
+
+export interface UIProposalsStore {
+  proposals: (ProposalInfo & { hidden: boolean })[];
+  certified: boolean | undefined;
+}
+
+export const uiProposals: Readable<UIProposalsStore> = derived(
+  [
+    sortedProposals,
+    proposalsFiltersStore,
+    definedNeuronsStore,
+    voteInProgressStore,
+  ],
+  ([{ proposals, certified }, filters, neurons, { votes }]) => ({
+    proposals: proposals.map((proposalInfo) => ({
+      ...proposalInfo,
+      hidden: hide({ proposalInfo, filters, neurons, votes }),
+    })),
+    certified,
+  })
+);
+
+export const filteredProposals: Readable<ProposalsStore> = derived(
+  [uiProposals],
+  ([{ proposals, certified }]) => ({
+    proposals: proposals.filter((proposalInfo) => !proposalInfo.hidden),
     certified,
   })
 );
