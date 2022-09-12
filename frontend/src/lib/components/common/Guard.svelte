@@ -2,14 +2,14 @@
   import { authStore } from "../../stores/auth.store";
   import { routeStore } from "../../stores/route.store";
   import { routePath } from "../../utils/route.utils";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { Spinner } from "@dfinity/gix-components";
+  import { toastsError } from "../../stores/toasts.store";
 
   const syncAuthStore = async () => {
     try {
       await authStore.sync();
     } catch (err) {
-      toastsStore.error({ labelKey: "error.auth_sync", err });
+      toastsError({ labelKey: "error.auth_sync", err });
     }
   };
 </script>

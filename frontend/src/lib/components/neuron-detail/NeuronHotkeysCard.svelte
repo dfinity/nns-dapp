@@ -10,7 +10,7 @@
   import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsShow } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
   import Value from "../ui/Value.svelte";
@@ -41,7 +41,7 @@
       .toText();
     // If the user removes itself from the hotkeys, it has no more access to the detail page.
     if (currentIdentityPrincipal === hotkey && maybeNeuronId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });

@@ -27,7 +27,7 @@
   import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
   import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "../lib/components/canister-detail/DetachCanisterButton.svelte";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
@@ -104,7 +104,7 @@
       const userNotController = error instanceof UserNotTheControllerError;
       // Show an error if the error is not expected.
       if (!userNotController) {
-        toastsStore.error({
+        toastsError({
           labelKey: "error.canister_details_not_found",
         });
       }
@@ -173,7 +173,7 @@
         // Show toast only it was not already present in the store
         // for example, after detaching, the storeCanister is present, but not the selectedCanister
         if (storeCanister === undefined) {
-          toastsStore.error({
+          toastsError({
             labelKey: replacePlaceholders($i18n.error.canister_not_found, {
               $canister_id: routeCanisterId ?? "",
             }),

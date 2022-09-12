@@ -3,13 +3,13 @@
  */
 
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
+import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import {
   displayAndCleanLogoutMsg,
   logout,
 } from "../../../lib/services/auth.services";
-import { toastsStore } from "../../../lib/stores/toasts.store";
 import * as routeUtils from "../../../lib/utils/route.utils";
 
 describe("auth-services", () => {

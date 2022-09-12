@@ -28,7 +28,7 @@ import {
   proposalsStore,
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError, toastsHide, toastsShow } from "../stores/toasts.store";
 import {
   voteInProgressStore,
   type VoteInProgress,
@@ -59,7 +59,7 @@ const handleFindProposalsError = ({ error: err, certified }) => {
   if (certified === true) {
     proposalsStore.setProposals({ proposals: [], certified });
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.list_proposals",
       err,
     });
@@ -251,7 +251,7 @@ export const loadProposal = async ({
 
     if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);
-      toastsStore.show({
+      toastsShow({
         labelKey: "error.proposal_not_found",
         level: "error",
         detail: `id: "${proposalId}"${
@@ -340,7 +340,7 @@ export const loadProposalPayload = async ({
       return;
     }
     if (err instanceof ProposalPayloadNotFoundError) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.proposal_payload_not_found",
         substitutions: {
           $proposal_id: proposalId.toString(),
@@ -353,7 +353,7 @@ export const loadProposalPayload = async ({
       return;
     }
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.proposal_payload",
       err,
     });
@@ -435,7 +435,7 @@ export const registerVotes = async ({
 
   // display "voting in progress" message
   const $i18n = get(i18n);
-  const toastMessage = toastsStore.show({
+  const toastMessage = toastsShow({
     labelKey:
       vote === Vote.Yes
         ? "proposal_detail__vote.vote_adopt_in_progress"
@@ -466,7 +466,7 @@ export const registerVotes = async ({
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.register_vote_unknown",
       err,
     });
@@ -496,7 +496,7 @@ export const registerVotes = async ({
   Promise.all([reloadListNeurons(), reloadProposal()]).finally(() => {
     // remove in progress state update call
     voteInProgressStore.remove(voteInProgress.proposalId);
-    toastsStore.hide(toastMessage);
+    toastsHide(toastMessage);
   });
 };
 
@@ -554,7 +554,7 @@ export const requestRegisterVotes = async ({
 
     console.error("vote", rejectedResponses);
 
-    toastsStore.show({
+    toastsShow({
       labelKey: "error.register_vote",
       level: "error",
       substitutions: {

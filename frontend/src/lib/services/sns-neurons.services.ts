@@ -16,7 +16,7 @@ import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "../stores/sns-neurons.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
 import { toToastError } from "../utils/error.utils";
 import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
 import { hexStringToBytes } from "../utils/utils";
@@ -50,7 +50,7 @@ export const loadSnsNeurons = async (
       // hide unproven data
       snsNeuronsStore.resetProject(rootCanisterId);
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.sns_neurons_load",
@@ -166,7 +166,7 @@ export const addHotkey = async ({
     });
     return { success: true };
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__sns.sns_add_hotkey",
       err,
     });
@@ -196,7 +196,7 @@ export const removeHotkey = async ({
     });
     return { success: true };
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__sns.sns_remove_hotkey",
       err,
     });

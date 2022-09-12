@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
   import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { isNullish } from "../../utils/utils";
   import {
     snsesCountStore,

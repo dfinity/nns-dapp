@@ -11,7 +11,7 @@
   import { replacePlaceholders } from "../../../utils/i18n.utils";
   import { busy } from "../../../stores/busy.store";
   import type { VoteInProgress } from "../../../stores/voting.store";
-  import Spinner from "../../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { sanitize } from "../../../utils/html.utils";
 
   const dispatch = createEventDispatcher();

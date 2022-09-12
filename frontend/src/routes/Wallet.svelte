@@ -11,9 +11,9 @@
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
   import { accountsStore } from "../lib/stores/accounts.store";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import type { Account } from "../lib/types/account";
   import { writable } from "svelte/store";
@@ -104,7 +104,7 @@
 
       // handle unknown accountIdentifier from URL
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
-        toastsStore.error({
+        toastsError({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
             $account_identifier:
               routeAccountIdentifier?.accountIdentifier ?? "",

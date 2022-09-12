@@ -7,11 +7,11 @@
   import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
   import { neuronStake } from "../../utils/neuron.utils";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
   export let destinationAddress: string;
@@ -32,7 +32,7 @@
     loading = false;
     stopBusy("disburse-neuron");
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
       });
       routeStore.replace({

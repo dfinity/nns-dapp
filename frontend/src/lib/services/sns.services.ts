@@ -22,7 +22,7 @@ import {
   snsQueryStore,
   snsSwapCommitmentsStore,
 } from "../stores/sns.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
 import { transactionsFeesStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { LedgerErrorKey } from "../types/ledger.errors";
@@ -61,7 +61,7 @@ export const loadSnsSummaries = (): Promise<void> => {
       // hide unproven data
       snsQueryStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.list_summaries",
@@ -102,7 +102,7 @@ export const loadSnsSummary = async ({
         return;
       }
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.load_summary",
@@ -138,7 +138,7 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
       // hide unproven data
       snsSwapCommitmentsStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.list_swap_commitments",
@@ -172,7 +172,7 @@ export const loadSnsSwapCommitment = async ({
         return;
       }
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.load_swap_commitment",
@@ -209,7 +209,7 @@ export const listSnsProposals = async (): Promise<void> => {
       // hide unproven data
       snsProposalsStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.proposal_not_found",
@@ -303,7 +303,7 @@ export const participateInSwap = async ({
 
     return { success };
   } catch (error) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err: error,
         fallbackErrorLabelKey: "error__sns.cannot_participate",

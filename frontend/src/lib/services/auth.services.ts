@@ -1,8 +1,9 @@
 import type { Identity } from "@dfinity/agent";
+import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import { authStore } from "../stores/auth.store";
-import { toastsStore } from "../stores/toasts.store";
-import type { ToastLevel, ToastMsg } from "../types/toast";
+import { toastsShow } from "../stores/toasts.store";
+import type { ToastMsg } from "../types/toast";
 import { replaceHistory } from "../utils/route.utils";
 
 const msgParam: string = "msg";
@@ -84,7 +85,7 @@ export const displayAndCleanLogoutMsg = () => {
   const level: ToastLevel =
     (urlParams.get(levelParam) as ToastLevel | null) ?? "success";
 
-  toastsStore.show({ labelKey: msg, level });
+  toastsShow({ labelKey: msg, level });
 
   cleanUpMsgUrl();
 };

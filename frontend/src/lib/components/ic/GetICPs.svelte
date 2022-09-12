@@ -5,9 +5,8 @@
   import Modal from "../../modals/Modal.svelte";
   import Input from "../ui/Input.svelte";
   import { getICPs } from "../../services/dev.services";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { IconAccountBalance } from "@dfinity/gix-components";
+  import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
+  import { toastsError } from "../../stores/toasts.store";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -16,7 +15,7 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.error({
+      toastsError({
         labelKey: "Invalid ICPs input.",
       });
       return;
@@ -32,7 +31,7 @@
 
       reset();
     } catch (err: unknown) {
-      toastsStore.error({
+      toastsError({
         labelKey: "ICPs could not be transferred.",
         err,
       });

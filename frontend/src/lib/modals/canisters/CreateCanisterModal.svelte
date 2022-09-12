@@ -11,7 +11,7 @@
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsShow } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import type { Account } from "../../types/account";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -62,7 +62,7 @@
   const create = async () => {
     // Edge case, should not happen
     if (amount === undefined || account === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;
@@ -77,7 +77,7 @@
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
         labelKey: "canisters.create_canister_success",
         substitutions: {
