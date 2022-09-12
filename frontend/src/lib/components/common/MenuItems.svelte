@@ -5,7 +5,7 @@
     IconLockOpen,
     IconHowToVote,
     IconSettingsApplications,
-    IconRocketLaunch
+    IconRocketLaunch,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
