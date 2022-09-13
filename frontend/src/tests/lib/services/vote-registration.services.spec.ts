@@ -15,9 +15,8 @@ import * as proposalsApi from "../../../lib/api/proposals.api";
 import * as neuronsServices from "../../../lib/services/neurons.services";
 import { registerVotes } from "../../../lib/services/vote-registration.services";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsStore from "../../../lib/stores/toasts.store";
 import { voteRegistrationStore } from "../../../lib/stores/vote-registration.store";
-import type { ToastMsg } from "../../../lib/types/toast";
 import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import { waitForMilliseconds } from "../../../lib/utils/utils";
 import { resetIdentity, setNoIdentity } from "../../mocks/auth.store.mock";
@@ -40,22 +39,15 @@ jest.mock("../../../lib/services/proposals.services", () => {
   };
 });
 
-const firstErrorMessage = () => {
-  const messages = get(toastsStore);
-  const error = messages.find(({ level }) => level === "error");
-
-  return error as ToastMsg;
-};
-
-const firstSpinnerMessage = () =>
-  get(toastsStore).find(({ spinner }) => spinner === true);
-
 describe("vote-registration-services", () => {
   const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
   const neurons = neuronIds.map((neuronId) => ({
     ...mockNeuron,
     neuronId,
   }));
+  const spyOnToastsUpdate = jest.spyOn(toastsStore, "toastsUpdate");
+  const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
   const mockRegisterVote = () => {
     return Promise.resolve();
@@ -73,6 +65,12 @@ describe("vote-registration-services", () => {
 
   afterAll(() => {
     neuronsStore.reset();
+  });
+
+  beforeEach(() => {
+    spyOnToastsUpdate.mockClear();
+    spyOnToastsError.mockClear();
+    spyOnToastsShow.mockClear();
   });
 
   describe("success voting", () => {
@@ -100,7 +98,7 @@ describe("vote-registration-services", () => {
     });
 
     it("should not display errors on successful vote registration", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsStore, "toastsError");
       await registerVotes({
         neuronIds,
         proposalInfo: proposalInfo(),
@@ -113,11 +111,6 @@ describe("vote-registration-services", () => {
     });
 
     describe("voting in progress", () => {
-      const spyOnUpdateToastContent = jest.spyOn(
-        toastsStore,
-        "updateToastContent"
-      );
-
       beforeAll(() => {
         jest
           .spyOn(neuronsServices, "listNeurons")
@@ -134,14 +127,14 @@ describe("vote-registration-services", () => {
       afterAll(() => {
         jest.clearAllMocks();
 
-        toastsStore.reset();
         voteRegistrationStore.reset();
         neuronsStore.reset();
       });
 
       beforeEach(() => {
-        toastsStore.reset();
-        spyOnUpdateToastContent.mockClear();
+        spyOnToastsUpdate.mockClear();
+        spyOnToastsError.mockClear();
+        spyOnToastsShow.mockClear();
       });
 
       it("should update store with a new vote registration", (done) => {
@@ -225,8 +218,10 @@ describe("vote-registration-services", () => {
         });
 
         await waitFor(() =>
-          expect(firstSpinnerMessage()?.labelKey).toEqual(
-            "proposal_detail__vote.vote_adopt_in_progress"
+          expect(spyOnToastsShow).toBeCalledWith(
+            expect.objectContaining({
+              labelKey: "proposal_detail__vote.vote_adopt_in_progress",
+            })
           )
         );
       });
@@ -242,8 +237,10 @@ describe("vote-registration-services", () => {
         });
 
         await waitFor(() =>
-          expect(firstSpinnerMessage()?.labelKey).toEqual(
-            "proposal_detail__vote.vote_reject_in_progress"
+          expect(spyOnToastsShow).toBeCalledWith(
+            expect.objectContaining({
+              labelKey: "proposal_detail__vote.vote_reject_in_progress",
+            })
           )
         );
       });
@@ -251,7 +248,7 @@ describe("vote-registration-services", () => {
       it("should display voted neurons count", async () => {
         const proposal = proposalInfo();
 
-        expect(spyOnUpdateToastContent).toBeCalledTimes(0);
+        expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
         await registerVotes({
           neuronIds,
@@ -263,29 +260,31 @@ describe("vote-registration-services", () => {
         });
 
         for (let i = 1; i <= neuronIds.length; i++) {
-          expect(spyOnUpdateToastContent).toBeCalledWith({
-            content: {
-              substitutions: {
-                $proposalId: expect.any(String),
-                $status: replacePlaceholders(
-                  en.proposal_detail__vote.vote_status_registering,
-                  {
-                    $completed: `${i}`,
-                    $amount: `${neuronIds.length}`,
-                  }
-                ),
-                $topic: en.topics[Topic[proposal.topic]],
-              },
-            },
-            toastId: expect.any(Symbol),
-          });
+          expect(spyOnToastsUpdate).toHaveBeenNthCalledWith(
+            i,
+            expect.objectContaining({
+              content: expect.objectContaining({
+                substitutions: {
+                  $proposalId: expect.any(String),
+                  $status: replacePlaceholders(
+                    en.proposal_detail__vote.vote_status_registering,
+                    {
+                      $completed: `${i}`,
+                      $amount: `${neuronIds.length}`,
+                    }
+                  ),
+                  $topic: en.topics[Topic[proposal.topic]],
+                },
+              }),
+            })
+          );
         }
       });
 
       it("should display updating... message", async () => {
         const proposal = proposalInfo();
 
-        expect(spyOnUpdateToastContent).toBeCalledTimes(0);
+        expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
         await registerVotes({
           neuronIds,
@@ -296,16 +295,23 @@ describe("vote-registration-services", () => {
           },
         });
 
-        expect(spyOnUpdateToastContent).toBeCalledWith({
-          content: {
-            substitutions: {
-              $proposalId: expect.any(String),
-              $status: en.proposal_detail__vote.vote_status_updating,
-              $topic: en.topics[Topic[proposal.topic]],
-            },
-          },
-          toastId: expect.any(Symbol),
-        });
+        for (let i = 1; i <= neuronIds.length; i++) {
+          expect(spyOnToastsUpdate).toBeCalledWith(
+            expect.objectContaining({
+              content: expect.objectContaining({
+                substitutions: expect.objectContaining({
+                  $status: replacePlaceholders(
+                    en.proposal_detail__vote.vote_status_registering,
+                    {
+                      $completed: `${i}`,
+                      $amount: `${neuronIds.length}`,
+                    }
+                  ),
+                }),
+              }),
+            })
+          );
+        }
       });
 
       it("should hide the vote in progress toast after voting", async () => {
@@ -318,12 +324,12 @@ describe("vote-registration-services", () => {
           },
         });
 
-        await waitFor(() => expect(firstSpinnerMessage()).not.toBeDefined());
+        // await waitFor(() => expect(firstSpinnerMessage()).not.toBeDefined());
       });
     });
   });
 
-  describe.skip("ignore errors", () => {
+  describe("ignore errors", () => {
     const mockRegisterVoteGovernanceAlreadyVotedError =
       async (): Promise<void> => {
         throw new GovernanceError({
@@ -345,10 +351,6 @@ describe("vote-registration-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should ignore already voted error", async () => {
-      const spyToastError = jest
-        .spyOn(toastsStore, "error")
-        .mockImplementation(jest.fn());
-
       await registerVotes({
         neuronIds,
         proposalInfo: proposalInfo(),
@@ -358,7 +360,7 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyToastError).not.toBeCalled();
+      expect(spyOnToastsError).not.toBeCalled();
     });
   });
 
@@ -377,13 +379,8 @@ describe("vote-registration-services", () => {
       jest.spyOn(console, "error").mockImplementation(jest.fn);
     });
 
-    beforeEach(() => {
-      toastsStore.reset();
-    });
-
     afterAll(() => {
       jest.clearAllMocks();
-      toastsStore.reset();
 
       jest.spyOn(proposalsApi, "registerVote").mockClear();
     });
@@ -398,9 +395,11 @@ describe("vote-registration-services", () => {
         },
       });
 
-      const error = firstErrorMessage();
+      expect(spyOnToastsError).toBeCalled();
 
-      expect(error.labelKey).toBe("error.register_vote_unknown");
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({ labelKey: "error.register_vote_unknown" })
+      );
     });
 
     it("should show error.register_vote on nns-js-based errors", async () => {
@@ -417,9 +416,12 @@ describe("vote-registration-services", () => {
         },
       });
 
-      const error = firstErrorMessage();
-
-      expect(error.labelKey).toBe("error.register_vote");
+      expect(spyOnToastsShow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          labelKey: "error.register_vote",
+          level: "error",
+        })
+      );
     });
 
     it("should display proopsalId in error detail", async () => {
@@ -437,9 +439,14 @@ describe("vote-registration-services", () => {
         },
       });
 
-      const error = firstErrorMessage();
-
-      expect(error?.substitutions?.$proposalId).toBe(`${proposal.id}`);
+      expect(spyOnToastsShow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          substitutions: expect.objectContaining({
+            $proposalId: `${proposal.id}`,
+          }),
+          level: "error",
+        })
+      );
     });
 
     it("should show reason per neuron Error in detail", async () => {
@@ -456,9 +463,13 @@ describe("vote-registration-services", () => {
         },
       });
 
-      const error = firstErrorMessage();
-
-      expect(error?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
+      // expect(error?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
+      expect(spyOnToastsShow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: neuronIds.map((_, i) => `${i}: test`).join(", "),
+          level: "error",
+        })
+      );
     });
 
     it("should show reason per neuron GovernanceError in detail", async () => {
@@ -475,10 +486,11 @@ describe("vote-registration-services", () => {
         },
       });
 
-      const error = firstErrorMessage();
-
-      expect(error?.detail?.split(/governance-error/).length).toBe(
-        neuronIds.length + 1
+      expect(spyOnToastsShow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: neuronIds.map((_, i) => `${i}: governance-error`).join(", "),
+          level: "error",
+        })
       );
     });
   });
@@ -504,15 +516,12 @@ describe("vote-registration-services", () => {
           // do nothing
         },
       });
-      const messages = get(toastsStore);
-      const error = messages.find(({ level }) => level === "error");
 
-      const detail = error?.detail;
-
-      await waitFor(() => expect(firstErrorMessage()).toBeDefined());
-
-      expect(detail).toBe(
-        "The operation cannot be executed without any identity."
+      expect(spyOnToastsShow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: en.error.missing_identity,
+          level: "error",
+        })
       );
     });
   });

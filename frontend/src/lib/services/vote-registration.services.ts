@@ -12,7 +12,12 @@ import { registerVote } from "../api/proposals.api";
 import { i18n } from "../stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import { proposalsStore } from "../stores/proposals.store";
-import { toastsStore } from "../stores/toasts.store";
+import {
+  toastsError,
+  toastsHide,
+  toastsShow,
+  toastsUpdate,
+} from "../stores/toasts.store";
 import {
   voteRegistrationStore,
   type VoteRegistration,
@@ -88,12 +93,12 @@ export const registerVotes = async ({
     updateProposalContext(updatedProposalInfo);
 
     // cleanup
-    toastsStore.hide(toastId);
+    toastsHide(toastId);
     voteRegistrationStore.remove(proposalId);
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.register_vote_unknown",
       err,
     });
@@ -120,7 +125,7 @@ const createRegisterVotesToast = ({
     }
   );
 
-  return toastsStore.show({
+  return toastsShow({
     labelKey:
       vote === Vote.Yes
         ? "proposal_detail__vote.vote_adopt_in_progress"
@@ -229,8 +234,8 @@ const updateVoteRegistrationToastMessage = ({
         $amount: `${totalNeurons}`,
       });
 
-  toastsStore.updateToastContent({
-    toastId,
+  toastsUpdate({
+    id: toastId,
     content: {
       substitutions: {
         $proposalId: `${id}`,
@@ -296,7 +301,7 @@ const registerNeuronsVote = async ({
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
-    toastsStore.error({
+    toastsError({
       labelKey: "error.register_vote_unknown",
       err,
     });
@@ -338,7 +343,7 @@ const processRegisterVoteErrors = ({
     });
     const $i18n = get(i18n);
 
-    toastsStore.show({
+    toastsShow({
       labelKey: "error.register_vote",
       level: "error",
       substitutions: {
