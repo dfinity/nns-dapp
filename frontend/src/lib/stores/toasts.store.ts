@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { toastsStore } from "@dfinity/gix-components";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
@@ -72,5 +73,14 @@ export const toastsUpdate = ({
   content,
 }: {
   id: symbol;
-  content: Partial<Omit<ToastMsg, "id">>;
-}): void => toastsStore.update({ id, content });
+  content: ToastMsg;
+}): void => {
+  toastsStore.update({
+    id,
+    content: {
+      id,
+      ...content,
+      text: mapToastText(content),
+    },
+  });
+};

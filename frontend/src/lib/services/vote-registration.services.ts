@@ -82,6 +82,7 @@ export const registerVotes = async ({
       neuronIds,
       successfullyVotedNeuronIds,
       registrationDone: true,
+      vote,
     });
 
     // reload and replace proposal and neurons (`update` call) to display the actual backend state
@@ -206,6 +207,7 @@ const neuronRegistrationComplete = ({
     // use the most actual value
     successfullyVotedNeuronIds:
       voteRegistrationByProposal(proposalId).successfullyVotedNeuronIds,
+    vote,
   });
 };
 
@@ -216,12 +218,14 @@ const updateVoteRegistrationToastMessage = ({
   neuronIds,
   successfullyVotedNeuronIds,
   registrationDone,
+  vote,
 }: {
   toastId: symbol;
   proposalInfo: ProposalInfo;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
   registrationDone: boolean;
+  vote: Vote;
 }) => {
   const $i18n = get(i18n);
   const { id, topic } = proposalInfo;
@@ -237,6 +241,12 @@ const updateVoteRegistrationToastMessage = ({
   toastsUpdate({
     id: toastId,
     content: {
+      labelKey:
+        vote === Vote.Yes
+          ? "proposal_detail__vote.vote_adopt_in_progress"
+          : "proposal_detail__vote.vote_reject_in_progress",
+      level: "info",
+      spinner: true,
       substitutions: {
         $proposalId: `${id}`,
         $topic: $i18n.topics[Topic[topic]],
