@@ -1453,11 +1453,7 @@ impl Account {
         self.default_account_transactions
             .iter()
             .cloned()
-            .chain(
-                self.sub_accounts
-                    .values()
-                    .flat_map(|a| a.transactions.iter().cloned()),
-            )
+            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().cloned()))
             .sorted()
             .collect()
     }
