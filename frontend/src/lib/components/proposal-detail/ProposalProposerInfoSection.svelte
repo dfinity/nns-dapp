@@ -36,4 +36,8 @@
     padding: var(--padding-2x);
     border-radius: var(--border-radius);
   }
+
+  a {
+    overflow-wrap: break-word;
+  }
 </style>
