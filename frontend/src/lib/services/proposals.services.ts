@@ -1,18 +1,10 @@
 import type { Identity } from "@dfinity/agent";
-import {
-  Topic,
-  Vote,
-  type NeuronId,
-  type ProposalId,
-  type ProposalInfo,
-} from "@dfinity/nns";
-import { assertNonNullish } from "@dfinity/utils";
+import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
-  registerVote,
 } from "../api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
@@ -20,31 +12,21 @@ import {
 } from "../canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
 import { AppPath } from "../constants/routes.constants";
-import { i18n } from "../stores/i18n";
-import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   type ProposalsFiltersStore,
 } from "../stores/proposals.store";
-import { toastsError, toastsHide, toastsShow } from "../stores/toasts.store";
-import {
-  voteInProgressStore,
-  type VoteInProgress,
-} from "../stores/voting.store";
+import { toastsError, toastsShow } from "../stores/toasts.store";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
+import { hashCode } from "../utils/dev.utils";
 import { errorToString } from "../utils/error.utils";
-import { updateNeuronsVote } from "../utils/neuron.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
-  registerVoteErrorDetails,
-  updateProposalVote,
 } from "../utils/proposals.utils";
 import { getIdentity } from "./auth.services";
-import { listNeurons } from "./neurons.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
@@ -92,7 +74,7 @@ export const listProposals = async ({
  * List the nex proposals in a paginated way.
  * @param {beforeProposal: ProposalId | undefined; loadFinished: (paginationOver: boolean) => void;} params
  * @param {ProposalId | undefined} params.beforeProposal Pagination starting proposal. Undefined for first results
- * @param {(paginationOver: boolean) => void;} params.loadFinished Triggered when the loading is over. `paginationOver` equals `true` if all pages of the list have been queried.
+ * @param {(paginationOver: boolean) => void} params.loadFinished Triggered when the loading is over. `paginationOver` equals `true` if all pages of the list have been queried.
  */
 export const listNextProposals = async ({
   beforeProposal,
@@ -381,199 +363,4 @@ export const routePathProposalId = (
 
   const proposalId: ProposalId | undefined = getLastPathDetailId(path);
   return { proposalId };
-};
-
-/**
- * Makes multiple registerVote calls (1 per neuronId).
- *
- * In order to improve UX optimistic UI update is used: after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron) and update the stores with optimistic values.
- */
-export const registerVotes = async ({
-  neuronIds,
-  proposalInfo,
-  vote,
-  reloadProposalCallback,
-}: {
-  neuronIds: NeuronId[];
-  proposalInfo: ProposalInfo;
-  vote: Vote;
-  reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
-}): Promise<void> => {
-  const identity: Identity = await getIdentity();
-  const proposalId = proposalInfo.id as bigint;
-  const $definedNeuronsStore = get(definedNeuronsStore);
-  const voteInProgress: VoteInProgress = {
-    neuronIds,
-    proposalId,
-    successfullyVotedNeuronIds: [],
-    vote,
-  };
-
-  voteInProgressStore.add(voteInProgress);
-
-  let votingProposal: ProposalInfo = { ...proposalInfo };
-
-  const registerVoteCallback = (neuronId: NeuronId) => {
-    const originalNeuron = $definedNeuronsStore.find(
-      ({ neuronId: id }) => id === neuronId
-    );
-
-    // TODO: remove after live testing. In theory it should be always defined here.
-    assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
-
-    voteInProgressStore.addSuccessfullyVotedNeuronId({
-      proposalId,
-      neuronId,
-    });
-
-    // Mocking the data and update the stores because with proceed with optimistic values
-    const votingNeuron = updateNeuronsVote({
-      neuron: originalNeuron,
-      vote,
-      proposalId,
-    });
-    // update proposal vote state
-    votingProposal = updateProposalVote({
-      proposalInfo: votingProposal,
-      neuron: votingNeuron,
-      vote,
-    });
-
-    neuronsStore.replaceNeurons([votingNeuron]);
-    proposalsStore.replaceProposals([votingProposal]);
-    // update context store
-    reloadProposalCallback(votingProposal);
-  };
-
-  // display "voting in progress" message
-  const $i18n = get(i18n);
-  const toastMessage = toastsShow({
-    labelKey:
-      vote === Vote.Yes
-        ? "proposal_detail__vote.vote_adopt_in_progress"
-        : "proposal_detail__vote.vote_reject_in_progress",
-    level: "info",
-    spinner: true,
-    substitutions: {
-      $proposalId: `${proposalId}`,
-      $topic: $i18n.topics[Topic[proposalInfo.topic]],
-    },
-  });
-
-  try {
-    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
-
-    await requestRegisterVotes({
-      neuronIds,
-      proposalId,
-      identity,
-      vote,
-      topic: proposalInfo.topic,
-      registerVoteCallback,
-    });
-
-    logWithTimestamp(
-      `Registering [${neuronIds.map(hashCode)}] votes complete.`
-    );
-  } catch (err: unknown) {
-    console.error("vote unknown:", err);
-
-    toastsError({
-      labelKey: "error.register_vote_unknown",
-      err,
-    });
-  }
-  // TODO(create a Jira task): be sure that some previously called proposal fetch update wouldn't ruin the faked data (probably timestamp based)
-
-  // trigger refetching the data
-  const reloadListNeurons = async () =>
-    // store update is done by `listNeurons` function
-    listNeurons({
-      strategy: "update",
-    });
-
-  const reloadProposal = async () =>
-    loadProposal({
-      proposalId,
-      setProposal: (proposalInfo: ProposalInfo) => {
-        // update context store
-        reloadProposalCallback(proposalInfo);
-        // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
-        proposalsStore.replaceProposals([proposalInfo]);
-      },
-      // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
-      strategy: "update",
-    });
-
-  Promise.all([reloadListNeurons(), reloadProposal()]).finally(() => {
-    // remove in progress state update call
-    voteInProgressStore.remove(voteInProgress.proposalId);
-    toastsHide(toastMessage);
-  });
-};
-
-export const requestRegisterVotes = async ({
-  neuronIds,
-  proposalId,
-  identity,
-  vote,
-  topic,
-  registerVoteCallback,
-}: {
-  neuronIds: bigint[];
-  proposalId: ProposalId;
-  identity: Identity;
-  vote: Vote;
-  topic: Topic;
-  registerVoteCallback: (neuronId: NeuronId) => void;
-}): Promise<void> => {
-  const requests = neuronIds.map(
-    (neuronId: NeuronId): Promise<void> =>
-      registerVote({
-        neuronId,
-        vote,
-        proposalId,
-        identity,
-      })
-        // call it only after successful registration
-        .then(() => registerVoteCallback(neuronId))
-  );
-
-  const responses = await Promise.allSettled(requests);
-  const rejectedResponses = responses.filter(
-    (response: PromiseSettledResult<void>) => {
-      const { status } = response;
-
-      // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
-      // 1. the error truly means the neuron has already voted.
-      // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
-      // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
-      const hasAlreadyVoted: boolean =
-        "reason" in response &&
-        response.reason?.detail?.error_message ===
-          "Neuron already voted on proposal.";
-
-      return status === "rejected" && !hasAlreadyVoted;
-    }
-  );
-
-  if (rejectedResponses.length > 0) {
-    const details: string[] = registerVoteErrorDetails({
-      responses,
-      neuronIds,
-    });
-    const $i18n = get(i18n);
-
-    console.error("vote", rejectedResponses);
-
-    toastsShow({
-      labelKey: "error.register_vote",
-      level: "error",
-      substitutions: {
-        $proposalId: `${proposalId}`,
-        $topic: $i18n.topics[Topic[topic]],
-      },
-      detail: details.join(", "),
-    });
-  }
 };
