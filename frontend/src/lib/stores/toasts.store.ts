@@ -66,3 +66,11 @@ export const toastsError = ({
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
 
 export const toastsReset = () => toastsStore.reset();
+
+export const toastsUpdate = ({
+  id,
+  content,
+}: {
+  id: symbol;
+  content: Partial<Omit<ToastMsg, "id">>;
+}): void => toastsStore.update({ id, content });
