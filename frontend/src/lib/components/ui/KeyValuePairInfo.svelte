@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconInfoOutline from "../../icons/IconInfoOutline.svelte";
+  import { IconInfoOutline } from "@dfinity/gix-components";
   import Collapsible from "./Collapsible.svelte";
   import KeyValuePair from "./KeyValuePair.svelte";
 

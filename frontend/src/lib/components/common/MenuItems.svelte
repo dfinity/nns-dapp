@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { MenuItem } from "@dfinity/gix-components";
-  import IconWallet from "../../icons/IconWallet.svelte";
-  import IconLockOpen from "../../icons/IconLockOpen.svelte";
-  import IconHowToVote from "../../icons/IconHowToVote.svelte";
-  import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
+  import {
+    MenuItem,
+    IconWallet,
+    IconLockOpen,
+    IconHowToVote,
+    IconSettingsApplications,
+    IconRocketLaunch,
+  } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { baseHref } from "../../utils/route.utils";
   import { isRoutePath } from "../../utils/app-path.utils";
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
-  import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
   import {
     ENABLE_SNS,
     IS_TESTNET,

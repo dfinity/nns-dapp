@@ -3,8 +3,7 @@
   import { Vote } from "@dfinity/nns";
   import CardInfo from "../ui/CardInfo.svelte";
   import { i18n } from "../../stores/i18n";
-  import IconThumbDown from "../../icons/IconThumbDown.svelte";
-  import IconThumbUp from "../../icons/IconThumbUp.svelte";
+  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
   import { definedNeuronsStore } from "../../stores/neurons.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import {

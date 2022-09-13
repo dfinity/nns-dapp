@@ -1,7 +1,6 @@
 <script lang="ts">
   import Toggle from "../ui/Toggle.svelte";
-  import IconLightMode from "../../icons/IconLightMode.svelte";
-  import IconDarkMode from "../../icons/IconDarkMode.svelte";
+  import { IconLightMode, IconDarkMode } from "@dfinity/gix-components";
 
   import { Theme } from "../../types/theme";
   import { themeStore } from "../../stores/theme.store";
