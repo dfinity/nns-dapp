@@ -4,7 +4,7 @@ set -euxo pipefail
 # sdk has broken; this branch should fix it.
 #export PATH="/home/max/dfn/sdk/branches/spofford/global-args/target/debug:$PATH"
 
-export DFX_NETWORK=nnsdapp
+export DFX_NETWORK=testnet
 TESTNET=nnsdapp
 export FEATURE_FLAGS='{"ENABLE_SNS":true,"VOTING_UI":"legacy"}'
 IC_COMMIT=068c59b85ea4a384469b113f87e6b52b94c11d6b
