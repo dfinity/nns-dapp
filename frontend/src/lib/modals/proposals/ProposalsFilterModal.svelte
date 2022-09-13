@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components"
+  import { Modal } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import type {
     ProposalsFilterModalProps,
@@ -85,10 +85,10 @@
     <div class="filters">
       {#each filtersValues as key (key)}
         <Checkbox
-                inputId={`${key}`}
-                checked={selectedFilters.includes(key)}
-                on:nnsChange={() => onChange(key)}
-        >{$i18n[category][filters[key]]}</Checkbox
+          inputId={`${key}`}
+          checked={selectedFilters.includes(key)}
+          on:nnsChange={() => onChange(key)}
+          >{$i18n[category][filters[key]]}</Checkbox
         >
       {/each}
     </div>
