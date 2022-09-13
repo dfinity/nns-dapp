@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import { Modal } from "@dfinity/gix-components"
   import { createEventDispatcher } from "svelte";
   import type {
     ProposalsFilterModalProps,
@@ -78,21 +78,23 @@
   };
 </script>
 
-<Modal {visible} on:nnsClose={close}>
+<Modal {visible} on:nnsClose={close} role="alert">
   <span slot="title">{$i18n.voting?.[category] ?? ""}</span>
 
   {#if filters}
-    {#each filtersValues as key (key)}
-      <Checkbox
-        inputId={`${key}`}
-        checked={selectedFilters.includes(key)}
-        on:nnsChange={() => onChange(key)}
+    <div class="filters">
+      {#each filtersValues as key (key)}
+        <Checkbox
+                inputId={`${key}`}
+                checked={selectedFilters.includes(key)}
+                on:nnsChange={() => onChange(key)}
         >{$i18n[category][filters[key]]}</Checkbox
-      >
-    {/each}
+        >
+      {/each}
+    </div>
   {/if}
 
-  <svelte:fragment slot="footer">
+  <svelte:fragment slot="toolbar">
     <button class="secondary small" type="button" on:click={close}>
       {$i18n.core.cancel}
     </button>
@@ -106,3 +108,9 @@
     </button>
   </svelte:fragment>
 </Modal>
+
+<style lang="scss">
+  .filters {
+    --select-padding: var(--padding-2x) var(--padding-0_5x) var(--padding-2x) 0;
+  }
+</style>
