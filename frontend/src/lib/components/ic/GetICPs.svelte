@@ -133,6 +133,6 @@
     display: flex;
     flex-direction: column;
 
-    padding: var(--padding-2x) 0;
+    padding: var(--padding-2x) var(--padding);
   }
 </style>

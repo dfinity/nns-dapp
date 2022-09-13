@@ -28,3 +28,8 @@
   </svelte:fragment>
 </Modal>
 
+<style lang="scss">
+  article {
+    padding: 0 var(--padding);
+  }
+</style>

@@ -111,6 +111,6 @@
 
 <style lang="scss">
   .filters {
-    --select-padding: var(--padding-2x) var(--padding-0_5x) var(--padding-2x) 0;
+    --select-padding: var(--padding-2x) var(--padding) var(--padding-2x);
   }
 </style>
