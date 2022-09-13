@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
 
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/projects.store";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import Logo from "../ui/Logo.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
 
   export let project: SnsFullProject;
@@ -27,7 +27,7 @@
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
-  let myCommitment: ICP | undefined;
+  let myCommitment: TokenAmount | undefined;
 
   const showProject = () => {
     routeStore.navigate({
@@ -46,7 +46,7 @@
     <h3>{title}</h3>
   </div>
 
-  <p class="value">{description}</p>
+  <p class="value description">{description}</p>
 
   <ProjectCardSwapInfo {project} bind:myCommitment />
 
@@ -59,15 +59,18 @@
 </Card>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/text";
+
   .title {
     display: flex;
     gap: var(--padding-1_5x);
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: var(--padding);
 
     h3 {
       margin: 0;
       line-height: var(--line-height-standard);
+      @include text.clamp(2);
     }
   }
 
@@ -77,5 +80,9 @@
 
   .spinner {
     margin-top: var(--padding-1_5x);
+  }
+
+  .description {
+    @include text.clamp(6);
   }
 </style>

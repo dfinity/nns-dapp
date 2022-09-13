@@ -2,13 +2,14 @@
  * @jest-environment jsdom
  */
 
+import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionModal from "../../../../lib/modals/accounts/NewTransactionModal.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
+import {} from "../../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -36,7 +37,7 @@ describe("NewTransactionModal", () => {
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
-    successSpy = jest.spyOn(toastsStore, "success");
+    successSpy = jest.spyOn(toastsStore, "show");
   });
 
   afterAll(() => jest.clearAllMocks());

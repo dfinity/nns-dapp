@@ -3,9 +3,9 @@
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
@@ -18,7 +18,7 @@
 
   onMount(async () => {
     if (!$authStore.identity) {
-      toastsStore.error({ labelKey: "error.missing_identity" });
+      toastsError({ labelKey: "error.missing_identity" });
       return;
     }
 

@@ -2,20 +2,58 @@
  * @jest-environment jsdom
  */
 
+import { Principal } from "@dfinity/principal";
+import {
+  SnsNeuronPermissionType,
+  SnsSwapLifecycle,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.svelte";
+import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
+import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
+import { authStore } from "../../../../lib/stores/auth.store";
+import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
+import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { nowInSeconds } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
 import { getSnsNeuronIdAsHexString } from "../../../../lib/utils/sns-neuron.utils";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("SnsNeuronCard", () => {
+  beforeAll(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   const defaultProps = {
     role: "link",
     ariaLabel: "test label",
   };
+  const data = snsResponsesForLifecycle({
+    lifecycles: [SnsSwapLifecycle.Open],
+    certified: true,
+  });
+  beforeEach(() => {
+    snsQueryStore.setData(data);
+    const [snsMetadatas] = data;
+    snsProjectSelectedStore.set(
+      Principal.fromText(snsMetadatas[0].rootCanisterId)
+    );
+  });
+  afterEach(() => {
+    snsQueryStore.reset();
+    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+  });
   it("renders a Card", () => {
     const { container } = render(SnsNeuronCard, {
       props: { neuron: mockSnsNeuron, ...defaultProps },
@@ -67,6 +105,10 @@ describe("SnsNeuronCard", () => {
         ...defaultProps,
       },
     });
+    const token = get(snsTokenSymbolSelectedStore);
+    expect(token).not.toBeUndefined();
+    token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
+    expect(queryAllByText(en.core.icp).length).toBe(0);
 
     const stakeText = formatICP({
       value:
@@ -96,7 +138,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_locked)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Locked)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
@@ -111,7 +153,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolved)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolved)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
@@ -130,7 +172,28 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
+  });
+
+  it("renders the hotkey_control label when user has only voting permissions", async () => {
+    const hotkeyneuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      permissions: [
+        {
+          principal: [mockIdentity.getPrincipal()],
+          permission_type: [
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          ],
+        },
+      ],
+    };
+    const { getByText } = render(SnsNeuronCard, {
+      props: {
+        neuron: hotkeyneuron,
+      },
+    });
+
+    expect(getByText(en.neurons.hotkey_control)).toBeInTheDocument();
   });
 });

@@ -8,10 +8,13 @@
   import type { AuthStore } from "./lib/stores/auth.store";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
-  import Toasts from "./lib/components/ui/Toasts.svelte";
+  import { Toasts } from "@dfinity/gix-components";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { initApp } from "./lib/services/app.services";
+  import { voteInProgressStore } from "./lib/stores/voting.store";
+  import { syncBeforeUnload } from "./lib/utils/before-unload.utils";
+  import { voteRegistrationActive } from "./lib/utils/proposals.utils";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -35,9 +38,14 @@
     }
   );
 
+  const unsubscribeVoteInProgress: Unsubscriber = voteInProgressStore.subscribe(
+    ({ votes }) => syncBeforeUnload(voteRegistrationActive(votes))
+  );
+
   onDestroy(() => {
     unsubscribeAuth();
     unsubscribeRoute();
+    unsubscribeVoteInProgress();
   });
 </script>
 
@@ -60,13 +68,7 @@
 <BusyScreen />
 
 <style lang="scss" global>
-  @import "lib/themes/fonts";
+  @import "@dfinity/gix-components/styles/global.scss";
+  @import "lib/themes/legacy";
   @import "lib/themes/variables";
-  @import "lib/themes/theme";
-  @import "lib/themes/button";
-  @import "lib/themes/link";
-  @import "lib/themes/modal";
-  @import "lib/themes/themes/dark";
-  @import "lib/themes/themes/light";
-  @import "lib/themes/colors";
 </style>

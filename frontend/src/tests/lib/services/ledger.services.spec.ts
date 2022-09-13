@@ -17,7 +17,7 @@ import {
   showAddressAndPubKeyOnHardwareWallet,
 } from "../../../lib/services/ledger.services";
 import { authStore } from "../../../lib/stores/auth.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsStore from "../../../lib/stores/toasts.store";
 import {
   LedgerErrorKey,
   LedgerErrorMessage,
@@ -88,7 +88,7 @@ describe("ledger-services", () => {
       });
 
       it("should display a toast for the error assuming the user has cancelled the process", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
 
@@ -145,7 +145,7 @@ describe("ledger-services", () => {
 
     describe("error", () => {
       it("should throw an error if no name provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({ name: undefined, ledgerIdentity });
 
@@ -158,7 +158,7 @@ describe("ledger-services", () => {
       });
 
       it("should throw an error if no ledger identity provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({
           name: "test",
@@ -260,7 +260,7 @@ describe("ledger-services", () => {
           throw new LedgerErrorKey("error__ledger.unexpected_wallet");
         });
 
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await showAddressAndPubKeyOnHardwareWallet();
 
@@ -310,7 +310,7 @@ describe("ledger-services", () => {
       );
 
       it("should not list neurons if ledger throw an error", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         const { err } = await listNeuronsHardwareWallet();
 

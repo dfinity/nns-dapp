@@ -1,54 +1,44 @@
 <script lang="ts">
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { ProposalStatus } from "@dfinity/nns";
+  import { type NeuronId, ProposalStatus } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "../../utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
   import ProposalMeta from "./ProposalMeta.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
   import type { Color } from "../../types/theme";
   import Tag from "../ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
+  // TODO(L2-965): delete property and use modern
+  export let layout: "modern" | "legacy" = "legacy";
+  import Value from "../ui/Value.svelte";
+  import ProposalCountdown from "./ProposalCountdown.svelte";
 
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: Color | undefined;
 
-  $: ({ status, id, title, color } = mapProposalInfo(proposalInfo));
+  let topic: string | undefined;
+  let proposer: NeuronId | undefined;
+  let type: string | undefined;
+
+  $: ({ status, id, title, color, topic, proposer, type } =
+    mapProposalInfo(proposalInfo));
 
   const showProposal = () => {
     routeStore.navigate({
       path: `${AppPath.ProposalDetail}/${id}`,
     });
   };
-
-  // HACK:
-  //
-  // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-  // 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
-  // 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-  //
-  // That's why we hide and re-process these proposals delivered by the backend on the client side.
-  //
-  // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
-  let hide: boolean;
-  $: hide = hideProposal({
-    filters: $proposalsFiltersStore,
-    proposalInfo,
-    neurons: $definedNeuronsStore,
-  });
 </script>
 
-<!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <li class:hidden>
-  {#if !hide}
+  {#if layout === "legacy"}
     <Card role="link" on:click={showProposal} testId="proposal-card">
       <div slot="start" class="title-container">
         <p class="title" {title}>{title}</p>
@@ -57,13 +47,47 @@
 
       <ProposalMeta {proposalInfo} showTopic />
     </Card>
+  {:else}
+    <Card
+      role="link"
+      on:click={showProposal}
+      testId="proposal-card"
+      withArrow={true}
+    >
+      <div class="card-meta">
+        <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+        <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
+      </div>
+
+      <div class="card-meta">
+        <span>{$i18n.proposal_detail.topic_prefix}</span>
+        <Value>{topic ?? ""}</Value>
+      </div>
+
+      {#if proposer !== undefined}
+        <div class="card-meta">
+          <span>{$i18n.proposal_detail.proposer_prefix}</span>
+          <Value>{proposer}</Value>
+        </div>
+      {/if}
+
+      <p class="title-placeholder description">{title}</p>
+
+      <div class="card-meta">
+        <p class={`${color} status`}>
+          {$i18n.status[ProposalStatus[status]] ?? ""}
+        </p>
+
+        <ProposalCountdown {proposalInfo} />
+      </div>
+    </Card>
   {/if}
 </li>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
-  @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   li.hidden {
     visibility: hidden;
@@ -81,5 +105,36 @@
     }
 
     color: var(--value-color);
+  }
+
+  .card-meta {
+    @include card.meta;
+  }
+
+  .title-placeholder {
+    @include text.clamp(6);
+    word-break: break-word;
+    flex-grow: 1;
+  }
+
+  /**
+   * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
+   */
+  .status {
+    // Default color: Color.PRIMARY
+    --badge-color: var(--primary);
+    color: var(--badge-color);
+
+    margin-bottom: 0;
+
+    // Color.WARNING
+    &.warning {
+      --badge-color: var(--warning-emphasis);
+    }
+
+    // Color.SUCCESS
+    &.success {
+      --badge-color: var(--positive-emphasis);
+    }
   }
 </style>

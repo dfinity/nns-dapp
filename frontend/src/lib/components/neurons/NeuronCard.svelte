@@ -1,18 +1,15 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
-    getStateInfo,
     hasJoinedCommunityFund,
     isHotKeyControllable,
     isSpawning,
     neuronStake,
   } from "../../utils/neuron.utils";
-  import type { StateInfo } from "../../utils/neuron.utils";
-  import ICPComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
@@ -29,12 +26,10 @@
   export let disabled: boolean = false;
   export let cardType: CardType = "card";
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getStateInfo(neuron.state);
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
-  let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(neuronStake(neuron));
+  let neuronICP: TokenAmount;
+  $: neuronICP = TokenAmount.fromE8s({ amount: neuronStake(neuron) });
   let isHotKeyControl: boolean;
   $: isHotKeyControl = isHotKeyControllable({
     neuron,
@@ -59,10 +54,10 @@
     <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
 
     {#if isCommunityFund}
-      <span class="neuron-control">{$i18n.neurons.community_fund}</span>
+      <span>{$i18n.neurons.community_fund}</span>
     {/if}
     {#if isHotKeyControl}
-      <span class="neuron-control">{$i18n.neurons.hotkey_control}</span>
+      <span>{$i18n.neurons.hotkey_control}</span>
     {/if}
   </div>
 
@@ -70,17 +65,17 @@
     {#if isSpawning(neuron)}
       <IconStackedLineChart />
     {:else if proposerNeuron}
-      <ICPComponent
+      <AmountDisplay
         label={$i18n.neurons.voting_power}
-        icp={ICP.fromE8s(neuron.votingPower)}
+        amount={TokenAmount.fromE8s({ amount: neuron.votingPower })}
         detailed
       />
     {:else if neuronICP}
-      <ICPComponent icp={neuronICP} detailed />
+      <AmountDisplay amount={neuronICP} detailed />
     {/if}
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuron.state} />
 
   <NeuronStateRemainingTime
     state={neuron.state}
@@ -93,8 +88,9 @@
 </NeuronCardContainer>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/card";
 
+  // TODO: avoid root global styling
   :global(div.modal article > div) {
     margin-bottom: 0;
   }

@@ -10,7 +10,7 @@
 >
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   .tag {
     padding: calc(var(--padding-0_5x) / 2) var(--padding);
 
@@ -20,6 +20,8 @@
     color: var(--badge-color);
     border: 1px solid var(--badge-color);
     border-radius: var(--border-radius-5x);
+
+    height: fit-content;
 
     // Color.WARNING
     &.warning {

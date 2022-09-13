@@ -28,8 +28,8 @@
 
 <style lang="scss">
   @use "../../themes/mixins/overlay";
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/header";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/header";
 
   .info {
     @include overlay.content;

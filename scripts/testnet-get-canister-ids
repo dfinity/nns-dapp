@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+help_text() {
+  cat <<-EOF
+
+	Populates local canister_ids.json with the values published in the testnets branch
+
+	Flags
+	--help
+	  Print this help message and exit.
+
+	EOF
+}
+
+canister_ids_is_well_formed() {
+  test -e canister_ids.json || {
+    echo "canister_ids.json does not exist" >&2
+  }
+  (($(jq -s 'length' canister_ids.json) == 1)) || {
+    echo "canister_ids.json does not contain exactly one JSON record" >&2
+    return 1
+  }
+}
+
+: "Print help, if applicable..."
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  *)
+    printf "ERROR: %s\n" "Unsupported argument: '$arg'"
+    exit 1
+    ;;
+  esac
+done
+
+: "Move to repo root"
+cd "$(dirname "$(realpath "$0")")/.."
+
+: "Back up  canister_ids.json, if it exists..."
+if test -e canister_ids.json; then
+  cp canister_ids.json "canister_ids.json.$(date -u +%Y-%m-%dT%H-%M-%S)"
+fi
+
+: "If canister_ids.json is absent or malformed, replace it with an empty file..."
+canister_ids_is_well_formed 2>/dev/null || echo '{}' >canister_ids.json
+
+: "Merge canister_ids.json with the one in the testnets branch..."
+git fetch
+jq -s '.[0] * .[1]' canister_ids.json <(git show origin/testnets:testnets/canister_ids.json) >canister_ids.json.new
+mv canister_ids.json.new canister_ids.json
+
+: "FIN"
+echo "Updated canister_ids.json with data from the 'origin/testnets' branch."

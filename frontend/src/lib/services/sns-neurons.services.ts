@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNeuron,
@@ -10,12 +10,13 @@ import {
   addNeuronPermissions,
   querySnsNeuron,
   querySnsNeurons,
+  removeNeuronPermissions,
 } from "../api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "../stores/sns-neurons.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
 import { toToastError } from "../utils/error.utils";
 import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
 import { hexStringToBytes } from "../utils/utils";
@@ -49,7 +50,7 @@ export const loadSnsNeurons = async (
       // hide unproven data
       snsNeuronsStore.resetProject(rootCanisterId);
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.sns_neurons_load",
@@ -71,7 +72,7 @@ const getNeuronFromStoreByIdHex = ({
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
-}): { neuron?: SnsNeuron; certified?: boolean } => {
+}): { neuron?: SnsNeuron; certified: boolean } => {
   const projectData = getSnsNeuronsFromStoreByProject(rootCanisterId);
   const neuron = getSnsNeuronByHexId({
     neuronIdHex,
@@ -86,24 +87,40 @@ const getNeuronFromStoreByIdHex = ({
 export const getSnsNeuron = async ({
   neuronIdHex,
   rootCanisterId,
+  forceFetch = false,
   onLoad,
   onError,
 }: {
   neuronIdHex: string;
   rootCanisterId: Principal;
-  onLoad: ({ certified: boolean, neuron: SnsNeuron }) => void;
-  onError?: ({ certified, error }) => void;
+  forceFetch?: boolean;
+  onLoad: ({
+    certified,
+    neuron,
+  }: {
+    certified: boolean;
+    neuron: SnsNeuron;
+  }) => void;
+  onError?: ({
+    certified,
+    error,
+  }: {
+    certified: boolean;
+    error: unknown;
+  }) => void;
 }): Promise<void> => {
-  const { neuron, certified } = getNeuronFromStoreByIdHex({
-    neuronIdHex,
-    rootCanisterId,
-  });
-  if (neuron !== undefined) {
-    onLoad({
-      neuron,
-      certified,
+  if (!forceFetch) {
+    const { neuron, certified } = getNeuronFromStoreByIdHex({
+      neuronIdHex,
+      rootCanisterId,
     });
-    return;
+    if (neuron !== undefined) {
+      onLoad({
+        neuron,
+        certified,
+      });
+      return;
+    }
   }
   const neuronId = hexStringToBytes(neuronIdHex);
   return queryAndUpdate<SnsNeuron, Error>({
@@ -126,8 +143,7 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (neuronId: SnsNeuronId): Promise<Identity> =>
-  getIdentity();
+const getNeuronIdentity = (): Promise<Identity> => getIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -140,7 +156,7 @@ export const addHotkey = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
-    const identity = await getNeuronIdentity(neuronId);
+    const identity = await getNeuronIdentity();
     await addNeuronPermissions({
       permissions,
       identity,
@@ -150,8 +166,38 @@ export const addHotkey = async ({
     });
     return { success: true };
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__sns.sns_add_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const removeHotkey = async ({
+  neuronId,
+  hotkey,
+  rootCanisterId,
+}: {
+  neuronId: SnsNeuronId;
+  hotkey: string;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const identity = await getNeuronIdentity();
+    const principal = Principal.fromText(hotkey);
+    await removeNeuronPermissions({
+      permissions,
+      identity,
+      principal,
+      rootCanisterId,
+      neuronId,
+    });
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_remove_hotkey",
       err,
     });
     return { success: false };

@@ -6,7 +6,7 @@
   import { routeStore } from "../lib/stores/route.store";
   import { isSignedIn } from "../lib/utils/auth.utils";
   import { i18n } from "../lib/stores/i18n";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
 
   let signedIn: boolean = false;
@@ -16,7 +16,7 @@
     try {
       await authStore.signIn();
     } catch (err: unknown) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.sign_in",
         err,
       });
@@ -57,7 +57,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   h1,
   h2,

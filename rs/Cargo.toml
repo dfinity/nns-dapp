@@ -40,7 +40,7 @@ ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e07
 ledger-canister = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e077831ec73cdc0c07eaf6cc9" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e077831ec73cdc0c07eaf6cc9" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e077831ec73cdc0c07eaf6cc9" }
-ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e077831ec73cdc0c07eaf6cc9" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "fd53b006b2186f9e077831ec73cdc0c07eaf6cc9" }
 
 [dev-dependencies]
 maplit = "1.0.2"

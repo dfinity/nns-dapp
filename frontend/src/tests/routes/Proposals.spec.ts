@@ -24,6 +24,10 @@ import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
 import {
+  buildMockNeuronsStoreSubscribe,
+  mockNeuron,
+} from "../mocks/neurons.mock";
+import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
   mockProposalsStoreSubscribe,
@@ -69,17 +73,6 @@ describe("Proposals", () => {
         .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
     );
 
-    it("should render a description", () => {
-      const { getByText } = render(Proposals);
-
-      expect(
-        getByText(
-          "The Internet Computer network runs under the control of the Network Nervous System",
-          { exact: false }
-        )
-      ).toBeInTheDocument();
-    });
-
     it("should render filters", () => {
       const { getByText } = render(Proposals);
 
@@ -94,12 +87,12 @@ describe("Proposals", () => {
     });
 
     it("should render a spinner while searching proposals", async () => {
-      const { container } = render(Proposals);
+      const { getByTestId } = render(Proposals);
 
       proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
       await waitFor(() =>
-        expect(container.querySelector("div.spinner")).not.toBeNull()
+        expect(getByTestId("proposals-spinner")).not.toBeNull()
       );
     });
 
@@ -118,11 +111,11 @@ describe("Proposals", () => {
       });
       afterEach(() => jest.clearAllMocks());
 
-      it("should render a spinner while loading neurons", async () => {
-        const { container } = render(Proposals);
+      it("should render skeletons while loading neurons", async () => {
+        const { getByTestId } = render(Proposals);
 
         await waitFor(() =>
-          expect(container.querySelector("div.spinner")).not.toBeNull()
+          expect(getByTestId("proposals-loading")).not.toBeNull()
         );
       });
     });
@@ -140,6 +133,34 @@ describe("Proposals", () => {
       expect(
         getByText((secondProposal.proposal as Proposal).title as string)
       ).toBeInTheDocument();
+    });
+
+    it("should hide proposal card if already voted", async () => {
+      mockLoadProposals();
+
+      jest
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+
+      const { container } = render(Proposals);
+
+      proposalsFiltersStore.toggleExcludeVotedProposals();
+
+      await waitFor(() =>
+        expect(container.querySelectorAll("article").length).toBe(
+          mockProposals.length - 1
+        )
+      );
+    });
+
+    it("should disable infinite scroll when all proposals loaded", async () => {
+      mockLoadProposals();
+
+      const { getByTestId } = render(Proposals);
+
+      await waitFor(() =>
+        expect(getByTestId("proposals-scroll-off")).not.toBeNull()
+      );
     });
 
     it("should not render not found text on init", () => {

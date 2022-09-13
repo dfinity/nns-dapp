@@ -9,6 +9,7 @@ import type {
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
 import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
+import { storeLocalStorageKey } from "../constants/stores.constants";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -16,6 +17,7 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
 } from "../utils/proposals.utils";
+import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -124,9 +126,10 @@ const initProposalsStore = () => {
  *
  */
 const initProposalsFiltersStore = () => {
-  const { subscribe, update, set } = writable<ProposalsFiltersStore>(
-    DEFAULT_PROPOSALS_FILTERS
-  );
+  const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
+    key: storeLocalStorageKey.ProposalFilters,
+    defaultValue: DEFAULT_PROPOSALS_FILTERS,
+  });
 
   return {
     subscribe,

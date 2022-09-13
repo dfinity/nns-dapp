@@ -46,8 +46,7 @@ const replaceMap = [
   "IDENTITY_SERVICE_URL",
   "DFX_NETWORK",
   "FETCH_ROOT_KEY",
-  "ENABLE_NEW_SPAWN_FEATURE",
-  "ENABLE_SNS_NEURONS",
+  "FEATURE_FLAGS",
   "HOST",
   "OWN_CANISTER_ID",
   "LEDGER_CANISTER_ID",
@@ -55,7 +54,7 @@ const replaceMap = [
   "CYCLES_MINTING_CANISTER_ID",
   "WASM_CANISTER_ID",
 ].reduce(
-  (ans, key) => {
+  (acc, key) => {
     // Each key is transferred from envConfig as a string.
     // Theoretically it is possible to pass other types, such as a bool, however
     // the linter assumes that process.env.X is a string so it is best to comply.
@@ -63,8 +62,13 @@ const replaceMap = [
     if (undefined === value) {
       throw new Error(`In rollup, envConfig[${key}] is undefined.`);
     }
-    ans[`process.env.${key}`] = JSON.stringify(String(envConfig[key]));
-    return ans;
+
+    // Technically speaking we would be able to assign the object without having to stringify it but, jest test does not use rollup and can only assign string to process.env.
+    // That's why here too, we stringify the object.
+    acc[`process.env.${key}`] = JSON.stringify(
+      typeof value === "object" ? JSON.stringify(value) : String(value)
+    );
+    return acc;
   },
   {
     // This is a rollup configuration, it is not inserted into the compiled code.

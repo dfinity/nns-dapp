@@ -129,8 +129,8 @@ describe("proposals-store", () => {
 
     it("should update topic rewards", () => {
       const filter = [
-        ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+        ProposalRewardStatus.AcceptVotes,
+        ProposalRewardStatus.ReadyToSettle,
       ];
       proposalsFiltersStore.filterRewards(filter);
 
@@ -143,10 +143,7 @@ describe("proposals-store", () => {
     });
 
     it("should update topic status", () => {
-      const filter = [
-        ProposalStatus.PROPOSAL_STATUS_OPEN,
-        ProposalStatus.PROPOSAL_STATUS_REJECTED,
-      ];
+      const filter = [ProposalStatus.Open, ProposalStatus.Rejected];
       proposalsFiltersStore.filterStatus(filter);
 
       const filters = get(proposalsFiltersStore);

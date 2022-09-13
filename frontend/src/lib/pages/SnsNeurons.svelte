@@ -7,7 +7,10 @@
   import { loadSnsNeurons } from "../services/sns-neurons.services";
   import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { snsProjectSelectedStore } from "../stores/projects.store";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "../stores/projects.store";
   import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
@@ -16,11 +19,13 @@
 
   let loading = true;
 
-  const unsubscribe: Unsubscriber = snsProjectSelectedStore.subscribe(
+  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
-      loading = true;
-      await loadSnsNeurons(selectedProjectCanisterId);
-      loading = false;
+      if (selectedProjectCanisterId !== undefined) {
+        loading = true;
+        await loadSnsNeurons(selectedProjectCanisterId);
+        loading = false;
+      }
     }
   );
 

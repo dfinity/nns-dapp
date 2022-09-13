@@ -24,8 +24,8 @@
 />
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   input {
     appearance: none;

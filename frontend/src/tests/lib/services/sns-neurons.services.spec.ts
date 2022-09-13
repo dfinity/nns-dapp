@@ -10,7 +10,7 @@ import { bytesToHexString } from "../../../lib/utils/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
-const { loadSnsNeurons, getSnsNeuron, addHotkey } = services;
+const { loadSnsNeurons, getSnsNeuron, addHotkey, removeHotkey } = services;
 
 describe("sns-neurons-services", () => {
   describe("loadSnsNeurons", () => {
@@ -109,6 +109,36 @@ describe("sns-neurons-services", () => {
       });
     });
 
+    it("should call api even if it's in the store when forceFetch", (done) => {
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeuron")
+        .mockImplementation(() => Promise.resolve({ ...mockSnsNeuron }));
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockPrincipal,
+        neurons: [mockSnsNeuron],
+        certified: true,
+      });
+      const onLoad = ({
+        neuron,
+        certified,
+      }: {
+        neuron: SnsNeuron;
+        certified: boolean;
+      }) => {
+        expect(spyQuery).toBeCalled();
+        expect(neuron).not.toBe(mockSnsNeuron);
+        if (certified) {
+          done();
+        }
+      };
+      getSnsNeuron({
+        forceFetch: true,
+        neuronIdHex: bytesToHexString(mockSnsNeuron.id[0]?.id as number[]),
+        rootCanisterId: mockPrincipal,
+        onLoad,
+      });
+    });
+
     it("should call onError callback when call failes", (done) => {
       const spyQuery = jest
         .spyOn(api, "querySnsNeuron")
@@ -146,6 +176,28 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         principal: hotkey,
+        rootCanisterId: mockPrincipal,
+        permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      });
+    });
+  });
+
+  describe("removeHotkey", () => {
+    it("should call api.addNeuronPermissions", async () => {
+      const spyAdd = jest
+        .spyOn(api, "removeNeuronPermissions")
+        .mockImplementation(() => Promise.resolve());
+      const hotkey = "aaaaa-aa";
+      const { success } = await removeHotkey({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        hotkey,
+        rootCanisterId: mockPrincipal,
+      });
+      expect(success).toBeTruthy();
+      expect(spyAdd).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        identity: mockIdentity,
+        principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
         permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
       });

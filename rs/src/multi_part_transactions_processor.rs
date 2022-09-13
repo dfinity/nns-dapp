@@ -2,6 +2,7 @@ use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCani
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
+use ledger_canister::AccountIdentifier;
 use ledger_canister::{BlockHeight, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
@@ -24,6 +25,8 @@ pub enum MultiPartTransactionToBeProcessed {
     RefundTransaction(RefundTransactionArgs),
     CreateCanisterV2(PrincipalId),
     TopUpCanisterV2(PrincipalId, CanisterId),
+    // ParticipateSwap(buyer_id, from, to, swap_canister_id)
+    ParticipateSwap(PrincipalId, AccountIdentifier, AccountIdentifier, CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize)]

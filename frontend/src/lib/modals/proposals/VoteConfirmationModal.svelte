@@ -13,7 +13,7 @@
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
   <div>
-    {#if voteType === Vote.YES}
+    {#if voteType === Vote.Yes}
       <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
       <p>
@@ -34,8 +34,8 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   div {
     padding: var(--padding-2x) 0;

@@ -25,7 +25,7 @@ describe("Collapsible", () => {
   it("should not render button", () => {
     const { getByText, queryByTestId } = render(
       CollapsibleTest,
-      props({ iconSize: "none" })
+      props({ expandButton: false })
     );
     expect(getByText("Jack")).toBeInTheDocument();
     expect(getByText("Sparrow")).toBeInTheDocument();
@@ -104,6 +104,24 @@ describe("Collapsible", () => {
     expect(
       container.querySelector('[aria-expanded="false"]')
     ).toBeInTheDocument();
+  });
+
+  it("should not toggle if external toggle", async () => {
+    const { getByTestId, container, component } = render(
+      CollapsibleTest,
+      props({ externalToggle: true })
+    );
+
+    const spyToggle = jest.fn();
+    component.$on("nnsToggle", spyToggle);
+
+    fireEvent.click(getByTestId("collapsible-header"));
+    await tick();
+    expect(
+      container.querySelector('[aria-expanded="false"]')
+    ).toBeInTheDocument();
+
+    expect(spyToggle).not.toHaveBeenCalled();
   });
 
   it("should emit state update", async () => {

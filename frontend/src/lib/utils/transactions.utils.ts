@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, TokenAmount } from "@dfinity/nns";
 import type {
   AccountIdentifierString,
   Transaction,
@@ -6,6 +6,7 @@ import type {
 import type { Account } from "../types/account";
 import { stringifyJson } from "./utils";
 
+// Value should match the key in i18n "transaction_names"
 export enum AccountTransactionType {
   Burn = "burn",
   Mint = "mint",
@@ -15,6 +16,7 @@ export enum AccountTransactionType {
   TopUpNeuron = "topUpNeuron",
   CreateCanister = "createCanister",
   TopUpCanister = "topUpCanister",
+  ParticipateSwap = "participateSwap",
 }
 
 export const accountName = ({
@@ -69,6 +71,8 @@ export const transactionType = (
     return AccountTransactionType.Burn;
   } else if ("Mint" in transaction_type[0]) {
     return AccountTransactionType.Mint;
+  } else if ("ParticipateSwap" in transaction_type[0]) {
+    return AccountTransactionType.ParticipateSwap;
   }
 
   throw new Error(
@@ -101,14 +105,14 @@ export const transactionDisplayAmount = ({
   fee,
 }: {
   useFee: boolean;
-  amount: ICP;
-  fee: ICP | undefined;
-}): ICP => {
+  amount: TokenAmount;
+  fee: TokenAmount | undefined;
+}): TokenAmount => {
   if (useFee) {
     if (fee === undefined) {
       throw new Error("fee is not available");
     }
-    return ICP.fromE8s(amount.toE8s() + fee.toE8s());
+    return TokenAmount.fromE8s({ amount: amount.toE8s() + fee.toE8s() });
   }
   return amount;
 };
@@ -127,29 +131,29 @@ export const mapTransaction = ({
   isSend: boolean;
   from: AccountIdentifierString | undefined;
   to: AccountIdentifierString | undefined;
-  displayAmount: ICP;
+  displayAmount: TokenAmount;
   date: Date;
 } => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
-  let amount: ICP | undefined;
-  let fee: ICP | undefined;
+  let amount: TokenAmount | undefined;
+  let fee: TokenAmount | undefined;
 
   if ("Send" in transfer) {
     from = account.identifier;
     to = transfer.Send.to;
-    amount = ICP.fromE8s(transfer.Send.amount.e8s);
-    fee = ICP.fromE8s(transfer.Send.fee.e8s);
+    amount = TokenAmount.fromE8s({ amount: transfer.Send.amount.e8s });
+    fee = TokenAmount.fromE8s({ amount: transfer.Send.fee.e8s });
   } else if ("Receive" in transfer) {
     to = account.identifier;
     from = transfer.Receive.from;
-    amount = ICP.fromE8s(transfer.Receive.amount.e8s);
-    fee = ICP.fromE8s(transfer.Receive.fee.e8s);
+    amount = TokenAmount.fromE8s({ amount: transfer.Receive.amount.e8s });
+    fee = TokenAmount.fromE8s({ amount: transfer.Receive.fee.e8s });
   } else if ("Burn" in transfer) {
-    amount = ICP.fromE8s(transfer.Burn.amount.e8s);
+    amount = TokenAmount.fromE8s({ amount: transfer.Burn.amount.e8s });
   } else if ("Mint" in transfer) {
-    amount = ICP.fromE8s(transfer.Mint.amount.e8s);
+    amount = TokenAmount.fromE8s({ amount: transfer.Mint.amount.e8s });
   } else {
     throw new Error("Unsupported transfer type");
   }

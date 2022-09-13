@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
   import { getContext } from "svelte";
   import {
@@ -7,7 +7,7 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import Icp from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { i18n } from "../../stores/i18n";
   import type { SnsSwapInit } from "@dfinity/sns";
   import { openTimeWindow } from "../../utils/projects.utils";
@@ -35,19 +35,23 @@
     end_timestamp_seconds: undefined,
   });
 
-  let minCommitmentIcp: ICP;
-  $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);
-  let maxCommitmentIcp: ICP;
-  $: maxCommitmentIcp = ICP.fromE8s(init.max_participant_icp_e8s);
+  let minCommitmentIcp: TokenAmount;
+  $: minCommitmentIcp = TokenAmount.fromE8s({
+    amount: init.min_participant_icp_e8s,
+  });
+  let maxCommitmentIcp: TokenAmount;
+  $: maxCommitmentIcp = TokenAmount.fromE8s({
+    amount: init.max_participant_icp_e8s,
+  });
 </script>
 
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-  <Icp slot="value" icp={minCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
-  <Icp slot="value" icp={maxCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.sale_start} </span>

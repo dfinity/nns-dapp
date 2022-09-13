@@ -66,3 +66,5 @@ export class UnknownProposalPayloadError extends Error {
 
 export class ProposalPayloadNotFoundError extends Error {}
 export class ProposalPayloadTooLargeError extends Error {}
+
+export class NotAuthorizedError extends Error {}

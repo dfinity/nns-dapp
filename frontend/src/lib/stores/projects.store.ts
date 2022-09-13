@@ -5,6 +5,7 @@ import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
+  isNnsProject,
 } from "../utils/projects.utils";
 import { snsSummariesStore, snsSwapCommitmentsStore } from "./sns.store";
 
@@ -22,7 +23,7 @@ export interface SnsFullProject {
  *
  * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
-const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
+export const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     summaries?.map((summary) => {
@@ -73,5 +74,16 @@ export const snsProjectSelectedStore = initSnsProjectSelectedStore();
 export const isNnsProjectStore = derived(
   snsProjectSelectedStore,
   ($snsProjectSelectedStore: Principal) =>
-    $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
+    isNnsProject($snsProjectSelectedStore)
+);
+
+/***
+ * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
+ */
+export const snsOnlyProjectStore = derived(
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    isNnsProject($snsProjectSelectedStore)
+      ? undefined
+      : $snsProjectSelectedStore
 );

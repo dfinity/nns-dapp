@@ -1,17 +1,15 @@
 import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { AppPath } from "../constants/routes.constants";
-import type { SnsNeuronState } from "../types/sns";
 import {
   getLastPathDetail,
   getParentPathDetail,
   isRoutePath,
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
-import { fromNullable } from "./did.utils";
 import { enumValues } from "./enum.utils";
-import { stateTextMapper, type StateInfo } from "./neuron.utils";
 import { bytesToHexString, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -24,36 +22,30 @@ export const sortSnsNeuronsByCreatedTimestamp = (
     ) => Number(created2 - created1)
   );
 
+// For now, both nns neurons and sns neurons have the same states.
 export const getSnsNeuronState = ({
   dissolve_state,
-}: SnsNeuron): SnsNeuronState => {
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = dissolve_state[0];
+}: SnsNeuron): NeuronState => {
+  const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
-    return NeuronState.DISSOLVED;
+    return NeuronState.Dissolved;
   }
   if ("DissolveDelaySeconds" in dissolveState) {
-    return NeuronState.LOCKED;
+    return NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    return NeuronState.DISSOLVING;
+    return NeuronState.Dissolving;
   }
-  return NeuronState.UNSPECIFIED;
-};
-
-export const getSnsStateInfo = (neuron: SnsNeuron): StateInfo => {
-  const state = getSnsNeuronState(neuron);
-  return stateTextMapper[state] ?? stateTextMapper[NeuronState.UNSPECIFIED];
+  return NeuronState.Unspecified;
 };
 
 export const getSnsDissolvingTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
-    neuronState === NeuronState.DISSOLVING &&
+    neuronState === NeuronState.Dissolving &&
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
@@ -65,10 +57,9 @@ export const getSnsLockedTimeInSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
-  // TODO: use upcoming fromDefinedNullable
-  const dissolveState = neuron.dissolve_state[0];
+  const dissolveState = fromNullable(neuron.dissolve_state);
   if (
-    neuronState === NeuronState.LOCKED &&
+    neuronState === NeuronState.Locked &&
     dissolveState !== undefined &&
     "DissolveDelaySeconds" in dissolveState
   ) {
@@ -97,8 +88,7 @@ export const getSnsNeuronByHexId = ({
  *   //...
  */
 export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
-  // TODO: use upcoming fromDefinedNullable
-  bytesToHexString(neuron.id[0]?.id ?? []);
+  bytesToHexString(fromNullable(neuron.id)?.id ?? []);
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
   if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
@@ -157,3 +147,14 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
+
+export const isUserHotkey = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | null | undefined;
+}) =>
+  identity === null || identity === undefined
+    ? false
+    : getSnsNeuronHotkeys(neuron).includes(identity.getPrincipal().toText());

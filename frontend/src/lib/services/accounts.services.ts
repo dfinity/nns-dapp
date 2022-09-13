@@ -17,7 +17,7 @@ import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import type { AccountsStore } from "../stores/accounts.store";
 import { accountsStore } from "../stores/accounts.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import type { TransactionStore } from "../types/transaction.context";
 import {
@@ -46,7 +46,7 @@ export const syncAccounts = (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       accountsStore.reset();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.accounts_not_found",
@@ -69,7 +69,7 @@ export const addSubAccount = async ({
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
         fallbackErrorLabelKey: "error__account.create_subaccount",
@@ -119,7 +119,7 @@ const transferError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,
@@ -181,7 +181,7 @@ export const getAccountTransactions = async ({
         return;
       }
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.transactions_not_found",
         err,
       });
@@ -259,7 +259,7 @@ const renameError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,

@@ -42,7 +42,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/select";
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .checkbox {
     @include select.group;

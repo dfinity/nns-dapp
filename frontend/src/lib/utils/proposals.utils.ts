@@ -1,18 +1,29 @@
 import type {
   Ballot,
+  ExecuteNnsFunction,
   NeuronId,
   NeuronInfo,
   Proposal,
   ProposalId,
   ProposalInfo,
+  Tally,
 } from "@dfinity/nns";
-import { ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import {
+  NnsFunction,
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import { PROPOSAL_COLOR } from "../constants/proposals.constants";
 import { i18n } from "../stores/i18n";
 import type { ProposalsFiltersStore } from "../stores/proposals.store";
+import type { VoteInProgress } from "../stores/voting.store";
 import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
+import { errorToString } from "./error.utils";
+import { replacePlaceholders } from "./i18n.utils";
 import { isDefined } from "./utils";
 
 export const lastProposalId = (
@@ -23,8 +34,8 @@ export const lastProposalId = (
 };
 
 export const proposalFirstActionKey = (
-  proposal: Proposal
-): string | undefined => Object.keys(proposal.action || {})[0];
+  proposal: Proposal | undefined
+): string | undefined => Object.keys(proposal?.action ?? {})[0];
 
 export const proposalActionFields = (
   proposal: Proposal
@@ -47,14 +58,21 @@ export const proposalActionFields = (
   });
 };
 
-export const getNnsFunctionIndex = (proposal: Proposal): number | undefined => {
-  const key = proposalFirstActionKey(proposal);
+export const getNnsFunctionKey = (
+  proposal: Proposal | undefined
+): string | undefined => {
+  const action = proposalFirstActionKey(proposal);
 
-  if (key !== "ExecuteNnsFunction") {
+  if (action !== "ExecuteNnsFunction") {
     return undefined;
   }
 
-  return Object.values(proposal.action?.[key])?.[0] as number;
+  // 0 equals Unspecified
+  const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
+    nnsFunctionId: 0,
+  };
+
+  return NnsFunction[nnsFunctionId];
 };
 
 export const hideProposal = ({
@@ -117,7 +135,7 @@ const isExcludedVotedProposal = ({
         // TODO: This is temporary solution. Will be replaced with L2-507
         // ignore neuronIds in ballots that are not in the neuron list of the user.
         // Otherwise it is confusing that there are proposals in the filtered list that can't vote.
-        belongsToValidNeuron(neuronId) && vote === Vote.UNSPECIFIED
+        belongsToValidNeuron(neuronId) && vote === Vote.Unspecified
     ) !== undefined;
 
   return (
@@ -230,7 +248,7 @@ export const concatenateUniqueProposals = ({
 ];
 
 /**
- * Compares proposals by "id"
+ * Compares proposals by "id" and replace those existing then append the remaining new proposals.
  */
 export const replaceAndConcatenateProposals = ({
   oldProposals,
@@ -239,14 +257,21 @@ export const replaceAndConcatenateProposals = ({
   oldProposals: ProposalInfo[];
   newProposals: ProposalInfo[];
 }): ProposalInfo[] => {
-  const updatedProposals = (oldProposals = oldProposals.map(
+  const updatedProposals = oldProposals.map(
     (stateProposal) =>
-      newProposals.find(({ id }) => stateProposal.id === id) || stateProposal
-  ));
+      newProposals.find(({ id }) => stateProposal.id === id) ?? stateProposal
+  );
+
+  const newStateProposalsIds: (ProposalId | undefined)[] = updatedProposals.map(
+    ({ id }) => id
+  );
+  const brandNewProposals: ProposalInfo[] = newProposals.filter(
+    ({ id }) => !newStateProposalsIds.includes(id)
+  );
 
   return concatenateUniqueProposals({
     oldProposals: updatedProposals,
-    newProposals,
+    newProposals: brandNewProposals,
   });
 };
 
@@ -295,39 +320,129 @@ export const excludeProposals = ({
   return proposals.filter(({ id }) => !excludeIds.has(id as ProposalId));
 };
 
-export const mapProposalInfo = (
-  proposalInfo: ProposalInfo
-): {
+export type ProposalInfoMap = {
   id: ProposalId | undefined;
   proposal: Proposal | undefined;
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  topic: string | undefined;
   color: Color | undefined;
-  status: ProposalStatus;
-  deadline: bigint | undefined;
-} => {
-  const { proposal, proposer, id, status, deadlineTimestampSeconds } =
-    proposalInfo;
 
-  const { topics } = get(i18n);
+  created: bigint;
+  decided: bigint | undefined;
+  executed: bigint | undefined;
+  failed: bigint | undefined;
+  deadline: bigint | undefined;
+
+  topic: string | undefined;
+  topicDescription: string | undefined;
+  type: string | undefined;
+  typeDescription: string | undefined;
+  status: ProposalStatus;
+  statusString: string;
+  statusDescription: string | undefined;
+  rewardStatus: ProposalRewardStatus;
+  rewardStatusString: string;
+  rewardStatusDescription: string | undefined;
+};
+
+export const mapProposalInfo = (
+  proposalInfo: ProposalInfo
+): ProposalInfoMap => {
+  const {
+    proposal,
+    proposer,
+    id,
+    status,
+    rewardStatus,
+    deadlineTimestampSeconds,
+    proposalTimestampSeconds,
+    decidedTimestampSeconds,
+    executedTimestampSeconds,
+    failedTimestampSeconds,
+  } = proposalInfo;
+
+  const {
+    topics,
+    topics_description,
+    status_description,
+    status: statusLabels,
+    rewards,
+    rewards_description,
+  } = get(i18n);
   const deadline =
     deadlineTimestampSeconds === undefined
       ? undefined
       : deadlineTimestampSeconds - BigInt(nowInSeconds());
+
+  const topicKey: string = Topic[proposalInfo?.topic];
+
+  const statusKey: string = ProposalStatus[status];
+  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
 
   return {
     id,
     proposer,
     proposal,
     title: proposal?.title,
-    topic: topics[Topic[proposalInfo?.topic]],
     url: proposal?.url,
     color: PROPOSAL_COLOR[status],
-    status,
+
+    created: proposalTimestampSeconds,
+    decided: decidedTimestampSeconds > 0 ? decidedTimestampSeconds : undefined,
+    executed:
+      executedTimestampSeconds > 0 ? executedTimestampSeconds : undefined,
+    failed: failedTimestampSeconds > 0 ? failedTimestampSeconds : undefined,
     deadline,
+
+    topic: topics[topicKey],
+    topicDescription: topics_description[topicKey],
+    status,
+    statusString: statusLabels[statusKey],
+    statusDescription: status_description[statusKey],
+    rewardStatus,
+    rewardStatusString: rewards[rewardStatusKey],
+    rewardStatusDescription: rewards_description[rewardStatusKey],
+    ...mapProposalType(proposal),
   };
+};
+
+/**
+ * If the action is a ExecuteNnsFunction, then we map the NNS function id (its detailed label).
+ * Otherwise, we map the action function itself.
+ *
+ * This outcome is called "the proposal type".
+ */
+const mapProposalType = (
+  proposal: Proposal | undefined
+): Pick<ProposalInfoMap, "type" | "typeDescription"> => {
+  const {
+    actions,
+    actions_description,
+    nns_functions,
+    nns_functions_description,
+  } = get(i18n);
+
+  const NO_MATCH = { type: undefined, typeDescription: undefined };
+
+  if (proposal === undefined) {
+    return NO_MATCH;
+  }
+
+  const nnsFunctionKey: string | undefined = getNnsFunctionKey(proposal);
+
+  if (nnsFunctionKey !== undefined) {
+    return {
+      type: nns_functions[nnsFunctionKey],
+      typeDescription: nns_functions_description[nnsFunctionKey],
+    };
+  }
+
+  const action: string | undefined = proposalFirstActionKey(proposal);
+
+  return action !== undefined
+    ? { type: actions[action], typeDescription: actions_description[action] }
+    : NO_MATCH;
 };
 
 /**
@@ -372,3 +487,85 @@ const votingPeriodEndFallback = ({
     Number(proposalTimestampSeconds) * 1000 + durationInSeconds * 1000
   );
 };
+
+/** Update proposal voting state as it participated in voting */
+export const updateProposalVote = ({
+  proposalInfo,
+  neuron,
+  vote,
+}: {
+  proposalInfo: ProposalInfo;
+  neuron: NeuronInfo;
+  vote: Vote;
+}): ProposalInfo => {
+  const { votingPower, neuronId } = neuron;
+  const votedBallot: Ballot = {
+    neuronId,
+    vote,
+    votingPower,
+  };
+
+  return {
+    ...proposalInfo,
+    ballots: [
+      ...proposalInfo.ballots.filter(
+        ({ neuronId }) => neuronId !== neuron.neuronId
+      ),
+      votedBallot,
+    ],
+    latestTally: {
+      ...(proposalInfo.latestTally as Tally),
+      yes:
+        vote === Vote.Yes
+          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.yes ?? BigInt(0),
+      no:
+        vote === Vote.No
+          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
+          : proposalInfo.latestTally?.no ?? BigInt(0),
+    },
+  };
+};
+
+/** Returns `registerVote` error reason text or undefined if not an error */
+const registerVoteErrorReason = (
+  neuronId: NeuronId,
+  result: PromiseSettledResult<void>
+): string | undefined => {
+  if (result.status === "fulfilled") {
+    return undefined;
+  }
+
+  const reason =
+    result.reason instanceof Error ? errorToString(result.reason) : undefined;
+  // detail text
+  return replacePlaceholders(get(i18n).error.register_vote_neuron, {
+    $neuronId: neuronId.toString(),
+    $reason:
+      reason === undefined || reason?.length === 0
+        ? get(i18n).error.fail
+        : reason,
+  });
+};
+
+/** Returns `registerVote` error details (neuronId and the reason by error) */
+export const registerVoteErrorDetails = ({
+  responses,
+  neuronIds,
+}: {
+  responses: PromiseSettledResult<void>[];
+  neuronIds: bigint[];
+}): string[] => {
+  const details: string[] = responses
+    .map((response, i) => registerVoteErrorReason(neuronIds[i], response))
+    .filter(isDefined);
+
+  return details;
+};
+
+/** There are neurons in a queue whose vote is not yet been registered */
+export const voteRegistrationActive = (votes: VoteInProgress[]): boolean =>
+  votes.find(
+    ({ neuronIds, successfullyVotedNeuronIds }) =>
+      neuronIds.length > successfullyVotedNeuronIds.length
+  ) !== undefined;

@@ -5,8 +5,8 @@
   import Modal from "../../modals/Modal.svelte";
   import Input from "../ui/Input.svelte";
   import { getICPs } from "../../services/dev.services";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { Spinner } from "@dfinity/gix-components";
+  import { toastsError } from "../../stores/toasts.store";
   import IconAccountBalance from "../../icons/IconAccountBalance.svelte";
 
   let visible: boolean = false;
@@ -16,7 +16,7 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.error({
+      toastsError({
         labelKey: "Invalid ICPs input.",
       });
       return;
@@ -32,7 +32,7 @@
 
       reset();
     } catch (err: unknown) {
-      toastsStore.error({
+      toastsError({
         labelKey: "ICPs could not be transferred.",
         err,
       });
@@ -56,7 +56,7 @@
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click={() => (visible = true)}
+  on:click|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
@@ -93,7 +93,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .open {
     display: flex;

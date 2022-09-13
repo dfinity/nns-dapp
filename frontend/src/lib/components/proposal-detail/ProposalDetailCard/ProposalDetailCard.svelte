@@ -15,7 +15,7 @@
   let proposal: Proposal | undefined;
   let id: ProposalId | undefined;
   let title: string | undefined;
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
+  let status: ProposalStatus = ProposalStatus.Unknown;
   let color: Color | undefined;
 
   $: ({ id, proposal, status, title, color } = mapProposalInfo(proposalInfo));
@@ -36,8 +36,8 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../../themes/mixins/media";
-  @use "../../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .title {
     line-height: var(--line-height-standard);

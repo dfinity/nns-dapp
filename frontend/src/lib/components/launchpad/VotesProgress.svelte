@@ -38,7 +38,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .latest-tally {
     display: grid;

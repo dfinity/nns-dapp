@@ -12,6 +12,7 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  isUserHotkey,
   routePathSnsNeuronId,
   routePathSnsNeuronRootCanisterId,
   sortSnsNeuronsByCreatedTimestamp,
@@ -53,17 +54,17 @@ describe("sns-neuron utils", () => {
     it("returns LOCKED", () => {
       const neuron = createMockSnsNeuron({
         id: [1, 2, 3, 4],
-        state: NeuronState.LOCKED,
+        state: NeuronState.Locked,
       });
-      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.LOCKED);
+      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Locked);
     });
 
     it("returns DISSOLVING", () => {
       const neuron = createMockSnsNeuron({
         id: [1, 2, 3, 4],
-        state: NeuronState.DISSOLVING,
+        state: NeuronState.Dissolving,
       });
-      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.DISSOLVING);
+      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolving);
     });
 
     it("returns DISSOLVED", () => {
@@ -71,7 +72,7 @@ describe("sns-neuron utils", () => {
         id: [1, 2, 3, 4],
         state: undefined,
       });
-      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.DISSOLVED);
+      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
     });
   });
 
@@ -79,7 +80,7 @@ describe("sns-neuron utils", () => {
     it("returns undefined if not dissolving", () => {
       const neuron = createMockSnsNeuron({
         id: [1, 2, 3, 4],
-        state: NeuronState.LOCKED,
+        state: NeuronState.Locked,
       });
       expect(getSnsDissolvingTimeInSeconds(neuron)).toBeUndefined();
     });
@@ -101,7 +102,7 @@ describe("sns-neuron utils", () => {
     it("returns undefined if not locked", () => {
       const neuron = createMockSnsNeuron({
         id: [1, 2, 3, 4],
-        state: NeuronState.DISSOLVING,
+        state: NeuronState.Dissolving,
       });
       expect(getSnsLockedTimeInSeconds(neuron)).toBeUndefined();
     });
@@ -333,6 +334,123 @@ describe("sns-neuron utils", () => {
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(
         expectedHotkeys.includes(mockIdentity.getPrincipal().toText())
+      ).toBe(false);
+    });
+  });
+
+  describe("isUserHotkey", () => {
+    it("returns true if user only has voting permissions but not all permissions", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: [
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ],
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+    it("returns true if user has voting permissions but not all permissions", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: [
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+            ],
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+    it("returns false if user has all the voting permissions", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: enumValues(SnsNeuronPermissionType),
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+    it("returns false if user has permissions but not the voting one", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: [
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+            ],
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+
+    it("returns false if user is not in the permissions", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText("aaaaa-aa")],
+            permission_type: [
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+            ],
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+    it("returns false if user is has empty permissions", () => {
+      const hotkeyneuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: [],
+          },
+        ],
+      };
+      expect(
+        isUserHotkey({
+          neuron: hotkeyneuron,
+          identity: mockIdentity,
+        })
       ).toBe(false);
     });
   });

@@ -4,21 +4,32 @@
   import Value from "../ui/Value.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "../../types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
 
-  export let neuron: SnsNeuron;
+  const { store }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
+
+  let neuron: SnsNeuron | undefined | null;
+  $: neuron = $store.neuron;
 </script>
 
-<SnsNeuronCard {neuron} cardType="info">
-  <section>
-    <p>
-      <Value>{secondsToDate(Number(neuron.created_timestamp_seconds))}</Value>
-      - {$i18n.neurons.staked}
-    </p>
-  </section>
-</SnsNeuronCard>
+{#if neuron !== undefined && neuron !== null}
+  <SnsNeuronCard {neuron} cardType="info">
+    <section>
+      <p>
+        <Value>{secondsToDate(Number(neuron.created_timestamp_seconds))}</Value>
+        - {$i18n.neurons.staked}
+      </p>
+    </section>
+  </SnsNeuronCard>
+{/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   section {
     padding: var(--padding) 0 0 0;
     display: flex;

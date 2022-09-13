@@ -4,7 +4,7 @@
   import { toggleCommunityFund } from "../../../services/neurons.services";
   import { startBusy, stopBusy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
-  import { toastsStore } from "../../../stores/toasts.store";
+  import { toastsSuccess } from "../../../stores/toasts.store";
   import { hasJoinedCommunityFund } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
 
@@ -25,7 +25,7 @@
       : "neuron_detail.join_community_fund_success";
     const id = await toggleCommunityFund(neuron);
     if (id !== undefined) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: successMessageKey,
       });
     }

@@ -49,8 +49,8 @@ local_deployment_data="$(
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
-  : "      dfx.json -> canisters -> wasm_canister -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
-  LOCALLY_DEPLOYED_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
+  : "      dfx.json -> canisters -> nns-sns-wasm -> remote -> id -> your DFX_NETWORK -> THE_WASM_CANISTER_ID"
+  LOCALLY_DEPLOYED_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm 2>/dev/null || echo "NO_SNS_WASM_CANISTER_SPECIFIED")"
   test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
@@ -119,14 +119,8 @@ export FETCH_ROOT_KEY
 REDIRECT_TO_LEGACY="$(get_var REDIRECT_TO_LEGACY)"
 export REDIRECT_TO_LEGACY
 
-ENABLE_NEW_SPAWN_FEATURE="$(get_var ENABLE_NEW_SPAWN_FEATURE)"
-export ENABLE_NEW_SPAWN_FEATURE
-
 WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
 export WASM_CANISTER_ID
-
-ENABLE_SNS_NEURONS="$(get_var ENABLE_SNS_NEURONS)"
-export ENABLE_SNS_NEURONS
 
 : "Return to the original working directory."
 popd

@@ -88,9 +88,9 @@
     <div class="buttons">
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
-        {#if neuron.state === NeuronState.DISSOLVED}
+        {#if neuron.state === NeuronState.Dissolved}
           <DisburseButton {neuron} />
-        {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
+        {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}
             neuronId={neuron.neuronId}
@@ -110,7 +110,7 @@
 </NeuronCard>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   section {
     padding: var(--padding) 0 0 0;
     display: flex;

@@ -1,6 +1,5 @@
 import type { AuthStore } from "../stores/auth.store";
 import type { PostMessageEventData } from "../types/post-messages";
-import { localStorageAuth } from "../utils/auth.utils";
 import { logout } from "./auth.services";
 
 const initWorker = () => {
@@ -31,7 +30,6 @@ const initWorker = () => {
 
       worker.postMessage({
         msg: "nnsStartIdleTimer",
-        data: await localStorageAuth(),
       });
     },
   };

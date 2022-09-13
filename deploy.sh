@@ -291,7 +291,7 @@ fi
 if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   # If the wasm canister has not been installed already, install it.
   echo Checking whether sns wasm is installed
-  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister 2>/dev/null || echo NOPE)"
+  SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm 2>/dev/null || echo NOPE)"
   [[ "${SNS_WASM_CANISTER_ID:-}" == "NOPE" ]] || {
     echo "SNS wasm/management canister already installed at: $SNS_WASM_CANISTER_ID"
   }
@@ -301,8 +301,8 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
     echo "Deploying SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
-    dfx deploy --network "$DFX_NETWORK" wasm_canister --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; } )' --no-wallet
-    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id wasm_canister)"
+    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; } )' --no-wallet
+    SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
     for canister in root governance ledger swap; do

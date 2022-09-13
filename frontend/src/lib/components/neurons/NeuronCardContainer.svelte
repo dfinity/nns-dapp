@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CardType } from "../../types/card";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import CardInfo from "../ui/CardInfo.svelte";
 
   export let role: undefined | "link" | "button" | "checkbox" = undefined;

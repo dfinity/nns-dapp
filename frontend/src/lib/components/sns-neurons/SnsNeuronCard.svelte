@@ -1,35 +1,46 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import { NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
+  import { authStore } from "../../stores/auth.store";
+  import { i18n } from "../../stores/i18n";
   import type { CardType } from "../../types/card";
-  import type { StateInfo } from "../../utils/neuron.utils";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
-    getSnsStateInfo,
+    isUserHotkey,
   } from "../../utils/sns-neuron.utils";
-  import IcpComponent from "../ic/ICP.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
   import Hash from "../ui/Hash.svelte";
+  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
 
+  let isHotkey: boolean;
+  $: isHotkey = isUserHotkey({
+    neuron,
+    identity: $authStore.identity,
+  });
+
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
+  let neuronStake: TokenAmount;
+  $: neuronStake = TokenAmount.fromE8s({
+    amount: getSnsNeuronStake(neuron),
+    token: $snsTokenSymbolSelectedStore,
+  });
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getSnsStateInfo(neuron);
+  let neuronState: NeuronState;
+  $: neuronState = getSnsNeuronState(neuron);
 
   let dissolvingTime: bigint | undefined;
   $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
@@ -41,14 +52,16 @@
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
   <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
     <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
-    <!-- TODO: Hotkey label https://dfinity.atlassian.net/browse/L2-899 -->
+    {#if isHotkey}
+      <span>{$i18n.neurons.hotkey_control}</span>
+    {/if}
   </div>
 
   <div slot="end" class="currency">
-    <IcpComponent icp={neuronICP} detailed />
+    <AmountDisplay amount={neuronStake} detailed />
   </div>
 
-  <NeuronStateInfo {stateInfo} />
+  <NeuronStateInfo state={neuronState} />
 
   <NeuronStateRemainingTime
     state={getSnsNeuronState(neuron)}
@@ -59,9 +72,11 @@
 </NeuronCardContainer>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/card";
 
   .identifier {
+    @include card.stacked-title;
     :global(h3) {
       margin: 0;
     }

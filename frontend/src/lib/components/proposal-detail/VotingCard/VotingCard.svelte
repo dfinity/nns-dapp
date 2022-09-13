@@ -8,12 +8,18 @@
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import CardInfo from "../../ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import CastVoteCardNeuronSelect from "./VotingNeuronSelect.svelte";
+  import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
+  import {
+    voteInProgressStore,
+    type VoteInProgress,
+  } from "../../../stores/voting.store";
+  import { VOTING_UI } from "../../../constants/environment.constants";
+  import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;
 
@@ -25,10 +31,16 @@
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
+  let voteInProgress: VoteInProgress | undefined = undefined;
+
+  $: voteInProgress = $voteInProgressStore.votes.find(
+    ({ proposalId }) => proposalInfo.id === proposalId
+  );
 
   $: $definedNeuronsStore,
     (visible =
-      votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo));
+      voteInProgress !== undefined ||
+      (votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
@@ -48,7 +60,7 @@
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
       vote: detail.voteType,
-      proposalId: proposalInfo.id as bigint,
+      proposalInfo,
       reloadProposalCallback: (
         proposalInfo: ProposalInfo // we update store only if proposal id are matching even though it would be an edge case that these would not match here
       ) =>
@@ -62,12 +74,34 @@
     unsubscribe();
     votingNeuronSelectStore.reset();
   });
+
+  // TODO(L2-965): delete legacy component <CardInfo />
 </script>
 
-{#if visible}
-  <CardInfo>
-    <h3 slot="start">{$i18n.proposal_detail__vote.headline}</h3>
-    <CastVoteCardNeuronSelect {proposalInfo} />
-    <VotingConfirmationToolbar {proposalInfo} on:nnsConfirm={vote} />
-  </CardInfo>
+{#if VOTING_UI === "legacy"}
+  {#if visible}
+    <CardInfo>
+      <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
+      <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteInProgress}
+        on:nnsConfirm={vote}
+        layout="legacy"
+      />
+    </CardInfo>
+  {/if}
+{:else if $definedNeuronsStore.length > 0}
+  <BottomSheet>
+    {#if visible}
+      <VotingConfirmationToolbar
+        {proposalInfo}
+        {voteInProgress}
+        on:nnsConfirm={vote}
+        layout="modern"
+      />
+    {/if}
+
+    <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+  </BottomSheet>
 {/if}

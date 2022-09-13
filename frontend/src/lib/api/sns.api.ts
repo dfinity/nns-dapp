@@ -9,6 +9,7 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
 import {
@@ -28,6 +29,7 @@ import { createAgent } from "../utils/agent.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
+import { nnsDappCanister } from "./nns-dapp.api";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -439,9 +441,17 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
+  // If the client disconnects after the tranfer, the participation will still be notified.
+  const { canister: nnsDapp } = await nnsDappCanister({ identity });
+  await nnsDapp.addPendingNotifySwap({
+    swap_canister_id: swapCanisterId,
+    buyer: controller,
+    buyer_sub_account: toNullable(fromSubAccount),
+  });
+
   // Send amount to the ledger
   await nnsLedger.transfer({
-    amount,
+    amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
   });
@@ -526,4 +536,32 @@ export const addNeuronPermissions = async ({
   });
 
   logWithTimestamp("Adding neuron permissions: done");
+};
+
+export const removeNeuronPermissions = async ({
+  identity,
+  rootCanisterId,
+  permissions,
+  principal,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp("Removing neuron permissions: call...");
+  const { removeNeuronPermissions } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  await removeNeuronPermissions({
+    permissions,
+    principal,
+    neuronId,
+  });
+
+  logWithTimestamp("Removing neuron permissions: done");
 };

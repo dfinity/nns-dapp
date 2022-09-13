@@ -25,6 +25,7 @@ describe("VotingConfirmationToolbar", () => {
 
   const props = {
     proposalInfo: mockProposalInfo,
+    layout: "modern",
   };
 
   beforeEach(() => {
@@ -46,7 +47,7 @@ describe("VotingConfirmationToolbar", () => {
     );
   });
 
-  it("should display Vote.YES modal", async () => {
+  it("should display Vote.Yes modal", async () => {
     const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(
       container.querySelector('[data-tid="vote-yes"]') as Element
@@ -58,7 +59,7 @@ describe("VotingConfirmationToolbar", () => {
     );
   });
 
-  it("should display Vote.NO modal", async () => {
+  it("should display Vote.No modal", async () => {
     const { container } = render(VotingConfirmationToolbar, { props });
     fireEvent.click(container.querySelector('[data-tid="vote-no"]') as Element);
     await waitFor(() =>
@@ -66,6 +67,17 @@ describe("VotingConfirmationToolbar", () => {
         container.querySelector('[data-tid="thumb-down"]')
       ).toBeInTheDocument()
     );
+  });
+
+  it("should disable Adapt/Reject buttons when voteInProgress", async () => {
+    const { getByTestId } = render(VotingConfirmationToolbar, {
+      props: { ...props, voteInProgress: true },
+    });
+    const adaptButton = getByTestId("vote-yes");
+    const rejectButton = getByTestId("vote-no");
+
+    expect(adaptButton?.getAttribute("disabled")).not.toBeNull();
+    expect(rejectButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it('should display "total" in modal', async () => {
@@ -106,7 +118,7 @@ describe("VotingConfirmationToolbar", () => {
     const { component, container } = render(VotingConfirmationToolbar, {
       props,
     });
-    let calledVoteType: Vote = Vote.UNSPECIFIED;
+    let calledVoteType: Vote = Vote.Unspecified;
     const onConfirm = jest.fn((ev) => (calledVoteType = ev?.detail?.voteType));
     component.$on("nnsConfirm", onConfirm);
 
@@ -123,12 +135,15 @@ describe("VotingConfirmationToolbar", () => {
       ).not.toBeInTheDocument()
     );
     expect(onConfirm).toBeCalled();
-    expect(calledVoteType).toBe(Vote.NO);
+    expect(calledVoteType).toBe(Vote.No);
   });
 
-  it("should display a question that repeats id and topic", () => {
+  it("should display a question that repeats id and topic", async () => {
     const { container } = render(VotingConfirmationToolbar, {
-      props,
+      props: {
+        ...props,
+        layout: "legacy",
+      },
     });
 
     const testLabel = replacePlaceholders(
@@ -143,10 +158,11 @@ describe("VotingConfirmationToolbar", () => {
       .replace(/<\/strong>/g, "")
       .replace("&ndash;", "–");
 
-    const { textContent }: HTMLParagraphElement = container.querySelector(
-      ".question"
-    ) as HTMLParagraphElement;
-
-    expect(textContent).toEqual(testLabel);
+    await waitFor(() => {
+      const { textContent }: HTMLParagraphElement = container.querySelector(
+        ".question"
+      ) as HTMLParagraphElement;
+      expect(textContent).toEqual(testLabel);
+    });
   });
 });

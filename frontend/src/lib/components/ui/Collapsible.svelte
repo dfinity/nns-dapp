@@ -8,23 +8,28 @@
   export let initiallyExpanded: boolean = false;
   export let maxContentHeight: number | undefined = undefined;
 
-  export let iconSize: "small" | "medium" | "none" = "small";
+  export let iconSize: "small" | "medium" = "small";
+  export let expandButton: boolean = true;
+  export let externalToggle: boolean = false;
+  export let wrapHeight: boolean = false;
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
 
-  let expanded: boolean = initiallyExpanded;
+  export let expanded: boolean = initiallyExpanded;
   let offsetHeight: number | undefined;
   let userUpdated: boolean = false;
   let maxHeight: number | undefined;
 
   const dispatchUpdate = () => dispatch("nnsToggle", { expanded });
-  const toggleContent = () => {
+
+  export const toggleContent = () => {
     userUpdated = true;
     expanded = !expanded;
     dispatchUpdate();
   };
+
   const calculateMaxContentHeight = (): number => {
     if (maxContentHeight !== undefined) return maxContentHeight;
     const height = offsetHeight === undefined ? 0 : offsetHeight;
@@ -59,13 +64,13 @@
   data-tid="collapsible-header"
   id={id !== undefined ? `heading${id}` : undefined}
   role="term"
-  class="header"
-  on:click={toggleContent}
+  class={`header ${externalToggle ? "external" : ""}`}
+  on:click={() => (externalToggle ? undefined : toggleContent())}
 >
   <div class="header-content">
     <slot name="header" />
   </div>
-  {#if iconSize !== "none"}
+  {#if expandButton}
     <button
       class="collapsible-expand-icon"
       class:size-medium={iconSize === "medium"}
@@ -92,6 +97,7 @@
     {id}
     aria-labelledby={id !== undefined ? `heading${id}` : undefined}
     class="content"
+    class:wrapHeight
     bind:offsetHeight
   >
     <slot />
@@ -99,12 +105,14 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .header {
-    @include interaction.tappable;
-    user-select: none;
+    &:not(.external) {
+      @include interaction.tappable;
+      user-select: none;
+    }
 
     position: relative;
 
@@ -167,11 +175,12 @@
   }
 
   .content {
-    // to not stick the content to the bottom
-    padding-bottom: var(--padding-2x);
     // to respect children margins in contentHeight calculation
     overflow: auto;
-    // scrollbar
-    padding-right: var(--padding);
+
+    &:not(.wrapHeight) {
+      // to not stick the content to the bottom
+      padding-bottom: var(--padding);
+    }
   }
 </style>

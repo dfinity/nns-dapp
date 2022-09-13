@@ -3,19 +3,18 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { accountsStore } from "../lib/stores/accounts.store";
   import type { AccountsStore } from "../lib/stores/accounts.store";
-  import ICPComponent from "../lib/components/ic/ICP.svelte";
+  import AmountDisplay from "../lib/components/ic/AmountDisplay.svelte";
   import AccountCard from "../lib/components/accounts/AccountCard.svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
-  import { ICP } from "@dfinity/nns";
-  import { formatICP, sumICPs } from "../lib/utils/icp.utils";
+  import { TokenAmount } from "@dfinity/nns";
+  import { formatICP, sumTokenAmounts } from "../lib/utils/icp.utils";
   import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import Footer from "../lib/components/common/Footer.svelte";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import Tooltip from "../lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
 
@@ -35,11 +34,14 @@
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
 
-  let totalBalance: ICP;
+  let totalBalance: TokenAmount;
   let totalICP: string;
-  const zeroICPs = ICP.fromE8s(BigInt(0));
+  const zeroICPs = TokenAmount.fromE8s({
+    amount: BigInt(0),
+    token: accounts?.main?.balance.token,
+  });
   $: {
-    totalBalance = sumICPs(
+    totalBalance = sumTokenAmounts(
       accounts?.main?.balance || zeroICPs,
       ...(accounts?.subAccounts || []).map(({ balance }) => balance),
       ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
@@ -51,7 +53,7 @@
   }
 </script>
 
-<MainContentWrapper>
+<main class="legacy">
   <section data-tid="accounts-body">
     <div class="title">
       <h1>{$i18n.accounts.title}</h1>
@@ -63,7 +65,7 @@
             $amount: totalICP,
           })}
         >
-          <ICPComponent icp={totalBalance} />
+          <AmountDisplay amount={totalBalance} />
         </Tooltip>
       {/if}
     </div>
@@ -95,35 +97,34 @@
       <SkeletonCard />
     {/if}
   </section>
+</main>
 
-  {#if modal === "AddAccountModal"}
-    <AddAcountModal on:nnsClose={closeModal} />
-  {/if}
-  {#if modal === "NewTransaction"}
-    <NewTransactionModal on:nnsClose={closeModal} />
-  {/if}
+{#if modal === "AddAccountModal"}
+  <AddAcountModal on:nnsClose={closeModal} />
+{/if}
+{#if modal === "NewTransaction"}
+  <NewTransactionModal on:nnsClose={closeModal} />
+{/if}
 
-  {#if accounts}
-    <Footer>
-      <Toolbar>
-        <button
-          class="primary full-width"
-          on:click={openNewTransaction}
-          data-tid="open-new-transaction"
-          >{$i18n.accounts.new_transaction}</button
-        >
-        <button
-          class="primary full-width"
-          on:click={openAddAccountModal}
-          data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
-        >
-      </Toolbar>
-    </Footer>
-  {/if}
-</MainContentWrapper>
+{#if accounts}
+  <Footer>
+    <Toolbar>
+      <button
+        class="primary full-width"
+        on:click={openNewTransaction}
+        data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
+      >
+      <button
+        class="primary full-width"
+        on:click={openAddAccountModal}
+        data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
+      >
+    </Toolbar>
+  </Footer>
+{/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
     display: block;

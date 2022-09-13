@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { ICP } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/canisters.api";
 import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
@@ -18,7 +18,7 @@ import {
   updateSettings,
 } from "../../../lib/services/canisters.services";
 import { canistersStore } from "../../../lib/stores/canisters.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import { toastsError, toastsShow } from "../../../lib/stores/toasts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
@@ -51,11 +51,9 @@ jest.mock("../../../lib/services/accounts.services", () => {
 
 jest.mock("../../../lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      error: jest.fn(),
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsError: jest.fn(),
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -233,7 +231,7 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsError).toBeCalled();
     });
 
     it("should not update settings if no identity", async () => {
@@ -287,7 +285,7 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(toastsError).toBeCalled();
     });
 
     it("should not update settings if no identity", async () => {
@@ -379,7 +377,10 @@ describe("canisters-services", () => {
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 5,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -394,7 +395,10 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -409,14 +413,17 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const canisterId = await createCanister({
         amount: 3,
         account,
       });
       expect(canisterId).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
+      expect(toastsShow).toBeCalled();
     });
 
     it("should return undefined if no identity", async () => {
@@ -439,7 +446,10 @@ describe("canisters-services", () => {
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 5,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -454,7 +464,10 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -469,7 +482,10 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balance: TokenAmount.fromNumber({
+          amount: 2,
+          token: ICPToken,
+        }) as TokenAmount,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -477,7 +493,7 @@ describe("canisters-services", () => {
         account,
       });
       expect(success).toBe(false);
-      expect(toastsStore.show).toBeCalled();
+      expect(toastsShow).toBeCalled();
     });
 
     it("should return success false if no identity", async () => {

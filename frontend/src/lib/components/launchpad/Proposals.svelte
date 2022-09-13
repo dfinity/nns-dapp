@@ -7,9 +7,10 @@
     snsProposalsStore,
   } from "../../stores/sns.store";
   import { isNullish } from "../../utils/utils";
-  import CardGrid from "../ui/CardGrid.svelte";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
-  import ProposalCard from "./ProposalCard.svelte";
+  import ProjectProposalCard from "./ProposalCard.svelte";
+  import ProposalCard from "../proposals/ProposalCard.svelte";
+  import { VOTING_UI } from "../../constants/environment.constants";
 
   let loading: boolean = false;
   $: loading = isNullish($snsProposalsStore);
@@ -24,23 +25,33 @@
 </script>
 
 {#if loading}
-  <CardGrid>
+  <div class="card-grid">
     <SkeletonProposalCard />
     <SkeletonProposalCard />
-  </CardGrid>
+  </div>
 {:else if $openSnsProposalsStore.length === 0}
   <p class="no-proposals">{$i18n.voting.nothing_found}</p>
 {:else}
-  <CardGrid>
+  <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
-      <ProposalCard {proposalInfo} />
+      {#if VOTING_UI === "legacy"}
+        <ProjectProposalCard {proposalInfo} />
+      {:else}
+        <ProposalCard {proposalInfo} layout="modern" />
+      {/if}
     {/each}
-  </CardGrid>
+  </ul>
 {/if}
 
 <style lang="scss">
   .no-proposals {
     text-align: center;
     margin: var(--padding-2x) 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 </style>

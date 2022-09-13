@@ -1,5 +1,5 @@
-@use "interaction";
-@use "display";
+@use "@dfinity/gix-components/styles/mixins/interaction";
+@use "@dfinity/gix-components/styles/mixins/display";
 
 @mixin content {
   width: 100%;

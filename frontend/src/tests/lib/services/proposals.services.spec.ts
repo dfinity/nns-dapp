@@ -1,5 +1,11 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import { toastsStore, type ToastMsg } from "@dfinity/gix-components";
 import type { NeuronId, ProposalInfo } from "@dfinity/nns";
 import { GovernanceError, Vote } from "@dfinity/nns";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/proposals.api";
 import {
@@ -16,22 +22,35 @@ import {
   registerVotes,
   routePathProposalId,
 } from "../../../lib/services/proposals.services";
-import * as busyStore from "../../../lib/stores/busy.store";
+import { neuronsStore } from "../../../lib/stores/neurons.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "../../../lib/stores/proposals.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
+import * as toastsFunctions from "../../../lib/stores/toasts.store";
+import { toastsReset } from "../../../lib/stores/toasts.store";
+import { voteInProgressStore } from "../../../lib/stores/voting.store";
+import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
+import { waitForMilliseconds } from "../../../lib/utils/utils";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
+  const firstErrorMessage = () => {
+    const messages = get(toastsStore);
+    const error = messages.find(({ level }) => level === "error");
+
+    return error as ToastMsg;
+  };
+
   describe("list", () => {
     const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
     const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
@@ -53,7 +72,11 @@ describe("proposals-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the canister to list proposals", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).toHaveBeenCalled();
 
@@ -64,6 +87,9 @@ describe("proposals-services", () => {
     it("should call the canister to list the next proposals", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
 
       expect(spyQueryProposals).toHaveBeenCalled();
@@ -73,15 +99,32 @@ describe("proposals-services", () => {
     });
 
     it("should not clear the list proposals before query", async () => {
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
       expect(spySetProposals).toHaveBeenCalledTimes(2);
     });
 
     it("should push new proposals to the list", async () => {
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
       expect(spyPushProposals).toHaveBeenCalledTimes(2);
+    });
+
+    it("should call callback when load finished", async () => {
+      const spy = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spy,
+      });
+      expect(spy).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -119,14 +162,14 @@ describe("proposals-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should show error message in details", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "show");
+      const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
 
       await loadProposal({
         proposalId: BigInt(0),
         setProposal: jest.fn,
       });
-      expect(spyToastError).toBeCalled();
-      expect(spyToastError).toBeCalledWith({
+      expect(toastsShow).toBeCalled();
+      expect(toastsShow).toBeCalledWith({
         detail: 'id: "0". test-message',
         labelKey: "error.proposal_not_found",
         level: "error",
@@ -147,9 +190,31 @@ describe("proposals-services", () => {
       const spy = jest.spyOn(proposalsStore, "pushProposals");
       await listNextProposals({
         beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: () => {
+          // do nothing here
+        },
       });
       expect(spy).toHaveBeenCalledTimes(0);
       spy.mockClear();
+    });
+
+    it("should call callback with pagination over", async () => {
+      jest
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => Promise.resolve([]));
+
+      const spyCallback = jest.fn();
+
+      await listNextProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        loadFinished: spyCallback,
+      });
+
+      expect(spyCallback).toHaveBeenCalledTimes(2);
+      expect(spyCallback).toHaveBeenLastCalledWith({
+        paginationOver: true,
+        certified: true,
+      });
     });
   });
 
@@ -176,6 +241,7 @@ describe("proposals-services", () => {
   describe("vote registration", () => {
     const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
     const proposalId = BigInt(0);
+    const proposalInfo: ProposalInfo = { ...mockProposalInfo, id: proposalId };
 
     describe("success", () => {
       jest
@@ -195,41 +261,27 @@ describe("proposals-services", () => {
       it("should call the canister to register multiple votes", async () => {
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.YES,
+          proposalInfo,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
-        expect(spyRegisterVote).toHaveReturnedTimes(neuronIds.length);
-      });
 
-      it("should display appropriate busy screen", async () => {
-        const spyBusyStart = jest.spyOn(busyStore, "startBusy");
-        const spyBusyStop = jest.spyOn(busyStore, "stopBusy");
-        await registerVotes({
-          neuronIds,
-          proposalId,
-          vote: Vote.YES,
-          reloadProposalCallback: () => {
-            // do nothing
-          },
-        });
-        expect(spyBusyStart).toBeCalledWith({ initiator: "vote" });
-        expect(spyBusyStop).toBeCalledWith("vote");
+        expect(spyRegisterVote).toBeCalledTimes(neuronIds.length);
       });
 
       it("should not display errors on successful vote registration", async () => {
-        const spyToastShow = jest.spyOn(toastsStore, "show");
+        const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.YES,
+          proposalInfo,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
-        expect(spyToastShow).not.toBeCalled();
+        expect(spyToastError).not.toBeCalled();
       });
     });
 
@@ -243,6 +295,9 @@ describe("proposals-services", () => {
       const mockRegisterVote = async (): Promise<void> => {
         return;
       };
+      // const mockRequestRegisterVotes = async (): Promise<void> => {
+      //   return;
+      // };
 
       it("should refetch neurons after vote registration", async () => {
         jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
@@ -253,8 +308,8 @@ describe("proposals-services", () => {
 
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.YES,
+          proposalInfo,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -275,35 +330,147 @@ describe("proposals-services", () => {
 
         registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.YES,
+          proposalInfo,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             done();
           },
         });
       });
 
-      it("should show 'error.list_proposals' on refetch neurons error", async () => {
-        jest.spyOn(api, "registerVote").mockImplementation(mockRegisterVote);
-        const err = new Error("test");
-        const spyToastError = jest.spyOn(toastsStore, "error");
-        // .mockImplementation((params) => (lastToastMessage = params));
-        const spyOnListNeurons = jest
-          .spyOn(neuronsServices, "listNeurons")
-          .mockImplementation(() => Promise.reject(err));
+      describe("voting in progress", () => {
+        beforeEach(() => {
+          jest
+            .spyOn(neuronsServices, "listNeurons")
+            .mockImplementation(() => Promise.resolve());
+          jest
+            .spyOn(api, "queryProposal")
+            .mockImplementation(() => Promise.resolve(mockProposalInfo));
 
-        await registerVotes({
-          neuronIds,
-          proposalId,
-          vote: Vote.NO,
-          reloadProposalCallback: () => {
-            // do nothing
-          },
+          jest
+            .spyOn(api, "registerVote")
+            .mockImplementation(() => waitForMilliseconds(10));
+
+          neuronsStore.setNeurons({
+            neurons: [BigInt(0), BigInt(1), BigInt(2)].map((neuronId) => ({
+              ...mockNeuron,
+              neuronId,
+            })),
+            certified: true,
+          });
         });
-        expect(spyOnListNeurons).toBeCalled();
-        expect(spyToastError).toBeCalledWith({
-          err,
-          labelKey: "error.list_proposals",
+
+        afterEach(() => {
+          jest.clearAllMocks();
+
+          toastsReset();
+          voteInProgressStore.reset();
+          neuronsStore.reset();
+        });
+
+        it("should update voteInProgressStore", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.Yes,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const $voteInProgressStore = get(voteInProgressStore);
+
+          expect($voteInProgressStore.votes[0]).toBeDefined();
+          expect($voteInProgressStore.votes[0].neuronIds).toEqual(neuronIds);
+          expect($voteInProgressStore.votes[0].proposalId).toEqual(
+            proposalInfo.id
+          );
+          expect($voteInProgressStore.votes[0].vote).toEqual(Vote.Yes);
+        });
+
+        it("should update successfullyVotedNeuronIds in voteInProgressStore", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.Yes,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const $voteInProgressStore = get(voteInProgressStore);
+
+          expect(
+            $voteInProgressStore.votes[0].successfullyVotedNeuronIds
+          ).toEqual(neuronIds);
+        });
+
+        it("should show the vote adopt_in_progress toast", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.Yes,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const message = get(toastsStore).find(
+            ({ spinner }) => spinner === true
+          );
+          expect(message).toBeDefined();
+          expect(message?.text).toEqual(
+            replacePlaceholders(
+              en.proposal_detail__vote.vote_adopt_in_progress,
+              {
+                $topic: "System Canister Management",
+                $proposalId: "0",
+              }
+            )
+          );
+        });
+
+        it("should show the vote reject_in_progress toast", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.No,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const message = get(toastsStore).find(
+            ({ spinner }) => spinner === true
+          );
+          expect(message).toBeDefined();
+          expect(message?.text).toEqual(
+            replacePlaceholders(
+              en.proposal_detail__vote.vote_reject_in_progress,
+              {
+                $topic: "System Canister Management",
+                $proposalId: "0",
+              }
+            )
+          );
+        });
+
+        it("should hide the vote in progress toast after voting", async () => {
+          await registerVotes({
+            neuronIds,
+            proposalInfo,
+            vote: Vote.Yes,
+            reloadProposalCallback: () => {
+              //
+            },
+          });
+
+          const message = () =>
+            get(toastsStore).find(({ spinner }) => spinner === true);
+
+          expect(message()).toBeDefined();
+
+          await waitFor(() => expect(message()).not.toBeDefined());
         });
       });
     });
@@ -325,7 +492,7 @@ describe("proposals-services", () => {
 
       const resetToasts = () => {
         const toasts = get(toastsStore);
-        toasts.forEach(() => toastsStore.hide());
+        toasts.forEach(({ id }) => toastsStore.hide(id));
       };
 
       beforeEach(resetToasts);
@@ -338,17 +505,16 @@ describe("proposals-services", () => {
       it("should show error.register_vote_unknown on not nns-js-based error", async () => {
         await registerVotes({
           neuronIds: null as unknown as NeuronId[],
-          proposalId,
-          vote: Vote.NO,
+          proposalInfo,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [first, rest] = get(toastsStore);
-        expect(first.labelKey).toBe("error.register_vote_unknown");
-        expect(first.level).toBe("error");
+        const error = firstErrorMessage();
+
+        expect(error.text).toContain(en.error.register_vote_unknown);
       });
 
       it("should show error.register_vote on nns-js-based errors", async () => {
@@ -357,17 +523,39 @@ describe("proposals-services", () => {
           .mockImplementation(mockRegisterVoteError);
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.NO,
+          proposalInfo,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [first, rest] = get(toastsStore);
-        expect(first.labelKey).toBe("error.register_vote");
-        expect(first.level).toBe("error");
+        const error = firstErrorMessage();
+
+        expect(error.text).toContain(
+          replacePlaceholders(en.error.register_vote, {
+            $topic: "System Canister Management",
+            $proposalId: "0",
+          })
+        );
+      });
+
+      it("should display propsalId in error detail", async () => {
+        jest
+          .spyOn(api, "registerVote")
+          .mockImplementation(mockRegisterVoteError);
+        await registerVotes({
+          neuronIds,
+          proposalInfo,
+          vote: Vote.No,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
+        });
+
+        const error = firstErrorMessage();
+
+        expect(error?.text).toContain("0");
       });
 
       it("should show reason per neuron Error in detail", async () => {
@@ -376,16 +564,18 @@ describe("proposals-services", () => {
           .mockImplementation(mockRegisterVoteError);
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.NO,
+          proposalInfo,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [first, rest] = get(toastsStore);
-        expect(first?.detail?.split(/test/).length).toBe(neuronIds.length + 1);
+        const error = firstErrorMessage();
+
+        for (const neuronId of neuronIds) {
+          expect(error?.text).toContain(`${neuronId}`);
+        }
       });
 
       it("should show reason per neuron GovernanceError in detail", async () => {
@@ -394,23 +584,26 @@ describe("proposals-services", () => {
           .mockImplementation(mockRegisterVoteGovernanceError);
         await registerVotes({
           neuronIds,
-          proposalId,
-          vote: Vote.NO,
+          proposalInfo,
+          vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
           },
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [first, rest] = get(toastsStore);
-        expect(first?.detail?.split(/governance-error/).length).toBe(
-          neuronIds.length + 1
-        );
+        const error = firstErrorMessage();
+
+        for (const neuronId of neuronIds) {
+          expect(error?.text).toContain(`${neuronId}`);
+        }
       });
     });
   });
 
   describe("errors", () => {
+    const proposalId = BigInt(0);
+    const proposalInfo: ProposalInfo = { ...mockProposalInfo, id: proposalId };
+
     beforeAll(() => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(jest.fn);
@@ -424,7 +617,12 @@ describe("proposals-services", () => {
     });
 
     it("should not list proposals if no identity", async () => {
-      const call = async () => await listProposals();
+      const call = async () =>
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     });
@@ -433,6 +631,9 @@ describe("proposals-services", () => {
       const call = async () =>
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
+          loadFinished: () => {
+            // do nothing here
+          },
         });
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
@@ -454,8 +655,8 @@ describe("proposals-services", () => {
       const call = async () =>
         await registerVotes({
           neuronIds: [],
-          proposalId: BigInt(1),
-          vote: Vote.YES,
+          proposalInfo,
+          vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
           },
@@ -468,6 +669,7 @@ describe("proposals-services", () => {
   describe("ignore errors", () => {
     const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
     const proposalId = BigInt(0);
+    const proposalInfo: ProposalInfo = { ...mockProposalInfo, id: proposalId };
 
     const mockRegisterVoteGovernanceAlreadyVotedError =
       async (): Promise<void> => {
@@ -477,15 +679,15 @@ describe("proposals-services", () => {
         });
       };
 
-    let spyToastShow;
+    let spyToastError;
 
     beforeEach(() => {
       jest
         .spyOn(api, "registerVote")
         .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
 
-      spyToastShow = jest
-        .spyOn(toastsStore, "show")
+      spyToastError = jest
+        .spyOn(toastsFunctions, "toastsError")
         .mockImplementation(jest.fn());
     });
 
@@ -494,13 +696,13 @@ describe("proposals-services", () => {
     it("should ignore already voted error", async () => {
       await registerVotes({
         neuronIds,
-        proposalId,
-        vote: Vote.NO,
+        proposalInfo,
+        vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
         },
       });
-      expect(spyToastShow).not.toBeCalled();
+      expect(spyToastError).not.toBeCalled();
     });
   });
 
@@ -529,7 +731,11 @@ describe("proposals-services", () => {
     it("should not call the canister if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
@@ -539,7 +745,11 @@ describe("proposals-services", () => {
     it("should reset the proposal store if empty filter", async () => {
       proposalsFiltersStore.filterStatus([]);
 
-      await listProposals();
+      await listProposals({
+        loadFinished: () => {
+          // do nothing here
+        },
+      });
 
       const { proposals } = get(proposalsStore);
       expect(proposals).toEqual([]);
