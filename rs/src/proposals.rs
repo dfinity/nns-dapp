@@ -93,8 +93,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     }
 
     // See full list here - https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/governance/gen/ic_nns_governance.pb.v1.rs#L1690
-    // identity: deserealize -> serealize to JSON
-    // transform: deserealize -> transform -> serealize to JSON
+    // identity: deserialize -> serialize to JSON
+    // transform: deserialize -> transform -> serialize to JSON
     match nns_function {
         1 => identity::<CreateSubnetPayload>(payload_bytes),
         2 => identity::<AddNodesToSubnetPayload>(payload_bytes),
