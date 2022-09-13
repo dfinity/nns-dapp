@@ -1,7 +1,7 @@
 <script lang="ts">
   import Checkbox from "../../../components/ui/Checkbox.svelte";
   import { ICON_SIZE_LARGE } from "../../../constants/style.constants";
-  import IconWarning from "../../../icons/IconWarning.svelte";
+  import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "../../../stores/i18n";
 
   export let accepted: boolean = false;

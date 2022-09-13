@@ -1,6 +1,6 @@
 <script lang="ts">
   import Popover from "../ui/Popover.svelte";
-  import IconAccount from "../../icons/IconAccount.svelte";
+  import { IconAccount } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import ThemeToggle from "./ThemeToggle.svelte";

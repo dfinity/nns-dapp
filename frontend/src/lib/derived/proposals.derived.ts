@@ -9,8 +9,10 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "../stores/proposals.store";
-import type { VoteInProgress } from "../stores/voting.store";
-import { voteInProgressStore } from "../stores/voting.store";
+import {
+  voteRegistrationStore,
+  type VoteRegistration,
+} from "../stores/vote-registration.store";
 import { hideProposal } from "../utils/proposals.utils";
 
 /**
@@ -46,12 +48,12 @@ const hide = ({
   proposalInfo,
   filters,
   neurons,
-  votes,
+  registrations,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
-  votes: VoteInProgress[];
+  registrations: VoteRegistration[];
 }): boolean =>
   hideProposal({
     filters,
@@ -59,7 +61,8 @@ const hide = ({
     neurons,
   }) ||
   // hide proposals that are currently in the voting state
-  votes.find(({ proposalId }) => proposalInfo.id === proposalId) !== undefined;
+  registrations.find(({ proposalInfo: { id } }) => proposalInfo.id === id) !==
+    undefined;
 
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
@@ -71,12 +74,12 @@ export const uiProposals: Readable<UIProposalsStore> = derived(
     sortedProposals,
     proposalsFiltersStore,
     definedNeuronsStore,
-    voteInProgressStore,
+    voteRegistrationStore,
   ],
-  ([{ proposals, certified }, filters, neurons, { votes }]) => ({
+  ([{ proposals, certified }, filters, neurons, { registrations }]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
-      hidden: hide({ proposalInfo, filters, neurons, votes }),
+      hidden: hide({ proposalInfo, filters, neurons, registrations }),
     })),
     certified,
   })

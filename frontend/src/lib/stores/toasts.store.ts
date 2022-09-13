@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { toastsStore } from "@dfinity/gix-components";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
@@ -66,3 +67,20 @@ export const toastsError = ({
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
 
 export const toastsReset = () => toastsStore.reset();
+
+export const toastsUpdate = ({
+  id,
+  content,
+}: {
+  id: symbol;
+  content: ToastMsg;
+}): void => {
+  toastsStore.update({
+    id,
+    content: {
+      id,
+      ...content,
+      text: mapToastText(content),
+    },
+  });
+};

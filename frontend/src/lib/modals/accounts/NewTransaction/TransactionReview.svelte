@@ -1,7 +1,7 @@
 <script lang="ts">
   import { TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import IconSouth from "../../../icons/IconSouth.svelte";
+  import { IconSouth } from "@dfinity/gix-components";
   import FooterModal from "../../FooterModal.svelte";
   import { busy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";

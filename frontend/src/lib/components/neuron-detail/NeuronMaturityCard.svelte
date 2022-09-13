@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
