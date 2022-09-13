@@ -124,6 +124,7 @@ export const getParentPathDetail = (
  * Ex: `/#/u/aaaaa-aa/account/1234` becomes `/#/u/bbbbb-bb/account/1234`
  * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
  * Ex: `/#/neuron/1234` becomes `/#/u/bbbbb-bb/neuron/1234`
+ * Ex: `/#/proposals` does nothing because `/#/proposals` is not a context path
  *
  * @param path string - the path to change
  * @param newContext string - the new context to navigate to
