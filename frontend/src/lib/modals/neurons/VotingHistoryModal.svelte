@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -34,7 +34,7 @@
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose size="big">
+<LegacyModal testId="voting-history-modal" on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
@@ -46,7 +46,7 @@
   {:else}
     <Spinner />
   {/if}
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   .content {

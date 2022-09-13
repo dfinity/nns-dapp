@@ -1,13 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../stores/i18n";
-  import Modal from "./Modal.svelte";
+  import LegacyModal from "./LegacyModal.svelte";
   import { busy } from "../stores/busy.store";
 
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal on:nnsClose>
+<LegacyModal on:nnsClose>
   <article>
     <slot />
     <div role="toolbar">
@@ -25,7 +25,7 @@
       >
     </div>
   </article>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   article {

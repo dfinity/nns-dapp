@@ -2,7 +2,7 @@
   /**
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
-  import Modal from "../../modals/Modal.svelte";
+  import LegacyModal from "../../modals/LegacyModal.svelte";
   import Input from "../ui/Input.svelte";
   import { getICPs } from "../../services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
@@ -62,7 +62,7 @@
   <span>Get ICPs</span>
 </button>
 
-<Modal {visible} on:nnsClose={onClose}>
+<LegacyModal {visible} on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
   <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
@@ -89,7 +89,7 @@
       {/if}
     </button>
   </form>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
