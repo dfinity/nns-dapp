@@ -1208,8 +1208,7 @@ impl AccountsStore {
     ) -> bool {
         if memo.0 > 0 && amount.get_e8s() == 0 {
             self.get_transaction_index(memo.0)
-                .map(|index| self.get_transaction(index))
-                .flatten()
+                .and_then(|index| self.get_transaction(index))
                 .filter(|&t| {
                     t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron)
                 })
@@ -1457,8 +1456,7 @@ impl Account {
             .chain(
                 self.sub_accounts
                     .values()
-                    .map(|a| a.transactions.iter().cloned())
-                    .flatten(),
+                    .flat_map(|a| a.transactions.iter().cloned()),
             )
             .sorted()
             .collect()
@@ -1503,7 +1501,7 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
 
 /// This will sort the canisters such that those with names specified will appear first and will be
 /// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
-fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
+fn sort_canisters(canisters: &mut [NamedCanister]) {
     canisters.sort_unstable_by_key(|c| {
         if c.name.is_empty() {
             (true, c.canister_id.to_string())
