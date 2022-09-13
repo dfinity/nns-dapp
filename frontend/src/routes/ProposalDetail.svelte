@@ -8,7 +8,10 @@
   import { AppPath } from "../lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "../lib/stores/neurons.store";
-  import { layoutBackStore } from "../lib/stores/layout.store";
+  import {
+    layoutBackStore,
+    layoutTitleStore,
+  } from "../lib/stores/layout.store";
   import { get, writable } from "svelte/store";
   import type {
     SelectedProposalContext,
@@ -20,6 +23,7 @@
   import { VOTING_UI } from "../lib/constants/environment.constants";
   import ProposalLegacy from "../lib/components/proposal-detail/ProposalLegacy.svelte";
   import ProposalModern from "../lib/components/proposal-detail/ProposalModern.svelte";
+  import { i18n } from "../lib/stores/i18n";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -117,6 +121,14 @@
   };
 
   layoutBackStore.set(goBack);
+
+  $: layoutTitleStore.set(
+    `${$i18n.proposal_detail.title}${
+      $selectedProposalStore.proposalId !== undefined
+        ? ` ${$selectedProposalStore.proposalId}`
+        : ""
+    }`
+  );
 </script>
 
 <main class={VOTING_UI}>

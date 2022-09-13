@@ -95,7 +95,7 @@
       />
     </CardInfo>
   {/if}
-{:else}
+{:else if $definedNeuronsStore.length > 0}
   <BottomSheet>
     {#if visible}
       <VotingConfirmationToolbar

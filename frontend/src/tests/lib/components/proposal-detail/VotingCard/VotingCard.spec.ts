@@ -69,8 +69,8 @@ describe("VotingCard", () => {
 
   it("should be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    const { queryByTestId } = renderVotingCard();
-    await waitFor(() => expect(queryByTestId("card")).not.toBeInTheDocument());
+    const { getByTestId } = renderVotingCard();
+    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
