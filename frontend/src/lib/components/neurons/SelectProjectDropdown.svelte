@@ -7,7 +7,7 @@
   import { routeStore } from "../../stores/route.store";
   import Dropdown from "../ui/Dropdown.svelte";
   import DropdownItem from "../ui/DropdownItem.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
   let selectedCanisterId: string | undefined;
 

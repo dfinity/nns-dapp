@@ -7,7 +7,9 @@ import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
 import NeuronDetail from "../../../lib/pages/NnsNeuronDetail.svelte";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
 import { routeStore } from "../../../lib/stores/route.store";
+import { voteRegistrationStore } from "../../../lib/stores/vote-registration.store";
 import { mockNeuron } from "../../mocks/neurons.mock";
+import { mockVoteRegistration } from "../../mocks/proposal.mock";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
 jest.mock("../../../lib/services/knownNeurons.services", () => {
@@ -52,7 +54,7 @@ describe("NeuronDetail", () => {
     expect(querySkeleton(container)).not.toBeNull();
   });
 
-  it.only("should hide skeletons after neuron data are available", async () => {
+  it("should hide skeletons after neuron data are available", async () => {
     const { container } = render(NeuronDetail);
 
     fillNeuronStore();

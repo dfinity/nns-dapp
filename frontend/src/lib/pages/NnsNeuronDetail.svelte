@@ -21,8 +21,8 @@
   } from "../utils/neuron.utils";
   import { layoutBackStore } from "../stores/layout.store";
   import NeuronJoinFundCard from "../components/neuron-detail/NeuronJoinFundCard.svelte";
-  import { toastsStore } from "../stores/toasts.store";
-  import { voteInProgressStore } from "../stores/voting.store";
+  import { toastsError } from "../stores/toasts.store";
+  import { voteRegistrationStore } from "../stores/vote-registration.store";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -37,7 +37,7 @@
     // Spawning neuron can't access the details
     // TODO: Test with a spawning neuron
     if (neuron && isSpawning(neuron)) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.neuron_spawning",
       });
       routeStore.replace({ path: AppPath.LegacyNeurons });
@@ -93,7 +93,7 @@
     neuron !== undefined &&
     neuronVoting({
       neuronId: neuron.neuronId,
-      voteInProgressStore: $voteInProgressStore,
+      store: $voteRegistrationStore,
     });
 </script>
 
