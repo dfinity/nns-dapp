@@ -14,7 +14,8 @@
     <slot />
   </select>
   <span class="icon">
-    <IconExpandMore />
+    <!-- size to match the line-height when font-size is 16px -->
+    <IconExpandMore size="20px" />
   </span>
 </div>
 
@@ -67,12 +68,6 @@
 
       // Place the caret inside the select.
       margin-left: calc(-1 * var(--padding-3x));
-
-      // To match the line-height when font-size is 16px
-      :global(svg) {
-        width: 20px;
-        height: 20px;
-      }
     }
   }
 </style>

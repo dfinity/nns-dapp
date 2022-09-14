@@ -32,6 +32,7 @@
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets: boolean = false;
+  export let showManualAddress: boolean = true;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -125,6 +126,7 @@
     <SelectDestinationAddress
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
+      bind:showManualAddress
     />
   {/if}
 

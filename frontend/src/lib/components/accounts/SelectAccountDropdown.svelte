@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import { accountsStore } from "../../stores/accounts.store";
+  import { accountsList } from "../../derived/accounts-list.derived";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { getAccountFromStore } from "../../utils/accounts.utils";
@@ -16,18 +16,11 @@
     accountsStore: $accountsStore,
   });
 
-  let accounts: Account[] = [];
-  $: selectableAccounts = accounts.filter(filterAccounts);
-  const unsubscribe = accountsStore.subscribe(
-    ({ main, subAccounts, hardwareWallets }) => {
-      if (main !== undefined) {
-        selectedAccountIdentifier =
-          selectedAccountIdentifier ?? main.identifier;
-        accounts = [main, ...(subAccounts ?? []), ...(hardwareWallets ?? [])];
-      }
-    }
-  );
+  $: selectableAccounts = $accountsList.filter(filterAccounts);
 
+  // If the selected account is not in the list of accounts
+  // Set the selected account to the first account in the list
+  // It covers the case to select the main account by default
   $: {
     if (
       selectableAccounts.find(
@@ -37,8 +30,6 @@
       selectedAccountIdentifier = selectableAccounts[0]?.identifier;
     }
   }
-
-  onDestroy(unsubscribe);
 </script>
 
 {#if selectableAccounts.length === 0}

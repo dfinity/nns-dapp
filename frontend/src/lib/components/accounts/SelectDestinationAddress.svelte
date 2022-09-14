@@ -7,15 +7,15 @@
 
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
+  export let showManualAddress: boolean = true;
 
   let address: string;
   const setDestination = () => {
     selectedDestinationAddress = address;
   };
 
-  let showManualInput: boolean = true;
   const onToggleManualInput = () => {
-    showManualInput = !showManualInput;
+    showManualAddress = !showManualAddress;
     selectedDestinationAddress = undefined;
     selectedAccount = undefined;
   };
@@ -34,14 +34,14 @@
     <div class="toggle">
       <p>{$i18n.accounts.select}</p>
       <Toggle
-        bind:checked={showManualInput}
+        bind:checked={showManualAddress}
         on:nnsToggle={onToggleManualInput}
         ariaLabel="change"
       />
       <p>{$i18n.accounts.manual}</p>
     </div>
   </div>
-  {#if showManualInput}
+  {#if showManualAddress}
     <AddressInput bind:address on:nnsBlur={setDestination} />
   {:else}
     <SelectAccountDropdown {filterAccounts} bind:selectedAccount />

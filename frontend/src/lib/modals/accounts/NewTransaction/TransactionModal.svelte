@@ -37,6 +37,7 @@
   let selectedAccount: Account | undefined = sourceAccount;
   let canSelectSource: boolean = sourceAccount === undefined;
   let amount: number | undefined;
+  let showManualAddress: boolean = true;
 
   const goNext = () => {
     modal.next();
@@ -55,6 +56,7 @@
       bind:selectedDestinationAddress
       bind:selectedAccount
       bind:amount
+      bind:showManualAddress
       {skipHardwareWallets}
       {maxAmount}
       on:nnsNext={goNext}
