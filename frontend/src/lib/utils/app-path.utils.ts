@@ -116,6 +116,41 @@ export const getParentPathDetail = (
 };
 
 /**
+ * Checks whether the path is a legacy context path.
+ * Returns a new path with the new context path if it is a legacy context path.
+ * Returns same path if not a legacy context path.
+ * This needs to be updated when we support more legacy context paths.
+ *
+ * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
+ *
+ * @param path string - the path to change
+ * @param newContext string - the new context to navigate to
+ * @returns newPath string
+ */
+const checkContextPathExceptions = ({
+  path,
+  newContext,
+}: {
+  path: string;
+  newContext: string;
+}): string => {
+  if (isRoutePath({ path: AppPath.LegacyNeurons, routePath: path })) {
+    return `${CONTEXT_PATH}/${newContext}/neurons`;
+  }
+  if (
+    isRoutePath({
+      path: AppPath.LegacyNeuronDetail,
+      routePath: path,
+    })
+  ) {
+    const neuronId = routePathNeuronId(path);
+    return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
+  }
+  // Returns same path if no exception
+  return path;
+};
+
+/**
  * Returns a new path with the new context.
  * Doesn't do anything if the current path is not a context path.
  *
@@ -136,20 +171,8 @@ export const changePathContext = ({
   path: string;
   newContext: string;
 }) => {
-  let newPath = path;
-  // Check exceptions
-  if (isRoutePath({ path: AppPath.LegacyNeurons, routePath: path })) {
-    newPath = `${CONTEXT_PATH}/${newContext}/neurons`;
-  }
-  if (
-    isRoutePath({
-      path: AppPath.LegacyNeuronDetail,
-      routePath: path,
-    })
-  ) {
-    const neuronId = routePathNeuronId(path);
-    newPath = `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
-  }
+  // Check exceptions or return same path
+  let newPath = checkContextPathExceptions({ path, newContext });
   // Check if the path is a context path and perform the change
   if (isContextPath(path)) {
     const contextDetails = getContextDetailsFromPath(path);
