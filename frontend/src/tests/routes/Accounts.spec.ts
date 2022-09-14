@@ -2,79 +2,53 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { accountsStore } from "../../lib/stores/accounts.store";
-import { authStore } from "../../lib/stores/auth.store";
-import { replacePlaceholders } from "../../lib/utils/i18n.utils";
-import { formatICP } from "../../lib/utils/icp.utils";
+import { fireEvent, waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
+import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
+import { AppPath } from "../../lib/constants/routes.constants";
+import { committedProjectsStore } from "../../lib/stores/projects.store";
+import { routeStore } from "../../lib/stores/route.store";
 import Accounts from "../../routes/Accounts.svelte";
-import {
-  mockAccountsStoreSubscribe,
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import en from "../mocks/i18n.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../mocks/sns-projects.mock";
 
 describe("Accounts", () => {
-  let accountsStoreMock: jest.SpyInstance;
+  jest
+    .spyOn(committedProjectsStore, "subscribe")
+    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    // Reset to default value
+    routeStore.update({ path: AppPath.LegacyAccounts });
   });
 
-  it("should render title and account icp", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(Accounts);
-
-    const titleRow = container.querySelector("section > div");
-
-    expect(
-      titleRow?.textContent?.startsWith(
-        `${en.accounts.total} ${formatICP({
-          value: mockMainAccount.balance.toE8s(),
-        })} ICP`
-      )
-    ).toBeTruthy();
+  it("should render NnsAccounts by default", () => {
+    const { queryByTestId } = render(Accounts);
+    expect(queryByTestId("accounts-body")).toBeInTheDocument();
   });
 
-  it("should render a main card", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(Accounts);
-
-    const article = container.querySelector("article");
-    expect(article).not.toBeNull();
+  it("should render dropdown to select project", () => {
+    const { queryByTestId } = render(Accounts);
+    expect(queryByTestId("select-project-dropdown")).toBeInTheDocument();
   });
 
-  it("should render account icp in card too", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(Accounts);
+  it("should render sns accounts when a project is selected in the dropdown", async () => {
+    const { queryByTestId } = render(Accounts);
 
-    const cardTitleRow = container.querySelector(
-      "article > div div:last-of-type"
-    );
+    expect(queryByTestId("accounts-body")).toBeInTheDocument();
 
-    expect(cardTitleRow?.textContent).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
-    );
-  });
+    const selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
 
-  it("should render account identifier", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { getByText } = render(Accounts);
-    getByText(mockMainAccount.identifier);
-  });
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
 
   it("should render subaccount cards", () => {
     accountsStoreMock = jest
@@ -88,91 +62,38 @@ describe("Accounts", () => {
     expect(articles.length).toBe(2);
   });
 
-  it("should render hardware wallet account cards", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
-    const { container } = render(Accounts);
+  it("should be able to go back to nns after going to a project", async () => {
+    const { queryByTestId } = render(Accounts);
 
-    const articles = container.querySelectorAll("article");
+    expect(queryByTestId("accounts-body")).toBeInTheDocument();
 
-    expect(articles).not.toBeNull();
-    expect(articles.length).toBe(2);
-  });
+    const selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
 
-  it("should subscribe to store", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    expect(accountsStoreMock).toHaveBeenCalled();
-  });
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
 
-  describe("Total ICPs", () => {
-    const totalBalance =
-      mockMainAccount.balance.toE8s() +
-      mockSubAccount.balance.toE8s() +
-      mockHardwareWalletAccount.balance.toE8s();
-
-    beforeAll(
-      () =>
-        (accountsStoreMock = jest
-          .spyOn(accountsStore, "subscribe")
-          .mockImplementation(
-            mockAccountsStoreSubscribe(
-              [mockSubAccount],
-              [mockHardwareWalletAccount]
-            )
-          ))
+    await waitFor(() =>
+      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
     );
 
-    afterAll(jest.clearAllMocks);
-
-    it("should render total accounts icp", () => {
-      const { container } = render(Accounts);
-
-      const titleRow = container.querySelector("section > div");
-
-      expect(
-        titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatICP({ value: totalBalance })} ICP`
-        )
-      ).toBeTruthy();
-    });
-
-    it("should contain a tooltip", () => {
-      const { container } = render(Accounts);
-
-      expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-    });
-
-    it("should render a total balance in a tooltip", () => {
-      const { container } = render(Accounts);
-
-      const icp: HTMLDivElement | null =
-        container.querySelector("#wallet-total-icp");
-
-      const totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
-
-      expect(icp?.textContent).toEqual(
-        replacePlaceholders(en.accounts.current_balance_total, {
-          $amount: `${formatICP({
-            value: totalBalance,
-            detailed: true,
-          })}`,
-        })
-      );
-    });
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: OWN_CANISTER_ID.toText() },
+      });
+    await waitFor(() =>
+      expect(queryByTestId("accounts-body")).toBeInTheDocument()
+    );
   });
 
   it("should open transaction modal", async () => {
-    const { getByTestId } = render(Accounts);
+    const { container, getByText, getByTestId } = render(Accounts);
 
-    const button = getByTestId("open-new-transaction");
+    const button = getByTestId("open-new-transaction") as HTMLButtonElement;
     await fireEvent.click(button);
 
     await waitFor(() => {
