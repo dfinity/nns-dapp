@@ -74,7 +74,7 @@
     justify-content: space-between;
     gap: var(--padding);
     width: 100%;
-    margin: var(--padding-3x) 0 env(safe-area-inset-bottom, 0);
+    margin-top: var(--padding-3x);
     padding: var(--padding) var(--padding-2x);
 
     @include media.min-width(large) {
