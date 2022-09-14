@@ -23,7 +23,7 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .neurons {
-    padding: var(--padding-1_5x) var(--padding) 0;
+    padding: var(--padding-1_5x) var(--padding) env(safe-area-inset-bottom, 0);
     max-height: var(--voting-bottom-sheet-content-max-height);
     overflow-y: auto;
 
