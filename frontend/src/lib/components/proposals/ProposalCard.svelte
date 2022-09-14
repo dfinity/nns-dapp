@@ -57,8 +57,12 @@
       testId="proposal-card"
       withArrow={true}
     >
-      <div class="card-meta">
+      <div class="card-meta id">
         <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+      </div>
+
+      <div class="card-meta">
+        <span>{$i18n.proposal_detail.type_prefix}</span>
         <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
       </div>
 
@@ -74,7 +78,10 @@
         </div>
       {/if}
 
-      <p class="title-placeholder description">{title}</p>
+      <blockquote class="title-placeholder description">
+        <span class="quote">“</span>
+        <p>{title}</p>
+      </blockquote>
 
       <div class="card-meta">
         <p class={`${color} status`}>
@@ -112,12 +119,34 @@
 
   .card-meta {
     @include card.meta;
+
+    &.id {
+      justify-content: flex-end;
+
+      :global(.value) {
+        color: var(--primary);
+      }
+    }
   }
 
   .title-placeholder {
-    @include text.clamp(6);
-    word-break: break-word;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 0;
+    margin: 0;
+    padding: 0;
+
     flex-grow: 1;
+
+    span {
+      font-size: var(--font-size-h1);
+      opacity: 0.7;
+    }
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
   }
 
   /**
