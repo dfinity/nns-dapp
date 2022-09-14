@@ -6,6 +6,6 @@
   @use "../themes/mixins/modal";
   div {
     @include modal.bottom-buttons;
-    padding-top: var(--padding-4x);
+    padding: var(--padding-4x) 0 env(safe-area-inset-bottom, 0);
   }
 </style>
