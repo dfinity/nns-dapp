@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 80618
 * Fix android issues with modal.
 * Add pending transaction state in canister.
 * Persist proposal filters in local storage
