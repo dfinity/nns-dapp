@@ -9,7 +9,7 @@
   position: fixed;
   @include display.inset;
 
-  z-index: var(--overlay-z-index);
+  z-index: var(--modal-z-index);
 
   .wrapper {
     cursor: initial;
