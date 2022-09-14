@@ -32,7 +32,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.Accounts,
+      path: AppPath.LegacyAccounts,
     });
 
   layoutBackStore.set(goBack);

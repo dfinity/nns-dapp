@@ -36,8 +36,12 @@
   }[] = [
     {
       context: "accounts",
-      selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
-      label: "tokens",
+      selected: isSelectedPath([
+        AppPath.Accounts,
+        AppPath.LegacyAccounts,
+        AppPath.Wallet,
+      ]),
+      label: "accounts",
       icon: IconWallet,
     },
     {
