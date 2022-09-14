@@ -10,26 +10,16 @@
   export let selectedAccount: Account | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
 
-  let selectedAccountIdentifier: string;
+  // In case the component is already initialized with a selectedAccount
+  // To avoid cyclical dependencies, we don't update this if `selectedAccount` changes
+  let selectedAccountIdentifier: string | undefined =
+    selectedAccount?.identifier;
   $: selectedAccount = getAccountFromStore({
     identifier: selectedAccountIdentifier,
     accountsStore: $accountsStore,
   });
 
   $: selectableAccounts = $accountsList.filter(filterAccounts);
-
-  // If the selected account is not in the list of accounts
-  // Set the selected account to the first account in the list
-  // It covers the case to select the main account by default
-  $: {
-    if (
-      selectableAccounts.find(
-        ({ identifier }) => identifier === selectedAccountIdentifier
-      ) === undefined
-    ) {
-      selectedAccountIdentifier = selectableAccounts[0]?.identifier;
-    }
-  }
 </script>
 
 {#if selectableAccounts.length === 0}

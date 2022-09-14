@@ -5,7 +5,7 @@
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import type { Step } from "../../stores/steps.state";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
   import type { Account } from "../../types/account";
   import type { NewTransaction } from "../../types/transaction.context";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
@@ -44,7 +44,7 @@
     });
 
     if (success) {
-      toastsStore.success({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({ labelKey: "accounts.transaction_success" });
     }
 
     stopBusy("accounts");

@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
+  import { getAccountFromStore } from "../../utils/accounts.utils";
   import Toggle from "../ui/Toggle.svelte";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
@@ -20,7 +22,12 @@
     selectedAccount = undefined;
   };
 
-  let selectedAccount: Account | undefined = undefined;
+  // If the component is already initialized with a selectedDestinationAddress
+  let selectedAccount: Account | undefined = getAccountFromStore({
+    identifier: selectedDestinationAddress,
+    accountsStore: $accountsStore,
+  });
+  // Keep in sync the selected destination addres
   $: {
     if (selectedAccount !== undefined) {
       selectedDestinationAddress = selectedAccount.identifier;
