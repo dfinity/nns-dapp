@@ -36,16 +36,14 @@
 
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
-
-    @include media.min-width(medium) {
-      gap: var(--padding-0_5x);
-    }
+    gap: var(--padding-3x);
   }
 
   .toggle {
     justify-self: flex-end;
 
     @include header.button(--primary);
+
+    padding: var(--padding-0_5x);
   }
 </style>
