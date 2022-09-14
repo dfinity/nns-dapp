@@ -15,36 +15,13 @@
 
   export let neuron: NeuronInfo;
   export let destinationAddress: string;
-
-  let loading: boolean = false;
+  export let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
-  const executeTransaction = async () => {
-    startBusyNeuron({
-      initiator: "disburse-neuron",
-      neuronId: neuron.neuronId,
-    });
-    loading = true;
-    const { success } = await disburse({
-      neuronId: neuron.neuronId,
-      toAccountId: destinationAddress,
-    });
-    loading = false;
-    stopBusy("disburse-neuron");
-    if (success) {
-      toastsSuccess({
-        labelKey: "neuron_detail.disburse_success",
-      });
-      routeStore.replace({
-        path: AppPath.LegacyNeurons,
-      });
-    }
-    dispatcher("nnsClose");
-  };
 </script>
 
 <form
-  on:submit|preventDefault={executeTransaction}
+  on:submit|preventDefault={() => dispatcher("nnsConfirm")}
   class="wizard-wrapper"
   data-tid="confirm-disburse-screen"
 >

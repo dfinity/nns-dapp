@@ -24,6 +24,7 @@
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
+  import DisburseNeuronModal from "../../modals/neurons/DisburseNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -89,7 +90,7 @@
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.Dissolved}
-          <DisburseButton {neuron} />
+          <DisburseButton {neuron} modal={DisburseNeuronModal} />
         {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}

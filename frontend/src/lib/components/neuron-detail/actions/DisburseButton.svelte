@@ -1,9 +1,10 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import DisburseNeuronModal from "../../../modals/neurons/DisburseNeuronModal.svelte";
+  import type { SvelteComponent } from "svelte";
 
   export let neuron: NeuronInfo;
+  export let modal: typeof SvelteComponent;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -15,5 +16,5 @@
 >
 
 {#if showModal}
-  <DisburseNeuronModal on:nnsClose={closeModal} {neuron} />
+  <svelte:component this={modal} {neuron} on:nnsClose={closeModal} />
 {/if}

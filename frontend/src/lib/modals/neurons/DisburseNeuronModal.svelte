@@ -5,9 +5,18 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
+  import { startBusyNeuron } from "../../services/busy.services";
+
+  import { stopBusy } from "../../stores/busy.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
+  import { routeStore } from "../../stores/route.store";
+  import { createEventDispatcher } from "svelte";
+  import { AppPath } from "../../constants/routes.constants";
+  import { disburse } from "../../services/neurons.services";
 
   export let neuron: NeuronInfo;
 
+  const dispatcher = createEventDispatcher();
   const steps: Steps = [
     {
       name: "SelectDestination",
@@ -23,6 +32,7 @@
 
   let currentStep: Step;
   let modal: WizardModal;
+  let loading: boolean = false;
 
   let destinationAddress: string | undefined;
 
@@ -31,6 +41,36 @@
   }: CustomEvent<{ address: string }>) => {
     destinationAddress = address;
     modal.next();
+  };
+
+  const executeTransaction = async () => {
+    startBusyNeuron({
+      initiator: "disburse-neuron",
+      neuronId: neuron.neuronId,
+    });
+
+    loading = true;
+
+    const { success } = await disburse({
+      neuronId: neuron.neuronId,
+      toAccountId: destinationAddress as string,
+    });
+
+    loading = false;
+
+    stopBusy("disburse-neuron");
+
+    if (success) {
+      toastsSuccess({
+        labelKey: "neuron_detail.disburse_success",
+      });
+
+      routeStore.replace({
+        path: AppPath.LegacyNeurons,
+      });
+    }
+
+    dispatcher("nnsClose");
   };
 </script>
 
@@ -43,6 +83,12 @@
     <DestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
-    <ConfirmDisburseNeuron on:nnsClose {neuron} {destinationAddress} />
+    <ConfirmDisburseNeuron
+      on:nnsClose
+      on:nnsConfirm={executeTransaction}
+      {neuron}
+      {loading}
+      {destinationAddress}
+    />
   {/if}
 </WizardModal>
