@@ -2,7 +2,7 @@
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import Value from "../components/ui/Value.svelte";
   import { authStore } from "../stores/auth.store";
-  import { sortedSnsNeuronStore } from "../stores/sns-neurons.store";
+  import { sortedSnsNeuronStore } from "../derived/sorted-sns-neurons.derived";
   import { i18n } from "../stores/i18n";
   import { loadSnsNeurons } from "../services/sns-neurons.services";
   import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
@@ -10,7 +10,7 @@
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
-  } from "../stores/projects.store";
+  } from "../derived/selected-project.derived";
   import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";

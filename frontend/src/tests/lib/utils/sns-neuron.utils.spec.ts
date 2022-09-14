@@ -205,14 +205,14 @@ describe("sns-neuron utils", () => {
   describe("routePathSnsNeuronId", () => {
     afterAll(() => jest.clearAllMocks());
     it("should get neuronId from valid path", async () => {
-      expect(routePathSnsNeuronId("/#/project/222/neuron/123")).toBe("123");
-      expect(routePathSnsNeuronId("/#/project/222/neuron/0")).toBe("0");
+      expect(routePathSnsNeuronId("/#/u/222/neuron/123")).toBe("123");
+      expect(routePathSnsNeuronId("/#/u/222/neuron/0")).toBe("0");
     });
 
     it("should not get neuronId from invalid path", async () => {
       expect(routePathSnsNeuronId("/#/neuron/")).toBeUndefined();
-      expect(routePathSnsNeuronId("/#/project/123")).toBeUndefined();
-      expect(routePathSnsNeuronId("/#/project/124/neuron")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/u/123")).toBeUndefined();
+      expect(routePathSnsNeuronId("/#/u/124/neuron")).toBeUndefined();
       expect(routePathSnsNeuronId("/#/neurons/")).toBeUndefined();
       expect(routePathSnsNeuronId("/#/accounts/")).toBeUndefined();
     });
@@ -221,21 +221,17 @@ describe("sns-neuron utils", () => {
   describe("routePathSnsNeuronRootCanisterId", () => {
     afterAll(() => jest.clearAllMocks());
     it("should get root canister id from valid path", async () => {
-      expect(
-        routePathSnsNeuronRootCanisterId("/#/project/222/neuron/123")
-      ).toBe("222");
-      expect(routePathSnsNeuronRootCanisterId("/#/project/0ff/neuron/0")).toBe(
-        "0ff"
+      expect(routePathSnsNeuronRootCanisterId("/#/u/222/neuron/123")).toBe(
+        "222"
       );
+      expect(routePathSnsNeuronRootCanisterId("/#/u/0ff/neuron/0")).toBe("0ff");
     });
 
     it("should not get root canister id from invalid path", async () => {
       expect(routePathSnsNeuronRootCanisterId("/#/neuron/")).toBeUndefined();
+      expect(routePathSnsNeuronRootCanisterId("/#/u/123")).toBeUndefined();
       expect(
-        routePathSnsNeuronRootCanisterId("/#/project/123")
-      ).toBeUndefined();
-      expect(
-        routePathSnsNeuronRootCanisterId("/#/project/124/neuron")
+        routePathSnsNeuronRootCanisterId("/#/u/124/neuron")
       ).toBeUndefined();
       expect(routePathSnsNeuronRootCanisterId("/#/neurons/")).toBeUndefined();
       expect(routePathSnsNeuronRootCanisterId("/#/accounts/")).toBeUndefined();

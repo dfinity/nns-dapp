@@ -91,7 +91,7 @@ export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
   bytesToHexString(fromNullable(neuron.id)?.id ?? []);
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
-  if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
+  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);
@@ -100,7 +100,7 @@ export const routePathSnsNeuronId = (path: string): string | undefined => {
 export const routePathSnsNeuronRootCanisterId = (
   path: string
 ): string | undefined => {
-  if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
+  if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
     return undefined;
   }
   return getParentPathDetail(path);
