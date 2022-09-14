@@ -43,7 +43,5 @@
     justify-self: flex-end;
 
     @include header.button(--primary);
-
-    padding: var(--padding-0_5x);
   }
 </style>
