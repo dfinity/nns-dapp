@@ -2,7 +2,10 @@
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
-  import { getAccountFromStore } from "../../utils/accounts.utils";
+  import {
+    getAccountFromStore,
+    invalidAddress,
+  } from "../../utils/accounts.utils";
   import Toggle from "../ui/Toggle.svelte";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
@@ -12,9 +15,11 @@
   export let showManualAddress: boolean = true;
 
   let address: string;
-  const setDestination = () => {
-    selectedDestinationAddress = address;
-  };
+  $: {
+    if (!invalidAddress(address)) {
+      selectedDestinationAddress = address;
+    }
+  }
 
   const onToggleManualInput = () => {
     showManualAddress = !showManualAddress;
@@ -49,7 +54,7 @@
     </div>
   </div>
   {#if showManualAddress}
-    <AddressInput bind:address on:nnsBlur={setDestination} />
+    <AddressInput bind:address={selectedDestinationAddress} />
   {:else}
     <SelectAccountDropdown {filterAccounts} bind:selectedAccount />
   {/if}
