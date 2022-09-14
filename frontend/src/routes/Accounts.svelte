@@ -12,6 +12,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { AppPath } from "../lib/constants/routes.constants";
   import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
+  import SnsAccounts from "../lib/pages/SnsAccounts.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -36,7 +37,7 @@
   {#if $isNnsProjectStore}
     <NnsAccounts />
   {:else if $snsProjectSelectedStore !== undefined}
-    <div>hi</div>
+    <SnsAccounts />
   {/if}
 </main>
 
