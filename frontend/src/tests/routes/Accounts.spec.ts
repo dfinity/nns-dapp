@@ -36,7 +36,7 @@ describe("Accounts", () => {
 
     expect(
       titleRow?.textContent?.startsWith(
-        `Accounts ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+        `${en.accounts.total} ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
       )
     ).toBeTruthy();
   });
@@ -134,7 +134,7 @@ describe("Accounts", () => {
 
       expect(
         titleRow?.textContent?.startsWith(
-          `Accounts ${formatICP({ value: totalBalance })} ICP`
+          `${en.accounts.total} ${formatICP({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
     });
