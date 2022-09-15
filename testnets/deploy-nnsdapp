@@ -2,7 +2,7 @@
 set -euxo pipefail
 
 # sdk has broken; this branch should fix it.
-#export PATH="/home/max/dfn/sdk/branches/spofford/global-args/target/debug:$PATH"
+#export PATH=""$HOME"/dfn/sdk/branches/spofford/global-args/target/debug:$PATH"
 
 export DFX_NETWORK=testnet
 TESTNET=nnsdapp
@@ -97,7 +97,7 @@ echo Setting the cycles exchange rate...
 ./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
 
 
-/home/max/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
+"$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
 jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
 
 

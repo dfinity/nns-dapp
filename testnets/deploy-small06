@@ -6,9 +6,9 @@ TESTNET=small06
 # Latest at 15/09/2022
 IC_COMMIT=466c80223790cc7f152481fda3f910d114e0a019 # Master
 IC_DOWNLOAD=$IC_COMMIT
-IC_DIR=/home/max/dfn/ic-github/
+IC_DIR="$HOME/dfn/ic-github/"
 ND_COMMIT=1d0391fbb81eb8757406fd56eb75d544d319710b
-ND_DIR=/home/max/dfn/nns-dapp/branches/testnet-environments
+ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 
 cd "$ND_DIR"
@@ -87,7 +87,7 @@ echo Setting the cycles exchange rate...
 ./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
 
 
-/home/max/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
+"$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
 jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
 
 
