@@ -220,7 +220,7 @@
     },
     "build": {
       "config": {
-        "RUSTC_VERSION": "1.58.1",
+        "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IC_COMMIT": "3982db093a87e90cbe0595877a4110e4f37ac740"
       },
