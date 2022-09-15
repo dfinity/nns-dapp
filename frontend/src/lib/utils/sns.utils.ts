@@ -1,14 +1,12 @@
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type {
-  SnsGetMetadataResponse,
-  SnsSwap,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-  SnsSwapState,
-} from "@dfinity/sns";
 import {
   SnsMetadataResponseEntries,
+  type SnsGetMetadataResponse,
+  type SnsSwap,
+  type SnsSwapDerivedState,
+  type SnsSwapInit,
+  type SnsSwapState,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";

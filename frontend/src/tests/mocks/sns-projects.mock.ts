@@ -209,11 +209,11 @@ export const mockSwapCommitment = mockSnsSwapCommitment(
   principal(0)
 ) as SnsSwapCommitment;
 
-export const mockSnsFullProject = {
+export const mockSnsFullProject: SnsFullProject = {
   rootCanisterId: principal(0),
   summary: mockSummary,
   swapCommitment: mockSwapCommitment,
-} as SnsFullProject;
+};
 
 export const summaryForLifecycle = (
   lifecycle: SnsSwapLifecycle

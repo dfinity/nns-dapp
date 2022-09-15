@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CanisterDetails } from "../../canisters/nns-dapp/nns-dapp.types";
-  import Card from "../ui/Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import CanisterCardTitle from "./CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "./CanisterCardSubTitle.svelte";
 
@@ -18,7 +18,7 @@
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/card";
 
   .title-block {
     @include card.stacked-title;

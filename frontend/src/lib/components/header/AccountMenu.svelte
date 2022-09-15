@@ -1,6 +1,6 @@
 <script lang="ts">
   import Popover from "../ui/Popover.svelte";
-  import IconAccount from "../../icons/IconAccount.svelte";
+  import { IconAccount } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import { i18n } from "../../stores/i18n";
   import ThemeToggle from "./ThemeToggle.svelte";
@@ -28,24 +28,20 @@
 
 <style lang="scss">
   @use "../../themes/mixins/overlay";
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/header";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/header";
 
   .info {
     @include overlay.content;
 
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
-
-    @include media.min-width(medium) {
-      gap: var(--padding-0_5x);
-    }
+    gap: var(--padding-3x);
   }
 
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--primary);
+    @include header.button(--brand-sea-buckthorn);
   }
 </style>

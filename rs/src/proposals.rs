@@ -386,11 +386,11 @@ mod def {
         }
     }
 
+    use std::fmt::Write;
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            write!(&mut hash_string, "{:02x}", byte)
-                .expect("Cannot fail because 32 bytes * 2 chars per byte <= capacity == 64");
+            write!(hash_string, "{:02x}", byte).unwrap();
         }
         hash_string
     }

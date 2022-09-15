@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import {
     IS_TESTNET,
     ROLLUP_WATCH,
@@ -51,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   div {
     position: absolute;

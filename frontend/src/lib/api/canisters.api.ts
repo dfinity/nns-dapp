@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { CMCCanister } from "../canisters/cmc/cmc.canister";
 import { ProcessingError } from "../canisters/cmc/cmc.errors";
@@ -170,7 +170,7 @@ export const createCanister = async ({
   fromSubAccount,
 }: {
   identity: Identity;
-  amount: ICP;
+  amount: TokenAmount;
   name?: string;
   fromSubAccount?: SubAccountArray;
 }): Promise<Principal> => {
@@ -262,7 +262,7 @@ export const topUpCanister = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-  amount: ICP;
+  amount: TokenAmount;
   fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);

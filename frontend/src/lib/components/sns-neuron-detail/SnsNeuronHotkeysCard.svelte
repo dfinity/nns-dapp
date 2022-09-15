@@ -3,14 +3,12 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { ICON_SIZE_LARGE } from "../../constants/style.constants";
-  import IconClose from "../../icons/IconClose.svelte";
-  import IconInfo from "../../icons/IconInfo.svelte";
-  import IconWarning from "../../icons/IconWarning.svelte";
+  import { IconClose, IconInfo, IconWarning } from "@dfinity/gix-components";
   import { removeHotkey } from "../../services/sns-neurons.services";
   import { authStore } from "../../stores/auth.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -27,7 +25,7 @@
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined;
+  let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
   let neuronId: SnsNeuronId | undefined;
   $: neuronId =
@@ -35,14 +33,15 @@
 
   let canManageHotkeys: boolean = true;
   $: canManageHotkeys =
-    neuron !== undefined
+    neuron !== undefined && neuron !== null
       ? canIdentityManageHotkeys({
           neuron,
           identity: $authStore.identity,
         })
       : false;
   let hotkeys: string[];
-  $: hotkeys = neuron !== undefined ? getSnsNeuronHotkeys(neuron) : [];
+  $: hotkeys =
+    neuron !== undefined && neuron !== null ? getSnsNeuronHotkeys(neuron) : [];
 
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
@@ -61,13 +60,13 @@
       rootCanisterId: $snsProjectSelectedStore,
     });
     if (success) {
-      await reload();
+      await reload({ forceFetch: true });
     }
     stopBusy("remove-sns-hotkey-neuron");
   };
 </script>
 
-{#if neuron !== undefined}
+{#if neuron !== undefined && neuron !== null}
   <CardInfo testId="sns-hotkeys-card">
     <div class="title" slot="start">
       <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
@@ -118,7 +117,8 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/card";
+
   .title {
     display: flex;
     align-items: center;

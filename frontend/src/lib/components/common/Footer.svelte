@@ -3,14 +3,9 @@
 </footer>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
     height: var(--footer-height);
 
     will-change: transform;
@@ -20,7 +15,7 @@
 
     :global(.toolbar) {
       align-items: end;
-      margin: 0 auto var(--padding-2x);
+      margin: 0 auto max(env(safe-area-inset-bottom), var(--padding-2x));
     }
 
     :global(.main) {

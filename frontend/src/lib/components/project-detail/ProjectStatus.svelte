@@ -33,19 +33,16 @@
 </script>
 
 <div>
-  <h2>{$i18n.sns_project_detail.status}</h2>
+  <h2 class="content-cell-title">{$i18n.sns_project_detail.status}</h2>
   <Tag>{statusTextMapper[lifecycle]}</Tag>
 </div>
 
 <style lang="scss">
-  h2 {
-    margin: 0;
-    line-height: var(--line-height-standard);
-  }
-
   div {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    margin-top: calc(var(--padding-0_5x) / 2);
   }
 </style>

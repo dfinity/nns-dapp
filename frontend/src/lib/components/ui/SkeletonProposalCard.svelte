@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Card from "./Card.svelte";
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
+  import { Card } from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <Card testId="skeleton-card">
   <div class="title" slot="start">
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="content">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
+    <SkeletonText />
   </div>
 </Card>
 

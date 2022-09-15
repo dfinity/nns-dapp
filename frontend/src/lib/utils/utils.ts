@@ -206,7 +206,7 @@ export const smallerVersion = ({
   );
 };
 
-const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, milliseconds);
   });
@@ -245,7 +245,7 @@ export const poll = async <T>({
       throw error;
     }
     // Log swallowed errors
-    console.log(`Error polling: ${errorToString(error)}`);
+    console.error(`Error polling: ${errorToString(error)}`);
   }
   await waitForMilliseconds(500);
   return poll({
@@ -256,5 +256,9 @@ export const poll = async <T>({
   });
 };
 
+/**
+ * Use to highlight a placeholder in a text rendered from i18n labels.
+ * TODO: can maybe be replaced with a more meaningful semantic such as <mark></mark>
+ */
 export const valueSpan = (text: string): string =>
   `<span class="value">${text}</span>`;

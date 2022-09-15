@@ -5,10 +5,10 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SelectProjectDropdown from "../../../../lib/components/neurons/SelectProjectDropdown.svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import {
-  committedProjectsStore,
-  snsProjectSelectedStore,
-} from "../../../../lib/stores/projects.store";
+import { AppPath } from "../../../../lib/constants/routes.constants";
+import { snsProjectSelectedStore } from "../../../../lib/derived/selected-project.derived";
+import { committedProjectsStore } from "../../../../lib/stores/projects.store";
+import { routeStore } from "../../../../lib/stores/route.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProjectSubscribe,
@@ -27,8 +27,8 @@ describe("SelectProjectDropdown", () => {
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
-    // Reset to default value
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    // Dropdown changes context only in the Neurons page for now.
+    routeStore.update({ path: AppPath.LegacyNeurons });
   });
 
   it("should render NNS and projects as options", () => {

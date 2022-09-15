@@ -1,10 +1,10 @@
 <script lang="ts">
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import Input from "./Input.svelte";
 
   // Same props as Input
   export let name: string;
-  export let inputType: "number" | "text" = "number";
+  export let inputType: "number" | "text" | "icp" = "number";
   export let required: boolean = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
@@ -36,6 +36,7 @@
     on:blur
     on:input
   >
+    <slot name="label" slot="label" />
     <slot name="additional" slot="additional" />
   </Input>
 
@@ -50,7 +51,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .wrapper {
     position: relative;

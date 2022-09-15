@@ -5,6 +5,7 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 import {
   participateInSnsSwap,
   queryAllSnsMetadata,
@@ -15,19 +16,27 @@ import {
   querySnsSwapStates,
 } from "../api/sns.api";
 import { AppPath } from "../constants/routes.constants";
+import { projectsStore, type SnsFullProject } from "../stores/projects.store";
 import {
   snsProposalsStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
 } from "../stores/sns.store";
-import { toastsStore } from "../stores/toasts.store";
+import { toastsError } from "../stores/toasts.store";
+import { transactionsFeesStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
+import { LedgerErrorKey } from "../types/ledger.errors";
 import type { SnsSwapCommitment } from "../types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
+import {
+  commitmentExceedsAmountLeft,
+  validParticipation,
+} from "../utils/projects.utils";
 import { getSwapCanisterAccount } from "../utils/sns.utils";
-import { getAccountIdentity } from "./accounts.services";
+import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
@@ -52,7 +61,7 @@ export const loadSnsSummaries = (): Promise<void> => {
       // hide unproven data
       snsQueryStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.list_summaries",
@@ -93,7 +102,7 @@ export const loadSnsSummary = async ({
         return;
       }
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.load_summary",
@@ -129,7 +138,7 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
       // hide unproven data
       snsSwapCommitmentsStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.list_swap_commitments",
@@ -163,7 +172,7 @@ export const loadSnsSwapCommitment = async ({
         return;
       }
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error__sns.load_swap_commitment",
@@ -200,7 +209,7 @@ export const listSnsProposals = async (): Promise<void> => {
       // hide unproven data
       snsProposalsStore.setLoadingState();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.proposal_not_found",
@@ -228,6 +237,13 @@ export const getSwapAccount = async (
   });
 };
 
+const getProjectFromStore = (
+  rootCanisterId: Principal
+): SnsFullProject | undefined =>
+  get(projectsStore)?.find(
+    ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
+  );
+
 export const participateInSwap = async ({
   amount,
   rootCanisterId,
@@ -237,20 +253,62 @@ export const participateInSwap = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {
+  let success = false;
   try {
+    const transactionFee = get(transactionsFeesStore).main;
+    assertEnoughAccountFunds({
+      account,
+      amountE8s: amount.toE8s() + transactionFee,
+    });
+    const project = getProjectFromStore(rootCanisterId);
+    const { valid, labelKey, substitutions } = validParticipation({
+      project,
+      amount,
+    });
+    if (!valid) {
+      // TODO: Rename LedgerErroKey to NnsDappErrorKey?
+      throw new LedgerErrorKey(labelKey, substitutions);
+    }
+
     const accountIdentity = await getAccountIdentity(account.identifier);
 
-    await participateInSnsSwap({
-      identity: accountIdentity,
-      rootCanisterId,
-      amount,
-      controller: accountIdentity.getPrincipal(),
-      fromSubAccount: "subAccount" in account ? account.subAccount : undefined,
-    });
+    try {
+      await participateInSnsSwap({
+        identity: accountIdentity,
+        rootCanisterId,
+        amount,
+        controller: accountIdentity.getPrincipal(),
+        fromSubAccount:
+          "subAccount" in account ? account.subAccount : undefined,
+      });
+    } catch (error) {
+      // The last commitment might trigger this error
+      // because the backend is faster than the frontend at notifying the commitment.
+      // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
+      const openStateError = error.message?.includes("'open' state") === true;
+      // If it's the last commitment, it means that one more e8 is not a valid participation.
+      const lastCommitment =
+        project?.summary !== undefined &&
+        commitmentExceedsAmountLeft({
+          summary: project?.summary,
+          amountE8s: amount.toE8s() + BigInt(1),
+        });
+      if (!(openStateError && lastCommitment)) {
+        throw error;
+      }
+    }
 
-    return { success: true };
+    success = true;
+    await syncAccounts();
+
+    return { success };
   } catch (error) {
-    // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-798
-    return { success: false };
+    toastsError(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
+    return { success };
   }
 };

@@ -1,13 +1,11 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
-  import IconClose from "../icons/IconClose.svelte";
   import { createEventDispatcher } from "svelte";
-  import IconBackIosNew from "../icons/IconBackIosNew.svelte";
   import { i18n } from "../stores/i18n";
   import { busy } from "../stores/busy.store";
   import { triggerDebugReport } from "../services/debug.services";
-  import Backdrop from "../components/ui/Backdrop.svelte";
+  import { Backdrop, IconBackIosNew, IconClose } from "@dfinity/gix-components";
 
   export let visible: boolean = true;
   export let size: "small" | "big" = "small";
@@ -77,9 +75,9 @@
 {/if}
 
 <style lang="scss">
-  @use "../themes/mixins/interaction";
-  @use "../themes/mixins/text";
-  @use "../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/display";
   @use "../themes/mixins/modal";
 
   .modal {
@@ -123,7 +121,12 @@
       max-width: var(--modal-big-max-width);
 
       height: var(--modal-big-height);
-      max-height: var(--modal-big-max-height);
+
+      max-height: var(--modal-big-max-height, 100%);
+
+      @supports (-webkit-touch-callout: none) {
+        max-height: -webkit-fill-available;
+      }
 
       border-radius: var(--modal-big-border-radius);
     }

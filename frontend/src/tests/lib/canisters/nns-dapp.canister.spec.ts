@@ -11,6 +11,7 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  NotAuthorizedError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
@@ -159,6 +160,43 @@ describe("NNSDapp", () => {
       const res = await nnsDapp.getCanisters({ certified: true });
 
       expect(res).toEqual(mockCanisters);
+    });
+  });
+
+  describe("NNSDapp.addPendingNotifySwap", () => {
+    afterEach(() => jest.clearAllMocks());
+    it("should call add_pending_notify_swap successfully", async () => {
+      const service = mock<NNSDappService>();
+      service.add_pending_notify_swap.mockResolvedValue({ Ok: null });
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const res = await nnsDapp.addPendingNotifySwap({
+        swap_canister_id: mockCanister.canister_id,
+        buyer: mockPrincipal,
+        buyer_sub_account: [],
+      });
+
+      expect(res).toBeUndefined();
+      expect(service.add_pending_notify_swap).toBeCalled();
+    });
+
+    it("should raise error if add_pending_notify_swap returns error", async () => {
+      const service = mock<NNSDappService>();
+      service.add_pending_notify_swap.mockResolvedValue({
+        NotAuthorized: null,
+      });
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.addPendingNotifySwap({
+          swap_canister_id: mockCanister.canister_id,
+          buyer: mockPrincipal,
+          buyer_sub_account: [],
+        });
+
+      expect(call).rejects.toThrow(NotAuthorizedError);
     });
   });
 

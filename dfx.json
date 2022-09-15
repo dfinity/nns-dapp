@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.1",
+  "dfx": "0.11.2",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -14,6 +14,7 @@
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -28,7 +29,7 @@
       "type": "custom",
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-25/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "nns-sns-wasm": {
       "build": [
@@ -36,7 +37,12 @@
       ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+        }
+      }
     },
     "sns_governance": {
       "build": [
@@ -77,12 +83,14 @@
         "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.ic0.app",
-        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/"
+        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": false,
+          "VOTING_UI": "legacy"
+        }
       },
       "providers": [
         "https://ic0.app/"
@@ -94,9 +102,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": false,
+          "VOTING_UI": "legacy"
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
@@ -108,9 +118,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
@@ -122,12 +134,14 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small13.dfinity.network"
+        "HOST": "https://small13.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
       ],
       "type": "persistent"
     },
@@ -136,9 +150,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small12.dfinity.network"
+        "HOST": "https://small12.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
@@ -150,9 +166,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small11.dfinity.network"
+        "HOST": "https://small11.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
@@ -164,9 +182,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small06.dfinity.network"
+        "HOST": "https://small06.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
@@ -178,9 +198,11 @@
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "REDIRECT_TO_LEGACY": "svelte",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "http://localhost:8080"
+        "HOST": "http://localhost:8080",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
+        }
       },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
@@ -198,9 +220,9 @@
     },
     "build": {
       "config": {
-        "RUSTC_VERSION": "1.58.1",
+        "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "54a57a1f6f1ed99e66d6cde3100a0565e826385f"
+        "IC_COMMIT": "3982db093a87e90cbe0595877a4110e4f37ac740"
       },
       "packtool": ""
     }

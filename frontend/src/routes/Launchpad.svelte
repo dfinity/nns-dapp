@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import Projects from "../lib/components/launchpad/Projects.svelte";
   import Proposals from "../lib/components/launchpad/Proposals.svelte";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
   import { i18n } from "../lib/stores/i18n";
@@ -15,13 +14,13 @@
   });
 </script>
 
-<MainContentWrapper sns>
+<main>
   <h2>{$i18n.sns_launchpad.projects}</h2>
   <Projects />
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>
   <Proposals />
-</MainContentWrapper>
+</main>
 
 <style lang="scss">
   h2 {

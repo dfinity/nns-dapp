@@ -1,4 +1,4 @@
-import { ICP, LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
   createSubAccount,
@@ -25,7 +25,7 @@ describe("accounts-api", () => {
   it("should call ledger and nnsdapp to get account and balance", async () => {
     // Ledger mock
     const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.accountBalance.mockResolvedValue(ICP.fromString("1") as ICP);
+    ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => ledgerMock);
@@ -45,7 +45,7 @@ describe("accounts-api", () => {
   it("should get balances of subaccounts", async () => {
     // Ledger mock
     const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.accountBalance.mockResolvedValue(ICP.fromString("1") as ICP);
+    ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => ledgerMock);
@@ -68,7 +68,7 @@ describe("accounts-api", () => {
   it("should get balances of hardware wallet accounts", async () => {
     // Ledger mock
     const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.accountBalance.mockResolvedValue(ICP.fromString("1") as ICP);
+    ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => ledgerMock);

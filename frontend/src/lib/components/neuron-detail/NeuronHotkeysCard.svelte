@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
-  import IconClose from "../../icons/IconClose.svelte";
+  import { IconClose } from "@dfinity/gix-components";
   import { getIdentity } from "../../services/auth.services";
   import { startBusyNeuron } from "../../services/busy.services";
   import { removeHotkey } from "../../services/neurons.services";
@@ -10,7 +10,7 @@
   import { stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsShow } from "../../stores/toasts.store";
   import { isNeuronControllable } from "../../utils/neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
   import Value from "../ui/Value.svelte";
@@ -41,11 +41,11 @@
       .toText();
     // If the user removes itself from the hotkeys, it has no more access to the detail page.
     if (currentIdentityPrincipal === hotkey && maybeNeuronId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.LegacyNeurons });
     }
     stopBusy("remove-hotkey-neuron");
   };
@@ -80,7 +80,8 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/card";
+
   .actions {
     display: flex;
     justify-content: flex-start;

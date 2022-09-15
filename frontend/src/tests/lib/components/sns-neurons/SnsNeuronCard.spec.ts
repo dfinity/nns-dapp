@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -11,11 +10,14 @@ import {
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.svelte";
-import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
+import {
+  AppPath,
+  CONTEXT_PATH,
+} from "../../../../lib/constants/routes.constants";
 import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
+import { routeStore } from "../../../../lib/stores/route.store";
 import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { nowInSeconds } from "../../../../lib/utils/date.utils";
 import { formatICP } from "../../../../lib/utils/icp.utils";
@@ -46,13 +48,15 @@ describe("SnsNeuronCard", () => {
   beforeEach(() => {
     snsQueryStore.setData(data);
     const [snsMetadatas] = data;
-    snsProjectSelectedStore.set(
-      Principal.fromText(snsMetadatas[0].rootCanisterId)
-    );
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${snsMetadatas[0].rootCanisterId}/neurons`,
+    });
   });
   afterEach(() => {
     snsQueryStore.reset();
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    routeStore.update({
+      path: AppPath.LegacyNeurons,
+    });
   });
   it("renders a Card", () => {
     const { container } = render(SnsNeuronCard, {
@@ -107,7 +111,7 @@ describe("SnsNeuronCard", () => {
     });
     const token = get(snsTokenSymbolSelectedStore);
     expect(token).not.toBeUndefined();
-    token !== undefined && expect(getByText(token)).toBeInTheDocument();
+    token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
 
     const stakeText = formatICP({
@@ -138,7 +142,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_locked)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Locked)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
@@ -153,7 +157,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolved)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolved)).toBeInTheDocument();
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
@@ -172,7 +176,7 @@ describe("SnsNeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.status_dissolving)).toBeInTheDocument();
+    expect(getByText(en.neuron_state.Dissolving)).toBeInTheDocument();
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 

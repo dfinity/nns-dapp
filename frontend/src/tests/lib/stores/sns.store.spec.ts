@@ -54,19 +54,19 @@ describe("sns.store", () => {
           ...mockProposalInfo,
           id: BigInt(111),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
-          status: ProposalStatus.PROPOSAL_STATUS_REJECTED,
+          status: ProposalStatus.Rejected,
         },
         {
           ...mockProposalInfo,
           id: BigInt(222),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
-          status: ProposalStatus.PROPOSAL_STATUS_OPEN,
+          status: ProposalStatus.Open,
         },
         {
           ...mockProposalInfo,
           id: BigInt(222),
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
-          status: ProposalStatus.PROPOSAL_STATUS_ACCEPTED,
+          status: ProposalStatus.Accepted,
         },
       ];
 

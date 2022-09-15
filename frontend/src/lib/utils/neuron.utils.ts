@@ -1,5 +1,10 @@
 import type { Identity } from "@dfinity/agent";
 import {
+  IconHistoryToggleOff,
+  IconLockClock,
+  IconLockOpen,
+} from "@dfinity/gix-components";
+import {
   ICP,
   NeuronState,
   Topic,
@@ -10,6 +15,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
+  type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
@@ -27,12 +33,10 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "../constants/neurons.constants";
-import IconHistoryToggleOff from "../icons/IconHistoryToggleOff.svelte";
-import IconLockClock from "../icons/IconLockClock.svelte";
-import IconLockOpen from "../icons/IconLockOpen.svelte";
 import type { AccountsStore } from "../stores/accounts.store";
 import type { NeuronsStore } from "../stores/neurons.store";
 import type { Step } from "../stores/steps.state";
+import type { VoteRegistrationStore } from "../stores/vote-registration.store";
 import type { Account } from "../types/account";
 import {
   getAccountByPrincipal,
@@ -56,27 +60,27 @@ type StateMapper = {
   [key: number]: StateInfo;
 };
 export const stateTextMapper: StateMapper = {
-  [NeuronState.LOCKED]: {
+  [NeuronState.Locked]: {
     textKey: "locked",
     Icon: IconLockClock,
     status: "ok",
   },
-  [NeuronState.UNSPECIFIED]: {
+  [NeuronState.Unspecified]: {
     textKey: "unspecified",
     status: "ok",
   },
-  [NeuronState.DISSOLVED]: {
+  [NeuronState.Dissolved]: {
     textKey: "dissolved",
     Icon: IconLockOpen,
     status: "ok",
   },
-  [NeuronState.DISSOLVING]: {
+  [NeuronState.Dissolving]: {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
     color: "var(--warning-emphasis)",
   },
-  [NeuronState.SPAWNING]: {
+  [NeuronState.Spawning]: {
     textKey: "spawning",
     Icon: IconHistoryToggleOff,
     status: "spawning",
@@ -125,7 +129,7 @@ export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
-  neuron.state === NeuronState.DISSOLVING &&
+  neuron.state === NeuronState.Dissolving &&
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
     ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
@@ -232,7 +236,8 @@ export const isHotKeyControllable = ({
 }): boolean =>
   fullNeuron?.hotKeys.find(
     (hotkey) => hotkey === identity?.getPrincipal().toText()
-  ) !== undefined;
+  ) !== undefined &&
+  fullNeuron.controller !== identity?.getPrincipal().toText();
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
@@ -318,7 +323,7 @@ export const isEnoughMaturityToSpawn = ({
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>
-  neuron.state === NeuronState.SPAWNING;
+  neuron.state === NeuronState.Spawning;
 
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
@@ -649,3 +654,50 @@ export const getNeuronById = ({
   neuronId: NeuronId;
 }): NeuronInfo | undefined =>
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
+
+/** Update neurons voting state as they participated in voting */
+export const updateNeuronsVote = ({
+  neuron,
+  vote,
+  proposalId,
+}: {
+  neuron: NeuronInfo;
+  vote: Vote;
+  proposalId: ProposalId;
+}): NeuronInfo => {
+  const newBallot: BallotInfo = {
+    vote,
+    proposalId,
+  };
+  const recentBallots = [
+    ...neuron.recentBallots.filter(
+      ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
+    ),
+    newBallot,
+  ].map((ballot) => ({
+    ...ballot,
+  }));
+
+  return {
+    ...neuron,
+    recentBallots,
+    fullNeuron: {
+      ...(neuron.fullNeuron as Neuron),
+      recentBallots,
+    },
+  };
+};
+
+/** Is a neuron currently in a vote registration process */
+export const neuronVoting = ({
+  store: { registrations },
+  neuronId,
+}: {
+  store: VoteRegistrationStore;
+  neuronId: NeuronId;
+}): boolean =>
+  registrations.find(
+    ({ neuronIds, successfullyVotedNeuronIds }) =>
+      neuronIds.includes(neuronId) &&
+      !successfullyVotedNeuronIds.includes(neuronId)
+  ) !== undefined;

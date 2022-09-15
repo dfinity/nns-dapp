@@ -3,7 +3,6 @@ import { derived, writable, type Readable } from "svelte/store";
 export type BusyStateInitiatorType =
   | "stake-neuron"
   | "update-delay"
-  | "vote"
   | "attach-canister"
   | "detach-canister"
   | "create-canister"
@@ -18,8 +17,6 @@ export type BusyStateInitiatorType =
   | "remove-followee"
   | "add-hotkey-neuron"
   | "remove-hotkey-neuron"
-  | "reload-neurons"
-  | "reload-proposal"
   | "merge-neurons"
   | "merge-maturity"
   | "spawn-neuron"

@@ -6,12 +6,12 @@
   import CurrentBalance from "./CurrentBalance.svelte";
   import AmountInput from "../ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import { ICP } from "@dfinity/nns";
-  import { convertNumberToICP, maxICP } from "../../utils/icp.utils";
+  import { FromStringToTokenError, ICPToken, TokenAmount } from "@dfinity/nns";
+  import { getMaxTransactionAmount } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
+  import { transactionsFeesStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
@@ -24,33 +24,35 @@
     : undefined;
 
   let max: number = 0;
-  $: max = maxICP({
-    icp: $store.selectedAccount?.balance,
-    fee: $mainTransactionFeeStore,
+  $: max = getMaxTransactionAmount({
+    balance: $store.selectedAccount?.balance.toE8s(),
+    fee: $transactionsFeesStore.main,
   });
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
 
-  let balance: ICP;
+  let balance: TokenAmount;
   $: ({ balance } = $store.selectedAccount ?? {
-    balance: ICP.fromE8s(BigInt(0)),
+    balance: TokenAmount.fromE8s({ amount: BigInt(0), token: ICPToken }),
   });
 
   const onMax = () => (amount = max);
   const onSubmit = () => {
     // TS not smart enough to know that validForm also covers `amount === undefiend`
     if (!validForm || amount === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.transaction_invalid_amount",
       });
       return;
     }
 
-    const icp: ICP | undefined = convertNumberToICP(amount);
+    const icp: TokenAmount | FromStringToTokenError = TokenAmount.fromNumber({
+      amount,
+    });
 
-    if (icp === undefined) {
-      toastsStore.error({
+    if (icp === undefined || !(icp instanceof TokenAmount)) {
+      toastsError({
         labelKey: "error.amount_not_valid",
       });
       return;

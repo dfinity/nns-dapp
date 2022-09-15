@@ -5,8 +5,7 @@
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { writable } from "svelte/store";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../../lib/constants/icp.constants";
-import ParticipateSwapModal from "../../../../lib/modals/sns/ParticipateSwapModal.svelte";
+import ParticipateSwapModal from "../../../../lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
 import { participateInSwap } from "../../../../lib/services/sns.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
@@ -14,14 +13,13 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "../../../../lib/types/project-detail.context";
-import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
+import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
 
 jest.mock("../../../../lib/services/sns.services", () => {
   return {
@@ -36,127 +34,67 @@ jest.mock("../../../../lib/services/sns.services", () => {
 
 describe("ParticipateSwapModal", () => {
   const reload = jest.fn();
-
-  const renderSwapModal = () =>
+  const renderSwapModal = (
+    swapCommitment: SnsSwapCommitment | undefined = undefined
+  ) =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
       contextKey: PROJECT_DETAIL_CONTEXT_KEY,
       contextValue: {
         store: writable<ProjectDetailStore>({
           summary: mockSnsFullProject.summary,
-          swapCommitment: mockSnsFullProject.swapCommitment,
+          swapCommitment,
         }),
         reload,
       } as ProjectDetailContext,
     });
 
-  describe("when accountsStore is populated", () => {
-    beforeEach(() => {
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
-    });
+  const renderEnter10ICPAndNext = async (
+    swapCommitment: SnsSwapCommitment | undefined = undefined
+  ): Promise<RenderResult> => {
+    const result = await renderSwapModal(swapCommitment);
 
-    it("should display modal", async () => {
-      const { container } = await renderSwapModal();
+    const { queryByText, getByTestId, container } = result;
 
-      expect(container.querySelector("div.modal")).not.toBeNull();
-    });
+    await waitFor(() =>
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+    );
+    const participateButton = getByTestId("transaction-button-next");
+    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
 
-    it("should display dropdown to select account and input to add amount", async () => {
-      const { queryByTestId, container } = await renderSwapModal();
+    const icpAmount = "10";
+    const input = container.querySelector("input[name='amount']");
+    input && fireEvent.input(input, { target: { value: icpAmount } });
+    await waitFor(() =>
+      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+    );
 
-      expect(queryByTestId("select-account-dropdown")).toBeInTheDocument();
-      expect(
-        container.querySelector("input[name='amount']")
-      ).toBeInTheDocument();
-    });
+    fireEvent.click(participateButton);
 
-    it("should trigger close on cancel", async () => {
-      const { getByTestId, component } = await renderSwapModal();
+    await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
+    expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
 
-      const onClose = jest.fn();
-      component.$on("nnsClose", onClose);
+    return result;
+  };
 
-      await clickByTestId(getByTestId, "sns-swap-participate-button-cancel");
+  beforeEach(() => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe());
+  });
 
-      await waitFor(() => expect(onClose).toBeCalled());
-    });
-
-    it("should have disabled button by default", async () => {
-      const { getByTestId } = await renderSwapModal();
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-    });
-
-    it("should enable button when input value changes", async () => {
-      const { getByTestId, container } = await renderSwapModal();
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: "10" } });
-      await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-      );
-    });
-
-    const renderEnter10ICPAndNext = async (): Promise<RenderResult> => {
-      const result = await renderSwapModal();
-
-      const { queryByText, getByTestId, container } = result;
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const icpAmount = "10";
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: icpAmount } });
-      await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-      );
-
-      fireEvent.click(participateButton);
-
-      await waitFor(() =>
-        expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
-      );
-      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
-
-      return result;
-    };
-
+  describe("when user has not participated", () => {
     it("should move to the last step with ICP and disabled button", async () => {
       const { getByTestId } = await renderEnter10ICPAndNext();
 
-      const confirmButton = getByTestId("sns-swap-participate-button-execute");
+      const confirmButton = getByTestId("transaction-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
-    });
-
-    it("should move to the last step and render review info", async () => {
-      const { getByText, getByTestId } = await renderEnter10ICPAndNext();
-
-      expect(
-        (
-          getByTestId("sns-swap-participate-main-account").textContent ?? ""
-        ).includes(mockMainAccount.identifier)
-      ).toBeTruthy();
-      expect(
-        getByText(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S))
-      ).toBeInTheDocument();
-      expect(
-        (
-          getByTestId("sns-swap-participate-project-name").textContent ?? ""
-        ).includes(mockSnsFullProject.summary.metadata.name)
-      ).toBeTruthy();
     });
 
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
       const { getByTestId, container } = await renderEnter10ICPAndNext();
 
-      const confirmButton = getByTestId("sns-swap-participate-button-execute");
+      const confirmButton = getByTestId("transaction-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
 
       const acceptInput = container.querySelector("[type='checkbox']");
@@ -170,39 +108,51 @@ describe("ParticipateSwapModal", () => {
       await waitFor(() => expect(participateInSwap).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
+  });
 
-    it("should move to the last step and go back", async () => {
-      const { getByTestId, container } = await renderSwapModal();
-
-      const participateButton = getByTestId("sns-swap-participate-button-next");
-
-      expect(participateButton).toBeInTheDocument();
-
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: "10" } });
-      await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+  describe("when user has participated", () => {
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      const { getByTestId, container } = await renderEnter10ICPAndNext(
+        mockSnsFullProject.swapCommitment
       );
 
-      fireEvent.click(participateButton);
+      const confirmButton = getByTestId("transaction-button-execute");
+      expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const acceptInput = container.querySelector("[type='checkbox']");
+      acceptInput && (await fireEvent.click(acceptInput));
       await waitFor(() =>
-        expect(getByTestId("sns-swap-participate-step-2")).toBeTruthy()
+        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
       );
 
-      await clickByTestId(getByTestId, "sns-swap-participate-button-back");
-      await waitFor(() =>
-        expect(getByTestId("sns-swap-participate-step-1")).toBeTruthy()
-      );
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
 
-  describe("when accountsStore is empty", () => {
-    it("should have disabled button if no account is selected", async () => {
+  describe("when swapCommitment is empty", () => {
+    const renderSwapModal = () =>
+      renderModalContextWrapper({
+        Component: ParticipateSwapModal,
+        contextKey: PROJECT_DETAIL_CONTEXT_KEY,
+        contextValue: {
+          store: writable<ProjectDetailStore>({
+            summary: mockSnsFullProject.summary,
+            swapCommitment: undefined,
+          }),
+          reload,
+        } as ProjectDetailContext,
+      });
+    it("should have disabled button if no swap commitment is present", async () => {
       const { getByTestId, container } = await renderSwapModal();
 
-      const participateButton = getByTestId("sns-swap-participate-button-next");
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+      );
+
+      const participateButton = getByTestId("transaction-button-next");
 
       const input = container.querySelector("input[name='amount']");
       input && (await fireEvent.input(input, { target: { value: "10" } }));

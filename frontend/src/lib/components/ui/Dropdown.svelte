@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import { IconExpandMore } from "@dfinity/gix-components";
 
   // Do not allow to use objects as values.
   // Ex: in the query/update calls we do, when the object changes, the value is pointing to the old object.

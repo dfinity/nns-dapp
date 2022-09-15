@@ -23,7 +23,9 @@
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard",
     "badgeNew": "New",
-    "nns": "Network Nervous System"
+    "nns": "Network Nervous System",
+    "previous": "Previous",
+    "next": "Next"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -43,7 +45,7 @@
     "rename_subaccount_type": "The account provided is not a linked account. Only linked account can be renamed.",
     "get_neurons": "There was an unexpected issue while searching for the neurons.",
     "get_known_neurons": "There was an unexpected issue while searching for the known neurons.",
-    "register_vote": "Sorry, there was an error while registering the vote. Please try again.",
+    "register_vote": "Sorry, there was an error while registering the vote for the proposal $topic ($proposalId). Please try again.",
     "register_vote_neuron": "$neuronId: $reason",
     "register_vote_unknown": "Sorry, there was an unexpected error while registering the vote. Please try again later.",
     "add_followee": "Sorry, there was an unexpected error while adding the followee. Please try again later.",
@@ -59,7 +61,7 @@
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
-    "amount_not_enough_stake_neuron": "Sorry, the amount is too smal. You need a minimum of 1 ICP to stake a neuron",
+    "amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of 1 ICP to stake a neuron",
     "amount_not_enough_top_up_neuron": "Sorry, the amount is too small. The amount plus the current stake need to be at least 1 ICP",
     "stake_neuron": "Sorry, there was an unexpected error staking the neuron. Please try again later.",
     "transaction_invalid_amount": "The amount is less than zero or exceeds the amount of available funds for the selected account.",
@@ -104,7 +106,7 @@
     "auth_sign_out": "You have been logged out because your session has expired."
   },
   "navigation": {
-    "accounts": "Accounts",
+    "tokens": "Tokens",
     "neurons": "Neurons",
     "voting": "Voting",
     "canisters": "Canisters",
@@ -124,7 +126,7 @@
     "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
-    "title": "Accounts",
+    "total": "Total",
     "main": "Main",
     "main_account": "Main Account $identifier",
     "new_transaction": "New Transaction",
@@ -159,6 +161,7 @@
     "destination": "Destination",
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",
+    "new_transaction_fee": "(transaction fee)",
     "review_transaction": "Review Transaction",
     "edit_destination": "Edit Destination",
     "current_balance": "Current balance",
@@ -175,6 +178,9 @@
     "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
     "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?",
     "current_balance_total": "Total balance: $amount ICP",
+    "description": "Description",
+    "edit_transaction": "Edit Transaction",
+    "execute": "Execute",
     "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {
@@ -205,11 +211,6 @@
     "may_take_while": "This may take up to 1 minute",
     "create": "Create",
     "edit_source": "Edit Source Account",
-    "status_locked": "Locked",
-    "status_spawning": "Spawning",
-    "status_unspecified": "",
-    "status_dissolved": "Unlocked",
-    "status_dissolving": "Dissolving",
     "community_fund": "COMMUNITY FUND",
     "hotkey_control": "HOTKEY CONTROL",
     "stake": "Stake",
@@ -239,6 +240,9 @@
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
     "claim_seed_neurons_success": "Seed neurons claimed successfully: $neurons",
+    "enter_neuron_id_prompt": "Enter neuron id",
+    "add_hotkey_prompt_error": "Error adding hotkey.",
+    "add_hotkey_prompt_success": "Hotkey added successfully.",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
@@ -342,35 +346,6 @@
     "new_controller": "New Controller",
     "add_controller": "Add Controller"
   },
-  "topics": {
-    "Unspecified": "Unspecified",
-    "ManageNeuron": "Manage neuron",
-    "ExchangeRate": "Exchange Rate",
-    "NetworkEconomics": "Network Economics",
-    "Governance": "Governance",
-    "NodeAdmin": "Node Admin",
-    "ParticipantManagement": "Participant Management",
-    "SubnetManagement": "Subnet Management",
-    "NetworkCanisterManagement": "Network Canister Management",
-    "Kyc": "KYC",
-    "NodeProviderRewards": "Node Provider Rewards",
-    "SnsDecentralizationSale": "SNS Decentralization Sale"
-  },
-  "rewards": {
-    "PROPOSAL_REWARD_STATUS_UNKNOWN": "Unknown",
-    "PROPOSAL_REWARD_STATUS_ACCEPT_VOTES": "Accepting Votes",
-    "PROPOSAL_REWARD_STATUS_READY_TO_SETTLE": "Processing Votes",
-    "PROPOSAL_REWARD_STATUS_SETTLED": "Rewards Disbursed",
-    "PROPOSAL_REWARD_STATUS_INELIGIBLE": "Ineligible"
-  },
-  "status": {
-    "PROPOSAL_STATUS_UNKNOWN": "Unknown",
-    "PROPOSAL_STATUS_OPEN": "Open",
-    "PROPOSAL_STATUS_REJECTED": "Rejected",
-    "PROPOSAL_STATUS_ACCEPTED": "Adopted",
-    "PROPOSAL_STATUS_EXECUTED": "Executed",
-    "PROPOSAL_STATUS_FAILED": "Failed"
-  },
   "transaction_names": {
     "receive": "Received ICP",
     "send": "Sent ICP",
@@ -380,7 +355,8 @@
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
-    "topUpCanister": "Top-up Canister"
+    "topUpCanister": "Top-up Canister",
+    "participateSwap": "Decentralized Sale"
   },
   "wallet": {
     "title": "Account",
@@ -397,9 +373,13 @@
   "proposal_detail": {
     "title": "Proposal",
     "summary": "Proposal Summary",
-    "topic_prefix": "Topic:",
-    "id_prefix": "ID:",
-    "proposer_prefix": "Proposer:",
+    "topic_prefix": "Topic",
+    "status_prefix": "Status",
+    "type_prefix": "Type",
+    "reward_prefix": "Reward Status",
+    "id_prefix": "ID",
+    "proposer_prefix": "Proposer",
+    "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
     "adopt": "Adopt",
     "reject": "Reject",
@@ -409,12 +389,25 @@
     "nns_function_name": "nnsFunctionName",
     "payload": "Payload",
     "summary_toggle_view": "$toggleView summary",
-    "vote": "Vote"
+    "vote": "Vote",
+    "created_prefix": "Created",
+    "created_description": "The date when this proposal was created.",
+    "decided_prefix": "Decided",
+    "decided_description": "The date when this proposal was adopted or rejected.",
+    "executed_prefix": "Executed",
+    "executed_description": "The date when this adopted proposal was executed.",
+    "failed_prefix": "Failed",
+    "failed_description": "The date when this adopted proposal failed to be executed.",
+    "no_more_info": "No particular information.",
+    "voting_results": "Voting Results",
+    "remaining": "remaining",
+    "next": "Navigate to next proposal",
+    "previous": "Navigate to previous proposal"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
     "neurons": "Neurons",
-    "voting_power": "Voting power",
+    "voting_power": "Voting Power",
     "vote_progress": "Vote Progress",
     "total": "Total",
     "adopt": "Adopt",
@@ -426,44 +419,17 @@
     "vote_status": "Neuron $neuronId has voted $vote",
     "accept_or_reject": "Do you want to adopt or reject Proposal <strong>$id</strong> &ndash; <strong>$title</strong> for <strong>$topic</strong>?",
     "cast_vote_neuronId": "Neuron ID $neuronId",
-    "cast_vote_votingPower": "Voting power of $votingPower"
+    "cast_vote_votingPower": "Voting power of $votingPower",
+    "vote_adopt_in_progress": "Adopting proposal $topic ($proposalId). $status",
+    "vote_reject_in_progress": "Rejecting proposal $topic ($proposalId). $status",
+    "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
+    "vote_status_updating": "Updating proposal state..."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
     "text": "The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
     "reason_since": "created after the proposal",
     "reason_short": "dissolve delay < 6 months"
-  },
-  "nns_function_names": {
-    "1": "Create subnet",
-    "2": "Add nodes to subnet",
-    "3": "Install NNS canister",
-    "4": "Upgrade NNS canister",
-    "5": "Bless replica version",
-    "6": "Recover subnet",
-    "7": "Update subnet config",
-    "8": "Assign node operator Id",
-    "9": "Update NNS root canister",
-    "10": "Update ICP/XDR conversion rate",
-    "11": "Update subnet replica version",
-    "12": "Clear provisional whitelist",
-    "13": "Remove nodes from subnet",
-    "14": "Set authorized subnetworks",
-    "15": "Change firewall config",
-    "16": "Update node operator config",
-    "17": "Start or stop NNS canister",
-    "18": "Remove nodes from registry",
-    "19": "Uninstall code from canister",
-    "20": "Update the node rewards table",
-    "21": "Add or remove data centers",
-    "22": "Update unassigned nodes config",
-    "23": "Remove node operators",
-    "24": "Reroute canister range",
-    "25": "Add firewall rules",
-    "26": "Remove firewall rules",
-    "27": "Update firewall rules",
-    "28": "Prepare Canister Migration",
-    "29": "Complete Canister Migration"
   },
   "neuron_detail": {
     "title": "Neuron",
@@ -566,13 +532,9 @@
     "status_aborted": "Aborted",
     "status_pending": "Upcoming sale",
     "status_unspecified": "Unspecified",
-    "transaction_fee": "(transaction fee)",
-    "description": "Description",
     "participate_swap_description": "Participate in Decentralized Sale",
     "participate_swap_warning": "Your participation cannot be withdrawn by you. If the sale is not successful, your commitment will be automatically transferred back to your main ICP account.",
     "understand_agree": "I understand and want to proceed.",
-    "edit_transaction": "Edit Transaction",
-    "execute": "Execute",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
     "increase_participation": "Increase Participation",
@@ -580,6 +542,7 @@
     "completed": "Completed",
     "sale_start": "Sale Start",
     "sale_end": "Sale End",
+    "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached"
   },
   "sns_neuron_detail": {
@@ -595,25 +558,27 @@
     "hour": "hour",
     "hour_plural": "hours",
     "minute": "minute",
-    "minute_plural": "minutes"
+    "minute_plural": "minutes",
+    "second": "second",
+    "second_plural": "seconds"
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
-    "please_open": "Please open the Internet Computer app on your wallet and try again.",
-    "locked": "Ledger Wallet is locked. Unlock it and try again.",
+    "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
+    "locked": "Hardware Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
     "principal_not_match": "Principal returned by the device does not match the public key.",
     "signature_unexpected": "A ledger error happened during signature. $message (code $code).",
     "signature_length": "Signature must be 64 bytes long (is $length)",
-    "connect_no_device": "No Ledger device found. Is the wallet connected and unlocked?",
-    "connect_many_apps": "Cannot connect to Ledger device. Please close all other wallet applications (e.g. Ledger Live) and try again.",
+    "connect_no_device": "No hardware wallet found. Is the hardware wallet connected and unlocked?",
+    "connect_many_apps": "Cannot connect to the hardware wallet. Please close all other wallet applications (e.g. Ledger Live) and try again.",
     "connect_not_supported": "Either you have other wallet applications open (e.g. Ledger Live), or your browser doesn't support WebHID, which is necessary to communicate with your Ledger hardware wallet. Supported browsers: Chrome (Desktop) v89+, Edge v89+, Opera v76+. Error: $err",
-    "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right wallet?",
+    "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right hardware wallet?",
     "access_denied": "Access denied to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
     "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion.",
     "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
-    "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
+    "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right hardware wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
   "error__attach_wallet": {
     "unexpected": "There was an error trying to attach the hardware wallet.",
@@ -656,6 +621,13 @@
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "project_not_found": "Sorry, the project was not found. Please refresh and try again",
+    "project_not_open": "Sorry, the project does not accept participations yet.",
+    "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
+    "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
+    "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
+    "cannot_participate": "Sorry, There was an unexpected error while participating.",
+    "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   }
 }

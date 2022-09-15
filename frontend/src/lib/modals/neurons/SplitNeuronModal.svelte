@@ -1,7 +1,7 @@
 <script lang="ts">
   import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
   import Modal from "../Modal.svelte";
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
@@ -10,7 +10,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import FooterModal from "../FooterModal.svelte";
   import Value from "../../components/ui/Value.svelte";
@@ -22,8 +22,8 @@
   let stakeE8s: bigint;
   $: stakeE8s = neuronStake(neuron);
 
-  let balance: ICP;
-  $: balance = ICP.fromE8s(stakeE8s);
+  let balance: TokenAmount;
+  $: balance = TokenAmount.fromE8s({ amount: stakeE8s });
 
   let max: number = 0;
   $: max =
@@ -41,7 +41,7 @@
   const split = async () => {
     // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
     if (!validForm || amount === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.amount_not_valid",
       });
       return;
@@ -53,7 +53,7 @@
       amount,
     });
     if (id !== undefined) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.split_neuron_success",
       });
     }

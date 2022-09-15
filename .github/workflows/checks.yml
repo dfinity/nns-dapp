@@ -46,6 +46,9 @@ jobs:
         run: npm run format
         working-directory: ./e2e-tests
 
+      - name: Format dfx.json
+        run: cat <<<$(jq . dfx.json) > dfx.json
+
       - name: Commit Formatting changes - will not trigger rebuild
         uses: EndBug/add-and-commit@v7.2.0
         if: ${{ github.event_name == 'pull_request' }}
@@ -71,8 +74,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: [ '1.62.1' ]
-        os: [ ubuntu-20.04 ]
+        rust: ["1.63.0"]
+        os: [ubuntu-20.04]
 
     steps:
       - uses: actions/checkout@v2

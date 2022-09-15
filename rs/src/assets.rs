@@ -46,7 +46,7 @@ impl From<&Assets> for AssetHashes {
 }
 
 /// An asset to be served via HTTP requests.
-#[derive(CandidType, Clone, Deserialize, PartialEq, Debug)]
+#[derive(CandidType, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Asset {
     headers: Vec<HeaderField>,
     bytes: Vec<u8>,
@@ -77,7 +77,7 @@ impl Asset {
     }
 }
 
-#[derive(Default, CandidType, Deserialize, PartialEq, Debug)]
+#[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
