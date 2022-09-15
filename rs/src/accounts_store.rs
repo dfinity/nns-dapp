@@ -1156,8 +1156,7 @@ impl AccountsStore {
     ) -> bool {
         if memo.0 > 0 && amount.get_e8s() == 0 {
             self.get_transaction_index(memo.0)
-                .map(|index| self.get_transaction(index))
-                .flatten()
+                .and_then(|index| self.get_transaction(index))
                 .filter(|&t| {
                     t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron)
                 })
@@ -1393,12 +1392,7 @@ impl Account {
         self.default_account_transactions
             .iter()
             .cloned()
-            .chain(
-                self.sub_accounts
-                    .values()
-                    .map(|a| a.transactions.iter().cloned())
-                    .flatten(),
-            )
+            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().cloned()))
             .sorted()
             .collect()
     }

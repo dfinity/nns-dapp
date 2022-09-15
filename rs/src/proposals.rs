@@ -61,7 +61,7 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
 fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
-    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().map(|p| p.action.as_ref()).flatten() {
+    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
             .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
     } else {
@@ -139,6 +139,7 @@ mod def {
     use ic_nervous_system_common::MethodAuthzChange;
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
+    use std::fmt::Write;
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
@@ -388,7 +389,8 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            hash_string.push_str(&format!("{:02x}", byte));
+            write!(&mut hash_string, "{:02x}", byte)
+                .expect("Cannot fail because 32 bytes * 2 chars per byte <= capacity == 64");
         }
         hash_string
     }
