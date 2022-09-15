@@ -78,9 +78,8 @@
         </div>
       {/if}
 
-      <blockquote class="title-placeholder description">
-        <span class="quote">“</span>
-        <p>{title}</p>
+      <blockquote class="title-placeholder">
+        <p class="description">{title}</p>
       </blockquote>
 
       <div class="card-meta">
@@ -130,18 +129,7 @@
   }
 
   .title-placeholder {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 0;
-    margin: 0;
-    padding: 0;
-
     flex-grow: 1;
-
-    span {
-      font-size: var(--font-size-h1);
-      opacity: 0.7;
-    }
 
     p {
       @include text.clamp(6);
