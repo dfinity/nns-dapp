@@ -258,8 +258,6 @@ fn prune_pending_transactions_works() {
     let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
     let from_account_identifier = AccountIdentifier::new(buyer, Some((&swap_canister_id).into()));
     store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
-    println!("Number of pending transactions:");
-    println!("{}", store.pending_transactions.len().to_string());
 
     assert!(store.should_prune_pending_transactions());
 
