@@ -1436,7 +1436,7 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
 
 /// This will sort the canisters such that those with names specified will appear first and will be
 /// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
-fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
+fn sort_canisters(canisters: &mut [NamedCanister]) {
     canisters.sort_unstable_by_key(|c| {
         if c.name.is_empty() {
             (true, c.canister_id.to_string())
