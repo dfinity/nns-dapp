@@ -7,7 +7,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import { toastsError } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,

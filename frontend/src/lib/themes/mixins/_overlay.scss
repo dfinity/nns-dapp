@@ -9,7 +9,7 @@
   position: fixed;
   @include display.inset;
 
-  z-index: var(--overlay-z-index);
+  z-index: var(--modal-z-index);
 
   .wrapper {
     cursor: initial;
@@ -33,7 +33,7 @@
     width: fit-content;
     height: auto;
 
-    padding: var(--padding-2x);
+    padding: var(--padding-3x) var(--padding-2x) var(--padding-2x);
     display: flex;
     flex-direction: column;
 

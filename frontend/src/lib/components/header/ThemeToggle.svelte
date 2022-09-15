@@ -14,8 +14,6 @@
 </script>
 
 <div class="theme-toggle" data-tid="theme-toggle">
-  <span>{$i18n.theme.theme}</span>
-
   <div class="toggle">
     <IconLightMode />
     <Toggle

@@ -45,7 +45,7 @@
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.LegacyNeurons });
     }
     stopBusy("remove-hotkey-neuron");
   };

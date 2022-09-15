@@ -1,28 +1,26 @@
 <script lang="ts">
   import { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
-  import SnsNeuronHotkeysCard from "../lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
-  import SnsNeuronMetaInfoCard from "../lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-  import { AppPath } from "../lib/constants/routes.constants";
-  import { getSnsNeuron } from "../lib/services/sns-neurons.services";
-  import { layoutBackStore } from "../lib/stores/layout.store";
-  import { snsProjectSelectedStore } from "../lib/stores/projects.store";
-  import { routeStore } from "../lib/stores/route.store";
-  import { isRoutePath } from "../lib/utils/app-path.utils";
+  import SnsNeuronHotkeysCard from "../components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
+  import SnsNeuronMetaInfoCard from "../components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
+  import { AppPath } from "../constants/routes.constants";
+  import { getSnsNeuron } from "../services/sns-neurons.services";
+  import { layoutBackStore } from "../stores/layout.store";
+  import { routeStore } from "../stores/route.store";
+  import { isRoutePath } from "../utils/app-path.utils";
   import {
     routePathSnsNeuronRootCanisterId,
     routePathSnsNeuronId,
-  } from "../lib/utils/sns-neuron.utils";
+  } from "../utils/sns-neuron.utils";
   import {
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
-  } from "../lib/types/sns-neuron-detail.context";
+  } from "../types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
-  import { toastsError } from "../lib/stores/toasts.store";
-  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
+  import { toastsError } from "../stores/toasts.store";
+  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -60,14 +58,14 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ path: AppPath.SnsNeuronDetail, routePath: path })) {
+    if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
     const neuronIdMaybe = routePathSnsNeuronId(path);
     if (neuronIdMaybe === undefined || rootCanisterIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.LegacyNeurons });
       return;
     }
     let rootCanisterId: Principal | undefined;
@@ -80,10 +78,9 @@
           $canisterId: rootCanisterIdMaybe,
         },
       });
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.LegacyNeurons });
       return;
     }
-    snsProjectSelectedStore.set(rootCanisterId);
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
     selectedSnsNeuronStore.set({
@@ -98,7 +95,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.Neurons,
+      path: AppPath.LegacyNeurons,
     });
 
   layoutBackStore.set(goBack);
@@ -109,8 +106,7 @@
         labelKey: "error.neuron_not_found",
       });
       // Reset selected project
-      snsProjectSelectedStore.set(OWN_CANISTER_ID);
-      routeStore.replace({ path: AppPath.Neurons });
+      routeStore.replace({ path: AppPath.LegacyNeurons });
     }
   }
 

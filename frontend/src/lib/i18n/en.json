@@ -106,7 +106,7 @@
     "auth_sign_out": "You have been logged out because your session has expired."
   },
   "navigation": {
-    "accounts": "Accounts",
+    "tokens": "Tokens",
     "neurons": "Neurons",
     "voting": "Voting",
     "canisters": "Canisters",
@@ -126,7 +126,7 @@
     "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
-    "title": "Accounts",
+    "total": "Total",
     "main": "Main",
     "main_account": "Main Account $identifier",
     "new_transaction": "New Transaction",

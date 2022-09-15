@@ -112,7 +112,7 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  accounts: string;
+  tokens: string;
   neurons: string;
   voting: string;
   canisters: string;
@@ -135,7 +135,7 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  title: string;
+  total: string;
   main: string;
   main_account: string;
   new_transaction: string;
