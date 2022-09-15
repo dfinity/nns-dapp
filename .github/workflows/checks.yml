@@ -71,7 +71,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: [ '1.58.1' ]
+        rust: [ '1.62.1' ]
         os: [ ubuntu-20.04 ]
 
     steps:
