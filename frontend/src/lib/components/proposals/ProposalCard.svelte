@@ -57,8 +57,12 @@
       testId="proposal-card"
       withArrow={true}
     >
-      <div class="card-meta">
+      <div class="card-meta id">
         <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+      </div>
+
+      <div class="card-meta">
+        <span>{$i18n.proposal_detail.type_prefix}</span>
         <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
       </div>
 
@@ -74,10 +78,12 @@
         </div>
       {/if}
 
-      <p class="title-placeholder description">{title}</p>
+      <blockquote class="title-placeholder">
+        <p class="description">{title}</p>
+      </blockquote>
 
       <div class="card-meta">
-        <p class={`${color} status`}>
+        <p class={`${color ?? ""} status`}>
           {$i18n.status[ProposalStatus[status]] ?? ""}
         </p>
 
@@ -112,12 +118,23 @@
 
   .card-meta {
     @include card.meta;
+
+    &.id {
+      justify-content: flex-end;
+
+      :global(.value) {
+        color: var(--primary);
+      }
+    }
   }
 
   .title-placeholder {
-    @include text.clamp(6);
-    word-break: break-word;
     flex-grow: 1;
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
   }
 
   /**
@@ -138,6 +155,11 @@
     // Color.SUCCESS
     &.success {
       --badge-color: var(--positive-emphasis);
+    }
+
+    // Color.ERROR
+    &.error {
+      --badge-color: var(--negative-emphasis-light);
     }
   }
 </style>
