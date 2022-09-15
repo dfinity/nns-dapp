@@ -4,7 +4,8 @@
 
 @use "@dfinity/gix-components/styles/mixins/media";
 
-main.legacy, div.modal.legacy {
+main.legacy,
+div.modal.legacy {
   margin: inherit;
   padding: inherit;
   max-width: inherit;
