@@ -4,7 +4,7 @@
 
 @use "@dfinity/gix-components/styles/mixins/media";
 
-main.legacy {
+main.legacy, div.modal.legacy {
   margin: inherit;
   padding: inherit;
   max-width: inherit;
@@ -29,6 +29,7 @@ main.legacy {
     .meta {
       flex-wrap: wrap;
       column-gap: var(--padding);
+      word-break: break-word;
     }
 
     &[data-tid="proposal-card"] > .meta {
