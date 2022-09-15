@@ -36,7 +36,9 @@ describe("Accounts", () => {
 
     expect(
       titleRow?.textContent?.startsWith(
-        `${en.accounts.total} ${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+        `${en.accounts.total} ${formatICP({
+          value: mockMainAccount.balance.toE8s(),
+        })} ICP`
       )
     ).toBeTruthy();
   });
