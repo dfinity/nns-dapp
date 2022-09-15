@@ -242,6 +242,8 @@ pub enum AddPendingTransactionResponse {
     NotAuthorized,
 }
 
+pub const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
+
 impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -493,6 +495,18 @@ impl AccountsStore {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
         self.pending_transactions.remove(&(from, to));
+    }
+
+    pub fn should_prune_pending_transactions(&self) -> bool {
+        // Valid pending transactions are very short lived.
+        // If there are many, it's because it's filled with invalid pending transactions.
+        self.pending_transactions.len() > TRANSACTIONS_COUNT_LIMIT as usize
+    }
+
+    pub fn prune_pending_transactions(&mut self) {
+        // Worst case scenario a valid pending transaction is removed.
+        // The user needs to ask for a refund or notify manually if not already done.
+        self.pending_transactions = HashMap::new();
     }
 
     pub fn append_transaction(

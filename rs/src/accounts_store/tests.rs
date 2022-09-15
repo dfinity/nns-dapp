@@ -241,6 +241,35 @@ fn add_participate_pending_transaction_and_complete() {
 }
 
 #[test]
+fn prune_pending_transactions_works() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    assert_eq!(0, store.pending_transactions.len());
+
+    for n in 0..TRANSACTIONS_COUNT_LIMIT {
+        let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
+        let from_account_identifier = AccountIdentifier::new(buyer, None);
+        store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+    }
+    // Add the one that exceeds the limit
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    let from_account_identifier = AccountIdentifier::new(buyer, Some((&swap_canister_id).into()));
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+    println!("Number of pending transactions:");
+    println!("{}", store.pending_transactions.len().to_string());
+
+    assert!(store.should_prune_pending_transactions());
+
+    store.prune_pending_transactions();
+
+    assert!(!store.should_prune_pending_transactions());
+    assert_eq!(store.pending_transactions.keys().len(), 0);
+}
+
+#[test]
 fn cannot_add_other_pending_transaction() {
     let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
