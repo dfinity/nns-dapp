@@ -83,7 +83,7 @@
       </blockquote>
 
       <div class="card-meta">
-        <p class={`${color} status`}>
+        <p class={`${color ?? ""} status`}>
           {$i18n.status[ProposalStatus[status]] ?? ""}
         </p>
 
@@ -155,6 +155,11 @@
     // Color.SUCCESS
     &.success {
       --badge-color: var(--positive-emphasis);
+    }
+
+    // Color.ERROR
+    &.error {
+      --badge-color: var(--negative-emphasis-light);
     }
   }
 </style>
