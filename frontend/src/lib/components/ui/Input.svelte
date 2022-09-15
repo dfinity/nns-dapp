@@ -123,7 +123,7 @@
 <div class="input-block" class:disabled>
   {#if showInfo}
     <div class="info">
-      <label for={name}><slot name="label" /></label>
+      <label class="label" for={name}><slot name="label" /></label>
       <slot name="additional" />
     </div>
   {/if}
@@ -179,10 +179,6 @@
   .info {
     display: flex;
     justify-content: space-between;
-
-    label {
-      color: var(--label-color);
-    }
   }
 
   input {

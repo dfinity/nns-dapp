@@ -14,10 +14,19 @@
   export let filterAccounts: (account: Account) => boolean = () => true;
   export let showManualAddress: boolean = true;
 
+  // If the component is already initialized with a selectedDestinationAddress
+  let selectedAccount: Account | undefined = getAccountFromStore({
+    identifier: selectedDestinationAddress,
+    accountsStore: $accountsStore,
+  });
   let address: string;
   $: {
     if (!invalidAddress(address)) {
       selectedDestinationAddress = address;
+    }
+    // Keep in sync the selected destination address
+    if (selectedAccount !== undefined) {
+      selectedDestinationAddress = selectedAccount.identifier;
     }
   }
 
@@ -26,18 +35,6 @@
     selectedDestinationAddress = undefined;
     selectedAccount = undefined;
   };
-
-  // If the component is already initialized with a selectedDestinationAddress
-  let selectedAccount: Account | undefined = getAccountFromStore({
-    identifier: selectedDestinationAddress,
-    accountsStore: $accountsStore,
-  });
-  // Keep in sync the selected destination addres
-  $: {
-    if (selectedAccount !== undefined) {
-      selectedDestinationAddress = selectedAccount.identifier;
-    }
-  }
 </script>
 
 <div data-tid="select-destination">
@@ -71,9 +68,5 @@
       align-items: center;
       gap: var(--padding);
     }
-  }
-
-  .label {
-    color: var(--label-color);
   }
 </style>

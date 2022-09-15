@@ -5,7 +5,7 @@
 import { derived } from "svelte/store";
 import { accountsStore } from "../stores/accounts.store";
 
-export const accountsList = derived(
+export const accountsListStore = derived(
   accountsStore,
   ({ main, subAccounts, hardwareWallets }) =>
     main === undefined

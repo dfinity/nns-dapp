@@ -1,6 +1,6 @@
 <script lang="ts">
   import { accountsStore } from "../../stores/accounts.store";
-  import { accountsList } from "../../derived/accounts-list.derived";
+  import { accountsListStore } from "../../derived/accounts-list.derived";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { getAccountFromStore } from "../../utils/accounts.utils";
@@ -19,7 +19,7 @@
     accountsStore: $accountsStore,
   });
 
-  $: selectableAccounts = $accountsList.filter(filterAccounts);
+  $: selectableAccounts = $accountsListStore.filter(filterAccounts);
 </script>
 
 {#if selectableAccounts.length === 0}

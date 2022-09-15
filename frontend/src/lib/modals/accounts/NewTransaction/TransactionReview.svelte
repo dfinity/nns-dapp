@@ -135,8 +135,4 @@
 
     --select-padding: var(--padding-2x) 0;
   }
-
-  .label {
-    color: var(--label-color);
-  }
 </style>

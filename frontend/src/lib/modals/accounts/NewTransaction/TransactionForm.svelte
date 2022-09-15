@@ -167,10 +167,6 @@
     }
   }
 
-  .label {
-    color: var(--label-color);
-  }
-
   .account-identifier {
     word-break: break-all;
   }
