@@ -112,7 +112,7 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  accounts: string;
+  tokens: string;
   neurons: string;
   voting: string;
   canisters: string;

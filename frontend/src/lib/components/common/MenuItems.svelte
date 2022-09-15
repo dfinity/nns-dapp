@@ -37,7 +37,7 @@
     {
       context: "accounts",
       selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
-      label: "accounts",
+      label: "tokens",
       icon: IconWallet,
     },
     {
