@@ -126,7 +126,7 @@
     "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
-    "title": "Total",
+    "total": "Total",
     "main": "Main",
     "main_account": "Main Account $identifier",
     "new_transaction": "New Transaction",
