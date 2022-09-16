@@ -24,6 +24,7 @@ mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod proposals;
 mod state;
+mod time;
 
 type Cycles = u128;
 
