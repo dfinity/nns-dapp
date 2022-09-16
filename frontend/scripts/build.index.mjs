@@ -84,7 +84,9 @@ const updateCSP = (content) => {
         img-src 'self' data: https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(" ")};
+        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(
+          " "
+        )};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';
