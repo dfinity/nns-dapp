@@ -53,7 +53,7 @@
       title: $i18n.navigation.tokens,
     },
     [AppPath.LegacyAccounts]: {
-      title: $i18n.navigation.accounts,
+      title: $i18n.navigation.tokens,
     },
     [AppPath.LegacyNeurons]: {
       title: $i18n.navigation.neurons,
