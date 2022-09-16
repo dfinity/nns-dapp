@@ -5,7 +5,8 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use crate::{STATE};
+use crate::time::time_millis;
+use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -22,7 +23,6 @@ use std::cmp::min;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
-use crate::time::time_millis;
 
 type TransactionIndex = u64;
 
