@@ -15,7 +15,7 @@ describe("routes", () => {
   describe("isAppPath()", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
-      expect(isAppPath(AppPath.Accounts)).toBeTruthy();
+      expect(isAppPath(AppPath.LegacyAccounts)).toBeTruthy();
       expect(isAppPath(`${AppPath.Wallet}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.LegacyNeuronDetail}/123`)).toBeTruthy();
@@ -23,6 +23,7 @@ describe("routes", () => {
       expect(isAppPath(`${AppPath.ProjectDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neurons`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neuron/1234`)).toBeTruthy();
+      expect(isAppPath(`${CONTEXT_PATH}/123/accounts`)).toBeTruthy();
     });
 
     it("should return null for invalid urls", () => {
@@ -116,7 +117,7 @@ describe("routes", () => {
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Accounts,
+          path: AppPath.LegacyAccounts,
           routePath: "/#/accounts",
         })
       ).toBeTruthy();
@@ -224,6 +225,22 @@ describe("routes", () => {
       const path1 = `${CONTEXT_PATH}/aaaaa-aa/neuron/12344`;
       const path2 = `${CONTEXT_PATH}/aaaaa-aa/neurons`;
       const path3 = `${CONTEXT_PATH}/aaaaa-aa/accounts`;
+      const newContext = "bbbbb-bb";
+      expect(changePathContext({ path: path1, newContext })).toBe(
+        `${CONTEXT_PATH}/${newContext}/neuron/12344`
+      );
+      expect(changePathContext({ path: path2, newContext })).toBe(
+        `${CONTEXT_PATH}/${newContext}/neurons`
+      );
+      expect(changePathContext({ path: path3, newContext })).toBe(
+        `${CONTEXT_PATH}/${newContext}/accounts`
+      );
+    });
+
+    it("returns path with context for exceptions", () => {
+      const path1 = "/#/neuron/12344";
+      const path2 = "/#/neurons";
+      const path3 = "/#/accounts";
       const newContext = "bbbbb-bb";
       expect(changePathContext({ path: path1, newContext })).toBe(
         `${CONTEXT_PATH}/${newContext}/neuron/12344`
