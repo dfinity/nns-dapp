@@ -4,10 +4,10 @@
 
   // TODO: Implement https://dfinity.atlassian.net/browse/GIX-993
   let totalAmountToken = TokenAmount.fromE8s({
-    amount: BigInt(4_530_000_000),
+    amount: BigInt(0),
     token: {
-      symbol: "OC",
-      name: "Open Chat",
+      symbol: "test",
+      name: "todo",
     },
   });
 </script>

@@ -30,7 +30,7 @@
   <NewTransactionModal on:nnsClose={closeModal} />
 {/if}
 
-{#if accounts}
+{#if accounts !== undefined}
   <Footer>
     <Toolbar>
       <button
