@@ -5,10 +5,9 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
-use crate::STATE;
+use crate::{STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
-use dfn_core::api::ic0::time;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
@@ -23,6 +22,7 @@ use std::cmp::min;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use crate::time::time_millis;
 
 type TransactionIndex = u64;
 
@@ -472,17 +472,15 @@ impl AccountsStore {
         transaction_type: TransactionType,
     ) -> AddPendingTransactionResponse {
         // Call to `time` needs the unsafe
-        unsafe {
-            let now_millis = time() / 1_000_000;
-            self.prune_old_pending_transactions(now_millis);
-            if self.pending_transactions_limit_reached() {
-                // We should never hit this
-                // Just to be safe and the pending transaction is always added
-                self.remove_last_pending_transaction();
-            }
-            self.pending_transactions
-                .insert((from, to), (transaction_type, now_millis));
+        let now_millis = time_millis();
+        self.prune_old_pending_transactions(now_millis);
+        if self.pending_transactions_limit_reached() {
+            // We should never hit this
+            // Just to be safe and the pending transaction is always added
+            self.remove_last_pending_transaction();
         }
+        self.pending_transactions
+            .insert((from, to), (transaction_type, now_millis));
         AddPendingTransactionResponse::Ok
     }
 

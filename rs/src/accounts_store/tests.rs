@@ -252,10 +252,7 @@ fn add_pending_transactions_removes_old_ones() {
     let from_account_identifier = AccountIdentifier::new(buyer, None);
     let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), None);
     const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
-    let two_hours_ago: u64;
-    unsafe {
-        two_hours_ago = (time() / 1_000_000) - (HOUR_IN_MILLISECONDS * 2);
-    }
+    let two_hours_ago = time_millis() - (HOUR_IN_MILLISECONDS * 2);
     store.pending_transactions.insert(
         (from_account_identifier, to_account_identifier),
         (transaction_type, two_hours_ago),
@@ -293,10 +290,8 @@ fn add_pending_transactions_removes_last_one_on_limit() {
     let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
     assert_eq!(0, store.pending_transactions.len());
 
-    let now_millis: u64;
-    unsafe {
-        now_millis = time() / 1_000_000;
-    }
+    let now_millis = time_millis();
+
     // 10_000 is the PENDING_TRANSACTIONS_LIMIT
     for n in 0..10_000 {
         let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
