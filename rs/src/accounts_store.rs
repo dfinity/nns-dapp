@@ -471,7 +471,6 @@ impl AccountsStore {
         to: AccountIdentifier,
         transaction_type: TransactionType,
     ) -> AddPendingTransactionResponse {
-        // Call to `time` needs the unsafe
         let now_millis = time_millis();
         if self.pending_transactions.len() > 1_000 {
             self.prune_old_pending_transactions(now_millis);
