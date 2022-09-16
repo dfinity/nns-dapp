@@ -8,6 +8,10 @@ on:
       # Commit to the nightly branch and push to test.
       - nightly
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   update-ii:
     runs-on: ubuntu-20.04

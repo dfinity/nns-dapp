@@ -12,6 +12,9 @@ name: Native build
 on:
   push:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
       NNS_CACHING_KEY: dv-0004
