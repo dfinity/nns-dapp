@@ -4,8 +4,7 @@
 
 @use "@dfinity/gix-components/styles/mixins/media";
 
-main.legacy,
-div.modal.legacy {
+main.legacy {
   margin: inherit;
   padding: inherit;
   max-width: inherit;
@@ -24,7 +23,10 @@ div.modal.legacy {
   @include media.min-width(medium) {
     padding: inherit;
   }
+}
 
+main.legacy,
+div.modal.legacy {
   .card {
     // solve title|icp line (e.g. neuron card)
     .meta {
