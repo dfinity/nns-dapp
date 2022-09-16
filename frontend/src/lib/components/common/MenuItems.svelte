@@ -2,10 +2,10 @@
   import {
     MenuItem,
     IconWallet,
-    IconLockOpen,
     IconHowToVote,
-    IconSettingsApplications,
     IconRocketLaunch,
+    IconEngineering,
+    IconPsychology,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
@@ -37,14 +37,19 @@
     {
       context: "accounts",
       selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
-      label: "accounts",
+      label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
-      selected: isSelectedPath([AppPath.Neurons, AppPath.NeuronDetail]),
+      selected: isSelectedPath([
+        AppPath.LegacyNeurons,
+        AppPath.LegacyNeuronDetail,
+        AppPath.NeuronDetail,
+        AppPath.Neurons,
+      ]),
       label: "neurons",
-      icon: IconLockOpen,
+      icon: IconPsychology,
     },
     {
       context: "proposals",
@@ -56,7 +61,7 @@
       context: "canisters",
       selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
       label: "canisters",
-      icon: IconSettingsApplications,
+      icon: IconEngineering,
     },
     // Launchpad should not be visible on mainnet
     ...(ENABLE_SNS

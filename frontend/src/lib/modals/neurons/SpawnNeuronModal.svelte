@@ -70,7 +70,7 @@
         },
       });
       close();
-      routeStore.navigate({ path: AppPath.Neurons });
+      routeStore.navigate({ path: AppPath.LegacyNeurons });
     }
 
     stopBusy("spawn-neuron");

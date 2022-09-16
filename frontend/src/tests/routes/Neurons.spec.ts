@@ -5,10 +5,9 @@
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
-import {
-  committedProjectsStore,
-  snsProjectSelectedStore,
-} from "../../lib/stores/projects.store";
+import { AppPath } from "../../lib/constants/routes.constants";
+import { committedProjectsStore } from "../../lib/stores/projects.store";
+import { routeStore } from "../../lib/stores/route.store";
 import Neurons from "../../routes/Neurons.svelte";
 import {
   mockProjectSubscribe,
@@ -34,7 +33,7 @@ describe("Neurons", () => {
 
   beforeEach(() => {
     // Reset to default value
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    routeStore.update({ path: AppPath.LegacyNeurons });
   });
 
   it("should render NnsNeurons by default", () => {

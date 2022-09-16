@@ -14,8 +14,6 @@
 </script>
 
 <div class="theme-toggle" data-tid="theme-toggle">
-  <span>{$i18n.theme.theme}</span>
-
   <div class="toggle">
     <IconLightMode />
     <Toggle
@@ -37,10 +35,6 @@
 
     padding: 0 var(--padding-0_5x);
     gap: var(--padding);
-  }
-
-  span {
-    margin-right: var(--padding-0_5x);
   }
 
   .toggle {
