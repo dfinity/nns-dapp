@@ -45,6 +45,11 @@ const updateBaseHref = (content) =>
  * To overcome this, we include within the index.html a first script which, when executed at app boot time, add a script that actually loads the main.js.
  * We generate the hash for that particular first script and set 'strict-dynamic' to trust those scripts that will be loaded per extension - the chunks used by the app.
  *
+ * - script-src and 'strict-dynamic':
+ * Chrome 40+ / Firefox 31+ / Safari 15.4+ / Edge 15+ supports 'strict-dynamic'.
+ * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' and https: to the rules for backwards compatibility.
+ * Browsers that supports the 'strict-dynamic' rule will ignore these backwards directives (CSP 3).
+ *
  * - style-src 'unsafe-inline' is required because:
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
@@ -79,7 +84,7 @@ const updateCSP = (content) => {
         img-src 'self' data: https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'strict-dynamic' ${indexHashes.join(" ")};
+        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(" ")};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';
