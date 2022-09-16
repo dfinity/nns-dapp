@@ -14,7 +14,7 @@ import { routeStore } from "../../../lib/stores/route.store";
 describe("selected project derived stores", () => {
   describe("isNnsProjectStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.Accounts });
+      routeStore.update({ path: AppPath.LegacyAccounts });
     });
 
     it("should be set by default true", () => {
@@ -33,7 +33,7 @@ describe("selected project derived stores", () => {
 
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.Accounts });
+      routeStore.update({ path: AppPath.LegacyAccounts });
     });
 
     it("should be set by default undefined", () => {
@@ -61,7 +61,7 @@ describe("selected project derived stores", () => {
       const $store = get(snsOnlyProjectStore);
       expect($store?.toText()).toBe(principalString);
 
-      routeStore.update({ path: AppPath.Accounts });
+      routeStore.update({ path: AppPath.LegacyAccounts });
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
     });
@@ -69,7 +69,7 @@ describe("selected project derived stores", () => {
 
   describe("snsProjectSelectedStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.Accounts });
+      routeStore.update({ path: AppPath.LegacyAccounts });
     });
 
     it("should be set by default to own canister id", () => {

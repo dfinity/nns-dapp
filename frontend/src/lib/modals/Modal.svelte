@@ -26,7 +26,7 @@
 
 {#if visible}
   <div
-    class="modal"
+    class="modal legacy"
     transition:fade
     role="dialog"
     data-tid={testId}

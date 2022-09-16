@@ -128,8 +128,9 @@
   "accounts": {
     "total": "Total",
     "main": "Main",
-    "main_account": "Main Account $identifier",
     "new_transaction": "New Transaction",
+    "icp_transaction_description": "ICP Transaction",
+    "review_action": "Review",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -181,6 +182,9 @@
     "description": "Description",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
+    "select": "Select",
+    "manual": "Manual",
+    "no_account_select": "No accounts to select",
     "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {
