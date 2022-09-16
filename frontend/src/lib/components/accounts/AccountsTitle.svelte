@@ -19,7 +19,7 @@
 </script>
 
 <div class="title">
-  <h1 data-tid="accounts-title">{$i18n.accounts.title}</h1>
+  <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
 
   {#if balance !== undefined}
     <Tooltip

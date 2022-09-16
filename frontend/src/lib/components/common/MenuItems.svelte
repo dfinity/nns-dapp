@@ -41,7 +41,7 @@
         AppPath.LegacyAccounts,
         AppPath.Wallet,
       ]),
-      label: "accounts",
+      label: "tokens",
       icon: IconWallet,
     },
     {

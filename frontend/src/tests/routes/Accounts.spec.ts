@@ -50,16 +50,9 @@ describe("Accounts", () => {
         target: { value: projectCanisterId },
       });
 
-  it("should render subaccount cards", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
-    const { container } = render(Accounts);
-
-    const articles = container.querySelectorAll("article");
-
-    expect(articles).not.toBeNull();
-    expect(articles.length).toBe(2);
+    await waitFor(() =>
+      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
+    );
   });
 
   it("should be able to go back to nns after going to a project", async () => {
@@ -91,7 +84,7 @@ describe("Accounts", () => {
   });
 
   it("should open transaction modal", async () => {
-    const { container, getByText, getByTestId } = render(Accounts);
+    const { getByTestId } = render(Accounts);
 
     const button = getByTestId("open-new-transaction") as HTMLButtonElement;
     await fireEvent.click(button);

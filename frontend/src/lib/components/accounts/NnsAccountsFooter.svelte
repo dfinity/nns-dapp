@@ -6,8 +6,8 @@
   import { i18n } from "../../stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import AddAcountModal from "../../modals/accounts/AddAccountModal.svelte";
-  import NewTransactionModal from "../../modals/accounts/NewTransactionModal.svelte";
   import Footer from "../common/Footer.svelte";
+  import IcpTransactionModal from "../../modals/accounts/IcpTransactionModal.svelte";
 
   let accounts: AccountsStore | undefined;
 
@@ -27,7 +27,7 @@
   <AddAcountModal on:nnsClose={closeModal} />
 {/if}
 {#if modal === "NewTransaction"}
-  <NewTransactionModal on:nnsClose={closeModal} />
+  <IcpTransactionModal on:nnsClose={closeModal} />
 {/if}
 
 {#if accounts !== undefined}
