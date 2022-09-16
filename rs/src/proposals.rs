@@ -424,7 +424,7 @@ mod def {
     use std::fmt::Write;
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
-        for byte in calculate_hash(bytes) {
+        for byte in bytes {
             write!(hash_string, "{:02x}", byte).unwrap();
         }
         hash_string
