@@ -199,3 +199,10 @@ jobs:
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
+
+  build-pass:
+    needs: ["nns_canisters", "build"]
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Build workflow passes
+         run: echo OK

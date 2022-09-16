@@ -23,12 +23,16 @@ main.legacy {
   @include media.min-width(medium) {
     padding: inherit;
   }
+}
 
+main.legacy,
+div.modal.legacy {
   .card {
     // solve title|icp line (e.g. neuron card)
     .meta {
       flex-wrap: wrap;
       column-gap: var(--padding);
+      word-break: break-word;
     }
 
     &[data-tid="proposal-card"] > .meta {
