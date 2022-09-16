@@ -7,11 +7,8 @@
   import { i18n } from "../../../stores/i18n";
   import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { valueSpan } from "../../../utils/utils";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import { sanitize } from "../../../utils/html.utils";
   import type { NewTransaction } from "../../../types/transaction.context";
 
   export let transaction: NewTransaction;
@@ -39,14 +36,18 @@
 <div data-tid="transaction-step-2">
   <div class="info">
     <KeyValuePair>
-      <span slot="key">{$i18n.accounts.source}</span>
+      <span class="label" slot="key">{$i18n.accounts.source}</span>
       <AmountDisplay slot="value" singleLine amount={sourceAccount.balance} />
     </KeyValuePair>
     <div>
-      <p data-tid="transaction-review-source-account">
-        {@html replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: valueSpan(sanitize(destinationAddress)),
-        })}
+      <p class="label">
+        {sourceAccount.name ?? $i18n.accounts.main}
+      </p>
+      <p
+        data-tid="transaction-review-source-account"
+        class="account-identifier"
+      >
+        {sourceAccount.identifier}
       </p>
     </div>
     <div class="highlight">
@@ -62,12 +63,13 @@
       </div>
     </div>
     <div>
-      <h5>{$i18n.accounts.destination}</h5>
+      <p class="label">{$i18n.accounts.destination}</p>
+      <p />
       <slot name="destination-info" />
-      <p class="value">{destinationAddress}</p>
+      <p class="account-identifier">{destinationAddress}</p>
     </div>
     <div>
-      <h5>{$i18n.accounts.description}</h5>
+      <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
     </div>
   </div>
@@ -91,6 +93,10 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/modal";
+
+  .account-identifier {
+    word-break: break-all;
+  }
 
   .highlight {
     padding: var(--padding-2x);
