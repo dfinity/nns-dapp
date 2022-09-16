@@ -1,4 +1,4 @@
-use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs, TRANSACTIONS_COUNT_LIMIT};
+use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use crate::canisters::ledger;
 use crate::canisters::{cmc, governance, swap};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
@@ -58,12 +58,6 @@ pub async fn run_periodic_tasks() {
                 .prune_transactions(PRUNE_TRANSACTIONS_COUNT)
         });
     }
-
-    STATE.with(|s| {
-        if s.accounts_store.borrow().should_prune_pending_transactions() {
-            s.accounts_store.borrow_mut().prune_pending_transactions();
-        }
-    });
 }
 
 async fn handle_participate_swap(
@@ -442,6 +436,7 @@ fn should_prune_transactions() -> bool {
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
+        const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
         let transactions_count = STATE.with(|s| s.accounts_store.borrow().get_transactions_count());
         transactions_count > TRANSACTIONS_COUNT_LIMIT
     }

@@ -249,22 +249,31 @@ fn prune_pending_transactions_works() {
     let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
     assert_eq!(0, store.pending_transactions.len());
 
-    for n in 0..TRANSACTIONS_COUNT_LIMIT {
+    // 10_000 is the PENDING_TRANSACTIONS_LIMIT
+    for n in 0..10_000 {
         let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
         let from_account_identifier = AccountIdentifier::new(buyer, None);
         store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
     }
+    assert_eq!(10_000, store.pending_transactions.len());
     // Add the one that exceeds the limit
     let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
     let from_account_identifier = AccountIdentifier::new(buyer, Some((&swap_canister_id).into()));
-    store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+    let swap_canister_id_2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let new_transaction_type = TransactionType::ParticipateSwap(swap_canister_id_2);
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, new_transaction_type);
 
-    assert!(store.should_prune_pending_transactions());
-
-    store.prune_pending_transactions();
-
-    assert!(!store.should_prune_pending_transactions());
-    assert_eq!(store.pending_transactions.keys().len(), 0);
+    // After adding one, the state has not increased size.
+    assert_eq!(10_000, store.pending_transactions.len());
+    // But has added the new one
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        Some(added) => {
+            assert_eq!(*added, new_transaction_type);
+        }
+        None => {
+            panic!("Didn't add the pending transaction when limit was reached")
+        }
+    }
 }
 
 #[test]

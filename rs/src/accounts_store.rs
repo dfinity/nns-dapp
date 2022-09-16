@@ -242,8 +242,6 @@ pub enum AddPendingTransactionResponse {
     NotAuthorized,
 }
 
-pub const TRANSACTIONS_COUNT_LIMIT: u32 = 1_000_000;
-
 impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -472,6 +470,14 @@ impl AccountsStore {
         to: AccountIdentifier,
         transaction_type: TransactionType,
     ) -> AddPendingTransactionResponse {
+        // Note: key order is random so this removes a random element from the map.
+        while self.should_prune_pending_transactions() {
+            if let Some(key) = self.pending_transactions.keys().next().map(|key| *key) {
+                self.pending_transactions.remove(&key);
+            } else {
+                break
+            }
+        }
         self.pending_transactions.insert((from, to), transaction_type);
         AddPendingTransactionResponse::Ok
     }
@@ -500,13 +506,8 @@ impl AccountsStore {
     pub fn should_prune_pending_transactions(&self) -> bool {
         // Valid pending transactions are very short lived.
         // If there are many, it's because it's filled with invalid pending transactions.
-        self.pending_transactions.len() > TRANSACTIONS_COUNT_LIMIT as usize
-    }
-
-    pub fn prune_pending_transactions(&mut self) {
-        // Worst case scenario a valid pending transaction is removed.
-        // The user needs to ask for a refund or notify manually if not already done.
-        self.pending_transactions = HashMap::new();
+        const PENDING_TRANSACTIONS_LIMIT: usize = 10_000;
+        self.pending_transactions.len() >= PENDING_TRANSACTIONS_LIMIT
     }
 
     pub fn append_transaction(
