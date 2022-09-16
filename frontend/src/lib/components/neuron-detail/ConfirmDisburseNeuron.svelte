@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, type E8s } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
-  import { neuronStake } from "../../utils/neuron.utils";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
-  export let neuron: NeuronInfo;
+  export let amount: E8s;
+  export let source: string;
   export let destinationAddress: string;
   export let loading: boolean = false;
 
@@ -20,16 +20,12 @@
   data-tid="confirm-disburse-screen"
 >
   <div class="amount">
-    <AmountDisplay
-      inline
-      amount={TokenAmount.fromE8s({ amount: neuronStake(neuron) })}
-    />
+    <AmountDisplay inline amount={TokenAmount.fromE8s({ amount })} />
   </div>
 
-  <TransactionInfo
-    source={neuron.neuronId.toString()}
-    destination={destinationAddress}
-  />
+  {#if destinationAddress !== undefined}
+    <TransactionInfo {source} destination={destinationAddress} />
+  {/if}
 
   <button
     class="primary full-width"

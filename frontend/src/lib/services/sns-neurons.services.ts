@@ -8,6 +8,7 @@ import {
 import { get } from "svelte/store";
 import {
   addNeuronPermissions,
+  disburse as disburseApi,
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
@@ -198,6 +199,32 @@ export const removeHotkey = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_remove_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const disburse = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await disburseApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_disburse",
       err,
     });
     return { success: false };

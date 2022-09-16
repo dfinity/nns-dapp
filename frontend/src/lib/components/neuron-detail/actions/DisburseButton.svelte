@@ -2,8 +2,9 @@
   import { i18n } from "../../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import type { SvelteComponent } from "svelte";
+  import type { SnsNeuron } from "@dfinity/sns";
 
-  export let neuron: NeuronInfo;
+  export let neuron: NeuronInfo | SnsNeuron;
   export let modal: typeof SvelteComponent;
 
   let showModal: boolean = false;

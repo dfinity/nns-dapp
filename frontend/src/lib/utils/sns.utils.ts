@@ -3,6 +3,7 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsMetadataResponseEntries,
   type SnsGetMetadataResponse,
+  type SnsNeuron,
   type SnsSwap,
   type SnsSwapDerivedState,
   type SnsSwapInit,
@@ -196,3 +197,7 @@ export const getSwapCanisterAccount = ({
 
   return accountIdentifier;
 };
+
+export const isDissolved = (neuron: SnsNeuron) =>
+  neuron.dissolve_state[0] !== undefined &&
+  "DissolveDelaySeconds" in neuron.dissolve_state[0];

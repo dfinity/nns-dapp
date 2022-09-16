@@ -1,67 +1,65 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import type { E8s, NeuronInfo } from "@dfinity/nns";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
 
-  import { stopBusy } from "../../stores/busy.store";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
   import { toastsSuccess } from "../../stores/toasts.store";
   import { routeStore } from "../../stores/route.store";
   import { createEventDispatcher } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
-  import { disburse } from "../../services/neurons.services";
-  import { neuronStake } from "../../utils/neuron.utils";
+  import { disburse } from "../../services/sns-neurons.services";
+  import { snsOnlyProjectStore } from "../../derived/selected-project.derived";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
+  import { accountsStore } from "../../stores/accounts.store";
+  import { getSnsNeuronIdAsHexString } from "../../utils/sns-neuron.utils";
+  import type { E8s } from "@dfinity/nns/dist/types";
+  import type { Principal } from "@dfinity/principal";
 
-  export let neuron: NeuronInfo;
+  export let neuron: SnsNeuron;
+
+  let destinationAddress: string;
+  $: destinationAddress = $accountsStore?.main?.identifier;
+
+  let source: string;
+  $: source = getSnsNeuronIdAsHexString(neuron);
+
+  let amount: E8s;
+  $: amount = neuron.cached_neuron_stake_e8s;
 
   const dispatcher = createEventDispatcher();
   const steps: Steps = [
     {
-      name: "SelectDestination",
-      showBackButton: false,
-      title: $i18n.neuron_detail.disburse_neuron_title,
-    },
-    {
       name: "ConfirmDisburse",
-      showBackButton: true,
+      showBackButton: false,
       title: $i18n.accounts.review_transaction,
     },
   ];
 
   let currentStep: Step;
-  let modal: WizardModal;
   let loading: boolean = false;
-  let amount: E8s;
-  $: amount = neuronStake(neuron);
-
-  let destinationAddress: string | undefined;
-
-  const onSelectAddress = ({
-    detail: { address },
-  }: CustomEvent<{ address: string }>) => {
-    destinationAddress = address;
-    modal.next();
-  };
 
   const executeTransaction = async () => {
-    startBusyNeuron({
-      initiator: "disburse-neuron",
-      neuronId: neuron.neuronId,
+    startBusy({
+      initiator: "disburse-sns-neuron",
     });
 
     loading = true;
 
+    let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
+
+    assertNonNullish(rootCanisterId);
+
     const { success } = await disburse({
-      neuronId: neuron.neuronId,
-      toAccountId: destinationAddress as string,
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
     });
 
     loading = false;
 
-    stopBusy("disburse-neuron");
+    stopBusy("disburse-sns-neuron");
 
     if (success) {
       toastsSuccess({
@@ -77,20 +75,17 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
-  {#if currentStep.name === "SelectDestination"}
-    <DestinationAddress on:nnsAddress={onSelectAddress} />
-  {/if}
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
       on:nnsConfirm={executeTransaction}
       {amount}
-      source={neuron.neuronId.toString()}
+      {source}
       {loading}
       {destinationAddress}
     />
