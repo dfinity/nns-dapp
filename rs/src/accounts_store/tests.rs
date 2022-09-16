@@ -297,7 +297,6 @@ fn add_pending_transactions_removes_last_one_on_limit() {
     unsafe {
         now_millis = time() / 1_000_000;
     }
-    println!("Before loop: {}", now_millis.to_string());
     // 10_000 is the PENDING_TRANSACTIONS_LIMIT
     for n in 0..10_000 {
         let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);

@@ -492,7 +492,6 @@ impl AccountsStore {
     }
 
     fn prune_old_pending_transactions(&mut self, now_millis: u64) {
-        println!("Prunning old: {}", now_millis.to_string());
         const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
         let one_hour_ago = now_millis - HOUR_IN_MILLISECONDS;
         // Keep pending transactions of the last hour only
