@@ -170,19 +170,13 @@ describe("Accounts", () => {
   });
 
   it("should open transaction modal", async () => {
-    const { container, getByText } = render(Accounts);
+    const { getByTestId } = render(Accounts);
 
-    const button = container.querySelector(
-      '[data-tid="open-new-transaction"]'
-    ) as HTMLButtonElement;
+    const button = getByTestId("open-new-transaction");
     await fireEvent.click(button);
 
     await waitFor(() => {
-      expect(container.querySelector("div.modal")).not.toBeNull();
-
-      expect(
-        getByText(en.accounts.select_source, { exact: false })
-      ).toBeInTheDocument();
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
   });
 
