@@ -249,16 +249,18 @@ fn add_pending_transactions_removes_old_ones() {
     let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
     assert_eq!(0, store.pending_transactions.len());
 
-    let from_account_identifier = AccountIdentifier::new(buyer, None);
-    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), None);
     const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
     let two_hours_ago = time_millis() - (HOUR_IN_MILLISECONDS * 2);
-    store.pending_transactions.insert(
-        (from_account_identifier, to_account_identifier),
-        (transaction_type, two_hours_ago),
-    );
+    for n in 0..5000 {
+        let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
+        let from_account_identifier = AccountIdentifier::new(buyer, None);
+        store.pending_transactions.insert(
+            (from_account_identifier, to_account_identifier),
+            (transaction_type, two_hours_ago),
+        );
+    }
     // New pending transaction
-    assert_eq!(1, store.pending_transactions.len());
+    assert_eq!(5000, store.pending_transactions.len());
 
     // Add the one that exceeds the limit
     let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
@@ -267,7 +269,7 @@ fn add_pending_transactions_removes_old_ones() {
     let new_transaction_type = TransactionType::ParticipateSwap(swap_canister_id_2);
     store.add_pending_transaction(from_account_identifier, to_account_identifier, new_transaction_type);
 
-    // Adding new pending transaction removes old one
+    // Adding new pending transaction removes old ones
     assert_eq!(1, store.pending_transactions.len());
 
     // But add the new one

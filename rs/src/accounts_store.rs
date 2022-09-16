@@ -473,7 +473,9 @@ impl AccountsStore {
     ) -> AddPendingTransactionResponse {
         // Call to `time` needs the unsafe
         let now_millis = time_millis();
-        self.prune_old_pending_transactions(now_millis);
+        if self.pending_transactions.len() > 1_000 {
+            self.prune_old_pending_transactions(now_millis);
+        }
         if self.pending_transactions_limit_reached() {
             // We should never hit this
             // Just to be safe and the pending transaction is always added
