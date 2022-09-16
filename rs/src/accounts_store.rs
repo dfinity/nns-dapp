@@ -475,7 +475,7 @@ impl AccountsStore {
             if let Some(key) = self.pending_transactions.keys().next().map(|key| *key) {
                 self.pending_transactions.remove(&key);
             } else {
-                break
+                break;
             }
         }
         self.pending_transactions.insert((from, to), transaction_type);
@@ -1372,7 +1372,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            _,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1415,7 +1415,10 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            // Valid pending transactions are short-lived.
+            // If there are many, it's because some malicious actor
+            // or expired pending transactions
+            pending_transactions: HashMap::new(),
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
