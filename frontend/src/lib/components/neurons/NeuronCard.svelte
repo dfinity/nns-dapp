@@ -13,7 +13,7 @@
   import { authStore } from "../../stores/auth.store";
   import type { CardType } from "../../types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
-  import IconStackedLineChart from "../../icons/IconStackedLineChart.svelte";
+  import { IconStackedLineChart } from "@dfinity/gix-components";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
 

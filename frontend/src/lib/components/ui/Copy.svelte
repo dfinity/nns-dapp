@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconCopy from "../../icons/IconCopy.svelte";
+  import { IconCopy } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
 

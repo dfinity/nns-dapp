@@ -56,7 +56,7 @@
 <main class="legacy">
   <section data-tid="accounts-body">
     <div class="title">
-      <h1>{$i18n.accounts.title}</h1>
+      <h1>{$i18n.accounts.total}</h1>
 
       {#if accounts?.main}
         <Tooltip

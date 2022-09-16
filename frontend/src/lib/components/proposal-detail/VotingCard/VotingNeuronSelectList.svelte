@@ -14,44 +14,48 @@
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
-<ul>
-  {#each $votingNeuronSelectStore.neurons as neuron}
-    <li>
-      <Checkbox
-        inputId={`${neuron.neuronId}`}
-        checked={$votingNeuronSelectStore.selectedIds.includes(neuron.neuronId)}
-        on:nnsChange={() => toggleSelection(neuron.neuronId)}
-        text="block"
-        selector="neuron-checkbox"
-        {disabled}
-      >
-        <span
-          class="neuron-id value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_neuronId,
-            {
-              $neuronId: `${neuron.neuronId}`,
-            }
-          )}>{`${neuron.neuronId}`}</span
-        >
-        <span
-          class="voting-power value"
-          aria-label={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_votingPower,
-            {
-              $votingPower: formatVotingPower(
-                getVotingPower({ neuron, proposal: proposalInfo })
-              ),
-            }
+{#if $votingNeuronSelectStore.neurons.length > 0}
+  <ul>
+    {#each $votingNeuronSelectStore.neurons as neuron}
+      <li>
+        <Checkbox
+          inputId={`${neuron.neuronId}`}
+          checked={$votingNeuronSelectStore.selectedIds.includes(
+            neuron.neuronId
           )}
-          >{`${formatVotingPower(
-            getVotingPower({ neuron, proposal: proposalInfo })
-          )}`}</span
+          on:nnsChange={() => toggleSelection(neuron.neuronId)}
+          text="block"
+          selector="neuron-checkbox"
+          {disabled}
         >
-      </Checkbox>
-    </li>
-  {/each}
-</ul>
+          <span
+            class="neuron-id value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_neuronId,
+              {
+                $neuronId: `${neuron.neuronId}`,
+              }
+            )}>{`${neuron.neuronId}`}</span
+          >
+          <span
+            class="voting-power value"
+            aria-label={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_votingPower,
+              {
+                $votingPower: formatVotingPower(
+                  getVotingPower({ neuron, proposal: proposalInfo })
+                ),
+              }
+            )}
+            >{`${formatVotingPower(
+              getVotingPower({ neuron, proposal: proposalInfo })
+            )}`}</span
+          >
+        </Checkbox>
+      </li>
+    {/each}
+  </ul>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

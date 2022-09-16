@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import type { AppPath } from "../constants/routes.constants";
-import { isAppPath } from "../utils/app-path.utils";
+import { changePathContext, isAppPath } from "../utils/app-path.utils";
 import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
@@ -60,6 +60,30 @@ const initRouteStore = () => {
       }));
 
       replaceHistory({ path, query });
+    },
+
+    /**
+     * Replaces the path with a new context.
+     * Doesn't do anything if the current path is not a context path.
+     *
+     * When called with `bbbbb-bb`
+     * Ex: `/#/u/aaaaa-aa/neurons` becomes `/#/u/bbbbb-bb/neurons`
+     * Ex: `/#/u/aaaaa-aa/account/1234` becomes `/#/u/bbbbb-bb/account/1234`
+     * Ex: `/#/neurons` doesn't change anything
+     *
+     * @param newContext string - the new context to navigate to
+     */
+    changeContext: (newContext: string) => {
+      let newPath;
+      update((state: RouteStore) => {
+        newPath = changePathContext({ path: state.path, newContext });
+        return {
+          ...state,
+          path: newPath,
+        };
+      });
+
+      replaceHistory({ path: newPath });
     },
   };
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
-  import IconExpandMore from "../../icons/IconExpandMore.svelte";
+  import { IconExpandMore } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
 

@@ -3,9 +3,9 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
+import { sortedSnsNeuronStore } from "../../../lib/derived/sorted-sns-neurons.derived";
 import SnsNeurons from "../../../lib/pages/SnsNeurons.svelte";
 import { authStore } from "../../../lib/stores/auth.store";
-import { sortedSnsNeuronStore } from "../../../lib/stores/sns-neurons.store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,

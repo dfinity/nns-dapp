@@ -2,18 +2,18 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
   import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
-  import type { VoteInProgress } from "../../../stores/voting.store";
   import { VOTING_UI } from "../../../constants/environment.constants";
   import VotingNeuronSelectLegacy from "./VotingNeuronSelectLegacy.svelte";
   import VotingNeuronSelectModern from "./VotingNeuronSelectModern.svelte";
+  import type { VoteRegistration } from "../../../stores/vote-registration.store";
 
   export let proposalInfo: ProposalInfo;
-  export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let totalNeuronsVotingPower: bigint;
   let disabled: boolean = false;
 
-  $: disabled = voteInProgress !== undefined;
+  $: disabled = voteRegistration !== undefined;
 
   $: totalNeuronsVotingPower = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,

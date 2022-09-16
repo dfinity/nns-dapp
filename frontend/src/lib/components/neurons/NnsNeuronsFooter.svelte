@@ -6,8 +6,8 @@
   import { sortedNeuronStore } from "../../stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
   import { i18n } from "../../stores/i18n";
-  import { voteInProgressStore } from "../../stores/voting.store";
   import Tooltip from "../ui/Tooltip.svelte";
+  import { voteRegistrationStore } from "../../stores/vote-registration.store";
 
   type ModalKey = "stake-neuron" | "merge-neurons";
   let showModal: ModalKey | undefined = undefined;
@@ -15,7 +15,7 @@
   const closeModal = () => (showModal = undefined);
 
   let votingInProgress: boolean = false;
-  $: votingInProgress = $voteInProgressStore.votes.length > 0;
+  $: votingInProgress = $voteRegistrationStore.registrations.length > 0;
   let enoughNeuronsToMerge: boolean;
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>

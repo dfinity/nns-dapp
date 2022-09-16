@@ -30,7 +30,7 @@
 
   const goToNeuronDetails = (id: NeuronId) => () => {
     routeStore.navigate({
-      path: `${AppPath.NeuronDetail}/${id}`,
+      path: `${AppPath.LegacyNeuronDetail}/${id}`,
     });
   };
 </script>

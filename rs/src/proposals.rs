@@ -61,7 +61,7 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
 fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
-    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().map(|p| p.action.as_ref()).flatten() {
+    if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
             .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
     } else {
@@ -421,10 +421,11 @@ mod def {
         format_bytes(&calculate_hash(bytes))
     }
 
+    use std::fmt::Write;
     fn format_bytes(bytes: &[u8]) -> String {
-        let mut hash_string = String::with_capacity(bytes.len() * 2);
-        for byte in bytes {
-            hash_string.push_str(&format!("{:02x}", byte));
+        let mut hash_string = String::with_capacity(64);
+        for byte in calculate_hash(bytes) {
+            write!(hash_string, "{:02x}", byte).unwrap();
         }
         hash_string
     }

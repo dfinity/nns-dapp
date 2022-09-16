@@ -12,9 +12,9 @@
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { initApp } from "./lib/services/app.services";
-  import { voteInProgressStore } from "./lib/stores/voting.store";
   import { syncBeforeUnload } from "./lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "./lib/utils/proposals.utils";
+  import { voteRegistrationStore } from "./lib/stores/vote-registration.store";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -38,9 +38,10 @@
     }
   );
 
-  const unsubscribeVoteInProgress: Unsubscriber = voteInProgressStore.subscribe(
-    ({ votes }) => syncBeforeUnload(voteRegistrationActive(votes))
-  );
+  const unsubscribeVoteInProgress: Unsubscriber =
+    voteRegistrationStore.subscribe(({ registrations }) =>
+      syncBeforeUnload(voteRegistrationActive(registrations))
+    );
 
   onDestroy(() => {
     unsubscribeAuth();
@@ -52,16 +53,17 @@
 <Guard>
   <Route path={AppPath.Authentication} />
   <PrivateRoute path={AppPath.Accounts} />
+  <PrivateRoute path={AppPath.LegacyNeurons} />
   <PrivateRoute path={AppPath.Neurons} />
   <PrivateRoute path={AppPath.Proposals} />
   <PrivateRoute path={AppPath.Canisters} />
   <PrivateRoute path={AppPath.Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} />
-  <PrivateRoute path={AppPath.NeuronDetail} />
+  <PrivateRoute path={AppPath.LegacyNeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} />
   <PrivateRoute path={AppPath.Launchpad} />
   <PrivateRoute path={AppPath.ProjectDetail} />
-  <PrivateRoute path={AppPath.SnsNeuronDetail} />
+  <PrivateRoute path={AppPath.NeuronDetail} />
 </Guard>
 
 <Toasts />

@@ -112,7 +112,7 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  accounts: string;
+  tokens: string;
   neurons: string;
   voting: string;
   canisters: string;
@@ -135,7 +135,7 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  title: string;
+  total: string;
   main: string;
   main_account: string;
   new_transaction: string;
@@ -442,6 +442,8 @@ interface I18nProposal_detail__vote {
   cast_vote_votingPower: string;
   vote_adopt_in_progress: string;
   vote_reject_in_progress: string;
+  vote_status_registering: string;
+  vote_status_updating: string;
 }
 
 interface I18nProposal_detail__ineligible {

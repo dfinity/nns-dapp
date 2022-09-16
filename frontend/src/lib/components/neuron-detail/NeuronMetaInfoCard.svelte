@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -24,6 +24,7 @@
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
+  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -89,7 +90,7 @@
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.Dissolved}
-          <DisburseButton {neuron} />
+          <DisburseButton {neuron} modal={DisburseNnsNeuronModal} />
         {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}

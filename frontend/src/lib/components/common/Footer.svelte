@@ -15,7 +15,7 @@
 
     :global(.toolbar) {
       align-items: end;
-      margin: 0 auto var(--padding-2x);
+      margin: 0 auto max(env(safe-area-inset-bottom), var(--padding-2x));
     }
 
     :global(.main) {

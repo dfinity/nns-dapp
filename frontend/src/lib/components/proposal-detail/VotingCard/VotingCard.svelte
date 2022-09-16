@@ -1,8 +1,11 @@
 <script lang="ts">
-  import type { ProposalInfo, Vote } from "@dfinity/nns";
-  import { votableNeurons as getVotableNeurons } from "@dfinity/nns";
+  import {
+    type ProposalInfo,
+    type Vote,
+    votableNeurons as getVotableNeurons,
+  } from "@dfinity/nns";
+
   import { getContext, onDestroy } from "svelte";
-  import { registerVotes } from "../../../services/proposals.services";
   import { i18n } from "../../../stores/i18n";
   import { definedNeuronsStore } from "../../../stores/neurons.store";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
@@ -15,9 +18,10 @@
   } from "../../../types/selected-proposal.context";
   import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
   import {
-    voteInProgressStore,
-    type VoteInProgress,
-  } from "../../../stores/voting.store";
+    voteRegistrationStore,
+    type VoteRegistration,
+  } from "../../../stores/vote-registration.store";
+  import { registerVotes } from "../../../services/vote-registration.services";
   import { VOTING_UI } from "../../../constants/environment.constants";
   import { BottomSheet } from "@dfinity/gix-components";
 
@@ -28,18 +32,19 @@
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     });
+
   let visible: boolean = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteInProgress: VoteInProgress | undefined = undefined;
+  let voteRegistration: VoteRegistration | undefined = undefined;
 
-  $: voteInProgress = $voteInProgressStore.votes.find(
-    ({ proposalId }) => proposalInfo.id === proposalId
+  $: voteRegistration = $voteRegistrationStore.registrations.find(
+    ({ proposalInfo: { id } }) => proposalInfo.id === id
   );
 
   $: $definedNeuronsStore,
     (visible =
-      voteInProgress !== undefined ||
+      voteRegistration !== undefined ||
       (votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
@@ -55,7 +60,6 @@
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
-
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds,
@@ -82,10 +86,10 @@
   {#if visible}
     <CardInfo>
       <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
-      <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+      <VotingNeuronSelect {proposalInfo} {voteRegistration} />
       <VotingConfirmationToolbar
         {proposalInfo}
-        {voteInProgress}
+        {voteRegistration}
         on:nnsConfirm={vote}
         layout="legacy"
       />
@@ -96,12 +100,12 @@
     {#if visible}
       <VotingConfirmationToolbar
         {proposalInfo}
-        {voteInProgress}
+        {voteRegistration}
         on:nnsConfirm={vote}
         layout="modern"
       />
     {/if}
 
-    <VotingNeuronSelect {proposalInfo} {voteInProgress} />
+    <VotingNeuronSelect {proposalInfo} {voteRegistration} />
   </BottomSheet>
 {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconSubdirectory from "../../icons/IconSubdirectory.svelte";
+  import { IconSubdirectory } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
 </script>
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   import Toggle from "../ui/Toggle.svelte";
-  import IconLightMode from "../../icons/IconLightMode.svelte";
-  import IconDarkMode from "../../icons/IconDarkMode.svelte";
+  import { IconLightMode, IconDarkMode } from "@dfinity/gix-components";
 
   import { Theme } from "../../types/theme";
   import { themeStore } from "../../stores/theme.store";
@@ -15,8 +14,6 @@
 </script>
 
 <div class="theme-toggle" data-tid="theme-toggle">
-  <span>{$i18n.theme.theme}</span>
-
   <div class="toggle">
     <IconLightMode />
     <Toggle
