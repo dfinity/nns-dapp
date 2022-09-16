@@ -27,7 +27,7 @@ export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
   [ProposalStatus.Executed]: Color.SUCCESS,
   [ProposalStatus.Open]: Color.WARNING,
   [ProposalStatus.Unknown]: undefined,
-  [ProposalStatus.Rejected]: undefined,
+  [ProposalStatus.Rejected]: Color.ERROR,
   [ProposalStatus.Accepted]: undefined,
-  [ProposalStatus.Failed]: undefined,
+  [ProposalStatus.Failed]: Color.ERROR,
 };

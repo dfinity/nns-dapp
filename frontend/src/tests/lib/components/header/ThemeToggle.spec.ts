@@ -10,12 +10,6 @@ import { Theme } from "../../../../lib/types/theme";
 import en from "../../../mocks/i18n.mock";
 
 describe("ThemeToggle", () => {
-  it("should render a label", () => {
-    const { getByText } = render(ThemeToggle);
-
-    expect(getByText(en.theme.theme)).toBeInTheDocument();
-  });
-
   it("should render a toggle", () => {
     const { container } = render(ThemeToggle);
 
