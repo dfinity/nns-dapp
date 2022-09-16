@@ -34,7 +34,7 @@
         return;
       }
       // if the path is unsupported (to mock the flutter dapp) the user will be redirected to the first page (/accounts/) page (unknown path will not be saved in session History)
-      routeStore.replace({ path: AppPath.Accounts });
+      routeStore.replace({ path: AppPath.LegacyAccounts });
     }
   );
 
@@ -53,6 +53,7 @@
 <Guard>
   <Route path={AppPath.Authentication} />
   <PrivateRoute path={AppPath.Accounts} />
+  <PrivateRoute path={AppPath.LegacyAccounts} />
   <PrivateRoute path={AppPath.LegacyNeurons} />
   <PrivateRoute path={AppPath.Neurons} />
   <PrivateRoute path={AppPath.Proposals} />

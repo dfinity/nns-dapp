@@ -13,12 +13,12 @@ import {
 
 describe("route-store", () => {
   it("should set referrer path", () => {
-    routeStore.update({ path: AppPath.Accounts });
+    routeStore.update({ path: AppPath.LegacyAccounts });
 
     routeStore.navigate({ path: AppPath.Proposals });
 
     let referrerPath = get(routeStore).referrerPath;
-    expect(referrerPath).toEqual(AppPath.Accounts);
+    expect(referrerPath).toEqual(AppPath.LegacyAccounts);
 
     routeStore.replace({ path: AppPath.LegacyNeurons });
 

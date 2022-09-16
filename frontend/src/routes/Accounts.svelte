@@ -1,148 +1,60 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { accountsStore } from "../lib/stores/accounts.store";
-  import type { AccountsStore } from "../lib/stores/accounts.store";
-  import AmountDisplay from "../lib/components/ic/AmountDisplay.svelte";
-  import AccountCard from "../lib/components/accounts/AccountCard.svelte";
-  import { i18n } from "../lib/stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
+  import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
+  import { ENABLE_SNS } from "../lib/constants/environment.constants";
+  import NnsAccounts from "../lib/pages/NnsAccounts.svelte";
+  import NnsAccountsFooter from "../lib/components/accounts/NnsAccountsFooter.svelte";
+  import {
+    isNnsProjectStore,
+    snsProjectSelectedStore,
+  } from "../lib/derived/selected-project.derived";
+  import { onMount } from "svelte";
   import { routeStore } from "../lib/stores/route.store";
+  import { isRoutePath } from "../lib/utils/app-path.utils";
   import { AppPath } from "../lib/constants/routes.constants";
-  import AddAcountModal from "../lib/modals/accounts/AddAccountModal.svelte";
-  import { TokenAmount } from "@dfinity/nns";
-  import { formatICP, sumTokenAmounts } from "../lib/utils/icp.utils";
-  import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
-  import Footer from "../lib/components/common/Footer.svelte";
-  import Tooltip from "../lib/components/ui/Tooltip.svelte";
-  import { replacePlaceholders } from "../lib/utils/i18n.utils";
-  import IcpTransactionModal from "../lib/modals/accounts/IcpTransactionModal.svelte";
+  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
+  import SnsAccounts from "../lib/pages/SnsAccounts.svelte";
 
-  let accounts: AccountsStore | undefined;
-
-  const unsubscribe: Unsubscriber = accountsStore.subscribe(
-    async (storeData: AccountsStore) => (accounts = storeData)
-  );
-
-  const cardClick = (identifier: string) =>
-    routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
-
-  onDestroy(unsubscribe);
-
-  let modal: "AddAccountModal" | "NewTransaction" | undefined = undefined;
-  const openAddAccountModal = () => (modal = "AddAccountModal");
-  const openNewTransaction = () => (modal = "NewTransaction");
-  const closeModal = () => (modal = undefined);
-
-  let totalBalance: TokenAmount;
-  let totalICP: string;
-  const zeroICPs = TokenAmount.fromE8s({
-    amount: BigInt(0),
-    token: accounts?.main?.balance.token,
+  // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
+  onMount(() => {
+    if (
+      ENABLE_SNS &&
+      isRoutePath({ path: AppPath.LegacyAccounts, routePath: $routeStore.path })
+    ) {
+      routeStore.changeContext(OWN_CANISTER_ID.toText());
+    }
   });
-  $: {
-    totalBalance = sumTokenAmounts(
-      accounts?.main?.balance || zeroICPs,
-      ...(accounts?.subAccounts || []).map(({ balance }) => balance),
-      ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
-    );
-    totalICP = formatICP({
-      value: totalBalance.toE8s(),
-      detailed: true,
-    });
-  }
 </script>
 
 <main class="legacy">
-  <section data-tid="accounts-body">
-    <div class="title">
-      <h1>{$i18n.accounts.total}</h1>
-
-      {#if accounts?.main}
-        <Tooltip
-          id="wallet-total-icp"
-          text={replacePlaceholders($i18n.accounts.current_balance_total, {
-            $amount: totalICP,
-          })}
-        >
-          <AmountDisplay amount={totalBalance} />
-        </Tooltip>
-      {/if}
+  {#if ENABLE_SNS}
+    <div class="dropdown-wrapper">
+      <div class="fit-content">
+        <SelectProjectDropdown />
+      </div>
     </div>
+  {/if}
 
-    {#if accounts?.main?.identifier}
-      <AccountCard
-        role="link"
-        on:click={() => cardClick(accounts?.main?.identifier ?? "")}
-        showCopy
-        account={accounts?.main}>{$i18n.accounts.main}</AccountCard
-      >
-      {#each accounts.subAccounts || [] as subAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(subAccount.identifier)}
-          showCopy
-          account={subAccount}>{subAccount.name}</AccountCard
-        >
-      {/each}
-      {#each accounts.hardwareWallets || [] as walletAccount}
-        <AccountCard
-          role="link"
-          on:click={() => cardClick(walletAccount.identifier)}
-          showCopy
-          account={walletAccount}>{walletAccount.name}</AccountCard
-        >
-      {/each}
-    {:else}
-      <SkeletonCard />
-    {/if}
-  </section>
+  {#if $isNnsProjectStore}
+    <NnsAccounts />
+  {:else if $snsProjectSelectedStore !== undefined}
+    <SnsAccounts />
+  {/if}
 </main>
 
-{#if modal === "AddAccountModal"}
-  <AddAcountModal on:nnsClose={closeModal} />
-{/if}
-{#if modal === "NewTransaction"}
-  <IcpTransactionModal on:nnsClose={closeModal} />
-{/if}
-
-{#if accounts}
-  <Footer>
-    <Toolbar>
-      <button
-        class="primary full-width"
-        on:click={openNewTransaction}
-        data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
-      >
-      <button
-        class="primary full-width"
-        on:click={openAddAccountModal}
-        data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
-      >
-    </Toolbar>
-  </Footer>
+{#if $isNnsProjectStore}
+  <NnsAccountsFooter />
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  .dropdown-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  .title {
-    display: block;
-    width: 100%;
+    margin-top: var(--padding-4x);
 
-    margin-bottom: var(--padding-2x);
-
-    --icp-font-size: var(--font-size-h1);
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
+    .fit-content {
+      width: fit-content;
     }
   }
 </style>
