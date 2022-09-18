@@ -79,6 +79,11 @@ const initAuthStore = () => {
 
       await client.logout();
 
+      // We currently do not have issue because the all screen is reloaded after sign-out.
+      // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
+      // This fix a "sign in -> sign out -> sign in again" flow without window reload.
+      authClient = undefined;
+
       update((state: AuthStore) => ({
         ...state,
         identity: null,
