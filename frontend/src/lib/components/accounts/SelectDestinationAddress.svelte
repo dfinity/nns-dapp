@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { accountsListStore } from "../../derived/accounts-list.derived";
   import { accountsStore } from "../../stores/accounts.store";
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
@@ -30,6 +31,10 @@
     }
   }
 
+  // Show the toggle if there are more than one account to select from.
+  let showToggle: boolean = true;
+  $: showToggle = $accountsListStore.filter(filterAccounts).length > 0;
+
   const onToggleManualInput = () => {
     showManualAddress = !showManualAddress;
     selectedDestinationAddress = undefined;
@@ -40,15 +45,17 @@
 <div data-tid="select-destination">
   <div class="title">
     <p class="label">{$i18n.accounts.destination}</p>
-    <div class="toggle">
-      <p>{$i18n.accounts.select}</p>
-      <Toggle
-        bind:checked={showManualAddress}
-        on:nnsToggle={onToggleManualInput}
-        ariaLabel="change"
-      />
-      <p>{$i18n.accounts.manual}</p>
-    </div>
+    {#if showToggle}
+      <div class="toggle">
+        <p>{$i18n.accounts.select}</p>
+        <Toggle
+          bind:checked={showManualAddress}
+          on:nnsToggle={onToggleManualInput}
+          ariaLabel="change"
+        />
+        <p>{$i18n.accounts.manual}</p>
+      </div>
+    {/if}
   </div>
   {#if showManualAddress}
     <AddressInput bind:address={selectedDestinationAddress} />
