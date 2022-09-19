@@ -1,14 +1,15 @@
 use crate::proposals::def::{
     AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
-    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest, AddWasmRequestTrimmed, BlessReplicaVersionPayload,
-    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload,
-    CompleteCanisterMigrationPayload, CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload,
-    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable,
-    RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload,
-    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
-    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload,
-    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
+    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest, AddWasmRequestTrimmed,
+    BlessReplicaVersionPayload, ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed,
+    ChangeSubnetMembershipPayload, CompleteCanisterMigrationPayload, CreateSubnetPayload,
+    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
+    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
+    RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
+    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
+    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
+    UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
+    UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -413,7 +414,6 @@ mod def {
     // https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
     pub type ChangeSubnetMembershipPayload =
         registry_canister::mutations::do_change_subnet_membership::ChangeSubnetMembershipPayload;
-
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
