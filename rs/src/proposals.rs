@@ -8,7 +8,7 @@ use crate::proposals::def::{
     StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
     UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
     UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed,
+    UpgradeRootProposalPayloadTrimmed, ChangeSubnetMembershipPayload,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -123,6 +123,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         27 => identity::<UpdateFirewallRulesPayload>(payload_bytes),
         28 => identity::<PrepareCanisterMigrationPayload>(payload_bytes),
         29 => identity::<CompleteCanisterMigrationPayload>(payload_bytes),
+        31 => identity::<ChangeSubnetMembershipPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -373,6 +374,11 @@ mod def {
     // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34
     pub type CompleteCanisterMigrationPayload =
         registry_canister::mutations::complete_canister_migration::CompleteCanisterMigrationPayload;
+
+    // NNS function 31 - AddSnsWasm
+    // The payload of a proposal to change the membership of nodes in an existing subnet.
+    // https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
+    pub type ChangeSubnetMembershipPayload = registry_canister::mutations::do_change_subnet_membership::ChangeSubnetMembershipPayload;
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
