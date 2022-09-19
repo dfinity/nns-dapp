@@ -37,10 +37,13 @@
   <div class="info">
     <KeyValuePair>
       <span class="label" slot="key">{$i18n.accounts.source}</span>
-      <AmountDisplay slot="value" singleLine amount={sourceAccount.balance} />
+      <div class="balance" slot="value">
+        <span class="label">{$i18n.accounts.balance}</span>
+        <AmountDisplay singleLine amount={sourceAccount.balance} />
+      </div>
     </KeyValuePair>
     <div>
-      <p class="label">
+      <p>
         {sourceAccount.name ?? $i18n.accounts.main}
       </p>
       <p
@@ -94,6 +97,12 @@
 <style lang="scss">
   @use "../../../themes/mixins/modal";
 
+  .balance {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: var(--padding-1_5x);
+  }
   .account-identifier {
     word-break: break-all;
   }
