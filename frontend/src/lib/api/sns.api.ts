@@ -174,7 +174,7 @@ const wrappers = async ({
   }
 };
 
-const wrapper = async ({
+export const wrapper = async ({
   identity,
   rootCanisterId,
   certified,
