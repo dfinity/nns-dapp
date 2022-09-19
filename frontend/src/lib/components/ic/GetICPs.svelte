@@ -2,7 +2,7 @@
   /**
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
-  import Modal from "../../modals/Modal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import Input from "../ui/Input.svelte";
   import { getICPs } from "../../services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
@@ -62,11 +62,15 @@
   <span>Get ICPs</span>
 </button>
 
-<Modal {visible} on:nnsClose={onClose}>
+<Modal {visible} role="alert" on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
-  <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
-    <span class="how-much">How much?</span>
+  <form
+    id="get-icp-form"
+    data-tid="get-icp-form"
+    on:submit|preventDefault={onSubmit}
+  >
+    <span class="label">How much?</span>
 
     <Input
       placeholderLabelKey="core.icp"
@@ -75,20 +79,22 @@
       bind:value={inputValue}
       disabled={transferring}
     />
-
-    <button
-      data-tid="get-icp-submit"
-      type="submit"
-      class="primary"
-      disabled={invalidForm || transferring}
-    >
-      {#if transferring}
-        <Spinner />
-      {:else}
-        Get
-      {/if}
-    </button>
   </form>
+
+  <button
+    form="get-icp-form"
+    data-tid="get-icp-submit"
+    type="submit"
+    class="primary"
+    slot="toolbar"
+    disabled={invalidForm || transferring}
+  >
+    {#if transferring}
+      <Spinner />
+    {:else}
+      Get
+    {/if}
+  </button>
 </Modal>
 
 <style lang="scss">
@@ -128,12 +134,7 @@
   form {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
 
-    padding: var(--padding-2x);
-
-    button {
-      margin-top: var(--padding-0_5x);
-    }
+    padding: var(--padding-2x) var(--padding);
   }
 </style>
