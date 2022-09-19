@@ -14,7 +14,6 @@ import {
   mockMainAccount,
 } from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
-import en from "../mocks/i18n.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 
 jest.mock("../../lib/services/accounts.services", () => ({
@@ -129,13 +128,13 @@ describe("Wallet", () => {
     });
 
     it("should open transaction modal on step select destination because selected account is current account", async () => {
-      const { container, getByText } = render(Wallet);
+      const { container, getByTestId } = render(Wallet);
 
       await testModal(container);
 
-      expect(
-        getByText(en.accounts.select_destination, { exact: false })
-      ).toBeInTheDocument();
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+      );
     });
 
     it("should display SkeletonCard while loading transactions", async () => {

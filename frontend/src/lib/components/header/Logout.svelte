@@ -15,7 +15,7 @@
 
     display: flex;
     align-items: center;
-    gap: var(--padding);
+    gap: var(--padding-0_5x);
 
     :global(svg) {
       width: var(--padding-3x);

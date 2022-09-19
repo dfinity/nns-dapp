@@ -23,12 +23,16 @@ main.legacy {
   @include media.min-width(medium) {
     padding: inherit;
   }
+}
 
+main.legacy,
+div.modal.legacy {
   .card {
     // solve title|icp line (e.g. neuron card)
     .meta {
       flex-wrap: wrap;
       column-gap: var(--padding);
+      word-break: break-word;
     }
 
     &[data-tid="proposal-card"] > .meta {
@@ -44,5 +48,32 @@ html[theme="light"] {
     --json-string-color: var(--brand-flamingo);
     --json-principal-color: var(--warning-emphasis);
     --json-hash-color: var(--warning-emphasis);
+  }
+}
+
+// Modal
+:root {
+  --modal-legacy-small-width: calc(100% - var(--padding-8x));
+  --modal-legacy-small-max-width: calc(100vw - var(--padding-4x));
+  --modal-legacy-small-max-height: calc(100vh - var(--padding-4x));
+  --modal-legacy-small-border-radius: calc(2 * var(--border-radius));
+
+  --modal-legacy-big-width: 100vw;
+  --modal-legacy-big-max-width: 100vw;
+  --modal-legacy-big-height: 100vh;
+  --modal-legacy-big-border-radius: 0;
+
+  @supports (-webkit-touch-callout: none) {
+    --modal-legacy-big-height: -webkit-fill-available;
+  }
+
+  @include media.min-width(medium) {
+    --modal-legacy-small-width: 500px;
+
+    --modal-legacy-big-width: 600px;
+    --modal-legacy-big-max-width: var(--modal-legacy-small-max-width);
+    --modal-legacy-big-height: var(--modal-legacy-small-max-height);
+    --modal-legacy-big-max-height: 680px;
+    --modal-legacy-big-border-radius: var(--modal-legacy-small-border-radius);
   }
 }

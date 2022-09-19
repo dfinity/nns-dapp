@@ -3,13 +3,13 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import Modal from "../../../lib/modals/Modal.svelte";
+import LegacyModal from "../../../lib/modals/LegacyModal.svelte";
 
-describe("Modal", () => {
+describe("LegacyModal", () => {
   const props: { visible: boolean } = { visible: true };
 
   it("should display modal", () => {
-    const { container, rerender } = render(Modal, {
+    const { container, rerender } = render(LegacyModal, {
       props: { visible: false },
     });
 
@@ -23,7 +23,7 @@ describe("Modal", () => {
   });
 
   it("should display a medium size modal", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props: { visible: true, size: "medium" },
     });
 
@@ -31,7 +31,7 @@ describe("Modal", () => {
   });
 
   it("should be an accessible modal", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props: { ...props, showBackButton: true },
     });
 
@@ -46,7 +46,7 @@ describe("Modal", () => {
   });
 
   it("should render a backdrop", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props,
     });
 
@@ -57,7 +57,7 @@ describe("Modal", () => {
   });
 
   it("should render a wrapper", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props,
     });
 
@@ -68,7 +68,7 @@ describe("Modal", () => {
   });
 
   it("should render a toolbar", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props: { ...props, showBackButton: true },
     });
 
@@ -80,7 +80,7 @@ describe("Modal", () => {
   });
 
   it("should render a content", () => {
-    const { container } = render(Modal, {
+    const { container } = render(LegacyModal, {
       props,
     });
 
@@ -91,7 +91,7 @@ describe("Modal", () => {
   });
 
   it("should trigger close modal on click on backdrop", (done) => {
-    const { container, component } = render(Modal, {
+    const { container, component } = render(LegacyModal, {
       props,
     });
 
@@ -105,7 +105,7 @@ describe("Modal", () => {
   });
 
   it("should trigger close modal on click on close button", (done) => {
-    const { container, component } = render(Modal, {
+    const { container, component } = render(LegacyModal, {
       props: { ...props, showBackButton: true },
     });
 
@@ -120,7 +120,7 @@ describe("Modal", () => {
   });
 
   it("should trigger back event on click on back button", (done) => {
-    const { container, component } = render(Modal, {
+    const { container, component } = render(LegacyModal, {
       props: { visible: true, showBackButton: true },
     });
 

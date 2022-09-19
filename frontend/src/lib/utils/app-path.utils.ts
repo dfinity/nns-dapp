@@ -8,6 +8,7 @@ const mapper: Record<string, string> = {
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
   [AppPath.Neurons]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/neurons`,
+  [AppPath.Accounts]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/accounts`,
   [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/[a-zA-Z0-9-]+`,
   [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+`,
   [AppPath.NeuronDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+/neuron/[a-zA-Z0-9-]+`,
@@ -136,6 +137,9 @@ const checkContextPathExceptions = ({
 }): string => {
   if (isRoutePath({ path: AppPath.LegacyNeurons, routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/neurons`;
+  }
+  if (isRoutePath({ path: AppPath.LegacyAccounts, routePath: path })) {
+    return `${CONTEXT_PATH}/${newContext}/accounts`;
   }
   if (
     isRoutePath({

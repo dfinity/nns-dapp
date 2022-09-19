@@ -112,7 +112,7 @@ interface I18nWarning {
 }
 
 interface I18nNavigation {
-  accounts: string;
+  tokens: string;
   neurons: string;
   voting: string;
   canisters: string;
@@ -135,10 +135,11 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  title: string;
+  total: string;
   main: string;
-  main_account: string;
   new_transaction: string;
+  icp_transaction_description: string;
+  review_action: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -190,6 +191,9 @@ interface I18nAccounts {
   description: string;
   edit_transaction: string;
   execute: string;
+  select: string;
+  manual: string;
+  no_account_select: string;
   current_balance_detail: string;
 }
 

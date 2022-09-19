@@ -32,6 +32,7 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
+    showInfo={$$slots.label !== undefined || $$slots.additional !== undefined}
     bind:value
     on:blur
     on:input

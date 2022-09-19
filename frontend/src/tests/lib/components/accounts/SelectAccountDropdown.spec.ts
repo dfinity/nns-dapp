@@ -5,6 +5,7 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import SelectAccountDropdown from "../../../../lib/components/accounts/SelectAccountDropdown.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
+import { isAccountHardwareWallet } from "../../../../lib/utils/accounts.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -45,7 +46,7 @@ describe("SelectAccountDropdown", () => {
 
   it("should not render accounts hardware wallets", () => {
     const { container } = render(SelectAccountDropdown, {
-      skipHardwareWallets: true,
+      filterAccounts: (account) => !isAccountHardwareWallet(account),
     });
 
     // main + subaccounts
