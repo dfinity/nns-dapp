@@ -22,7 +22,7 @@ export const mockMainAccount: Account = {
 
 export const mockSubAccount: Account = {
   identifier:
-    "aaaa5b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+    "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
   balance: TokenAmount.fromString({
     amount: "1234567.8901",
     token: ICPToken,

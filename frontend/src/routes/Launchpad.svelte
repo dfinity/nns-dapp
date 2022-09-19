@@ -9,7 +9,7 @@
 
   onMount(() => {
     if (!IS_TESTNET) {
-      routeStore.replace({ path: AppPath.Accounts });
+      routeStore.replace({ path: AppPath.LegacyAccounts });
     }
   });
 </script>
