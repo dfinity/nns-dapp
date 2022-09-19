@@ -4,7 +4,7 @@ import type { Principal } from "@dfinity/principal";
 import type { Account } from "../types/account";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { mapOptionalToken } from "../utils/sns.utils";
-import { wrapper } from "./sns.api";
+import { wrapper } from "./sns-wrapper.api";
 
 export const getSnsAccounts = async ({
   rootCanisterId,

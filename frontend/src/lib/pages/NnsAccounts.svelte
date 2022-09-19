@@ -7,7 +7,7 @@
   import { i18n } from "../stores/i18n";
   import { routeStore } from "../stores/route.store";
   import { AppPath } from "../constants/routes.constants";
-  import { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { sumTokenAmounts } from "../utils/icp.utils";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import AccountsTitle from "../components/accounts/AccountsTitle.svelte";

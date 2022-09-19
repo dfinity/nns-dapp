@@ -44,4 +44,18 @@ describe("sns-project-accounts store", () => {
     const value = get(snsProjectAccountsStore);
     expect(value?.length).toEqual(2);
   });
+
+  it("should retun first the main account", () => {
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
+    });
+    const accounts = [mockSnsSubAccount, mockSnsMainAccount];
+    snsAccountsStore.setAccounts({
+      rootCanisterId: mockPrincipal,
+      accounts,
+      certified: true,
+    });
+    const value = get(snsProjectAccountsStore);
+    expect(value?.[0]?.type).toEqual("main");
+  });
 });
