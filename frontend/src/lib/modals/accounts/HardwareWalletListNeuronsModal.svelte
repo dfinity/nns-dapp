@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import { i18n } from "../../stores/i18n";
   import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
 </script>
 
-<Modal on:nnsClose size="big">
+<LegacyModal on:nnsClose size="big">
   <span slot="title">{$i18n.neurons.title}</span>
 
   <div>
     <HardwareWalletNeurons />
   </div>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   div {

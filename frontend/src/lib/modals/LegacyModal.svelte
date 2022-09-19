@@ -98,7 +98,7 @@
     display: flex;
     flex-direction: column;
 
-    --modal-toolbar-height: 35px;
+    --modal-legacy-toolbar-height: 35px;
 
     background: var(--background);
 
@@ -108,27 +108,27 @@
     overflow: hidden;
 
     &.small {
-      width: var(--modal-small-width);
-      max-width: var(--modal-small-max-width);
+      width: var(--modal-legacy-small-width);
+      max-width: var(--modal-legacy-small-max-width);
 
-      max-height: var(--modal-small-max-height);
+      max-height: var(--modal-legacy-small-max-height);
 
-      border-radius: var(--modal-small-border-radius);
+      border-radius: var(--modal-legacy-small-border-radius);
     }
 
     &.big {
-      width: var(--modal-big-width);
-      max-width: var(--modal-big-max-width);
+      width: var(--modal-legacy-big-width);
+      max-width: var(--modal-legacy-big-max-width);
 
-      height: var(--modal-big-height);
+      height: var(--modal-legacy-big-height);
 
-      max-height: var(--modal-big-max-height, 100%);
+      max-height: var(--modal-legacy-big-max-height, 100%);
 
       @supports (-webkit-touch-callout: none) {
         max-height: -webkit-fill-available;
       }
 
-      border-radius: var(--modal-big-border-radius);
+      border-radius: var(--modal-legacy-big-border-radius);
     }
   }
 
@@ -143,7 +143,7 @@
 
     z-index: var(--z-index);
 
-    height: var(--modal-toolbar-height);
+    height: var(--modal-legacy-toolbar-height);
 
     h3 {
       @include text.clamp(1);
@@ -176,7 +176,7 @@
     display: flex;
     flex-direction: column;
 
-    height: calc(100% - var(--modal-toolbar-height));
+    height: calc(100% - var(--modal-legacy-toolbar-height));
     overflow-y: auto;
     overflow-x: hidden;
   }
