@@ -141,6 +141,7 @@ mod def {
     use ic_nervous_system_common::MethodAuthzChange;
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
+    use std::fmt::Write;
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
@@ -418,10 +419,13 @@ mod def {
     }
 
     fn calculate_hash_string(bytes: &[u8]) -> String {
-        format_bytes(&calculate_hash(bytes))
+        let mut hash_string = String::with_capacity(64);
+        for byte in calculate_hash(bytes) {
+            write!(hash_string, "{:02x}", byte).unwrap();
+        }
+        hash_string
     }
 
-    use std::fmt::Write;
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in bytes {
