@@ -46,7 +46,7 @@ impl From<&Assets> for AssetHashes {
 }
 
 /// An asset to be served via HTTP requests.
-#[derive(CandidType, Clone, Deserialize, PartialEq, Debug)]
+#[derive(CandidType, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Asset {
     headers: Vec<HeaderField>,
     bytes: Vec<u8>,
@@ -77,7 +77,7 @@ impl Asset {
     }
 }
 
-#[derive(Default, CandidType, Deserialize, PartialEq, Debug)]
+#[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
@@ -150,25 +150,21 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
     }
-    request_path
-        .split('.')
-        .last()
-        .map(|suffix| match suffix {
-            "css" => Some("text/css"),
-            "html" => Some("text/html"),
-            "xml" => Some("application/xml"),
-            "js" => Some("application/javascript"),
-            "json" => Some("application/json"),
-            "svg" => Some("image/svg+xml"),
-            "png" => Some("image/png"),
-            "jpeg" => Some("image/jpeg"),
-            "jpg" => Some("image/jpeg"),
-            "ico" => Some("image/x-icon"),
-            "ttf" => Some("font/ttf"),
-            "woff2" => Some("font/woff2"),
-            _ => None,
-        })
-        .flatten()
+    request_path.split('.').last().and_then(|suffix| match suffix {
+        "css" => Some("text/css"),
+        "html" => Some("text/html"),
+        "xml" => Some("application/xml"),
+        "js" => Some("application/javascript"),
+        "json" => Some("application/json"),
+        "svg" => Some("image/svg+xml"),
+        "png" => Some("image/png"),
+        "jpeg" => Some("image/jpeg"),
+        "jpg" => Some("image/jpeg"),
+        "ico" => Some("image/x-icon"),
+        "ttf" => Some("font/ttf"),
+        "woff2" => Some("font/woff2"),
+        _ => None,
+    })
 }
 
 /// List of recommended security headers as per https://owasp.org/www-project-secure-headers/

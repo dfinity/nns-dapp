@@ -1,8 +1,11 @@
+import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { addHotkey } from "../api/governance.api";
 import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { initDebugStore } from "../stores/debug.store";
 import { i18n } from "../stores/i18n";
+import { toastsError, toastsSuccess } from "../stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
@@ -10,12 +13,16 @@ import {
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
+  anonymizeSnsSummary,
+  anonymizeSnsSwapCommitment,
   anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 import { enumKeys } from "../utils/enum.utils";
 import { saveToJSONFile } from "../utils/save.utils";
 import { mapPromises, stringifyJson } from "../utils/utils";
+import { getIdentity } from "./auth.services";
 import { claimSeedNeurons } from "./seed-neurons.services";
 
 /**
@@ -32,6 +39,7 @@ export enum LogType {
   File = "f",
   FileOriginal = "fo",
   ClaimNeurons = "cn",
+  AddHotkey = "ah",
 }
 
 /**
@@ -63,6 +71,14 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
+        if (LogType.AddHotkey === logType) {
+          const neuronIdString = prompt(
+            get(i18n).neurons.enter_neuron_id_prompt
+          );
+          addHotkeyFromPrompt(neuronIdString);
+          return;
+        }
+
         generateDebugLogProxy(logType);
       }
     } else {
@@ -82,6 +98,25 @@ export function triggerDebugReport(node: HTMLElement) {
   };
 }
 
+const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
+  try {
+    if (neuronIdString === null) {
+      throw new Error("You need to provide a neuron id.");
+    }
+    const neuronId = BigInt(neuronIdString) as NeuronId;
+    const identity = await getIdentity();
+    await addHotkey({ neuronId, principal: identity.getPrincipal(), identity });
+    toastsSuccess({
+      labelKey: "neurons.add_hotkey_prompt_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "neurons.add_hotkey_prompt_error",
+      err,
+    });
+  }
+};
+
 const anonymiseStoreState = async () => {
   const debugStore = initDebugStore();
   const {
@@ -99,6 +134,7 @@ const anonymiseStoreState = async () => {
     transaction,
     selectedAccount,
     selectedProposal,
+    selectedProject,
   } = get(debugStore);
 
   return {
@@ -158,6 +194,12 @@ const anonymiseStoreState = async () => {
           })
       ),
     },
+    selectedProject: {
+      summary: await anonymizeSnsSummary(selectedProject.summary),
+      swapCommitment: await anonymizeSnsSwapCommitment(
+        selectedProject.swapCommitment
+      ),
+    },
   };
 };
 
@@ -171,10 +213,9 @@ export const generateDebugLog = async (logType: LogType) => {
   const anonymise = [LogType.Console, LogType.File].includes(logType);
   const saveToFile = [LogType.File, LogType.FileOriginal].includes(logType);
   const state = anonymise ? await anonymiseStoreState() : get(debugStore);
-  const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
 
   if (logType === LogType.ConsoleOriginalObject) {
-    console.log(date, state);
+    logWithTimestamp(state);
     return;
   }
 
@@ -183,11 +224,13 @@ export const generateDebugLog = async (logType: LogType) => {
   });
 
   if (saveToFile) {
+    const date = new Date().toJSON().split(".")[0].replace(/:/g, "-");
+
     saveToJSONFile({
       blob: new Blob([stringifiedState]),
       filename: `${date}_nns-local-state.json`,
     });
   } else {
-    console.log(date, stringifiedState);
+    logWithTimestamp(stringifiedState);
   }
 };

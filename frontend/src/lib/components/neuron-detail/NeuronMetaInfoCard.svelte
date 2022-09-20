@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -88,9 +88,9 @@
     <div class="buttons">
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
-        {#if neuron.state === NeuronState.DISSOLVED}
+        {#if neuron.state === NeuronState.Dissolved}
           <DisburseButton {neuron} />
-        {:else if neuron.state === NeuronState.DISSOLVING || neuron.state === NeuronState.LOCKED}
+        {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}
             neuronId={neuron.neuronId}
@@ -110,7 +110,7 @@
 </NeuronCard>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   section {
     padding: var(--padding) 0 0 0;
     display: flex;

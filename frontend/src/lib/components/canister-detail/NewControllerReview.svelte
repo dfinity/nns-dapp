@@ -7,7 +7,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "../../types/canister-detail.context";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
   import { addController } from "../../services/canisters.services";
   import FooterModal from "../../modals/FooterModal.svelte";
@@ -22,7 +22,7 @@
     const canisterDetails: CanisterDetails | undefined = $store.details;
     if (canisterDetails === undefined) {
       // Edge case
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;

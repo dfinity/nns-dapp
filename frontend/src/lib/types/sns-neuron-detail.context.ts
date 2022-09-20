@@ -4,6 +4,9 @@ import type { Writable } from "svelte/store";
 
 /**
  * A store that contains the selected sns neuron.
+ *
+ * `null` is the initial value.
+ * `undefined` means not found
  */
 export interface SelectedSnsNeuronStore {
   selected:
@@ -12,12 +15,12 @@ export interface SelectedSnsNeuronStore {
         neuronIdHex: string;
       }
     | undefined;
-  neuron: SnsNeuron | undefined;
+  neuron: SnsNeuron | undefined | null;
 }
 
 export interface SelectedSnsNeuronContext {
   store: Writable<SelectedSnsNeuronStore>;
-  reload: () => Promise<void>;
+  reload: ({ forceFetch: boolean }?) => Promise<void>;
 }
 
 export const SELECTED_SNS_NEURON_CONTEXT_KEY = Symbol("selected-sns-neuron");

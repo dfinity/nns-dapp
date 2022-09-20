@@ -3,7 +3,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "../../components/ui/Input.svelte";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import { listKnownNeurons } from "../../services/knownNeurons.services";
   import { addFollowee } from "../../services/neurons.services";
   import { accountsStore } from "../../stores/accounts.store";
@@ -16,7 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "../../utils/neuron.utils";
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -86,7 +86,7 @@
   };
 </script>
 
-<Modal size="big" on:nnsClose>
+<LegacyModal size="big" on:nnsClose>
   <span slot="title">{$i18n.new_followee.title}</span>
   <main data-tid="new-followee-modal">
     <article>
@@ -135,7 +135,7 @@
       {/if}
     </article>
   </main>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   main {

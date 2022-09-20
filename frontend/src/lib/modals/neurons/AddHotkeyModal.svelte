@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
@@ -7,7 +7,7 @@
   import { addHotkey } from "../../services/neurons.services";
   import { createEventDispatcher } from "svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
 
   export let neuronId: NeuronId;
@@ -18,7 +18,7 @@
   const add = async () => {
     // Edge case: button is only enabled when principal is defined
     if (principal === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.principal_not_valid",
       });
       return;
@@ -30,7 +30,7 @@
   };
 </script>
 
-<Modal on:nnsClose size="big">
+<LegacyModal on:nnsClose size="big">
   <span slot="title" data-tid="add-hotkey-neuron-modal"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</span
   >
@@ -40,7 +40,7 @@
       <span slot="button">{$i18n.core.confirm}</span>
     </AddPrincipal>
   </section>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "../../themes/mixins/modal";

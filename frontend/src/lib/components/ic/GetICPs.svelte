@@ -2,12 +2,11 @@
   /**
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
-  import Modal from "../../modals/Modal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import Input from "../ui/Input.svelte";
   import { getICPs } from "../../services/dev.services";
-  import Spinner from "../ui/Spinner.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
-  import IconAccountBalance from "../../icons/IconAccountBalance.svelte";
+  import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
+  import { toastsError } from "../../stores/toasts.store";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -16,7 +15,7 @@
 
   const onSubmit = async ({ target }) => {
     if (invalidForm) {
-      toastsStore.error({
+      toastsError({
         labelKey: "Invalid ICPs input.",
       });
       return;
@@ -32,7 +31,7 @@
 
       reset();
     } catch (err: unknown) {
-      toastsStore.error({
+      toastsError({
         labelKey: "ICPs could not be transferred.",
         err,
       });
@@ -56,18 +55,22 @@
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click={() => (visible = true)}
+  on:click|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
   <span>Get ICPs</span>
 </button>
 
-<Modal {visible} on:nnsClose={onClose}>
+<Modal {visible} role="alert" on:nnsClose={onClose}>
   <span slot="title">Get ICPs</span>
 
-  <form data-tid="get-icp-form" on:submit|preventDefault={onSubmit}>
-    <span class="how-much">How much?</span>
+  <form
+    id="get-icp-form"
+    data-tid="get-icp-form"
+    on:submit|preventDefault={onSubmit}
+  >
+    <span class="label">How much?</span>
 
     <Input
       placeholderLabelKey="core.icp"
@@ -76,32 +79,36 @@
       bind:value={inputValue}
       disabled={transferring}
     />
-
-    <button
-      data-tid="get-icp-submit"
-      type="submit"
-      class="primary"
-      disabled={invalidForm || transferring}
-    >
-      {#if transferring}
-        <Spinner />
-      {:else}
-        Get
-      {/if}
-    </button>
   </form>
+
+  <button
+    form="get-icp-form"
+    data-tid="get-icp-submit"
+    type="submit"
+    class="primary"
+    slot="toolbar"
+    disabled={invalidForm || transferring}
+  >
+    {#if transferring}
+      <Spinner />
+    {:else}
+      Get
+    {/if}
+  </button>
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .open {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
     font-weight: 700;
+
+    letter-spacing: var(--letter-spacing-title);
 
     padding: var(--padding-2x);
 
@@ -127,12 +134,7 @@
   form {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
 
-    padding: var(--padding-2x);
-
-    button {
-      margin-top: var(--padding-0_5x);
-    }
+    padding: var(--padding-2x) var(--padding);
   }
 </style>

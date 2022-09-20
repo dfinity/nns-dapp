@@ -3,7 +3,7 @@
   import { busy, busyMessageKey } from "../../stores/busy.store";
   import { triggerDebugReport } from "../../services/debug.services";
   import { translate } from "../../utils/i18n.utils";
-  import Spinner from "./Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 </script>
 
 <!-- Display spinner and lock UI if busyStore is not empty -->
@@ -21,7 +21,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   div {
     z-index: calc(var(--z-index) + 1000);

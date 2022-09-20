@@ -1,19 +1,18 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "../lib/stores/i18n";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../lib/components/common/Footer.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
-  import NewTransactionModal from "../lib/modals/accounts/NewTransactionModal.svelte";
   import {
     getAccountTransactions,
     routePathAccountIdentifier,
   } from "../lib/services/accounts.services";
   import { accountsStore } from "../lib/stores/accounts.store";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { replacePlaceholders } from "../lib/utils/i18n.utils";
   import type { Account } from "../lib/types/account";
   import { writable } from "svelte/store";
@@ -29,11 +28,11 @@
   import { getAccountFromStore } from "../lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "../lib/stores/debug.store";
   import { layoutBackStore } from "../lib/stores/layout.store";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
+  import IcpTransactionModal from "../lib/modals/accounts/IcpTransactionModal.svelte";
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.Accounts,
+      path: AppPath.LegacyAccounts,
     });
 
   layoutBackStore.set(goBack);
@@ -105,7 +104,7 @@
 
       // handle unknown accountIdentifier from URL
       if (selectedAccount === undefined && $accountsStore.main !== undefined) {
-        toastsStore.error({
+        toastsError({
           labelKey: replacePlaceholders($i18n.error.account_not_found, {
             $account_identifier:
               routeAccountIdentifier?.accountIdentifier ?? "",
@@ -120,7 +119,7 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<MainContentWrapper>
+<main class="legacy">
   <section>
     {#if $selectedAccountStore.account !== undefined}
       <WalletSummary />
@@ -132,25 +131,25 @@
       <Spinner />
     {/if}
   </section>
+</main>
 
-  <Footer>
-    <Toolbar>
-      <button
-        class="primary"
-        on:click={() => (showNewTransactionModal = true)}
-        disabled={$selectedAccountStore.account === undefined || $busy}
-        data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
-      >
-    </Toolbar>
-  </Footer>
+<Footer>
+  <Toolbar>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+    >
+  </Toolbar>
+</Footer>
 
-  {#if showNewTransactionModal}
-    <NewTransactionModal
-      on:nnsClose={() => (showNewTransactionModal = false)}
-      selectedAccount={$selectedAccountStore.account}
-    />
-  {/if}
-</MainContentWrapper>
+{#if showNewTransactionModal}
+  <IcpTransactionModal
+    on:nnsClose={() => (showNewTransactionModal = false)}
+    selectedAccount={$selectedAccountStore.account}
+  />
+{/if}
 
 <style lang="scss">
   .actions {

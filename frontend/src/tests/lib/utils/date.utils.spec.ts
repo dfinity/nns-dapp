@@ -1,5 +1,6 @@
 import {
   secondsToDate,
+  secondsToDateTime,
   secondsToDuration,
   secondsToTime,
 } from "../../../lib/utils/date.utils";
@@ -25,6 +26,14 @@ describe("secondsToDuration", () => {
     const MORE_THAN_ONE_MINUTE = BigInt(60 * 4);
     expect(secondsToDuration(MORE_THAN_ONE_MINUTE)).toContain(en.time.minute);
   });
+
+  it("should give seconds details", () => {
+    expect(secondsToDuration(BigInt(56))).toContain(en.time.second_plural);
+  });
+
+  it("should give a second details", () => {
+    expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
+  });
 });
 
 describe("secondsToDate", () => {
@@ -39,6 +48,19 @@ describe("secondsToDate", () => {
     expect(expectedDateText).toContain("March");
     expect(expectedDateText).toContain("2022");
     expect(expectedDateText).toContain("25");
+  });
+});
+
+describe("secondsToDateTime", () => {
+  it("should return formatted start date and time in 1970", () => {
+    expect(secondsToDateTime(BigInt(0))).toEqual("January 1, 1970 12:00 AM");
+  });
+
+  it("should return formatted date and time", () => {
+    // We only support english for now
+    const march25of2022InSeconds = Math.round(1648200639061 / 1000);
+    const expectedDateText = secondsToDateTime(BigInt(march25of2022InSeconds));
+    expect(expectedDateText).toEqual("March 25, 2022 9:30 AM");
   });
 });
 

@@ -13,7 +13,8 @@
   let id: ProposalId | undefined;
   let topic: string | undefined;
   let url: string | undefined;
-  $: ({ id, url, topic, deadline } = mapProposalInfo(proposalInfo));
+  let deadline: bigint | undefined;
+  $: ({ id, url, deadline, topic } = mapProposalInfo(proposalInfo));
 </script>
 
 <ul>
@@ -27,12 +28,12 @@
   {/if}
   {#if showTopic}
     <li>
-      {$i18n.proposal_detail.topic_prefix}
+      {$i18n.proposal_detail.topic_prefix}:
       <Value>{topic}</Value>
     </li>
   {/if}
   <li>
-    {$i18n.proposal_detail.id_prefix}
+    {$i18n.proposal_detail.id_prefix}:
     <Value>{id}</Value>
   </li>
   {#if deadline !== undefined && deadline >= 0}
@@ -44,7 +45,7 @@
 </ul>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   ul {
     margin: 0;

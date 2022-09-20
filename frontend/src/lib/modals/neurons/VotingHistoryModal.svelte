@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import Spinner from "../../components/ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import NeuronCard from "../../components/neurons/NeuronCard.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
   import { authStore } from "../../stores/auth.store";
@@ -18,7 +18,7 @@
 
   onMount(async () => {
     if (!$authStore.identity) {
-      toastsStore.error({ labelKey: "error.missing_identity" });
+      toastsError({ labelKey: "error.missing_identity" });
       return;
     }
 
@@ -34,7 +34,7 @@
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose size="big">
+<LegacyModal testId="voting-history-modal" on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
@@ -46,7 +46,7 @@
   {:else}
     <Spinner />
   {/if}
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   .content {

@@ -97,7 +97,7 @@
 </article>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/interaction";
 
   article {
     :global(.collapsible-expand-icon) {

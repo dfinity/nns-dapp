@@ -12,7 +12,7 @@
     type HardwareWalletNeuronInfo,
     type HardwareWalletNeuronsContext,
   } from "../../types/hardware-wallet-neurons.context";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
@@ -52,7 +52,7 @@
 
   const addCurrentUserToHotkey = async () => {
     if (selectedAccount === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.hardware_wallet_no_account",
       });
       dispatch("nnsClose");

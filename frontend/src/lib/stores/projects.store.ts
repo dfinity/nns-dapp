@@ -1,6 +1,5 @@
 import type { Principal } from "@dfinity/principal";
-import { derived, writable, type Readable } from "svelte/store";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
+import { derived, type Readable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
 import {
   filterActiveProjects,
@@ -49,29 +48,4 @@ export const activePadProjectsStore = derived(
 export const committedProjectsStore = derived(
   projectsStore,
   (projects: SnsFullProject[] | undefined) => filterCommittedProjects(projects)
-);
-
-// ************** Selected project **************
-
-const initSnsProjectSelectedStore = () => {
-  const { subscribe, set } = writable<Principal>(OWN_CANISTER_ID);
-
-  return {
-    subscribe,
-    set,
-  };
-};
-
-/**
- * In Neurons or ultimately in Voting screen, user can select the "universe" - e.g. display Neurons of Nns or a particular Sns
- */
-export const snsProjectSelectedStore = initSnsProjectSelectedStore();
-
-/***
- * Is the selected project (universe) Nns?
- */
-export const isNnsProjectStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore: Principal) =>
-    $snsProjectSelectedStore.toText() === OWN_CANISTER_ID.toText()
 );

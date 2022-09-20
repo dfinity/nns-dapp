@@ -2,13 +2,14 @@
  * @jest-environment jsdom
  */
 
-import type { Ballot, Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Topic, Vote } from "@dfinity/nns";
+import type { Proposal, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
 import { proposalsFiltersStore } from "../../../../lib/stores/proposals.store";
+import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
@@ -48,7 +49,7 @@ describe("ProposalCard", () => {
       },
     });
 
-    expect(getByText(en.status.PROPOSAL_STATUS_OPEN)).toBeInTheDocument();
+    expect(getByText(en.status.Open)).toBeInTheDocument();
   });
 
   it("should render a proposer", () => {
@@ -87,17 +88,65 @@ describe("ProposalCard", () => {
     ).toBeInTheDocument();
   });
 
+  it("should render a proposal a type", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern",
+      },
+    });
+
+    expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+  });
+
+  it("should render deadline", () => {
+    const { getByText } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern",
+      },
+    });
+
+    const durationTillDeadline =
+      (mockProposals[0].deadlineTimestampSeconds as bigint) -
+      BigInt(Math.round(Date.now() / 1000));
+
+    const text = `${secondsToDuration(durationTillDeadline)} ${
+      en.proposal_detail.remaining
+    }`;
+
+    expect(getByText(text)).toBeInTheDocument();
+  });
+
+  it("should render accessible info without label", () => {
+    const { container } = render(ProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+        layout: "modern",
+      },
+    });
+
+    expect(
+      container.querySelector(`[aria-label="${en.proposal_detail.id_prefix}"]`)
+    ).not.toBeNull();
+    expect(
+      container.querySelector(
+        `[aria-label="${en.proposal_detail.type_prefix}"]`
+      )
+    ).not.toBeNull();
+  });
+
   it("should render a specific color for the status", () => {
     proposalsFiltersStore.filterStatus([
       ...DEFAULT_PROPOSALS_FILTERS.status,
-      ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+      ProposalStatus.Executed,
     ]);
 
     const { queryByTestId } = render(ProposalCard, {
       props: {
         proposalInfo: {
           ...mockProposals[1],
-          status: ProposalStatus.PROPOSAL_STATUS_EXECUTED,
+          status: ProposalStatus.Executed,
         },
       },
     });
@@ -107,25 +156,6 @@ describe("ProposalCard", () => {
     expect(tag?.classList.contains("success")).toBe(true);
 
     proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
-  });
-
-  it("should hide card if already voted", async () => {
-    const { container } = render(ProposalCard, {
-      props: {
-        proposalInfo: {
-          ...mockProposals[0],
-          ballots: [
-            {
-              vote: Vote.YES,
-            } as Ballot,
-          ],
-        },
-      },
-    });
-
-    proposalsFiltersStore.toggleExcludeVotedProposals();
-
-    await waitFor(() => expect(container.querySelector("article")).toBeNull());
   });
 
   it("should open neuron modal", async () => {

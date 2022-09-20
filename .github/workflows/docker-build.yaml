@@ -90,3 +90,10 @@ jobs:
     steps:
        - name: Extract assets for verification
          run: echo TODO
+
+  docker-build-passes:
+    needs: ["assets", "docker-build"]
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Docker Build workflow passes
+         run: echo OK

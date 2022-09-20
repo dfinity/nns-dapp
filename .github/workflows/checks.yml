@@ -46,6 +46,9 @@ jobs:
         run: npm run format
         working-directory: ./e2e-tests
 
+      - name: Format dfx.json
+        run: cat <<<$(jq . dfx.json) > dfx.json
+
       - name: Commit Formatting changes - will not trigger rebuild
         uses: EndBug/add-and-commit@v7.2.0
         if: ${{ github.event_name == 'pull_request' }}
@@ -71,8 +74,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: [ '1.58.1' ]
-        os: [ ubuntu-20.04 ]
+        rust: ["1.63.0"]
+        os: [ubuntu-20.04]
 
     steps:
       - uses: actions/checkout@v2
@@ -205,7 +208,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
+    needs: ["formatting", "clippy", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes

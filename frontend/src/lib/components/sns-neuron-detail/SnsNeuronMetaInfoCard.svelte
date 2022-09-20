@@ -13,11 +13,11 @@
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined;
+  let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 </script>
 
-{#if neuron !== undefined}
+{#if neuron !== undefined && neuron !== null}
   <SnsNeuronCard {neuron} cardType="info">
     <section>
       <p>
@@ -29,7 +29,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   section {
     padding: var(--padding) 0 0 0;
     display: flex;

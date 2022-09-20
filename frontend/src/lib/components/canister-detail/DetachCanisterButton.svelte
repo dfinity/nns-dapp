@@ -6,7 +6,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
 
   export let canisterId: Principal;
 
@@ -22,7 +22,7 @@
     stopBusy("detach-canister");
     close();
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "canister_detail.detach_success",
       });
       routeStore.replace({ path: AppPath.Canisters });

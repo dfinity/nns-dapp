@@ -1,78 +1,86 @@
-import { writable } from "svelte/store";
+/* eslint-disable no-console */
+import { toastsStore } from "@dfinity/gix-components";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import type { ToastMsg } from "../types/toast";
 import { errorToString } from "../utils/error.utils";
 import type { I18nSubstitutions } from "../utils/i18n.utils";
+import { replacePlaceholders, translate } from "../utils/i18n.utils";
+
+const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
+  `${replacePlaceholders(translate({ labelKey }), substitutions ?? {})}${
+    detail !== undefined ? ` ${detail}` : ""
+  }`;
 
 /**
  * Toast messages.
  *
- * - show: display a message in toast component - messages are stacked but only one is displayed
- * - success: display a message of type "success" - something went really well ;)
- * - error: display an error and print the issue in the console as well
- * - hide: remove the toast message with that timestamp or the first one.
+ * - toastsShow: display a message in toast component
+ * - toastsSuccess: display a message of type "success" - something went really well ;)
+ * - toastsError: display an error and print the issue in the console as well
+ * - toastsHide: remove the toast message with that timestamp or the first one.
+ * - toastsReset: reset toasts
  */
-const initToastsStore = () => {
-  const { subscribe, update, set } = writable<ToastMsg[]>([]);
 
-  return {
-    subscribe,
+export const toastsShow = (msg: ToastMsg): symbol => {
+  const { level, spinner, duration } = msg;
 
-    show(msg: ToastMsg) {
-      update((messages: ToastMsg[]) => {
-        const id = Symbol();
-        return [...messages, { ...msg, id }];
-      });
-    },
-
-    success({
-      labelKey,
-      substitutions,
-    }: Pick<ToastMsg, "labelKey" | "substitutions">) {
-      this.show({
-        labelKey,
-        substitutions,
-        level: "success",
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-    },
-
-    error({
-      labelKey,
-      err,
-      substitutions,
-    }: {
-      labelKey: string;
-      err?: unknown;
-      substitutions?: I18nSubstitutions;
-    }) {
-      this.show({
-        labelKey,
-        level: "error",
-        detail: errorToString(err),
-        substitutions,
-      });
-
-      if (err !== undefined) {
-        console.error(err);
-      }
-    },
-
-    hide(idToHide?: symbol) {
-      // If not specified, we remove the first one
-      if (idToHide === undefined) {
-        update((messages: ToastMsg[]) => messages.slice(1));
-      } else {
-        update((messages: ToastMsg[]) =>
-          messages.filter(({ id }) => id !== idToHide)
-        );
-      }
-    },
-
-    reset() {
-      set([]);
-    },
-  };
+  return toastsStore.show({
+    text: mapToastText(msg),
+    level,
+    spinner,
+    duration,
+  });
 };
 
-export const toastsStore = initToastsStore();
+export const toastsSuccess = ({
+  labelKey,
+  substitutions,
+}: Pick<ToastMsg, "labelKey" | "substitutions">) =>
+  toastsShow({
+    labelKey,
+    substitutions,
+    level: "success",
+    duration: DEFAULT_TOAST_DURATION_MILLIS,
+  });
+
+export const toastsError = ({
+  labelKey,
+  err,
+  substitutions,
+}: {
+  labelKey: string;
+  err?: unknown;
+  substitutions?: I18nSubstitutions;
+}) => {
+  toastsShow({
+    labelKey,
+    level: "error",
+    detail: errorToString(err),
+    substitutions,
+  });
+
+  if (err !== undefined) {
+    console.error(err);
+  }
+};
+
+export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
+
+export const toastsReset = () => toastsStore.reset();
+
+export const toastsUpdate = ({
+  id,
+  content,
+}: {
+  id: symbol;
+  content: ToastMsg;
+}): void => {
+  toastsStore.update({
+    id,
+    content: {
+      id,
+      ...content,
+      text: mapToastText(content),
+    },
+  });
+};

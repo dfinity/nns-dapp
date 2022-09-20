@@ -12,11 +12,10 @@
   import { routeStore } from "../lib/stores/route.store";
   import { canistersStore } from "../lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "../lib/utils/i18n.utils";
-  import SkeletonParagraph from "../lib/components/ui/SkeletonParagraph.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
   import SkeletonCard from "../lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "../lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "../lib/components/canister-detail/ControllersCard.svelte";
-  import SkeletonTitle from "../lib/components/ui/SkeletonTitle.svelte";
   import { writable } from "svelte/store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
@@ -26,9 +25,9 @@
   import { debugSelectedCanisterStore } from "../lib/stores/debug.store";
   import type { CanisterDetails } from "../lib/canisters/ic-management/ic-management.canister.types";
   import AddCyclesModal from "../lib/modals/canisters/AddCyclesModal.svelte";
-  import Toolbar from "../lib/components/ui/Toolbar.svelte";
+  import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "../lib/components/canister-detail/DetachCanisterButton.svelte";
-  import { toastsStore } from "../lib/stores/toasts.store";
+  import { toastsError } from "../lib/stores/toasts.store";
   import { busy } from "../lib/stores/busy.store";
   import { getCanisterFromStore } from "../lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "../lib/canisters/ic-management/ic-management.errors";
@@ -37,7 +36,6 @@
   import CanisterCardSubTitle from "../lib/components/canisters/CanisterCardSubTitle.svelte";
   import { layoutBackStore } from "../lib/stores/layout.store";
   import Footer from "../lib/components/common/Footer.svelte";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -106,7 +104,7 @@
       const userNotController = error instanceof UserNotTheControllerError;
       // Show an error if the error is not expected.
       if (!userNotController) {
-        toastsStore.error({
+        toastsError({
           labelKey: "error.canister_details_not_found",
         });
       }
@@ -175,7 +173,7 @@
         // Show toast only it was not already present in the store
         // for example, after detaching, the storeCanister is present, but not the selectedCanister
         if (storeCanister === undefined) {
-          toastsStore.error({
+          toastsError({
             labelKey: replacePlaceholders($i18n.error.canister_not_found, {
               $canister_id: routeCanisterId ?? "",
             }),
@@ -189,7 +187,7 @@
     $selectedCanisterStore);
 </script>
 
-<MainContentWrapper>
+<main class="legacy">
   <section>
     {#if canisterInfo !== undefined}
       <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
@@ -199,10 +197,10 @@
       </div>
     {:else}
       <div class="loader-title">
-        <SkeletonTitle />
+        <SkeletonText tagName="h1" />
       </div>
       <div class="loader-subtitle">
-        <SkeletonParagraph />
+        <SkeletonText />
       </div>
     {/if}
     {#if canisterDetails !== undefined}
@@ -217,25 +215,25 @@
       <SkeletonCard />
     {/if}
   </section>
+</main>
 
-  <Footer>
-    <Toolbar>
-      <button
-        class="primary"
-        on:click={() => (showAddCyclesModal = true)}
-        disabled={canisterInfo === undefined || $busy}
-        >{$i18n.canister_detail.add_cycles}</button
-      >
-    </Toolbar>
-  </Footer>
+<Footer>
+  <Toolbar>
+    <button
+      class="primary"
+      on:click={() => (showAddCyclesModal = true)}
+      disabled={canisterInfo === undefined || $busy}
+      >{$i18n.canister_detail.add_cycles}</button
+    >
+  </Toolbar>
+</Footer>
 
-  {#if showAddCyclesModal}
-    <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
-  {/if}
-</MainContentWrapper>
+{#if showAddCyclesModal}
+  <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
+{/if}
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .actions {
     margin-bottom: var(--padding-3x);

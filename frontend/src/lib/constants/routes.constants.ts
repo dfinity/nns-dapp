@@ -1,14 +1,18 @@
 export enum AppPath {
   Authentication = "/",
-  Accounts = "/#/accounts",
-  Neurons = "/#/neurons",
+  LegacyAccounts = "/#/accounts",
+  Accounts = "/#/u/:rootCanisterId/accounts",
+  LegacyNeurons = "/#/neurons",
+  Neurons = "/#/u/:rootCanisterId/neurons",
   Proposals = "/#/proposals",
   Canisters = "/#/canisters",
   Wallet = "/#/wallet",
   ProposalDetail = "/#/proposal",
-  NeuronDetail = "/#/neuron",
+  LegacyNeuronDetail = "/#/neuron",
   CanisterDetail = "/#/canister",
   Launchpad = "/#/launchpad",
-  ProjectDetail = "/#/project",
-  SnsNeuronDetail = "/#/project/:rootCanisterId/neuron",
+  ProjectDetail = "/#/u",
+  NeuronDetail = "/#/u/:rootCanisterId/neuron",
 }
+
+export const CONTEXT_PATH = "/#/u";

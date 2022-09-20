@@ -1,6 +1,8 @@
 import type { ICP } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
 import type { SnsFullProject } from "../stores/projects.store";
 import type {
   SnsSummary,
@@ -113,16 +115,44 @@ export const durationTillSwapStart = (
   return BigInt(nowInSeconds()) - start_timestamp_seconds;
 };
 
+/**
+ * Returns the minimum between:
+ * - user remaining commitment to reach user maximum
+ * - remaining commitment to reach project maximum
+ */
+export const currentUserMaxCommitment = ({
+  summary: { swap, derived },
+  swapCommitment,
+}: {
+  summary: SnsSummary;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+}): bigint => {
+  const remainingProjectCommitment =
+    swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+  const remainingUserCommitment =
+    swap.init.max_participant_icp_e8s -
+    (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
+  return remainingProjectCommitment < remainingUserCommitment
+    ? remainingProjectCommitment
+    : remainingUserCommitment;
+};
+
+export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
+  swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+
 const isProjectOpen = (summary: SnsSummary): boolean =>
   summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
+// Checks whether the amount that the user wants to contiribute is lower than the minimum for the project.
+// It takes into account the current commitment of the user.
 const commitmentTooSmall = ({
-  project,
+  project: { summary, swapCommitment },
   amount,
 }: {
   project: SnsFullProject;
   amount: ICP;
 }): boolean =>
-  project.summary.swap.init.min_participant_icp_e8s > amount.toE8s();
+  summary.swap.init.min_participant_icp_e8s >
+  amount.toE8s() + (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
 const commitmentTooLarge = ({
   summary,
   amountE8s,
@@ -130,6 +160,16 @@ const commitmentTooLarge = ({
   summary: SnsSummary;
   amountE8s: bigint;
 }): boolean => summary.swap.init.max_participant_icp_e8s < amountE8s;
+// Checks whether the amount that the user wants to contribute
+// plus the amount that all users have contributed so far
+// exceeds the maximum amount that the project can accept.
+export const commitmentExceedsAmountLeft = ({
+  summary,
+  amountE8s,
+}: {
+  summary: SnsSummary;
+  amountE8s: bigint;
+}): boolean => projectRemainingAmount(summary) < amountE8s;
 
 /**
  * To participate to a swap:
@@ -212,5 +252,27 @@ export const validParticipation = ({
       },
     };
   }
+  if (
+    commitmentExceedsAmountLeft({
+      summary: project.summary,
+      amountE8s: amount.toE8s(),
+    })
+  ) {
+    return {
+      valid: false,
+      labelKey: "error__sns.commitment_exceeds_current_allowed",
+      substitutions: {
+        $commitment: formatICP({ value: totalCommitment }),
+        $remainingCommitment: formatICP({
+          value:
+            project.summary.swap.init.max_icp_e8s -
+            project.summary.derived.buyer_total_icp_e8s,
+        }),
+      },
+    };
+  }
   return { valid: true };
 };
+
+export const isNnsProject = (canisterId: Principal): boolean =>
+  canisterId.toText() === OWN_CANISTER_ID.toText();

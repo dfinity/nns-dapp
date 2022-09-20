@@ -2,7 +2,7 @@
   import { i18n } from "../../stores/i18n";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
   import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import { registerHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
@@ -28,7 +28,7 @@
 
   const onSubmit = async () => {
     if (disabled) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error__attach_wallet.connect",
       });
       return;

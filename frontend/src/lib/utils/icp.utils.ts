@@ -1,4 +1,4 @@
-import { ICP } from "@dfinity/nns";
+import { ICP, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
@@ -48,8 +48,24 @@ export const formatICP = ({
     .replace(/,/g, "'");
 };
 
-export const sumICPs = (...icps: ICP[]): ICP =>
-  ICP.fromE8s(icps.reduce<bigint>((acc, icp) => acc + icp.toE8s(), BigInt(0)));
+export const sumTokenAmounts = (
+  ...amountTokens: TokenAmount[]
+): TokenAmount => {
+  if (
+    amountTokens.some(
+      (amountToken) => amountToken.token.symbol !== amountTokens[0].token.symbol
+    )
+  ) {
+    throw new Error("Token symbols must be equal");
+  }
+  return TokenAmount.fromE8s({
+    amount: amountTokens.reduce<bigint>(
+      (acc, icp) => acc + icp.toE8s(),
+      BigInt(0)
+    ),
+    token: amountTokens[0].token,
+  });
+};
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
@@ -58,8 +74,31 @@ export const formattedTransactionFeeICP = (fee: number): string =>
     value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });
 
-export const maxICP = ({ icp, fee }: { icp?: ICP; fee: number }): number =>
-  Math.max((Number(icp?.toE8s() ?? 0) - fee) / E8S_PER_ICP, 0);
+/**
+ * Calculates the maximum amount for a transaction.
+ *
+ * @param balanceE8s The balance of the account in E8S.
+ * @param fee The fee of the transaction in E8S.
+ * @param maxAmount The maximum amount of the transaction not counting the fees.
+ * @returns
+ */
+export const getMaxTransactionAmount = ({
+  balance = BigInt(0),
+  fee = BigInt(0),
+  maxAmount,
+}: {
+  balance?: bigint;
+  fee?: bigint;
+  maxAmount?: bigint;
+}): number => {
+  if (maxAmount === undefined) {
+    return Math.max(Number(balance - fee), 0) / E8S_PER_ICP;
+  }
+  return (
+    Math.min(Number(maxAmount), Math.max(Number(balance - fee), 0)) /
+    E8S_PER_ICP
+  );
+};
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);

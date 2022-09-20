@@ -7,7 +7,7 @@
   import { mergeNeurons } from "../../services/neurons.services";
   import { busy, stopBusy } from "../../stores/busy.store";
   import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { neuronStake } from "../../utils/neuron.utils";
@@ -19,7 +19,7 @@
   $: {
     // Only MAX_NEURONS_MERGED neurons can be merged
     if (neurons.length !== MAX_NEURONS_MERGED) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unexpected_number_neurons_merge",
       });
       dispatcher("nnsClose");
@@ -39,7 +39,7 @@
     });
 
     if (id !== undefined) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.merge_neurons_success",
       });
     }
@@ -97,7 +97,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   .wrapper {
     height: 100%;
 

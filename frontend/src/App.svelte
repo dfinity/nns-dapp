@@ -8,10 +8,13 @@
   import type { AuthStore } from "./lib/stores/auth.store";
   import { routeStore } from "./lib/stores/route.store";
   import { AppPath } from "./lib/constants/routes.constants";
-  import Toasts from "./lib/components/ui/Toasts.svelte";
+  import { Toasts } from "@dfinity/gix-components";
   import BusyScreen from "./lib/components/ui/BusyScreen.svelte";
   import { worker } from "./lib/services/worker.services";
   import { initApp } from "./lib/services/app.services";
+  import { syncBeforeUnload } from "./lib/utils/before-unload.utils";
+  import { voteRegistrationActive } from "./lib/utils/proposals.utils";
+  import { voteRegistrationStore } from "./lib/stores/vote-registration.store";
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
@@ -31,42 +34,44 @@
         return;
       }
       // if the path is unsupported (to mock the flutter dapp) the user will be redirected to the first page (/accounts/) page (unknown path will not be saved in session History)
-      routeStore.replace({ path: AppPath.Accounts });
+      routeStore.replace({ path: AppPath.LegacyAccounts });
     }
   );
+
+  const unsubscribeVoteInProgress: Unsubscriber =
+    voteRegistrationStore.subscribe(({ registrations }) =>
+      syncBeforeUnload(voteRegistrationActive(registrations))
+    );
 
   onDestroy(() => {
     unsubscribeAuth();
     unsubscribeRoute();
+    unsubscribeVoteInProgress();
   });
 </script>
 
 <Guard>
   <Route path={AppPath.Authentication} />
   <PrivateRoute path={AppPath.Accounts} />
+  <PrivateRoute path={AppPath.LegacyAccounts} />
+  <PrivateRoute path={AppPath.LegacyNeurons} />
   <PrivateRoute path={AppPath.Neurons} />
   <PrivateRoute path={AppPath.Proposals} />
   <PrivateRoute path={AppPath.Canisters} />
   <PrivateRoute path={AppPath.Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} />
-  <PrivateRoute path={AppPath.NeuronDetail} />
+  <PrivateRoute path={AppPath.LegacyNeuronDetail} />
   <PrivateRoute path={AppPath.CanisterDetail} />
   <PrivateRoute path={AppPath.Launchpad} />
   <PrivateRoute path={AppPath.ProjectDetail} />
-  <PrivateRoute path={AppPath.SnsNeuronDetail} />
+  <PrivateRoute path={AppPath.NeuronDetail} />
 </Guard>
 
 <Toasts />
 <BusyScreen />
 
 <style lang="scss" global>
-  @import "lib/themes/fonts";
+  @import "@dfinity/gix-components/styles/global.scss";
+  @import "lib/themes/legacy";
   @import "lib/themes/variables";
-  @import "lib/themes/theme";
-  @import "lib/themes/button";
-  @import "lib/themes/link";
-  @import "lib/themes/modal";
-  @import "lib/themes/themes/dark";
-  @import "lib/themes/themes/light";
-  @import "lib/themes/colors";
 </style>

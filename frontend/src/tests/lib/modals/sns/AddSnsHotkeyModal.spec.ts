@@ -83,6 +83,6 @@ describe("AddSnsHotkeyModal", () => {
     expect(addHotkey).toBeCalled();
 
     await waitFor(() => expect(onClose).toBeCalled());
-    expect(reload).toBeCalled();
+    expect(reload).toBeCalledWith({ forceFetch: true });
   });
 });

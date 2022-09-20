@@ -2,7 +2,6 @@
   import { onDestroy, onMount, setContext } from "svelte";
   import ProjectInfoSection from "../lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "../lib/components/project-detail/ProjectStatusSection.svelte";
-  import TwoColumns from "../lib/components/ui/TwoColumns.svelte";
   import { IS_TESTNET } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
   import { routeStore } from "../lib/stores/route.store";
@@ -10,7 +9,6 @@
     layoutBackStore,
     layoutTitleStore,
   } from "../lib/stores/layout.store";
-  import MainContentWrapper from "../lib/components/ui/MainContentWrapper.svelte";
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
@@ -18,7 +16,6 @@
   } from "../lib/services/sns.services";
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { snsSwapCommitmentsStore } from "../lib/stores/sns.store";
-  import Spinner from "../lib/components/ui/Spinner.svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -27,10 +24,13 @@
   import { isNullish } from "../lib/utils/utils";
   import { writable } from "svelte/store";
   import { snsSummariesStore } from "../lib/stores/sns.store";
+  import { Principal } from "@dfinity/principal";
+  import { toastsError } from "../lib/stores/toasts.store";
+  import { debugSelectedProjectStore } from "../lib/stores/debug.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
-      routeStore.replace({ path: AppPath.Accounts });
+      routeStore.replace({ path: AppPath.LegacyAccounts });
     }
   });
 
@@ -38,8 +38,8 @@
     loadSnsSummary({
       rootCanisterId,
       onError: () => {
-        // hide unproven data
-        $projectDetailStore.summary = null;
+        // Set to not found
+        $projectDetailStore.summary = undefined;
         goBack();
       },
     });
@@ -48,8 +48,8 @@
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
-        // hide unproven data
-        $projectDetailStore.swapCommitment = null;
+        // Set to not found
+        $projectDetailStore.swapCommitment = undefined;
         goBack();
       },
     });
@@ -63,7 +63,6 @@
       // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
       return;
     }
-
     await Promise.all([
       loadSummary(rootCanisterId),
       loadSwapState(rootCanisterId),
@@ -71,11 +70,11 @@
   };
 
   const projectDetailStore = writable<ProjectDetailStore>({
-    summary: undefined,
-    swapCommitment: undefined,
+    summary: null,
+    swapCommitment: null,
   });
 
-  // TODO: add projectDetailStore to debug store
+  debugSelectedProjectStore(projectDetailStore);
 
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
@@ -87,14 +86,32 @@
     routeStore.replace({ path: AppPath.Launchpad });
   };
 
-  const mapProjectDetail = (rootCanisterId: string | undefined) => {
+  const mapProjectDetail = (rootCanisterId: string) => {
+    // Check project summaries are loaded in store
+    if (
+      $snsSummariesStore.length === 0 ||
+      isNullish($snsSwapCommitmentsStore)
+    ) {
+      return;
+    }
+    // Check valid rootCanisterId
+    try {
+      if (rootCanisterId !== undefined) {
+        Principal.fromText(rootCanisterId);
+      }
+    } catch (error) {
+      // set values as not found
+      $projectDetailStore.summary = undefined;
+      $projectDetailStore.swapCommitment = undefined;
+      return;
+    }
     $projectDetailStore.summary =
       rootCanisterId !== undefined
         ? $snsSummariesStore.find(
             ({ rootCanisterId: rootCanister }) =>
               rootCanister?.toText() === rootCanisterId
           )
-        : null;
+        : undefined;
 
     $projectDetailStore.swapCommitment =
       rootCanisterId !== undefined
@@ -102,7 +119,7 @@
             (item) =>
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
-        : null;
+        : undefined;
   };
 
   /**
@@ -117,7 +134,11 @@
         return;
       }
 
+      // Edge case, the previous check already ensures that `routePathRootCanisterId` will return a defined value.
       const rootCanisterId = routePathRootCanisterId(path);
+      if (rootCanisterId === undefined) {
+        return;
+      }
       mapProjectDetail(rootCanisterId);
     })();
 
@@ -144,33 +165,34 @@
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let loadingSummary: boolean;
-  $: loadingSummary = isNullish($projectDetailStore.summary);
-  let loadingSwapState: boolean;
-  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
+  let notFound: boolean;
+  $: notFound = $projectDetailStore.summary === undefined;
 
-  // TODO(L2-838): if error redirect to launchpad and display error there
+  $: {
+    if (notFound) {
+      toastsError({
+        labelKey: "error__sns.project_not_found",
+      });
+      routeStore.replace({ path: AppPath.Launchpad });
+    }
+  }
 </script>
 
-<MainContentWrapper sns>
+<main>
   <div class="stretch-mobile">
-    {#if loadingSummary && loadingSwapState}
-      <Spinner />
-    {:else}
-      <TwoColumns>
-        <div slot="left">
-          <ProjectInfoSection />
-        </div>
-        <div slot="right">
-          <ProjectStatusSection />
-        </div>
-      </TwoColumns>
-    {/if}
+    <div class="content-grid">
+      <div class="content-a">
+        <ProjectInfoSection />
+      </div>
+      <div class="content-b">
+        <ProjectStatusSection />
+      </div>
+    </div>
   </div>
-</MainContentWrapper>
+</main>
 
 <style lang="scss">
-  @use "../lib/themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
   .stretch-mobile {
     min-height: 100%;
 

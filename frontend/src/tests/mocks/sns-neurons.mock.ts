@@ -19,11 +19,12 @@ export const createMockSnsNeuron = ({
     Math.floor(Date.now() / 1000 - 3600 * 24 * 6)
   ),
   aging_since_timestamp_seconds: BigInt(100),
+  voting_power_percentage_multiplier: BigInt(1),
   dissolve_state:
     state === undefined
       ? []
       : [
-          state === NeuronState.DISSOLVING
+          state === NeuronState.Dissolving
             ? {
                 WhenDissolvedTimestampSeconds: BigInt(
                   Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)

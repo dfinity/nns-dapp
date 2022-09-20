@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { addHotkey } from "../../services/sns-neurons.services";
   import { createEventDispatcher, getContext } from "svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import { snsProjectSelectedStore } from "../../stores/projects.store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -22,7 +22,7 @@
   const add = async () => {
     // Edge case: button is only enabled when principal is defined
     if (principal === undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.principal_not_valid",
       });
       return;
@@ -39,7 +39,7 @@
       rootCanisterId: $snsProjectSelectedStore,
     });
     if (success) {
-      await reload();
+      await reload({ forceFetch: true });
     }
     stopBusy("add-sns-hotkey-neuron");
     if (success) {
@@ -48,7 +48,7 @@
   };
 </script>
 
-<Modal on:nnsClose size="big">
+<LegacyModal on:nnsClose size="big">
   <span slot="title" data-tid="add-hotkey-neuron-modal"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</span
   >
@@ -58,7 +58,7 @@
       <span slot="button">{$i18n.core.confirm}</span>
     </AddPrincipal>
   </section>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "../../themes/mixins/modal";

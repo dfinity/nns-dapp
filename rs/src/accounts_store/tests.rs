@@ -204,6 +204,235 @@ fn create_sub_account() {
 }
 
 #[test]
+fn add_participate_pending_transaction_and_complete() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    assert_eq!(0, store.pending_transactions.len());
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    let from_account_identifier = AccountIdentifier::new(buyer, None);
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type)
+        }
+    }
+
+    let same_buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let same_from_account_identifier = AccountIdentifier::new(same_buyer, None);
+    // Set transaction as complete
+    store.complete_pending_transaction(same_from_account_identifier, to_account_identifier, 1);
+
+    // There should be no more pending transactions
+    match store.get_pending_transaction(same_from_account_identifier, to_account_identifier) {
+        None => {
+            assert_eq!(true, true);
+        }
+        Some(_) => {
+            panic!("Pending transaction found!");
+        }
+    }
+}
+
+#[test]
+fn add_pending_transactions_removes_old_ones() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    assert_eq!(0, store.pending_transactions.len());
+
+    const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
+    let two_hours_ago = time_millis() - (HOUR_IN_MILLISECONDS * 2);
+    for n in 0..5000 {
+        let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
+        let from_account_identifier = AccountIdentifier::new(buyer, None);
+        store.pending_transactions.insert(
+            (from_account_identifier, to_account_identifier),
+            (transaction_type, two_hours_ago),
+        );
+    }
+    // New pending transaction
+    assert_eq!(5000, store.pending_transactions.len());
+
+    // Add the one that exceeds the limit
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    let from_account_identifier = AccountIdentifier::new(buyer, Some((&swap_canister_id).into()));
+    let swap_canister_id_2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let new_transaction_type = TransactionType::ParticipateSwap(swap_canister_id_2);
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, new_transaction_type);
+
+    // Adding new pending transaction removes old ones
+    assert_eq!(1, store.pending_transactions.len());
+
+    // But add the new one
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        Some(added) => {
+            assert_eq!(added, new_transaction_type);
+        }
+        None => {
+            panic!("Didn't add the new pending transaction")
+        }
+    }
+}
+
+#[test]
+fn add_pending_transactions_removes_last_one_on_limit() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    assert_eq!(0, store.pending_transactions.len());
+
+    let now_millis = time_millis();
+
+    // 10_000 is the PENDING_TRANSACTIONS_LIMIT
+    for n in 0..10_000 {
+        let to_account_identifier = AccountIdentifier::new(PrincipalId::new_user_test_id(n as u64), None);
+        let from_account_identifier = AccountIdentifier::new(buyer, None);
+        store.pending_transactions.insert(
+            (from_account_identifier, to_account_identifier),
+            (transaction_type, now_millis),
+        );
+    }
+    assert_eq!(10_000, store.pending_transactions.len());
+
+    // Add the one that exceeds the limit
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    let from_account_identifier = AccountIdentifier::new(buyer, Some((&swap_canister_id).into()));
+    let swap_canister_id_2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let new_transaction_type = TransactionType::ParticipateSwap(swap_canister_id_2);
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, new_transaction_type);
+
+    // Adding new pending transaction removes one
+    assert_eq!(10_000, store.pending_transactions.len());
+
+    // But add the new one
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        Some(added) => {
+            assert_eq!(added, new_transaction_type);
+        }
+        None => {
+            panic!("Didn't add the new pending transaction")
+        }
+    }
+}
+
+#[test]
+fn cannot_add_other_pending_transaction() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::TopUpNeuron;
+    assert_eq!(0, store.pending_transactions.len());
+    let from_account_identifier = AccountIdentifier::new(buyer, None);
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        None => {
+            panic!("No pending transaction found!");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type)
+        }
+    }
+}
+
+#[test]
+fn add_and_complete_multiple_pending_transactions() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let swap_canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let buyer2 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let swap_canister_id2 = CanisterId::from_str(TEST_ACCOUNT_4).unwrap();
+
+    let mut store = setup_test_store();
+    let transaction_type = TransactionType::ParticipateSwap(swap_canister_id);
+    let transaction_type2 = TransactionType::ParticipateSwap(swap_canister_id2);
+    assert_eq!(0, store.pending_transactions.len());
+    let to_account_identifier = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer).into()));
+    let to_account_identifier2 = AccountIdentifier::new(swap_canister_id.get(), Some((&buyer2).into()));
+    let to_account_identifier3 = AccountIdentifier::new(swap_canister_id2.get(), Some((&buyer2).into()));
+    let from_account_identifier = AccountIdentifier::new(buyer, None);
+    let from_account_identifier2 = AccountIdentifier::new(buyer2, None);
+    store.add_pending_transaction(from_account_identifier, to_account_identifier, transaction_type);
+    store.add_pending_transaction(from_account_identifier2, to_account_identifier2, transaction_type);
+    store.add_pending_transaction(from_account_identifier2, to_account_identifier3, transaction_type2);
+
+    // Buyer investing in swap 1
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type)
+        }
+    }
+    // Buyer 2 investing in swap 1
+    match store.get_pending_transaction(from_account_identifier2, to_account_identifier2) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type)
+        }
+    }
+    // Buyer 2 investing in swap 2
+    match store.get_pending_transaction(from_account_identifier2, to_account_identifier3) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type2)
+        }
+    }
+
+    // Set transaction as complete buyer 1
+    store.complete_pending_transaction(from_account_identifier, to_account_identifier, 1);
+
+    // There should be no more pending transactions
+    match store.get_pending_transaction(from_account_identifier, to_account_identifier) {
+        None => {
+            assert_eq!(true, true);
+        }
+        Some(_) => {
+            panic!("Pending transaction found!");
+        }
+    }
+
+    // Buyer 2 is still pending
+    match store.get_pending_transaction(from_account_identifier2, to_account_identifier2) {
+        None => {
+            panic!("Pending transaction not found");
+        }
+        Some(found) => {
+            assert_eq!(found, transaction_type)
+        }
+    }
+}
+
+#[test]
+fn only_caller_can_add_pending_transaction() {
+    let buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let buyer2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let mut store = setup_test_store();
+
+    let is_allowed1 = store.check_pending_transaction_buyer(buyer, buyer);
+    assert!(is_allowed1);
+    let is_allowed2 = store.check_pending_transaction_buyer(buyer, buyer2);
+    assert!(!is_allowed2)
+}
+
+#[test]
 fn rename_sub_account() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();

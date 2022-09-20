@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import { LedgerConnectionState } from "../../constants/ledger.constants";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import type { LedgerIdentity } from "../../identities/ledger.identity";
   import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
   import { connectToHardwareWalletProxy } from "../../proxy/ledger.services.proxy";

@@ -5,6 +5,7 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
+use crate::time::time_millis;
 use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -30,6 +31,8 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
+    // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
+    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
@@ -120,7 +123,7 @@ pub struct RefundTransactionArgs {
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-enum TransactionType {
+pub enum TransactionType {
     Burn,
     Mint,
     Transfer,
@@ -129,6 +132,7 @@ enum TransactionType {
     TopUpNeuron,
     CreateCanister,
     TopUpCanister(CanisterId),
+    ParticipateSwap(CanisterId),
 }
 
 #[derive(Clone, CandidType, Deserialize)]
@@ -224,6 +228,19 @@ pub enum DetachCanisterResponse {
     Ok,
     CanisterNotFound,
     AccountNotFound,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct AddPendingNotifySwapRequest {
+    pub swap_canister_id: CanisterId,
+    pub buyer: PrincipalId,
+    pub buyer_sub_account: Option<Subaccount>,
+}
+
+#[derive(CandidType)]
+pub enum AddPendingTransactionResponse {
+    Ok,
+    NotAuthorized,
 }
 
 impl AccountsStore {
@@ -443,6 +460,84 @@ impl AccountsStore {
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
+    }
+
+    // Adds a transactions to be handled by `get_transaction_type` when adding transactions
+    // Used to add the Swap Canister Id for decentralized sale participations to the transaction
+    // It's needed to notify the Swap Canister afterwards in the periodic_tasks_runner
+    pub fn add_pending_transaction(
+        &mut self,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        transaction_type: TransactionType,
+    ) -> AddPendingTransactionResponse {
+        let now_millis = time_millis();
+        if self.pending_transactions.len() > 1_000 {
+            self.prune_old_pending_transactions(now_millis);
+        }
+        if self.pending_transactions_limit_reached() {
+            // We should never hit this
+            // Just to be safe and the pending transaction is always added
+            self.remove_last_pending_transaction();
+        }
+        self.pending_transactions
+            .insert((from, to), (transaction_type, now_millis));
+        AddPendingTransactionResponse::Ok
+    }
+
+    pub fn check_pending_transaction_buyer(&mut self, caller: PrincipalId, buyer: PrincipalId) -> bool {
+        // TODO: To support hardware wallets, check that the buyer is either the caller's principal or the principal of a hardware wallet linked to the caller's account.
+        caller == buyer
+    }
+
+    fn prune_old_pending_transactions(&mut self, now_millis: u64) {
+        const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
+        let one_hour_ago = now_millis - HOUR_IN_MILLISECONDS;
+        // Keep pending transactions of the last hour only
+        self.pending_transactions
+            .retain(|_, (_, timestamp)| *timestamp > one_hour_ago);
+    }
+
+    fn remove_last_pending_transaction(&mut self) {
+        match self
+            .pending_transactions
+            .iter()
+            .max_by(|(_, (_, timestamp1)), (_, (_, timestamp2))| timestamp1.cmp(timestamp2))
+        {
+            Some((k, _)) => {
+                self.remove_pending_transaction(*k);
+            }
+            None => (),
+        }
+    }
+
+    fn remove_pending_transaction(&mut self, (from, to): (AccountIdentifier, AccountIdentifier)) {
+        self.pending_transactions.remove(&(from, to));
+    }
+
+    // Get pending transaction
+    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<TransactionType> {
+        self.pending_transactions
+            .get(&(from, to))
+            .map(|&(transaction_type, _)| transaction_type)
+    }
+
+    pub fn complete_pending_transaction(
+        &mut self,
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        block_height: BlockHeight,
+    ) {
+        self.multi_part_transactions_processor
+            .update_status(block_height, MultiPartTransactionStatus::Complete);
+        self.remove_pending_transaction((from, to));
+    }
+
+    pub fn pending_transactions_limit_reached(&self) -> bool {
+        // Valid pending transactions are very short lived.
+        // If there are many, it's because it's filled with invalid pending transactions.
+        const PENDING_TRANSACTIONS_LIMIT: usize = 10_000;
+        self.pending_transactions.len() >= PENDING_TRANSACTIONS_LIMIT
     }
 
     pub fn append_transaction(
@@ -1063,6 +1158,8 @@ impl AccountsStore {
             } else {
                 TransactionType::TopUpNeuron
             }
+        } else if let Some(transaction_type) = self.get_pending_transaction(from, to) {
+            transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1156,8 +1253,7 @@ impl AccountsStore {
     ) -> bool {
         if memo.0 > 0 && amount.get_e8s() == 0 {
             self.get_transaction_index(memo.0)
-                .map(|index| self.get_transaction(index))
-                .flatten()
+                .and_then(|index| self.get_transaction(index))
                 .filter(|&t| {
                     t.transaction_type.is_some() && matches!(t.transaction_type.unwrap(), TransactionType::StakeNeuron)
                 })
@@ -1207,6 +1303,13 @@ impl AccountsStore {
         block_height: BlockHeight,
     ) {
         match transaction_type {
+            TransactionType::ParticipateSwap(swap_canister_id) => {
+                self.multi_part_transactions_processor.push(
+                    principal,
+                    block_height,
+                    MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
+                );
+            }
             TransactionType::StakeNeuron => {
                 let neuron_details = NeuronDetails {
                     account_identifier: to,
@@ -1282,6 +1385,7 @@ impl StableState for AccountsStore {
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
+            &self.pending_transactions,
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
@@ -1298,6 +1402,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1307,6 +1412,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
+            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
@@ -1339,6 +1445,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1393,12 +1500,7 @@ impl Account {
         self.default_account_transactions
             .iter()
             .cloned()
-            .chain(
-                self.sub_accounts
-                    .values()
-                    .map(|a| a.transactions.iter().cloned())
-                    .flatten(),
-            )
+            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().cloned()))
             .sorted()
             .collect()
     }
@@ -1442,7 +1544,7 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
 
 /// This will sort the canisters such that those with names specified will appear first and will be
 /// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
-fn sort_canisters(canisters: &mut Vec<NamedCanister>) {
+fn sort_canisters(canisters: &mut [NamedCanister]) {
     canisters.sort_unstable_by_key(|c| {
         if c.name.is_empty() {
             (true, c.canister_id.to_string())

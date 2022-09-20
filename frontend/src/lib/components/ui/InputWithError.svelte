@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import Input from "./Input.svelte";
 
   // Same props as Input
@@ -32,6 +32,7 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
+    showInfo={$$slots.label !== undefined || $$slots.additional !== undefined}
     bind:value
     on:blur
     on:input
@@ -51,7 +52,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .wrapper {
     position: relative;

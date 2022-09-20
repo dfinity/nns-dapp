@@ -4,6 +4,7 @@ import { configure } from "@testing-library/svelte";
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
+import localStorageMock from "./src/tests/mocks/local-storage.mock";
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
@@ -21,11 +22,18 @@ process.env.IDENTITY_SERVICE_URL =
   "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
 process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
 process.env.FEATURE_FLAGS = JSON.stringify({
-  ENABLE_NEW_SPAWN_FEATURE: true,
-  ENABLE_SNS_NEURONS: true,
+  ENABLE_SNS: true,
+  VOTING_UI: "modern",
 });
+
+global.localStorage = localStorageMock;
 
 // testing-library setup
 configure({
   testIdAttribute: "data-tid",
 });
+
+const DOMPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+const { window } = new JSDOM("<!DOCTYPE html>");
+global.DOMPurify = DOMPurify(window);

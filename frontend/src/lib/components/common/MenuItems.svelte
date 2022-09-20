@@ -1,18 +1,24 @@
 <script lang="ts">
-  import MenuItem from "../ui/MenuItem.svelte";
-  import IconWallet from "../../icons/IconWallet.svelte";
-  import IconLockOpen from "../../icons/IconLockOpen.svelte";
-  import IconHowToVote from "../../icons/IconHowToVote.svelte";
-  import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
+  import {
+    MenuItem,
+    IconWallet,
+    IconHowToVote,
+    IconRocketLaunch,
+    IconEngineering,
+    IconPsychology,
+  } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { baseHref } from "../../utils/route.utils";
   import { isRoutePath } from "../../utils/app-path.utils";
   import { AppPath } from "../../constants/routes.constants";
   import { routeStore } from "../../stores/route.store";
-  import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
-  import { IS_TESTNET } from "../../constants/environment.constants";
+  import {
+    ENABLE_SNS,
+    IS_TESTNET,
+  } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
+  import GetICPs from "../ic/GetICPs.svelte";
 
   const baseUrl: string = baseHref();
 
@@ -30,15 +36,24 @@
   }[] = [
     {
       context: "accounts",
-      selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
-      label: "accounts",
+      selected: isSelectedPath([
+        AppPath.Accounts,
+        AppPath.LegacyAccounts,
+        AppPath.Wallet,
+      ]),
+      label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
-      selected: isSelectedPath([AppPath.Neurons, AppPath.NeuronDetail]),
+      selected: isSelectedPath([
+        AppPath.LegacyNeurons,
+        AppPath.LegacyNeuronDetail,
+        AppPath.NeuronDetail,
+        AppPath.Neurons,
+      ]),
       label: "neurons",
-      icon: IconLockOpen,
+      icon: IconPsychology,
     },
     {
       context: "proposals",
@@ -50,10 +65,10 @@
       context: "canisters",
       selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
       label: "canisters",
-      icon: IconSettingsApplications,
+      icon: IconEngineering,
     },
     // Launchpad should not be visible on mainnet
-    ...(IS_TESTNET
+    ...(ENABLE_SNS
       ? [
           {
             context: "launchpad",
@@ -81,3 +96,7 @@
     <svelte:component this={statusIcon} slot="statusIcon" />
   </MenuItem>
 {/each}
+
+{#if IS_TESTNET}
+  <GetICPs />
+{/if}

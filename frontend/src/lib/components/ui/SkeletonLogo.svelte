@@ -1,9 +1,9 @@
 <script>
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
 <div>
-  <SkeletonParagraph />
+  <SkeletonText />
 </div>
 
 <style lang="scss">

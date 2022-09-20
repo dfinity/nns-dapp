@@ -1,7 +1,7 @@
 <script lang="ts">
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import ICP from "../ic/ICP.svelte";
-  import { ICP as ICPType } from "@dfinity/nns";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { TokenAmount } from "@dfinity/nns";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import type { TransactionContext } from "../../types/transaction.context";
   import { createEventDispatcher, getContext } from "svelte";
@@ -9,7 +9,7 @@
   import { busy, startBusy, stopBusy } from "../../stores/busy.store";
   import { transferICP } from "../../services/accounts.services";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
   import FooterModal from "../../modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
@@ -22,7 +22,8 @@
     back,
   }: TransactionContext = context;
 
-  let amount: ICPType = $store.amount ?? ICPType.fromE8s(BigInt(0));
+  let amount: TokenAmount =
+    $store.amount ?? TokenAmount.fromE8s({ amount: BigInt(0) });
 
   const dispatcher = createEventDispatcher();
 
@@ -46,7 +47,7 @@
 
       if (success) {
         await onTransactionComplete?.();
-        toastsStore.success({ labelKey: "accounts.transaction_success" });
+        toastsSuccess({ labelKey: "accounts.transaction_success" });
       }
 
       stopBusy("accounts");
@@ -64,7 +65,7 @@
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
-    <ICP inline={true} icp={amount} detailed />
+    <AmountDisplay inline={true} {amount} detailed />
   </div>
 
   <NewTransactionInfo />
@@ -86,7 +87,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/modal";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .amount {
     display: flex;

@@ -2,7 +2,7 @@
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
-  import Spinner from "../ui/Spinner.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
   import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
@@ -16,7 +16,9 @@
   const loadModule = async (): Promise<typeof SvelteComponent> => {
     switch (path) {
       case AppPath.Accounts:
+      case AppPath.LegacyAccounts:
         return (await import("../../../routes/Accounts.svelte")).default;
+      case AppPath.LegacyNeurons:
       case AppPath.Neurons:
         return (await import("../../../routes/Neurons.svelte")).default;
       case AppPath.Proposals:
@@ -27,38 +29,65 @@
         return (await import("../../../routes/Wallet.svelte")).default;
       case AppPath.ProposalDetail:
         return (await import("../../../routes/ProposalDetail.svelte")).default;
-      case AppPath.NeuronDetail:
-        return (await import("../../../routes/NeuronDetail.svelte")).default;
+      case AppPath.LegacyNeuronDetail:
+        return (await import("../../../routes/LegacyNeuronDetail.svelte"))
+          .default;
       case AppPath.CanisterDetail:
         return (await import("../../../routes/CanisterDetail.svelte")).default;
       case AppPath.Launchpad:
         return (await import("../../../routes/Launchpad.svelte")).default;
       case AppPath.ProjectDetail:
         return (await import("../../../routes/ProjectDetail.svelte")).default;
-      case AppPath.SnsNeuronDetail:
-        return (await import("../../../routes/SnsNeuronDetail.svelte")).default;
+      case AppPath.NeuronDetail:
+        return (await import("../../../routes/NeuronDetail.svelte")).default;
       default:
         return (await import("../../../routes/Auth.svelte")).default;
     }
   };
 
-  const titleKeys: Record<AppPath, string> = {
-    [AppPath.Authentication]: "",
-    [AppPath.Accounts]: $i18n.navigation.accounts,
-    [AppPath.Neurons]: $i18n.navigation.neurons,
-    [AppPath.Proposals]: $i18n.navigation.voting,
-    [AppPath.Canisters]: $i18n.navigation.canisters,
-    [AppPath.Wallet]: $i18n.wallet.title,
-    [AppPath.ProposalDetail]: $i18n.proposal_detail.title,
-    [AppPath.NeuronDetail]: $i18n.neuron_detail.title,
-    [AppPath.CanisterDetail]: $i18n.canister_detail.title,
-    [AppPath.Launchpad]: $i18n.sns_launchpad.header,
-    [AppPath.SnsNeuronDetail]: $i18n.sns_neuron_detail.header,
-    [AppPath.ProjectDetail]: "",
+  const routesConfig: Record<AppPath, { title: string }> = {
+    [AppPath.Authentication]: {
+      title: "",
+    },
+    [AppPath.Accounts]: {
+      title: $i18n.navigation.tokens,
+    },
+    [AppPath.LegacyAccounts]: {
+      title: $i18n.navigation.tokens,
+    },
+    [AppPath.LegacyNeurons]: {
+      title: $i18n.navigation.neurons,
+    },
+    [AppPath.Neurons]: {
+      title: $i18n.navigation.neurons,
+    },
+    [AppPath.Proposals]: {
+      title: $i18n.navigation.voting,
+    },
+    [AppPath.Canisters]: {
+      title: $i18n.navigation.canisters,
+    },
+    [AppPath.Wallet]: { title: $i18n.wallet.title },
+    [AppPath.ProposalDetail]: {
+      title: $i18n.proposal_detail.title,
+    },
+    [AppPath.LegacyNeuronDetail]: {
+      title: $i18n.neuron_detail.title,
+    },
+    [AppPath.CanisterDetail]: {
+      title: $i18n.canister_detail.title,
+    },
+    [AppPath.Launchpad]: {
+      title: $i18n.sns_launchpad.header,
+    },
+    [AppPath.NeuronDetail]: {
+      title: $i18n.sns_neuron_detail.header,
+    },
+    [AppPath.ProjectDetail]: { title: "" },
   };
 
   onMount(async () => {
-    layoutTitleStore.set(titleKeys[path]);
+    layoutTitleStore.set(routesConfig[path].title);
 
     // Reset back action because only detail routes have such feature other views use the menu
     layoutBackStore.set(undefined);
@@ -89,7 +118,7 @@
 </svelte:component>
 
 <style lang="scss">
-  @use "../../themes/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/display";
 
   section {
     position: absolute;

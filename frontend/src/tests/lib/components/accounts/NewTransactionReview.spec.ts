@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { ICP, LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister, TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
@@ -23,7 +23,7 @@ import NewTransactionTest from "./NewTransactionTest.svelte";
 describe("NewTransactionReview", () => {
   const props = { testComponent: NewTransactionReview };
 
-  const amount = ICP.fromString("10.6756") as ICP;
+  const amount = TokenAmount.fromString({ amount: "10.6756" }) as TokenAmount;
 
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
   const mockNNSDappCanister: MockNNSDappCanister = new MockNNSDappCanister();

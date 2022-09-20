@@ -61,5 +61,6 @@ module.exports = {
         "ts-ignore": "allow-with-description",
       },
     ],
+    "no-console": ["error", { allow: ["warn", "error", "debug"] }],
   },
 };

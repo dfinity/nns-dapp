@@ -12,7 +12,7 @@
   import type { Step, Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
   import { createEventDispatcher, tick } from "svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { toastsError, toastsShow } from "../../stores/toasts.store";
   import AddUserToHotkeys from "../../components/neurons/AddUserToHotkeys.svelte";
   import { isAccountHardwareWallet } from "../../utils/accounts.utils";
   import { definedNeuronsStore } from "../../stores/neurons.store";
@@ -111,7 +111,7 @@
       }
     );
     if (invalidState !== undefined) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       close();
@@ -139,7 +139,7 @@
   }: CustomEvent<{ neuronId: NeuronId }>) => {
     newNeuronId = detail.neuronId;
     if (isAccountHardwareWallet(selectedAccount)) {
-      toastsStore.show({
+      toastsShow({
         labelKey: "neurons.neuron_create_success",
         level: "success",
       });

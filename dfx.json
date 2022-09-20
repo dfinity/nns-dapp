@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.1",
+  "dfx": "0.11.2",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -14,6 +14,7 @@
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -28,34 +29,49 @@
       "type": "custom",
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-25/internet_identity_dev.wasm\" -o internet_identity.wasm"
     },
     "nns-sns-wasm": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+        }
+      }
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -71,11 +87,13 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS": false,
+          "VOTING_UI": "legacy"
         }
       },
-      "providers": ["https://ic0.app/"],
+      "providers": [
+        "https://ic0.app/"
+      ],
       "type": "persistent"
     },
     "staging": {
@@ -84,11 +102,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS": false,
+          "VOTING_UI": "legacy"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "testnet": {
@@ -97,11 +117,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small13": {
@@ -110,11 +132,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
+      ],
       "type": "persistent"
     },
     "small12": {
@@ -123,11 +147,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
+      ],
       "type": "persistent"
     },
     "small11": {
@@ -136,11 +162,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
       "type": "persistent"
     },
     "small06": {
@@ -149,11 +177,13 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": true
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
       "type": "persistent"
     },
     "local": {
@@ -162,8 +192,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
-          "ENABLE_NEW_SPAWN_FEATURE": true,
-          "ENABLE_SNS_NEURONS": false
+          "ENABLE_SNS": true,
+          "VOTING_UI": "modern"
         }
       },
       "bind": "127.0.0.1:8080",
@@ -182,7 +212,7 @@
     },
     "build": {
       "config": {
-        "RUSTC_VERSION": "1.58.1",
+        "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IC_COMMIT": "3982db093a87e90cbe0595877a4110e4f37ac740"
       },

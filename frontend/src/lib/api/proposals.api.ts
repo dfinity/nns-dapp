@@ -38,10 +38,6 @@ export const queryProposals = async ({
 
   const { rewards, status, topics }: ProposalsFiltersStore = filters;
 
-  // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
-  // sortedByDescending((element) => element.proposalTimestamp);
-  // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
-
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
       limit: DEFAULT_LIST_PAGINATION_LIMIT,
