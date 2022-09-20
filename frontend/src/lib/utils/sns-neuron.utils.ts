@@ -87,7 +87,9 @@ export const getSnsNeuronByHexId = ({
  *   id: [] | [{ id: Uint8Array }],
  *   //...
  */
-export const getSnsNeuronIdAsHexString = ({id: neuronId}: SnsNeuron): string =>
+export const getSnsNeuronIdAsHexString = ({
+  id: neuronId,
+}: SnsNeuron): string =>
   bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
@@ -133,7 +135,9 @@ const hasAllPermissions = (permission_type: Int32Array): boolean => {
   const allPermissions = enumValues(SnsNeuronPermissionType);
   return (
     allPermissions.length === permissionsNumbers.length &&
-    allPermissions.every((permission) => permissionsNumbers.includes(permission))
+    allPermissions.every((permission) =>
+      permissionsNumbers.includes(permission)
+    )
   );
 };
 

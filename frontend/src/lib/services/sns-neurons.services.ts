@@ -5,6 +5,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
 import {
   addNeuronPermissions,
@@ -22,7 +23,6 @@ import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
 import { hexStringToBytes } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
-import {arrayOfNumberToUint8Array} from "@dfinity/utils";
 
 export const loadSnsNeurons = async (
   rootCanisterId: Principal
