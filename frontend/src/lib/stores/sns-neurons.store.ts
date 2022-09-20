@@ -50,7 +50,10 @@ const initSnsNeuronsStore = () => {
 
     resetProject(rootCanisterId: Principal) {
       update((currentState: NeuronsStore) =>
-        removeKeys(currentState, [rootCanisterId.toText()])
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [rootCanisterId.toText()],
+        })
       );
     },
   };

@@ -408,8 +408,10 @@ describe("utils", () => {
         a: 1,
         c: 3,
       };
-      expect(removeKeys(obj, ["b"])).toEqual(expected);
-      expect(Object.keys(removeKeys(obj, ["b", "a", "c"])).length).toBe(0);
+      expect(removeKeys({ obj, keysToRemove: ["b"] })).toEqual(expected);
+      expect(
+        Object.keys(removeKeys({ obj, keysToRemove: ["b", "a", "c"] })).length
+      ).toBe(0);
     });
 
     it("should ignore keys that are not present", () => {
@@ -422,7 +424,7 @@ describe("utils", () => {
         a: 1,
         c: 3,
       };
-      expect(removeKeys(obj, ["b", "d"])).toEqual(expected);
+      expect(removeKeys({ obj, keysToRemove: ["b", "d"] })).toEqual(expected);
     });
   });
 });

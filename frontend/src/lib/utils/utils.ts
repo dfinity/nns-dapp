@@ -270,10 +270,13 @@ export const valueSpan = (text: string): string =>
  * @param keysToRemove keys to remove
  * @returns new object with entries removed
  */
-export const removeKeys = <T extends Record<string, unknown>>(
-  obj: T,
-  keysToRemove: string[]
-): T =>
+export const removeKeys = <T extends Record<string, unknown>>({
+  obj,
+  keysToRemove,
+}: {
+  obj: T;
+  keysToRemove: string[];
+}): T =>
   Object.entries(obj)
     .filter(([key]) => keysToRemove.indexOf(key) === -1)
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as T);

@@ -52,7 +52,10 @@ const initSnsAccountsStore = () => {
 
     resetProject(rootCanisterId: Principal) {
       update((currentState: SnsAccountsStore) =>
-        removeKeys(currentState, [rootCanisterId.toText()])
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [rootCanisterId.toText()],
+        })
       );
     },
   };
