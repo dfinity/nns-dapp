@@ -9,6 +9,7 @@ import {
   nonNullish,
   poll,
   PollingLimitExceededError,
+  removeKeys,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
@@ -393,6 +394,35 @@ describe("utils", () => {
       // Without the `await`, the line didn't wait the `poll` to throw to move to the next line
       await expect(call).rejects.toThrowError(PollingLimitExceededError);
       expect(counter).toBe(maxAttempts);
+    });
+  });
+
+  describe("removeKeys", () => {
+    it("removes the keys passed", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+        c: 3,
+      };
+      const expected = {
+        a: 1,
+        c: 3,
+      };
+      expect(removeKeys(obj, ["b"])).toEqual(expected);
+      expect(Object.keys(removeKeys(obj, ["b", "a", "c"])).length).toBe(0);
+    });
+
+    it("should ignore keys that are not present", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+        c: 3,
+      };
+      const expected = {
+        a: 1,
+        c: 3,
+      };
+      expect(removeKeys(obj, ["b", "d"])).toEqual(expected);
     });
   });
 });

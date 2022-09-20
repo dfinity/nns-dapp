@@ -1,13 +1,19 @@
 import { getSnsAccounts } from "../../../lib/api/sns-ledger.api";
-import { importInitSnsWrapper } from "../../../lib/proxy/api.import.proxy";
+import {
+  importInitSnsWrapper,
+  importSnsWasmCanister,
+} from "../../../lib/proxy/api.import.proxy";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
 import {
+  deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
+
+jest.mock("../../../lib/proxy/api.import.proxy");
 
 describe("sns-ledger api", () => {
   const mainBalance = BigInt(10_000_000);
@@ -15,6 +21,12 @@ describe("sns-ledger api", () => {
   const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
 
   beforeEach(() => {
+    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+      create: () => ({
+        listSnses: () => Promise.resolve(deployedSnsMock),
+      }),
+    });
+
     (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
@@ -41,7 +53,7 @@ describe("sns-ledger api", () => {
       const main = accounts.find(({ type }) => type === "main");
       expect(main).not.toBeUndefined();
 
-      expect(main?.balance).toEqual(mainBalance);
+      expect(main?.balance.toE8s()).toEqual(mainBalance);
 
       expect(balanceSpy).toBeCalled();
       expect(metadataSpy).toBeCalled();

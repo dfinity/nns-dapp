@@ -1,7 +1,9 @@
 import type { Principal } from "@dfinity/principal";
 import { getSnsAccounts } from "../api/sns-ledger.api";
 import { snsAccountsStore } from "../stores/sns-accounts.store";
+import { toastsError } from "../stores/toasts.store";
 import type { Account } from "../types/account";
+import { toToastError } from "../utils/error.utils";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsAccounts = async (
@@ -16,9 +18,23 @@ export const loadSnsAccounts = async (
         rootCanisterId,
         certified,
       }),
-    onError: (error) => {
-      // TODO: Manage errors https://dfinity.atlassian.net/browse/GIX-1026
-      console.error("in da error", error);
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // hide unproven data
+      snsAccountsStore.resetProject(rootCanisterId);
+
+      toastsError(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.sns_neurons_load",
+        })
+      );
     },
+    logMessage: "Syncing Sns Accounts",
   });
 };

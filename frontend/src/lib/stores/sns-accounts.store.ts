@@ -1,6 +1,7 @@
 import type { Principal } from "@dfinity/principal";
 import { writable } from "svelte/store";
 import type { Account } from "../types/account";
+import { removeKeys } from "../utils/utils";
 
 interface SnsAccount {
   accounts: Account[];
@@ -51,9 +52,7 @@ const initSnsAccountsStore = () => {
 
     resetProject(rootCanisterId: Principal) {
       update((currentState: SnsAccountsStore) =>
-        Object.entries(currentState)
-          .filter(([key]) => key !== rootCanisterId.toText())
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+        removeKeys(currentState, [rootCanisterId.toText()])
       );
     },
   };
