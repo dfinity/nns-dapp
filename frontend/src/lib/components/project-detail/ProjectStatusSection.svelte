@@ -76,7 +76,11 @@
               summary={$projectDetailStore.summary}
               {swapCommitment}
             />
-            <AmountDisplay slot="value" amount={myCommitmentIcp} class="small" />
+            <AmountDisplay
+              slot="value"
+              amount={myCommitmentIcp}
+              class="small"
+            />
           </KeyValuePair>
         </div>
       {/if}

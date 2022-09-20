@@ -60,7 +60,10 @@
       <div class="align-right">
         <AmountDisplay amount={icpAmount} />
         <span>
-          <AmountDisplay amount={$mainTransactionFeeStoreAsToken} class="small" />
+          <AmountDisplay
+            amount={$mainTransactionFeeStoreAsToken}
+            class="small"
+          />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>
