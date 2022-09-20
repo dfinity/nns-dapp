@@ -5,4 +5,4 @@
   export let amount: TokenAmount;
 </script>
 
-<span><slot /> <AmountDisplay singleLine {amount} /></span>
+<span><slot /> <AmountDisplay singleLine {amount} class="small" /></span>

@@ -65,7 +65,7 @@
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
   <div class="amount">
-    <AmountDisplay inline={true} {amount} detailed />
+    <AmountDisplay {amount} detailed />
   </div>
 
   <NewTransactionInfo />

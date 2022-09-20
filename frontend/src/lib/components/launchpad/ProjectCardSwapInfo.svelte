@@ -78,7 +78,7 @@
 
   {#if myCommitment !== undefined}
     <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
-    <dd><AmountDisplay amount={myCommitment} singleLine inheritSize /></dd>
+    <dd><AmountDisplay amount={myCommitment} class="small" /></dd>
   {/if}
 </dl>
 

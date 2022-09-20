@@ -22,7 +22,7 @@
   }
 
   .cycles {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--font-size-h3);
   }
 </style>

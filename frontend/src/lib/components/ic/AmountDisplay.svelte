@@ -4,19 +4,11 @@
 
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;
-  export let inline: boolean = false;
-  export let singleLine: boolean = false;
-  export let inheritSize: boolean = false;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean = false;
 </script>
 
-<div
-  class:inline
-  class:singleLine
-  class:inheritSize
-  class:plus-sign={sign === "+"}
->
+<div class={$$props.class} class:plus-sign={sign === "+"}>
   <span data-tid="icp-value" class="value"
     >{`${sign}${formatICP({ value: amount.toE8s(), detailed })}`}</span
   >
@@ -27,32 +19,26 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   div {
-    display: inline-grid;
-    grid-template-columns: repeat(2, auto);
-    grid-gap: 5px;
     align-items: baseline;
 
+    overflow-wrap: break-word;
+
+    span {
+      word-break: break-word;
+    }
+
     span:first-of-type {
-      font-weight: 700;
+      font-weight: var(--icp-font-weight, var(--font-weight-bold));
       font-size: var(--icp-font-size, var(--font-size-h3));
+      line-height: var(--line-height-title);
     }
 
-    &.singleLine span:first-of-type {
-      font-weight: normal;
-      font-size: var(--font-size-h5);
-    }
+    &.small {
+      --icp-font-weight: normal;
+      --icp-font-size: var(--font-size-h5);
 
-    &.inheritSize span:first-of-type {
-      font-size: inherit;
-    }
-
-    &:not(.inline, .singleLine) {
-      @include media.min-width(medium) {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: flex-end;
-        grid-gap: 0;
+      span:first-of-type {
+        line-height: inherit;
       }
     }
 

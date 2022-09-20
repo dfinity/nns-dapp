@@ -8,7 +8,7 @@
 
 <div>
   <p>{$i18n.accounts.current_balance}:</p>
-  <AmountDisplay inline={true} amount={balance} />
+  <AmountDisplay amount={balance} />
 </div>
 
 <style lang="scss">

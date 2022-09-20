@@ -14,7 +14,7 @@
 {#if userHasParticipated}
   <p class="right">
     {$i18n.sns_project_detail.max_left}
-    <AmountDisplay singleLine amount={maxCommitment} />
+    <AmountDisplay class="small" amount={maxCommitment} />
   </p>
 {:else}
   <KeyValuePair>
@@ -28,7 +28,7 @@
 {/if}
 <p class="right">
   <span>{$i18n.accounts.transaction_fee}</span>
-  <AmountDisplay singleLine amount={$mainTransactionFeeStoreAsToken} />
+  <AmountDisplay class="small" amount={$mainTransactionFeeStoreAsToken} />
 </p>
 
 <style lang="scss">

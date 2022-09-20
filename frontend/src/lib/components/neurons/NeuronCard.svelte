@@ -95,11 +95,6 @@
     margin-bottom: 0;
   }
 
-  h3 {
-    line-height: var(--line-height-standard);
-    margin-bottom: 0;
-  }
-
   .lock {
     @include card.stacked-title;
   }

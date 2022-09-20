@@ -107,7 +107,7 @@
     border: 2px solid var(--login-button-color);
     border-radius: var(--border-radius);
 
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: white;
     text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
 

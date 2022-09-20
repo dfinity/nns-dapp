@@ -100,7 +100,7 @@
         <span slot="key" class="label">{$i18n.accounts.source}</span>
         <AmountDisplay
           slot="value"
-          singleLine
+          class="small"
           amount={selectedAccount?.balance}
         />
       </KeyValuePair>

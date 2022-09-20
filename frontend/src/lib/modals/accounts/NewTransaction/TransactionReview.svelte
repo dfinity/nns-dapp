@@ -39,7 +39,7 @@
       <span class="label" slot="key">{$i18n.accounts.source}</span>
       <div class="balance" slot="value">
         <span class="label">{$i18n.accounts.balance}</span>
-        <AmountDisplay singleLine amount={sourceAccount.balance} />
+        <AmountDisplay class="small" amount={sourceAccount.balance} />
       </div>
     </KeyValuePair>
     <div>
@@ -58,9 +58,9 @@
         <IconSouth />
       </span>
       <div class="align-right">
-        <AmountDisplay amount={icpAmount} inline />
+        <AmountDisplay amount={icpAmount} />
         <span>
-          <AmountDisplay amount={$mainTransactionFeeStoreAsToken} singleLine />
+          <AmountDisplay amount={$mainTransactionFeeStoreAsToken} class="small" />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>

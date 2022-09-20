@@ -50,7 +50,6 @@
 >
   <div class="amount">
     <AmountDisplay
-      inline
       amount={TokenAmount.fromE8s({ amount: neuronStake(neuron) })}
     />
   </div>

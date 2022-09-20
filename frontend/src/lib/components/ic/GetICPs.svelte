@@ -106,7 +106,7 @@
     align-items: center;
 
     font-size: var(--font-size-h5);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 
     letter-spacing: var(--letter-spacing-title);
 

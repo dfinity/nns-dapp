@@ -27,7 +27,7 @@
         <span data-tid="commitment-max-indicator-value">
           <AmountDisplay
             amount={TokenAmount.fromE8s({ amount: max })}
-            singleLine
+            class="small"
           />
         </span>
       </p>
@@ -55,7 +55,7 @@
           <span data-tid="commitment-min-indicator-value">
             <AmountDisplay
               amount={TokenAmount.fromE8s({ amount: minimumIndicator })}
-              singleLine
+              class="small"
             />
           </span>
         </p>

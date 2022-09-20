@@ -47,11 +47,11 @@
 
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-  <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={minCommitmentIcp} class="small" />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
-  <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={maxCommitmentIcp} class="small" />
 </KeyValuePair>
 <KeyValuePair>
   <span slot="key">{$i18n.sns_project_detail.sale_start} </span>

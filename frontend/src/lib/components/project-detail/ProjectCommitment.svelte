@@ -43,7 +43,7 @@
     {$i18n.sns_project_detail.current_overall_commitment}
   </span>
 
-  <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
+  <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} class="small" />
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar
