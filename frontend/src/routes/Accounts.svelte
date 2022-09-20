@@ -1,5 +1,4 @@
 <script lang="ts">
-  import SelectProjectDropdown from "../lib/components/neurons/SelectProjectDropdown.svelte";
   import { ENABLE_SNS } from "../lib/constants/environment.constants";
   import NnsAccounts from "../lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "../lib/components/accounts/NnsAccountsFooter.svelte";
