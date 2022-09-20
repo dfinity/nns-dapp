@@ -5,7 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
-  import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
+  import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
     formattedMaturity,
@@ -36,12 +36,9 @@
       {formattedMaturity(neuron)}
     </h3>
   </div>
-  <p>
-    {@html $i18n.neuron_detail.maturity_description}
-  </p>
   <div class="actions">
     {#if isControllable}
-      <MergeMaturityButton {neuron} />
+      <StakeMaturityButton {neuron} />
       <SpawnNeuronButton {neuron} />
     {/if}
   </div>
@@ -52,15 +49,6 @@
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
-  }
-
-  p {
-    margin: 0 0 var(--padding);
-
-    :global(a) {
-      font-size: inherit;
-      color: var(--primary);
-    }
   }
 
   .actions {

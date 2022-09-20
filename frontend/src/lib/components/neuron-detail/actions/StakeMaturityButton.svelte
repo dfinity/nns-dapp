@@ -26,7 +26,7 @@
 
 {#if enoughMaturity}
   <button class="primary small" on:click={showModal}
-    >{$i18n.neuron_detail.merge_maturity}</button
+    >{$i18n.neuron_detail.stake_maturity}</button
   >
 {:else}
   <Tooltip
@@ -42,7 +42,7 @@
     )}
   >
     <button disabled class="primary small" on:click={showModal}
-      >{$i18n.neuron_detail.merge_maturity}</button
+      >{$i18n.neuron_detail.stake_maturity}</button
     >
   </Tooltip>
 {/if}

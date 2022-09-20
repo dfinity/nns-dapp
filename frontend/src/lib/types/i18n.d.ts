@@ -478,8 +478,7 @@ interface I18nNeuron_detail {
   participate_community_fund: string;
   community_fund_more_info: string;
   maturity_title: string;
-  maturity_description: string;
-  merge_maturity: string;
+  stake_maturity: string;
   merge: string;
   spawn_neuron: string;
   spawn: string;

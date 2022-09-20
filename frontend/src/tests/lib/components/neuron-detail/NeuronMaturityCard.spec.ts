@@ -56,7 +56,7 @@ describe("NeuronMaturityCard", () => {
       props,
     });
 
-    expect(queryByText(en.neuron_detail.merge_maturity)).toBeInTheDocument();
+    expect(queryByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.spawn_neuron)).toBeInTheDocument();
   });
 
@@ -76,7 +76,7 @@ describe("NeuronMaturityCard", () => {
     });
 
     expect(
-      queryByText(en.neuron_detail.merge_maturity)
+      queryByText(en.neuron_detail.stake_maturity)
     ).not.toBeInTheDocument();
     expect(queryByText(en.neuron_detail.spawn_neuron)).not.toBeInTheDocument();
   });

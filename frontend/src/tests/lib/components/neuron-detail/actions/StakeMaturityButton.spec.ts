@@ -3,17 +3,17 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import MergeMaturityButton from "../../../../../lib/components/neuron-detail/actions/MergeMaturityButton.svelte";
+import StakeMaturityButton from "../../../../../lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 
-describe("MergeMaturityButton", () => {
+describe("StakeMaturityButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it("renders merge maturity message", () => {
-    const { getByText } = render(MergeMaturityButton, {
+    const { getByText } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
       },
@@ -23,7 +23,7 @@ describe("MergeMaturityButton", () => {
   });
 
   it("opens Merge Maturity Modal", async () => {
-    const { container, queryByTestId } = render(MergeMaturityButton, {
+    const { container, queryByTestId } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
       },
