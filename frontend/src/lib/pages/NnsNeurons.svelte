@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "../stores/auth.store";
-  import type { AuthStore } from "../stores/auth.store";
   import { i18n } from "../stores/i18n";
   import NeuronCard from "../components/neurons/NeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
@@ -20,19 +17,11 @@
   $: isLoading = $neuronsStore.neurons === undefined;
 
   let principalText: string = "";
+  $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ identity }: AuthStore) =>
-      (principalText = identity?.getPrincipal().toText() ?? "")
-  );
-
-  onDestroy(unsubscribe);
-
-  const goToNeuronDetails = (id: NeuronId) => () => {
-    routeStore.navigate({
-      path: `${AppPath.LegacyNeuronDetail}/${id}`,
-    });
-  };
+  const goToNeuronDetails = (id: NeuronId) => () => routeStore.navigate({
+    path: `${AppPath.LegacyNeuronDetail}/${id}`,
+  });
 </script>
 
 <section data-tid="neurons-body">

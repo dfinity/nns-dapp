@@ -15,6 +15,7 @@
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import { IconStackedLineChart } from "@dfinity/gix-components";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
+  import NeuronInfoDisplay from "./NeuronInfoDisplay.svelte";
   import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
@@ -50,30 +51,41 @@
   on:click
   {cardType}
 >
-  <div slot="start" class="lock" data-tid="neuron-card-title">
-    <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
+  <!-- Staked ICP -->
+  <NeuronInfoDisplay>
+    <h3 slot="start">{$i18n.neurons.staked_icp}</h3>
 
-    {#if isCommunityFund}
-      <span>{$i18n.neurons.community_fund}</span>
-    {/if}
-    {#if isHotKeyControl}
-      <span>{$i18n.neurons.hotkey_control}</span>
-    {/if}
-  </div>
+    <svelte:fragment slot="end">
+      {#if isSpawning(neuron)}
+        <IconStackedLineChart />
+      {:else if proposerNeuron}
+        <AmountDisplay singleLine
+                label={$i18n.neurons.voting_power}
+                amount={TokenAmount.fromE8s({ amount: neuron.votingPower })}
+                detailed
+        />
+      {:else if neuronICP}
+        <AmountDisplay amount={neuronICP} detailed />
+      {/if}
+    </svelte:fragment>
+  </NeuronInfoDisplay>
 
-  <div slot="end" class="currency">
-    {#if isSpawning(neuron)}
-      <IconStackedLineChart />
-    {:else if proposerNeuron}
-      <AmountDisplay
-        label={$i18n.neurons.voting_power}
-        amount={TokenAmount.fromE8s({ amount: neuron.votingPower })}
-        detailed
-      />
-    {:else if neuronICP}
-      <AmountDisplay amount={neuronICP} detailed />
-    {/if}
-  </div>
+  <!-- Staked Maturity -->
+  <NeuronInfoDisplay>
+    <h3 slot="start">{$i18n.neurons.staked_maturity}</h3>
+
+    <span slot="end">
+      999 (TODO)
+    </span>
+  </NeuronInfoDisplay>
+
+  <!-- Neuron meta information -->
+  {#if isCommunityFund}
+    <p class="description">{$i18n.neurons.community_fund}</p>
+  {/if}
+  {#if isHotKeyControl}
+    <p class="description">{$i18n.neurons.hotkey_control}</p>
+  {/if}
 
   <NeuronStateInfo state={neuron.state} />
 
@@ -100,13 +112,13 @@
     margin-bottom: 0;
   }
 
-  .lock {
-    @include card.stacked-title;
-  }
-
   .currency {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+  }
+
+  .description {
+    margin: 0 0 var(--padding-2x);
   }
 </style>
