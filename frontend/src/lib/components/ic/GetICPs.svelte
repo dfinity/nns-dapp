@@ -137,4 +137,8 @@
 
     padding: var(--padding-2x) var(--padding);
   }
+
+  .primary {
+    min-width: calc(48px + (2 * var(--padding-2x)));
+  }
 </style>
