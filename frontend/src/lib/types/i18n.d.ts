@@ -137,6 +137,7 @@ interface I18nAuth {
 interface I18nAccounts {
   total: string;
   main: string;
+  balance: string;
   new_transaction: string;
   icp_transaction_description: string;
   review_action: string;
@@ -798,6 +799,7 @@ interface I18nNns_functions {
   PrepareCanisterMigration: string;
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
+  ChangeSubnetMembership: string;
 }
 
 interface I18nNns_functions_description {
@@ -832,6 +834,7 @@ interface I18nNns_functions_description {
   PrepareCanisterMigration: string;
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
+  ChangeSubnetMembership: string;
 }
 
 interface I18n {

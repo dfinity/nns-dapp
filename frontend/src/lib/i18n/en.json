@@ -128,6 +128,7 @@
   "accounts": {
     "total": "Total",
     "main": "Main",
+    "balance": "Balance",
     "new_transaction": "New Transaction",
     "icp_transaction_description": "ICP Transaction",
     "review_action": "Review",
