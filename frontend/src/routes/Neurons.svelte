@@ -13,6 +13,7 @@
   import { isRoutePath } from "../lib/utils/app-path.utils";
   import { AppPath } from "../lib/constants/routes.constants";
   import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
+  import SelectProjectDropdownHeader from "../lib/components/ic/SelectProjectDropdownHeader.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -27,11 +28,7 @@
 
 <main class="legacy">
   {#if ENABLE_SNS}
-    <div class="dropdown-wrapper">
-      <div class="fit-content">
-        <SelectProjectDropdown />
-      </div>
-    </div>
+    <SelectProjectDropdownHeader />
   {/if}
 
   {#if $isNnsProjectStore}
@@ -44,17 +41,3 @@
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
 {/if}
-
-<style lang="scss">
-  .dropdown-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-top: var(--padding-4x);
-
-    .fit-content {
-      width: fit-content;
-    }
-  }
-</style>

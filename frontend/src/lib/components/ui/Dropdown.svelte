@@ -42,7 +42,10 @@
       outline: 2px solid var(--primary);
     }
     select {
+      // Needed to keep the clickable area of the dropdown the whole width of the div.
       width: 100%;
+      // Apply the width to the content
+      box-sizing: content-box;
       // Space for the caret icon.
       padding-right: var(--padding-4x);
       background: var(--card-background);
