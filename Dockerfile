@@ -69,9 +69,6 @@ RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 ARG OWN_CANISTER_ID
 RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
 
-ARG REDIRECT_TO_LEGACY
-RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
-
 # Build
 # ... put only git-tracked files in the build directory
 COPY . /build

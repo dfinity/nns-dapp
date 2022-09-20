@@ -124,7 +124,6 @@ jobs:
         working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-      REDIRECT_TO_LEGACY: svelte
 
     steps:
       - name: Checkout
