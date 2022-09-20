@@ -22,6 +22,7 @@ import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
 import { hexStringToBytes } from "../utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+import {arrayOfNumberToUint8Array} from "@dfinity/utils";
 
 export const loadSnsNeurons = async (
   rootCanisterId: Principal
@@ -122,7 +123,7 @@ export const getSnsNeuron = async ({
       return;
     }
   }
-  const neuronId = hexStringToBytes(neuronIdHex);
+  const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
   return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
       querySnsNeuron({

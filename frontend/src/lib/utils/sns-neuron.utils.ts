@@ -79,16 +79,16 @@ export const getSnsNeuronByHexId = ({
   neuronIdHex: string;
   neurons: SnsNeuron[] | undefined;
 }): SnsNeuron | undefined =>
-  neurons?.find(({ id }) => bytesToHexString(id[0]?.id ?? []) === neuronIdHex);
+  neurons?.find((neuron) => getSnsNeuronIdAsHexString(neuron) === neuronIdHex);
 
 /**
  * Get the neuron id as string instead of its type
  * type Neuron {
- *   id: { id: number[] },
+ *   id: [] | [{ id: Uint8Array }],
  *   //...
  */
-export const getSnsNeuronIdAsHexString = (neuron: SnsNeuron): string =>
-  bytesToHexString(fromNullable(neuron.id)?.id ?? []);
+export const getSnsNeuronIdAsHexString = ({id: neuronId}: SnsNeuron): string =>
+  bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
   if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
@@ -128,11 +128,12 @@ export const canIdentityManageHotkeys = ({
   );
 };
 
-const hasAllPermissions = (permissions: SnsNeuronPermissionType[]): boolean => {
+const hasAllPermissions = (permission_type: Int32Array): boolean => {
+  const permissionsNumbers = Array.from(permission_type);
   const allPermissions = enumValues(SnsNeuronPermissionType);
   return (
-    allPermissions.length === permissions.length &&
-    allPermissions.every((permission) => permissions.includes(permission))
+    allPermissions.length === permissionsNumbers.length &&
+    allPermissions.every((permission) => permissionsNumbers.includes(permission))
   );
 };
 
