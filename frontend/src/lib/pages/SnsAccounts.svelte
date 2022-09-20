@@ -16,6 +16,7 @@
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
+        // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
         await loadSnsAccounts(selectedProjectCanisterId);
         loading = false;
