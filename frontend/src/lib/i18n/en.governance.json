@@ -154,6 +154,6 @@
     "PrepareCanisterMigration": "Insert or update canister migrations entries. Such entries specify that a migration of canister ID ranges is currently ongoing.<br/><br/>The steps of canister migration are:<ol><li>Prepare Canister Migration</li><li>Reroute Canister Ranges</li><li>Complete Canister Migration</li></ol>",
     "CompleteCanisterMigration": "Remove canister migrations entries. Such entries specify that a migration of canister ID ranges is currently ongoing.<br/><br/>The steps of canister migration are:<ol><li>Prepare Canister Migration</li><li>Reroute Canister Ranges</li><li>Complete Canister Migration</li></ol>",
     "AddSnsWasm": "Add a new SNS canister WASM",
-    "ChangeSubnetMembership": "Change the subnet node membership. In a way, this function combines the separate functions for adding and removing nodes from the subnet record, but adds the property of atomic node replacement (node swap) on top."
+    "ChangeSubnetMembership": "Change the membership (list) of nodes in a subnet by adding and/or removing nodes from the subnet. At the time the proposal is executed, the added nodes (if provided in the proposal) need to be unassigned and the removed nodes (if provided in the proposal) need to be assigned to the subnet. After the proposal is executed, the removed nodes become unassigned, and can be reassigned to other subnets via future proposals or completely removed from the network."
   }
 }

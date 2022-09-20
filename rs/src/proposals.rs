@@ -409,7 +409,7 @@ mod def {
         }
     }
 
-    // NNS function 31 - AddSnsWasm
+    // NNS function 31 - ChangeSubnetMembership
     // The payload of a proposal to change the membership of nodes in an existing subnet.
     // https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
     pub type ChangeSubnetMembershipPayload =
