@@ -33,8 +33,9 @@
           ...$snsProjectAccountsStore.map(({ balance }) => balance)
         );
 
-  // TODO: Wallet details https://dfinity.atlassian.net/browse/GIX-995
   const goToDetails = (account: Account) => {
+    // TODO: Wallet details https://dfinity.atlassian.net/browse/GIX-995
+    // eslint-disable-next-line no-console
     console.log("goToDetails", account);
   };
 </script>
