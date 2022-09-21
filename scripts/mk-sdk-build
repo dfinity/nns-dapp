@@ -7,7 +7,8 @@ read -rp "Are you sure this is the right tool for you? (ctrl-c to escape) "
 
 set -euxo pipefail
 rm -f nns-dapp.wasm nns-dapp_local.wasm
-jq '.networks.local.config.OWN_CANISTER_ID="qhbym-qaaaa-aaaaa-aaafq-cai"|.canisters["nns-dapp"].remote.id.local="qhbym-qaaaa-aaaaa-aaafq-cai"|.canisters.internet_identity.remote.id.local="qhbym-qaaaa-aaaaa-aaafq-cai"| .canisters["nns-sns-wasm"].remote.id.local="qaa6y-5yaaa-aaaaa-aaafa-cai"' dfx.json | sponge dfx.json
+git tag tutorial2 && git push origin --tags
+jq '.networks.local.config.OWN_CANISTER_ID="qsgjb-riaaa-aaaaa-aaaga-cai"|.canisters["nns-dapp"].remote.id.local="qsgjb-riaaa-aaaaa-aaaga-cai"|.canisters.internet_identity.remote.id.local="qhbym-qaaaa-aaaaa-aaafq-cai"| .canisters["nns-sns-wasm"].remote.id.local="qaa6y-5yaaa-aaaaa-aaafa-cai"' dfx.json | sponge dfx.json
 export FEATURE_FLAGS='{"ENABLE_SNS":true,"VOTING_UI":"modern"}'
 export DFX_NETWORK=local
 ./config.sh
