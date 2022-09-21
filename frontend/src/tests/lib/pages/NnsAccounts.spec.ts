@@ -10,7 +10,7 @@ import {
   type AccountsStore,
 } from "../../../lib/stores/accounts.store";
 import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
-import { formatICP } from "../../../lib/utils/icp.utils";
+import { formatToken } from "../../../lib/utils/icp.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -35,7 +35,7 @@ describe("NnsAccounts", () => {
 
       expect(
         titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatICP({
+          `${en.accounts.total} ${formatToken({
             value: mockMainAccount.balance.toE8s(),
           })} ICP`
         )
@@ -63,7 +63,7 @@ describe("NnsAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent).toEqual(
-        `${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
+        `${formatToken({ value: mockMainAccount.balance.toE8s() })} ICP`
       );
     });
 
@@ -137,7 +137,7 @@ describe("NnsAccounts", () => {
 
       expect(
         titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatICP({ value: totalBalance })} ICP`
+          `${en.accounts.total} ${formatToken({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
     });
@@ -161,7 +161,7 @@ describe("NnsAccounts", () => {
 
       expect(icp?.textContent).toEqual(
         replacePlaceholders(en.accounts.current_balance_total, {
-          $amount: `${formatICP({
+          $amount: `${formatToken({
             value: totalBalance,
             detailed: true,
           })}`,

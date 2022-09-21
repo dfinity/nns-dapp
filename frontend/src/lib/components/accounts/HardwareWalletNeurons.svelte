@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
   import type {
@@ -32,7 +32,7 @@
     </p>
 
     <p>
-      {formatICP({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
+      {formatToken({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
     </p>
 
     <p class="hotkey">

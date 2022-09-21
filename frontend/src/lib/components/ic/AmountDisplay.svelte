@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TokenAmount } from "@dfinity/nns";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
 
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;
@@ -17,8 +17,8 @@
   class:inheritSize
   class:plus-sign={sign === "+"}
 >
-  <span data-tid="icp-value" class="value"
-    >{`${sign}${formatICP({ value: amount.toE8s(), detailed })}`}</span
+  <span data-tid="token-value" class="value"
+    >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
 </div>
@@ -34,7 +34,7 @@
 
     span:first-of-type {
       font-weight: 700;
-      font-size: var(--icp-font-size, var(--font-size-h3));
+      font-size: var(--token-font-size, var(--font-size-h3));
     }
 
     &.singleLine span:first-of-type {
