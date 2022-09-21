@@ -2,7 +2,6 @@
   import { i18n } from "../../stores/i18n";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
 
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { toastsSuccess } from "../../stores/toasts.store";
@@ -14,20 +13,24 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
   import { accountsStore } from "../../stores/accounts.store";
-  import { getSnsNeuronIdAsHexString } from "../../utils/sns-neuron.utils";
-  import type { E8s } from "@dfinity/nns/dist/types";
+  import { getSnsNeuronIdAsHexString, getSnsNeuronStake } from "../../utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
+    import { TokenAmount } from "@dfinity/nns";
+    import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
+    import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+
 
   export let neuron: SnsNeuron;
-
-  let destinationAddress: string;
+  
+  let destinationAddress: string | undefined;
   $: destinationAddress = $accountsStore?.main?.identifier;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
 
-  let amount: E8s;
-  $: amount = neuron.cached_neuron_stake_e8s;
+  
+  let amount: TokenAmount;
+  $: amount = TokenAmount.fromE8s({amount: getSnsNeuronStake(neuron), token: $snsTokenSymbolSelectedStore});
 
   const dispatcher = createEventDispatcher();
   const steps: Steps = [

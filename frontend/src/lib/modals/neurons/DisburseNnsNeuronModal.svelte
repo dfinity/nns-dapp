@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import type { E8s, NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
@@ -34,8 +34,8 @@
   let currentStep: Step;
   let modal: WizardModal;
   let loading: boolean = false;
-  let amount: E8s;
-  $: amount = neuronStake(neuron);
+  let amount: TokenAmount;
+  $: amount = TokenAmount.fromE8s({amount: neuronStake(neuron), token: ICPToken});
 
   let destinationAddress: string | undefined;
 
