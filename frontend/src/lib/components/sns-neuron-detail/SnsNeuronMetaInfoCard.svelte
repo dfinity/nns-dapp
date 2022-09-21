@@ -12,6 +12,9 @@
   import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
   import DisburseSnsNeuronModal from "../../modals/neurons/DisburseSnsNeuronModal.svelte";
   import { isDissolved } from "../../utils/sns.utils";
+  import { hasPermissionToDisburse } from "../../utils/sns-neuron.utils";
+  import { authStore } from "../../stores/auth.store";
+  import { nonNullish } from "../../utils/utils";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -19,8 +22,16 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
-  // TODO: TBD
-  let isControllable: boolean = true;
+  let canDisburse: boolean = false;
+
+  $: if (nonNullish(neuron)) {
+    canDisburse =
+      hasPermissionToDisburse({
+        neuron,
+        identity: $authStore.identity,
+      }) &&
+      (neuron.dissolve_state[0] === undefined || isDissolved(neuron));
+  }
 </script>
 
 {#if neuron !== undefined && neuron !== null}
@@ -32,12 +43,10 @@
       </p>
 
       <div class="buttons">
-        {#if isControllable}
-          <!-- TODO(GIX-985): Sns/IncreaseDissolveDelayButton -->
-          {#if neuron.dissolve_state[0] === undefined || isDissolved(neuron)}
-            <DisburseButton {neuron} modal={DisburseSnsNeuronModal} />
-          {/if}
-          <!-- TODO(GIX-985): Sns/DissolveActionButton -->
+        <!-- TODO(GIX-985): Sns/IncreaseDissolveDelayButton -->
+        <!-- TODO(GIX-985): Sns/DissolveActionButton -->
+        {#if canDisburse}
+          <DisburseButton {neuron} modal={DisburseSnsNeuronModal} />
         {/if}
       </div>
     </section>
