@@ -260,8 +260,6 @@ interface I18nNeurons {
   add_hotkey_prompt_error: string;
   add_hotkey_prompt_success: string;
   stake_amount: string;
-  staked_icp: string;
-  staked_maturity: string;
 }
 
 interface I18nNew_followee {

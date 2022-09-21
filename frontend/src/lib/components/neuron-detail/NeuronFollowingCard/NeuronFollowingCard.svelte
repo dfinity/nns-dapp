@@ -14,6 +14,7 @@
   import CardInfo from "../../ui/CardInfo.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
+  import KeyValuePairInfo from "../../ui/KeyValuePairInfo.svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;
@@ -34,8 +35,10 @@
 </script>
 
 <CardInfo>
-  <h3 slot="start">{$i18n.neuron_detail.following_title}</h3>
-  <p class="description">{$i18n.neuron_detail.following_description}</p>
+  <KeyValuePairInfo testId="neuron-following">
+    <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
+    <svelte:fragment slot="info">{$i18n.neuron_detail.following_description}</svelte:fragment>
+  </KeyValuePairInfo>
 
   {#if followees.length > 0}
     <div class="frame">
@@ -55,15 +58,6 @@
 </CardInfo>
 
 <style lang="scss">
-  h3 {
-    margin-bottom: 0;
-  }
-
-  p {
-    margin-top: 0;
-    margin-bottom: var(--padding-2x);
-  }
-
   .frame {
     padding-bottom: var(--padding-2x);
   }
@@ -71,5 +65,6 @@
   .actions {
     display: flex;
     justify-content: flex-start;
+    padding-top: var(--padding);
   }
 </style>

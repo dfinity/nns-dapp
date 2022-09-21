@@ -5,6 +5,7 @@
   import { isNeuronControllableByUser } from "../../utils/neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
+  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -17,32 +18,30 @@
 
 {#if isControlledByUser}
   <CardInfo>
-    <h3 slot="start">{$i18n.neuron_detail.community_fund}</h3>
-    <div>
-      <JoinCommunityFundCheckbox {neuron} />
-      <p class="description">
+    <KeyValuePairInfo testId="join-community-fund">
+      <h3 slot="key">{$i18n.neuron_detail.community_fund}</h3>
+
+      <svelte:fragment slot="info"
+        ><div class="info">
         {@html $i18n.neuron_detail.community_fund_more_info}
-      </p>
+      </div></svelte:fragment
+      >
+    </KeyValuePairInfo>
+
+    <div class="join">
+      <JoinCommunityFundCheckbox {neuron} />
     </div>
   </CardInfo>
 {/if}
 
 <style lang="scss">
-  div {
+  .join {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 
     p {
       margin: var(--padding) 0 0 0;
-    }
-
-    // For the link inside "i18n.neuron_detail.community_fund_more_info"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
     }
 
     // Changes order of the label of the JoinCommunityFundCheckbox
@@ -52,5 +51,15 @@
 
     // Changes padding of checkbox wrapper
     --select-padding: var(--padding) 0;
+  }
+
+  .info {
+    // For the link inside "i18n.neuron_detail.community_fund_more_info"
+    :global(a) {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: inherit;
+      line-height: inherit;
+    }
   }
 </style>

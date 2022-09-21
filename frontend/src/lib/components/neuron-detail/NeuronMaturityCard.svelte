@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { IconInfo } from "@dfinity/gix-components";
   import { authStore } from "../../stores/auth.store";
   import { i18n } from "../../stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
   import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
@@ -23,19 +23,25 @@
 </script>
 
 <CardInfo>
-  <div class="title" slot="start">
-    <h3>{$i18n.neuron_detail.maturity_title}</h3>
-    <Tooltip id="maturity-info" text={$i18n.neuron_detail.maturity_tooltip}>
-      <span>
-        <IconInfo />
-      </span>
-    </Tooltip>
-  </div>
-  <div slot="end">
-    <h3>
-      {formattedMaturity(neuron)}
-    </h3>
-  </div>
+  <KeyValuePairInfo testId="maturity">
+    <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
+    <svelte:fragment slot="info"
+      >{$i18n.neuron_detail.maturity_tooltip}</svelte:fragment
+    >
+    <h3 slot="value">{formattedMaturity(neuron)}</h3>
+  </KeyValuePairInfo>
+
+  <!-- TODO: staked maturity equivalent formatted -->
+  {#if neuron?.fullNeuron?.staked_maturity_e8s_equivalent !== undefined}
+    <KeyValuePair>
+      <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
+
+      <svelte:fragment slot="value"
+        >{neuron?.fullNeuron?.staked_maturity_e8s_equivalent}</svelte:fragment
+      >
+    </KeyValuePair>
+  {/if}
+
   <div class="actions">
     {#if isControllable}
       <StakeMaturityButton {neuron} />
@@ -55,5 +61,6 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--padding);
+    padding-top: var(--padding);
   }
 </style>

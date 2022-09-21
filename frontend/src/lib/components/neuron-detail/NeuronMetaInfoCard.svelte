@@ -1,13 +1,11 @@
-<script lang="ts">
+<script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { IconInfo } from "@dfinity/gix-components";
   import { i18n } from "../../stores/i18n";
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
@@ -24,6 +22,7 @@
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
+  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -53,38 +52,34 @@
         - {$i18n.neurons.staked}
       </p>
     </div>
-    <p class="voting-power">
-      {#if neuron.votingPower}
-        {`${$i18n.neurons.voting_power}:`}
-        <span class="amount">
-          <Value>{formatVotingPower(neuron.votingPower)}</Value>
-        </span>
-        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-          <Tooltip
-            id="voting-power-info"
-            text={replacePlaceholders(
-              $i18n.neuron_detail.voting_power_tooltip,
-              {
-                $stake: formatICP({
-                  value: neuron.fullNeuron.cachedNeuronStake,
-                  detailed: true,
-                }),
-                $delayMultiplier: dissolveDelayMultiplier(
-                  Number(neuron.dissolveDelaySeconds)
-                ).toFixed(2),
-                $ageMultiplier: ageMultiplier(
-                  Number(neuron.ageSeconds)
-                ).toFixed(2),
-              }
-            )}
-          >
-            <span>
-              <IconInfo />
-            </span>
-          </Tooltip>
-        {/if}
-      {/if}
-    </p>
+
+    {#if neuron.votingPower}
+      <KeyValuePairInfo testId="voting-power">
+        <svelte:fragment slot="key"
+          >{$i18n.neurons.voting_power}</svelte:fragment
+        >
+        <span class="value" slot="value"
+          >{formatVotingPower(neuron.votingPower)}</span
+        >
+        <svelte:fragment slot="info">
+          {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+            {replacePlaceholders($i18n.neuron_detail.voting_power_tooltip, {
+              $stake: formatICP({
+                value: neuron.fullNeuron.cachedNeuronStake,
+                detailed: true,
+              }),
+              $delayMultiplier: dissolveDelayMultiplier(
+                Number(neuron.dissolveDelaySeconds)
+              ).toFixed(2),
+              $ageMultiplier: ageMultiplier(Number(neuron.ageSeconds)).toFixed(
+                2
+              ),
+            })}
+          {/if}
+        </svelte:fragment>
+      </KeyValuePairInfo>
+    {/if}
+
     <div class="buttons">
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
@@ -111,26 +106,12 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
   section {
     padding: var(--padding) 0 0 0;
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .voting-power {
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
-
-    span {
-      display: flex;
-      align-items: center;
-    }
-
-    .amount {
-      font-weight: bold;
-    }
   }
 
   .buttons {
