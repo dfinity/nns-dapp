@@ -25,7 +25,10 @@
   import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
   import { VOTING_UI } from "../lib/constants/environment.constants";
-  import { sortedProposals } from "../lib/derived/proposals.derived";
+  import {
+    sortedProposals,
+    filteredProposals,
+  } from "../lib/derived/proposals.derived";
 
   let loading: boolean = false;
   let hidden: boolean = false;
@@ -126,7 +129,7 @@
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($sortedProposals.certified === false) {
+    if ($filteredProposals.certified === false) {
       if (loading) nothingFound = false;
       return;
     }
@@ -135,7 +138,7 @@
       initialized &&
       !loading &&
       !hasMatchingProposals({
-        proposals: $sortedProposals.proposals,
+        proposals: $filteredProposals.proposals,
         filters: $proposalsFiltersStore,
         neurons: $definedNeuronsStore,
       });
@@ -145,7 +148,7 @@
   $: initialized,
     loading,
     neuronsLoaded,
-    $sortedProposals,
+    $filteredProposals,
     (() => updateNothingFound())();
 
   let neuronsLoaded: boolean;
