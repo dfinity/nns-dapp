@@ -88,7 +88,7 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "legacy"
+          "VOTING_UI": "modern"
         }
       },
       "providers": [
@@ -103,7 +103,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "legacy"
+          "VOTING_UI": "modern"
         }
       },
       "providers": [

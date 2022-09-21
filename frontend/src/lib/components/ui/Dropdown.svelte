@@ -23,7 +23,6 @@
   div {
     @include form.input;
 
-    width: 100%;
     position: relative;
     box-sizing: border-box;
 
@@ -35,6 +34,9 @@
     box-shadow: var(--box-shadow);
 
     padding: var(--padding-2x);
+
+    width: var(--dropdown-width, auto);
+
     // Click on <select> does not trigger "focus" on parent div.
     // https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within
     // Matches an element if the element or any of its descendants are focused.
@@ -42,7 +44,10 @@
       outline: 2px solid var(--primary);
     }
     select {
+      // Needed to keep the clickable area of the dropdown the whole width of the div.
       width: 100%;
+      // Apply the width to the content
+      box-sizing: content-box;
       // Space for the caret icon.
       padding-right: var(--padding-4x);
       background: var(--card-background);
