@@ -33,7 +33,7 @@
     {
       name: "SelectAccount",
       title: $i18n.canister_detail.top_up_canister,
-      showBackButton: true,
+      showBackButton: false,
     },
     {
       name: "SelectCycles",
