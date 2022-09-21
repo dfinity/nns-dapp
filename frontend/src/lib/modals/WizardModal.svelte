@@ -1,7 +1,7 @@
 <script lang="ts">
   import { StepsState } from "../stores/steps.state";
   import type { Steps, Step } from "../stores/steps.state";
-  import Modal from "./Modal.svelte";
+  import LegacyModal from "./LegacyModal.svelte";
   import Transition from "../components/ui/Transition.svelte";
 
   export let steps: Steps;
@@ -22,7 +22,7 @@
   let presented = false;
 </script>
 
-<Modal
+<LegacyModal
   size="big"
   on:nnsClose
   on:introend={() => (presented = true)}
@@ -37,7 +37,7 @@
       </Transition>
     {/if}
   </section>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "../themes/mixins/modal";

@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   formatting:
@@ -120,7 +124,6 @@ jobs:
         working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-      REDIRECT_TO_LEGACY: svelte
 
     steps:
       - name: Checkout
@@ -209,7 +212,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
+    needs: ["formatting", "clippy", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes

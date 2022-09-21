@@ -5,6 +5,7 @@ use crate::multi_part_transactions_processor::{
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
+use crate::time::time_millis;
 use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -30,8 +31,8 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-    // pending_transactions: HashMap<(from, to), TransactionType>
-    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
+    // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
+    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
@@ -470,7 +471,17 @@ impl AccountsStore {
         to: AccountIdentifier,
         transaction_type: TransactionType,
     ) -> AddPendingTransactionResponse {
-        self.pending_transactions.insert((from, to), transaction_type);
+        let now_millis = time_millis();
+        if self.pending_transactions.len() > 1_000 {
+            self.prune_old_pending_transactions(now_millis);
+        }
+        if self.pending_transactions_limit_reached() {
+            // We should never hit this
+            // Just to be safe and the pending transaction is always added
+            self.remove_last_pending_transaction();
+        }
+        self.pending_transactions
+            .insert((from, to), (transaction_type, now_millis));
         AddPendingTransactionResponse::Ok
     }
 
@@ -479,9 +490,36 @@ impl AccountsStore {
         caller == buyer
     }
 
+    fn prune_old_pending_transactions(&mut self, now_millis: u64) {
+        const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
+        let one_hour_ago = now_millis - HOUR_IN_MILLISECONDS;
+        // Keep pending transactions of the last hour only
+        self.pending_transactions
+            .retain(|_, (_, timestamp)| *timestamp > one_hour_ago);
+    }
+
+    fn remove_last_pending_transaction(&mut self) {
+        match self
+            .pending_transactions
+            .iter()
+            .max_by(|(_, (_, timestamp1)), (_, (_, timestamp2))| timestamp1.cmp(timestamp2))
+        {
+            Some((k, _)) => {
+                self.remove_pending_transaction(*k);
+            }
+            None => (),
+        }
+    }
+
+    fn remove_pending_transaction(&mut self, (from, to): (AccountIdentifier, AccountIdentifier)) {
+        self.pending_transactions.remove(&(from, to));
+    }
+
     // Get pending transaction
-    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<&TransactionType> {
-        self.pending_transactions.get(&(from, to))
+    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<TransactionType> {
+        self.pending_transactions
+            .get(&(from, to))
+            .map(|&(transaction_type, _)| transaction_type)
     }
 
     pub fn complete_pending_transaction(
@@ -492,7 +530,14 @@ impl AccountsStore {
     ) {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
-        self.pending_transactions.remove(&(from, to));
+        self.remove_pending_transaction((from, to));
+    }
+
+    pub fn pending_transactions_limit_reached(&self) -> bool {
+        // Valid pending transactions are very short lived.
+        // If there are many, it's because it's filled with invalid pending transactions.
+        const PENDING_TRANSACTIONS_LIMIT: usize = 10_000;
+        self.pending_transactions.len() >= PENDING_TRANSACTIONS_LIMIT
     }
 
     pub fn append_transaction(
@@ -1114,7 +1159,7 @@ impl AccountsStore {
                 TransactionType::TopUpNeuron
             }
         } else if let Some(transaction_type) = self.get_pending_transaction(from, to) {
-            *transaction_type
+            transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister
@@ -1357,6 +1402,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
+            _,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1366,6 +1412,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
+            HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,

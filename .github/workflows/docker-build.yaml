@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   builder:
     runs-on: ubuntu-20.04
@@ -37,7 +41,6 @@ jobs:
          - BUILD_NAME: "mainnet"
            DFX_NETWORK: "mainnet"
            OWN_CANISTER_ID: ""
-           REDIRECT_TO_LEGACY: "prod"
     steps:
       - uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -51,7 +54,6 @@ jobs:
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
             OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
-            REDIRECT_TO_LEGACY=${{ matrix.REDIRECT_TO_LEGACY }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out
@@ -92,3 +94,10 @@ jobs:
     steps:
        - name: Extract assets for verification
          run: echo TODO
+
+  docker-build-passes:
+    needs: ["assets", "docker-build"]
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Docker Build workflow passes
+         run: echo OK

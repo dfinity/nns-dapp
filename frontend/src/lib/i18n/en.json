@@ -37,6 +37,7 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
+    "sns_accounts_load": "An error occurred while loading the accounts.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -128,8 +129,10 @@
   "accounts": {
     "total": "Total",
     "main": "Main",
-    "main_account": "Main Account $identifier",
+    "balance": "Balance",
     "new_transaction": "New Transaction",
+    "icp_transaction_description": "ICP Transaction",
+    "review_action": "Review",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -181,6 +184,9 @@
     "description": "Description",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
+    "select": "Select",
+    "manual": "Manual",
+    "no_account_select": "No accounts to select",
     "current_balance_detail": "Current balance: $amount ICP"
   },
   "neurons": {

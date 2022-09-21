@@ -41,6 +41,7 @@ interface I18nError {
   neuron_spawning: string;
   neuron_load: string;
   sns_neurons_load: string;
+  sns_accounts_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -137,8 +138,10 @@ interface I18nAuth {
 interface I18nAccounts {
   total: string;
   main: string;
-  main_account: string;
+  balance: string;
   new_transaction: string;
+  icp_transaction_description: string;
+  review_action: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -190,6 +193,9 @@ interface I18nAccounts {
   description: string;
   edit_transaction: string;
   execute: string;
+  select: string;
+  manual: string;
+  no_account_select: string;
   current_balance_detail: string;
 }
 
@@ -794,6 +800,7 @@ interface I18nNns_functions {
   PrepareCanisterMigration: string;
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
+  ChangeSubnetMembership: string;
 }
 
 interface I18nNns_functions_description {
@@ -828,6 +835,7 @@ interface I18nNns_functions_description {
   PrepareCanisterMigration: string;
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
+  ChangeSubnetMembership: string;
 }
 
 interface I18n {

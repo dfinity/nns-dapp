@@ -344,15 +344,12 @@ if [[ "$POPULATE" == "true" ]]; then
 
   # Create users and neurons
   # Note: Cannot be used with flutter.
-  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY "$CONFIG_FILE")"
-  [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
-    echo Creating users and neurons...
-    pushd e2e-tests
-    npm ci
-    printf '%s\n' user-N01-neuron-created.e2e.ts |
-      SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
-    popd
-  }
+  echo Creating users and neurons...
+  pushd e2e-tests
+  npm ci
+  printf '%s\n' user-N01-neuron-created.e2e.ts |
+    SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
+  popd
 fi
 
 if [[ "$DEPLOY_SNS" == "true" ]]; then

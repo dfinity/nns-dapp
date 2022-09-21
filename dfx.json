@@ -82,14 +82,13 @@
       "config": {
         "BUILD": "release",
         "FETCH_ROOT_KEY": false,
-        "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "legacy"
+          "VOTING_UI": "modern"
         }
       },
       "providers": [
@@ -101,11 +100,10 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "legacy"
+          "VOTING_UI": "modern"
         }
       },
       "providers": [
@@ -117,7 +115,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "prod",
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
@@ -133,7 +130,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
@@ -149,7 +145,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
@@ -165,7 +160,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
@@ -181,7 +175,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
@@ -197,7 +190,6 @@
       "config": {
         "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "svelte",
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,

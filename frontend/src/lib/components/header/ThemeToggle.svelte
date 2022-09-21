@@ -37,10 +37,6 @@
     gap: var(--padding);
   }
 
-  span {
-    margin-right: var(--padding-0_5x);
-  }
-
   .toggle {
     display: flex;
     align-items: center;

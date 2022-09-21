@@ -16,6 +16,7 @@
   const loadModule = async (): Promise<typeof SvelteComponent> => {
     switch (path) {
       case AppPath.Accounts:
+      case AppPath.LegacyAccounts:
         return (await import("../../../routes/Accounts.svelte")).default;
       case AppPath.LegacyNeurons:
       case AppPath.Neurons:
@@ -49,6 +50,9 @@
       title: "",
     },
     [AppPath.Accounts]: {
+      title: $i18n.navigation.tokens,
+    },
+    [AppPath.LegacyAccounts]: {
       title: $i18n.navigation.tokens,
     },
     [AppPath.LegacyNeurons]: {
