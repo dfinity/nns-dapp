@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../../lib/constants/icp.constants";
 import TransactionModal from "../../../../lib/modals/accounts/NewTransaction/TransactionModal.svelte";
@@ -20,6 +21,7 @@ describe("TransactionModal", () => {
   const renderTransactionModal = (props?: {
     destinationAddress?: string;
     sourceAccount?: Account;
+    transactionFee?: TokenAmount;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -33,10 +35,12 @@ describe("TransactionModal", () => {
   });
 
   const renderEnter10ICPAndNext = async (
-    destination?: string
+    destination?: string,
+    transactionFee?: TokenAmount
   ): Promise<RenderResult> => {
     const result = await renderTransactionModal({
       destinationAddress: destination,
+      transactionFee,
     });
 
     const { queryAllByText, getByTestId, container } = result;
@@ -128,6 +132,29 @@ describe("TransactionModal", () => {
       ).toBeTruthy();
       expect(
         getByText(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S))
+      ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and render passed transaction fee", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByText, getByTestId } = await renderEnter10ICPAndNext(
+        undefined,
+        fee
+      );
+
+      expect(
+        (
+          getByTestId("transaction-review-source-account").textContent ?? ""
+        ).includes(mockMainAccount.identifier)
+      ).toBeTruthy();
+      expect(
+        getByText(formattedTransactionFeeICP(Number(fee.toE8s())))
       ).toBeInTheDocument();
     });
 

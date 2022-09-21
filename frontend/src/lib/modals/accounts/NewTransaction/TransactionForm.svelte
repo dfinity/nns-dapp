@@ -2,10 +2,6 @@
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../../modals/FooterModal.svelte";
   import { i18n } from "../../../stores/i18n";
-  import {
-    mainTransactionFeeStoreAsIcp,
-    transactionsFeesStore,
-  } from "../../../stores/transaction-fees.store";
   import type { Account } from "../../../types/account";
   import { InvalidAmountError } from "../../../types/neurons.errors";
   import {
@@ -13,15 +9,13 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "../../../utils/accounts.utils";
-  import {
-    convertNumberToICP,
-    getMaxTransactionAmount,
-  } from "../../../utils/icp.utils";
+  import { getMaxTransactionAmount } from "../../../utils/icp.utils";
   import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import AmountInput from "../../../components/ui/AmountInput.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import SelectDestinationAddress from "../../../components/accounts/SelectDestinationAddress.svelte";
+  import { TokenAmount, type Token } from "@dfinity/nns";
 
   // Tested in the TransactionModal
   export let selectedAccount: Account | undefined = undefined;
@@ -29,6 +23,8 @@
   export let canSelectSource: boolean;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
+  export let token: Token;
+  export let transactionFee: TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets: boolean = false;
@@ -45,7 +41,7 @@
   let max: number = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balance.toE8s(),
-    fee: $transactionsFeesStore.main,
+    fee: transactionFee.toE8s(),
     maxAmount,
   });
   const addMax = () => (amount = max);
@@ -66,10 +62,10 @@
       return;
     }
     try {
-      const icp = convertNumberToICP(amount);
+      const tokens = TokenAmount.fromNumber({ amount, token }) as TokenAmount;
       assertEnoughAccountFunds({
         account: selectedAccount,
-        amountE8s: icp.toE8s() + $mainTransactionFeeStoreAsIcp.toE8s(),
+        amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
       errorMessage = undefined;
     } catch (error) {
