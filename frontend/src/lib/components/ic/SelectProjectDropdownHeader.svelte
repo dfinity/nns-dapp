@@ -3,10 +3,7 @@
 </script>
 
 <div class="dropdown-wrapper">
-  <!-- Extra div is needed to fit to the content size instead of the whole width -->
-  <div>
-    <SelectProjectDropdown />
-  </div>
+  <SelectProjectDropdown />
 </div>
 
 <style lang="scss">
