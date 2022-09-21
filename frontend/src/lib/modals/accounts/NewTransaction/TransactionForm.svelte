@@ -149,6 +149,10 @@
 <style lang="scss">
   @use "../../../themes/mixins/modal";
 
+  form {
+    --dropdown-width: 100%;
+  }
+
   .select-account {
     display: flex;
     flex-direction: column;
