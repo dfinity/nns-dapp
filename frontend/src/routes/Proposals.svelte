@@ -25,7 +25,10 @@
   import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
   import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
   import { VOTING_UI } from "../lib/constants/environment.constants";
-  import { sortedProposals, filteredProposals } from "../lib/derived/proposals.derived";
+  import {
+    sortedProposals,
+    filteredProposals,
+  } from "../lib/derived/proposals.derived";
 
   let loading: boolean = false;
   let hidden: boolean = false;
