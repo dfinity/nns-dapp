@@ -32,7 +32,7 @@
   <Tooltip
     id="merge-maturity-button"
     text={replacePlaceholders(
-      $i18n.neuron_detail.merge_maturity_disabled_tooltip,
+      $i18n.neuron_detail.stake_maturity_disabled_tooltip,
       {
         $amount: formatICP({
           value: BigInt(minMaturityMerge($mainTransactionFeeStore)),

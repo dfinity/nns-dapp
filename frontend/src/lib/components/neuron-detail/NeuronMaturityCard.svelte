@@ -51,6 +51,10 @@
 </CardInfo>
 
 <style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   .title {
     display: flex;
     align-items: center;

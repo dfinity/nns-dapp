@@ -35,6 +35,10 @@
 {/if}
 
 <style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   .join {
     display: flex;
     flex-direction: column;

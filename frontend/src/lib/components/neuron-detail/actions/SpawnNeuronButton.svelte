@@ -45,7 +45,7 @@
   <Tooltip
     id="spawn-maturity-button"
     text={replacePlaceholders(
-      $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
+      $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
       {
         $amount: formatNumber(
           MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,

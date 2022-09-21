@@ -168,7 +168,7 @@
     overflow: hidden;
 
     &.expanded {
-      margin-top: var(--padding-0_5x);
+      margin-top: var(--padding);
       opacity: 1;
       visibility: initial;
     }
