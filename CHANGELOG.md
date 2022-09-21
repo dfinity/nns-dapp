@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXXXX
+* New Proposal Page.
+* New Proposal Card in the Proposals list page.
+* New transaction flow.
+* Navigation between proposals.
+
 ## Proposal 80618
 * Fix android issues with modal.
 * Add pending transaction state in canister.
