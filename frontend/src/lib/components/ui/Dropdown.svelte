@@ -7,10 +7,9 @@
   export let name: string;
   export let testId: string | undefined = undefined;
   export let disabled: boolean = false;
-  export let fullWidth: boolean = false;
 </script>
 
-<div class:fullWidth>
+<div>
   <select {disabled} bind:value={selectedValue} {name} data-tid={testId}>
     <slot />
   </select>
@@ -36,9 +35,7 @@
 
     padding: var(--padding-2x);
 
-    &.fullWidth {
-      width: 100%;
-    }
+    width: var(--dropdown-width, auto);
 
     // Click on <select> does not trigger "focus" on parent div.
     // https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within

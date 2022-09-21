@@ -28,7 +28,6 @@
     disabled
     selectedValue="no-accounts"
     testId="select-account-dropdown"
-    fullWidth
   >
     <DropdownItem value="no-accounts">
       {$i18n.accounts.no_account_select}
