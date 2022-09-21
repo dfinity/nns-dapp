@@ -1,10 +1,14 @@
 # Changelog
 
 ## Proposal 81792
-* New Proposal Page.
-* New Proposal Card in the Proposals list page.
+* New Voting screens:
+  * refreshed design (new cards, new buttons’ color, etc.)
+  * information structure modified to present firstly “system information”
+  * better use of the space for a quicker and better overview
+  * ability to navigate from previous or to next proposal
+  * quicker access to voting actions notably on mobile devices thanks to a sticky bottom sheet
+* CSP fallback for old devices
 * New transaction flow.
-* Navigation between proposals.
 
 ## Proposal 80618
 * Fix android issues with modal.
