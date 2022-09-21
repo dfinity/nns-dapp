@@ -262,3 +262,21 @@ export const poll = async <T>({
  */
 export const valueSpan = (text: string): string =>
   `<span class="value">${text}</span>`;
+
+/**
+ * Removes entries from an object given a list of keys.
+ *
+ * @param obj object to remove entries from
+ * @param keysToRemove keys to remove
+ * @returns new object with entries removed
+ */
+export const removeKeys = <T extends Record<string, unknown>>({
+  obj,
+  keysToRemove,
+}: {
+  obj: T;
+  keysToRemove: string[];
+}): T =>
+  Object.entries(obj)
+    .filter(([key]) => keysToRemove.indexOf(key) === -1)
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as T);

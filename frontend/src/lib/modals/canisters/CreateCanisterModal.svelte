@@ -28,7 +28,7 @@
     {
       name: "SelectAccount",
       title: $i18n.accounts.select_source,
-      showBackButton: true,
+      showBackButton: false,
     },
     {
       name: "SelectCycles",

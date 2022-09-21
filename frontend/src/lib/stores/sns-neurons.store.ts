@@ -1,6 +1,7 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { writable } from "svelte/store";
+import { removeKeys } from "../utils/utils";
 
 export interface ProjectNeuronStore {
   neurons: SnsNeuron[];
@@ -49,9 +50,10 @@ const initSnsNeuronsStore = () => {
 
     resetProject(rootCanisterId: Principal) {
       update((currentState: NeuronsStore) =>
-        Object.entries(currentState)
-          .filter(([key]) => key !== rootCanisterId.toText())
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [rootCanisterId.toText()],
+        })
       );
     },
   };

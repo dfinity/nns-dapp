@@ -25,11 +25,8 @@ mainnet)
   ;;
 esac
 
-REDIRECT_TO_LEGACY=${REDIRECT_TO_LEGACY:-prod}
-
 echo "DFX_NETWORK: $DFX_NETWORK"
 echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
-echo "REDIRECT_TO_LEGACY: $REDIRECT_TO_LEGACY"
 echo "PWD: $PWD"
 
 image_name="nns-dapp-$DFX_NETWORK"

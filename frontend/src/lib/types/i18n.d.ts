@@ -41,6 +41,7 @@ interface I18nError {
   neuron_spawning: string;
   neuron_load: string;
   sns_neurons_load: string;
+  sns_accounts_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
