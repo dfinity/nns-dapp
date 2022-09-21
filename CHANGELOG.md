@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 81792
 * New Proposal Page.
 * New Proposal Card in the Proposals list page.
 * New transaction flow.
