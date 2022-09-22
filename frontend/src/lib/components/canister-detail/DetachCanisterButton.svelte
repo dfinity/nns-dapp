@@ -31,7 +31,7 @@
 </script>
 
 <button
-  class="primary small"
+  class="primary"
   type="button"
   on:click={openConfirmation}
   disabled={$busy}

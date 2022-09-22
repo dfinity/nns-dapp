@@ -49,7 +49,7 @@
   {#if userCanParticipateToSwap}
     <button
       on:click={openModal}
-      class="primary small"
+      class="primary"
       data-tid="sns-project-participate-button"
       >{userHasParticipatedToSwap
         ? $i18n.sns_project_detail.increase_participation
@@ -60,10 +60,8 @@
       id="sns-project-participate-button-tooltip"
       text={$i18n.sns_project_detail.max_user_commitment_reached}
     >
-      <button
-        class="primary small"
-        data-tid="sns-project-participate-button"
-        disabled>{$i18n.sns_project_detail.participate}</button
+      <button class="primary" data-tid="sns-project-participate-button" disabled
+        >{$i18n.sns_project_detail.participate}</button
       >
     </Tooltip>
   {/if}

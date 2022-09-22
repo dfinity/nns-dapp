@@ -80,14 +80,14 @@
 
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_source}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="create-neuron-button"
       disabled={amount === undefined || amount <= 0 || $busy}

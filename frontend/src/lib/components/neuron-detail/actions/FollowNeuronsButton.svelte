@@ -10,7 +10,7 @@
   const closeModal = () => (showModal = false);
 </script>
 
-<button class="primary small" on:click={openModal}
+<button class="primary" on:click={openModal}
   >{$i18n.neuron_detail.follow_neurons}</button
 >
 

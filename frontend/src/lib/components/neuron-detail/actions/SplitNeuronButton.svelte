@@ -26,7 +26,7 @@
 </script>
 
 {#if splittable}
-  <button on:click={openModal} class="primary small"
+  <button on:click={openModal} class="primary"
     >{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
@@ -42,7 +42,7 @@
       }
     )}
   >
-    <button on:click={openModal} class="primary small" disabled
+    <button on:click={openModal} class="primary" disabled
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>
