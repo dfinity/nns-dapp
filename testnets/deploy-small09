@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-export DFX_NETWORK=small06
+export DFX_NETWORK=small09
 TESTNET=small09
 IC_COMMIT=08716da25d35ffcf7cc190ca952ad52e269c57a2 # master Thu Aug 25 12:40:41 2022 +0000
 IC_DOWNLOAD=$IC_COMMIT
