@@ -122,7 +122,7 @@ const initProposalsStore = () => {
  * - filterTopics: set the filter topics (enum Topic)
  * - filterRewards: set the filter for the status of the rewards (enum ProposalRewardStatus)
  * - filterStatus: set the filter for the status of the proposals (enum ProposalStatus)
- * - excludeVotedProposals: "Hide "Open" proposals where all your neurons have voted or are ineligible to vote"
+ * - excludeVotedProposals: "Show only proposals you can still vote for"
  *
  */
 const initProposalsFiltersStore = () => {
