@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/svelte";
 import TransactionCard from "../../../../lib/components/accounts/TransactionCard.svelte";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mapTransaction } from "../../../../lib/utils/transactions.utils";
 import {
   mockMainAccount,
@@ -56,8 +56,8 @@ describe("Address", () => {
     const { getByTestId } = renderTransactionCard(account, transaction);
     const { displayAmount } = mapTransaction({ account, transaction });
 
-    expect(getByTestId("icp-value")?.textContent).toBe(
-      `-${formatICP({ value: displayAmount.toE8s(), detailed: true })}`
+    expect(getByTestId("token-value")?.textContent).toBe(
+      `-${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
     );
   });
 
@@ -67,8 +67,8 @@ describe("Address", () => {
     const { getByTestId } = renderTransactionCard(account, transaction);
     const { displayAmount } = mapTransaction({ account, transaction });
 
-    expect(getByTestId("icp-value")?.textContent).toBe(
-      `+${formatICP({ value: displayAmount.toE8s(), detailed: true })}`
+    expect(getByTestId("token-value")?.textContent).toBe(
+      `+${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
     );
   });
 
