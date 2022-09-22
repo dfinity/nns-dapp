@@ -2,7 +2,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
 
@@ -11,7 +11,7 @@
   let totalTokens: string;
   totalTokens =
     balance !== undefined
-      ? formatICP({
+      ? formatToken({
           value: balance.toE8s(),
           detailed: true,
         })
@@ -42,11 +42,11 @@
 
     margin-bottom: var(--padding-2x);
 
-    --icp-font-size: var(--font-size-h1);
+    --token-font-size: var(--font-size-h1);
 
     // Minimum height of ICP value + ICP label (ICP component)
     min-height: calc(
-      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
+      var(--line-height-standard) * (var(--token-font-size) + 1rem)
     );
 
     @include media.min-width(medium) {

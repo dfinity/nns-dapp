@@ -1,39 +1,35 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../stores/i18n";
-  import Modal from "./Modal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import { busy } from "../stores/busy.store";
 
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal on:nnsClose>
+<Modal role="alert" on:nnsClose>
   <article>
     <slot />
-    <div role="toolbar">
-      <button
-        data-tid="confirm-no"
-        disabled={$busy}
-        on:click={() => dispatch("nnsClose")}
-        class="secondary full-width">{$i18n.core.confirm_no}</button
-      >
-      <button
-        data-tid="confirm-yes"
-        disabled={$busy}
-        class="primary full-width"
-        on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
-      >
-    </div>
   </article>
+
+  <svelte:fragment slot="toolbar">
+    <button
+      data-tid="confirm-no"
+      disabled={$busy}
+      on:click={() => dispatch("nnsClose")}
+      class="secondary">{$i18n.core.confirm_no}</button
+    >
+    <button
+      data-tid="confirm-yes"
+      disabled={$busy}
+      class="primary"
+      on:click={() => dispatch("nnsConfirm")}>{$i18n.core.confirm_yes}</button
+    >
+  </svelte:fragment>
 </Modal>
 
 <style lang="scss">
   article {
-    padding: var(--padding-2x);
-  }
-
-  [role="toolbar"] {
-    display: flex;
-    gap: var(--padding);
+    padding: 0 var(--padding);
   }
 </style>

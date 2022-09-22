@@ -100,7 +100,7 @@
     padding: var(--padding) 0;
 
     @include media.min-width(medium) {
-      --icp-font-size: var(--font-size-huge);
+      --token-font-size: var(--font-size-huge);
       @include modal.header;
     }
   }

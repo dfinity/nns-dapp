@@ -11,7 +11,7 @@ import type {
 } from "../types/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
-import { formatICP } from "./icp.utils";
+import { formatToken } from "./icp.utils";
 
 const filterProjectsStatus = ({
   swapLifecycle,
@@ -229,7 +229,7 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.not_enough_amount",
       substitutions: {
-        $amount: formatICP({
+        $amount: formatToken({
           value: project.summary.swap.init.min_participant_icp_e8s,
         }),
       },
@@ -245,8 +245,8 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
-        $maxCommitment: formatICP({
+        $commitment: formatToken({ value: totalCommitment }),
+        $maxCommitment: formatToken({
           value: project.summary.swap.init.max_participant_icp_e8s,
         }),
       },
@@ -262,8 +262,8 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
-        $remainingCommitment: formatICP({
+        $commitment: formatToken({ value: totalCommitment }),
+        $remainingCommitment: formatToken({
           value:
             project.summary.swap.init.max_icp_e8s -
             project.summary.derived.buyer_total_icp_e8s,

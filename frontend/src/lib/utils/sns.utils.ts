@@ -89,7 +89,7 @@ const mapOptionalMetadata = ({
 /**
  * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
  */
-const mapOptionalToken = (
+export const mapOptionalToken = (
   response: SnsTokenMetadataResponse
 ): SnsTokenMetadata | undefined => {
   const nullishToken: Partial<SnsTokenMetadata> = response.reduce(

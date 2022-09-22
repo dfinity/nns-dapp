@@ -1,6 +1,6 @@
 <script lang="ts">
   import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
   import AmountInput from "../../components/ui/AmountInput.svelte";
@@ -62,7 +62,7 @@
   };
 </script>
 
-<Modal on:nnsClose size="big">
+<LegacyModal on:nnsClose size="big">
   <span slot="title">{$i18n.neuron_detail.split_neuron}</span>
   <section data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
@@ -91,7 +91,7 @@
       </button>
     </FooterModal>
   </section>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "../../themes/mixins/modal";

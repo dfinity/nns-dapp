@@ -3,110 +3,112 @@
  */
 
 import { render } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
 import NnsAccounts from "../../../lib/pages/NnsAccounts.svelte";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import { authStore } from "../../../lib/stores/auth.store";
+import {
+  accountsStore,
+  type AccountsStore,
+} from "../../../lib/stores/accounts.store";
 import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
-import { formatICP } from "../../../lib/utils/icp.utils";
+import { formatToken } from "../../../lib/utils/icp.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 
 describe("NnsAccounts", () => {
-  let accountsStoreMock: jest.SpyInstance;
+  afterEach(() => jest.clearAllMocks());
 
-  beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-  });
+  describe("when there are accounts", () => {
+    let accountsStoreMock: jest.SpyInstance;
 
-  it("should render title and account icp", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(NnsAccounts);
+    it("should render title and account icp", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+      const { container } = render(NnsAccounts);
 
-    const titleRow = container.querySelector("section > div");
+      const titleRow = container.querySelector("section > div");
 
-    expect(
-      titleRow?.textContent?.startsWith(
-        `${en.accounts.total} ${formatICP({
-          value: mockMainAccount.balance.toE8s(),
-        })} ICP`
-      )
-    ).toBeTruthy();
-  });
+      expect(
+        titleRow?.textContent?.startsWith(
+          `${en.accounts.total} ${formatToken({
+            value: mockMainAccount.balance.toE8s(),
+          })} ICP`
+        )
+      ).toBeTruthy();
+    });
 
-  it("should render a main card", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(NnsAccounts);
+    it("should render a main card", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+      const { container } = render(NnsAccounts);
 
-    const article = container.querySelector("article");
-    expect(article).not.toBeNull();
-  });
+      const article = container.querySelector("article");
+      expect(article).not.toBeNull();
+    });
 
-  it("should render account icp in card too", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { container } = render(NnsAccounts);
+    it("should render account icp in card too", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+      const { container } = render(NnsAccounts);
 
-    const cardTitleRow = container.querySelector(
-      "article > div div:last-of-type"
-    );
-
-    expect(cardTitleRow?.textContent).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })} ICP`
-    );
-  });
-
-  it("should render account identifier", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    const { getByText } = render(NnsAccounts);
-    getByText(mockMainAccount.identifier);
-  });
-
-  it("should render subaccount cards", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
-    const { container } = render(NnsAccounts);
-
-    const articles = container.querySelectorAll("article");
-
-    expect(articles).not.toBeNull();
-    expect(articles.length).toBe(2);
-  });
-
-  it("should render hardware wallet account cards", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      const cardTitleRow = container.querySelector(
+        "article > div div:last-of-type"
       );
-    const { container } = render(NnsAccounts);
 
-    const articles = container.querySelectorAll("article");
+      expect(cardTitleRow?.textContent).toEqual(
+        `${formatToken({ value: mockMainAccount.balance.toE8s() })} ICP`
+      );
+    });
 
-    expect(articles).not.toBeNull();
-    expect(articles.length).toBe(2);
-  });
+    it("should render account identifier", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+      const { getByText } = render(NnsAccounts);
+      getByText(mockMainAccount.identifier);
+    });
 
-  it("should subscribe to store", () => {
-    accountsStoreMock = jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-    expect(accountsStoreMock).toHaveBeenCalled();
+    it("should render subaccount cards", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      const { container } = render(NnsAccounts);
+
+      const articles = container.querySelectorAll("article");
+
+      expect(articles).not.toBeNull();
+      expect(articles.length).toBe(2);
+    });
+
+    it("should render hardware wallet account cards", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        );
+      const { container } = render(NnsAccounts);
+
+      const articles = container.querySelectorAll("article");
+
+      expect(articles).not.toBeNull();
+      expect(articles.length).toBe(2);
+    });
+
+    it("should subscribe to store", () => {
+      accountsStoreMock = jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(mockAccountsStoreSubscribe());
+      render(NnsAccounts);
+
+      expect(accountsStoreMock).toHaveBeenCalled();
+    });
   });
 
   describe("Total ICPs", () => {
@@ -115,16 +117,15 @@ describe("NnsAccounts", () => {
       mockSubAccount.balance.toE8s() +
       mockHardwareWalletAccount.balance.toE8s();
 
-    beforeAll(
-      () =>
-        (accountsStoreMock = jest
-          .spyOn(accountsStore, "subscribe")
-          .mockImplementation(
-            mockAccountsStoreSubscribe(
-              [mockSubAccount],
-              [mockHardwareWalletAccount]
-            )
-          ))
+    beforeAll(() =>
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe(
+            [mockSubAccount],
+            [mockHardwareWalletAccount]
+          )
+        )
     );
 
     afterAll(jest.clearAllMocks);
@@ -136,7 +137,7 @@ describe("NnsAccounts", () => {
 
       expect(
         titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatICP({ value: totalBalance })} ICP`
+          `${en.accounts.total} ${formatToken({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
     });
@@ -160,12 +161,36 @@ describe("NnsAccounts", () => {
 
       expect(icp?.textContent).toEqual(
         replacePlaceholders(en.accounts.current_balance_total, {
-          $amount: `${formatICP({
+          $amount: `${formatToken({
             value: totalBalance,
             detailed: true,
           })}`,
         })
       );
+    });
+  });
+
+  describe("when no accounts", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation((run: Subscriber<AccountsStore>): (() => void) => {
+          run({
+            main: undefined,
+            subAccounts: undefined,
+            hardwareWallets: undefined,
+          });
+
+          return () => undefined;
+        });
+    });
+    it("should not render a token amount component nor zero", () => {
+      const { container } = render(NnsAccounts);
+
+      // The tooltip wraps the total amount
+      expect(
+        container.querySelector(".tooltip-wrapper")
+      ).not.toBeInTheDocument();
     });
   });
 });

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import LegacyModal from "../LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "../../stores/i18n";
   import { startBusy, stopBusy } from "../../stores/busy.store";
@@ -48,7 +48,7 @@
   };
 </script>
 
-<Modal on:nnsClose size="big">
+<LegacyModal on:nnsClose size="big">
   <span slot="title" data-tid="add-hotkey-neuron-modal"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</span
   >
@@ -58,7 +58,7 @@
       <span slot="button">{$i18n.core.confirm}</span>
     </AddPrincipal>
   </section>
-</Modal>
+</LegacyModal>
 
 <style lang="scss">
   @use "../../themes/mixins/modal";

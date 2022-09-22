@@ -8,7 +8,7 @@ import { fireEvent, render } from "@testing-library/svelte";
 import NeuronCard from "../../../../lib/components/neurons/NeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -73,7 +73,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    const stakeText = formatICP({
+    const stakeText = formatToken({
       value:
         (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
         (mockNeuron.fullNeuron as Neuron).neuronFees,
@@ -205,7 +205,7 @@ describe("NeuronCard", () => {
         proposerNeuron: true,
       },
     });
-    const votingValue = formatICP({
+    const votingValue = formatToken({
       value: mockNeuron.votingPower,
       detailed: true,
     });

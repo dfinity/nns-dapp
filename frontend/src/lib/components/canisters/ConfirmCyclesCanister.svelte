@@ -40,7 +40,7 @@
     </div>
     <div>
       <h5>{$i18n.accounts.source}</h5>
-      <p class="value">{account.identifier}</p>
+      <p class="value identifier">{account.identifier}</p>
     </div>
     <slot />
   </div>
@@ -89,5 +89,9 @@
       align-items: center;
       gap: var(--padding);
     }
+  }
+
+  .identifier {
+    word-break: break-word;
   }
 </style>
