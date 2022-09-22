@@ -38,7 +38,7 @@
   };
 </script>
 
-<button on:click={showModal} class="warning small"
+<button on:click={showModal} class="warning"
   >{$i18n.neuron_detail[buttonKey]}</button
 >
 {#if isOpen}

@@ -61,7 +61,7 @@
 </script>
 
 <button
-  class="primary small"
+  class="primary"
   type="button"
   on:click={listNeurons}
   disabled={$busy}

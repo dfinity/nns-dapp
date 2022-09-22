@@ -78,11 +78,11 @@
   </div>
   <div>
     <FooterModal>
-      <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+      <button class="secondary" on:click={() => dispatcher("nnsBack")}>
         {$i18n.neurons.merge_neurons_edit_selection}
       </button>
       <button
-        class="primary small"
+        class="primary"
         data-tid="confirm-merge-neurons-button"
         disabled={$busy}
         on:click={merge}

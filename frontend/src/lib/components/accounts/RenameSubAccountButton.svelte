@@ -6,7 +6,7 @@
 </script>
 
 <button
-  class="primary small"
+  class="primary"
   type="button"
   on:click={() => (modalOpen = true)}
   data-tid="open-rename-subaccount-button"

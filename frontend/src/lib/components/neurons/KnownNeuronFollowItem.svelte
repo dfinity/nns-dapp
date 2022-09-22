@@ -29,11 +29,7 @@
 <div data-tid={`known-neuron-item-${knownNeuron.id}`}>
   <p class="value">{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
-  <button
-    class="primary small"
-    disabled={$busy}
-    on:click={toggleKnownNeuronFollowee}
-  >
+  <button class="primary" disabled={$busy} on:click={toggleKnownNeuronFollowee}>
     {#if isFollowed}
       {$i18n.new_followee.unfollow}
     {:else}

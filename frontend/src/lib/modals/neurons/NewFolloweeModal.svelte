@@ -103,7 +103,7 @@
           >
         </Input>
         <button
-          class="primary small"
+          class="primary"
           type="submit"
           disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
         >

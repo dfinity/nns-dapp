@@ -61,12 +61,12 @@
   </Card>
 
   <FooterModal>
-    <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+    <button class="secondary" on:click={() => dispatcher("nnsBack")}>
       {$i18n.core.cancel}
     </button>
     <button
       data-tid="select-maturity-percentage-button"
-      class="primary small"
+      class="primary"
       on:click={selectPercentage}
       {disabled}
     >
