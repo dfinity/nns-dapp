@@ -32,7 +32,7 @@
 
     <button
       data-tid="vote-for-sns"
-      class="primary small"
+      class="primary"
       on:click={showProposal}>{$i18n.proposal_detail.vote}</button
     >
   </Card>

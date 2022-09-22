@@ -78,12 +78,12 @@
     </div>
 
     <FooterModal>
-      <button class="secondary small" on:click={close}>
+      <button class="secondary" on:click={close}>
         {$i18n.core.cancel}
       </button>
       <button
         data-tid="split-neuron-button"
-        class="primary small"
+        class="primary"
         on:click={split}
         disabled={!validForm || $busy}
       >

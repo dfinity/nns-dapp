@@ -80,12 +80,12 @@
     <slot name="additional-info" />
     <FooterModal>
       <button
-        class="small secondary"
+        class="secondary"
         data-tid="transaction-button-back"
         on:click={back}>{$i18n.accounts.edit_transaction}</button
       >
       <button
-        class="small primary"
+        class="primary"
         data-tid="transaction-button-execute"
         disabled={$busy || disableSubmit}
         on:click={submit}>{$i18n.accounts.execute}</button

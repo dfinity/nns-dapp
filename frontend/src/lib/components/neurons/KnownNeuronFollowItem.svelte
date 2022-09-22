@@ -30,7 +30,7 @@
   <p class="value">{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
   <button
-    class="primary small"
+    class="primary"
     disabled={$busy}
     on:click={toggleKnownNeuronFollowee}
   >

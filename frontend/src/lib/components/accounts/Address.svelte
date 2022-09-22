@@ -10,7 +10,7 @@
   <form on:submit|preventDefault>
     <AddressInput bind:address />
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="address-submit-button"
       disabled={invalidAddress(address)}

@@ -112,10 +112,10 @@
     <button
       on:click={cancel}
       data-tid="cancel-neuron-delay"
-      class="secondary small">{cancelButtonText}</button
+      class="secondary">{cancelButtonText}</button
     >
     <button
-      class="primary small"
+      class="primary"
       disabled={disableUpdate}
       on:click={goToConfirmation}
       data-tid="go-confirm-delay-button"

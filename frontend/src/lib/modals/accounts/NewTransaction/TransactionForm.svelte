@@ -132,13 +132,13 @@
 
   <FooterModal>
     <button
-      class="small secondary"
+      class="secondary"
       data-tid="transaction-button-cancel"
       type="button"
       on:click={close}>{$i18n.core.cancel}</button
     >
     <button
-      class="small primary"
+      class="primary"
       data-tid="transaction-button-next"
       disabled={disableButton}
       type="submit">{$i18n.accounts.review_action}</button

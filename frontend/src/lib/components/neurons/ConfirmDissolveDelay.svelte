@@ -70,14 +70,14 @@
   </div>
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       disabled={$busy}
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
     <button
-      class="primary small"
+      class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
       on:click={updateNeuron}
