@@ -1,3 +1,4 @@
+import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
@@ -12,6 +13,8 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  hasPermissions,
+  hasPermissionToDisburse,
   isUserHotkey,
   routePathSnsNeuronId,
   routePathSnsNeuronRootCanisterId,
@@ -23,6 +26,23 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
+
+const appendPermissions = ({
+  neuron,
+  identity,
+  permissions,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity;
+  permissions: SnsNeuronPermissionType[];
+}) =>
+  (neuron.permissions = [
+    ...neuron.permissions,
+    {
+      principal: [identity.getPrincipal()],
+      permission_type: permissions,
+    },
+  ]);
 
 describe("sns-neuron utils", () => {
   describe("sortNeuronsByCreatedTimestamp", () => {
@@ -448,6 +468,133 @@ describe("sns-neuron utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false);
+    });
+  });
+
+  describe("hasPermissionToDisburse", () => {
+    it("returns true when user has disburse rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburse({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no disburse rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburse({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("hasPermissions", () => {
+    it("returns true when user has one selected permission", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions,
+      });
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: mockIdentity,
+          permissions,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user doesn't have selected permission", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const permissions = [];
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions,
+      });
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: mockIdentity,
+          permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+        })
+      ).toBe(false);
+    });
+
+    it("returns false when user doesn't have selected permission for selected identity", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const permissions = [];
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions,
+      });
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: {
+            ...mockIdentity,
+            getPrincipal: () =>
+              Principal.fromText(
+                "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe"
+              ),
+          },
+          permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+        })
+      ).toBe(false);
+    });
+
+    it("returns true when user has multiple selected permission", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const permissions = [
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MERGE_MATURITY,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+      ];
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          ...permissions,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
+        ],
+      });
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: mockIdentity,
+          permissions,
+        })
+      ).toBe(true);
     });
   });
 });
