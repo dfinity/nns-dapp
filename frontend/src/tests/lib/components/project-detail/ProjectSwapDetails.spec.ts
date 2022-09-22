@@ -21,7 +21,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const element = Array.from(
-      container.querySelectorAll('[data-tid="icp-value"]')
+      container.querySelectorAll('[data-tid="token-value"]')
     )[0];
 
     expect(element?.innerHTML).toEqual(
@@ -37,7 +37,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const element = Array.from(
-      container.querySelectorAll('[data-tid="icp-value"]')
+      container.querySelectorAll('[data-tid="token-value"]')
     )[1];
 
     expect(element?.innerHTML).toEqual(

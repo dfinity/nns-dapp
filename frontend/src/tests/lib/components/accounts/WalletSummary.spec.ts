@@ -11,7 +11,7 @@ import {
   type SelectedAccountStore,
 } from "../../../../lib/types/selected-account.context";
 import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
@@ -48,10 +48,10 @@ describe("WalletSummary", () => {
   it("should render a balance in ICP", () => {
     const { getByText, queryByTestId } = renderWalletSummary();
 
-    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });
@@ -71,7 +71,7 @@ describe("WalletSummary", () => {
 
     expect(icp?.textContent).toEqual(
       replacePlaceholders(en.accounts.current_balance_detail, {
-        $amount: `${formatICP({
+        $amount: `${formatToken({
           value: mockMainAccount.balance.toE8s(),
           detailed: true,
         })}`,

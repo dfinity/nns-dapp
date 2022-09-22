@@ -4,7 +4,7 @@
   import MergeMaturityModal from "../../../modals/neurons/MergeMaturityModal.svelte";
   import Tooltip from "../../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatICP } from "../../../utils/icp.utils";
+  import { formatToken } from "../../../utils/icp.utils";
   import {
     hasEnoughMaturityToMerge,
     minMaturityMerge,
@@ -34,7 +34,7 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.merge_maturity_disabled_tooltip,
       {
-        $amount: formatICP({
+        $amount: formatToken({
           value: BigInt(minMaturityMerge($mainTransactionFeeStore)),
           detailed: true,
         }),

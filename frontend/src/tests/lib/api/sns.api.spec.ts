@@ -6,6 +6,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 import {
@@ -238,7 +239,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       certified: false,
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
     });
 
     expect(neuron).not.toBeNull();
@@ -250,7 +251,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
       permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
     });
 
@@ -262,7 +263,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
       permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
     });
 

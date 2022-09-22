@@ -20,8 +20,9 @@ RUN git config --global url."https://github.com/".insteadOf git://github.com/
 
 # Modify the code to make testing easier:
 # - Provide maturity more rapidly.
-COPY nns-canister.patch /tmp/
-RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
+# TODO: Fix canister patch
+# COPY nns-canister.patch /tmp/
+# RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
 
 RUN export CARGO_TARGET_DIR=/ic/rs/target && \
     cd ic/rs/ && \

@@ -5,58 +5,58 @@ import {
   convertIcpToTCycles,
   convertNumberToICP,
   convertTCyclesToIcpNumber,
-  formatICP,
   formattedTransactionFeeICP,
+  formatToken,
   getMaxTransactionAmount,
   sumTokenAmounts,
 } from "../../../lib/utils/icp.utils";
 
 describe("icp-utils", () => {
   it("should format icp", () => {
-    expect(formatICP({ value: BigInt(0) })).toEqual("0");
+    expect(formatToken({ value: BigInt(0) })).toEqual("0");
     // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
-    // expect(formatICP({value: BigInt(10)})).toEqual("0.0000001");
-    expect(formatICP({ value: BigInt(100) })).toEqual("0.000001");
-    expect(formatICP({ value: BigInt(100000000) })).toEqual("1.00");
-    expect(formatICP({ value: BigInt(1000000000) })).toEqual("10.00");
-    expect(formatICP({ value: BigInt(1010000000) })).toEqual("10.10");
-    expect(formatICP({ value: BigInt(1012300000) })).toEqual("10.12");
-    expect(formatICP({ value: BigInt(20000000000) })).toEqual("200.00");
-    expect(formatICP({ value: BigInt(20000000001) })).toEqual("200.00");
-    expect(formatICP({ value: BigInt(200000000000) })).toEqual(`2'000.00`);
-    expect(formatICP({ value: BigInt(200000000000000) })).toEqual(
+    // expect(formatToken({value: BigInt(10)})).toEqual("0.0000001");
+    expect(formatToken({ value: BigInt(100) })).toEqual("0.000001");
+    expect(formatToken({ value: BigInt(100000000) })).toEqual("1.00");
+    expect(formatToken({ value: BigInt(1000000000) })).toEqual("10.00");
+    expect(formatToken({ value: BigInt(1010000000) })).toEqual("10.10");
+    expect(formatToken({ value: BigInt(1012300000) })).toEqual("10.12");
+    expect(formatToken({ value: BigInt(20000000000) })).toEqual("200.00");
+    expect(formatToken({ value: BigInt(20000000001) })).toEqual("200.00");
+    expect(formatToken({ value: BigInt(200000000000) })).toEqual(`2'000.00`);
+    expect(formatToken({ value: BigInt(200000000000000) })).toEqual(
       `2'000'000.00`
     );
   });
 
   it("should format icp detailed", () => {
-    expect(formatICP({ value: BigInt(0), detailed: true })).toEqual("0");
-    expect(formatICP({ value: BigInt(100), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(0), detailed: true })).toEqual("0");
+    expect(formatToken({ value: BigInt(100), detailed: true })).toEqual(
       "0.000001"
     );
-    expect(formatICP({ value: BigInt(100000000), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(100000000), detailed: true })).toEqual(
       "1.00"
     );
-    expect(formatICP({ value: BigInt(1000000000), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(1000000000), detailed: true })).toEqual(
       "10.00"
     );
-    expect(formatICP({ value: BigInt(1010000000), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(1010000000), detailed: true })).toEqual(
       "10.10"
     );
-    expect(formatICP({ value: BigInt(1012300000), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(1012300000), detailed: true })).toEqual(
       "10.123"
     );
-    expect(formatICP({ value: BigInt(20000000000), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(20000000000), detailed: true })).toEqual(
       "200.00"
     );
-    expect(formatICP({ value: BigInt(20000000001), detailed: true })).toEqual(
+    expect(formatToken({ value: BigInt(20000000001), detailed: true })).toEqual(
       "200.00000001"
     );
-    expect(formatICP({ value: BigInt(200000000000), detailed: true })).toEqual(
-      `2'000.00`
-    );
     expect(
-      formatICP({ value: BigInt(200000000000000), detailed: true })
+      formatToken({ value: BigInt(200000000000), detailed: true })
+    ).toEqual(`2'000.00`);
+    expect(
+      formatToken({ value: BigInt(200000000000000), detailed: true })
     ).toEqual(`2'000'000.00`);
   });
 

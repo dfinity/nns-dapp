@@ -9,7 +9,7 @@
   import { i18n } from "../../stores/i18n";
   import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import { neuronStake } from "../../utils/neuron.utils";
   import { valueSpan } from "../../utils/utils";
 
@@ -69,7 +69,7 @@
         <p>
           {@html replacePlaceholders($i18n.neurons.icp_stake, {
             $amount: valueSpan(
-              formatICP({ value: neuronStake(neuron), detailed: true })
+              formatToken({ value: neuronStake(neuron), detailed: true })
             ),
           })}
         </p>

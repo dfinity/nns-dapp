@@ -5,7 +5,7 @@
 import { render } from "@testing-library/svelte";
 import AccountCard from "../../../../lib/components/accounts/AccountCard.svelte";
 import type { Account } from "../../../../lib/types/account";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
 describe("AccountCard", () => {
@@ -29,7 +29,7 @@ describe("AccountCard", () => {
     const balance = container.querySelector("article > div span:first-of-type");
 
     expect(balance?.textContent).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
   });
 

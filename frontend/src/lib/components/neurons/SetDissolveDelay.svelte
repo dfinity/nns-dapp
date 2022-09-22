@@ -9,7 +9,7 @@
   } from "../../constants/constants";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import {
     formatVotingPower,
     neuronStake,
@@ -56,7 +56,7 @@
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p data-tid="neuron-stake">
       {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
+        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
       })}
     </p>
 

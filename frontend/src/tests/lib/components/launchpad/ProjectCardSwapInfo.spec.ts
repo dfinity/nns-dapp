@@ -6,7 +6,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import ProjectCardSwapInfo from "../../../../lib/components/launchpad/ProjectCardSwapInfo.svelte";
 import { secondsToDuration } from "../../../../lib/utils/date.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsFullProject,
@@ -80,7 +80,7 @@ describe("ProjectCardSwapInfo", () => {
       },
     });
 
-    const icpValue = formatICP({
+    const icpValue = formatToken({
       value: mockSnsFullProject.swapCommitment?.myCommitment
         ?.amount_icp_e8s as bigint,
     });
