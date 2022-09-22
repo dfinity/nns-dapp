@@ -3,7 +3,6 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsMetadataResponseEntries,
   type SnsGetMetadataResponse,
-  type SnsSwap,
   type SnsSwapDerivedState,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
@@ -11,6 +10,8 @@ import { fromNullable } from "@dfinity/utils";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
   SnsTokenMetadata,
 } from "../types/sns";
 import type {
@@ -22,7 +23,7 @@ import type {
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
   token?: SnsTokenMetadata;
-  swap?: SnsSwap;
+  swap?: SnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
 };
@@ -46,7 +47,7 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
           params: { swap_due_timestamp_seconds: endTimeWindowB },
         },
       }: SnsSummary
-    ) => (endTimeWindowA < endTimeWindowB ? 1 : -1)
+    ) => (endTimeWindowA < endTimeWindowB ? -1 : 1)
   );
 
 /**
@@ -138,13 +139,21 @@ export const mapAndSortSnsQueryToSummaries = ({
         ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
           swapRootCanisterId === rootCanisterId
       );
+
+      const swapData = fromNullable(swapState?.swap ?? []);
       return {
         ...rest,
         rootCanisterId,
         metadata: mapOptionalMetadata(metadata),
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
-        swap: fromNullable(swapState?.swap ?? []),
+        swap:
+          swapData === undefined
+            ? undefined
+            : ({
+                ...swapData,
+                params: fromNullable(swapData.params),
+              } as SnsSummarySwap),
         derived: fromNullable(swapState?.derived ?? []),
       };
     }
@@ -183,3 +192,8 @@ export const getSwapCanisterAccount = ({
 
   return accountIdentifier;
 };
+
+export const getCommitmentE8s = (
+  swapCommitment?: SnsSwapCommitment | null
+): bigint | undefined =>
+  swapCommitment?.myCommitment?.icp[0]?.amount_e8s ?? undefined;

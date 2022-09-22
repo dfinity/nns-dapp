@@ -1,6 +1,6 @@
 import { ICP } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle, type SnsSwapBuyerState } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "../../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../../lib/types/sns";
@@ -12,11 +12,11 @@ import {
   filterCommittedProjects,
   hasUserParticipatedToSwap,
   isNnsProject,
-  openTimeWindow,
   projectRemainingAmount,
   validParticipation,
 } from "../../../lib/utils/projects.utils";
 import {
+  createTransferableAmount,
   mockSnsFullProject,
   mockSnsParams,
   mockSnsSwapCommitment,
@@ -61,11 +61,7 @@ describe("project-utils", () => {
               ...mockSnsFullProject.summary,
               swap: {
                 ...mockSwap,
-                state: {
-                  ...mockSwap.state,
-                  lifecycle: SnsSwapLifecycle.Pending,
-                  open_time_window: [],
-                },
+                lifecycle: SnsSwapLifecycle.Pending,
               },
             },
           },
@@ -87,30 +83,6 @@ describe("project-utils", () => {
     });
 
     it("should return active / launchpad projects", () => {
-      expect(
-        filterActiveProjects([
-          {
-            ...mockSnsFullProject,
-            summary: {
-              ...mockSnsFullProject.summary,
-              swap: {
-                ...mockSwap,
-                state: {
-                  ...mockSwap.state,
-                  lifecycle: SnsSwapLifecycle.Pending,
-                  open_time_window: [
-                    {
-                      start_timestamp_seconds: BigInt(1),
-                      end_timestamp_seconds: BigInt(2),
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        ])?.length
-      ).toEqual(1);
-
       expect(
         filterActiveProjects([
           {
@@ -183,22 +155,6 @@ describe("project-utils", () => {
   //     ));
   // });
 
-  describe("time window", () => {
-    it("should extract time window", () =>
-      expect(openTimeWindow(mockSwap)).not.toBeUndefined());
-
-    it("should not extract time window", () =>
-      expect(
-        openTimeWindow({
-          ...mockSwap,
-          state: {
-            ...mockSwap.state,
-            open_time_window: [],
-          },
-        })
-      ).toBeUndefined());
-  });
-
   describe("can user participate to swap", () => {
     it("cannot participate to swap if no summary or swap information", () => {
       expect(
@@ -264,8 +220,9 @@ describe("project-utils", () => {
           swapCommitment: {
             rootCanisterId: mockSwapCommitment.rootCanisterId,
             myCommitment: {
-              ...(mockSwapCommitment.myCommitment as SnsSwapBuyerState),
-              amount_icp_e8s: mockSnsParams.max_participant_icp_e8s,
+              icp: [
+                createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
+              ],
             },
           },
         })
@@ -314,8 +271,7 @@ describe("project-utils", () => {
           swapCommitment: {
             ...mockSwapCommitment,
             myCommitment: {
-              ...(mockSwapCommitment.myCommitment as SnsSwapBuyerState),
-              amount_icp_e8s: BigInt(0),
+              icp: [],
             },
           },
         })
@@ -337,8 +293,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
-            init: {
-              ...mockSnsFullProject.summary.swap.init,
+            params: {
+              ...mockSnsFullProject.summary.swap.params,
               min_participant_icp_e8s: BigInt(100_000_000),
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
@@ -364,8 +320,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
-            init: {
-              ...mockSnsFullProject.summary.swap.init,
+            params: {
+              ...mockSnsFullProject.summary.swap.params,
               min_participant_icp_e8s: BigInt(100_000_000),
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
@@ -375,9 +331,7 @@ describe("project-utils", () => {
         swapCommitment: {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
-            ...(mockSnsFullProject.swapCommitment
-              ?.myCommitment as SnsSwapBuyerState),
-            amount_icp_e8s: userCommitment,
+            icp: [createTransferableAmount(userCommitment)],
           },
         },
       };
@@ -400,8 +354,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
-            init: {
-              ...mockSnsFullProject.summary.swap.init,
+            params: {
+              ...mockSnsFullProject.summary.swap.params,
               min_participant_icp_e8s: BigInt(100_000_000),
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
@@ -430,8 +384,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
-            init: {
-              ...mockSnsFullProject.summary.swap.init,
+            params: {
+              ...mockSnsFullProject.summary.swap.params,
               min_participant_icp_e8s: BigInt(100_000_000),
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
@@ -441,9 +395,7 @@ describe("project-utils", () => {
         swapCommitment: {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
-            ...(mockSnsFullProject.swapCommitment
-              ?.myCommitment as SnsSwapBuyerState),
-            amount_icp_e8s: userCommitment,
+            icp: [createTransferableAmount(userCommitment)],
           },
         },
       };
@@ -465,8 +417,8 @@ describe("project-utils", () => {
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
-          init: {
-            ...mockSnsFullProject.summary.swap.init,
+          params: {
+            ...mockSnsFullProject.summary.swap.params,
             min_participant_icp_e8s: BigInt(100_000_000),
             max_participant_icp_e8s: BigInt(1_000_000_000),
             max_icp_e8s: projectMax,
@@ -491,12 +443,9 @@ describe("project-utils", () => {
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
-          state: {
-            ...mockSnsFullProject.summary.swap.state,
-            lifecycle: SnsSwapLifecycle.Open,
-          },
-          init: {
-            ...mockSnsFullProject.summary.swap.init,
+          lifecycle: SnsSwapLifecycle.Open,
+          params: {
+            ...mockSnsFullProject.summary.swap.params,
             min_participant_icp_e8s: validAmountE8s - BigInt(10_000),
             max_participant_icp_e8s: validAmountE8s + BigInt(10_000),
             max_icp_e8s: validAmountE8s + BigInt(10_000),
@@ -506,9 +455,7 @@ describe("project-utils", () => {
       swapCommitment: {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
-          ...(mockSnsFullProject.swapCommitment
-            ?.myCommitment as SnsSwapBuyerState),
-          amount_icp_e8s: BigInt(0),
+          icp: [createTransferableAmount(BigInt(0))],
         },
       },
     };
@@ -527,10 +474,7 @@ describe("project-utils", () => {
           ...validProject.summary,
           swap: {
             ...validProject.summary.swap,
-            state: {
-              ...validProject.summary.swap.state,
-              lifecycle: SnsSwapLifecycle.Committed,
-            },
+            lifecycle: SnsSwapLifecycle.Committed,
           },
         },
       };
@@ -548,10 +492,7 @@ describe("project-utils", () => {
           ...validProject.summary,
           swap: {
             ...validProject.summary.swap,
-            state: {
-              ...validProject.summary.swap.state,
-              lifecycle: SnsSwapLifecycle.Pending,
-            },
+            lifecycle: SnsSwapLifecycle.Pending,
           },
         },
       };
@@ -569,8 +510,8 @@ describe("project-utils", () => {
           ...validProject.summary,
           swap: {
             ...validProject.summary.swap,
-            init: {
-              ...validProject.summary.swap.init,
+            params: {
+              ...validProject.summary.swap.params,
               max_participant_icp_e8s: validAmountE8s,
             },
           },
@@ -590,8 +531,8 @@ describe("project-utils", () => {
           ...validProject.summary,
           swap: {
             ...validProject.summary.swap,
-            init: {
-              ...validProject.summary.swap.init,
+            params: {
+              ...validProject.summary.swap.params,
               max_participant_icp_e8s: validAmountE8s * BigInt(2),
             },
           },
@@ -599,8 +540,7 @@ describe("project-utils", () => {
         swapCommitment: {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
-            ...(validProject.swapCommitment?.myCommitment as SnsSwapBuyerState),
-            amount_icp_e8s: validAmountE8s,
+            icp: [createTransferableAmount(validAmountE8s)],
           },
         },
       };
@@ -625,8 +565,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...validProject.summary.swap,
-            init: {
-              ...validProject.summary.swap.init,
+            params: {
+              ...validProject.summary.swap.params,
               max_participant_icp_e8s: maxE8s,
             },
           },
@@ -656,8 +596,8 @@ describe("project-utils", () => {
           },
           swap: {
             ...validProject.summary.swap,
-            init: {
-              ...validProject.summary.swap.init,
+            params: {
+              ...validProject.summary.swap.params,
               max_participant_icp_e8s: maxPerUser,
               min_participant_icp_e8s: minPerUser,
               max_icp_e8s: maxProject,
@@ -667,8 +607,7 @@ describe("project-utils", () => {
         swapCommitment: {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
-            ...(validProject.swapCommitment?.myCommitment as SnsSwapBuyerState),
-            amount_icp_e8s: currentUserParticipation,
+            icp: [createTransferableAmount(currentUserParticipation)],
           },
         },
       };
@@ -694,12 +633,9 @@ describe("project-utils", () => {
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
-          state: {
-            ...mockSnsFullProject.summary.swap.state,
-            lifecycle: SnsSwapLifecycle.Open,
-          },
-          init: {
-            ...mockSnsFullProject.summary.swap.init,
+          lifecycle: SnsSwapLifecycle.Open,
+          params: {
+            ...mockSnsFullProject.summary.swap.params,
             min_participant_icp_e8s: minPerUser,
             max_participant_icp_e8s: maxPerUser,
             max_icp_e8s: maxProject,
@@ -721,9 +657,7 @@ describe("project-utils", () => {
       project.swapCommitment = {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
-          ...(mockSnsFullProject.swapCommitment
-            ?.myCommitment as SnsSwapBuyerState),
-          amount_icp_e8s: initialAmountUser,
+          icp: [createTransferableAmount(initialAmountUser)],
         },
       };
 
@@ -790,8 +724,8 @@ describe("project-utils", () => {
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
-          init: {
-            ...mockSnsFullProject.summary.swap.init,
+          params: {
+            ...mockSnsFullProject.summary.swap.params,
             max_icp_e8s: maxE8s,
           },
         },
@@ -815,8 +749,8 @@ describe("project-utils", () => {
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
-          init: {
-            ...mockSnsFullProject.summary.swap.init,
+          params: {
+            ...mockSnsFullProject.summary.swap.params,
             max_icp_e8s: maxE8s,
           },
         },

@@ -10,6 +10,7 @@
   import Logo from "../ui/Logo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
+  import { getCommitmentE8s } from "../../utils/sns.utils";
 
   export let project: SnsFullProject;
 
@@ -27,7 +28,8 @@
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
-  let myCommitment: TokenAmount | undefined;
+  let commitmentE8s: bigint | undefined;
+  $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
   const showProject = () => {
     routeStore.navigate({
@@ -39,7 +41,7 @@
 <Card
   role="link"
   on:click={showProject}
-  highlighted={myCommitment !== undefined}
+  highlighted={commitmentE8s !== undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
@@ -48,7 +50,7 @@
 
   <p class="value description">{description}</p>
 
-  <ProjectCardSwapInfo {project} bind:myCommitment />
+  <ProjectCardSwapInfo {project} />
 
   <!-- TODO L2-751: handle fetching errors -->
   {#if swapCommitment === undefined}

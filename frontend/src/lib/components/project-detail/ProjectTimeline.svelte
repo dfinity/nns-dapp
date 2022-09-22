@@ -31,7 +31,7 @@
   // $: durationTillDeadline = durationTillSwapDeadline(swap);
 </script>
 
-<!-- TODO: Change UX because now we don't have a start date -->
+<!-- TODO: https://dfinity.atlassian.net/browse/GIX-1031 Change UX because now we don't have a start date -->
 
 <!-- {#if durationTillDeadline !== undefined && durationSeconds !== undefined && durationTillStart !== undefined}
   <div>

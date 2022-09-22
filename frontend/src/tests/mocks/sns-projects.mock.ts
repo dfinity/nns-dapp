@@ -14,6 +14,7 @@ import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
+  SnsSummarySwap,
   SnsSwapCommitment,
   SnsTokenMetadata,
 } from "../../lib/types/sns";
@@ -104,7 +105,17 @@ export const mockSnsParams = {
   min_icp_e8s: BigInt(1500 * 100000000),
 };
 
-export const mockSwapState = {
+export const mockSwap: SnsSummarySwap = {
+  neuron_recipes: [],
+  cf_participants: [],
+  init: [],
+  lifecycle: SnsSwapLifecycle.Open,
+  open_sns_token_swap_proposal_id: [BigInt(1000)],
+  buyers: [],
+  params: mockSnsParams,
+};
+
+export const mockQuerySwap: SnsSwap = {
   neuron_recipes: [],
   cf_participants: [],
   init: [],
@@ -112,11 +123,7 @@ export const mockSwapState = {
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
   params: [mockSnsParams],
-} as SnsSwap;
-
-export const buildMockSwap = (): SnsSwap => mockSwapState;
-
-export const mockSwap = buildMockSwap();
+};
 
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
@@ -142,7 +149,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     swapCanisterId: principal(3),
     metadata: mockMetadata,
     token: mockToken,
-    swap: buildMockSwap(),
+    swap: mockSwap,
     derived: mockDerived,
   },
   {
@@ -159,7 +166,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Pacman",
       symbol: "PAC",
     },
-    swap: buildMockSwap(),
+    swap: mockSwap,
     derived: mockDerived,
   },
   {
@@ -176,7 +183,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Mario",
       symbol: "SPM",
     },
-    swap: buildMockSwap(),
+    swap: mockSwap,
     derived: mockDerived,
   },
   {
@@ -193,7 +200,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Kong",
       symbol: "DKG",
     },
-    swap: buildMockSwap(),
+    swap: mockSwap,
     derived: mockDerived,
   },
 ];
@@ -216,10 +223,7 @@ export const summaryForLifecycle = (
   ...mockSnsFullProject.summary,
   swap: {
     ...mockSwap,
-    state: {
-      ...buildMockSwap(),
-      lifecycle,
-    },
+    lifecycle,
   },
 });
 

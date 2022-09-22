@@ -11,11 +11,11 @@ import {
   mockDerived,
   mockQueryMetadata,
   mockQueryMetadataResponse,
+  mockQuerySwap,
   mockQueryTokenResponse,
   mockSnsParams,
   mockSnsSummaryList,
   mockSummary,
-  mockSwapState,
   principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
@@ -81,7 +81,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockSwapState],
+            swap: [mockQuerySwap],
             derived: [],
             certified: true,
           },
@@ -98,7 +98,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockSwapState],
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -115,7 +115,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockSwapState],
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -140,7 +140,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockSwapState],
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -162,7 +162,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockSwapState],
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -186,7 +186,7 @@ describe("sns-utils", () => {
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                ...mockSwapState,
+                ...mockQuerySwap,
                 params: [
                   {
                     ...mockSnsParams,
@@ -203,7 +203,7 @@ describe("sns-utils", () => {
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                ...mockSwapState,
+                ...mockQuerySwap,
                 params: [
                   {
                     ...mockSnsParams,

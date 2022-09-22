@@ -1,8 +1,11 @@
 import type { Principal } from "@dfinity/principal";
 import type {
+  CfParticipant,
+  SnsNeuronRecipe,
+  SnsParams,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
-  SnsSwapState,
+  SnsSwapInit,
 } from "@dfinity/sns";
 
 /**
@@ -24,10 +27,17 @@ export interface SnsTokenMetadata {
   symbol: string;
 }
 
-// export interface SnsSummarySwap {
-//   init: SnsSwapInit;
-//   state: ;
-// }
+export interface SnsSummarySwap {
+  neuron_recipes: Array<SnsNeuronRecipe>;
+  cf_participants: Array<CfParticipant>;
+  // We don't use it for now and keep it as the candid optional type
+  init: [] | [SnsSwapInit];
+  lifecycle: number;
+  buyers: Array<[string, SnsSwapBuyerState]>;
+  params: SnsParams;
+  // We don't use it for now and keep it as the candid optional type
+  open_sns_token_swap_proposal_id: [] | [bigint];
+}
 
 export interface SnsSummary {
   rootCanisterId: Principal;
@@ -47,7 +57,7 @@ export interface SnsSummary {
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)
    */
-  swap: SnsSwapState;
+  swap: SnsSummarySwap;
   /**
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */

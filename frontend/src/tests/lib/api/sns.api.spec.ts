@@ -35,7 +35,7 @@ import {
   mockQueryMetadata,
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
-  mockSwapState,
+  mockSwap,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -54,7 +54,7 @@ jest.mock("../../../lib/utils/agent.utils", () => {
 
 describe("sns-api", () => {
   const mockQuerySwap = {
-    swap: [mockSwapState],
+    swap: [mockSwap],
     derived: [
       {
         sns_tokens_per_icp: 1,
