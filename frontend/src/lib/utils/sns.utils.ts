@@ -5,11 +5,9 @@ import {
   type SnsGetMetadataResponse,
   type SnsSwap,
   type SnsSwapDerivedState,
-  type SnsSwapInit,
-  type SnsSwapState,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { fromNullable } from "@dfinity/utils";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -32,7 +30,7 @@ type OptionalSummary = QuerySns & {
 type ValidSummary = Required<OptionalSummary>;
 
 /**
- * Sort Sns summaries according their swap start dates. Sooner dates first.
+ * Sort Sns summaries according their swap end dates. Sooner end dates first.
  * @param summaries
  */
 const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
@@ -40,19 +38,15 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
     (
       {
         swap: {
-          state: { open_time_window: openTimeWindowA },
+          params: { swap_due_timestamp_seconds: endTimeWindowA },
         },
       }: SnsSummary,
       {
         swap: {
-          state: { open_time_window: openTimeWindowB },
+          params: { swap_due_timestamp_seconds: endTimeWindowB },
         },
       }: SnsSummary
-    ) =>
-      (openTimeWindowA[0]?.start_timestamp_seconds ?? 0) <
-      (openTimeWindowB[0]?.start_timestamp_seconds ?? 0)
-        ? -1
-        : 1
+    ) => (endTimeWindowA < endTimeWindowB ? 1 : -1)
   );
 
 /**
@@ -160,8 +154,6 @@ export const mapAndSortSnsQueryToSummaries = ({
   const validSwapSummaries: ValidSummary[] = allSummaries.filter(
     (entry: OptionalSummary): entry is ValidSummary =>
       entry.swap !== undefined &&
-      fromNullable(entry.swap.init) !== undefined &&
-      fromNullable(entry.swap.state) !== undefined &&
       entry.swapCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
@@ -169,14 +161,9 @@ export const mapAndSortSnsQueryToSummaries = ({
   );
 
   return sortSnsSummaries(
-    validSwapSummaries.map(({ swap, rootCanisterId, ...rest }) => ({
+    validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
       rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
-      swap: {
-        // We know for sure that init and state are defined because we check in previous filter that there are not undefined
-        init: fromDefinedNullable<SnsSwapInit>(swap.init),
-        state: fromDefinedNullable<SnsSwapState>(swap.state),
-      },
     }))
   );
 };

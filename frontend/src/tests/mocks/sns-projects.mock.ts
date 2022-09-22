@@ -3,16 +3,17 @@ import {
   SnsMetadataResponseEntries,
   SnsSwapLifecycle,
   type SnsGetMetadataResponse,
+  type SnsSwap,
+  type SnsSwapBuyerState,
   type SnsSwapDerivedState,
-  type SnsSwapState,
   type SnsTokenMetadataResponse,
+  type SnsTransferableAmount,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import type { SnsFullProject } from "../../lib/stores/projects.store";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
-  SnsSummarySwap,
   SnsSwapCommitment,
   SnsTokenMetadata,
 } from "../../lib/types/sns";
@@ -43,11 +44,15 @@ export const principal = (index: number): Principal =>
     ),
   ][index];
 
-export const createBuyersState = (amount: bigint) => ({
-  icp_disbursing: false,
-  amount_sns_e8s: BigInt(0),
-  amount_icp_e8s: amount,
-  sns_disbursing: false,
+export const createTransferableAmount = (
+  amount: bigint
+): SnsTransferableAmount => ({
+  transfer_start_timestamp_seconds: BigInt(0),
+  amount_e8s: amount,
+  transfer_success_timestamp_seconds: BigInt(0),
+});
+export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
+  icp: [createTransferableAmount(amount)],
 });
 
 export const mockSnsSwapCommitment = (
@@ -75,24 +80,6 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const buildMockSwapInit = (
-  rootCanisterId: string = principal(0).toText()
-) => ({
-  sns_root_canister_id: rootCanisterId,
-  min_participant_icp_e8s: BigInt(150000000),
-  fallback_controller_principal_ids: [],
-  max_icp_e8s: BigInt(3000 * 100000000),
-  min_participants: 1,
-  nns_governance_canister_id: "1234",
-  icp_ledger_canister_id: "1234",
-  sns_ledger_canister_id: "1234",
-  max_participant_icp_e8s: BigInt(5000000000),
-  sns_governance_canister_id: "1234",
-  min_icp_e8s: BigInt(1500 * 100000000),
-});
-
-export const mockSwapInit = buildMockSwapInit();
-
 export const mockSwapTimeWindow = {
   start_timestamp_seconds: BigInt(SECONDS_TODAY + 60 * 5),
   end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
@@ -107,19 +94,27 @@ export const mockSwapTimeWindowText = {
   )} ${secondsToTime(Number(mockSwapTimeWindow.end_timestamp_seconds))}`,
 };
 
-export const mockSwapState = {
-  open_time_window: [mockSwapTimeWindow],
-  sns_token_e8s: BigInt(1000),
-  lifecycle: SnsSwapLifecycle.Open,
-  buyers: [],
-} as SnsSwapState;
+export const mockSnsParams = {
+  min_participant_icp_e8s: BigInt(150000000),
+  max_icp_e8s: BigInt(3000 * 100000000),
+  swap_due_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
+  min_participants: 1,
+  sns_token_e8s: BigInt(150000000),
+  max_participant_icp_e8s: BigInt(5000000000),
+  min_icp_e8s: BigInt(1500 * 100000000),
+};
 
-export const buildMockSwap = (
-  rootCanisterId: string = principal(0).toText()
-): SnsSummarySwap => ({
-  init: buildMockSwapInit(rootCanisterId),
-  state: mockSwapState,
-});
+export const mockSwapState = {
+  neuron_recipes: [],
+  cf_participants: [],
+  init: [],
+  lifecycle: SnsSwapLifecycle.Open,
+  open_sns_token_swap_proposal_id: [BigInt(1000)],
+  buyers: [],
+  params: [mockSnsParams],
+} as SnsSwap;
+
+export const buildMockSwap = (): SnsSwap => mockSwapState;
 
 export const mockSwap = buildMockSwap();
 
@@ -164,7 +159,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Pacman",
       symbol: "PAC",
     },
-    swap: buildMockSwap(principal(1).toText()),
+    swap: buildMockSwap(),
     derived: mockDerived,
   },
   {
@@ -181,7 +176,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Mario",
       symbol: "SPM",
     },
-    swap: buildMockSwap(principal(2).toText()),
+    swap: buildMockSwap(),
     derived: mockDerived,
   },
   {
@@ -198,7 +193,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Kong",
       symbol: "DKG",
     },
-    swap: buildMockSwap(principal(3).toText()),
+    swap: buildMockSwap(),
     derived: mockDerived,
   },
 ];
@@ -222,7 +217,7 @@ export const summaryForLifecycle = (
   swap: {
     ...mockSwap,
     state: {
-      ...buildMockSwap().state,
+      ...buildMockSwap(),
       lifecycle,
     },
   },

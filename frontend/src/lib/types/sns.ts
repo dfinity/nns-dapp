@@ -2,7 +2,6 @@ import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwapBuyerState,
   SnsSwapDerivedState,
-  SnsSwapInit,
   SnsSwapState,
 } from "@dfinity/sns";
 
@@ -25,10 +24,10 @@ export interface SnsTokenMetadata {
   symbol: string;
 }
 
-export interface SnsSummarySwap {
-  init: SnsSwapInit;
-  state: SnsSwapState;
-}
+// export interface SnsSummarySwap {
+//   init: SnsSwapInit;
+//   state: ;
+// }
 
 export interface SnsSummary {
   rootCanisterId: Principal;
@@ -48,7 +47,7 @@ export interface SnsSummary {
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)
    */
-  swap: SnsSummarySwap;
+  swap: SnsSwapState;
   /**
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */

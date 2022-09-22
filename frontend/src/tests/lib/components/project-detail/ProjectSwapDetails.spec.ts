@@ -6,8 +6,8 @@ import ProjectSwapDetails from "../../../../lib/components/project-detail/Projec
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import {
   mockSnsFullProject,
+  mockSnsParams,
   mockSummary,
-  mockSwapInit,
   mockSwapTimeWindowText,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
@@ -25,7 +25,9 @@ describe("ProjectSwapDetails", () => {
     )[0];
 
     expect(element?.innerHTML).toEqual(
-      `${(Number(mockSwapInit.min_participant_icp_e8s) / 100000000).toFixed(2)}`
+      `${(Number(mockSnsParams.min_participant_icp_e8s) / 100000000).toFixed(
+        2
+      )}`
     );
   });
 
@@ -41,7 +43,9 @@ describe("ProjectSwapDetails", () => {
     )[1];
 
     expect(element?.innerHTML).toEqual(
-      `${(Number(mockSwapInit.max_participant_icp_e8s) / 100000000).toFixed(2)}`
+      `${(Number(mockSnsParams.max_participant_icp_e8s) / 100000000).toFixed(
+        2
+      )}`
     );
   });
 

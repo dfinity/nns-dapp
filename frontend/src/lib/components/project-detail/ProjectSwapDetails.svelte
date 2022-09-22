@@ -9,7 +9,7 @@
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { i18n } from "../../stores/i18n";
-  import type { SnsSwapInit } from "@dfinity/sns";
+  import type { SnsParams } from "@dfinity/sns";
   import { openTimeWindow } from "../../utils/projects.utils";
   import DateSeconds from "../ui/DateSeconds.svelte";
   import type { SnsSwapTimeWindow } from "@dfinity/sns";
@@ -22,8 +22,8 @@
   // type safety validation is done in ProjectDetail component
   $: ({ swap } = $projectDetailStore.summary as SnsSummary);
 
-  let init: SnsSwapInit;
-  $: ({ init } = swap);
+  let params: SnsParams;
+  $: ({ params } = swap);
 
   let timeWindow: SnsSwapTimeWindow | undefined;
   $: timeWindow = openTimeWindow(swap);
@@ -37,11 +37,11 @@
 
   let minCommitmentIcp: TokenAmount;
   $: minCommitmentIcp = TokenAmount.fromE8s({
-    amount: init.min_participant_icp_e8s,
+    amount: params.min_participant_icp_e8s,
   });
   let maxCommitmentIcp: TokenAmount;
   $: maxCommitmentIcp = TokenAmount.fromE8s({
-    amount: init.max_participant_icp_e8s,
+    amount: params.max_participant_icp_e8s,
   });
 </script>
 

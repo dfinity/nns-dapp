@@ -12,9 +12,9 @@ import {
   mockQueryMetadata,
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
+  mockSnsParams,
   mockSnsSummaryList,
   mockSummary,
-  mockSwapInit,
   mockSwapState,
   principal,
 } from "../../mocks/sns-projects.mock";
@@ -47,12 +47,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [],
-                state: [],
-              },
-            ],
+            swap: [],
             derived: [mockDerived],
             certified: true,
           },
@@ -69,12 +64,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [],
-              },
-            ],
+            swap: [],
             derived: [mockDerived],
             certified: true,
           },
@@ -91,12 +81,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            swap: [mockSwapState],
             derived: [],
             certified: true,
           },
@@ -113,12 +98,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            swap: [mockSwapState],
             derived: [mockDerived],
             certified: true,
           },
@@ -135,12 +115,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            swap: [mockSwapState],
             derived: [mockDerived],
             certified: true,
           },
@@ -165,12 +140,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            swap: [mockSwapState],
             derived: [mockDerived],
             certified: true,
           },
@@ -192,12 +162,7 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            swap: [mockSwapState],
             derived: [mockDerived],
             certified: true,
           },
@@ -221,16 +186,11 @@ describe("sns-utils", () => {
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                init: [mockSwapInit],
-                state: [
+                ...mockSwapState,
+                params: [
                   {
-                    ...mockSwapState,
-                    open_time_window: [
-                      {
-                        start_timestamp_seconds: BigInt(4),
-                        end_timestamp_seconds: BigInt(5),
-                      },
-                    ],
+                    ...mockSnsParams,
+                    swap_due_timestamp_seconds: BigInt(5),
                   },
                 ],
               },
@@ -243,16 +203,11 @@ describe("sns-utils", () => {
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                init: [mockSwapInit],
-                state: [
+                ...mockSwapState,
+                params: [
                   {
-                    ...mockSwapState,
-                    open_time_window: [
-                      {
-                        start_timestamp_seconds: BigInt(1),
-                        end_timestamp_seconds: BigInt(2),
-                      },
-                    ],
+                    ...mockSnsParams,
+                    swap_due_timestamp_seconds: BigInt(2),
                   },
                 ],
               },
