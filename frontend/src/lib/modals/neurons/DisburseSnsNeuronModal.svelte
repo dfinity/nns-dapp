@@ -80,7 +80,7 @@
 
 <WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
-    ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
+    ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
