@@ -74,7 +74,9 @@ describe("sns-neurons-services", () => {
         }
       };
       getSnsNeuron({
-        neuronIdHex: bytesToHexString(Array.from((mockSnsNeuron.id[0]?.id as Uint8Array))),
+        neuronIdHex: bytesToHexString(
+          Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
+        ),
         rootCanisterId: mockPrincipal,
         onLoad,
       });
@@ -103,7 +105,9 @@ describe("sns-neurons-services", () => {
         }
       };
       getSnsNeuron({
-        neuronIdHex: bytesToHexString(Array.from((mockSnsNeuron.id[0]?.id as Uint8Array))),
+        neuronIdHex: bytesToHexString(
+          Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
+        ),
         rootCanisterId: mockPrincipal,
         onLoad,
       });
@@ -133,7 +137,9 @@ describe("sns-neurons-services", () => {
       };
       getSnsNeuron({
         forceFetch: true,
-        neuronIdHex: bytesToHexString(Array.from((mockSnsNeuron.id[0]?.id as Uint8Array))),
+        neuronIdHex: bytesToHexString(
+          Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
+        ),
         rootCanisterId: mockPrincipal,
         onLoad,
       });
@@ -152,7 +158,9 @@ describe("sns-neurons-services", () => {
         }
       };
       getSnsNeuron({
-        neuronIdHex: bytesToHexString(Array.from((mockSnsNeuron.id[0]?.id as Uint8Array))),
+        neuronIdHex: bytesToHexString(
+          Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
+        ),
         rootCanisterId: mockPrincipal,
         onLoad,
         onError,
