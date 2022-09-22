@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
 PROPOSALS_DIR="scripts/propose-to"
+PATH="$PWD/target/ic:$PATH"
 
 help_text() {
   cat <<-EOF
