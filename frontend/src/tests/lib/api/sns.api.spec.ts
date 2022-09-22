@@ -44,6 +44,7 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
+import {arrayOfNumberToUint8Array} from "@dfinity/utils";
 
 jest.mock("../../../lib/proxy/api.import.proxy");
 jest.mock("../../../lib/utils/agent.utils", () => {
@@ -238,7 +239,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       certified: false,
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
     });
 
     expect(neuron).not.toBeNull();
@@ -250,7 +251,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
       permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
     });
 
@@ -262,7 +263,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
       permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
     });
 
