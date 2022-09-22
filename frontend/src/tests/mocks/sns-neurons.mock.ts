@@ -1,7 +1,7 @@
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import {arrayOfNumberToUint8Array} from "@dfinity/utils";
 
 export const createMockSnsNeuron = ({
   stake = BigInt(1_000_000_000),
