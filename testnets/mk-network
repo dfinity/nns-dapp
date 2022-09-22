@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+NETWORKS_FILE=".config/dfx/networks.json"
+if test -e "$NETWORKS_FILE"
+then cp "$NETWORKS_FILE" "${NETWORKS_FILE}.$(date -u +%Y%m%d_%H%M%S)"
+else install -D -m 644 <(echo "{}") "$NETWORKS_FILE"
+fi
+
+DFX_NETWORK="$1"
+PROVIDER="$( cd "$HOME/dfn/ic" && git pull >/dev/null && cd "testnet/env/$DFX_NETWORK/" && ./hosts --nns-nodes | awk '{printf "http://[%s]:8080\n", $2; exit 0}')"
+
+network_config() {
+	jq . <<-EOF | tee /dev/stderr
+	{
+	  "$DFX_NETWORK": {
+	      "config": {
+		"BUILD": "dev",
+		"FETCH_ROOT_KEY": true,
+		"HOST": "https://${DFX_NETWORK}.dfinity.network",
+		"FEATURE_FLAGS": {
+		  "ENABLE_SNS": true,
+		  "VOTING_UI": "modern"
+		}
+	      },
+	      "providers": [
+		"$PROVIDER"
+	      ],
+	      "type": "persistent"
+	    }
+	}
+	EOF
+}
+
+dfx_net_config() {
+	jq . <<-EOF
+	{ "networks": $(network_config) }
+	EOF
+}
+
+jq -s '.[0] * .[1]' "$NETWORKS_FILE" <(network_config) | sponge "$NETWORKS_FILE"
+
+if test -e dfx.json ; then
+  jq '.canisters["nns-governance"].remote.id[env.DFX_NETWORK]=.canisters["nns-governance"].remote.id.local' dfx.json | sponge dfx.json
+  jq -s '.[0] * .[1]' dfx.json <(dfx_net_config) | sponge dfx.json
+fi
+
+echo FIN
