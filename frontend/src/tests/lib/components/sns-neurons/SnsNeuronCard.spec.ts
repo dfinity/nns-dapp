@@ -186,9 +186,9 @@ describe("SnsNeuronCard", () => {
       permissions: [
         {
           principal: [mockIdentity.getPrincipal()],
-          permission_type: [
+          permission_type: Int32Array.from([
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          ],
+          ]),
         },
       ],
     };
