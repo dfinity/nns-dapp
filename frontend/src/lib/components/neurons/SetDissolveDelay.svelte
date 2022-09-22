@@ -109,10 +109,8 @@
   </div>
 
   <FooterModal>
-    <button
-      on:click={cancel}
-      data-tid="cancel-neuron-delay"
-      class="secondary">{cancelButtonText}</button
+    <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
+      >{cancelButtonText}</button
     >
     <button
       class="primary"
