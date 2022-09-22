@@ -17,6 +17,7 @@ dfx identity use default
 ( set -euxo pipefail
 	cd "$ND_DIR"
 	git fetch
+	git stash
 	git checkout "$ND_COMMIT"
 	git reset --hard "$ND_COMMIT"
 	"$SCRIPT_DIR/mk-network" "$DFX_NETWORK"
