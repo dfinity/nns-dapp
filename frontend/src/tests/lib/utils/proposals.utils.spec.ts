@@ -26,7 +26,7 @@ import {
   getVotingPower,
   hasMatchingProposals,
   hideProposal,
-  isProposalOpenForVotes,
+  isProposalDeadlineInTheFuture,
   lastProposalId,
   mapProposalInfo,
   preserveNeuronSelectionAfterUpdate,
@@ -1087,7 +1087,7 @@ describe("proposals-utils", () => {
     it("should be open for votes", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
         })
@@ -1097,7 +1097,7 @@ describe("proposals-utils", () => {
     it("should not be open for votes", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
         })
@@ -1107,7 +1107,7 @@ describe("proposals-utils", () => {
     it("should be open for votes short period", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.ManageNeuron,
@@ -1119,7 +1119,7 @@ describe("proposals-utils", () => {
     it("should not be open for votes short period", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.ManageNeuron,
@@ -1131,7 +1131,7 @@ describe("proposals-utils", () => {
     it("should be open for votes quiet threshold", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
@@ -1140,7 +1140,7 @@ describe("proposals-utils", () => {
       ).toBeTruthy();
 
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
@@ -1149,7 +1149,7 @@ describe("proposals-utils", () => {
       ).toBeTruthy();
 
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
@@ -1163,7 +1163,7 @@ describe("proposals-utils", () => {
     it("should not be open for votes quiet threshold", () => {
       const nowSeconds = new Date().getTime() / 1000;
       expect(
-        isProposalOpenForVotes({
+        isProposalDeadlineInTheFuture({
           ...mockProposalInfo,
           deadlineTimestampSeconds: undefined,
           topic: Topic.Governance,
