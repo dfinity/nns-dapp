@@ -114,6 +114,7 @@ get_wasm() {
 
 get_binary ic-nns-init
 get_binary sns
+get_binary ic-admin
 get_wasm registry-canister.wasm
 get_wasm governance-canister.wasm
 get_wasm governance-canister_test.wasm
