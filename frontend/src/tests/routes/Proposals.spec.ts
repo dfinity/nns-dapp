@@ -80,7 +80,7 @@ describe("Proposals", () => {
       expect(getByText("Reward Status")).toBeInTheDocument();
       expect(getByText("Proposal Status")).toBeInTheDocument();
       expect(
-        getByText('Hide "Open" proposals', {
+        getByText("Show only proposals", {
           exact: false,
         })
       ).toBeInTheDocument();
