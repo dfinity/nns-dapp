@@ -448,8 +448,9 @@ const mapProposalType = (
  * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
  * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
  */
-export const isProposalDeadlineInTheFuture = (proposalInfo: ProposalInfo): boolean =>
-  votingPeriodEnd(proposalInfo).getTime() >= Date.now();
+export const isProposalDeadlineInTheFuture = (
+  proposalInfo: ProposalInfo
+): boolean => votingPeriodEnd(proposalInfo).getTime() >= Date.now();
 
 /**
  * Return the voting period end date of a proposal.
