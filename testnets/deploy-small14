@@ -3,10 +3,10 @@ set -euxo pipefail
 
 export DFX_NETWORK=small14
 TESTNET=small14
-IC_COMMIT=08716da25d35ffcf7cc190ca952ad52e269c57a2 # master Thu Aug 25 12:40:41 2022 +0000
+IC_COMMIT=18dc31ca64a4ead42c5d4222e647dce7124eb90e # master Wed Sep 21 22:44:00 2022 +0000
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=a80a6e090703fb9387f209c8cddbaeb9fee05697 # release Sep 14
+ND_COMMIT=fcaa60965563682c1021a52b2fe0a87d8d0ea002 # main Wed Sep 21 17:48:41 2022 +0200
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
