@@ -45,7 +45,8 @@
   $: $definedNeuronsStore,
     (visible =
       voteRegistration !== undefined ||
-      (votableNeurons().length > 0 && isProposalDeadlineInTheFuture(proposalInfo)));
+      (votableNeurons().length > 0 &&
+        isProposalDeadlineInTheFuture(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
