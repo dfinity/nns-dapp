@@ -120,10 +120,14 @@
     "account_menu": "Open menu to access logout button"
   },
   "auth": {
+    "login": "Sign in with Internet Identity",
+    "title": "Open and permissionless autonomous governance system running fully on the Internet Computer",
+    "secure": "SECURE ICP TOKENS",
+    "stake": "STAKE ICP NEURONS",
+    "earn": "EARN VOTING REWARDS",
     "ic": "INTERNET COMPUTER",
     "nns": "NETWORK NERVOUS SYSTEM",
     "icp_governance": "ICP and governance",
-    "login": "Login",
     "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {

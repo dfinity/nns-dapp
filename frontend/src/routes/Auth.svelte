@@ -8,6 +8,11 @@
   import { i18n } from "../lib/stores/i18n";
   import { toastsError } from "../lib/stores/toasts.store";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
+  import {
+    IconHistoryToggleOff,
+    IconLockClock,
+    IconLockOpen,
+  } from "@dfinity/gix-components";
 
   let signedIn: boolean = false;
 
@@ -49,86 +54,84 @@
   onDestroy(unsubscribe);
 </script>
 
+<img
+        src="/assets/100_on_chain-small-centered-white_text.svg"
+        role="presentation"
+        alt={$i18n.auth.on_chain}
+        class="bottom-banner"
+        loading="lazy"
+/>
+
+<h1>{$i18n.auth.title}</h1>
+
+<ul>
+  <li><IconHistoryToggleOff /> {$i18n.auth.secure}</li>
+  <li><IconLockClock /> {$i18n.auth.stake}</li>
+  <li><IconLockOpen />  {$i18n.auth.earn}</li>
+</ul>
+
 {#if !signedIn}
-  <h1>{$i18n.auth.nns}</h1>
-  <h2>{$i18n.auth.ic}</h2>
-  <p>{$i18n.auth.icp_governance}</p>
-  <button on:click={signIn} data-tid="login-button">{$i18n.auth.login}</button>
+  <button on:click={signIn} data-tid="login-button" class="primary">{$i18n.auth.login}</button>
 {/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  h1,
-  h2,
-  p,
+  img {
+    height: 40px;
+  }
+
   button {
-    z-index: 3;
+    width: min(100%, calc(375px - var(--padding-8x)));
   }
 
   h1 {
-    font-size: var(--font-size-h4);
-    line-height: 1.5;
+    line-height: 1.4;
+    font-size: var(--font-size-h2);
 
-    color: white;
-  }
-
-  h2 {
-    margin: var(--padding) auto 0;
-
-    font-size: var(--font-size-h5);
-
-    color: #e5be5a; /** TODO: ask designer */
-  }
-
-  h1,
-  h2 {
-    text-align: center;
-    letter-spacing: 0.1rem;
-  }
-
-  p {
-    font-size: 1rem;
-    color: #e1e1e1;
-    margin: 0 auto 16px;
-    align-self: flex-end;
-  }
-
-  button {
-    --letter-spacing: 0.4rem;
-
-    width: 200px;
-    height: 54px;
-
-    --login-button-color: #2942d5; /** TODO: ask designer */
-    --login-button-color-tint: #3e55d9;
-
-    background: var(--login-button-color); /** TODO: ask designer */
-    border: 2px solid var(--login-button-color);
-    border-radius: var(--border-radius);
-
-    font-weight: 700;
-    color: white;
-    text-indent: 4px; /* The text looks off centre otherwise, although technically it is centred. */
-
-    transition: background var(--animation-time-normal);
-
-    justify-self: center;
-
-    &:hover,
-    &:focus {
-      background: var(--login-button-color-tint);
-    }
-  }
-
-  @media screen and (min-width: media.$breakpoint-medium) and (min-height: 640px) {
-    h1 {
+    @media (min-width: 376px) {
       font-size: var(--font-size-h1);
-      letter-spacing: 0.3rem;
     }
+  }
 
-    h2 {
-      font-size: var(--font-size-h2);
+  ul {
+    flex-grow: 2;
+    list-style-type: none;
+    padding: 0;
+    margin: var(--padding) 0 0;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05rem;
+
+    @include media.min-width(medium) {
+      flex-grow: inherit;
+
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      gap: var(--padding-6x);
+      padding: var(--padding-4x);
+    }
+  }
+
+  @include media.light-theme() {
+    ul {
+      color: var(--label-color);
+    }
+  }
+
+  li {
+    padding: var(--padding-1_5x) 0;
+
+    :global(svg) {
+      height: 24px;
+      width: 24px;
+      vertical-align: bottom;
+      margin: 0 var(--padding-1_5x) 0 0;
+      color: var(--primary);
     }
   }
 </style>

@@ -128,10 +128,14 @@ interface I18nHeader {
 }
 
 interface I18nAuth {
+  login: string;
+  title: string;
+  secure: string;
+  stake: string;
+  earn: string;
   ic: string;
   nns: string;
   icp_governance: string;
-  login: string;
   on_chain: string;
 }
 
