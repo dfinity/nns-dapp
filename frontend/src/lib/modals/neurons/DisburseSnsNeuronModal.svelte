@@ -13,24 +13,28 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
   import { accountsStore } from "../../stores/accounts.store";
-  import { getSnsNeuronIdAsHexString, getSnsNeuronStake } from "../../utils/sns-neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    getSnsNeuronStake,
+  } from "../../utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
-    import { TokenAmount } from "@dfinity/nns";
-    import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
-    import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
-
+  import { TokenAmount } from "@dfinity/nns";
+  import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
 
   export let neuron: SnsNeuron;
-  
+
   let destinationAddress: string | undefined;
   $: destinationAddress = $accountsStore?.main?.identifier;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
 
-  
   let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({amount: getSnsNeuronStake(neuron), token: $snsTokenSymbolSelectedStore});
+  $: amount = TokenAmount.fromE8s({
+    amount: getSnsNeuronStake(neuron),
+    token: $snsTokenSymbolSelectedStore,
+  });
 
   const dispatcher = createEventDispatcher();
   const steps: Steps = [

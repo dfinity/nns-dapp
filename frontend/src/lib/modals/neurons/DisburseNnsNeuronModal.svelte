@@ -35,7 +35,10 @@
   let modal: WizardModal;
   let loading: boolean = false;
   let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({amount: neuronStake(neuron), token: ICPToken});
+  $: amount = TokenAmount.fromE8s({
+    amount: neuronStake(neuron),
+    token: ICPToken,
+  });
 
   let destinationAddress: string | undefined;
 
