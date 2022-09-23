@@ -2,14 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { SnsSwapLifecycle, type SnsSwapBuyerState } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import ParticipateButton from "../../../../lib/components/project-detail/ParticipateButton.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
 import {
-  buildMockSwapInit,
+  createTransferableAmount,
   mockSnsFullProject,
+  mockSnsParams,
   mockSnsSwapCommitment,
   principal,
   summaryForLifecycle,
@@ -94,9 +95,9 @@ describe("ParticipateButton", () => {
       swapCommitment: {
         rootCanisterId: mock.rootCanisterId,
         myCommitment: {
-          ...(mock.myCommitment as SnsSwapBuyerState),
-          amount_icp_e8s: buildMockSwapInit(mock.rootCanisterId.toText())
-            .max_participant_icp_e8s,
+          icp: [
+            createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
+          ],
         },
       },
       Component: ParticipateButton,
