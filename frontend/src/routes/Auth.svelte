@@ -79,18 +79,29 @@
 
   img {
     height: 40px;
+    margin-bottom: var(--padding-6x);
   }
 
   button {
-    width: min(100%, calc(375px - var(--padding-8x)));
+    width: max(100%, calc(375px - var(--padding-8x)));
+
+    @include media.min-width(medium) {
+      margin: var(--padding-6x) 0 var(--padding-8x);
+    }
   }
 
   h1 {
     line-height: 1.4;
     font-size: var(--font-size-h2);
+    margin: 0 0 var(--padding-2x);
+    max-width: 550px;
 
     @media (min-width: 376px) {
       font-size: var(--font-size-h1);
+    }
+
+    @include media.min-width(medium) {
+      font-size: 2.441rem;
     }
   }
 
