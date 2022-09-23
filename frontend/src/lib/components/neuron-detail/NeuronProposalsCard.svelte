@@ -22,7 +22,7 @@
   <div>
     <button
       on:click={makeProposals}
-      class={`primary small ${loading ? "icon-only" : ""}`}
+      class={`primary ${loading ? "icon-only" : ""}`}
       disabled={loading}
     >
       {#if loading}

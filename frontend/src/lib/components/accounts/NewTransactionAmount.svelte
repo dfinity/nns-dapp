@@ -77,11 +77,11 @@
   <NewTransactionInfo feeOnly={true} />
 
   <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+    <button class="secondary" type="button" on:click={back}>
       {$i18n.accounts.edit_destination}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={!validForm}
       data-tid="review-transaction"

@@ -48,14 +48,14 @@
   </div>
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsClose")}
     >
       {$i18n.core.cancel}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="rename-subaccount-button"
       disabled={newAccountName.length === 0 ||
