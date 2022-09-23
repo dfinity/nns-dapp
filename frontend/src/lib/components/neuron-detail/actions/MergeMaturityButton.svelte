@@ -4,7 +4,7 @@
   import MergeMaturityModal from "../../../modals/neurons/MergeMaturityModal.svelte";
   import Tooltip from "../../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatICP } from "../../../utils/icp.utils";
+  import { formatToken } from "../../../utils/icp.utils";
   import {
     hasEnoughMaturityToMerge,
     minMaturityMerge,
@@ -25,7 +25,7 @@
 </script>
 
 {#if enoughMaturity}
-  <button class="primary small" on:click={showModal}
+  <button class="primary" on:click={showModal}
     >{$i18n.neuron_detail.merge_maturity}</button
   >
 {:else}
@@ -34,14 +34,14 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.merge_maturity_disabled_tooltip,
       {
-        $amount: formatICP({
+        $amount: formatToken({
           value: BigInt(minMaturityMerge($mainTransactionFeeStore)),
           detailed: true,
         }),
       }
     )}
   >
-    <button disabled class="primary small" on:click={showModal}
+    <button disabled class="primary" on:click={showModal}
       >{$i18n.neuron_detail.merge_maturity}</button
     >
   </Tooltip>

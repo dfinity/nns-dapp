@@ -76,12 +76,12 @@
     {/each}
   </ul>
   <FooterModal>
-    <button on:click={() => dispatcher("nnsClose")} class="secondary small"
+    <button on:click={() => dispatcher("nnsClose")} class="secondary"
       >{$i18n.core.cancel}</button
     >
     <button
       on:click={confirmSelection}
-      class="primary small"
+      class="primary"
       data-tid="merge-neurons-confirm-selection-button"
       disabled={!isMaxSelection}
       >{$i18n.neurons.merge_neurons_modal_merge_button}</button

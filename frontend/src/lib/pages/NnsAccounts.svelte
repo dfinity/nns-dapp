@@ -7,8 +7,8 @@
   import { i18n } from "../stores/i18n";
   import { routeStore } from "../stores/route.store";
   import { AppPath } from "../constants/routes.constants";
-  import { TokenAmount } from "@dfinity/nns";
-  import { formatICP, sumTokenAmounts } from "../utils/icp.utils";
+  import type { TokenAmount } from "@dfinity/nns";
+  import { sumTokenAmounts } from "../utils/icp.utils";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import AccountsTitle from "../components/accounts/AccountsTitle.svelte";
 
@@ -23,28 +23,19 @@
 
   onDestroy(unsubscribe);
 
-  let totalBalance: TokenAmount;
-  let totalICP: string;
-  const zeroICPs = TokenAmount.fromE8s({
-    amount: BigInt(0),
-    token: accounts?.main?.balance.token,
-  });
-  $: {
-    totalBalance = sumTokenAmounts(
-      accounts?.main?.balance || zeroICPs,
-      ...(accounts?.subAccounts || []).map(({ balance }) => balance),
-      ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
-    );
-    totalICP = formatICP({
-      value: totalBalance.toE8s(),
-      detailed: true,
-    });
-  }
+  let totalBalance: TokenAmount | undefined;
+  $: totalBalance =
+    accounts?.main?.balance !== undefined
+      ? sumTokenAmounts(
+          accounts?.main?.balance,
+          ...(accounts?.subAccounts || []).map(({ balance }) => balance),
+          ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
+        )
+      : undefined;
 </script>
 
 <section data-tid="accounts-body">
   <AccountsTitle balance={totalBalance} />
-
   {#if accounts?.main?.identifier}
     <AccountCard
       role="link"

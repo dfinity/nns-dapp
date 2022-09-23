@@ -5,6 +5,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
 import {
   addNeuronPermissions,
@@ -123,7 +124,7 @@ export const getSnsNeuron = async ({
       return;
     }
   }
-  const neuronId = hexStringToBytes(neuronIdHex);
+  const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
   return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
       querySnsNeuron({

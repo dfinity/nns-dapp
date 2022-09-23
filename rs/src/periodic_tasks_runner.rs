@@ -316,6 +316,7 @@ async fn create_canister_v2(
     let notify_request = NotifyCreateCanister {
         block_index,
         controller,
+        subnet_type: None,
     };
 
     cmc::notify_create_canister(notify_request).await
@@ -340,6 +341,7 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
     let notify_request = NotifyCreateCanister {
         block_index,
         controller: principal,
+        subnet_type: None,
     };
 
     cmc::notify_create_canister(notify_request).await

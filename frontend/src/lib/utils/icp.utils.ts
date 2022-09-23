@@ -21,7 +21,7 @@ const countDecimals = (value: number): number => {
  * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
  * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
  */
-export const formatICP = ({
+export const formatToken = ({
   value,
   detailed = false,
 }: {
@@ -70,7 +70,7 @@ export const sumTokenAmounts = (
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (fee: number): string =>
-  formatICP({
+  formatToken({
     value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });
 

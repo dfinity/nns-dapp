@@ -10,7 +10,7 @@ import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
 } from "../../../../lib/constants/icp.constants";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -47,10 +47,10 @@ describe("NewTransactionAmount", () => {
   it("should render current balance", () => {
     const { queryByTestId } = render(NewTransactionTest, { props });
 
-    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
   });
 

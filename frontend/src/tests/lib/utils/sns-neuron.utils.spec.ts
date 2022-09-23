@@ -261,7 +261,9 @@ describe("sns-neuron utils", () => {
   describe("canIdentityManageHotkeys", () => {
     const addVotePermission = (key) => ({
       principal: [Principal.fromText(key)] as [Principal],
-      permission_type: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      permission_type: Int32Array.from([
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      ]),
     });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
@@ -299,10 +301,10 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()] as [Principal],
-            permission_type: [
+            permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
-            ],
+            ]),
           },
         ],
       };
@@ -318,13 +320,15 @@ describe("sns-neuron utils", () => {
   describe("getSnsNeuronHotkeys", () => {
     const addVotePermission = (key) => ({
       principal: [Principal.fromText(key)] as [Principal],
-      permission_type: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      permission_type: Int32Array.from([
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      ]),
     });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
       "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
     ];
-    const allPermissions = enumValues(SnsNeuronPermissionType);
+    const allPermissions = Int32Array.from(enumValues(SnsNeuronPermissionType));
     const controllerPermission = {
       principal: [mockPrincipal] as [Principal],
       permission_type: allPermissions,
@@ -361,9 +365,9 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: [
+            permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            ],
+            ]),
           },
         ],
       };
@@ -380,10 +384,10 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: [
+            permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
-            ],
+            ]),
           },
         ],
       };
@@ -400,7 +404,9 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: enumValues(SnsNeuronPermissionType),
+            permission_type: Int32Array.from(
+              enumValues(SnsNeuronPermissionType)
+            ),
           },
         ],
       };
@@ -417,10 +423,10 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: [
+            permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
-            ],
+            ]),
           },
         ],
       };
@@ -438,10 +444,10 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [Principal.fromText("aaaaa-aa")],
-            permission_type: [
+            permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
-            ],
+            ]),
           },
         ],
       };
@@ -458,7 +464,7 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: [],
+            permission_type: Int32Array.from([]),
           },
         ],
       };

@@ -7,7 +7,7 @@
   } from "../../../utils/neuron.utils";
   import { i18n } from "../../../stores/i18n";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatICP } from "../../../utils/icp.utils";
+  import { formatToken } from "../../../utils/icp.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
 
@@ -26,7 +26,7 @@
 </script>
 
 {#if splittable}
-  <button on:click={openModal} class="primary small"
+  <button on:click={openModal} class="primary"
     >{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
@@ -35,14 +35,14 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatICP({
+        $amount: formatToken({
           value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
           detailed: true,
         }),
       }
     )}
   >
-    <button on:click={openModal} class="primary small" disabled
+    <button on:click={openModal} class="primary" disabled
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>

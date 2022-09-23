@@ -23,3 +23,9 @@
 
   <slot />
 </Layout>
+
+<style lang="scss">
+  div {
+    max-width: inherit;
+  }
+</style>

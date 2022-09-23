@@ -57,14 +57,14 @@
   </div>
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.canister_detail.edit_controller}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={$busy}
       data-tid="confirm-new-canister-controller-button"

@@ -37,6 +37,7 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
+    "sns_accounts_load": "An error occurred while loading the accounts.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -128,6 +129,7 @@
   "accounts": {
     "total": "Total",
     "main": "Main",
+    "balance": "Balance",
     "new_transaction": "New Transaction",
     "icp_transaction_description": "ICP Transaction",
     "review_action": "Review",
@@ -294,7 +296,7 @@
     "topics": "Topics",
     "rewards": "Reward Status",
     "status": "Proposal Status",
-    "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote",
+    "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "nothing_found": "No proposals found for the filters."
   },
   "canisters": {

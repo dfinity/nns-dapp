@@ -51,7 +51,7 @@
 
     flex-grow: 1;
 
-    --icp-font-size: var(--font-size-huge);
+    --token-font-size: var(--font-size-huge);
 
     @include modal.header;
   }

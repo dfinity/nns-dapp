@@ -40,19 +40,19 @@
     </div>
     <div>
       <h5>{$i18n.accounts.source}</h5>
-      <p class="value">{account.identifier}</p>
+      <p class="value identifier">{account.identifier}</p>
     </div>
     <slot />
   </div>
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       on:click={() => dispatcher("nnsBack")}
       data-tid="confirm-cycles-canister-button-back"
       >{$i18n.canisters.edit_cycles}</button
     >
     <button
-      class="primary small"
+      class="primary"
       on:click={confirm}
       data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
     >
@@ -89,5 +89,9 @@
       align-items: center;
       gap: var(--padding);
     }
+  }
+
+  .identifier {
+    word-break: break-word;
   }
 </style>

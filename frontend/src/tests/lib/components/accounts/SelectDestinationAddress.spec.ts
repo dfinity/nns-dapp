@@ -40,6 +40,17 @@ describe("SelectDestinationAddress", () => {
     expect(toggle).toBeInTheDocument();
   });
 
+  it("should not render toggle if no extra accounts to choose from", () => {
+    const { container } = render(SelectDestinationAddress, {
+      props: {
+        filterAccounts: () => false,
+      },
+    });
+
+    const toggle = container.querySelector("input[id='toggle']");
+    expect(toggle).not.toBeInTheDocument();
+  });
+
   it("should render select account dropdown when toggle is clicked", async () => {
     const { container, queryByTestId } = render(SelectDestinationAddress);
 

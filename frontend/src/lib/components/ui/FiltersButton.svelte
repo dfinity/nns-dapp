@@ -12,7 +12,7 @@
   const filter = () => dispatch("nnsFilter");
 </script>
 
-<button data-tid={testId} on:click={filter} class="primary small"
+<button data-tid={testId} on:click={filter} class="primary"
   ><IconFilter /><slot />
   <small>{`(${activeFilters}/${totalFilters})`}</small></button
 >
