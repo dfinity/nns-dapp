@@ -12,6 +12,7 @@
 
 <style lang="scss">
   @use "../../themes/mixins/img";
+  @use "../../themes/mixins/login";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/display";
 
@@ -21,15 +22,7 @@
 
     display: block;
 
-    background: var(--background);
-    background: radial-gradient(circle at 50% 100%, black, var(--background));
-    background-size: 100% 100%;
-  }
-
-  @include media.light-theme() {
-    .container {
-      background: linear-gradient(135deg, var(--background) 75%, var(--primary) 150%);
-    }
+    @include login.background;
   }
 
   main {

@@ -1,0 +1,5 @@
+@mixin background {
+  background: var(--background);
+  background: var(--background-login-gradient);
+  background-size: 100% 100%;
+}

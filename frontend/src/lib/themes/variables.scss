@@ -1,4 +1,12 @@
 // NNS-dapp global specific theme variables
 :root {
   --voting-bottom-sheet-content-max-height: 30vh;
+
+  --background-login-gradient: radial-gradient(circle at 50% 100%, black, var(--background));
+}
+
+:root {
+  &[theme="light"] {
+    --background-login-gradient: linear-gradient(135deg, var(--background) 75%, var(--primary) 150%);
+  }
 }
