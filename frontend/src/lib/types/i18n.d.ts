@@ -133,9 +133,6 @@ interface I18nAuth {
   secure: string;
   stake: string;
   earn: string;
-  ic: string;
-  nns: string;
-  icp_governance: string;
   on_chain: string;
 }
 

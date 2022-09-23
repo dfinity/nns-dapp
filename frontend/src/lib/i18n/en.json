@@ -125,9 +125,6 @@
     "secure": "SECURE ICP TOKENS",
     "stake": "STAKE ICP NEURONS",
     "earn": "EARN VOTING REWARDS",
-    "ic": "INTERNET COMPUTER",
-    "nns": "NETWORK NERVOUS SYSTEM",
-    "icp_governance": "ICP and governance",
     "on_chain": "100% on-chain Internet Computer"
   },
   "accounts": {
