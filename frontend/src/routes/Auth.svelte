@@ -13,6 +13,7 @@
     IconLockClock,
     IconLockOpen,
   } from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
 
   let signedIn: boolean = false;
 
@@ -55,11 +56,11 @@
 </script>
 
 <img
-        src="/assets/100_on_chain-small-centered-white_text.svg"
-        role="presentation"
-        alt={$i18n.auth.on_chain}
-        class="bottom-banner"
-        loading="lazy"
+  src="/assets/100_on_chain-small-centered-white_text.svg"
+  role="presentation"
+  alt={$i18n.auth.on_chain}
+  class="bottom-banner"
+  loading="lazy"
 />
 
 <h1>{$i18n.auth.title}</h1>
@@ -67,12 +68,20 @@
 <ul>
   <li><IconHistoryToggleOff /> {$i18n.auth.secure}</li>
   <li><IconLockClock /> {$i18n.auth.stake}</li>
-  <li><IconLockOpen />  {$i18n.auth.earn}</li>
+  <li><IconLockOpen /> {$i18n.auth.earn}</li>
 </ul>
 
-{#if !signedIn}
-  <button on:click={signIn} data-tid="login-button" class="primary">{$i18n.auth.login}</button>
-{/if}
+<button
+  on:click={signIn}
+  data-tid="login-button"
+  class="primary"
+  disabled={signedIn}
+>
+  {$i18n.auth.login}
+  {#if signedIn}
+    <div class="spinner"><Spinner size="small" inline /></div>
+  {/if}
+</button>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
@@ -83,10 +92,20 @@
   }
 
   button {
-    width: max(100%, calc(375px - var(--padding-8x)));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
 
     @include media.min-width(medium) {
       margin: var(--padding-6x) 0 var(--padding-8x);
+
+      width: auto;
+    }
+
+    .spinner {
+      margin-left: var(--padding);
     }
   }
 
