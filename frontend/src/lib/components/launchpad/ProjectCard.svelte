@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/nns";
   import { AppPath } from "../../constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
-
   import { i18n } from "../../stores/i18n";
   import { routeStore } from "../../stores/route.store";
   import type { SnsFullProject } from "../../stores/projects.store";
