@@ -19,7 +19,6 @@ import type {
   SnsTokenMetadata,
 } from "../../lib/types/sns";
 import type { QuerySnsMetadata } from "../../lib/types/sns.query";
-import { secondsToDate, secondsToTime } from "../../lib/utils/date.utils";
 
 export const mockProjectSubscribe =
   (projects: SnsFullProject[]) =>
@@ -80,20 +79,6 @@ export const mockSnsSwapCommitment = (
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
-
-export const mockSwapTimeWindow = {
-  start_timestamp_seconds: BigInt(SECONDS_TODAY + 60 * 5),
-  end_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
-};
-
-export const mockSwapTimeWindowText = {
-  start_timestamp_seconds: `${secondsToDate(
-    Number(mockSwapTimeWindow.start_timestamp_seconds)
-  )} ${secondsToTime(Number(mockSwapTimeWindow.start_timestamp_seconds))}`,
-  end_timestamp_seconds: `${secondsToDate(
-    Number(mockSwapTimeWindow.end_timestamp_seconds)
-  )} ${secondsToTime(Number(mockSwapTimeWindow.end_timestamp_seconds))}`,
-};
 
 export const mockSnsParams = {
   min_participant_icp_e8s: BigInt(150000000),

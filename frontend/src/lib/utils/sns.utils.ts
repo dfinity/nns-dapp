@@ -1,8 +1,10 @@
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsParams } from "@dfinity/sns";
 import {
   SnsMetadataResponseEntries,
   type SnsGetMetadataResponse,
+  type SnsSwap,
   type SnsSwapDerivedState,
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
@@ -20,15 +22,21 @@ import type {
   QuerySnsSwapState,
 } from "../types/sns.query";
 
+type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
+  params?: SnsParams;
+};
+
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
   token?: SnsTokenMetadata;
-  swap?: SnsSummarySwap;
+  swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
 };
 
-type ValidSummary = Required<OptionalSummary>;
+type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
+  swap: SnsSummarySwap;
+};
 
 /**
  * Sort Sns summaries according their swap end dates. Sooner end dates first.
@@ -110,6 +118,20 @@ export const mapOptionalToken = (
 };
 
 /**
+ * Maps the properties of the SnsSwap type to the properties of the SnsSummarySwap type.
+ * For now, the only property is extracted from candid optional type is `params`.
+ */
+const mapOptionalSwap = (
+  swapData: SnsSwap | undefined
+): OptionalSnsSummarySwap | undefined =>
+  swapData === undefined
+    ? undefined
+    : {
+        ...swapData,
+        params: fromNullable(swapData.params),
+      };
+
+/**
  * 1. Concat Sns queries for metadata and swap state.
  * 2. Filter those Sns without metadata, swap and derived information
  * 3. Sort according swap start date
@@ -147,13 +169,7 @@ export const mapAndSortSnsQueryToSummaries = ({
         metadata: mapOptionalMetadata(metadata),
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
-        swap:
-          swapData === undefined
-            ? undefined
-            : ({
-                ...swapData,
-                params: fromNullable(swapData.params),
-              } as SnsSummarySwap),
+        swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
       };
     }
@@ -163,6 +179,7 @@ export const mapAndSortSnsQueryToSummaries = ({
   const validSwapSummaries: ValidSummary[] = allSummaries.filter(
     (entry: OptionalSummary): entry is ValidSummary =>
       entry.swap !== undefined &&
+      entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
@@ -196,4 +213,5 @@ export const getSwapCanisterAccount = ({
 export const getCommitmentE8s = (
   swapCommitment?: SnsSwapCommitment | null
 ): bigint | undefined =>
-  swapCommitment?.myCommitment?.icp[0]?.amount_e8s ?? undefined;
+  fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
+  undefined;
