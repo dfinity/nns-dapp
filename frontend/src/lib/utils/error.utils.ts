@@ -12,7 +12,7 @@ import {
 import {
   InvalidaTransactionError,
   RefundedError,
-} from "../canisters/cmc/cmc.errors";
+} from "@dfinity/cmc";
 import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
 import { InsufficientAmountError } from "../types/common.errors";
 import { LedgerErrorMessage } from "../types/ledger.errors";

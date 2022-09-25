@@ -15,9 +15,8 @@ import {
   topUpCanister,
   updateSettings,
 } from "../../../lib/api/canisters.api";
-import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
-import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
-import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
+import { CMCCanister, ProcessingError } from "@dfinity/cmc";
+import { principalToSubAccount } from "@dfinity/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
