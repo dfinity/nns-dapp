@@ -1,9 +1,11 @@
+import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
   LedgerCanister,
   SubAccount,
   TokenAmount,
 } from "@dfinity/nns";
+import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 import {
   attachCanister,
@@ -15,8 +17,6 @@ import {
   topUpCanister,
   updateSettings,
 } from "../../../lib/api/canisters.api";
-import { CMCCanister, ProcessingError } from "@dfinity/cmc";
-import { principalToSubAccount } from "@dfinity/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
