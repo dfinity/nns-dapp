@@ -164,10 +164,11 @@ export const hasPermissions = ({
     return false;
   }
 
-  const principalPermissions =
+  const principalPermissions = Array.from(
     neuronPermissions.find(
       ({ principal }) => fromNullable(principal)?.toText() === principalAsText
-    )?.permission_type ?? [];
+    )?.permission_type ?? []
+  );
 
   const notFound = (permission: SnsNeuronPermissionType) =>
     !principalPermissions.includes(permission);
