@@ -859,9 +859,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(
       ({
-        swap: {
-          state: { lifecycle },
-        },
+        swap: { lifecycle },
         // Use 1 instead of using enum to avoid importing sns-js
       }) => lifecycle === 1
     );

@@ -36,11 +36,11 @@ describe("sns-services", () => {
     });
     // Prepare project data
     querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = BigInt(0);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
       BigInt(20_000_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
       BigInt(10_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
       BigInt(200_000_000_000);
 
     afterEach(() => {
@@ -74,11 +74,11 @@ describe("sns-services", () => {
       });
       // Prepare project data
       querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = currentE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s = maxE8s;
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s = maxE8s;
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
@@ -121,12 +121,12 @@ describe("sns-services", () => {
         certified: true,
         lifecycles: [SnsSwapLifecycle.Open],
       });
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         BigInt(20_000_000_000);
       const minimumE8s = BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         minimumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
@@ -149,11 +149,11 @@ describe("sns-services", () => {
         lifecycles: [SnsSwapLifecycle.Open],
       });
       const maximumE8s = BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         maximumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);

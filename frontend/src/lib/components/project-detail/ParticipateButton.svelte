@@ -20,9 +20,7 @@
 
   let lifecycle: number;
   $: ({
-    swap: {
-      state: { lifecycle },
-    },
+    swap: { lifecycle },
   } =
     $projectDetailStore.summary ??
     ({

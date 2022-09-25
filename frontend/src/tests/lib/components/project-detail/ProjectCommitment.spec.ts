@@ -24,10 +24,10 @@ describe("ProjectCommitment", () => {
     });
     expect(
       queryByTestId("commitment-max-indicator-value")?.textContent
-    ).toEqual(`${formatToken({ value: summary.swap.init.max_icp_e8s })} ICP`);
+    ).toEqual(`${formatToken({ value: summary.swap.params.max_icp_e8s })} ICP`);
     expect(
       queryByTestId("commitment-min-indicator-value")?.textContent
-    ).toEqual(`${formatToken({ value: summary.swap.init.min_icp_e8s })} ICP`);
+    ).toEqual(`${formatToken({ value: summary.swap.params.min_icp_e8s })} ICP`);
   });
 
   it("should render overall current commitment", () => {

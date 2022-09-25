@@ -1,9 +1,11 @@
 import type { Principal } from "@dfinity/principal";
 import type {
+  CfParticipant,
+  SnsNeuronRecipe,
+  SnsParams,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
   SnsSwapInit,
-  SnsSwapState,
 } from "@dfinity/sns";
 
 /**
@@ -26,8 +28,15 @@ export interface SnsTokenMetadata {
 }
 
 export interface SnsSummarySwap {
-  init: SnsSwapInit;
-  state: SnsSwapState;
+  neuron_recipes: Array<SnsNeuronRecipe>;
+  cf_participants: Array<CfParticipant>;
+  // We don't use it for now and keep it as the candid optional type
+  init: [] | [SnsSwapInit];
+  lifecycle: number;
+  buyers: Array<[string, SnsSwapBuyerState]>;
+  params: SnsParams;
+  // We don't use it for now and keep it as the candid optional type
+  open_sns_token_swap_proposal_id: [] | [bigint];
 }
 
 export interface SnsSummary {
