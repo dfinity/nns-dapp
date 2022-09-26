@@ -153,10 +153,10 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const formattedMaturity = ({fullNeuron}: NeuronInfo): string =>
+export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.maturityE8sEquivalent);
 
-export const formattedStakedMaturity = ({fullNeuron}: NeuronInfo): string =>
+export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
 const formatMaturity = (value?: bigint): string =>
