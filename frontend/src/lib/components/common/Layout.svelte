@@ -10,7 +10,6 @@
   let back = false;
   $: back = $layoutBackStore !== undefined;
 
-
   /* eslint-disable @typescript-eslint/no-unused-vars */
   // smoothness the content transition - i.e. the navigation
   const content = (
