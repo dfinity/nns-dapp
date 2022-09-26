@@ -150,7 +150,7 @@ const pollNotifyCreateCanister = async ({
         cmc.notifyCreateCanister({
           controller,
           block_index: blockHeight,
-          subnet_type: []
+          subnet_type: [],
         }),
       shouldExit: notProcessingError,
     });
