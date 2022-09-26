@@ -71,11 +71,11 @@
   <NewTransactionInfo />
 
   <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+    <button class="secondary" type="button" on:click={back}>
       {$i18n.accounts.edit_amount}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={$busy}
       data-tid="confirm-and-send"
@@ -100,7 +100,7 @@
     padding: var(--padding) 0;
 
     @include media.min-width(medium) {
-      --icp-font-size: var(--font-size-huge);
+      --token-font-size: var(--font-size-huge);
       @include modal.header;
     }
   }

@@ -104,14 +104,14 @@
   <FooterModal>
     <button
       type="button"
-      class="secondary small"
+      class="secondary"
       data-tid="select-cycles-button-back"
       on:click={() => dispatcher("nnsBack")}
       >{$i18n.canisters.edit_source}</button
     >
     <button
       type="submit"
-      class="primary small"
+      class="primary"
       on:click={selectAmount}
       data-tid="select-cycles-button"
       disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button

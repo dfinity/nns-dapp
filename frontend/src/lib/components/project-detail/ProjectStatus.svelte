@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
-  import { SnsSwapLifecycle, type SnsSwapState } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -16,9 +16,6 @@
   let swap: SnsSummarySwap;
   // type safety validation is done in ProjectStatusSection component
   $: ({ swap } = $projectDetailStore.summary as SnsSummary);
-
-  let state: SnsSwapState;
-  $: ({ state } = swap);
 
   const statusTextMapper = {
     [SnsSwapLifecycle.Unspecified]: $i18n.sns_project_detail.status_unspecified,
@@ -29,7 +26,7 @@
   };
 
   let lifecycle: number;
-  $: lifecycle = state.lifecycle;
+  $: ({ lifecycle } = swap);
 </script>
 
 <div>

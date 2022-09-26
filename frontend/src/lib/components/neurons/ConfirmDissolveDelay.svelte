@@ -5,7 +5,7 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import {
     formatVotingPower,
     neuronStake,
@@ -53,7 +53,7 @@
     <h5>{$i18n.neurons.neuron_balance}</h5>
     <p>
       {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
+        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
       })}
     </p>
   </div>
@@ -70,14 +70,14 @@
   </div>
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       disabled={$busy}
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
     <button
-      class="primary small"
+      class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
       on:click={updateNeuron}

@@ -20,11 +20,11 @@
     <slot />
   </div>
   <FooterModal>
-    <button class="secondary small" on:click={cancel}>
+    <button class="secondary" on:click={cancel}>
       <slot name="button-cancel-content" />
     </button>
     <button
-      class="primary small"
+      class="primary"
       data-tid="confirm-action-button"
       disabled={$busy}
       on:click={confirm}

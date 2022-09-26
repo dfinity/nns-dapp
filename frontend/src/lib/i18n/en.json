@@ -296,7 +296,7 @@
     "topics": "Topics",
     "rewards": "Reward Status",
     "status": "Proposal Status",
-    "hide_unavailable_proposals": "Hide \"Open\" proposals where all your neurons have voted or are ineligible to vote",
+    "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "nothing_found": "No proposals found for the filters."
   },
   "canisters": {
@@ -545,7 +545,6 @@
     "increase_participation": "Increase Participation",
     "status_completed": "Status",
     "completed": "Completed",
-    "sale_start": "Sale Start",
     "sale_end": "Sale End",
     "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached"

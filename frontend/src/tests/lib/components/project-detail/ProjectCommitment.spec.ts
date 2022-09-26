@@ -5,7 +5,7 @@
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import ProjectCommitment from "../../../../lib/components/project-detail/ProjectCommitment.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsFullProject,
@@ -24,10 +24,10 @@ describe("ProjectCommitment", () => {
     });
     expect(
       queryByTestId("commitment-max-indicator-value")?.textContent
-    ).toEqual(`${formatICP({ value: summary.swap.init.max_icp_e8s })} ICP`);
+    ).toEqual(`${formatToken({ value: summary.swap.params.max_icp_e8s })} ICP`);
     expect(
       queryByTestId("commitment-min-indicator-value")?.textContent
-    ).toEqual(`${formatICP({ value: summary.swap.init.min_icp_e8s })} ICP`);
+    ).toEqual(`${formatToken({ value: summary.swap.params.min_icp_e8s })} ICP`);
   });
 
   it("should render overall current commitment", () => {
@@ -39,7 +39,7 @@ describe("ProjectCommitment", () => {
     expect(
       queryByTestId("sns-project-current-commitment")?.textContent
     ).toEqual(
-      `${en.sns_project_detail.current_overall_commitment} ${formatICP({
+      `${en.sns_project_detail.current_overall_commitment} ${formatToken({
         value: summary.derived.buyer_total_icp_e8s,
       })} ICP`
     );

@@ -15,18 +15,15 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
-describe("ProjectTimeline", () => {
+// TODO: https://dfinity.atlassian.net/browse/GIX-1031
+describe.skip("ProjectTimeline", () => {
   it("should render no timeline", () => {
     const { queryByText } = renderContextCmp({
       summary: {
         ...mockSnsFullProject.summary,
         swap: {
           ...mockSwap,
-          state: {
-            ...mockSwap.state,
-            lifecycle: SnsSwapLifecycle.Open,
-            open_time_window: [],
-          },
+          lifecycle: SnsSwapLifecycle.Open,
         },
       },
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,

@@ -38,7 +38,7 @@
 </script>
 
 {#if enoughMaturity}
-  <button class="secondary small" on:click={showModal}>
+  <button class="secondary" on:click={showModal}>
     {$i18n.neuron_detail.spawn_neuron}
   </button>
 {:else}
@@ -62,7 +62,7 @@
       }
     )}
   >
-    <button disabled class="secondary small" on:click={showModal}>
+    <button disabled class="secondary" on:click={showModal}>
       {$i18n.neuron_detail.spawn_neuron}
     </button>
   </Tooltip>

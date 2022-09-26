@@ -4,7 +4,7 @@
   import { i18n } from "../../stores/i18n";
   import { secondsToDate } from "../../utils/date.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
@@ -64,7 +64,7 @@
         <svelte:fragment slot="info">
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
             {replacePlaceholders($i18n.neuron_detail.voting_power_tooltip, {
-              $stake: formatICP({
+              $stake: formatToken({
                 value: neuron.fullNeuron.cachedNeuronStake,
                 detailed: true,
               }),

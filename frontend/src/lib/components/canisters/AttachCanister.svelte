@@ -47,7 +47,7 @@
 
   <FooterModal>
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsClose")}
     >
@@ -55,7 +55,7 @@
     </button>
     <button
       data-tid="attach-canister-button"
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={principal === undefined || $busy}
     >

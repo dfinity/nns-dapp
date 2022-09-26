@@ -74,7 +74,7 @@
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="success small"
+    class="success"
   >
     {#if voteRegistration?.vote === Vote.Yes}
       <Spinner size="small" />
@@ -86,7 +86,7 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger small"
+    class="danger"
   >
     {#if voteRegistration?.vote === Vote.No}
       <Spinner size="small" />

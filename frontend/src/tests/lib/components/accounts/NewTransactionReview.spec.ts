@@ -8,7 +8,7 @@ import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.can
 import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -76,9 +76,9 @@ describe("NewTransactionReview", () => {
   it("should render the amount the user has entered", () => {
     const { queryByTestId } = render(NewTransactionTest, { props });
 
-    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
     expect(icp?.innerHTML).toEqual(
-      `${formatICP({ value: amount.toE8s(), detailed: true })}`
+      `${formatToken({ value: amount.toE8s(), detailed: true })}`
     );
   });
 

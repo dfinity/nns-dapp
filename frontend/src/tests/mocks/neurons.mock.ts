@@ -6,12 +6,14 @@ import { mockIdentity } from "./auth.store.mock";
 
 export const mockFullNeuron: Neuron = {
   id: BigInt(1),
+  stakedMaturityE8sEquivalent: undefined,
   controller: undefined,
   recentBallots: [],
   kycVerified: true,
   notForProfit: false,
   cachedNeuronStake: BigInt(3_000_000_000),
   createdTimestampSeconds: BigInt(10),
+  autoStakeMaturity: undefined,
   maturityE8sEquivalent: BigInt(10),
   agingSinceTimestampSeconds: BigInt(10),
   spawnAtTimesSeconds: undefined,

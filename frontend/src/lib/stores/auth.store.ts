@@ -13,7 +13,7 @@ export interface AuthStore {
 
 // We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
 // @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
-let authClient: AuthClient | undefined;
+let authClient: AuthClient | undefined | null;
 
 /**
  * A store to handle authentication and the identity of the user.
@@ -78,6 +78,11 @@ const initAuthStore = () => {
       const client: AuthClient = authClient ?? (await createAuthClient());
 
       await client.logout();
+
+      // We currently do not have issue because the all screen is reloaded after sign-out.
+      // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
+      // This fix a "sign in -> sign out -> sign in again" flow without window reload.
+      authClient = null;
 
       update((state: AuthStore) => ({
         ...state,

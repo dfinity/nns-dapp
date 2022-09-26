@@ -45,11 +45,11 @@
     />
   </div>
   <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+    <button class="secondary" type="button" on:click={back}>
       {$i18n.core.back}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={newAccountName.length === 0 || $busy}
     >

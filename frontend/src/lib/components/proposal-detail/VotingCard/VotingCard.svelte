@@ -16,7 +16,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "../../../types/selected-proposal.context";
-  import { isProposalOpenForVotes } from "../../../utils/proposals.utils";
+  import { isProposalDeadlineInTheFuture } from "../../../utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
@@ -45,7 +45,8 @@
   $: $definedNeuronsStore,
     (visible =
       voteRegistration !== undefined ||
-      (votableNeurons().length > 0 && isProposalOpenForVotes(proposalInfo)));
+      (votableNeurons().length > 0 &&
+        isProposalDeadlineInTheFuture(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {

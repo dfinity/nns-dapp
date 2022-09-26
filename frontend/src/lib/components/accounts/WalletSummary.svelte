@@ -10,7 +10,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "../../types/selected-account.context";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "../../utils/i18n.utils";
 
@@ -30,7 +30,7 @@
     (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
 
   let detailedICP: string;
-  $: detailedICP = formatICP({
+  $: detailedICP = formatToken({
     value: accountBalance.toE8s(),
     detailed: true,
   });
@@ -72,12 +72,12 @@
 
     margin: 0 0 var(--padding-2x);
 
-    --icp-font-size: var(--font-size-h1);
+    --token-font-size: var(--font-size-h1);
     --tooltip-display: inline-block;
 
     // Minimum height of ICP value + ICP label (ICP component)
     min-height: calc(
-      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
+      var(--line-height-standard) * (var(--token-font-size) + 1rem)
     );
 
     @include media.min-width(medium) {
