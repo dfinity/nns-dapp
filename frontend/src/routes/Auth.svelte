@@ -110,7 +110,8 @@
       flex-direction: column;
       align-items: flex-start;
 
-      font-size: var(--font-size-ultra-small);
+      // Non standard font-size used for the login screen only
+      font-size: 10px;
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.1rem;
     }
