@@ -119,10 +119,6 @@
       justify-content: center;
 
       margin: var(--padding) 0 var(--padding-4x);
-
-      span {
-        font-size: inherit;
-      }
     }
   }
 
