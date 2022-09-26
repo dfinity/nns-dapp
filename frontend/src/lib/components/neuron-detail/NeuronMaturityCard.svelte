@@ -10,7 +10,7 @@
   import {
     formattedMaturity,
     isNeuronControllable,
-    formattedStakedMaturity
+    formattedStakedMaturity,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
 
