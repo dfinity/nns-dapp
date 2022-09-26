@@ -19,6 +19,7 @@
     isHotKeyControllable,
     isNeuronControllable,
     isNeuronControllableByUser,
+    formattedStakedMaturity,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
@@ -68,6 +69,7 @@
                 value: neuron.fullNeuron.cachedNeuronStake,
                 detailed: true,
               }),
+              $stakedMaturity: formattedStakedMaturity(neuron),
               $delayMultiplier: dissolveDelayMultiplier(
                 Number(neuron.dissolveDelaySeconds)
               ).toFixed(2),
