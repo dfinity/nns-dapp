@@ -1,11 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import {
-  ICP,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-  Topic,
-} from "@dfinity/nns";
+import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
@@ -889,7 +883,10 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: ICP.fromE8s(BigInt(Math.round(amountWithFee * E8S_PER_ICP))),
+        amount: TokenAmount.fromE8s({
+          amount: BigInt(Math.round(amountWithFee * E8S_PER_ICP)),
+          token: ICPToken,
+        }),
       });
     });
 
