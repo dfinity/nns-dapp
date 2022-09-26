@@ -55,12 +55,6 @@
     line-height: var(--line-height-standard);
   }
 
-  .title {
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
-  }
-
   .actions {
     display: flex;
     justify-content: flex-start;

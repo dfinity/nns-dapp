@@ -44,10 +44,6 @@
     flex-direction: column;
     justify-content: flex-start;
 
-    p {
-      margin: var(--padding) 0 0 0;
-    }
-
     // Changes order of the label of the JoinCommunityFundCheckbox
     :global(label) {
       order: 1;
