@@ -37,7 +37,9 @@
 <CardInfo>
   <KeyValuePairInfo testId="neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
-    <svelte:fragment slot="info">{$i18n.neuron_detail.following_description}</svelte:fragment>
+    <svelte:fragment slot="info"
+      >{$i18n.neuron_detail.following_description}</svelte:fragment
+    >
   </KeyValuePairInfo>
 
   {#if followees.length > 0}
