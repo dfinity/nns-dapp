@@ -33,7 +33,7 @@
   </KeyValuePairInfo>
 
   {#if neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
-    <KeyValuePair>
+    <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
       <svelte:fragment slot="value"
