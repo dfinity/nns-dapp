@@ -98,7 +98,7 @@
     justify-content: flex-start;
     align-items: center;
 
-    margin: var(--padding) 0 var(--padding-6x);
+    margin: var(--padding) 0 calc(5 * var(--padding));
     gap: var(--padding);
 
     img {
@@ -117,6 +117,8 @@
 
     @include media.min-width(medium) {
       justify-content: center;
+
+      margin: var(--padding) 0 var(--padding-4x);
 
       span {
         font-size: inherit;
@@ -176,8 +178,8 @@
       display: flex;
       width: 100%;
       justify-content: center;
-      gap: var(--padding-4x);
-      padding: var(--padding-4x);
+      gap: var(--padding-6x);
+      padding: var(--padding-6x);
     }
   }
 
