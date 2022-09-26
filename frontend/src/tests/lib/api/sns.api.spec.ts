@@ -3,7 +3,12 @@
  */
 
 import type { HttpAgent } from "@dfinity/agent";
-import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import {
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+  type SnsWasmCanisterOptions,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
@@ -183,7 +188,10 @@ describe("sns-api", () => {
     jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
     await participateInSnsSwap({
-      amount: ICP.fromString("10") as ICP,
+      amount: TokenAmount.fromString({
+        amount: "10",
+        token: ICPToken,
+      }) as TokenAmount,
       rootCanisterId: rootCanisterIdMock,
       identity: mockIdentity,
       controller: Principal.fromText("aaaaa-aa"),
@@ -203,7 +211,10 @@ describe("sns-api", () => {
 
     const call = () =>
       participateInSnsSwap({
-        amount: ICP.fromString("10") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "10",
+          token: ICPToken,
+        }) as TokenAmount,
         rootCanisterId: rootCanisterIdMock,
         identity: mockIdentity,
         controller: Principal.fromText("aaaaa-aa"),
