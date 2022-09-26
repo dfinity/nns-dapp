@@ -55,13 +55,17 @@
   onDestroy(unsubscribe);
 </script>
 
-<img
-  src="/assets/100_on_chain-small-centered-white_text.svg"
-  role="presentation"
-  alt={$i18n.auth.on_chain}
-  class="bottom-banner"
-  loading="lazy"
-/>
+<div class="nns">
+  <img
+    src="/assets/ic_logo.svg"
+    role="presentation"
+    alt={$i18n.auth.ic_logo}
+    class="bottom-banner"
+    loading="lazy"
+  />
+
+  <span class="description">{$i18n.auth.nns}</span>
+</div>
 
 <h1>{$i18n.auth.title}</h1>
 
@@ -86,21 +90,48 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  img {
-    height: 40px;
-    margin-bottom: var(--padding-6x);
+  .nns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    margin: var(--padding) 0 var(--padding-6x);
+    gap: var(--padding);
+
+    img {
+      height: var(--padding-3x);
+    }
+
+    span {
+      font-size: var(--font-size-small);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.1rem;
+    }
+
+    @include media.min-width(medium) {
+      justify-content: center;
+
+      img {
+        height: var(--padding-4x);
+      }
+
+      span {
+        font-size: inherit;
+      }
+    }
   }
 
   button {
     display: flex;
     justify-content: center;
     align-items: center;
+    align-self: center;
 
     width: 100%;
+    max-width: 475px;
 
     @include media.min-width(medium) {
-      margin: var(--padding-6x) 0 var(--padding-8x);
-
+      margin: var(--padding-6x) 0 calc(14 * var(--padding));
       width: auto;
     }
 
@@ -142,7 +173,7 @@
       display: flex;
       width: 100%;
       justify-content: center;
-      gap: var(--padding-6x);
+      gap: var(--padding-4x);
       padding: var(--padding-4x);
     }
   }
