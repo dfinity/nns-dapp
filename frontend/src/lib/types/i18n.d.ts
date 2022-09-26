@@ -128,6 +128,7 @@ interface I18nHeader {
 }
 
 interface I18nAuth {
+  ic: string;
   nns: string;
   login: string;
   title: string;

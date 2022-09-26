@@ -9,9 +9,9 @@
   import { toastsError } from "../lib/stores/toasts.store";
   import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
   import {
-    IconHistoryToggleOff,
-    IconLockClock,
-    IconLockOpen,
+    IconWallet,
+    IconPsychology,
+    IconHowToVote,
   } from "@dfinity/gix-components";
   import { Spinner } from "@dfinity/gix-components";
 
@@ -64,15 +64,18 @@
     loading="lazy"
   />
 
-  <span class="description">{$i18n.auth.nns}</span>
+  <p>
+    <span>{$i18n.auth.ic}</span>
+    <span>{$i18n.auth.nns}</span>
+  </p>
 </div>
 
 <h1>{$i18n.auth.title}</h1>
 
 <ul>
-  <li><IconHistoryToggleOff /> {$i18n.auth.secure}</li>
-  <li><IconLockClock /> {$i18n.auth.stake}</li>
-  <li><IconLockOpen /> {$i18n.auth.earn}</li>
+  <li><IconWallet /> {$i18n.auth.secure}</li>
+  <li><IconPsychology /> {$i18n.auth.stake}</li>
+  <li><IconHowToVote /> {$i18n.auth.earn}</li>
 </ul>
 
 <button
@@ -102,7 +105,11 @@
       height: var(--padding-3x);
     }
 
-    span {
+    p {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
       font-size: var(--font-size-small);
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.1rem;
@@ -110,10 +117,6 @@
 
     @include media.min-width(medium) {
       justify-content: center;
-
-      img {
-        height: var(--padding-4x);
-      }
 
       span {
         font-size: inherit;
