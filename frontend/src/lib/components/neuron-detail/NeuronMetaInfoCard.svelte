@@ -69,7 +69,7 @@
                 value: neuron.fullNeuron.cachedNeuronStake,
                 detailed: true,
               }),
-              $stakedMaturity: formattedStakedMaturity(neuron),
+              $st4kedMaturity: formattedStakedMaturity(neuron),
               $delayMultiplier: dissolveDelayMultiplier(
                 Number(neuron.dissolveDelaySeconds)
               ).toFixed(2),
