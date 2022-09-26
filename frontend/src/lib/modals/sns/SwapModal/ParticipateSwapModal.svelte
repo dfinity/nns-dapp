@@ -23,7 +23,6 @@
   } from "../../../services/sns.services";
   import { toastsSuccess } from "../../../stores/toasts.store";
   import type { NewTransaction } from "../../../types/transaction.context";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
 
@@ -91,7 +90,9 @@
       });
       const { success } = await participateInSwap({
         account: sourceAccount,
-        amount: convertNumberToICP(amount),
+        // If we made it here, we know that the amount is valid
+        // TODO: change fromNumber return type
+        amount: TokenAmount.fromNumber({ amount }) as TokenAmount,
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
       if (success) {
