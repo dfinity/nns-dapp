@@ -95,6 +95,7 @@
       {source}
       {loading}
       {destinationAddress}
+      fee={neuron.neuron_fees_e8s}
     />
   {/if}
 </WizardModal>

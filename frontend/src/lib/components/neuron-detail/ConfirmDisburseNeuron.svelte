@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { E8s, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
@@ -10,6 +10,7 @@
   export let source: string;
   export let destinationAddress: string;
   export let loading: boolean = false;
+  export let fee: E8s | undefined = undefined;
 
   const dispatcher = createEventDispatcher();
 </script>
@@ -24,7 +25,7 @@
   </div>
 
   {#if destinationAddress !== undefined}
-    <TransactionInfo {source} destination={destinationAddress} />
+    <TransactionInfo {source} destination={destinationAddress} {fee} />
   {/if}
 
   <button

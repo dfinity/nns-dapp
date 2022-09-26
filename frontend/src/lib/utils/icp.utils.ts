@@ -69,7 +69,7 @@ export const sumTokenAmounts = (
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
-export const formattedTransactionFeeICP = (fee: number): string =>
+export const formattedTransactionFeeICP = (fee: number | bigint): string =>
   formatToken({
     value: ICP.fromE8s(BigInt(fee)).toE8s(),
   });

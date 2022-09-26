@@ -6,6 +6,7 @@ import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 // import ConfirmDisburseNeuron from "../../../../lib/components/neurons-detail/ConfirmDisburseNeuron.svelte";
 import ConfirmDisburseNeuron from "../../../../lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
@@ -21,6 +22,7 @@ describe("ConfirmDisburseNeuron", () => {
     source: "test source",
     destinationAddress: "test destination",
     loading: false,
+    fee: BigInt(3300000000),
   };
 
   it("should display amount", async () => {
@@ -39,6 +41,7 @@ describe("ConfirmDisburseNeuron", () => {
 
     expect(getByText(props.source)).not.toBeNull();
     expect(getByText(props.destinationAddress)).not.toBeNull();
+    expect(getByText(formattedTransactionFeeICP(props.fee))).not.toBeNull();
   });
 
   it("should display spinner", async () => {
