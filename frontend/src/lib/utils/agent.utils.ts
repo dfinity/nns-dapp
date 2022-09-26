@@ -1,5 +1,4 @@
-import type { Identity } from "@dfinity/agent";
-import type { HttpAgent } from "@dfinity/agent";
+import type { HttpAgent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil } from "@dfinity/utils";
 import { FETCH_ROOT_KEY } from "../constants/environment.constants";
 
