@@ -57,9 +57,7 @@
 
   const dispatcher = createEventDispatcher();
   const selectAmount = () => {
-    dispatcher("nnsSelectAmount", {
-      amount: ICP.fromString(String(amount)),
-    });
+    dispatcher("nnsSelectAmount");
   };
 
   let enoughCycles: boolean;
