@@ -19,9 +19,10 @@
   let principalText: string = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  const goToNeuronDetails = (id: NeuronId) => () => routeStore.navigate({
-    path: `${AppPath.LegacyNeuronDetail}/${id}`,
-  });
+  const goToNeuronDetails = (id: NeuronId) => () =>
+    routeStore.navigate({
+      path: `${AppPath.LegacyNeuronDetail}/${id}`,
+    });
 </script>
 
 <section data-tid="neurons-body">

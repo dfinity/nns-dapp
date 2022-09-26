@@ -23,8 +23,8 @@
 
       <svelte:fragment slot="info"
         ><div class="info">
-        {@html $i18n.neuron_detail.community_fund_more_info}
-      </div></svelte:fragment
+          {@html $i18n.neuron_detail.community_fund_more_info}
+        </div></svelte:fragment
       >
     </KeyValuePairInfo>
 
