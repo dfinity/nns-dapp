@@ -11,7 +11,7 @@
 </script>
 
 <button class="primary" on:click={showModal}
->{$i18n.neuron_detail.stake_maturity}</button
+  >{$i18n.neuron_detail.stake_maturity}</button
 >
 
 {#if isOpen}
