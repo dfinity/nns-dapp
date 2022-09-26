@@ -11,7 +11,7 @@
     type ProjectDetailContext,
   } from "../../types/project-detail.context";
   import type { SnsSummarySwap } from "../../types/sns";
-  import type { SnsSwapDerivedState, SnsSwapInit } from "@dfinity/sns";
+  import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -22,12 +22,12 @@
   // type safety validation is done in ProjectStatusSection component
   $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
 
-  let init: SnsSwapInit;
-  $: ({ init } = swap);
+  let params: SnsParams;
+  $: ({ params } = swap);
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
-  $: ({ min_icp_e8s, max_icp_e8s } = init);
+  $: ({ min_icp_e8s, max_icp_e8s } = params);
 
   let buyersTotalCommitment: bigint;
   $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
