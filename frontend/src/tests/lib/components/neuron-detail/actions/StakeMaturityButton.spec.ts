@@ -12,17 +12,17 @@ describe("StakeMaturityButton", () => {
     jest.clearAllMocks();
   });
 
-  it("renders merge maturity message", () => {
+  it("renders stake maturity message", () => {
     const { getByText } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
       },
     });
 
-    expect(getByText(en.neuron_detail.merge_maturity)).toBeInTheDocument();
+    expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("opens Merge Maturity Modal", async () => {
+  it("opens Stake Maturity Modal", async () => {
     const { container, queryByTestId } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
@@ -34,7 +34,7 @@ describe("StakeMaturityButton", () => {
 
     buttonElement && (await fireEvent.click(buttonElement));
 
-    const modal = queryByTestId("merge-maturity-neuron-modal");
+    const modal = queryByTestId("stake-maturity-neuron-modal");
     expect(modal).toBeInTheDocument();
   });
 });
