@@ -2,10 +2,10 @@
 :root {
   --voting-bottom-sheet-content-max-height: 30vh;
 
-  --background-login-gradient: radial-gradient(
-    circle at 50% 100%,
-    black,
-    var(--background)
+  --background-login-gradient: linear-gradient(
+    135deg,
+    var(--card-background) 75%,
+    var(--background) 150%
   );
 }
 
