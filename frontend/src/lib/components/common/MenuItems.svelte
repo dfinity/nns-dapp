@@ -40,6 +40,7 @@
         AppPath.Accounts,
         AppPath.LegacyAccounts,
         AppPath.Wallet,
+        AppPath.LegacyWallet,
       ]),
       label: "tokens",
       icon: IconWallet,
