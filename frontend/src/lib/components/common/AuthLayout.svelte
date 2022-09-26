@@ -39,5 +39,10 @@
       max-width: 540px;
       text-align: center;
     }
+
+    @supports (-webkit-touch-callout: none) {
+      // webkit-fill-available does not strech to full height
+      height: calc(100vh - (12 * var(--padding)));
+    }
   }
 </style>
