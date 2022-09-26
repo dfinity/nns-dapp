@@ -1,4 +1,4 @@
-<script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
+<script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
