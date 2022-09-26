@@ -10,6 +10,7 @@
   import {
     formattedMaturity,
     isNeuronControllable,
+    formattedStakedMaturity
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
 
@@ -31,13 +32,12 @@
     <h3 slot="value">{formattedMaturity(neuron)}</h3>
   </KeyValuePairInfo>
 
-  <!-- TODO: staked maturity equivalent formatted -->
-  {#if neuron?.fullNeuron?.staked_maturity_e8s_equivalent !== undefined}
+  {#if neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
     <KeyValuePair>
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
       <svelte:fragment slot="value"
-        >{neuron?.fullNeuron?.staked_maturity_e8s_equivalent}</svelte:fragment
+        >{formattedStakedMaturity(neuron)}</svelte:fragment
       >
     </KeyValuePair>
   {/if}
