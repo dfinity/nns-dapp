@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../../types/project-detail.context";
-  import type { SnsSwapInit } from "@dfinity/sns";
+  import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
@@ -50,9 +50,9 @@
         : undefined;
   })();
 
-  let init: SnsSwapInit;
+  let params: SnsParams;
   $: ({
-    swap: { init },
+    swap: { params },
   } = summary);
 
   let currentStep: Step;
@@ -76,7 +76,7 @@
   $: minCommitment = TokenAmount.fromE8s({
     amount: userHasParticipatedToSwap
       ? BigInt(0)
-      : init.min_participant_icp_e8s,
+      : params.min_participant_icp_e8s,
   });
 
   let accepted: boolean;
