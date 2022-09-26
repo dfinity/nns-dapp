@@ -57,7 +57,7 @@
 
 <div class="nns">
   <img
-    src="/assets/ic_logo.svg"
+    src="/assets/ic-logo.svg"
     role="presentation"
     alt={$i18n.auth.ic_logo}
     class="bottom-banner"
