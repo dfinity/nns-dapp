@@ -62,7 +62,7 @@ describe("DisburseSnsNeuronModal", () => {
   it("should render a confirmation screen", async () => {
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
 
-    const confirmScreen = queryByTestId("confirm-disburse-sns-neuron-screen");
+    const confirmScreen = queryByTestId("confirm-disburse-screen");
     expect(confirmScreen).not.toBeNull();
   });
 
@@ -73,8 +73,8 @@ describe("DisburseSnsNeuronModal", () => {
     });
 
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
-    const confirmScreen = queryByTestId("confirm-disburse-sns-neuron-screen");
-    expect(confirmScreen).not.toBeNull();
+
+    expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
 
     const confirmButton = queryByTestId("disburse-neuron-button");
     expect(confirmButton).not.toBeNull();
