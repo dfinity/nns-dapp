@@ -40,7 +40,7 @@ const appendPermissions = ({
     ...neuron.permissions,
     {
       principal: [identity.getPrincipal()],
-      permission_type: permissions,
+      permission_type: Int32Array.from(permissions),
     },
   ]);
 
