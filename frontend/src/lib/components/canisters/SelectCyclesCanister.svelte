@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
