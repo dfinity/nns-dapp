@@ -3,7 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
@@ -77,7 +77,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ??
       $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
@@ -104,4 +104,4 @@
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
-</WizardModal>
+</LegacyWizardModal>
