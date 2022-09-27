@@ -164,7 +164,6 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
         "txt" => Some("text/plain"),
-        "xml" => Some("application/xml"),
         _ => None,
     })
 }
