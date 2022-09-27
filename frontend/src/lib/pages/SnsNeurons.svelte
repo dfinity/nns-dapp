@@ -7,10 +7,7 @@
   import { loadSnsNeurons } from "../services/sns-neurons.services";
   import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import {
-    snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "../derived/selected-project.derived";
+  import { snsOnlyProjectStore } from "../derived/selected-project.derived";
   import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";

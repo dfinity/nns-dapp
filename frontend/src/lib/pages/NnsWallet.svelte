@@ -4,7 +4,6 @@
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../components/common/Footer.svelte";
   import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
   import {
     getAccountTransactions,
     routePathAccountIdentifier,
