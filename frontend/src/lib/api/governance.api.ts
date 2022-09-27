@@ -141,14 +141,14 @@ export const spawnNeuron = async ({
   percentageToSpawn?: number;
   identity: Identity;
 }): Promise<NeuronId> => {
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
   const newNeuronId = await canister.spawnNeuron({
     neuronId,
     percentageToSpawn,
   });
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) complete.`);
   return newNeuronId;
 };
 

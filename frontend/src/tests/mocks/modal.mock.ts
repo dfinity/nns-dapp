@@ -23,7 +23,7 @@ const waitModalIntroEnd = async ({
   await waitFor(() => expect(container.querySelector(selector)).not.toBeNull());
 };
 
-const modalToolbarSelector = "div.toolbar";
+const modalToolbarSelector = "div.content";
 
 export const renderModal = async ({
   component,

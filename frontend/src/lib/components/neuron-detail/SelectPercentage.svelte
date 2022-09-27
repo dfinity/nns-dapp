@@ -3,13 +3,9 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
   import { formatPercentage } from "../../utils/format.utils";
-  import { Card } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
   import InputRange from "../ui/InputRange.svelte";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { valueSpan } from "../../utils/utils";
+  import KeyValuePair from "../ui/KeyValuePair.svelte";
 
   export let neuron: NeuronInfo;
   export let percentage: number;
@@ -25,65 +21,44 @@
   };
 </script>
 
-<div class="wrapper" data-tid="spawn-maturity-neuron-modal">
-  <div>
-    <h5>{$i18n.neuron_detail.current_maturity}</h5>
-    <p class="value">
-      {formattedMaturity(neuron)}
-    </p>
-    <h5>{$i18n.neuron_detail.current_stake}</h5>
-    <p data-tid="neuron-stake">
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-      })}
-    </p>
-  </div>
-  <slot name="description" />
+<KeyValuePair>
+  <span slot="key" class="label">{$i18n.neuron_detail.available_maturity}</span>
+  <span class="value" slot="value">{formattedMaturity(neuron)}</span>
+</KeyValuePair>
 
-  <Card>
-    <div slot="start">
-      <slot name="text" />
-    </div>
-    <div class="select-container">
-      <InputRange
-        ariaLabel={$i18n.neuron_detail.maturity_range}
-        min={0}
-        max={100}
-        bind:value={percentage}
-      />
-      <h5>
-        {formatPercentage(percentage / 100, {
-          minFraction: 0,
-          maxFraction: 0,
-        })}
-      </h5>
-    </div>
-  </Card>
+<slot name="description" />
 
-  <FooterModal>
-    <button class="secondary" on:click={() => dispatcher("nnsBack")}>
-      {$i18n.core.cancel}
-    </button>
-    <button
-      data-tid="select-maturity-percentage-button"
-      class="primary"
-      on:click={selectPercentage}
-      {disabled}
-    >
-      {buttonText}
-    </button>
-  </FooterModal>
+<p class="label"><slot name="text" /></p>
+
+<div class="select-container">
+  <InputRange
+          ariaLabel={$i18n.neuron_detail.maturity_range}
+          min={0}
+          max={100}
+          bind:value={percentage}
+  />
+  <h5>
+    {formatPercentage(percentage / 100, {
+      minFraction: 0,
+      maxFraction: 0,
+    })}
+  </h5>
+</div>
+
+<div class="toolbar">
+  <button
+    data-tid="select-maturity-percentage-button"
+    class="primary"
+    on:click={selectPercentage}
+    {disabled}
+  >
+    {buttonText}
+  </button>
 </div>
 
 <style lang="scss">
-  .wrapper {
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: var(--padding);
+  .label {
+    padding-top: var(--padding-2x);
   }
 
   .select-container {

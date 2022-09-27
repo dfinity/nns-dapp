@@ -3,7 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
+  import WizardModal from "../WizardModal.svelte";
   import { stopBusy } from "../../stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
@@ -28,7 +28,7 @@
     {
       name: "SelectPercentage",
       showBackButton: false,
-      title: $i18n.neuron_detail.spawn_maturity_modal_title,
+      title: $i18n.neuron_detail.spawn_neuron_modal_title,
     },
     {
       name: "ConfirmSpawn",
@@ -64,7 +64,7 @@
     if (newNeuronId !== undefined) {
       toastsShow({
         level: "success",
-        labelKey: "neuron_detail.spawn_maturity_success",
+        labelKey: "neuron_detail.spawn_neuron_success",
         substitutions: {
           $neuronId: String(newNeuronId),
         },
@@ -77,10 +77,10 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep on:nnsClose>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ??
-      $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
+      $i18n.neuron_detail.spawn_neuron_modal_title}</svelte:fragment
   >
   {#if currentStep.name === "SelectPercentage"}
     <SelectPercentage
@@ -91,17 +91,23 @@
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
-      <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
-      <div slot="description" class="description">
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
+      <svelte:fragment slot="text">{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment>
+      <svelte:fragment slot="description">
+        <p class="description">
+          {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
         </p>
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
+        <p class="description">
+          {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
         </p>
-      </div>
+      </svelte:fragment>
     </SelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
-</LegacyWizardModal>
+</WizardModal>
+
+<style lang="scss">
+  .description:first-of-type {
+    margin-top: var(--padding-2x);
+  }
+</style>
