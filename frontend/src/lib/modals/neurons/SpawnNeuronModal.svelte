@@ -91,7 +91,9 @@
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
-      <svelte:fragment slot="text">{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment>
+      <svelte:fragment slot="text"
+        >{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment
+      >
       <svelte:fragment slot="description">
         <p class="description">
           {@html $i18n.neuron_detail.spawn_neuron_explanation_1}

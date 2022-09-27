@@ -22,10 +22,7 @@
   let presented = false;
 </script>
 
-<Modal
-  on:nnsClose
-  on:introend={() => (presented = true)}
->
+<Modal on:nnsClose on:introend={() => (presented = true)}>
   <svelte:fragment slot="title"><slot name="title" /></svelte:fragment>
 
   {#if presented}
