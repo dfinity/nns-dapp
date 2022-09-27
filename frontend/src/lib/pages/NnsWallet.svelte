@@ -28,6 +28,7 @@
   import { debugSelectedAccountStore } from "../stores/debug.store";
   import { layoutBackStore } from "../stores/layout.store";
   import IcpTransactionModal from "../modals/accounts/IcpTransactionModal.svelte";
+  import { accountsPathStore } from "../derived/paths.derived";
   import type {
     AccountIdentifierString,
     Transaction,
@@ -35,7 +36,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.LegacyAccounts,
+      path: $accountsPathStore,
     });
 
   layoutBackStore.set(goBack);

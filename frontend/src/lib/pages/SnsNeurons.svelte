@@ -15,7 +15,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
   import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
+  import { neuronPathStore } from "../derived/paths.derived";
 
   let loading = true;
 
@@ -36,9 +36,8 @@
 
   const goToNeuronDetails = (neuron: SnsNeuron) => () => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
-    // TODO: Create a path creator helper
     routeStore.navigate({
-      path: `${AppPath.ProjectDetail}/${$snsProjectSelectedStore}/neuron/${neuronId}`,
+      path: `${$neuronPathStore}/${neuronId}`,
     });
   };
 </script>

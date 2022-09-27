@@ -11,6 +11,8 @@
   import type { Account } from "../types/account";
   import { sumTokenAmounts } from "../utils/icp.utils";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
+  import { routeStore } from "../stores/route.store";
+  import { walletPathStore } from "../derived/paths.derived";
 
   let loading: boolean = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -35,9 +37,7 @@
         );
 
   const goToDetails = (account: Account) => {
-    // TODO: Wallet details https://dfinity.atlassian.net/browse/GIX-995
-    // eslint-disable-next-line no-console
-    console.log("goToDetails", account);
+    routeStore.navigate({ path: `${$walletPathStore}/${account.identifier}` });
   };
 </script>
 
