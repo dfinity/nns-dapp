@@ -367,7 +367,10 @@ describe("neuron-utils", () => {
     });
 
     it("returns staked maturity with two decimals", () => {
-      const stake = ICP.fromString("2") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -380,7 +383,10 @@ describe("neuron-utils", () => {
     });
 
     it("returns 0 when staked maturity is 0", () => {
-      const stake = ICP.fromString("3") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
