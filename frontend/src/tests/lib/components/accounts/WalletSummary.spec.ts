@@ -24,7 +24,6 @@ describe("WalletSummary", () => {
         contextValue: {
           store: writable<SelectedAccountStore>({
             account: mockMainAccount,
-            transactions: undefined,
           }),
         } as SelectedAccountContext,
         Component: WalletSummary,

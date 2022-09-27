@@ -46,7 +46,6 @@ export const renderSelectedAccountContext = ({
     contextValue: {
       store: writable<SelectedAccountStore>({
         account,
-        transactions: undefined,
       }),
     },
     Component,
