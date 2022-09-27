@@ -1,9 +1,7 @@
 import { TokenAmount } from "@dfinity/nns";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { InvalidAmountError } from "../../../lib/types/neurons.errors";
 import {
   convertIcpToTCycles,
-  convertNumberToICP,
   convertTCyclesToIcpNumber,
   formattedTransactionFeeICP,
   formatToken,
@@ -159,20 +157,6 @@ describe("icp-utils", () => {
         fee,
       })
     ).toEqual(0);
-  });
-
-  describe("convertNumberToICP", () => {
-    it("returns ICP from number", () => {
-      expect(convertNumberToICP(10)?.toE8s()).toBe(BigInt(1_000_000_000));
-      expect(convertNumberToICP(10.1234)?.toE8s()).toBe(BigInt(1_012_340_000));
-      expect(convertNumberToICP(0.004)?.toE8s()).toBe(BigInt(400_000));
-      expect(convertNumberToICP(0.00000001)?.toE8s()).toBe(BigInt(1));
-    });
-
-    it("raises error on negative numbers", () => {
-      const call = () => convertNumberToICP(-10);
-      expect(call).toThrow(InvalidAmountError);
-    });
   });
 
   describe("convertIcpToTCycles", () => {
