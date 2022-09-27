@@ -1,7 +1,6 @@
 import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
 import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
-import { memoize } from "./optimization.utils";
 
 const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
@@ -23,15 +22,18 @@ const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 export const isAppPath = (routePath: string): routePath is AppPath =>
   isRoutePath({ paths: Object.values(AppPath), routePath });
 
-export const isRoutePath: ({
+export const isRoutePath = ({
   paths,
   routePath,
 }: {
   paths: AppPath[];
-  routePath: string | undefined;
-}) => boolean = memoize(({ paths, routePath }) =>
-  paths.some((path) => new RegExp(`^${pathValidation(path)}$`).test(routePath))
-);
+  routePath?: string;
+}): boolean =>
+  routePath !== undefined
+    ? paths.some((path) =>
+        new RegExp(`^${pathValidation(path)}$`).test(routePath)
+      )
+    : false;
 
 const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
 
