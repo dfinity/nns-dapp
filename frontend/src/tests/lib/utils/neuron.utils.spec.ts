@@ -1656,6 +1656,14 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("minMaturityMerge", () => {
+    it("returns value of fee", () => {
+      const fee = 10_000;
+      const received = minMaturityMerge(10_000);
+      expect(received).toBe(fee);
+    });
+  });
+
   describe("getNeuronById", () => {
     afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
     it("returns neuron when present in store", () => {
