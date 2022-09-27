@@ -6,11 +6,13 @@
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
   import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
+  import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
     formattedMaturity,
     isNeuronControllable,
     formattedStakedMaturity,
+    isNeuronControlledByHardwareWallet,
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
 
@@ -19,6 +21,12 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
+    accounts: $accountsStore,
+  });
+
+  let controlledByHardwareWallet: boolean;
+  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
+    neuron,
     accounts: $accountsStore,
   });
 </script>
@@ -44,8 +52,13 @@
 
   <div class="actions">
     {#if isControllable}
-      <StakeMaturityButton {neuron} />
-      <SpawnNeuronButton {neuron} />
+      {#if controlledByHardwareWallet}
+        <MergeMaturityButton {neuron} />
+      {:else}
+        <StakeMaturityButton {neuron} />
+      {/if}
+
+      <SpawnNeuronButton {neuron} {controlledByHardwareWallet} />
     {/if}
   </div>
 </CardInfo>
