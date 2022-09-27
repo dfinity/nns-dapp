@@ -1,8 +1,8 @@
 import {
-  ICP,
   Topic,
   type AccountIdentifier,
   type ProposalInfo,
+  type TokenAmount,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -249,7 +249,7 @@ export const participateInSwap = async ({
   rootCanisterId,
   account,
 }: {
-  amount: ICP;
+  amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {

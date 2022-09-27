@@ -5,8 +5,8 @@ import {
   IconLockOpen,
 } from "@dfinity/gix-components";
 import {
-  ICP,
   NeuronState,
+  TokenAmount,
   Topic,
   Vote,
   votedNeurons,
@@ -302,7 +302,7 @@ export const isEnoughToStakeNeuron = ({
   stake,
   fee = 0,
 }: {
-  stake: ICP;
+  stake: TokenAmount;
   fee?: number;
 }): boolean => stake.toE8s() >= MIN_NEURON_STAKE + fee;
 
