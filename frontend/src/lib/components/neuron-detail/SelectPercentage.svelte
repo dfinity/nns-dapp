@@ -32,10 +32,10 @@
 
 <div class="select-container">
   <InputRange
-          ariaLabel={$i18n.neuron_detail.maturity_range}
-          min={0}
-          max={100}
-          bind:value={percentage}
+    ariaLabel={$i18n.neuron_detail.maturity_range}
+    min={0}
+    max={100}
+    bind:value={percentage}
   />
   <h5>
     {formatPercentage(percentage / 100, {
