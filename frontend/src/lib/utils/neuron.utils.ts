@@ -622,6 +622,24 @@ export const votedNeuronDetails = ({
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
 
+/**
+ * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
+ */
+export const minMaturityMerge = (fee: number): number => fee;
+
+/**
+ * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
+ */
+export const hasEnoughMaturityToMerge = ({
+  neuron: { fullNeuron },
+  fee,
+}: {
+  neuron: NeuronInfo;
+  fee: number;
+}): boolean =>
+  fullNeuron !== undefined &&
+  fullNeuron.maturityE8sEquivalent > minMaturityMerge(fee);
+
 export const minNeuronSplittable = (fee: number): number =>
   2 * E8S_PER_ICP + fee;
 

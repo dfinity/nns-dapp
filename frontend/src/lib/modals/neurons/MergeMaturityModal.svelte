@@ -59,7 +59,7 @@
 </script>
 
 <LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <span slot="title" data-tid="stake-maturity-neuron-modal"
+  <span slot="title" data-tid="merge-maturity-neuron-modal"
     >{currentStep?.title ??
       $i18n.neuron_detail.merge_maturity_modal_title}</span
   >

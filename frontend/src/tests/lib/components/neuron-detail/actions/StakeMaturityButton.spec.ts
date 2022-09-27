@@ -22,7 +22,7 @@ describe("StakeMaturityButton", () => {
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("opens Stake Maturity Modal", async () => {
+  it("opens Merge Maturity Modal", async () => {
     const { container, queryByTestId } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
@@ -34,7 +34,7 @@ describe("StakeMaturityButton", () => {
 
     buttonElement && (await fireEvent.click(buttonElement));
 
-    const modal = queryByTestId("stake-maturity-neuron-modal");
+    const modal = queryByTestId("merge-maturity-neuron-modal");
     expect(modal).toBeInTheDocument();
   });
 });
