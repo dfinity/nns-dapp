@@ -94,7 +94,7 @@
     </div>
   {/if}
 
-  <svelte:fragment slot="toolbar">
+  <svelte:fragment slot="footer">
     <button class="secondary" type="button" on:click={close}>
       {$i18n.core.cancel}
     </button>
