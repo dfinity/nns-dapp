@@ -136,7 +136,10 @@ const transferError = ({
 export const routePathAccountIdentifier = (
   path: string | undefined
 ): { accountIdentifier: string | undefined } | undefined => {
-  if (!isRoutePath({ path: AppPath.Wallet, routePath: path })) {
+  if (
+    !isRoutePath({ path: AppPath.LegacyWallet, routePath: path }) &&
+    !isRoutePath({ path: AppPath.Wallet, routePath: path })
+  ) {
     return undefined;
   }
 

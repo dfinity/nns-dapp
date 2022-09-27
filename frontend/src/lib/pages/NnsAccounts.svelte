@@ -18,8 +18,10 @@
     async (storeData: AccountsStore) => (accounts = storeData)
   );
 
+  // TODO: Point to context based path when enabling SNS accounts
+  // https://dfinity.atlassian.net/browse/GIX-1013
   const cardClick = (identifier: string) =>
-    routeStore.navigate({ path: `${AppPath.Wallet}/${identifier}` });
+    routeStore.navigate({ path: `${AppPath.LegacyWallet}/${identifier}` });
 
   onDestroy(unsubscribe);
 
