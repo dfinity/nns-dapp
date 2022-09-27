@@ -1,4 +1,4 @@
-import type { ICP } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -131,7 +131,7 @@ const commitmentTooSmall = ({
   amount,
 }: {
   project: SnsFullProject;
-  amount: ICP;
+  amount: TokenAmount;
 }): boolean =>
   summary.swap.params.min_participant_icp_e8s >
   amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
@@ -189,7 +189,7 @@ export const validParticipation = ({
   amount,
 }: {
   project: SnsFullProject | undefined;
-  amount: ICP;
+  amount: TokenAmount;
 }): {
   valid: boolean;
   labelKey?: string;

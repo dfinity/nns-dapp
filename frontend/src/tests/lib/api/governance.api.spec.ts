@@ -1,4 +1,10 @@
-import { GovernanceCanister, ICP, LedgerCanister, Topic } from "@dfinity/nns";
+import {
+  GovernanceCanister,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+  Topic,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import {
@@ -52,7 +58,10 @@ describe("neurons-api", () => {
       .mockImplementation(() => mock<LedgerCanister>());
 
     await stakeNeuron({
-      stake: ICP.fromString("2") as ICP,
+      stake: TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount,
       controller: mockIdentity.getPrincipal(),
       ledgerCanisterIdentity: mockIdentity,
       identity: mockIdentity,
@@ -485,6 +494,10 @@ describe("neurons-api", () => {
   });
 
   describe("splitNeuron", () => {
+    const amount = TokenAmount.fromString({
+      amount: "2.2",
+      token: ICPToken,
+    }) as TokenAmount;
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.splitNeuron.mockImplementation(
         jest.fn().mockResolvedValue(BigInt(11))
@@ -493,7 +506,7 @@ describe("neurons-api", () => {
       await splitNeuron({
         identity: mockIdentity,
         neuronId: BigInt(10),
-        amount: ICP.fromString("2.2") as ICP,
+        amount,
       });
 
       expect(mockGovernanceCanister.splitNeuron).toBeCalled();
@@ -511,7 +524,7 @@ describe("neurons-api", () => {
         splitNeuron({
           identity: mockIdentity,
           neuronId: BigInt(10),
-          amount: ICP.fromString("2.2") as ICP,
+          amount,
         });
       expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
       await expect(call).rejects.toThrow(error);
