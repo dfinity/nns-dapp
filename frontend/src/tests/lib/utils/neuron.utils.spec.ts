@@ -1,4 +1,11 @@
-import { ICP, NeuronState, Topic, Vote, type BallotInfo } from "@dfinity/nns";
+import {
+  ICPToken,
+  NeuronState,
+  TokenAmount,
+  Topic,
+  Vote,
+  type BallotInfo,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
   SECONDS_IN_EIGHT_YEARS,
@@ -76,6 +83,10 @@ describe("neuron-utils", () => {
   afterAll(() => jest.useRealTimers());
 
   describe("votingPower", () => {
+    const tokenStake = TokenAmount.fromString({
+      amount: "2.2",
+      token: ICPToken,
+    }) as TokenAmount;
     it("should return zero for delays less than six months", () => {
       expect(
         votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
@@ -83,37 +94,31 @@ describe("neuron-utils", () => {
     });
 
     it("should return more than stake when delay more than six months", () => {
-      const stake = "2.2";
-      const icp = ICP.fromString(stake) as ICP;
       expect(
         votingPower({
-          stake: icp.toE8s(),
+          stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
         })
-      ).toBeGreaterThan(icp.toE8s());
+      ).toBeGreaterThan(tokenStake.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
-      const stake = "2.2";
-      const icp = ICP.fromString(stake) as ICP;
       expect(
         votingPower({
-          stake: icp.toE8s(),
+          stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
         })
-      ).toBe(icp.toE8s() * BigInt(2));
+      ).toBe(tokenStake.toE8s() * BigInt(2));
     });
 
     it("should add age multiplier", () => {
-      const stake = "2.2";
-      const icp = ICP.fromString(stake) as ICP;
       const powerWithAge = votingPower({
-        stake: icp.toE8s(),
+        stake: tokenStake.toE8s(),
         dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
         ageSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
       });
       const powerWithoutAge = votingPower({
-        stake: icp.toE8s(),
+        stake: tokenStake.toE8s(),
         dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
@@ -320,7 +325,10 @@ describe("neuron-utils", () => {
     });
 
     it("returns maturity of stake with two decimals", () => {
-      const stake = ICP.fromString("2") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -333,7 +341,10 @@ describe("neuron-utils", () => {
     });
 
     it("returns 0 when maturity is 0", () => {
-      const stake = ICP.fromString("3") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -779,11 +790,17 @@ describe("neuron-utils", () => {
 
   describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
-      const stake = ICP.fromString("3") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
       expect(isEnoughToStakeNeuron({ stake })).toBe(true);
     });
     it("returns false if not enough ICP to create a neuron", () => {
-      const stake = ICP.fromString("0.000001") as ICP;
+      const stake = TokenAmount.fromString({
+        amount: "0.000001",
+        token: ICPToken,
+      }) as TokenAmount;
       expect(isEnoughToStakeNeuron({ stake })).toBe(false);
     });
   });

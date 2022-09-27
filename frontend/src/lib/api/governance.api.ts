@@ -4,9 +4,10 @@ import type {
   KnownNeuron,
   NeuronId,
   NeuronInfo,
+  TokenAmount,
   Topic,
 } from "@dfinity/nns";
-import { GovernanceCanister, ICP } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { DFINITY_NEURON, IC_NEURON } from "../constants/api.constants";
@@ -191,7 +192,7 @@ export const splitNeuron = async ({
   identity,
 }: {
   neuronId: NeuronId;
-  amount: ICP;
+  amount: TokenAmount;
   identity: Identity;
 }): Promise<NeuronId> => {
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) call...`);
@@ -309,7 +310,7 @@ export const stakeNeuron = async ({
   identity,
   fromSubAccount,
 }: {
-  stake: ICP;
+  stake: TokenAmount;
   controller: Principal;
   ledgerCanisterIdentity: Identity;
   identity: Identity;

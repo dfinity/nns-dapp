@@ -1,5 +1,4 @@
 import {
-  ICP,
   TokenAmount,
   type Ballot,
   type Followees,
@@ -51,13 +50,16 @@ export const anonymizeAmount = async (
     : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
 
 export const anonymizeICP = async (
-  icp: ICP | TokenAmount | undefined
-): Promise<ICP | undefined> =>
-  icp === undefined
+  tokens: TokenAmount | undefined
+): Promise<TokenAmount | undefined> =>
+  tokens === undefined
     ? undefined
-    : icp.toE8s() === BigInt(0)
-    ? ICP.fromE8s(BigInt(0))
-    : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
+    : tokens.toE8s() === BigInt(0)
+    ? TokenAmount.fromE8s({ amount: BigInt(0), token: tokens.token })
+    : TokenAmount.fromE8s({
+        amount: (await anonymizeAmount(tokens.toE8s())) as bigint,
+        token: tokens.token,
+      });
 
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
