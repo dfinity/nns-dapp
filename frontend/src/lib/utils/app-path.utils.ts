@@ -3,20 +3,19 @@ import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
 import { memoize } from "./optimization.utils";
 
-const PRINCIPAL_ID_REGEX = "[a-zA-Z0-9-]+";
-const GENERIC_IDENTIFIER_REGEX = "[a-zA-Z0-9]+";
+const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${GENERIC_IDENTIFIER_REGEX}`,
-  [AppPath.Wallet]: `${CONTEXT_PATH}/${PRINCIPAL_ID_REGEX}/wallet/${GENERIC_IDENTIFIER_REGEX}`,
+  [AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${IDENTIFIER_REGEX}`,
+  [AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
-  [AppPath.Neurons]: `${CONTEXT_PATH}/${PRINCIPAL_ID_REGEX}/neurons`,
-  [AppPath.Accounts]: `${CONTEXT_PATH}/${PRINCIPAL_ID_REGEX}/accounts`,
-  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${PRINCIPAL_ID_REGEX}`,
-  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${PRINCIPAL_ID_REGEX}`,
-  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${PRINCIPAL_ID_REGEX}/neuron/${GENERIC_IDENTIFIER_REGEX}`,
+  [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
+  [AppPath.Accounts]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/accounts`,
+  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
@@ -36,7 +35,7 @@ export const isRoutePath: ({
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );
 
-const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${PRINCIPAL_ID_REGEX}`);
+const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
 
 /**
  * Returns the path after the context.
