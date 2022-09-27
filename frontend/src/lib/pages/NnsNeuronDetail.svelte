@@ -46,8 +46,10 @@
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (
-      !isRoutePath({ path: AppPath.LegacyNeuronDetail, routePath: path }) &&
-      !isRoutePath({ path: AppPath.NeuronDetail, routePath: path })
+      !isRoutePath({
+        paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+        routePath: path,
+      })
     ) {
       return;
     }

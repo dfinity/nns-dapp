@@ -21,18 +21,16 @@ const mapper: Record<string, string> = {
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
-  Boolean(
-    Object.values(AppPath).find((path) => isRoutePath({ path, routePath }))
-  );
+  isRoutePath({ paths: Object.values(AppPath), routePath });
 
 export const isRoutePath: ({
-  path,
+  paths,
   routePath,
 }: {
-  path: AppPath;
+  paths: AppPath[];
   routePath: string | undefined;
-}) => boolean = memoize(({ path, routePath }) =>
-  new RegExp(`^${pathValidation(path)}$`).test(routePath)
+}) => boolean = memoize(({ paths, routePath }) =>
+  paths.some((path) => new RegExp(`^${pathValidation(path)}$`).test(routePath))
 );
 
 const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
@@ -139,15 +137,15 @@ const checkContextPathExceptions = ({
   path: string;
   newContext: string;
 }): string => {
-  if (isRoutePath({ path: AppPath.LegacyNeurons, routePath: path })) {
+  if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/neurons`;
   }
-  if (isRoutePath({ path: AppPath.LegacyAccounts, routePath: path })) {
+  if (isRoutePath({ paths: [AppPath.LegacyAccounts], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/accounts`;
   }
   if (
     isRoutePath({
-      path: AppPath.LegacyNeuronDetail,
+      paths: [AppPath.LegacyNeuronDetail],
       routePath: path,
     })
   ) {
@@ -156,7 +154,7 @@ const checkContextPathExceptions = ({
   }
   if (
     isRoutePath({
-      path: AppPath.LegacyWallet,
+      paths: [AppPath.LegacyWallet],
       routePath: path,
     })
   ) {

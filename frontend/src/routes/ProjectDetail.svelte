@@ -130,7 +130,7 @@
     (() => {
       const { path } = $routeStore;
 
-      if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
+      if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
         return;
       }
 
@@ -146,7 +146,7 @@
    * We subscribe to the route in a particular function because if not root canister id is provided in the url it redirects to `goBack` which needs the particular usage of `unsubscribe` to avoid loops.
    */
   const unsubscribe = routeStore.subscribe(({ path }) => {
-    if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
+    if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
       return;
     }
 

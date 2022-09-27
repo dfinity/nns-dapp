@@ -23,9 +23,7 @@
   const baseUrl: string = baseHref();
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
-    paths.find((path: AppPath) =>
-      isRoutePath({ path, routePath: $routeStore.path })
-    ) !== undefined;
+    isRoutePath({ paths, routePath: $routeStore.path });
 
   const routes: {
     context: string;
