@@ -67,7 +67,7 @@
       "candid": "target/ic/ic-icrc1-archive.did",
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
-    },,
+    },
     "sns_swap": {
       "build": [
         "true"
