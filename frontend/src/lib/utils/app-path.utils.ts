@@ -1,17 +1,21 @@
 import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
+import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
 import { memoize } from "./optimization.utils";
 
+const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
+
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
+  [AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${IDENTIFIER_REGEX}`,
+  [AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
-  [AppPath.Neurons]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/neurons`,
-  [AppPath.Accounts]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/accounts`,
-  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/[a-zA-Z0-9-]+`,
-  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+`,
-  [AppPath.NeuronDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+/neuron/[a-zA-Z0-9-]+`,
+  [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
+  [AppPath.Accounts]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/accounts`,
+  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
@@ -31,7 +35,7 @@ export const isRoutePath: ({
   new RegExp(`^${pathValidation(path)}$`).test(routePath)
 );
 
-const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/[a-zA-Z0-9-]+`);
+const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
 
 /**
  * Returns the path after the context.
@@ -149,6 +153,17 @@ const checkContextPathExceptions = ({
   ) {
     const neuronId = routePathNeuronId(path);
     return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
+  }
+  if (
+    isRoutePath({
+      path: AppPath.LegacyWallet,
+      routePath: path,
+    })
+  ) {
+    const routeAccountIdentifier = routePathAccountIdentifier(path);
+    if (routeAccountIdentifier !== undefined) {
+      return `${CONTEXT_PATH}/${newContext}/wallet/${routeAccountIdentifier.accountIdentifier}`;
+    }
   }
   // Returns same path if no exception
   return path;

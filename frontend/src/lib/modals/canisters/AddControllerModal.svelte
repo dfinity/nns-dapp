@@ -4,7 +4,7 @@
   import AddPrincipal from "../../components/common/AddPrincipal.svelte";
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
 
   const steps: Steps = [
     {
@@ -20,13 +20,13 @@
   ];
 
   let currentStep: Step | undefined;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
   let principal: Principal | undefined = undefined;
 
   const next = () => modal.next();
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="add-controller-canister-modal-title"
       >{currentStep?.title ?? $i18n.canister_detail.add_controller}</span
@@ -47,4 +47,4 @@
       />
     {/if}
   </svelte:fragment>
-</WizardModal>
+</LegacyWizardModal>

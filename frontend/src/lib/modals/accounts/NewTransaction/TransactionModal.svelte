@@ -1,5 +1,5 @@
 <script lang="ts">
-  import WizardModal from "../../WizardModal.svelte";
+  import LegacyWizardModal from "../../LegacyWizardModal.svelte";
   import type { Step, Steps } from "../../../stores/steps.state";
   import type { Account } from "../../../types/account";
   import TransactionForm from "./TransactionForm.svelte";
@@ -31,7 +31,7 @@
     },
   ];
 
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
 
   // If destination or source are passed as prop, they are used.
   // But the component doesn't bind them to the props.
@@ -51,7 +51,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
@@ -89,4 +89,4 @@
       <slot name="description" slot="description" />
     </TransactionReview>
   {/if}
-</WizardModal>
+</LegacyWizardModal>

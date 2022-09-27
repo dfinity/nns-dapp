@@ -58,6 +58,7 @@
   <PrivateRoute path={AppPath.Neurons} />
   <PrivateRoute path={AppPath.Proposals} />
   <PrivateRoute path={AppPath.Canisters} />
+  <PrivateRoute path={AppPath.LegacyWallet} />
   <PrivateRoute path={AppPath.Wallet} />
   <PrivateRoute path={AppPath.ProposalDetail} />
   <PrivateRoute path={AppPath.LegacyNeuronDetail} />

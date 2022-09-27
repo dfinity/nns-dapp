@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import SelectNeuronsToMerge from "../../components/neurons/SelectNeuronsToMerge.svelte";
   import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
@@ -29,7 +29,7 @@
   ];
 
   let currentStep: Step | undefined;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
 
   const dispatcher = createEventDispatcher();
   const invalidStates: InvalidState<NeuronInfo[]>[] = [
@@ -59,7 +59,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ??
       $i18n.neurons.merge_neurons_modal_title}</svelte:fragment
@@ -76,4 +76,4 @@
       />
     {/if}
   {/if}
-</WizardModal>
+</LegacyWizardModal>
