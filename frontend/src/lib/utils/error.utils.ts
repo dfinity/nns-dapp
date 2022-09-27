@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
@@ -9,10 +10,6 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import {
-  InvalidaTransactionError,
-  RefundedError,
-} from "../canisters/cmc/cmc.errors";
 import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
 import { InsufficientAmountError } from "../types/common.errors";
 import { LedgerErrorMessage } from "../types/ledger.errors";
