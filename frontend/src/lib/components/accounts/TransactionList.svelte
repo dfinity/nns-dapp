@@ -27,9 +27,9 @@
   $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
 </script>
 
-{#if account === undefined || extendedTransactions === undefined}
+{#if account === undefined || transactions === undefined}
   <SkeletonCard cardType="info" />
-{:else if extendedTransactions.length === 0}
+{:else if transactions.length === 0}
   {$i18n.wallet.no_transactions}
 {:else}
   {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}${toSelfTransaction}`)}
