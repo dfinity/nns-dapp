@@ -55,6 +55,7 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
+  minMaturityMerge,
   minNeuronSplittable,
   neuronCanBeSplit,
   neuronStake,
