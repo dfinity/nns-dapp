@@ -14,7 +14,7 @@ export const reloadRouteData = <T>({
   currentData: T[] | undefined;
 }): boolean => {
   const isReferrerDetail: boolean = isRoutePath({
-    path: expectedPreviousPath,
+    paths: [expectedPreviousPath],
     routePath: effectivePreviousPath,
   });
 

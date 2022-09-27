@@ -115,25 +115,25 @@ describe("routes", () => {
     it("should compare static paths", () => {
       expect(
         isRoutePath({
-          path: AppPath.Authentication,
+          paths: [AppPath.Authentication],
           routePath: "/",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyAccounts,
+          paths: [AppPath.LegacyAccounts],
           routePath: "/#/accounts",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Authentication,
+          paths: [AppPath.Authentication],
           routePath: "",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.Accounts,
+          paths: [AppPath.Accounts, AppPath.Canisters],
           routePath: "/#/neurons",
         })
       ).toBeFalsy();
@@ -142,38 +142,38 @@ describe("routes", () => {
     it("should compare dynamic paths", () => {
       expect(
         isRoutePath({
-          path: AppPath.LegacyWallet,
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/0",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.Wallet],
           routePath:
             "/#/u/qvhpv-4qaaa-aaaaa-aaagq-cai/wallet/8703f867c97952906b676578c2cc9923d26d7aba865008b4478ec9c94f41c2f9",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyWallet,
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/a0",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyWallet,
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyWallet,
+          paths: [AppPath.LegacyWallet, AppPath.Wallet],
           routePath: "/#/wallet",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyWallet,
+          paths: [AppPath.LegacyWallet],
           routePath: undefined,
         })
       ).toBeFalsy();

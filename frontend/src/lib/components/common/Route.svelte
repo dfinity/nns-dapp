@@ -19,6 +19,6 @@
   onDestroy(unsubscribe);
 </script>
 
-{#if isRoutePath({ path, routePath: currentPath })}
+{#if isRoutePath({ paths: [path], routePath: currentPath })}
   <RouteModule {path} />
 {/if}
