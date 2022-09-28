@@ -1,11 +1,6 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
-  import { isValidICPFormat } from "../../utils/icp.utils";
   import { Input } from "@dfinity/gix-components";
-
-  // To show undefined as "" (because of the type="text")
-  const fixUndefinedValue = (value: string | number | undefined): string =>
-    value === undefined ? "" : `${value}`;
 
   export let name: string;
   export let inputType: "icp" | "number" | "text" = "number";
@@ -27,121 +22,27 @@
   // showInfo = $$slots.label || $$slots.additional
   export let showInfo: boolean = true;
 
-  let inputElement: HTMLInputElement | undefined;
-
-  let selectionStart: number | null = 0;
-  let selectionEnd: number | null = 0;
-
-  let icpValue: string = fixUndefinedValue(value);
-  let lastValidICPValue: string | number | undefined = value;
-  let internalValueChange: boolean = true;
-
-  $: value,
-    (() => {
-      if (!internalValueChange && inputType === "icp") {
-        icpValue = fixUndefinedValue(value);
-        lastValidICPValue = icpValue;
-      }
-
-      internalValueChange = false;
-    })();
-
-  const restoreFromValidValue = (noValue: boolean = false) => {
-    if (inputElement === undefined || inputType !== "icp") {
-      return;
-    }
-
-    if (noValue) {
-      lastValidICPValue = undefined;
-    }
-
-    internalValueChange = true;
-    value =
-      lastValidICPValue === undefined
-        ? undefined
-        : typeof lastValidICPValue === "number"
-        ? lastValidICPValue.toFixed(8)
-        : +lastValidICPValue;
-    icpValue = fixUndefinedValue(lastValidICPValue);
-
-    // force dom update (because no active triggers)
-    inputElement.value = icpValue;
-
-    // restore cursor position
-    inputElement.setSelectionRange(selectionStart, selectionEnd);
-  };
-
-  const handleInput = ({ currentTarget }: InputEventHandler) => {
-
-    console.log('handeInput', inputType)
-
-    if (inputType === "icp") {
-      const currentValue = currentTarget.value;
-
-      // handle invalid input
-      if (isValidICPFormat(currentValue) === false) {
-        // restore value (e.g. to fix invalid paste)
-        restoreFromValidValue();
-        return;
-      }
-
-      // reset to undefined ("" => undefined)
-      if (currentValue.length === 0) {
-        restoreFromValidValue(true);
-        return;
-      }
-
-      lastValidICPValue = currentValue;
-      icpValue = fixUndefinedValue(currentValue);
-
-      internalValueChange = true;
-      // for inputType="icp" value is a number
-      // TODO: do we need to fix lost precision for too big for number inputs?
-      value = +currentValue;
-      return;
-    }
-
-    internalValueChange = true;
-    value = inputType === "number" ? +currentTarget.value : currentTarget.value;
-  };
-
-  const handleKeyDown = () => {
-    if (inputElement === undefined) {
-      return;
-    }
-
-    // preserve selection
-    ({ selectionStart, selectionEnd } = inputElement);
-  };
-
-  $: step = inputType === "number" ? step ?? "any" : undefined;
-  $: autocomplete =
-    inputType !== "number" && inputType !== "icp"
-      ? autocomplete ?? "off"
-      : undefined;
-
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
 <Input
   testId="input-ui-element"
-  inputType={inputType === "icp" ? "text" : inputType}
-  bind:inputElement
+  {inputType}
   {required}
   {spellcheck}
   {name}
   {step}
   {disabled}
-  value={inputType === "icp" ? icpValue : value}
+  bind:value
   {minLength}
   {placeholder}
   {max}
   {autocomplete}
   on:blur
   on:focus
-  on:input={handleInput}
-  on:keydown={handleKeyDown}
+  on:input
+  on:keydown
   {showInfo}
 >
   <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
