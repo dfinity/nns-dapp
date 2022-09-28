@@ -4,7 +4,7 @@
 
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
