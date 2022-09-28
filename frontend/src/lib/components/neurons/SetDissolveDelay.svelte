@@ -16,7 +16,7 @@
     votingPower,
   } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import InputRange from "../ui/InputRange.svelte";
+  import { InputRange } from "@dfinity/gix-components";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { valueSpan } from "../../utils/utils";
 
