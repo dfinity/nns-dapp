@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { AppPath } from "../../constants/routes.constants";
   import { startBusyNeuron } from "../../services/busy.services";
@@ -51,7 +51,10 @@
   <div class="amount">
     <AmountDisplay
       inline
-      amount={TokenAmount.fromE8s({ amount: neuronStake(neuron) })}
+      amount={TokenAmount.fromE8s({
+        amount: neuronStake(neuron),
+        token: ICPToken,
+      })}
     />
   </div>
 

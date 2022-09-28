@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { Account } from "../types/account";
 import { logWithTimestamp } from "../utils/dev.utils";
@@ -34,7 +34,8 @@ export const getSnsAccounts = async ({
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
-      token: mapOptionalToken(metadata),
+      // TODO: Decide what we do when there is no token in an SNS project
+      token: mapOptionalToken(metadata) ?? ICPToken,
     }),
     type: "main",
   };
