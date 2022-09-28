@@ -58,7 +58,7 @@
 
 <style lang="scss">
   .label {
-    padding-top: var(--padding-2x);
+    padding-top: var(--padding-3x);
   }
 
   .select-container {

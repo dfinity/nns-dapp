@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
+  import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
   import { stopBusy } from "../../stores/busy.store";
@@ -80,11 +80,10 @@
 
 <WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
-    >{currentStep?.title ??
-      $i18n.neuron_detail.spawn_neuron_modal_title}</svelte:fragment
+    >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
   {#if currentStep.name === "SelectPercentage"}
-    <SelectPercentage
+    <NeuronSelectPercentage
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
@@ -102,7 +101,7 @@
           {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
         </p>
       </svelte:fragment>
-    </SelectPercentage>
+    </NeuronSelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}

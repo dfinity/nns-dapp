@@ -510,9 +510,8 @@ interface I18nNeuron_detail {
   merge_maturity_modal_title: string;
   merge_confirmation_modal_title: string;
   merge_maturity_modal_description: string;
-  merge_maturity_confirmation_q: string;
-  merge_maturity_confirmation_a: string;
-  merge_maturity_edit_percentage: string;
+  merge_maturity_confirmation: string;
+  edit_percentage: string;
   merge_maturity_success: string;
   spawn_neuron_modal_title: string;
   spawn_confirmation_modal_title: string;
