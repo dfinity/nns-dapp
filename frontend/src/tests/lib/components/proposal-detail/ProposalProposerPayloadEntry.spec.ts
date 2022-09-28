@@ -35,7 +35,7 @@ describe("ProposalProposerPayloadEntry", () => {
     render(ProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
-        proposalId: mockProposalInfo.id
+        proposalId: mockProposalInfo.id,
       },
     });
 
