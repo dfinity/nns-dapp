@@ -1,3 +1,4 @@
+import { ENABLE_SNS } from "../constants/environment.constants";
 import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
 import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
@@ -15,6 +16,29 @@ const mapper: Record<string, string> = {
   [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
   [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
   [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
+};
+
+/**
+ * Helpers to build the paths for the app.
+ * It interpolates the context and returns the path.
+ */
+export const paths = {
+  neuronDetail: (rootCanisterId: string) =>
+    ENABLE_SNS
+      ? `${CONTEXT_PATH}/${rootCanisterId}/neuron`
+      : AppPath.LegacyNeuronDetail,
+  neurons: (rootCanisterId: string) =>
+    ENABLE_SNS
+      ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
+      : AppPath.LegacyNeurons,
+  accounts: (rootCanisterId: string) =>
+    ENABLE_SNS
+      ? `${CONTEXT_PATH}/${rootCanisterId}/accounts`
+      : AppPath.LegacyAccounts,
+  wallet: (rootCanisterId: string) =>
+    ENABLE_SNS
+      ? `${CONTEXT_PATH}/${rootCanisterId}/wallet`
+      : AppPath.LegacyWallet,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;

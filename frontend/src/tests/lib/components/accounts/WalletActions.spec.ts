@@ -24,7 +24,6 @@ describe("WalletActions", () => {
         contextValue: {
           store: writable<SelectedAccountStore>({
             account,
-            transactions: undefined,
           }),
         } as SelectedAccountContext,
         Component: WalletActions,
