@@ -9,6 +9,7 @@ import VotingNeuronSelect from "../../../../../lib/components/proposal-detail/Vo
 import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
+import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
@@ -89,5 +90,59 @@ describe("VotingNeuronSelect", () => {
     );
 
     waitFor(() => expect(getByText(total)).toBeInTheDocument());
+  });
+
+  describe("No selectable neurons", () => {
+    beforeEach(() => {
+      votingNeuronSelectStore.set([]);
+    });
+
+    it("should display no neurons information", () => {
+      const { getByTestId } = render(VotingNeuronSelect, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+
+      expect(
+        getByTestId("voting-collapsible-toolbar-neurons")?.textContent?.trim()
+      ).toEqual(en.proposal_detail__vote.neurons);
+      expect(() =>
+        getByTestId("voting-collapsible-toolbar-voting-power")
+      ).toThrow();
+    });
+  });
+
+  describe("Has selected neurons", () => {
+    const neuronIds = [0, 1, 2].map(BigInt);
+    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
+
+    beforeAll(() => votingNeuronSelectStore.set(neurons));
+
+    it("should display voting power", () => {
+      const { getByTestId } = render(VotingNeuronSelect, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+
+      expect(
+        getByTestId("voting-collapsible-toolbar-voting-power")
+      ).not.toBeNull();
+    });
+
+    it("should display selectable neurons for voting power", () => {
+      const { getByTestId } = render(VotingNeuronSelect, {
+        props: {
+          proposalInfo: mockProposalInfo,
+        },
+      });
+
+      expect(
+        getByTestId("voting-collapsible-toolbar-neurons")
+          ?.textContent?.trim()
+          .includes(`(${neurons.length}/${neurons.length})`)
+      ).toBeTruthy();
+    });
   });
 });

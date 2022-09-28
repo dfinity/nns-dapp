@@ -1,12 +1,9 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import CardInfo from "../ui/CardInfo.svelte";
   import { i18n } from "../../stores/i18n";
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { formatNumber } from "../../utils/format.utils";
-  import type { SvelteComponent } from "svelte";
-  import { VOTING_UI } from "../../constants/environment.constants";
-  import ContentCell from "../ui/ContentCell.svelte";
+  import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -17,25 +14,21 @@
   $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   $: sum = yes + no;
-
-  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
-  let cmp: typeof SvelteComponent =
-    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
-<svelte:component this={cmp}>
+<ProposalContentCell>
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
   <div class="latest-tally">
     <h4 class="label yes">
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
     </h4>
     <div
-      class="progressbar"
-      role="progressbar"
-      aria-label={$i18n.proposal_detail__vote.vote_progress}
-      aria-valuenow={yes}
-      aria-valuemin={0}
-      aria-valuemax={sum}
+            class="progressbar"
+            role="progressbar"
+            aria-label={$i18n.proposal_detail__vote.vote_progress}
+            aria-valuenow={yes}
+            aria-valuemin={0}
+            aria-valuemax={sum}
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>
@@ -43,7 +36,7 @@
       {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
     </h4>
   </div>
-</svelte:component>
+</ProposalContentCell>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

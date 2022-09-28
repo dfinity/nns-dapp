@@ -6,7 +6,7 @@ import type { Proposal } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import ProposalActions from "../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
+import ProposalProposerActionsEntry from "../../../../lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
 import { proposalPayloadsStore } from "../../../../lib/stores/proposals.store";
 import { getNnsFunctionKey } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
@@ -30,10 +30,9 @@ describe("ProposalProposerActionsEntry", () => {
   afterAll(jest.clearAllMocks);
 
   it("should render nnsFunction id", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction,
-        proposalId: mockProposalInfo.id,
+        proposal: proposalWithNnsFunctionAction
       },
     });
 
@@ -50,10 +49,9 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render nnsFunction name", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction,
-        proposalId: mockProposalInfo.id,
+        proposal: proposalWithNnsFunctionAction
       },
     });
 
@@ -68,10 +66,9 @@ describe("ProposalProposerActionsEntry", () => {
       .spyOn(nnsDappMock, "getProposalPayload")
       .mockImplementation(async () => ({}));
 
-    render(ProposalActions, {
+    render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction,
-        proposalId: BigInt(0),
+        proposal: proposalWithNnsFunctionAction
       },
     });
 

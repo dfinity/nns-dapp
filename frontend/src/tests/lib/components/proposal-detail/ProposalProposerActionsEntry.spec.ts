@@ -4,13 +4,14 @@
 
 import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ProposalActions from "../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
 import { proposalFirstActionKey } from "../../../../lib/utils/proposals.utils";
 import {
   mockProposalInfo,
   proposalActionMotion,
   proposalActionRewardNodeProvider,
 } from "../../../mocks/proposal.mock";
+import ProposalProposerActionsEntry
+  from "../../../../lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
 
 const proposalWithMotionAction = {
   ...mockProposalInfo.proposal,
@@ -24,7 +25,7 @@ const proposalWithRewardNodeProviderAction = {
 
 describe("ProposalProposerActionsEntry", () => {
   it("should render action key", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
         proposalId: mockProposalInfo.id,
@@ -36,7 +37,7 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render action fields", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
         proposalId: mockProposalInfo.id,
@@ -51,7 +52,7 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render object fields as JSON", () => {
-    const nodeProviderActions = render(ProposalActions, {
+    const nodeProviderActions = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithRewardNodeProviderAction,
         proposalId: mockProposalInfo.id,
@@ -62,7 +63,7 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render text fields as plane text", () => {
-    const motionActions = render(ProposalActions, {
+    const motionActions = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
         proposalId: mockProposalInfo.id,

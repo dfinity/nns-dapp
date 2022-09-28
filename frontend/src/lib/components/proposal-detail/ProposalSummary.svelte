@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Proposal } from "@dfinity/nns";
-  import Markdown from "../../ui/Markdown.svelte";
+  import Markdown from "../ui/Markdown.svelte";
 
   export let proposal: Proposal | undefined;
 
@@ -20,7 +20,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
 
   .title {
     margin-bottom: var(--padding-4x);
