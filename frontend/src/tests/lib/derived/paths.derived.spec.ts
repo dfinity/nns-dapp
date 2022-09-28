@@ -3,11 +3,7 @@
  */
 import { get } from "svelte/store";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import {
-  AppPath,
-  CONTEXT_PATH,
-  paths,
-} from "../../../lib/constants/routes.constants";
+import { AppPath, CONTEXT_PATH } from "../../../lib/constants/routes.constants";
 import {
   accountsPathStore,
   neuronPathStore,
@@ -15,6 +11,7 @@ import {
   walletPathStore,
 } from "../../../lib/derived/paths.derived";
 import { routeStore } from "../../../lib/stores/route.store";
+import { paths } from "../../../lib/utils/app-path.utils";
 
 describe("paths derived stores", () => {
   describe("accountsPathStore", () => {
