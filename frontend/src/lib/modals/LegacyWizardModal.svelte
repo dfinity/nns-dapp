@@ -44,7 +44,7 @@
   section {
     @include modal.section;
 
-    :global(> div) {
+    > :global(div) {
       height: 100%;
     }
   }
