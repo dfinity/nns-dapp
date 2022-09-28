@@ -1,5 +1,6 @@
 import { HardwareWalletAttachError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
 import { errorToString, toToastError } from "../../../lib/utils/error.utils";
+import en from "../../mocks/i18n.mock";
 
 class TestError extends Error {
   constructor(msg: string) {
@@ -21,6 +22,12 @@ describe("error-utils", () => {
 
     it("should not parse error", () => {
       expect(errorToString(undefined)).toBeUndefined();
+    });
+
+    it("should translate error", () => {
+      expect(errorToString(new Error("error__sns.undefined_project"))).toEqual(
+        en.error__sns.undefined_project
+      );
     });
   });
 
