@@ -11,7 +11,6 @@
   } from "../services/accounts.services";
   import { accountsStore } from "../stores/accounts.store";
   import { Spinner } from "@dfinity/gix-components";
-  import type { AccountIdentifier } from "@dfinity/nns/dist/types/types/common";
   import { toastsError } from "../stores/toasts.store";
   import { replacePlaceholders } from "../utils/i18n.utils";
   import type { Account } from "../types/account";
@@ -29,6 +28,10 @@
   import { debugSelectedAccountStore } from "../stores/debug.store";
   import { layoutBackStore } from "../stores/layout.store";
   import IcpTransactionModal from "../modals/accounts/IcpTransactionModal.svelte";
+  import type {
+    AccountIdentifierString,
+    Transaction,
+  } from "../canisters/nns-dapp/nns-dapp.types";
 
   const goBack = () =>
     routeStore.navigate({
@@ -37,24 +40,28 @@
 
   layoutBackStore.set(goBack);
 
-  const reloadTransactions = async (accountIdentifier: AccountIdentifier) =>
+  let transactions: Transaction[] | undefined;
+
+  const reloadTransactions = async (
+    accountIdentifier: AccountIdentifierString
+  ) =>
     await getAccountTransactions({
       accountIdentifier,
-      onLoad: ({ accountIdentifier, transactions }) => {
+      onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
         if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
           return;
         }
 
-        $selectedAccountStore.transactions = transactions;
+        transactions = loadedTransactions;
       },
     });
 
   const selectedAccountStore = writable<SelectedAccountStore>({
     account: undefined,
-    transactions: undefined,
   });
 
+  // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
 
   setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
@@ -92,10 +99,11 @@
           selectedAccount !== undefined &&
           storeAccount?.identifier === selectedAccount.identifier;
 
-        selectedAccountStore.update(({ transactions }) => ({
+        selectedAccountStore.update(() => ({
           account: selectedAccount,
-          transactions: sameAccount ? transactions : undefined,
         }));
+
+        transactions = sameAccount ? transactions : undefined;
 
         if (selectedAccount !== undefined) {
           reloadTransactions(selectedAccount.identifier);
@@ -126,7 +134,7 @@
       <div class="actions">
         <WalletActions />
       </div>
-      <TransactionList />
+      <TransactionList {transactions} />
     {:else}
       <Spinner />
     {/if}
