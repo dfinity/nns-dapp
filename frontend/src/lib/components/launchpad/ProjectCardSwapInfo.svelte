@@ -6,7 +6,7 @@
     SnsSummarySwap,
   } from "../../types/sns";
   import { durationTillSwapDeadline } from "../../utils/projects.utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -37,6 +37,7 @@
     if (commitmentE8s !== undefined) {
       myCommitment = TokenAmount.fromE8s({
         amount: commitmentE8s,
+        token: ICPToken,
       });
     }
   }

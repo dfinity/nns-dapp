@@ -8,7 +8,7 @@
   import { E8S_PER_ICP } from "../../constants/icp.constants";
   import { toastsError } from "../../stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import { FromStringToTokenError, ICPToken, TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { getMaxTransactionAmount } from "../../utils/icp.utils";
   import { isValidInputAmount } from "../../utils/neuron.utils";
   import { transactionsFeesStore } from "../../stores/transaction-fees.store";
@@ -47,16 +47,10 @@
       return;
     }
 
-    const icp: TokenAmount | FromStringToTokenError = TokenAmount.fromNumber({
+    const icp: TokenAmount = TokenAmount.fromNumber({
       amount,
+      token: ICPToken,
     });
-
-    if (icp === undefined || !(icp instanceof TokenAmount)) {
-      toastsError({
-        labelKey: "error.amount_not_valid",
-      });
-      return;
-    }
 
     store.update((data) => ({
       ...data,

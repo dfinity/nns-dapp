@@ -1402,7 +1402,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
-            _,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1412,7 +1412,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
+            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
@@ -1445,7 +1445,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            pending_transactions: HashMap::new(),
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
