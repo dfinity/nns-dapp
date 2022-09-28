@@ -39,5 +39,6 @@
   {showInfo}
 >
   <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
-  <svelte:fragment slot="additional"><slot name="additional" /></svelte:fragment>
+  <svelte:fragment slot="additional"><slot name="additional" /></svelte:fragment
+  >
 </Input>
