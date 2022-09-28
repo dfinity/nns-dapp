@@ -106,11 +106,6 @@
     }
   }
 
-  .question {
-    margin: var(--padding-4x) 0 var(--padding-2x);
-    word-break: break-word;
-  }
-
   button {
     min-width: calc(48px + (2 * var(--padding-2x)));
     width: calc(100% - (2 * var(--padding)));
