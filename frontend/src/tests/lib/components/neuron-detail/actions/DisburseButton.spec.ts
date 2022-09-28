@@ -24,7 +24,7 @@ describe("DisburseButton", () => {
     expect(getByText(en.neuron_detail.disburse)).toBeInTheDocument();
   });
 
-  it("opens a modal", async () => {
+  it("opens disburse nns neuron modal", async () => {
     const { container, queryByTestId } = render(DisburseButton, {
       props: {
         neuron: mockNeuron,

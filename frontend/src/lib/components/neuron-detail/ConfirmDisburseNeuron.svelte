@@ -8,7 +8,7 @@
 
   export let amount: TokenAmount;
   export let source: string;
-  export let destinationAddress: string;
+  export let destinationAddress: string | undefined = undefined;
   export let loading: boolean = false;
   export let fee: E8s | undefined = undefined;
 

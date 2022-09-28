@@ -2,7 +2,6 @@
   import { i18n } from "../../stores/i18n";
   import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { toastsSuccess } from "../../stores/toasts.store";
   import { routeStore } from "../../stores/route.store";
@@ -37,6 +36,7 @@
   });
 
   const dispatcher = createEventDispatcher();
+  // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
   const steps: Steps = [
     {
       name: "ConfirmDisburse",
