@@ -92,8 +92,6 @@
       });
       const { success } = await participateInSwap({
         account: sourceAccount,
-        // If we made it here, we know that the amount is valid
-        // TODO: change fromNumber return type
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });

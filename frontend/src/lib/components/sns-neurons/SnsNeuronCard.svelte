@@ -36,7 +36,7 @@
   let neuronStake: TokenAmount;
   $: neuronStake = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
-    // TODO: Decide what to do when there is no SNS token
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
     token: $snsTokenSymbolSelectedStore ?? ICPToken,
   });
 

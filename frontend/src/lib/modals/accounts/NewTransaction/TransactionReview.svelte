@@ -24,6 +24,7 @@
   let tokenAmount: TokenAmount;
   $: tokenAmount = TokenAmount.fromNumber({
     amount,
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
     token: $snsTokenSymbolSelectedStore ?? ICPToken,
   }) as TokenAmount;
 

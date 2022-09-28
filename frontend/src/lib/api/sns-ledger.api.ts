@@ -34,7 +34,7 @@ export const getSnsAccounts = async ({
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
-      // TODO: Decide what we do when there is no token in an SNS project
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1045
       token: mapOptionalToken(metadata) ?? ICPToken,
     }),
     type: "main",
