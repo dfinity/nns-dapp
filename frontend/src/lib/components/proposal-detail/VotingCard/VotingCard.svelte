@@ -85,7 +85,6 @@
         {proposalInfo}
         {voteRegistration}
         on:nnsConfirm={vote}
-        layout="modern"
       />
     {/if}
 
