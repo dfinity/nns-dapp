@@ -58,7 +58,7 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+    if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
