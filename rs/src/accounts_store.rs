@@ -1412,7 +1412,7 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), TransactionType>,
+            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockHeight>,
