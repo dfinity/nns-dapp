@@ -8,6 +8,7 @@
   import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
+  import AutoStakeMaturity from "./actions/AutoStakeMaturity.svelte";
   import {
     formattedMaturity,
     isNeuronControllable,
@@ -61,6 +62,10 @@
       <SpawnNeuronButton {neuron} {controlledByHardwareWallet} />
     {/if}
   </div>
+
+  {#if !controlledByHardwareWallet}
+    <AutoStakeMaturity {neuron} />
+  {/if}
 </CardInfo>
 
 <style lang="scss">
