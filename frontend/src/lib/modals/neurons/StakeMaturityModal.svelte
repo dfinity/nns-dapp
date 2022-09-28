@@ -4,14 +4,13 @@
   import { formatPercentage } from "../../utils/format.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { stopBusy } from "../../stores/busy.store";
-  import { mergeMaturity } from "../../services/neurons.services";
+  import { stakeMaturity } from "../../services/neurons.services";
   import { toastsSuccess } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "../../components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-  import { valueSpan } from "../../utils/utils";
   import WizardModal from "../WizardModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
 
@@ -44,8 +43,7 @@
   const stakeNeuronMaturity = async () => {
     startBusyNeuron({ initiator: "stake-maturity", neuronId });
 
-    // TODO
-    const { success } = await mergeMaturity({
+    const { success } = await stakeMaturity({
       neuronId,
       percentageToMerge,
     });
