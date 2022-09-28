@@ -12,7 +12,7 @@
     if (
       ENABLE_SNS &&
       isRoutePath({
-        path: AppPath.LegacyWallet,
+        paths: [AppPath.LegacyWallet],
         routePath: $routeStore.path,
       })
     ) {

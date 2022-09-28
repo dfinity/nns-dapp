@@ -23,9 +23,9 @@ describe("TransactionList", () => {
         contextValue: {
           store: writable<SelectedAccountStore>({
             account,
-            transactions,
           }),
         } as SelectedAccountContext,
+        props: { transactions },
         Component: TransactionList,
       },
     });
