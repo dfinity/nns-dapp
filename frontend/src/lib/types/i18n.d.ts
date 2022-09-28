@@ -480,6 +480,7 @@ interface I18nNeuron_detail {
   merge_maturity: string;
   stake_maturity: string;
   merge: string;
+  stake: string;
   spawn_neuron: string;
   spawn: string;
   maturity_tooltip: string;
@@ -513,6 +514,11 @@ interface I18nNeuron_detail {
   merge_maturity_confirmation: string;
   edit_percentage: string;
   merge_maturity_success: string;
+  stake_maturity_modal_title: string;
+  stake_confirmation_modal_title: string;
+  stake_maturity_modal_description: string;
+  stake_maturity_confirmation: string;
+  stake_maturity_success: string;
   spawn_neuron_modal_title: string;
   spawn_confirmation_modal_title: string;
   spawn_neuron_modal_description: string;
