@@ -42,7 +42,7 @@ describe("route-store", () => {
       expect(isContextPath(state.path)).toBe(true);
       expect(getContextFromPath(state.path)).toBe(newContext);
       expect(
-        isRoutePath({ path: AppPath.NeuronDetail, routePath: state.path })
+        isRoutePath({ paths: [AppPath.NeuronDetail], routePath: state.path })
       ).toBe(true);
     });
 

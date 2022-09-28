@@ -892,8 +892,10 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
 
 export const routePathNeuronId = (path: string): NeuronId | undefined => {
   if (
-    !isRoutePath({ path: AppPath.LegacyNeuronDetail, routePath: path }) &&
-    !isRoutePath({ path: AppPath.NeuronDetail, routePath: path })
+    !isRoutePath({
+      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+      routePath: path,
+    })
   ) {
     return undefined;
   }
