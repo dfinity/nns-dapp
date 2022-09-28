@@ -7,10 +7,10 @@
   import { Spinner } from "@dfinity/gix-components";
 
   export let amount: TokenAmount;
+  export let fee: TokenAmount | undefined = undefined;
   export let source: string;
-  export let destinationAddress: string | undefined = undefined;
+  export let destinationAddress: string;
   export let loading: boolean = false;
-  export let fee: E8s | undefined = undefined;
 
   const dispatcher = createEventDispatcher();
 </script>
@@ -24,9 +24,7 @@
     <AmountDisplay inline {amount} />
   </div>
 
-  {#if destinationAddress !== undefined}
-    <TransactionInfo {source} destination={destinationAddress} {fee} />
-  {/if}
+  <TransactionInfo {source} destination={destinationAddress} {fee} />
 
   <button
     class="primary full-width"

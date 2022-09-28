@@ -20,11 +20,12 @@
   import { TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import { transactionsFeesStore } from "../../stores/transaction-fees.store";
 
   export let neuron: SnsNeuron;
 
   let destinationAddress: string | undefined;
-  $: destinationAddress = $accountsStore?.main?.identifier;
+  $: destinationAddress = $accountsStore.main?.identifier;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
@@ -32,6 +33,13 @@
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
+    token: $snsTokenSymbolSelectedStore,
+  });
+
+  let fee: TokenAmount;
+  $: fee = TokenAmount.fromE8s({
+    // TODO(GIX-1044): update FeesStore with the current sns project value
+    amount: $transactionsFeesStore.main,
     token: $snsTokenSymbolSelectedStore,
   });
 
@@ -95,7 +103,7 @@
       {source}
       {loading}
       {destinationAddress}
-      fee={neuron.neuron_fees_e8s}
+      {fee}
     />
   {/if}
 </WizardModal>

@@ -1,16 +1,15 @@
 <script lang="ts">
-  import type { E8s } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { isNullish } from "../../utils/utils";
   import Value from "../ui/Value.svelte";
+  import { TokenAmount } from "@dfinity/nns";
 
   export let feeOnly: boolean = false;
   export let source: string;
   export let destination: string;
   export let hardwareWallet: boolean = false;
-  export let fee: E8s | undefined = undefined;
+  export let fee: TokenAmount | undefined = undefined;
 </script>
 
 {#if !feeOnly}
@@ -30,10 +29,10 @@
 <p class="fee">
   <Value
     >{formattedTransactionFeeICP(
-      isNullish(fee) ? $mainTransactionFeeStore : fee
+      fee === undefined ? $mainTransactionFeeStore : fee.toE8s()
     )}</Value
   >
-  {$i18n.core.icp}
+  {fee === undefined ? $i18n.core.icp : fee.token.symbol}
 </p>
 
 <style lang="scss">
