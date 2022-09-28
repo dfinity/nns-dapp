@@ -24,7 +24,7 @@
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
-  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
+  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -112,6 +112,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
   section {
     padding: var(--padding) 0 0 0;
     display: flex;
