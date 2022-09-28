@@ -3,7 +3,7 @@
   import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
   import { ENABLE_SNS } from "../lib/constants/environment.constants";
   import { AppPath } from "../lib/constants/routes.constants";
-  import NnsNeuronDetail from "../lib/pages/NnsNeuronDetail.svelte";
+  import NnsWallet from "../lib/pages/NnsWallet.svelte";
   import { routeStore } from "../lib/stores/route.store";
   import { isRoutePath } from "../lib/utils/app-path.utils";
 
@@ -12,7 +12,7 @@
     if (
       ENABLE_SNS &&
       isRoutePath({
-        paths: [AppPath.LegacyNeuronDetail],
+        paths: [AppPath.LegacyWallet],
         routePath: $routeStore.path,
       })
     ) {
@@ -21,4 +21,4 @@
   });
 </script>
 
-<NnsNeuronDetail />
+<NnsWallet />

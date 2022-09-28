@@ -1,10 +1,8 @@
 import type { Identity } from "@dfinity/agent";
+import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { CMCCanister } from "../canisters/cmc/cmc.canister";
-import { ProcessingError } from "../canisters/cmc/cmc.errors";
-import type { Cycles } from "../canisters/cmc/cmc.types";
-import { principalToSubAccount } from "../canisters/cmc/utils";
+import { principalToSubAccount } from "@dfinity/utils";
 import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
@@ -152,6 +150,7 @@ const pollNotifyCreateCanister = async ({
         cmc.notifyCreateCanister({
           controller,
           block_index: blockHeight,
+          subnet_type: [],
         }),
       shouldExit: notProcessingError,
     });

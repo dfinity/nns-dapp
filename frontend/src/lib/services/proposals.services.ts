@@ -357,7 +357,7 @@ export const loadProposalPayload = async ({
 export const routePathProposalId = (
   path: string
 ): { proposalId: ProposalId | undefined } | undefined => {
-  if (!isRoutePath({ path: AppPath.ProposalDetail, routePath: path })) {
+  if (!isRoutePath({ paths: [AppPath.ProposalDetail], routePath: path })) {
     return undefined;
   }
 

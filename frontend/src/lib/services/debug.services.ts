@@ -1,7 +1,6 @@
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { addHotkey } from "../api/governance.api";
-import type { Transaction } from "../canisters/nns-dapp/nns-dapp.types";
 import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
 import { initDebugStore } from "../stores/debug.store";
 import { i18n } from "../stores/i18n";
@@ -15,7 +14,6 @@ import {
   anonymizeProposal,
   anonymizeSnsSummary,
   anonymizeSnsSwapCommitment,
-  anonymizeTransaction,
   cutAndAnonymize,
 } from "../utils/anonymize.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
@@ -185,14 +183,6 @@ const anonymiseStoreState = async () => {
     },
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
-      transactions: await mapPromises(
-        selectedAccount?.transactions,
-        (transaction: Transaction) =>
-          anonymizeTransaction({
-            transaction,
-            account: selectedAccount?.account,
-          })
-      ),
     },
     selectedProject: {
       summary: await anonymizeSnsSummary(selectedProject.summary),

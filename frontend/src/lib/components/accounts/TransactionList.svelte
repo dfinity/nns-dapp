@@ -11,27 +11,28 @@
   } from "../../types/selected-account.context";
   import { mapToSelfTransaction } from "../../utils/transactions.utils";
 
+  export let transactions: Transaction[] | undefined;
+
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
   );
 
   let account: Account | undefined;
-  let storeTransactions: Transaction[] | undefined;
-  $: ({ account, transactions: storeTransactions } = $store);
+  $: ({ account } = $store);
 
-  let transactions: {
+  let extendedTransactions: {
     transaction: Transaction;
     toSelfTransaction: boolean;
   }[];
-  $: transactions = mapToSelfTransaction(storeTransactions ?? []);
+  $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
 </script>
 
-{#if account === undefined || storeTransactions === undefined}
+{#if account === undefined || transactions === undefined}
   <SkeletonCard cardType="info" />
-{:else if storeTransactions.length === 0}
+{:else if transactions.length === 0}
   {$i18n.wallet.no_transactions}
 {:else}
-  {#each transactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}${toSelfTransaction}`)}
+  {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}${toSelfTransaction}`)}
     <TransactionCard {account} {transaction} {toSelfTransaction} />
   {/each}
 {/if}

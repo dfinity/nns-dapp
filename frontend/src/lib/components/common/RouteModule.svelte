@@ -27,6 +27,8 @@
         return (await import("../../../routes/Canisters.svelte")).default;
       case AppPath.Wallet:
         return (await import("../../../routes/Wallet.svelte")).default;
+      case AppPath.LegacyWallet:
+        return (await import("../../../routes/LegacyWallet.svelte")).default;
       case AppPath.ProposalDetail:
         return (await import("../../../routes/ProposalDetail.svelte")).default;
       case AppPath.LegacyNeuronDetail:
@@ -68,6 +70,7 @@
       title: $i18n.navigation.canisters,
     },
     [AppPath.Wallet]: { title: $i18n.wallet.title },
+    [AppPath.LegacyWallet]: { title: $i18n.wallet.title },
     [AppPath.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
     },

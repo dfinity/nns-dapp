@@ -16,7 +16,7 @@ describe("routes", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
       expect(isAppPath(AppPath.LegacyAccounts)).toBeTruthy();
-      expect(isAppPath(`${AppPath.Wallet}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPath.LegacyWallet}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.LegacyNeuronDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.Launchpad}`)).toBeTruthy();
@@ -24,6 +24,10 @@ describe("routes", () => {
       expect(isAppPath(`${CONTEXT_PATH}/123/neurons`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neuron/1234`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/accounts`)).toBeTruthy();
+      expect(isAppPath(`${CONTEXT_PATH}/123/wallet/1234`)).toBeTruthy();
+      const t =
+        "/#/u/qvhpv-4qaaa-aaaaa-aaagq-cai/wallet/8703f867c97952906b676578c2cc9923d26d7aba865008b4478ec9c94f41c2f9";
+      expect(isAppPath(t)).toBeTruthy();
     });
 
     it("should return null for invalid urls", () => {
@@ -111,25 +115,25 @@ describe("routes", () => {
     it("should compare static paths", () => {
       expect(
         isRoutePath({
-          path: AppPath.Authentication,
+          paths: [AppPath.Authentication],
           routePath: "/",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.LegacyAccounts,
+          paths: [AppPath.LegacyAccounts],
           routePath: "/#/accounts",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Authentication,
+          paths: [AppPath.Authentication],
           routePath: "",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.Accounts,
+          paths: [AppPath.Accounts, AppPath.Canisters],
           routePath: "/#/neurons",
         })
       ).toBeFalsy();
@@ -138,31 +142,38 @@ describe("routes", () => {
     it("should compare dynamic paths", () => {
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/0",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.Wallet],
+          routePath:
+            "/#/u/qvhpv-4qaaa-aaaaa-aaagq-cai/wallet/8703f867c97952906b676578c2cc9923d26d7aba865008b4478ec9c94f41c2f9",
+        })
+      ).toBeTruthy();
+      expect(
+        isRoutePath({
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/a0",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.LegacyWallet],
           routePath: "/#/wallet/",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.LegacyWallet, AppPath.Wallet],
           routePath: "/#/wallet",
         })
       ).toBeFalsy();
       expect(
         isRoutePath({
-          path: AppPath.Wallet,
+          paths: [AppPath.LegacyWallet],
           routePath: undefined,
         })
       ).toBeFalsy();
@@ -241,6 +252,7 @@ describe("routes", () => {
       const path1 = "/#/neuron/12344";
       const path2 = "/#/neurons";
       const path3 = "/#/accounts";
+      const path4 = "/#/wallet/12344";
       const newContext = "bbbbb-bb";
       expect(changePathContext({ path: path1, newContext })).toBe(
         `${CONTEXT_PATH}/${newContext}/neuron/12344`
@@ -250,6 +262,9 @@ describe("routes", () => {
       );
       expect(changePathContext({ path: path3, newContext })).toBe(
         `${CONTEXT_PATH}/${newContext}/accounts`
+      );
+      expect(changePathContext({ path: path4, newContext })).toBe(
+        `${CONTEXT_PATH}/${newContext}/wallet/12344`
       );
     });
 

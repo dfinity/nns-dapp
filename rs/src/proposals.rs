@@ -2,14 +2,14 @@ use crate::proposals::def::{
     AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
     AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest, AddWasmRequestTrimmed,
     BlessReplicaVersionPayload, ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed,
-    ChangeSubnetMembershipPayload, CompleteCanisterMigrationPayload, CreateSubnetPayload,
-    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
-    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
-    RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
+    ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload,
+    CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
+    RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
     StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
     UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
-    UpdateSubnetReplicaVersionPayload, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed,
+    UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -127,6 +127,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         29 => identity::<CompleteCanisterMigrationPayload>(payload_bytes),
         30 => transform::<AddWasmRequest, AddWasmRequestTrimmed>(payload_bytes),
         31 => identity::<ChangeSubnetMembershipPayload>(payload_bytes),
+        32 => identity::<UpdateSubnetTypeArgs>(payload_bytes),
+        33 => identity::<ChangeSubnetTypeAssignmentArgs>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -414,6 +416,16 @@ mod def {
     // https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
     pub type ChangeSubnetMembershipPayload =
         registry_canister::mutations::do_change_subnet_membership::ChangeSubnetMembershipPayload;
+
+    // NNS function 32 - UpdateSubnetType
+    // Updates the available subnet types in the cycles minting canister.
+    // https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179
+    pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
+
+    // NNS function 33 - ChangeSubnetTypeAssignment
+    // Changes the assignment of subnets to subnet types in the cycles minting canister.
+    // https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
+    pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
