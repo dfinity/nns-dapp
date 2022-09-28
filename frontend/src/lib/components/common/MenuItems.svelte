@@ -95,7 +95,7 @@
   ];
 </script>
 
-{#each routes as { context, label, href, icon, statusIcon, selected }}
+{#each routes as { context, label, href, icon, statusIcon, selected } (context)}
   <MenuItem {href} testId={`menuitem-${context}`} {selected}>
     <svelte:component this={icon} slot="icon" />
     <svelte:fragment>{$i18n.navigation[label]}</svelte:fragment>
