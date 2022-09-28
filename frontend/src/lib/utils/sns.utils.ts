@@ -4,7 +4,6 @@ import type { SnsParams } from "@dfinity/sns";
 import {
   SnsMetadataResponseEntries,
   type SnsGetMetadataResponse,
-  type SnsNeuron,
   type SnsSwap,
   type SnsSwapDerivedState,
   type SnsTokenMetadataResponse,
@@ -210,10 +209,6 @@ export const getSwapCanisterAccount = ({
 
   return accountIdentifier;
 };
-
-export const isDissolved = (neuron: SnsNeuron) =>
-  neuron.dissolve_state[0] !== undefined &&
-  "DissolveDelaySeconds" in neuron.dissolve_state[0];
 
 export const getCommitmentE8s = (
   swapCommitment?: SnsSwapCommitment | null

@@ -11,10 +11,13 @@
   import { getContext } from "svelte";
   import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
   import DisburseSnsNeuronModal from "../../modals/neurons/DisburseSnsNeuronModal.svelte";
-  import { isDissolved } from "../../utils/sns.utils";
-  import { hasPermissionToDisburse } from "../../utils/sns-neuron.utils";
+  import {
+    getSnsNeuronState,
+    hasPermissionToDisburse,
+  } from "../../utils/sns-neuron.utils";
   import { authStore } from "../../stores/auth.store";
-  import { nonNullish } from "../../utils/utils";
+  import { isNullish, nonNullish } from "../../utils/utils";
+  import { NeuronState } from "@dfinity/nns";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -22,19 +25,19 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
-  let canDisburse: boolean = false;
+  let dissolveState: ReturnType<getSnsNeuronState> | undefined;
+  $: dissolveState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
-  $: if (nonNullish(neuron)) {
-    canDisburse =
-      hasPermissionToDisburse({
+  let allowedToDisburse: boolean;
+  $: allowedToDisburse = isNullish(neuron)
+    ? false
+    : hasPermissionToDisburse({
         neuron,
         identity: $authStore.identity,
-      }) &&
-      (neuron.dissolve_state[0] === undefined || isDissolved(neuron));
-  }
+      });
 </script>
 
-{#if neuron !== undefined && neuron !== null}
+{#if nonNullish(neuron)}
   <SnsNeuronCard {neuron} cardType="info">
     <section>
       <p>
@@ -43,10 +46,10 @@
       </p>
 
       <div class="buttons">
-        <!-- TODO(GIX-985): Sns/IncreaseDissolveDelayButton -->
-        <!-- TODO(GIX-985): Sns/DissolveActionButton -->
-        {#if canDisburse}
+        {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseButton {neuron} modal={DisburseSnsNeuronModal} />
+        {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
+          <!-- TODO(GIX-985): Sns/DissolveActionButton -->
         {/if}
       </div>
     </section>
@@ -55,6 +58,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
   section {
     padding: var(--padding) 0 0 0;
     display: flex;
