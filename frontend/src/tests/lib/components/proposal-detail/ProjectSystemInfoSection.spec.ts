@@ -270,7 +270,7 @@ describe("ProposalSystemInfoSection", () => {
       action: proposalActionNnsFunction21,
     } as Proposal;
 
-    const { getByText, getByTestId } = render(ProposalSystemInfoSection, {
+    const { getByTestId } = render(ProposalSystemInfoSection, {
       props: {
         proposalInfo: {
           ...mockProposalInfo,
