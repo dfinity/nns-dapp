@@ -1,4 +1,4 @@
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
 import {
   convertIcpToTCycles,
@@ -60,13 +60,34 @@ describe("icp-utils", () => {
 
   describe("sumTokenAmounts", () => {
     it("should add amounts of token", () => {
-      const icp0 = TokenAmount.fromString({ amount: "0" }) as TokenAmount;
-      const icp1 = TokenAmount.fromString({ amount: "1" }) as TokenAmount;
-      const icp15 = TokenAmount.fromString({ amount: "1.5" }) as TokenAmount;
-      const icp2 = TokenAmount.fromString({ amount: "2" }) as TokenAmount;
-      const icp3 = TokenAmount.fromString({ amount: "3" }) as TokenAmount;
-      const icp35 = TokenAmount.fromString({ amount: "3.5" }) as TokenAmount;
-      const icp6 = TokenAmount.fromString({ amount: "6" }) as TokenAmount;
+      const icp0 = TokenAmount.fromString({
+        amount: "0",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp1 = TokenAmount.fromString({
+        amount: "1",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp15 = TokenAmount.fromString({
+        amount: "1.5",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp2 = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp3 = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp35 = TokenAmount.fromString({
+        amount: "3.5",
+        token: ICPToken,
+      }) as TokenAmount;
+      const icp6 = TokenAmount.fromString({
+        amount: "6",
+        token: ICPToken,
+      }) as TokenAmount;
 
       expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
       expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);

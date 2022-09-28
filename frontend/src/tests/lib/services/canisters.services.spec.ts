@@ -380,7 +380,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 5,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -398,7 +398,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 2,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -416,7 +416,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 2,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -449,7 +449,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 5,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -467,7 +467,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 2,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -485,7 +485,7 @@ describe("canisters-services", () => {
         balance: TokenAmount.fromNumber({
           amount: 2,
           token: ICPToken,
-        }) as TokenAmount,
+        }),
       };
       const { success } = await topUpCanister({
         amount: 3,

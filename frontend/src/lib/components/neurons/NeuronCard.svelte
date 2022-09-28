@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import {
     getDissolvingTimeInSeconds,
@@ -29,7 +29,10 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
   let neuronICP: TokenAmount;
-  $: neuronICP = TokenAmount.fromE8s({ amount: neuronStake(neuron) });
+  $: neuronICP = TokenAmount.fromE8s({
+    amount: neuronStake(neuron),
+    token: ICPToken,
+  });
   let isHotKeyControl: boolean;
   $: isHotKeyControl = isHotKeyControllable({
     neuron,
@@ -67,7 +70,10 @@
     {:else if proposerNeuron}
       <AmountDisplay
         label={$i18n.neurons.voting_power}
-        amount={TokenAmount.fromE8s({ amount: neuron.votingPower })}
+        amount={TokenAmount.fromE8s({
+          amount: neuron.votingPower,
+          token: ICPToken,
+        })}
         detailed
       />
     {:else if neuronICP}

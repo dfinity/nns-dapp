@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
   import FooterModal from "../../FooterModal.svelte";
@@ -9,6 +9,7 @@
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import type { NewTransaction } from "../../../types/transaction.context";
+  import { snsTokenSymbolSelectedStore } from "../../../derived/sns/sns-token-symbol-selected.store";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -21,7 +22,11 @@
 
   // If we made it this far, the number is valid.
   let tokenAmount: TokenAmount;
-  $: tokenAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+  $: tokenAmount = TokenAmount.fromNumber({
+    amount,
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
+    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+  }) as TokenAmount;
 
   const dispatcher = createEventDispatcher();
   const submit = () => {

@@ -1,4 +1,4 @@
-import { ICP, TokenAmount } from "@dfinity/nns";
+import { ICP, ICPToken, TokenAmount } from "@dfinity/nns";
 import type {
   AccountIdentifierString,
   Transaction,
@@ -112,7 +112,10 @@ export const transactionDisplayAmount = ({
     if (fee === undefined) {
       throw new Error("fee is not available");
     }
-    return TokenAmount.fromE8s({ amount: amount.toE8s() + fee.toE8s() });
+    return TokenAmount.fromE8s({
+      amount: amount.toE8s() + fee.toE8s(),
+      token: amount.token,
+    });
   }
   return amount;
 };
@@ -143,17 +146,35 @@ export const mapTransaction = ({
   if ("Send" in transfer) {
     from = account.identifier;
     to = transfer.Send.to;
-    amount = TokenAmount.fromE8s({ amount: transfer.Send.amount.e8s });
-    fee = TokenAmount.fromE8s({ amount: transfer.Send.fee.e8s });
+    amount = TokenAmount.fromE8s({
+      amount: transfer.Send.amount.e8s,
+      token: ICPToken,
+    });
+    fee = TokenAmount.fromE8s({
+      amount: transfer.Send.fee.e8s,
+      token: ICPToken,
+    });
   } else if ("Receive" in transfer) {
     to = account.identifier;
     from = transfer.Receive.from;
-    amount = TokenAmount.fromE8s({ amount: transfer.Receive.amount.e8s });
-    fee = TokenAmount.fromE8s({ amount: transfer.Receive.fee.e8s });
+    amount = TokenAmount.fromE8s({
+      amount: transfer.Receive.amount.e8s,
+      token: ICPToken,
+    });
+    fee = TokenAmount.fromE8s({
+      amount: transfer.Receive.fee.e8s,
+      token: ICPToken,
+    });
   } else if ("Burn" in transfer) {
-    amount = TokenAmount.fromE8s({ amount: transfer.Burn.amount.e8s });
+    amount = TokenAmount.fromE8s({
+      amount: transfer.Burn.amount.e8s,
+      token: ICPToken,
+    });
   } else if ("Mint" in transfer) {
-    amount = TokenAmount.fromE8s({ amount: transfer.Mint.amount.e8s });
+    amount = TokenAmount.fromE8s({
+      amount: transfer.Mint.amount.e8s,
+      token: ICPToken,
+    });
   } else {
     throw new Error("Unsupported transfer type");
   }
