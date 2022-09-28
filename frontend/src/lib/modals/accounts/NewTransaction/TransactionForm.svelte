@@ -62,7 +62,7 @@
       return;
     }
     try {
-      const tokens = TokenAmount.fromNumber({ amount, token }) as TokenAmount;
+      const tokens = TokenAmount.fromNumber({ amount, token });
       assertEnoughAccountFunds({
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
