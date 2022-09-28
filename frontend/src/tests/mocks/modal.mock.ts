@@ -78,7 +78,6 @@ export const renderModalSelectedAccountContextWrapper = ({
     contextValue: {
       store: writable<SelectedAccountStore>({
         account,
-        transactions: undefined,
       }),
     },
     Component,

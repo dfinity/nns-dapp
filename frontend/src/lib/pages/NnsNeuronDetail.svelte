@@ -24,6 +24,7 @@
   import { toastsError } from "../stores/toasts.store";
   import { voteRegistrationStore } from "../stores/vote-registration.store";
   import { i18n } from "../stores/i18n";
+  import { neuronsPathStore } from "../derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -85,7 +86,7 @@
     unsubscribe();
 
     routeStore.navigate({
-      path: AppPath.LegacyNeurons,
+      path: $neuronsPathStore,
     });
   };
 

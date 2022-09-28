@@ -5,11 +5,11 @@
   import type { NeuronId } from "@dfinity/nns";
   import { neuronsStore, sortedNeuronStore } from "../stores/neurons.store";
   import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import Tooltip from "../components/ui/Tooltip.svelte";
   import { isSpawning } from "../utils/neuron.utils";
   import Value from "../components/ui/Value.svelte";
+  import { neuronPathStore } from "../derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -21,7 +21,7 @@
 
   const goToNeuronDetails = (id: NeuronId) => () =>
     routeStore.navigate({
-      path: `${AppPath.LegacyNeuronDetail}/${id}`,
+      path: `${$neuronPathStore}/${id}`,
     });
 </script>
 

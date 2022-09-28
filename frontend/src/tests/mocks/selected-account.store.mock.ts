@@ -4,5 +4,4 @@ import { mockMainAccount } from "./accounts.store.mock";
 
 export const mockSelectedAccountStore = writable<SelectedAccountStore>({
   account: mockMainAccount,
-  transactions: undefined,
 });
