@@ -5,7 +5,7 @@
   import { formatPercentage } from "../../utils/format.utils";
   import { Card } from "@dfinity/gix-components";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import InputRange from "../ui/InputRange.svelte";
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
@@ -34,7 +34,7 @@
     <h5>{$i18n.neuron_detail.current_stake}</h5>
     <p data-tid="neuron-stake">
       {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
+        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
       })}
     </p>
   </div>
@@ -61,12 +61,12 @@
   </Card>
 
   <FooterModal>
-    <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+    <button class="secondary" on:click={() => dispatcher("nnsBack")}>
       {$i18n.core.cancel}
     </button>
     <button
       data-tid="select-maturity-percentage-button"
-      class="primary small"
+      class="primary"
       on:click={selectPercentage}
       {disabled}
     >

@@ -5,8 +5,8 @@ import {
   IconLockOpen,
 } from "@dfinity/gix-components";
 import {
-  ICP,
   NeuronState,
+  TokenAmount,
   Topic,
   Vote,
   votedNeurons,
@@ -45,7 +45,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
-import { formatICP } from "./icp.utils";
+import { formatToken } from "./icp.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { isDefined, isNullish, nonNullish } from "./utils";
 
@@ -160,7 +160,7 @@ export const formattedMaturity = (neuron: NeuronInfo): string => {
     value = BigInt(0);
   }
 
-  return formatICP({
+  return formatToken({
     value,
   });
 };
@@ -302,7 +302,7 @@ export const isEnoughToStakeNeuron = ({
   stake,
   fee = 0,
 }: {
-  stake: ICP;
+  stake: TokenAmount;
   fee?: number;
 }): boolean => stake.toE8s() >= MIN_NEURON_STAKE + fee;
 

@@ -57,10 +57,10 @@
     />
   </div>
   <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+    <button class="secondary" type="button" on:click={back}>
       {$i18n.core.back}
     </button>
-    <button class="primary small" type="submit" {disabled}>
+    <button class="primary" type="submit" {disabled}>
       {$i18n.core.continue}
     </button>
   </FooterModal>

@@ -11,7 +11,7 @@
   const closeModal = () => (isOpen = false);
 </script>
 
-<button data-tid="add-hotkey-button" class="primary small" on:click={showModal}
+<button data-tid="add-hotkey-button" class="primary" on:click={showModal}
   >{$i18n.neuron_detail.add_hotkey}</button
 >
 

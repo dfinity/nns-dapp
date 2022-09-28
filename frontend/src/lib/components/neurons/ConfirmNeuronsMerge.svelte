@@ -9,7 +9,7 @@
   import { i18n } from "../../stores/i18n";
   import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { formatToken } from "../../utils/icp.utils";
   import { neuronStake } from "../../utils/neuron.utils";
   import { valueSpan } from "../../utils/utils";
 
@@ -69,7 +69,7 @@
         <p>
           {@html replacePlaceholders($i18n.neurons.icp_stake, {
             $amount: valueSpan(
-              formatICP({ value: neuronStake(neuron), detailed: true })
+              formatToken({ value: neuronStake(neuron), detailed: true })
             ),
           })}
         </p>
@@ -78,11 +78,11 @@
   </div>
   <div>
     <FooterModal>
-      <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
+      <button class="secondary" on:click={() => dispatcher("nnsBack")}>
         {$i18n.neurons.merge_neurons_edit_selection}
       </button>
       <button
-        class="primary small"
+        class="primary"
         data-tid="confirm-merge-neurons-button"
         disabled={$busy}
         on:click={merge}

@@ -1,5 +1,4 @@
 import {
-  ICP,
   TokenAmount,
   type Ballot,
   type Followees,
@@ -8,11 +7,7 @@ import {
   type NeuronInfo,
   type ProposalInfo,
 } from "@dfinity/nns";
-import type {
-  SnsSwapBuyerState,
-  SnsSwapDerivedState,
-  SnsSwapState,
-} from "@dfinity/sns";
+import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
 import type {
   CanisterDetails,
   Transaction,
@@ -55,13 +50,16 @@ export const anonymizeAmount = async (
     : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
 
 export const anonymizeICP = async (
-  icp: ICP | TokenAmount | undefined
-): Promise<ICP | undefined> =>
-  icp === undefined
+  tokens: TokenAmount | undefined
+): Promise<TokenAmount | undefined> =>
+  tokens === undefined
     ? undefined
-    : icp.toE8s() === BigInt(0)
-    ? ICP.fromE8s(BigInt(0))
-    : ICP.fromE8s((await anonymizeAmount(icp.toE8s())) as bigint);
+    : tokens.toE8s() === BigInt(0)
+    ? TokenAmount.fromE8s({ amount: BigInt(0), token: tokens.token })
+    : TokenAmount.fromE8s({
+        amount: (await anonymizeAmount(tokens.toE8s())) as bigint,
+        token: tokens.token,
+      });
 
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
@@ -292,12 +290,18 @@ export const anonymizeProposal = async (
   };
 };
 
-const anonymizeBuyer = async ([buyer, state]) => [
+const anonymizeBuyer = async ([buyer, state]): Promise<
+  [string, SnsSwapBuyerState]
+> => [
   buyer,
   {
-    ...state,
-    amount_icp_e8s: (await anonymizeAmount(state.amount_icp_e8s)) ?? BigInt(0),
-    amount_sns_e8s: (await anonymizeAmount(state.amount_sns_e8s)) ?? BigInt(0),
+    icp: [
+      {
+        ...state.icp[0],
+        amount_e8s:
+          (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
+      },
+    ],
   },
 ];
 
@@ -315,7 +319,7 @@ export const anonymizeSnsSummary = async (
 ): Promise<AnonymizedSnsSummary | undefined> => {
   if (originalSummary !== undefined && originalSummary !== null) {
     const anonymizedBuyers = await mapPromises(
-      originalSummary?.swap.state.buyers,
+      originalSummary?.swap.buyers,
       anonymizeBuyer
     );
     return {
@@ -324,10 +328,7 @@ export const anonymizeSnsSummary = async (
       swapCanisterId: await anonymize(originalSummary.swapCanisterId),
       swap: {
         ...originalSummary.swap,
-        state: {
-          ...originalSummary.swap.state,
-          buyers: anonymizedBuyers,
-        } as SnsSwapState,
+        buyers: anonymizedBuyers ?? [],
       },
       derived: {
         ...originalSummary.derived,
@@ -352,18 +353,21 @@ export const anonymizeSnsSwapCommitment = async (
     originalSwapCommitment !== null &&
     originalSwapCommitment.myCommitment !== undefined
   ) {
+    const commitment = originalSwapCommitment.myCommitment.icp[0];
     return {
       rootCanisterId: await anonymize(originalSwapCommitment.rootCanisterId),
       myCommitment: {
-        ...originalSwapCommitment.myCommitment,
-        amount_sns_e8s:
-          (await anonymizeAmount(
-            originalSwapCommitment.myCommitment?.amount_sns_e8s
-          )) ?? BigInt(0),
-        amount_icp_e8s:
-          (await anonymizeAmount(
-            originalSwapCommitment.myCommitment?.amount_icp_e8s
-          )) ?? BigInt(0),
+        icp:
+          commitment !== undefined
+            ? [
+                {
+                  ...commitment,
+                  amount_e8s: (await anonymizeAmount(
+                    commitment.amount_e8s
+                  )) as bigint,
+                },
+              ]
+            : [],
       },
     };
   }

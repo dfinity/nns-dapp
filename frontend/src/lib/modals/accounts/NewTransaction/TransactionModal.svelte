@@ -1,13 +1,17 @@
 <script lang="ts">
-  import WizardModal from "../../WizardModal.svelte";
+  import LegacyWizardModal from "../../LegacyWizardModal.svelte";
   import type { Step, Steps } from "../../../stores/steps.state";
   import type { Account } from "../../../types/account";
   import TransactionForm from "./TransactionForm.svelte";
   import TransactionReview from "./TransactionReview.svelte";
+  import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
+  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
 
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
+  export let token: Token = ICPToken;
+  export let transactionFee: TokenAmount = $mainTransactionFeeStoreAsToken;
   export let disableSubmit: boolean = false;
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
@@ -27,7 +31,7 @@
     },
   ];
 
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
 
   // If destination or source are passed as prop, they are used.
   // But the component doesn't bind them to the props.
@@ -47,18 +51,20 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
       {canSelectDestination}
       {canSelectSource}
+      {transactionFee}
       bind:selectedDestinationAddress
       bind:selectedAccount
       bind:amount
       bind:showManualAddress
       {skipHardwareWallets}
       {maxAmount}
+      {token}
       on:nnsNext={goNext}
       on:nnsClose
     >
@@ -72,6 +78,7 @@
         sourceAccount: selectedAccount,
         amount,
       }}
+      {transactionFee}
       {disableSubmit}
       on:nnsBack={goBack}
       on:nnsSubmit
@@ -82,4 +89,4 @@
       <slot name="description" slot="description" />
     </TransactionReview>
   {/if}
-</WizardModal>
+</LegacyWizardModal>

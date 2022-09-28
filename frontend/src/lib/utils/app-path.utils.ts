@@ -1,37 +1,41 @@
 import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
+import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
-import { memoize } from "./optimization.utils";
+
+const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPath.Wallet]: `${AppPath.Wallet}/[a-zA-Z0-9]+`,
+  [AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${IDENTIFIER_REGEX}`,
+  [AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
-  [AppPath.Neurons]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/neurons`,
-  [AppPath.Accounts]: `${CONTEXT_PATH}/[a-zA-Z0-9-]+/accounts`,
-  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/[a-zA-Z0-9-]+`,
-  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+`,
-  [AppPath.NeuronDetail]: `${AppPath.ProjectDetail}/[a-zA-Z0-9-]+/neuron/[a-zA-Z0-9-]+`,
+  [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
+  [AppPath.Accounts]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/accounts`,
+  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
+  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
-  Boolean(
-    Object.values(AppPath).find((path) => isRoutePath({ path, routePath }))
-  );
+  isRoutePath({ paths: Object.values(AppPath), routePath });
 
-export const isRoutePath: ({
-  path,
+export const isRoutePath = ({
+  paths,
   routePath,
 }: {
-  path: AppPath;
-  routePath: string | undefined;
-}) => boolean = memoize(({ path, routePath }) =>
-  new RegExp(`^${pathValidation(path)}$`).test(routePath)
-);
+  paths: AppPath[];
+  routePath?: string;
+}): boolean =>
+  routePath !== undefined
+    ? paths.some((path) =>
+        new RegExp(`^${pathValidation(path)}$`).test(routePath)
+      )
+    : false;
 
-const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/[a-zA-Z0-9-]+`);
+const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
 
 /**
  * Returns the path after the context.
@@ -135,20 +139,31 @@ const checkContextPathExceptions = ({
   path: string;
   newContext: string;
 }): string => {
-  if (isRoutePath({ path: AppPath.LegacyNeurons, routePath: path })) {
+  if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/neurons`;
   }
-  if (isRoutePath({ path: AppPath.LegacyAccounts, routePath: path })) {
+  if (isRoutePath({ paths: [AppPath.LegacyAccounts], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/accounts`;
   }
   if (
     isRoutePath({
-      path: AppPath.LegacyNeuronDetail,
+      paths: [AppPath.LegacyNeuronDetail],
       routePath: path,
     })
   ) {
     const neuronId = routePathNeuronId(path);
     return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
+  }
+  if (
+    isRoutePath({
+      paths: [AppPath.LegacyWallet],
+      routePath: path,
+    })
+  ) {
+    const routeAccountIdentifier = routePathAccountIdentifier(path);
+    if (routeAccountIdentifier !== undefined) {
+      return `${CONTEXT_PATH}/${newContext}/wallet/${routeAccountIdentifier.accountIdentifier}`;
+    }
   }
   // Returns same path if no exception
   return path;

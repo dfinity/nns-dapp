@@ -20,7 +20,7 @@ import { authStore } from "../../../../lib/stores/auth.store";
 import { routeStore } from "../../../../lib/stores/route.store";
 import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { nowInSeconds } from "../../../../lib/utils/date.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
 import { getSnsNeuronIdAsHexString } from "../../../../lib/utils/sns-neuron.utils";
 import {
   mockAuthStoreSubscribe,
@@ -114,7 +114,7 @@ describe("SnsNeuronCard", () => {
     token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
 
-    const stakeText = formatICP({
+    const stakeText = formatToken({
       value:
         mockSnsNeuron.cached_neuron_stake_e8s - mockSnsNeuron.neuron_fees_e8s,
       detailed: true,

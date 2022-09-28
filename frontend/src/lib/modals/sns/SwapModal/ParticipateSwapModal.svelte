@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "../../../types/project-detail.context";
-  import type { SnsSwapInit } from "@dfinity/sns";
+  import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
@@ -23,7 +23,6 @@
   } from "../../../services/sns.services";
   import { toastsSuccess } from "../../../stores/toasts.store";
   import type { NewTransaction } from "../../../types/transaction.context";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
 
@@ -50,9 +49,9 @@
         : undefined;
   })();
 
-  let init: SnsSwapInit;
+  let params: SnsParams;
   $: ({
-    swap: { init },
+    swap: { params },
   } = summary);
 
   let currentStep: Step;
@@ -76,7 +75,7 @@
   $: minCommitment = TokenAmount.fromE8s({
     amount: userHasParticipatedToSwap
       ? BigInt(0)
-      : init.min_participant_icp_e8s,
+      : params.min_participant_icp_e8s,
   });
 
   let accepted: boolean;
@@ -91,7 +90,9 @@
       });
       const { success } = await participateInSwap({
         account: sourceAccount,
-        amount: convertNumberToICP(amount),
+        // If we made it here, we know that the amount is valid
+        // TODO: change fromNumber return type
+        amount: TokenAmount.fromNumber({ amount }) as TokenAmount,
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
       if (success) {

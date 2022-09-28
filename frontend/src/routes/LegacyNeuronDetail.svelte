@@ -12,7 +12,7 @@
     if (
       ENABLE_SNS &&
       isRoutePath({
-        path: AppPath.LegacyNeuronDetail,
+        paths: [AppPath.LegacyNeuronDetail],
         routePath: $routeStore.path,
       })
     ) {

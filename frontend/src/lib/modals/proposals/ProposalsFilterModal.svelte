@@ -94,12 +94,12 @@
     </div>
   {/if}
 
-  <svelte:fragment slot="toolbar">
-    <button class="secondary small" type="button" on:click={close}>
+  <svelte:fragment slot="footer">
+    <button class="secondary" type="button" on:click={close}>
       {$i18n.core.cancel}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="button"
       on:click={filter}
       data-tid="apply-proposals-filter"

@@ -15,6 +15,7 @@
   import { isNullish } from "../../utils/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
+  import { getCommitmentE8s } from "../../utils/sns.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -24,7 +25,7 @@
   $: swapCommitment = $projectDetailStore.swapCommitment;
 
   let myCommitment: bigint | undefined;
-  $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
+  $: myCommitment = getCommitmentE8s(swapCommitment);
 
   let myCommitmentIcp: TokenAmount | undefined;
   $: myCommitmentIcp =
@@ -39,9 +40,7 @@
 
   let lifecycle: number;
   $: ({
-    swap: {
-      state: { lifecycle },
-    },
+    swap: { lifecycle },
   } =
     $projectDetailStore.summary ??
     ({

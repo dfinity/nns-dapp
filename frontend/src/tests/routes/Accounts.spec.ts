@@ -15,6 +15,12 @@ import {
   mockSnsFullProject,
 } from "../mocks/sns-projects.mock";
 
+jest.mock("../../lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Accounts", () => {
   jest
     .spyOn(committedProjectsStore, "subscribe")

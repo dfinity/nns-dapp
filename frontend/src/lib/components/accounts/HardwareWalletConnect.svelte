@@ -57,11 +57,11 @@
 
   {#if !disabled}
     <FooterModal>
-      <button class="secondary small" type="button" on:click={back}>
+      <button class="secondary" type="button" on:click={back}>
         {$i18n.accounts.edit_name}
       </button>
       <button
-        class="primary small"
+        class="primary"
         type="submit"
         {disabled}
         data-tid="ledger-attach-button"

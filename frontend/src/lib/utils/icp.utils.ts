@@ -1,10 +1,9 @@
-import { ICP, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
 } from "../constants/icp.constants";
-import { InvalidAmountError } from "../types/neurons.errors";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -21,7 +20,7 @@ const countDecimals = (value: number): number => {
  * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
  * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
  */
-export const formatICP = ({
+export const formatToken = ({
   value,
   detailed = false,
 }: {
@@ -70,8 +69,11 @@ export const sumTokenAmounts = (
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (fee: number): string =>
-  formatICP({
-    value: ICP.fromE8s(BigInt(fee)).toE8s(),
+  formatToken({
+    value: TokenAmount.fromE8s({
+      amount: BigInt(fee),
+      token: ICPToken,
+    }).toE8s(),
   });
 
 /**
@@ -102,17 +104,6 @@ export const getMaxTransactionAmount = ({
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);
-
-const ICP_DECIMAL_ACCURACY = 8;
-export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(amount.toFixed(ICP_DECIMAL_ACCURACY));
-
-  if (!(stake instanceof ICP) || stake === undefined) {
-    throw new InvalidAmountError();
-  }
-
-  return stake;
-};
 
 // `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
 // This value reflects the current market price of one ICP token.

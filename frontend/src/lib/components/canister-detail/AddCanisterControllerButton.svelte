@@ -10,7 +10,7 @@
 <button
   data-tid="add-canister-controller-button"
   on:click={openModal}
-  class="primary small">{$i18n.canister_detail.add_controller}</button
+  class="primary">{$i18n.canister_detail.add_controller}</button
 >
 
 {#if showModal}

@@ -3,6 +3,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
+import type { SnsSummarySwap } from "../../lib/types/sns";
 import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
@@ -14,6 +15,13 @@ import {
   summaryForLifecycle,
 } from "./sns-projects.mock";
 import { swapCanisterIdMock } from "./sns.api.mock";
+
+const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
+  {
+    ...swap,
+    params: [{ ...swap.params }],
+  },
+];
 
 export const snsResponsesForLifecycle = ({
   certified = false,
@@ -33,12 +41,7 @@ export const snsResponsesForLifecycle = ({
     ...lifecycles.map((lifecycle, i) => ({
       rootCanisterId: principal(i).toText(),
       swapCanisterId: swapCanisterIdMock,
-      swap: [
-        {
-          init: [summaryForLifecycle(lifecycle).swap.init],
-          state: [summaryForLifecycle(lifecycle).swap.state],
-        },
-      ] as [SnsSwap],
+      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
       derived: [mockDerived] as [SnsSwapDerivedState],
       certified,
     })),

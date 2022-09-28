@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { i18n } from "../../stores/i18n";
@@ -57,9 +56,7 @@
 
   const dispatcher = createEventDispatcher();
   const selectAmount = () => {
-    dispatcher("nnsSelectAmount", {
-      amount: ICP.fromString(String(amount)),
-    });
+    dispatcher("nnsSelectAmount");
   };
 
   let enoughCycles: boolean;
@@ -104,14 +101,14 @@
   <FooterModal>
     <button
       type="button"
-      class="secondary small"
+      class="secondary"
       data-tid="select-cycles-button-back"
       on:click={() => dispatcher("nnsBack")}
       >{$i18n.canisters.edit_source}</button
     >
     <button
       type="submit"
-      class="primary small"
+      class="primary"
       on:click={selectAmount}
       data-tid="select-cycles-button"
       disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button

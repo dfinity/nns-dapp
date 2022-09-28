@@ -5,21 +5,14 @@
     SnsSwapCommitment,
     SnsSummarySwap,
   } from "../../types/sns";
-  import {
-    durationTillSwapDeadline,
-    openTimeWindow,
-  } from "../../utils/projects.utils";
+  import { durationTillSwapDeadline } from "../../utils/projects.utils";
   import { TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import { secondsToDuration } from "../../utils/date.utils";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import DateSeconds from "../ui/DateSeconds.svelte";
-  import {
-    SnsSwapLifecycle,
-    type SnsSwapState,
-    type SnsSwapTimeWindow,
-  } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
   import ProjectUserCommitmentLabel from "../project-detail/ProjectUserCommitmentLabel.svelte";
+  import { getCommitmentE8s } from "../../utils/sns.utils";
 
   export let project: SnsFullProject;
 
@@ -30,31 +23,23 @@
   let swap: SnsSummarySwap;
   $: ({ swap } = summary);
 
-  let state: SnsSwapState;
-  $: ({ state } = swap);
-
   let lifecycle: number;
-  $: lifecycle = state.lifecycle;
+  $: ({
+    swap: { lifecycle },
+  } = summary);
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 
-  let timeWindow: SnsSwapTimeWindow | undefined;
-  $: timeWindow = openTimeWindow(swap);
-
-  let start_timestamp_seconds: bigint | undefined;
-  $: ({ start_timestamp_seconds } = timeWindow ?? {
-    start_timestamp_seconds: undefined,
-    end_timestamp_seconds: undefined,
-  });
-
-  export let myCommitment: TokenAmount | undefined = undefined;
-  $: myCommitment =
-    swapCommitment?.myCommitment === undefined
-      ? undefined
-      : TokenAmount.fromE8s({
-          amount: swapCommitment.myCommitment.amount_icp_e8s,
-        });
+  let myCommitment: TokenAmount | undefined = undefined;
+  $: {
+    const commitmentE8s = getCommitmentE8s(swapCommitment);
+    if (commitmentE8s !== undefined) {
+      myCommitment = TokenAmount.fromE8s({
+        amount: commitmentE8s,
+      });
+    }
+  }
 </script>
 
 <dl>
@@ -68,12 +53,6 @@
   {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
     <dt>{$i18n.sns_project_detail.deadline}</dt>
     <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
-  {/if}
-
-  <!-- Sale starts soon -->
-  {#if lifecycle === SnsSwapLifecycle.Pending && start_timestamp_seconds !== undefined}
-    <dt>{$i18n.sns_project_detail.sale_start}</dt>
-    <DateSeconds tagName="dd" seconds={Number(start_timestamp_seconds)} />
   {/if}
 
   {#if myCommitment !== undefined}

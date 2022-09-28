@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { AccountIdentifier, ICP, ICPToken, TokenAmount } from "@dfinity/nns";
+import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import * as api from "../../../lib/api/sns.api";
@@ -36,12 +36,16 @@ describe("sns-services", () => {
     });
     // Prepare project data
     querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = BigInt(0);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
       BigInt(20_000_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
       BigInt(10_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+    querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
       BigInt(200_000_000_000);
+
+    beforeEach(() => {
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
 
     afterEach(() => {
       jest.clearAllMocks();
@@ -55,7 +59,10 @@ describe("sns-services", () => {
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         rootCanisterId,
         account: mockMainAccount,
       });
@@ -64,7 +71,7 @@ describe("sns-services", () => {
       expect(syncAccounts).toBeCalled();
     });
 
-    it.only("should return true when last commitment and still sync accounts", async () => {
+    it("should return true when last commitment and still sync accounts", async () => {
       const maxE8s = BigInt(1_000_000_000);
       const participationE8s = BigInt(150_000_000);
       const currentE8s = BigInt(850_000_000);
@@ -74,11 +81,11 @@ describe("sns-services", () => {
       });
       // Prepare project data
       querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = currentE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s = maxE8s;
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s = maxE8s;
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
@@ -91,7 +98,10 @@ describe("sns-services", () => {
           )
         );
       const { success } = await participateInSwap({
-        amount: ICP.fromE8s(participationE8s),
+        amount: TokenAmount.fromE8s({
+          amount: participationE8s,
+          token: ICPToken,
+        }),
         rootCanisterId,
         account: mockMainAccount,
       });
@@ -105,9 +115,12 @@ describe("sns-services", () => {
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.reject(undefined));
+        .mockImplementation(() => Promise.reject(new Error("test")));
       const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         rootCanisterId,
         account: mockMainAccount,
       });
@@ -121,12 +134,12 @@ describe("sns-services", () => {
         certified: true,
         lifecycles: [SnsSwapLifecycle.Open],
       });
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         BigInt(20_000_000_000);
       const minimumE8s = BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         minimumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
@@ -134,7 +147,10 @@ describe("sns-services", () => {
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
-        amount: ICP.fromE8s(minimumE8s - BigInt(10_000)),
+        amount: TokenAmount.fromE8s({
+          amount: minimumE8s - BigInt(10_000),
+          token: ICPToken,
+        }),
         rootCanisterId,
         account: mockMainAccount,
       });
@@ -149,11 +165,11 @@ describe("sns-services", () => {
         lifecycles: [SnsSwapLifecycle.Open],
       });
       const maximumE8s = BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_participant_icp_e8s =
         maximumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.min_participant_icp_e8s =
         BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
+      querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s =
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
@@ -161,7 +177,10 @@ describe("sns-services", () => {
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
-        amount: ICP.fromE8s(maximumE8s + BigInt(10_000)),
+        amount: TokenAmount.fromE8s({
+          amount: maximumE8s + BigInt(10_000),
+          token: ICPToken,
+        }),
         rootCanisterId,
         account: mockMainAccount,
       });
@@ -183,11 +202,13 @@ describe("sns-services", () => {
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
-        amount: ICP.fromE8s(
-          account.balance.toE8s() +
+        amount: TokenAmount.fromE8s({
+          amount:
+            account.balance.toE8s() +
             BigInt(DEFAULT_TRANSACTION_FEE_E8S) +
-            BigInt(10_000)
-        ),
+            BigInt(10_000),
+          token: ICPToken,
+        }),
         rootCanisterId,
         account,
       });
@@ -203,7 +224,10 @@ describe("sns-services", () => {
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         rootCanisterId,
         account: mockMainAccount,
       });

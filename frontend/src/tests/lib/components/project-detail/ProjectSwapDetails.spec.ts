@@ -4,11 +4,11 @@
 
 import ProjectSwapDetails from "../../../../lib/components/project-detail/ProjectSwapDetails.svelte";
 import type { SnsSwapCommitment } from "../../../../lib/types/sns";
+import { secondsToDate, secondsToTime } from "../../../../lib/utils/date.utils";
 import {
   mockSnsFullProject,
+  mockSnsParams,
   mockSummary,
-  mockSwapInit,
-  mockSwapTimeWindowText,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
@@ -21,11 +21,13 @@ describe("ProjectSwapDetails", () => {
     });
 
     const element = Array.from(
-      container.querySelectorAll('[data-tid="icp-value"]')
+      container.querySelectorAll('[data-tid="token-value"]')
     )[0];
 
     expect(element?.innerHTML).toEqual(
-      `${(Number(mockSwapInit.min_participant_icp_e8s) / 100000000).toFixed(2)}`
+      `${(Number(mockSnsParams.min_participant_icp_e8s) / 100000000).toFixed(
+        2
+      )}`
     );
   });
 
@@ -37,43 +39,30 @@ describe("ProjectSwapDetails", () => {
     });
 
     const element = Array.from(
-      container.querySelectorAll('[data-tid="icp-value"]')
+      container.querySelectorAll('[data-tid="token-value"]')
     )[1];
 
     expect(element?.innerHTML).toEqual(
-      `${(Number(mockSwapInit.max_participant_icp_e8s) / 100000000).toFixed(2)}`
-    );
-  });
-
-  it("should render sale start", () => {
-    const { container } = renderContextCmp({
-      summary: mockSummary,
-      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-      Component: ProjectSwapDetails,
-    });
-
-    const element = Array.from(
-      container.querySelectorAll('[data-tid="date-seconds"]')
-    )[0];
-
-    expect(element?.innerHTML).toEqual(
-      mockSwapTimeWindowText.start_timestamp_seconds
+      `${(Number(mockSnsParams.max_participant_icp_e8s) / 100000000).toFixed(
+        2
+      )}`
     );
   });
 
   it("should render sale end", () => {
-    const { container } = renderContextCmp({
+    const { queryByTestId } = renderContextCmp({
       summary: mockSummary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectSwapDetails,
     });
 
-    const element = Array.from(
-      container.querySelectorAll('[data-tid="date-seconds"]')
-    )[1];
+    const element = queryByTestId("date-seconds");
 
+    const seconds = Number(
+      mockSnsFullProject.summary.swap.params.swap_due_timestamp_seconds
+    );
     expect(element?.innerHTML).toEqual(
-      mockSwapTimeWindowText.end_timestamp_seconds
+      `${secondsToDate(seconds)} ${secondsToTime(seconds)}`
     );
   });
 });

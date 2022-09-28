@@ -18,7 +18,10 @@
   onMount(() => {
     if (
       ENABLE_SNS &&
-      isRoutePath({ path: AppPath.LegacyNeurons, routePath: $routeStore.path })
+      isRoutePath({
+        paths: [AppPath.LegacyNeurons],
+        routePath: $routeStore.path,
+      })
     ) {
       routeStore.changeContext(OWN_CANISTER_ID.toText());
     }

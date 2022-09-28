@@ -5,7 +5,6 @@
   import FooterModal from "../../FooterModal.svelte";
   import { busy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
   import type { Account } from "../../../types/account";
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
@@ -13,6 +12,7 @@
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
+  export let transactionFee: TokenAmount;
 
   let sourceAccount: Account;
   let amount: number;
@@ -20,8 +20,8 @@
   $: ({ sourceAccount, amount, destinationAddress } = transaction);
 
   // If we made it this far, the number is valid.
-  let icpAmount: TokenAmount;
-  $: icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+  let tokenAmount: TokenAmount;
+  $: tokenAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -58,9 +58,9 @@
         <IconSouth />
       </span>
       <div class="align-right">
-        <AmountDisplay amount={icpAmount} inline />
+        <AmountDisplay amount={tokenAmount} inline />
         <span>
-          <AmountDisplay amount={$mainTransactionFeeStoreAsToken} singleLine />
+          <AmountDisplay amount={transactionFee} singleLine />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>
@@ -80,12 +80,12 @@
     <slot name="additional-info" />
     <FooterModal>
       <button
-        class="small secondary"
+        class="secondary"
         data-tid="transaction-button-back"
         on:click={back}>{$i18n.accounts.edit_transaction}</button
       >
       <button
-        class="small primary"
+        class="primary"
         data-tid="transaction-button-execute"
         disabled={$busy || disableSubmit}
         on:click={submit}>{$i18n.accounts.execute}</button
