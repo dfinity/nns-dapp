@@ -1,6 +1,7 @@
 <script lang="ts">
   import { translate } from "../../utils/i18n.utils";
   import { isValidICPFormat } from "../../utils/icp.utils";
+  import { Input } from "@dfinity/gix-components";
 
   // To show undefined as "" (because of the type="text")
   const fixUndefinedValue = (value: string | number | undefined): string =>
@@ -71,6 +72,9 @@
   };
 
   const handleInput = ({ currentTarget }: InputEventHandler) => {
+
+    console.log('handeInput', inputType)
+
     if (inputType === "icp") {
       const currentValue = currentTarget.value;
 
@@ -120,88 +124,26 @@
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
-<div class="input-block" class:disabled>
-  {#if showInfo}
-    <div class="info">
-      <label class="label" for={name}><slot name="label" /></label>
-      <slot name="additional" />
-    </div>
-  {/if}
-  <input
-    data-tid="input-ui-element"
-    type={inputType === "icp" ? "text" : inputType}
-    bind:this={inputElement}
-    {required}
-    {spellcheck}
-    {name}
-    id={name}
-    {step}
-    {disabled}
-    value={inputType === "icp" ? icpValue : value}
-    {minLength}
-    {placeholder}
-    {max}
-    {autocomplete}
-    on:blur
-    on:focus
-    on:input={handleInput}
-    on:keydown={handleKeyDown}
-  />
-</div>
-
-<style lang="scss">
-  @use "../../themes/mixins/form";
-
-  .input-block {
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--padding);
-
-    width: var(--input-width);
-
-    --disabled-color: var(--disable-contrast);
-
-    &.disabled {
-      color: var(--disabled-color);
-
-      input {
-        border: 1px solid var(--disabled-color);
-      }
-    }
-
-    color: var(--background-contrast);
-    background: none;
-  }
-
-  .info {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  input {
-    @include form.input;
-    width: 100%;
-
-    font-size: inherit;
-
-    padding: var(--padding-2x);
-    box-sizing: border-box;
-
-    box-shadow: var(--current-box-inset-shadow);
-
-    border-radius: var(--element-border-radius);
-
-    outline: none;
-  }
-
-  input:focus {
-    border: 1px solid var(--primary);
-  }
-
-  input[disabled] {
-    cursor: text;
-  }
-</style>
+<Input
+  testId="input-ui-element"
+  inputType={inputType === "icp" ? "text" : inputType}
+  bind:inputElement
+  {required}
+  {spellcheck}
+  {name}
+  {step}
+  {disabled}
+  value={inputType === "icp" ? icpValue : value}
+  {minLength}
+  {placeholder}
+  {max}
+  {autocomplete}
+  on:blur
+  on:focus
+  on:input={handleInput}
+  on:keydown={handleKeyDown}
+  {showInfo}
+>
+  <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
+  <svelte:fragment slot="additional"><slot name="additional" /></svelte:fragment>
+</Input>
