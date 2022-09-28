@@ -1,13 +1,10 @@
 <script lang="ts">
-  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
+  import { type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "../../../stores/i18n";
   import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import {
-    mapProposalInfo,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
+  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
   import { busy } from "../../../stores/busy.store";
   import { Spinner } from "@dfinity/gix-components";
   import type { VoteRegistration } from "../../../stores/vote-registration.store";
@@ -16,10 +13,6 @@
 
   export let proposalInfo: ProposalInfo;
   export let voteRegistration: VoteRegistration | undefined = undefined;
-
-  let id: ProposalId | undefined;
-  let topic: string | undefined;
-  $: ({ id, topic } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
   let disabled: boolean = true;
