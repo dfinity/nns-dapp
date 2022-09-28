@@ -12,7 +12,6 @@
   import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "../../components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-  import { valueSpan } from "../../utils/utils";
 
   export let neuron: NeuronInfo;
 
@@ -93,19 +92,3 @@
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>
-
-<style lang="scss">
-  h4 {
-    text-align: center;
-  }
-
-  .confirm-answer {
-    margin: 0;
-    text-align: center;
-  }
-
-  .confirm {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
