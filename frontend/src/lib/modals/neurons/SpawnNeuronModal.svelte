@@ -52,6 +52,7 @@
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
+
   const spawnNeuronFromMaturity = async () => {
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
 
@@ -87,7 +88,6 @@
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
-      on:nnsBack={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
