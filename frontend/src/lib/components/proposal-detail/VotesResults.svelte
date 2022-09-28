@@ -23,12 +23,12 @@
       {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
     </h4>
     <div
-            class="progressbar"
-            role="progressbar"
-            aria-label={$i18n.proposal_detail__vote.vote_progress}
-            aria-valuenow={yes}
-            aria-valuemin={0}
-            aria-valuemax={sum}
+      class="progressbar"
+      role="progressbar"
+      aria-label={$i18n.proposal_detail__vote.vote_progress}
+      aria-valuenow={yes}
+      aria-valuemin={0}
+      aria-valuemax={sum}
     >
       <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
     </div>

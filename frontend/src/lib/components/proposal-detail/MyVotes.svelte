@@ -49,9 +49,9 @@
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li
-                data-tid="neuron-data"
-                aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
-                title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          data-tid="neuron-data"
+          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
         >
           <p class="value">{neuron.id}</p>
           <p class="vote-details">

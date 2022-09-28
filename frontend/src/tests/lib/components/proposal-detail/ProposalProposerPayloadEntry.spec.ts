@@ -32,7 +32,7 @@ describe("ProposalProposerActionsEntry", () => {
   it("should render nnsFunction id", () => {
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction
+        proposal: proposalWithNnsFunctionAction,
       },
     });
 
@@ -51,7 +51,7 @@ describe("ProposalProposerActionsEntry", () => {
   it("should render nnsFunction name", () => {
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction
+        proposal: proposalWithNnsFunctionAction,
       },
     });
 
@@ -68,7 +68,7 @@ describe("ProposalProposerActionsEntry", () => {
 
     render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithNnsFunctionAction
+        proposal: proposalWithNnsFunctionAction,
       },
     });
 

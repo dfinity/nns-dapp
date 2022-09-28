@@ -24,7 +24,7 @@ describe("VotingConfirmationToolbar", () => {
   };
 
   const props = {
-    proposalInfo: mockProposalInfo
+    proposalInfo: mockProposalInfo,
   };
 
   beforeEach(() => {
