@@ -133,11 +133,11 @@ export const mergeMaturity = async ({
 
 export const stakeMaturity = async ({
   neuronId,
-  percentageToMerge,
+  percentageToStake,
   identity,
 }: {
   neuronId: NeuronId;
-  percentageToMerge: number;
+  percentageToStake: number;
   identity: Identity;
 }): Promise<void> => {
   logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) call...`);
@@ -146,7 +146,7 @@ export const stakeMaturity = async ({
     canister: { stakeMaturity },
   } = await governanceCanister({ identity });
 
-  await stakeMaturity({ neuronId, percentageToMerge });
+  await stakeMaturity({ neuronId, percentageToStake });
 
   logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
 };

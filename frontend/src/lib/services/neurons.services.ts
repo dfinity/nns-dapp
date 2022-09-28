@@ -1,33 +1,33 @@
-import { AnonymousIdentity,type Identity } from "@dfinity/agent";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
-ICPToken,
-TokenAmount,
-Topic,
-type NeuronId,
-type NeuronInfo
+  ICPToken,
+  TokenAmount,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
-addHotkey as addHotkeyApi,
-claimOrRefreshNeuron,
-disburse as disburseApi,
-increaseDissolveDelay,
-joinCommunityFund,
-leaveCommunityFund,
-mergeMaturity as mergeMaturityApi,
-stakeMaturity as stakeMaturityApi,
-mergeNeurons as mergeNeuronsApi,
-queryNeuron,
-queryNeurons,
-removeHotkey as removeHotkeyApi,
-setFollowees,
-spawnNeuron as spawnNeuronApi,
-splitNeuron as splitNeuronApi,
-stakeNeuron as stakeNeuronApi,
-startDissolving as startDissolvingApi,
-stopDissolving as stopDissolvingApi
+  addHotkey as addHotkeyApi,
+  claimOrRefreshNeuron,
+  disburse as disburseApi,
+  increaseDissolveDelay,
+  joinCommunityFund,
+  leaveCommunityFund,
+  mergeMaturity as mergeMaturityApi,
+  mergeNeurons as mergeNeuronsApi,
+  queryNeuron,
+  queryNeurons,
+  removeHotkey as removeHotkeyApi,
+  setFollowees,
+  spawnNeuron as spawnNeuronApi,
+  splitNeuron as splitNeuronApi,
+  stakeMaturity as stakeMaturityApi,
+  stakeNeuron as stakeNeuronApi,
+  startDissolving as startDissolvingApi,
+  stopDissolving as stopDissolvingApi,
 } from "../api/governance.api";
 import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "../constants/environment.constants";
@@ -36,41 +36,41 @@ import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
 import { AppPath } from "../constants/routes.constants";
 import type { LedgerIdentity } from "../identities/ledger.identity";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { startBusy,stopBusy } from "../stores/busy.store";
-import { definedNeuronsStore,neuronsStore } from "../stores/neurons.store";
-import { toastsError,toastsShow,toastsSuccess } from "../stores/toasts.store";
+import { startBusy, stopBusy } from "../stores/busy.store";
+import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
+import { toastsError, toastsShow, toastsSuccess } from "../stores/toasts.store";
 import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
 import type { Account } from "../types/account";
 import { InsufficientAmountError } from "../types/common.errors";
 import {
-CannotBeMerged,
-NotAuthorizedNeuronError,
-NotFoundError
+  CannotBeMerged,
+  NotAuthorizedNeuronError,
+  NotFoundError,
 } from "../types/neurons.errors";
 import {
-assertEnoughAccountFunds,
-isAccountHardwareWallet
+  assertEnoughAccountFunds,
+  isAccountHardwareWallet,
 } from "../utils/accounts.utils";
-import { getLastPathDetailId,isRoutePath } from "../utils/app-path.utils";
+import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
 import {
-canBeMerged,
-followeesByTopic,
-hasJoinedCommunityFund,
-isEnoughToStakeNeuron,
-isHotKeyControllable,
-isIdentityController,
-userAuthorizedNeuron
+  canBeMerged,
+  followeesByTopic,
+  hasJoinedCommunityFund,
+  isEnoughToStakeNeuron,
+  isHotKeyControllable,
+  isIdentityController,
+  userAuthorizedNeuron,
 } from "../utils/neuron.utils";
 import {
-getAccountIdentity,
-getAccountIdentityByPrincipal,
-syncAccounts
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  syncAccounts,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { assertLedgerVersion } from "./ledger.services";
-import { queryAndUpdate,type QueryAndUpdateStrategy } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -606,17 +606,17 @@ export const mergeMaturity = async ({
 
 export const stakeMaturity = async ({
   neuronId,
-  percentageToMerge,
+  percentageToStake,
 }: {
   neuronId: NeuronId;
-  percentageToMerge: number;
+  percentageToStake: number;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
 
-    await stakeMaturityApi({ neuronId, percentageToMerge, identity });
+    await stakeMaturityApi({ neuronId, percentageToStake, identity });
 
     await getAndLoadNeuron(neuronId);
 

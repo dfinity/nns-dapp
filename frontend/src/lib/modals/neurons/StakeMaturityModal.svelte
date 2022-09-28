@@ -35,7 +35,7 @@
   let currentStep: Step;
   let modal: WizardModal;
 
-  let percentageToMerge: number = 0;
+  let percentageToStake: number = 0;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
@@ -45,7 +45,7 @@
 
     const { success } = await stakeMaturity({
       neuronId,
-      percentageToMerge,
+      percentageToStake,
     });
 
     if (success) {
@@ -71,8 +71,8 @@
       {neuron}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
-      bind:percentage={percentageToMerge}
-      disabled={percentageToMerge === 0}
+      bind:percentage={percentageToStake}
+      disabled={percentageToStake === 0}
     >
       <svelte:fragment slot="text">
         {$i18n.neuron_detail.stake_maturity_modal_description}
@@ -86,7 +86,7 @@
       {@html replacePlaceholders(
         $i18n.neuron_detail.stake_maturity_confirmation,
         {
-          $percentage: formatPercentage(percentageToMerge / 100, {
+          $percentage: formatPercentage(percentageToStake / 100, {
             minFraction: 0,
             maxFraction: 0,
           }),
