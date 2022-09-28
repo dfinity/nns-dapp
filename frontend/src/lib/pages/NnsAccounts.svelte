@@ -6,11 +6,11 @@
   import AccountCard from "../components/accounts/AccountCard.svelte";
   import { i18n } from "../stores/i18n";
   import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
   import type { TokenAmount } from "@dfinity/nns";
   import { sumTokenAmounts } from "../utils/icp.utils";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import AccountsTitle from "../components/accounts/AccountsTitle.svelte";
+  import { walletPathStore } from "../derived/paths.derived";
 
   let accounts: AccountsStore | undefined;
 
@@ -18,10 +18,8 @@
     async (storeData: AccountsStore) => (accounts = storeData)
   );
 
-  // TODO: Point to context based path when enabling SNS accounts
-  // https://dfinity.atlassian.net/browse/GIX-1013
   const cardClick = (identifier: string) =>
-    routeStore.navigate({ path: `${AppPath.LegacyWallet}/${identifier}` });
+    routeStore.navigate({ path: `${$walletPathStore}/${identifier}` });
 
   onDestroy(unsubscribe);
 

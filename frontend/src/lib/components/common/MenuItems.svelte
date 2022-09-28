@@ -19,21 +19,28 @@
   } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
   import GetICPs from "../ic/GetICPs.svelte";
+  import {
+    accountsPathStore,
+    neuronsPathStore,
+  } from "../../derived/paths.derived";
 
   const baseUrl: string = baseHref();
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
     isRoutePath({ paths, routePath: $routeStore.path });
 
-  const routes: {
+  let routes: {
     context: string;
+    href: string;
     selected: boolean;
     label: string;
     icon: typeof SvelteComponent;
     statusIcon?: typeof SvelteComponent;
-  }[] = [
+  }[];
+  $: routes = [
     {
       context: "accounts",
+      href: $accountsPathStore,
       selected: isSelectedPath([
         AppPath.Accounts,
         AppPath.LegacyAccounts,
@@ -45,6 +52,7 @@
     },
     {
       context: "neurons",
+      href: $neuronsPathStore,
       selected: isSelectedPath([
         AppPath.LegacyNeurons,
         AppPath.LegacyNeuronDetail,
@@ -56,12 +64,14 @@
     },
     {
       context: "proposals",
+      href: `${baseUrl}#/proposals`,
       selected: isSelectedPath([AppPath.Proposals, AppPath.ProposalDetail]),
       label: "voting",
       icon: IconHowToVote,
     },
     {
       context: "canisters",
+      href: `${baseUrl}#/canisters`,
       selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
       label: "canisters",
       icon: IconEngineering,
@@ -71,6 +81,7 @@
       ? [
           {
             context: "launchpad",
+            href: `${baseUrl}#/launchpad`,
             selected: isSelectedPath([
               AppPath.Launchpad,
               AppPath.ProjectDetail,
@@ -84,12 +95,8 @@
   ];
 </script>
 
-{#each routes as { context, label, icon, statusIcon, selected }}
-  <MenuItem
-    href={`${baseUrl}#/${context}`}
-    testId={`menuitem-${context}`}
-    {selected}
-  >
+{#each routes as { context, label, href, icon, statusIcon, selected } (context)}
+  <MenuItem {href} testId={`menuitem-${context}`} {selected}>
     <svelte:component this={icon} slot="icon" />
     <svelte:fragment>{$i18n.navigation[label]}</svelte:fragment>
     <svelte:component this={statusIcon} slot="statusIcon" />

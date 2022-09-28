@@ -4,7 +4,6 @@
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../components/common/Footer.svelte";
   import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
   import {
     getAccountTransactions,
     routePathAccountIdentifier,
@@ -28,6 +27,7 @@
   import { debugSelectedAccountStore } from "../stores/debug.store";
   import { layoutBackStore } from "../stores/layout.store";
   import IcpTransactionModal from "../modals/accounts/IcpTransactionModal.svelte";
+  import { accountsPathStore } from "../derived/paths.derived";
   import type {
     AccountIdentifierString,
     Transaction,
@@ -35,7 +35,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.LegacyAccounts,
+      path: $accountsPathStore,
     });
 
   layoutBackStore.set(goBack);
