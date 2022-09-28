@@ -257,7 +257,7 @@ export const detachCanister = async (
 export const routePathCanisterId = (
   path: string | undefined
 ): string | undefined => {
-  if (!isRoutePath({ path: AppPath.CanisterDetail, routePath: path })) {
+  if (!isRoutePath({ paths: [AppPath.CanisterDetail], routePath: path })) {
     return undefined;
   }
   const canisterId: string | undefined = getLastPathDetail(path);

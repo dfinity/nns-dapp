@@ -801,6 +801,8 @@ interface I18nNns_functions {
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
   ChangeSubnetMembership: string;
+  UpdateSubnetType: string;
+  ChangeSubnetTypeAssignment: string;
 }
 
 interface I18nNns_functions_description {
@@ -836,6 +838,8 @@ interface I18nNns_functions_description {
   CompleteCanisterMigration: string;
   AddSnsWasm: string;
   ChangeSubnetMembership: string;
+  UpdateSubnetType: string;
+  ChangeSubnetTypeAssignment: string;
 }
 
 interface I18n {

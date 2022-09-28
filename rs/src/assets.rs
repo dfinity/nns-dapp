@@ -163,6 +163,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "ico" => Some("image/x-icon"),
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
+        "txt" => Some("text/plain"),
         _ => None,
     })
 }

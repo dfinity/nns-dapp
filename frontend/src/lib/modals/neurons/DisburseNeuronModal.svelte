@@ -1,12 +1,11 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
-
   import { stopBusy } from "../../stores/busy.store";
   import { toastsSuccess } from "../../stores/toasts.store";
   import { routeStore } from "../../stores/route.store";
@@ -32,7 +31,7 @@
   ];
 
   let currentStep: Step;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
   let loading: boolean = false;
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
@@ -80,7 +79,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
@@ -98,4 +97,4 @@
       {destinationAddress}
     />
   {/if}
-</WizardModal>
+</LegacyWizardModal>

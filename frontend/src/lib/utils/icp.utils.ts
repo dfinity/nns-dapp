@@ -1,10 +1,9 @@
-import { ICP, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
 } from "../constants/icp.constants";
-import { InvalidAmountError } from "../types/neurons.errors";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -71,7 +70,10 @@ export const sumTokenAmounts = (
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (fee: number | bigint): string =>
   formatToken({
-    value: ICP.fromE8s(BigInt(fee)).toE8s(),
+    value: TokenAmount.fromE8s({
+      amount: BigInt(fee),
+      token: ICPToken,
+    }).toE8s(),
   });
 
 /**
@@ -102,17 +104,6 @@ export const getMaxTransactionAmount = ({
 
 export const isValidICPFormat = (text: string) =>
   /^[\d]*(\.[\d]{0,8})?$/.test(text);
-
-const ICP_DECIMAL_ACCURACY = 8;
-export const convertNumberToICP = (amount: number): ICP => {
-  const stake = ICP.fromString(amount.toFixed(ICP_DECIMAL_ACCURACY));
-
-  if (!(stake instanceof ICP) || stake === undefined) {
-    throw new InvalidAmountError();
-  }
-
-  return stake;
-};
 
 // `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
 // This value reflects the current market price of one ICP token.

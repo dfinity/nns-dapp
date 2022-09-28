@@ -19,7 +19,7 @@ import { swapCanisterIdMock } from "./sns.api.mock";
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {
     ...swap,
-    params: [swap.params],
+    params: [{ ...swap.params }],
   },
 ];
 

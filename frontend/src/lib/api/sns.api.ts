@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import type { ICP } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsNeuron,
@@ -247,7 +247,7 @@ export const participateInSnsSwap = async ({
   rootCanisterId,
   fromSubAccount,
 }: {
-  amount: ICP;
+  amount: TokenAmount;
   controller: Principal;
   identity: Identity;
   rootCanisterId: Principal;

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "../../stores/i18n";
-  import WizardModal from "../WizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import { toastsSuccess } from "../../stores/toasts.store";
@@ -21,6 +20,7 @@
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
   import { transactionsFeesStore } from "../../stores/transaction-fees.store";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
 
   export let neuron: SnsNeuron;
 
@@ -90,7 +90,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
@@ -106,4 +106,4 @@
       {fee}
     />
   {/if}
-</WizardModal>
+</LegacyWizardModal>

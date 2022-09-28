@@ -40,7 +40,6 @@ export const debugTransactionStore = (store: Writable<TransactionStore>) =>
 // Therefore, we need to initialize them here.
 let selectedAccountStore: Readable<SelectedAccountStore> = readable({
   account: undefined,
-  transactions: undefined,
 });
 export const debugSelectedAccountStore = (
   store: Writable<SelectedAccountStore>
