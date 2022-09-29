@@ -10,9 +10,9 @@
   import { toastsSuccess } from "../../stores/toasts.store";
   import { routeStore } from "../../stores/route.store";
   import { createEventDispatcher } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
   import { disburse } from "../../services/neurons.services";
   import { neuronStake } from "../../utils/neuron.utils";
+  import { neuronsPathStore } from "../../derived/paths.derived";
 
   export let neuron: NeuronInfo;
 
@@ -71,7 +71,7 @@
       });
 
       routeStore.replace({
-        path: AppPath.LegacyNeurons,
+        path: $neuronsPathStore,
       });
     }
 
