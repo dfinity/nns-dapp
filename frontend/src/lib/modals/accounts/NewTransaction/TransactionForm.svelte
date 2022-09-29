@@ -105,7 +105,7 @@
       <SelectAccountDropdown bind:selectedAccount />
     {:else}
       <div>
-        <p class="label">
+        <p>
           {selectedAccount?.name ?? $i18n.accounts.main}
         </p>
         <p class="account-identifier">
