@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXXXX
+* Upgrade nns-js, sns-js and utils-js.
+* Refactor to support multiple tokens in Accounts.
+* Extract CMC functionality to its own library cmc-js.
+* Add new proposal types.
+* UI fixes on iPad.
+* Add sitemap and robots.txt.
+
 ## Proposal 81792
 * New Voting screens:
   * refreshed design (new cards, new buttons’ color, etc.)
