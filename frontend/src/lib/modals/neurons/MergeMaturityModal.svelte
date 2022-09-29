@@ -67,7 +67,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.merge}
       on:nnsSelectPercentage={goToConfirm}
-      on:nnsBack={close}
+      on:nnsCancel={close}
       bind:percentage={percentageToMerge}
       disabled={percentageToMerge === 0}
     >

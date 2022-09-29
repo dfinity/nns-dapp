@@ -87,6 +87,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
+      on:nnsCancel={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >

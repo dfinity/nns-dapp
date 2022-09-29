@@ -73,7 +73,6 @@ const mapOptionalMetadata = ({
   const nullishDescription = fromNullable(description);
 
   if (
-    nullishLogo === undefined ||
     nullishUrl === undefined ||
     nullishName === undefined ||
     nullishDescription === undefined
@@ -82,7 +81,8 @@ const mapOptionalMetadata = ({
   }
 
   return {
-    logo: nullishLogo,
+    // TODO: Use default logo if logo is nullish https://dfinity.atlassian.net/browse/GIX-1048
+    logo: nullishLogo ?? "",
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
