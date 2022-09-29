@@ -80,6 +80,7 @@
       }}
       {transactionFee}
       {disableSubmit}
+      {token}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose
