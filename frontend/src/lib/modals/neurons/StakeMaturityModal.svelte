@@ -71,6 +71,7 @@
       {neuron}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
+      on:nnsCancel={close}
       bind:percentage={percentageToStake}
       disabled={percentageToStake === 0}
     >
