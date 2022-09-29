@@ -132,7 +132,7 @@
         </p>
         <div>
           <div>
-            <h5>{$i18n.accounts.source}</h5>
+            <p class="label">{$i18n.accounts.source}</p>
             <p class="value">{account?.identifier}</p>
           </div>
           <div>
