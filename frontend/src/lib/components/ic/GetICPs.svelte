@@ -4,9 +4,12 @@
    */
   import { Modal } from "@dfinity/gix-components";
   import Input from "../ui/Input.svelte";
-  import { getICPs } from "../../services/dev.services";
+  import { getICPs, getTokens } from "../../services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "../../stores/toasts.store";
+  import { get } from "svelte/store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
+  import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -22,12 +25,21 @@
     }
 
     const formData: FormData = new FormData(target);
-    const icps: number = formData.get("icp") as unknown as number;
+    const tokensNumber: number = formData.get("icp") as unknown as number;
 
     transferring = true;
 
+    const selectedProjectId = get(snsProjectSelectedStore);
+
     try {
-      await getICPs(icps);
+      if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
+        await getICPs(tokensNumber);
+      } else {
+        await getTokens({
+          tokens: tokensNumber,
+          rootCanisterId: selectedProjectId,
+        });
+      }
 
       reset();
     } catch (err: unknown) {
