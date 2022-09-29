@@ -81,7 +81,7 @@ const updateCSP = (content) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self' data: https://nns.raw.ic0.app/;
+        img-src 'self' data: https://nns.ic0.app/;
         child-src 'self';
         manifest-src 'self';
         script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(
