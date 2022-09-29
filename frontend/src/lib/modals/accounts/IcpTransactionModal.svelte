@@ -35,7 +35,7 @@
     const tokenAmount = TokenAmount.fromNumber({
       amount,
       token: ICPToken,
-    }) as TokenAmount;
+    });
 
     const { success } = await transferICP({
       selectedAccount: sourceAccount,

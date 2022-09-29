@@ -4,10 +4,12 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "../../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../../lib/types/sns";
+import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
+  durationTillSwapDeadline,
   filterActiveProjects,
   filterCommittedProjects,
   hasUserParticipatedToSwap,
@@ -98,62 +100,20 @@ describe("project-utils", () => {
     });
   });
 
-  // TODO: https://dfinity.atlassian.net/browse/GIX-1031
-  // describe("deadline", () => {
-  //   it("should return no duration until swap deadline", () =>
-  //     expect(
-  //       durationTillSwapDeadline({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return duration until swap deadline", () =>
-  //     expect(durationTillSwapDeadline(mockSwap)).toEqual(
-  //       (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //         .end_timestamp_seconds - BigInt(nowInSeconds())
-  //     ));
-
-  //   it("should return no swap duration", () =>
-  //     expect(
-  //       swapDuration({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return swap duration", () =>
-  //     expect(swapDuration(mockSwap)).toEqual(
-  //       (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //         .end_timestamp_seconds -
-  //         (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //           .start_timestamp_seconds
-  //     ));
-
-  //   it("should return no duration till swap", () =>
-  //     expect(
-  //       durationTillSwapStart({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return duration till swap", () =>
-  //     expect(durationTillSwapStart(mockSwap)).toEqual(
-  //       BigInt(nowInSeconds()) -
-  //         (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //           .start_timestamp_seconds
-  //     ));
-  // });
+  describe("durationTillSwapDeadline", () => {
+    it("should return duration until swap deadline", () => {
+      const dueSeconds = 3600;
+      const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);
+      const swap = {
+        ...mockSwap,
+        params: {
+          ...mockSnsParams,
+          swap_due_timestamp_seconds: dueTimestampSeconds,
+        },
+      };
+      expect(durationTillSwapDeadline(swap)).toEqual(BigInt(dueSeconds));
+    });
+  });
 
   describe("can user participate to swap", () => {
     it("cannot participate to swap if no summary or swap information", () => {
