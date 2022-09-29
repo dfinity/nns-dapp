@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
   import FooterModal from "../../FooterModal.svelte";
@@ -9,11 +9,11 @@
   import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
   import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
   import type { NewTransaction } from "../../../types/transaction.context";
-  import { snsTokenSymbolSelectedStore } from "../../../derived/sns/sns-token-symbol-selected.store";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
   export let transactionFee: TokenAmount;
+  export let token: Token;
 
   let sourceAccount: Account;
   let amount: number;
@@ -24,8 +24,7 @@
   let tokenAmount: TokenAmount;
   $: tokenAmount = TokenAmount.fromNumber({
     amount,
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    token,
   }) as TokenAmount;
 
   const dispatcher = createEventDispatcher();
