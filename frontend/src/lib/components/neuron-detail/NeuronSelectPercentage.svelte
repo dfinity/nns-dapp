@@ -16,9 +16,7 @@
   $: neuronICP = neuronStake(neuron);
 
   const dispatcher = createEventDispatcher();
-  const selectPercentage = async () => {
-    dispatcher("nnsSelectPercentage");
-  };
+  const selectPercentage = () => dispatcher("nnsSelectPercentage");
 </script>
 
 <KeyValuePair>
@@ -46,6 +44,9 @@
 </div>
 
 <div class="toolbar">
+  <button class="secondary" on:click={() => dispatcher("nnsCancel")}>
+    {$i18n.core.cancel}
+  </button>
   <button
     data-tid="select-maturity-percentage-button"
     class="primary"
