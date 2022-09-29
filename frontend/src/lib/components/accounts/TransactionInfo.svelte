@@ -29,10 +29,10 @@
 <p class="fee">
   <Value
     >{formattedTransactionFeeICP(
-      fee === undefined ? $mainTransactionFeeStore : fee.toE8s()
+      fee?.toE8s() ?? $mainTransactionFeeStore
     )}</Value
   >
-  {fee === undefined ? $i18n.core.icp : fee.token.symbol}
+  {fee?.token.symbol ?? $i18n.core.icp}
 </p>
 
 <style lang="scss">

@@ -5,7 +5,6 @@
   import { toastsSuccess } from "../../stores/toasts.store";
   import { routeStore } from "../../stores/route.store";
   import { createEventDispatcher } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
   import { disburse } from "../../services/sns-neurons.services";
   import { snsOnlyProjectStore } from "../../derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -21,6 +20,7 @@
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
   import { transactionsFeesStore } from "../../stores/transaction-fees.store";
   import LegacyWizardModal from "../LegacyWizardModal.svelte";
+  import { neuronsPathStore } from "../../derived/paths.derived";
 
   export let neuron: SnsNeuron;
 
@@ -82,7 +82,7 @@
       });
 
       routeStore.replace({
-        path: AppPath.LegacyNeurons,
+        path: $neuronsPathStore,
       });
     }
 
