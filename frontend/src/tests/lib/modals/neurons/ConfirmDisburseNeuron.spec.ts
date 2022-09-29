@@ -16,12 +16,13 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 
 describe("ConfirmDisburseNeuron", () => {
   const amount = 6.66;
+  const fee = 1.11;
   const props = {
     amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
     source: "test source",
     destinationAddress: "test destination",
     loading: false,
-    fee: BigInt(3300000000),
+    fee: TokenAmount.fromNumber({ amount: fee, token: ICPToken }),
   };
 
   it("should display amount", async () => {
@@ -37,10 +38,11 @@ describe("ConfirmDisburseNeuron", () => {
     const { getByText } = render(ConfirmDisburseNeuron, {
       props,
     });
+    const feeValue = BigInt(Math.floor(fee * 1e8));
 
     expect(getByText(props.source)).not.toBeNull();
     expect(getByText(props.destinationAddress)).not.toBeNull();
-    expect(getByText(formattedTransactionFeeICP(props.fee))).not.toBeNull();
+    expect(getByText(formattedTransactionFeeICP(feeValue))).not.toBeNull();
   });
 
   it("should display spinner", async () => {
