@@ -14,7 +14,7 @@
   // smoothness the content transition - i.e. the navigation
   const content = (
     _node: Element,
-    { duration = 150 }: { duration?: number }
+    { duration = 200 }: { duration?: number }
   ) => ({
     duration,
     css: (t) => {
