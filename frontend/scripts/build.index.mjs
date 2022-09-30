@@ -15,10 +15,22 @@ const buildIndex = () => {
   const content = buffer.toString("utf-8");
 
   let updatedContent = updateBaseHref(content);
+  updatedContent = updateRobotsTxt(content);
   updatedContent = updateCSP(updatedContent);
 
   writeFileSync("./public/index.html", updatedContent);
 };
+
+/**
+ * No search engines indexation locally or testnet otherwise remove comments.
+ */
+const updateRobotsTxt = (content) =>
+  content.replace(
+    "<!-- ROBOTS -->",
+    ["local", "testnet"].includes(envConfig.ENVIRONMENT)
+      ? '<meta name="robots" content="noindex, nofollow" />'
+      : ""
+  );
 
 /**
  * Specifies where the svelte app is loaded (typically "/" in both local development and in production)
