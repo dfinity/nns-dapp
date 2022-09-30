@@ -1,13 +1,15 @@
-import { ICP } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "../../../lib/stores/projects.store";
 import type { SnsSummary, SnsSwapCommitment } from "../../../lib/types/sns";
+import { nowInSeconds } from "../../../lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
+  durationTillSwapDeadline,
   filterActiveProjects,
   filterCommittedProjects,
   hasUserParticipatedToSwap,
@@ -98,62 +100,20 @@ describe("project-utils", () => {
     });
   });
 
-  // TODO: https://dfinity.atlassian.net/browse/GIX-1031
-  // describe("deadline", () => {
-  //   it("should return no duration until swap deadline", () =>
-  //     expect(
-  //       durationTillSwapDeadline({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return duration until swap deadline", () =>
-  //     expect(durationTillSwapDeadline(mockSwap)).toEqual(
-  //       (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //         .end_timestamp_seconds - BigInt(nowInSeconds())
-  //     ));
-
-  //   it("should return no swap duration", () =>
-  //     expect(
-  //       swapDuration({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return swap duration", () =>
-  //     expect(swapDuration(mockSwap)).toEqual(
-  //       (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //         .end_timestamp_seconds -
-  //         (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //           .start_timestamp_seconds
-  //     ));
-
-  //   it("should return no duration till swap", () =>
-  //     expect(
-  //       durationTillSwapStart({
-  //         ...mockSwap,
-  //         state: {
-  //           ...mockSwap.state,
-  //           open_time_window: [],
-  //         },
-  //       })
-  //     ).toBeUndefined());
-
-  //   it("should return duration till swap", () =>
-  //     expect(durationTillSwapStart(mockSwap)).toEqual(
-  //       BigInt(nowInSeconds()) -
-  //         (mockSwap.state.open_time_window[0] as SnsSwapTimeWindow)
-  //           .start_timestamp_seconds
-  //     ));
-  // });
+  describe("durationTillSwapDeadline", () => {
+    it("should return duration until swap deadline", () => {
+      const dueSeconds = 3600;
+      const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);
+      const swap = {
+        ...mockSwap,
+        params: {
+          ...mockSnsParams,
+          swap_due_timestamp_seconds: dueTimestampSeconds,
+        },
+      };
+      expect(durationTillSwapDeadline(swap)).toEqual(BigInt(dueSeconds));
+    });
+  });
 
   describe("can user participate to swap", () => {
     it("cannot participate to swap if no summary or swap information", () => {
@@ -462,7 +422,10 @@ describe("project-utils", () => {
     it("returns true if valid participation", () => {
       const { valid } = validParticipation({
         project: validProject,
-        amount: ICP.fromE8s(validAmountE8s),
+        amount: TokenAmount.fromE8s({
+          amount: validAmountE8s,
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(true);
     });
@@ -480,7 +443,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(validAmountE8s),
+        amount: TokenAmount.fromE8s({
+          amount: validAmountE8s,
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -498,7 +464,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(validAmountE8s),
+        amount: TokenAmount.fromE8s({
+          amount: validAmountE8s,
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -519,7 +488,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
+        amount: TokenAmount.fromE8s({
+          amount: validAmountE8s + BigInt(10_000),
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -546,7 +518,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(validAmountE8s + BigInt(10_000)),
+        amount: TokenAmount.fromE8s({
+          amount: validAmountE8s + BigInt(10_000),
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -574,7 +549,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(participationE8s),
+        amount: TokenAmount.fromE8s({
+          amount: participationE8s,
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -613,7 +591,10 @@ describe("project-utils", () => {
       };
       const { valid } = validParticipation({
         project,
-        amount: ICP.fromE8s(newParticipation),
+        amount: TokenAmount.fromE8s({
+          amount: newParticipation,
+          token: ICPToken,
+        }),
       });
       expect(valid).toBe(false);
     });
@@ -649,7 +630,10 @@ describe("project-utils", () => {
       const initialAmountUser = minPerUser;
       const { valid: v1 } = validParticipation({
         project,
-        amount: ICP.fromE8s(initialAmountUser),
+        amount: TokenAmount.fromE8s({
+          amount: initialAmountUser,
+          token: ICPToken,
+        }),
       });
       expect(v1).toBe(true);
 
@@ -665,21 +649,30 @@ describe("project-utils", () => {
       const secondAmountUser = BigInt(10);
       const { valid: v2 } = validParticipation({
         project,
-        amount: ICP.fromE8s(secondAmountUser),
+        amount: TokenAmount.fromE8s({
+          amount: secondAmountUser,
+          token: ICPToken,
+        }),
       });
       expect(v2).toBe(true);
 
       // User can't participate if amount is greater than max per user
       const { valid: v3 } = validParticipation({
         project,
-        amount: ICP.fromE8s(maxPerUser),
+        amount: TokenAmount.fromE8s({
+          amount: maxPerUser,
+          token: ICPToken,
+        }),
       });
       expect(v3).toBe(false);
 
       // User can participate to user max
       const { valid: v4 } = validParticipation({
         project,
-        amount: ICP.fromE8s(maxPerUser - initialAmountUser),
+        amount: TokenAmount.fromE8s({
+          amount: maxPerUser - initialAmountUser,
+          token: ICPToken,
+        }),
       });
       expect(v4).toBe(true);
 
@@ -689,23 +682,30 @@ describe("project-utils", () => {
       // User can't participate to user max
       const { valid: v5 } = validParticipation({
         project,
-        amount: ICP.fromE8s(maxPerUser - initialAmountUser),
+        amount: TokenAmount.fromE8s({
+          amount: maxPerUser - initialAmountUser,
+          token: ICPToken,
+        }),
       });
       expect(v5).toBe(false);
 
       // User can participate to project max
       const { valid: v6 } = validParticipation({
         project,
-        amount: ICP.fromE8s(
-          maxProject - project.summary.derived.buyer_total_icp_e8s
-        ),
+        amount: TokenAmount.fromE8s({
+          amount: maxProject - project.summary.derived.buyer_total_icp_e8s,
+          token: ICPToken,
+        }),
       });
       expect(v6).toBe(true);
 
       // User can't participate to above project max
       const { valid: v7 } = validParticipation({
         project,
-        amount: ICP.fromE8s(maxPerUser - initialAmountUser + BigInt(10_000)),
+        amount: TokenAmount.fromE8s({
+          amount: maxPerUser - initialAmountUser + BigInt(10_000),
+          token: ICPToken,
+        }),
       });
       expect(v7).toBe(false);
     });

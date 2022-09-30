@@ -1,4 +1,4 @@
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Transaction } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
 import { enumKeys } from "../../../lib/utils/enum.utils";
 import {
@@ -215,8 +215,8 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount }),
-          fee: TokenAmount.fromE8s({ amount: fee }),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(+date).toBe(
@@ -250,8 +250,8 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount }),
-          fee: TokenAmount.fromE8s({ amount: fee }),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(+date).toBe(
@@ -278,8 +278,8 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount }),
-          fee: TokenAmount.fromE8s({ amount: fee }),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(isSend).toBeFalsy();
@@ -321,8 +321,8 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222) }),
-          fee: TokenAmount.fromE8s({ amount: BigInt(333) }),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
         }).toE8s()
       ).toBe(BigInt(222 + 333));
     });
@@ -331,8 +331,8 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222) }),
-          fee: TokenAmount.fromE8s({ amount: BigInt(333) }),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
         }).toE8s()
       ).toBe(BigInt(222));
     });
@@ -341,7 +341,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222) }),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
           fee: undefined,
         })
       ).toThrow();

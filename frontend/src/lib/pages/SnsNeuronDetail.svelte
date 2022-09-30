@@ -21,6 +21,7 @@
   import { setContext } from "svelte";
   import { toastsError } from "../stores/toasts.store";
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
+  import { neuronsPathStore } from "../derived/paths.derived";
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -58,7 +59,7 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ path: AppPath.NeuronDetail, routePath: path })) {
+    if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
       return;
     }
     const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
@@ -95,7 +96,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.LegacyNeurons,
+      path: $neuronsPathStore,
     });
 
   layoutBackStore.set(goBack);

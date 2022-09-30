@@ -86,7 +86,7 @@
     data-tid="get-icp-submit"
     type="submit"
     class="primary"
-    slot="toolbar"
+    slot="footer"
     disabled={invalidForm || transferring}
   >
     {#if transferring}

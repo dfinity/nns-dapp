@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICP, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
   import { replacePlaceholders } from "../../utils/i18n.utils";
@@ -18,7 +18,10 @@
 
   let disabled: boolean;
   $: disabled = !isEnoughToStakeNeuron({
-    stake: ICP.fromE8s(neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0)),
+    stake: TokenAmount.fromE8s({
+      amount: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
+      token: ICPToken,
+    }),
   });
 
   const dispatcher = createEventDispatcher();
@@ -30,11 +33,11 @@
 <div class="wrapper" data-tid="confirm-spawn-hw-screen">
   <div class="info-wrapper">
     <div>
-      <h5>{$i18n.neuron_detail.current_maturity}</h5>
+      <p class="label">{$i18n.neuron_detail.current_maturity}</p>
       <p>
         {formattedMaturity(neuron)}
       </p>
-      <h5>{$i18n.neuron_detail.current_stake}</h5>
+      <p class="label">{$i18n.neuron_detail.current_stake}</p>
       <p data-tid="neuron-stake">
         {@html replacePlaceholders($i18n.neurons.icp_stake, {
           $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),

@@ -78,6 +78,7 @@
   @use "@dfinity/gix-components/styles/mixins/interaction";
   @use "@dfinity/gix-components/styles/mixins/text";
   @use "@dfinity/gix-components/styles/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/media";
   @use "../themes/mixins/modal";
 
   .modal {
@@ -126,6 +127,10 @@
 
       @supports (-webkit-touch-callout: none) {
         max-height: -webkit-fill-available;
+
+        @include media.min-width(medium) {
+          max-height: var(--modal-legacy-big-max-height, 100%);
+        }
       }
 
       border-radius: var(--modal-legacy-big-border-radius);

@@ -1,4 +1,4 @@
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
@@ -71,7 +71,7 @@ export const createCanister = async ({
   account: Account;
 }): Promise<Principal | undefined> => {
   try {
-    const icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
@@ -106,7 +106,7 @@ export const topUpCanister = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
-    const icpAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
@@ -257,7 +257,7 @@ export const detachCanister = async (
 export const routePathCanisterId = (
   path: string | undefined
 ): string | undefined => {
-  if (!isRoutePath({ path: AppPath.CanisterDetail, routePath: path })) {
+  if (!isRoutePath({ paths: [AppPath.CanisterDetail], routePath: path })) {
     return undefined;
   }
   const canisterId: string | undefined = getLastPathDetail(path);

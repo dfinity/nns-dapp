@@ -1,8 +1,8 @@
 import {
-  ICP,
   Topic,
   type AccountIdentifier,
   type ProposalInfo,
+  type TokenAmount,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -221,7 +221,7 @@ export const listSnsProposals = async (): Promise<void> => {
 };
 
 export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ path: AppPath.ProjectDetail, routePath: path })) {
+  if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);
@@ -249,7 +249,7 @@ export const participateInSwap = async ({
   rootCanisterId,
   account,
 }: {
-  amount: ICP;
+  amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {

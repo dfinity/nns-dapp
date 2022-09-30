@@ -17,7 +17,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formattedTransactionFeeICP } from "../../utils/icp.utils";
   import { valueSpan } from "../../utils/utils";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -43,7 +43,7 @@
   ];
 
   let currentStep: Step | undefined;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
 
@@ -89,7 +89,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="create-canister-modal-title"
       >{currentStep?.title ?? $i18n.canisters.add_canister}</span
@@ -132,4 +132,4 @@
       />
     {/if}
   </svelte:fragment>
-</WizardModal>
+</LegacyWizardModal>

@@ -1,5 +1,11 @@
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+import {
+  ICPToken,
+  TokenAmount,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
@@ -47,7 +53,6 @@ import {
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
 import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
-import { convertNumberToICP } from "../utils/icp.utils";
 import {
   canBeMerged,
   followeesByTopic,
@@ -191,7 +196,10 @@ export const stakeNeuron = async ({
   loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
-    const stake = convertNumberToICP(amount);
+    const stake = TokenAmount.fromNumber({
+      amount,
+      token: ICPToken,
+    });
     assertEnoughAccountFunds({
       account,
       amountE8s: stake.toE8s(),
@@ -521,7 +529,10 @@ export const splitNeuron = async ({
 
     const fee = get(mainTransactionFeeStore);
     const transactionFeeAmount = fee / E8S_PER_ICP;
-    const stake = convertNumberToICP(amount + transactionFeeAmount);
+    const stake = TokenAmount.fromNumber({
+      amount: amount + transactionFeeAmount,
+      token: ICPToken,
+    });
 
     if (!isEnoughToStakeNeuron({ stake, fee })) {
       throw new InsufficientAmountError();
@@ -880,8 +891,10 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
 
 export const routePathNeuronId = (path: string): NeuronId | undefined => {
   if (
-    !isRoutePath({ path: AppPath.LegacyNeuronDetail, routePath: path }) &&
-    !isRoutePath({ path: AppPath.NeuronDetail, routePath: path })
+    !isRoutePath({
+      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+      routePath: path,
+    })
   ) {
     return undefined;
   }

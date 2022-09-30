@@ -1,4 +1,4 @@
-import type { ICP } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
@@ -62,41 +62,6 @@ export const durationTillSwapDeadline = ({
 }: SnsSummarySwap): bigint | undefined =>
   swap_due_timestamp_seconds - BigInt(nowInSeconds());
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1031
-/**
- * If defined the duration of the swap in seconds - i.e. the duration from start till end
- * @param swap
- */
-// export const swapDuration = (swap: SnsSummarySwap): bigint | undefined => {
-//   const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-//   // e.g. proposal to start swap has not been accepted yet
-//   if (timeWindow === undefined) {
-//     return undefined;
-//   }
-
-//   const { start_timestamp_seconds, end_timestamp_seconds } = timeWindow;
-//   return end_timestamp_seconds - start_timestamp_seconds;
-// };
-
-/**
- * If defined the duration until the swap start in seconds
- * @param swap
- */
-// export const durationTillSwapStart = (
-//   swap: SnsSummarySwap
-// ): bigint | undefined => {
-//   const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-//   // e.g. proposal to start swap has not been accepted yet
-//   if (timeWindow === undefined) {
-//     return undefined;
-//   }
-
-//   const { start_timestamp_seconds } = timeWindow;
-//   return BigInt(nowInSeconds()) - start_timestamp_seconds;
-// };
-
 /**
  * Returns the minimum between:
  * - user remaining commitment to reach user maximum
@@ -131,7 +96,7 @@ const commitmentTooSmall = ({
   amount,
 }: {
   project: SnsFullProject;
-  amount: ICP;
+  amount: TokenAmount;
 }): boolean =>
   summary.swap.params.min_participant_icp_e8s >
   amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
@@ -189,7 +154,7 @@ export const validParticipation = ({
   amount,
 }: {
   project: SnsFullProject | undefined;
-  amount: ICP;
+  amount: TokenAmount;
 }): {
   valid: boolean;
   labelKey?: string;

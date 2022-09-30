@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
@@ -26,7 +26,7 @@
 
         <span data-tid="commitment-max-indicator-value">
           <AmountDisplay
-            amount={TokenAmount.fromE8s({ amount: max })}
+            amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
             singleLine
           />
         </span>
@@ -54,7 +54,10 @@
           <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
           <span data-tid="commitment-min-indicator-value">
             <AmountDisplay
-              amount={TokenAmount.fromE8s({ amount: minimumIndicator })}
+              amount={TokenAmount.fromE8s({
+                amount: minimumIndicator,
+                token: ICPToken,
+              })}
               singleLine
             />
           </span>

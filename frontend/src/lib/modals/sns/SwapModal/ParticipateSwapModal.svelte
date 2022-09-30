@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
   import type { Step } from "../../../stores/steps.state";
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -23,7 +23,6 @@
   } from "../../../services/sns.services";
   import { toastsSuccess } from "../../../stores/toasts.store";
   import type { NewTransaction } from "../../../types/transaction.context";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
 
@@ -70,6 +69,7 @@
       summary,
       swapCommitment,
     }),
+    token: ICPToken,
   });
 
   let minCommitment: TokenAmount;
@@ -77,6 +77,7 @@
     amount: userHasParticipatedToSwap
       ? BigInt(0)
       : params.min_participant_icp_e8s,
+    token: ICPToken,
   });
 
   let accepted: boolean;
@@ -91,7 +92,7 @@
       });
       const { success } = await participateInSwap({
         account: sourceAccount,
-        amount: convertNumberToICP(amount),
+        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
       if (success) {
