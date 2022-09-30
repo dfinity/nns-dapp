@@ -5,5 +5,5 @@
   export let canisterId: Principal | undefined;
 </script>
 
-<h5>{$i18n.canister_detail.title}</h5>
+<p class="label">{$i18n.canister_detail.title}</p>
 <p class="value">{canisterId?.toText()}</p>
