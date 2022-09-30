@@ -15,7 +15,7 @@ const buildIndex = () => {
   const content = buffer.toString("utf-8");
 
   let updatedContent = updateBaseHref(content);
-  updatedContent = updateRobotsTxt(content);
+  updatedContent = updateRobotsTxt(updatedContent);
   updatedContent = updateCSP(updatedContent);
 
   writeFileSync("./public/index.html", updatedContent);
