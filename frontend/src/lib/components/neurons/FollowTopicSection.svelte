@@ -71,7 +71,7 @@
       </div>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
-      <h5>{$i18n.follow_neurons.current_followees}</h5>
+      <p class="label">{$i18n.follow_neurons.current_followees}</p>
       <ul>
         {#each followees as followee}
           <li data-tid="current-followee-item">

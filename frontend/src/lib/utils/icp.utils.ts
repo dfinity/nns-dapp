@@ -102,9 +102,6 @@ export const getMaxTransactionAmount = ({
   );
 };
 
-export const isValidICPFormat = (text: string) =>
-  /^[\d]*(\.[\d]{0,8})?$/.test(text);
-
 // `exchangeRate` is the number of 10,000ths of IMF SDR (currency code XDR) that corresponds to 1 ICP.
 // This value reflects the current market price of one ICP token.
 // https://github.com/dfinity/ic/blob/8132ae34aeba2bf8b913647b85b9918e1cb8721c/rs/nns/cmc/cmc.did#L67

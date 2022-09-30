@@ -71,7 +71,6 @@
     </div>
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
-      <p />
       <slot name="destination-info" />
       <p class="account-identifier">{destinationAddress}</p>
     </div>
