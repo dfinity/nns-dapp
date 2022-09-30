@@ -43,5 +43,7 @@
   @use "../themes/mixins/modal";
   section {
     @include modal.section;
+
+    color: var(--background-contrast);
   }
 </style>
