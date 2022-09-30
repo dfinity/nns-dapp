@@ -70,8 +70,7 @@
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
 
     <div>
-      <h5>{$i18n.neurons.transaction_fee}</h5>
-
+      <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
         <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value> ICP
       </p>
