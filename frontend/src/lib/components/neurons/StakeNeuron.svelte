@@ -67,11 +67,11 @@
   </div>
 
   <div>
-    <h5>{$i18n.neurons.source}</h5>
+    <p class="label">{$i18n.neurons.source}</p>
     <small class="identifier value">{account.identifier}</small>
   </div>
   <div class="transaction-fee">
-    <h5>{$i18n.neurons.transaction_fee}</h5>
+    <p class="label">{$i18n.neurons.transaction_fee}</p>
     <small>
       <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
       <span>ICP</span>

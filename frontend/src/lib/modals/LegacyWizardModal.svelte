@@ -44,6 +44,8 @@
   section {
     @include modal.section;
 
+    color: var(--background-contrast);
+
     > :global(div) {
       height: 100%;
     }

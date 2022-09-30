@@ -50,7 +50,7 @@
 
     if (success) {
       toastsSuccess({
-        labelKey: "neuron_detail.merge_maturity_success",
+        labelKey: "neuron_detail.stake_maturity_success",
       });
       close();
     }
