@@ -1,5 +1,5 @@
 <script lang="ts">
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import type { Step, Steps } from "../../stores/steps.state";
   import { i18n } from "../../stores/i18n";
   import NewTransactionDestination from "../../components/accounts/NewTransactionDestination.svelte";
@@ -98,10 +98,10 @@
   }));
 
   let currentStep: Step | undefined;
-  let modal: WizardModal | undefined;
+  let modal: LegacyWizardModal | undefined;
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
   >
@@ -120,4 +120,4 @@
       <NewTransactionReview on:nnsClose />
     {/if}
   </svelte:fragment>
-</WizardModal>
+</LegacyWizardModal>

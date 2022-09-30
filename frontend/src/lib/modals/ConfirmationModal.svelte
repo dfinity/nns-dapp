@@ -12,7 +12,7 @@
     <slot />
   </article>
 
-  <svelte:fragment slot="toolbar">
+  <svelte:fragment slot="footer">
     <button
       data-tid="confirm-no"
       disabled={$busy}

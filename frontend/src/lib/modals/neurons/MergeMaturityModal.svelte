@@ -8,7 +8,7 @@
   import { toastsSuccess } from "../../stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import type { Step, Steps } from "../../stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
   import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
   import { startBusyNeuron } from "../../services/busy.services";
@@ -30,7 +30,7 @@
   ];
 
   let currentStep: Step;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
 
   let percentageToMerge: number = 0;
 
@@ -58,7 +58,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <span slot="title" data-tid="merge-maturity-neuron-modal"
     >{currentStep?.title ??
       $i18n.neuron_detail.merge_maturity_modal_title}</span
@@ -108,7 +108,7 @@
       >
     </ConfirmActionScreen>
   {/if}
-</WizardModal>
+</LegacyWizardModal>
 
 <style lang="scss">
   h4 {

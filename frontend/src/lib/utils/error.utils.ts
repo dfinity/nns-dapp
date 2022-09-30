@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
@@ -9,10 +10,6 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import {
-  InvalidaTransactionError,
-  RefundedError,
-} from "../canisters/cmc/cmc.errors";
 import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
 import { InsufficientAmountError } from "../types/common.errors";
 import { LedgerErrorMessage } from "../types/ledger.errors";
@@ -25,14 +22,19 @@ import {
 import type { ToastMsg } from "../types/toast";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
-export const errorToString = (err?: unknown): string | undefined =>
-  typeof err === "string"
-    ? (err as string)
-    : err instanceof GovernanceError
-    ? (err as GovernanceError)?.detail?.error_message
-    : err instanceof Error
-    ? (err as Error).message
-    : undefined;
+export const errorToString = (err?: unknown): string | undefined => {
+  const text =
+    typeof err === "string"
+      ? (err as string)
+      : err instanceof GovernanceError
+      ? (err as GovernanceError)?.detail?.error_message
+      : err instanceof Error
+      ? (err as Error).message
+      : undefined;
+
+  // replace with i18n version if available
+  return typeof text === "string" ? translate({ labelKey: text }) : text;
+};
 
 const factoryMappingErrorToToastMessage =
   (collection: Array<[Function, string]>) =>

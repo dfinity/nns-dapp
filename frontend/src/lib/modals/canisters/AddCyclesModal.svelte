@@ -11,7 +11,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Step, Steps } from "../../stores/steps.state";
   import type { Account } from "../../types/account";
-  import WizardModal from "../WizardModal.svelte";
+  import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import { toastsError, toastsSuccess } from "../../stores/toasts.store";
   import { startBusy, stopBusy } from "../../stores/busy.store";
   import {
@@ -51,7 +51,7 @@
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: Step | undefined;
-  let modal: WizardModal;
+  let modal: LegacyWizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
   let canisterId: Principal | undefined;
@@ -102,7 +102,7 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="top-up-canister-modal-title"
       >{currentStep?.title ?? $i18n.accounts.select_source}</span
@@ -132,7 +132,7 @@
         </p>
         <div>
           <div>
-            <h5>{$i18n.accounts.source}</h5>
+            <p class="label">{$i18n.accounts.source}</p>
             <p class="value">{account?.identifier}</p>
           </div>
           <div>
@@ -156,4 +156,4 @@
       </ConfirmCyclesCanister>
     {/if}
   </svelte:fragment>
-</WizardModal>
+</LegacyWizardModal>

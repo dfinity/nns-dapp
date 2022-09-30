@@ -1,9 +1,12 @@
+import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
+  ICPToken,
   LedgerCanister,
   SubAccount,
   TokenAmount,
 } from "@dfinity/nns";
+import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 import {
   attachCanister,
@@ -15,9 +18,6 @@ import {
   topUpCanister,
   updateSettings,
 } from "../../../lib/api/canisters.api";
-import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
-import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
-import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
 import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import {
@@ -186,7 +186,10 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -205,7 +208,10 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
       expect(response).toEqual(mockCanisterDetails.id);
@@ -216,7 +222,10 @@ describe("canisters-api", () => {
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
-      const amount = TokenAmount.fromString({ amount: "3" }) as TokenAmount;
+      const amount = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
 
       const response = await createCanister({
         identity: mockIdentity,
@@ -251,7 +260,10 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
@@ -274,7 +286,10 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
@@ -289,7 +304,10 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
@@ -307,7 +325,10 @@ describe("canisters-api", () => {
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
 
-      const amount = TokenAmount.fromString({ amount: "3" }) as TokenAmount;
+      const amount = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
       await topUpCanister({
         identity: mockIdentity,
         amount,
@@ -331,7 +352,10 @@ describe("canisters-api", () => {
       const call = () =>
         topUpCanister({
           identity: mockIdentity,
-          amount: TokenAmount.fromString({ amount: "3" }) as TokenAmount,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
           canisterId: mockCanisterDetails.id,
         });
       expect(call).rejects.toThrow();

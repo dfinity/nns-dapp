@@ -11,18 +11,18 @@
 </script>
 
 {#if !feeOnly}
-  <h5>
+  <p class="label">
     {$i18n.accounts.source}{hardwareWallet
       ? ` – ${$i18n.accounts.hardware_wallet_text}`
       : ""}
-  </h5>
+  </p>
   <p class="value">{source}</p>
 
-  <h5>{$i18n.accounts.destination}</h5>
+  <p class="label">{$i18n.accounts.destination}</p>
   <p class="value">{destination}</p>
 {/if}
 
-<h5>{$i18n.accounts.transaction_fee}</h5>
+<p class="label">{$i18n.accounts.transaction_fee}</p>
 
 <p class="fee">
   <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>

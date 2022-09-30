@@ -1,7 +1,7 @@
 <script lang="ts">
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
   import type { TransactionContext } from "../../types/transaction.context";
   import { createEventDispatcher, getContext } from "svelte";
@@ -23,7 +23,8 @@
   }: TransactionContext = context;
 
   let amount: TokenAmount =
-    $store.amount ?? TokenAmount.fromE8s({ amount: BigInt(0) });
+    $store.amount ??
+    TokenAmount.fromE8s({ amount: BigInt(0), token: ICPToken });
 
   const dispatcher = createEventDispatcher();
 
