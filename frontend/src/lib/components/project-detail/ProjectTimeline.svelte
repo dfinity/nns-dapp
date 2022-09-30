@@ -9,6 +9,7 @@
   import { durationTillSwapDeadline } from "../../utils/projects.utils";
   import { secondsToDuration } from "../../utils/date.utils";
   import Value from "../ui/Value.svelte";
+  import KeyValuePair from "../ui/KeyValuePair.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -23,24 +24,13 @@
 </script>
 
 {#if durationTillDeadline !== undefined}
-  <p class="push-apart">
-    <span>
+  <KeyValuePair>
+    <span slot="key">
       {$i18n.sns_project_detail.deadline}
     </span>
-    <Value>
+    <Value slot="value">
       {secondsToDuration(durationTillDeadline)}
     </Value>
-  </p>
+  </KeyValuePair>
 {/if}
 <div />
-
-<style lang="scss">
-  p {
-    margin: 0;
-  }
-
-  .push-apart {
-    display: flex;
-    justify-content: space-between;
-  }
-</style>

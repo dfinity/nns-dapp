@@ -61,11 +61,11 @@
         <h3>{sectionTitleMapper[index]}</h3>
       </div>
       <div>
-        <h5>{$i18n.neurons.neuron_id}</h5>
+        <p class="label">{$i18n.neurons.neuron_id}</p>
         <p class="value">{neuron.neuronId}</p>
       </div>
       <div>
-        <h5>{$i18n.neurons.neuron_balance}</h5>
+        <p class="label">{$i18n.neurons.neuron_balance}</p>
         <p>
           {@html replacePlaceholders($i18n.neurons.icp_stake, {
             $amount: valueSpan(
