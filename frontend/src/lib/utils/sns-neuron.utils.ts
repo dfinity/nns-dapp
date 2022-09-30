@@ -25,11 +25,7 @@ export const sortSnsNeuronsByCreatedTimestamp = (
 // For now, both nns neurons and sns neurons have the same states.
 export const getSnsNeuronState = ({
   dissolve_state,
-}: SnsNeuron):
-  | NeuronState.Dissolved
-  | NeuronState.Dissolving
-  | NeuronState.Locked
-  | NeuronState.Unspecified => {
+}: SnsNeuron): NeuronState => {
   const dissolveState = fromNullable(dissolve_state);
   if (dissolveState === undefined) {
     return NeuronState.Dissolved;

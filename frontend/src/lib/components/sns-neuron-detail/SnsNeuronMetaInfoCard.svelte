@@ -25,7 +25,7 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
-  let dissolveState: ReturnType<getSnsNeuronState> | undefined;
+  let dissolveState: NeuronState | undefined;
   $: dissolveState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
   let allowedToDisburse: boolean;
