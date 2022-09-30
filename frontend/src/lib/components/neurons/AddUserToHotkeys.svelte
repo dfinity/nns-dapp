@@ -33,7 +33,7 @@
   <div class="info">
     <h5>{$i18n.neurons.add_user_as_hotkey_message}</h5>
     <div>
-      <h5>{$i18n.neurons.your_principal}</h5>
+      <p class="label">{$i18n.neurons.your_principal}</p>
       <p>{$authStore.identity?.getPrincipal().toText() ?? ""}</p>
     </div>
   </div>

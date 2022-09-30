@@ -33,11 +33,11 @@
 <div class="wrapper" data-tid="confirm-spawn-hw-screen">
   <div class="info-wrapper">
     <div>
-      <h5>{$i18n.neuron_detail.current_maturity}</h5>
+      <p class="label">{$i18n.neuron_detail.current_maturity}</p>
       <p>
         {formattedMaturity(neuron)}
       </p>
-      <h5>{$i18n.neuron_detail.current_stake}</h5>
+      <p class="label">{$i18n.neuron_detail.current_stake}</p>
       <p data-tid="neuron-stake">
         {@html replacePlaceholders($i18n.neurons.icp_stake, {
           $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),

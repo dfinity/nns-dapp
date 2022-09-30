@@ -196,11 +196,10 @@ export const stakeNeuron = async ({
   loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1005
     const stake = TokenAmount.fromNumber({
       amount,
       token: ICPToken,
-    }) as TokenAmount;
+    });
     assertEnoughAccountFunds({
       account,
       amountE8s: stake.toE8s(),
@@ -533,7 +532,7 @@ export const splitNeuron = async ({
     const stake = TokenAmount.fromNumber({
       amount: amount + transactionFeeAmount,
       token: ICPToken,
-    }) as TokenAmount;
+    });
 
     if (!isEnoughToStakeNeuron({ stake, fee })) {
       throw new InsufficientAmountError();

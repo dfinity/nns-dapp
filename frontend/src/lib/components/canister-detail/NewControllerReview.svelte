@@ -50,9 +50,9 @@
   data-tid="new-controller-review-screen"
 >
   <div>
-    <h5>{$i18n.canisters.canister_id}</h5>
+    <p class="label">{$i18n.canisters.canister_id}</p>
     <p class="value">{$store.details?.id.toText()}</p>
-    <h5>{$i18n.canister_detail.new_controller}</h5>
+    <p class="label">{$i18n.canister_detail.new_controller}</p>
     <p class="value">{controller.toText()}</p>
   </div>
   <FooterModal>
