@@ -97,6 +97,37 @@ export const leaveCommunityFund = async ({
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
+export const autoStakeMaturity = async ({
+  neuronId,
+  autoStake,
+  identity,
+}: {
+  neuronId: NeuronId;
+  autoStake: boolean;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) call...`
+  );
+
+  const {
+    canister: { autoStakeMaturity: autoStakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) complete.`
+  );
+};
+
 export const disburse = async ({
   neuronId,
   toAccountId,

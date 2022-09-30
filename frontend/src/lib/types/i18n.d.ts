@@ -478,6 +478,8 @@ interface I18nNeuron_detail {
   auto_stake_maturity: string;
   auto_stake_maturity_on: string;
   auto_stake_maturity_off: string;
+  auto_stake_maturity_on_success: string;
+  auto_stake_maturity_off_success: string;
   community_fund_more_info: string;
   maturity_title: string;
   merge_maturity: string;

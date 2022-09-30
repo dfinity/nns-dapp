@@ -1,34 +1,36 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmationModal from "../../../modals/ConfirmationModal.svelte";
-  import { toggleCommunityFund } from "../../../services/neurons.services";
+  import { toggleAutoStakeMaturity } from "../../../services/neurons.services";
   import { startBusy, stopBusy } from "../../../stores/busy.store";
   import { i18n } from "../../../stores/i18n";
   import { toastsSuccess } from "../../../stores/toasts.store";
-  import { hasJoinedCommunityFund } from "../../../utils/neuron.utils";
+  import { hasAutoStakeMaturityOn } from "../../../utils/neuron.utils";
   import Checkbox from "../../ui/Checkbox.svelte";
 
   export let neuron: NeuronInfo;
 
-  let isCommunityFund: boolean;
-  $: isCommunityFund = hasJoinedCommunityFund(neuron);
+  let hasAutoStakeOn: boolean;
+  $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
 
   let isOpen: boolean = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 
-  const joinFund = async () => {
+  const autoStake = async () => {
     startBusy({ initiator: "auto-stake-maturity" });
-    const successMessageKey = isCommunityFund
-      ? "neuron_detail.leave_community_fund_success"
-      : "neuron_detail.join_community_fund_success";
-    const id = await toggleCommunityFund(neuron);
-    if (id !== undefined) {
+
+    const { success } = await toggleAutoStakeMaturity(neuron);
+
+    if (success) {
       toastsSuccess({
-        labelKey: successMessageKey,
+        labelKey: `neuron_detail.auto_stake_maturity_${
+          hasAutoStakeOn ? "on" : "off"
+        }_success`,
       });
     }
+
     closeModal();
     stopBusy("auto-stake-maturity");
   };
@@ -38,7 +40,7 @@
   <Checkbox
     preventDefault
     inputId="auto-stake-maturity-checkbox"
-    checked={isCommunityFund}
+    checked={hasAutoStakeOn}
     on:nnsChange={showModal}
   >
     <span>{$i18n.neuron_detail.auto_stake_maturity}</span>
@@ -46,14 +48,14 @@
 </div>
 
 {#if isOpen}
-  <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={joinFund}>
-    <div data-tid="join-community-fund-modal" class="wrapper">
+  <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={autoStake}>
+    <div data-tid="auto-stake-confirm-modal" class="wrapper">
       <h4>{$i18n.core.confirm}</h4>
-      {#if isCommunityFund}
-        <p>{@html $i18n.neuron_detail.auto_stake_maturity_on}</p>
-      {:else}
-        <p>{@html $i18n.neuron_detail.auto_stake_maturity_off}</p>
-      {/if}
+      <p>
+        {@html hasAutoStakeOn
+          ? $i18n.neuron_detail.auto_stake_maturity_off
+          : $i18n.neuron_detail.auto_stake_maturity_on}
+      </p>
     </div>
   </ConfirmationModal>
 {/if}
