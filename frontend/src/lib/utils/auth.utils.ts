@@ -1,5 +1,5 @@
-import type { Identity } from '@dfinity/agent';
-import { AuthClient } from '@dfinity/auth-client';
+import type { Identity } from "@dfinity/agent";
+import { AuthClient } from "@dfinity/auth-client";
 
 /**
  * The user is signed in when the identity is not undefined and not null.
@@ -9,7 +9,7 @@ import { AuthClient } from '@dfinity/auth-client';
  * It adds only an identity in memory if it is an authenticated one.
  */
 export const isSignedIn = (identity: Identity | undefined | null): boolean =>
-	identity !== undefined && identity !== null;
+  identity !== undefined && identity !== null;
 
 /**
  * Create an AuthClient to manage authentication and identity.
@@ -17,9 +17,9 @@ export const isSignedIn = (identity: Identity | undefined | null): boolean =>
  * - Disable idle manager that sign-out in case of inactivity after default 10min to avoid UX issues if multiple tabs are used as we observe the storage and sync the delegation on any changes
  */
 export const createAuthClient = (): Promise<AuthClient> =>
-	AuthClient.create({
-		idleOptions: {
-			disableIdle: true,
-			disableDefaultIdleCallback: true
-		}
-	});
+  AuthClient.create({
+    idleOptions: {
+      disableIdle: true,
+      disableDefaultIdleCallback: true,
+    },
+  });

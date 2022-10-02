@@ -1,10 +1,19 @@
-import type { NeuronInfo, ProposalInfo } from '@dfinity/nns';
-import { derived, type Readable } from 'svelte/store';
-import { definedNeuronsStore } from '../stores/neurons.store';
-import type { ProposalsFiltersStore, ProposalsStore } from '../stores/proposals.store';
-import { proposalsFiltersStore, proposalsStore } from '../stores/proposals.store';
-import { voteRegistrationStore, type VoteRegistration } from '../stores/vote-registration.store';
-import { hideProposal } from '../utils/proposals.utils';
+import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
+import { derived, type Readable } from "svelte/store";
+import { definedNeuronsStore } from "../stores/neurons.store";
+import type {
+  ProposalsFiltersStore,
+  ProposalsStore,
+} from "../stores/proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "../stores/proposals.store";
+import {
+  voteRegistrationStore,
+  type VoteRegistration,
+} from "../stores/vote-registration.store";
+import { hideProposal } from "../utils/proposals.utils";
 
 /**
  * A derived store of the proposals store that ensure the proposals are sorted by their proposal ids descendant (as provided back by the backend)
@@ -17,13 +26,13 @@ import { hideProposal } from '../utils/proposals.utils';
  *
  */
 export const sortedProposals: Readable<ProposalsStore> = derived(
-	[proposalsStore],
-	([{ proposals, certified }]) => ({
-		proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
-			Number((proposalIdB ?? BigInt(0)) - (proposalIdA ?? BigInt(0)))
-		),
-		certified
-	})
+  [proposalsStore],
+  ([{ proposals, certified }]) => ({
+    proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
+      Number((proposalIdB ?? BigInt(0)) - (proposalIdA ?? BigInt(0)))
+    ),
+    certified,
+  })
 );
 
 // HACK:
@@ -36,44 +45,50 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
 //
 // That's why we hide and re-process these proposals delivered by the backend on the client side.
 const hide = ({
-	proposalInfo,
-	filters,
-	neurons,
-	registrations
+  proposalInfo,
+  filters,
+  neurons,
+  registrations,
 }: {
-	proposalInfo: ProposalInfo;
-	filters: ProposalsFiltersStore;
-	neurons: NeuronInfo[];
-	registrations: VoteRegistration[];
+  proposalInfo: ProposalInfo;
+  filters: ProposalsFiltersStore;
+  neurons: NeuronInfo[];
+  registrations: VoteRegistration[];
 }): boolean =>
-	hideProposal({
-		filters,
-		proposalInfo,
-		neurons
-	}) ||
-	// hide proposals that are currently in the voting state
-	registrations.find(({ proposalInfo: { id } }) => proposalInfo.id === id) !== undefined;
+  hideProposal({
+    filters,
+    proposalInfo,
+    neurons,
+  }) ||
+  // hide proposals that are currently in the voting state
+  registrations.find(({ proposalInfo: { id } }) => proposalInfo.id === id) !==
+    undefined;
 
 export interface UIProposalsStore {
-	proposals: (ProposalInfo & { hidden: boolean })[];
-	certified: boolean | undefined;
+  proposals: (ProposalInfo & { hidden: boolean })[];
+  certified: boolean | undefined;
 }
 
 export const uiProposals: Readable<UIProposalsStore> = derived(
-	[sortedProposals, proposalsFiltersStore, definedNeuronsStore, voteRegistrationStore],
-	([{ proposals, certified }, filters, neurons, { registrations }]) => ({
-		proposals: proposals.map((proposalInfo) => ({
-			...proposalInfo,
-			hidden: hide({ proposalInfo, filters, neurons, registrations })
-		})),
-		certified
-	})
+  [
+    sortedProposals,
+    proposalsFiltersStore,
+    definedNeuronsStore,
+    voteRegistrationStore,
+  ],
+  ([{ proposals, certified }, filters, neurons, { registrations }]) => ({
+    proposals: proposals.map((proposalInfo) => ({
+      ...proposalInfo,
+      hidden: hide({ proposalInfo, filters, neurons, registrations }),
+    })),
+    certified,
+  })
 );
 
 export const filteredProposals: Readable<ProposalsStore> = derived(
-	[uiProposals],
-	([{ proposals, certified }]) => ({
-		proposals: proposals.filter((proposalInfo) => !proposalInfo.hidden),
-		certified
-	})
+  [uiProposals],
+  ([{ proposals, certified }]) => ({
+    proposals: proposals.filter((proposalInfo) => !proposalInfo.hidden),
+    certified,
+  })
 );

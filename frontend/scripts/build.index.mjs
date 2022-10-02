@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { createHash } from 'crypto';
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { envConfig } from '../env.config.mjs';
+import { createHash } from "crypto";
+import { readFileSync, writeFileSync } from "fs";
+import { join } from "path";
+import { envConfig } from "../env.config.mjs";
 
 /**
  * Rollup takes care of the JS and CSS bundles. Here we copy the index.html from the source to the output folder.
@@ -11,20 +11,23 @@ import { envConfig } from '../env.config.mjs';
  * By pre-rendering this information, we make it static and guarantee it will be set when the app - the JS code - accesses it at runtime.
  */
 const buildIndex = () => {
-	const buffer = readFileSync('./src/index.html');
-	const content = buffer.toString('utf-8');
+  const buffer = readFileSync("./src/index.html");
+  const content = buffer.toString("utf-8");
 
-	let updatedContent = updateBaseHref(content);
-	updatedContent = updateCSP(updatedContent);
+  let updatedContent = updateBaseHref(content);
+  updatedContent = updateCSP(updatedContent);
 
-	writeFileSync('./public/index.html', updatedContent);
+  writeFileSync("./public/index.html", updatedContent);
 };
 
 /**
  * Specifies where the svelte app is loaded (typically "/" in both local development and in production)
  */
 const updateBaseHref = (content) =>
-	content.replace('<!-- BASE_HREF -->', `<base href="${process.env.BASE_HREF || '/'}" />`);
+  content.replace(
+    "<!-- BASE_HREF -->",
+    `<base href="${process.env.BASE_HREF || "/"}" />`
+  );
 
 /**
  * Inject "Content Security Policy" (CSP) into index.html for production build
@@ -52,31 +55,38 @@ const updateBaseHref = (content) =>
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
 const updateCSP = (content) => {
-	// In local development mode, no CSP rule
-	if (envConfig.ENVIRONMENT === 'local') {
-		return content.replace('<!-- CONTENT_SECURITY_POLICY -->', '');
-	}
+  // In local development mode, no CSP rule
+  if (envConfig.ENVIRONMENT === "local") {
+    return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
+  }
 
-	const indexHtml = readFileSync(join(process.cwd(), 'src', 'index.html'), 'utf-8');
-	const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
+  const indexHtml = readFileSync(
+    join(process.cwd(), "src", "index.html"),
+    "utf-8"
+  );
+  const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
-	const indexHashes = [];
+  const indexHashes = [];
 
-	let m;
-	while ((m = sw.exec(indexHtml))) {
-		const content = m[1];
+  let m;
+  while ((m = sw.exec(indexHtml))) {
+    const content = m[1];
 
-		indexHashes.push(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
-	}
+    indexHashes.push(
+      `'sha256-${createHash("sha256").update(content).digest("base64")}'`
+    );
+  }
 
-	const csp = `<meta
+  const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
         img-src 'self' data: https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(' ')};
+        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(
+          " "
+        )};
         base-uri 'self';
         form-action 'none';
         style-src 'self' 'unsafe-inline';
@@ -84,32 +94,32 @@ const updateCSP = (content) => {
         upgrade-insecure-requests;"
     />`;
 
-	return content.replace('<!-- CONTENT_SECURITY_POLICY -->', csp);
+  return content.replace("<!-- CONTENT_SECURITY_POLICY -->", csp);
 };
 
 const cspConnectSrc = () => {
-	const {
-		IDENTITY_SERVICE_URL,
-		OWN_CANISTER_URL,
-		HOST,
-		GOVERNANCE_CANISTER_URL,
-		LEDGER_CANISTER_URL,
-		MAINNET
-	} = envConfig;
+  const {
+    IDENTITY_SERVICE_URL,
+    OWN_CANISTER_URL,
+    HOST,
+    GOVERNANCE_CANISTER_URL,
+    LEDGER_CANISTER_URL,
+    MAINNET,
+  } = envConfig;
 
-	const src = [
-		IDENTITY_SERVICE_URL,
-		OWN_CANISTER_URL,
-		HOST,
-		GOVERNANCE_CANISTER_URL,
-		LEDGER_CANISTER_URL,
-		MAINNET
-	];
+  const src = [
+    IDENTITY_SERVICE_URL,
+    OWN_CANISTER_URL,
+    HOST,
+    GOVERNANCE_CANISTER_URL,
+    LEDGER_CANISTER_URL,
+    MAINNET,
+  ];
 
-	return src
-		.filter((url) => url !== undefined)
-		.join(' ')
-		.trim();
+  return src
+    .filter((url) => url !== undefined)
+    .join(" ")
+    .trim();
 };
 
 buildIndex();

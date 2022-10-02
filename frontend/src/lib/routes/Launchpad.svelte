@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import Projects from '../components/launchpad/Projects.svelte';
-	import Proposals from '../components/launchpad/Proposals.svelte';
-	import { IS_TESTNET } from '../constants/environment.constants';
-	import { AppPath } from '../constants/routes.constants';
-	import { i18n } from '../stores/i18n';
-	import { routeStore } from '../stores/route.store';
+  import { onMount } from "svelte";
+  import Projects from "../components/launchpad/Projects.svelte";
+  import Proposals from "../components/launchpad/Proposals.svelte";
+  import { IS_TESTNET } from "../constants/environment.constants";
+  import { AppPath } from "../constants/routes.constants";
+  import { i18n } from "../stores/i18n";
+  import { routeStore } from "../stores/route.store";
 
-	onMount(() => {
-		if (!IS_TESTNET) {
-			routeStore.replace({ path: AppPath.LegacyAccounts });
-		}
-	});
+  onMount(() => {
+    if (!IS_TESTNET) {
+      routeStore.replace({ path: AppPath.LegacyAccounts });
+    }
+  });
 </script>
 
 <main>
-	<h2>{$i18n.sns_launchpad.projects}</h2>
-	<Projects />
+  <h2>{$i18n.sns_launchpad.projects}</h2>
+  <Projects />
 
-	<h2>{$i18n.sns_launchpad.proposals}</h2>
-	<Proposals />
+  <h2>{$i18n.sns_launchpad.proposals}</h2>
+  <Proposals />
 </main>
 
 <style lang="scss">
-	h2 {
-		margin: var(--padding-8x) 0 var(--padding-3x);
+  h2 {
+    margin: var(--padding-8x) 0 var(--padding-3x);
 
-		&:first-of-type {
-			margin-top: var(--padding);
-		}
-	}
+    &:first-of-type {
+      margin-top: var(--padding);
+    }
+  }
 </style>

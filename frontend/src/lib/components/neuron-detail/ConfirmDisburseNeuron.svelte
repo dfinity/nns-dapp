@@ -1,91 +1,98 @@
 <script lang="ts">
-	import { ICPToken, TokenAmount, type NeuronInfo } from '@dfinity/nns';
-	import { createEventDispatcher } from 'svelte';
-	import { AppPath } from '../../constants/routes.constants';
-	import { startBusyNeuron } from '../../services/busy.services';
-	import { disburse } from '../../services/neurons.services';
-	import { stopBusy } from '../../stores/busy.store';
-	import { i18n } from '../../stores/i18n';
-	import { routeStore } from '../../stores/route.store';
-	import { toastsSuccess } from '../../stores/toasts.store';
-	import { neuronStake } from '../../utils/neuron.utils';
-	import TransactionInfo from '../accounts/TransactionInfo.svelte';
-	import AmountDisplay from '../ic/AmountDisplay.svelte';
-	import { Spinner } from '@dfinity/gix-components';
+  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import { createEventDispatcher } from "svelte";
+  import { AppPath } from "../../constants/routes.constants";
+  import { startBusyNeuron } from "../../services/busy.services";
+  import { disburse } from "../../services/neurons.services";
+  import { stopBusy } from "../../stores/busy.store";
+  import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
+  import { toastsSuccess } from "../../stores/toasts.store";
+  import { neuronStake } from "../../utils/neuron.utils";
+  import TransactionInfo from "../accounts/TransactionInfo.svelte";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
-	export let neuron: NeuronInfo;
-	export let destinationAddress: string;
+  export let neuron: NeuronInfo;
+  export let destinationAddress: string;
 
-	let loading: boolean = false;
+  let loading: boolean = false;
 
-	const dispatcher = createEventDispatcher();
-	const executeTransaction = async () => {
-		startBusyNeuron({
-			initiator: 'disburse-neuron',
-			neuronId: neuron.neuronId
-		});
-		loading = true;
-		const { success } = await disburse({
-			neuronId: neuron.neuronId,
-			toAccountId: destinationAddress
-		});
-		loading = false;
-		stopBusy('disburse-neuron');
-		if (success) {
-			toastsSuccess({
-				labelKey: 'neuron_detail.disburse_success'
-			});
-			routeStore.replace({
-				path: AppPath.LegacyNeurons
-			});
-		}
-		dispatcher('nnsClose');
-	};
+  const dispatcher = createEventDispatcher();
+  const executeTransaction = async () => {
+    startBusyNeuron({
+      initiator: "disburse-neuron",
+      neuronId: neuron.neuronId,
+    });
+    loading = true;
+    const { success } = await disburse({
+      neuronId: neuron.neuronId,
+      toAccountId: destinationAddress,
+    });
+    loading = false;
+    stopBusy("disburse-neuron");
+    if (success) {
+      toastsSuccess({
+        labelKey: "neuron_detail.disburse_success",
+      });
+      routeStore.replace({
+        path: AppPath.LegacyNeurons,
+      });
+    }
+    dispatcher("nnsClose");
+  };
 </script>
 
 <form
-	on:submit|preventDefault={executeTransaction}
-	class="wizard-wrapper"
-	data-tid="confirm-disburse-screen"
+  on:submit|preventDefault={executeTransaction}
+  class="wizard-wrapper"
+  data-tid="confirm-disburse-screen"
 >
-	<div class="amount">
-		<AmountDisplay
-			inline
-			amount={TokenAmount.fromE8s({
-				amount: neuronStake(neuron),
-				token: ICPToken
-			})}
-		/>
-	</div>
+  <div class="amount">
+    <AmountDisplay
+      inline
+      amount={TokenAmount.fromE8s({
+        amount: neuronStake(neuron),
+        token: ICPToken,
+      })}
+    />
+  </div>
 
-	<TransactionInfo source={neuron.neuronId.toString()} destination={destinationAddress} />
+  <TransactionInfo
+    source={neuron.neuronId.toString()}
+    destination={destinationAddress}
+  />
 
-	<button class="primary full-width" type="submit" data-tid="disburse-neuron-button">
-		{#if loading}
-			<Spinner />
-		{:else}
-			{$i18n.accounts.confirm_and_send}
-		{/if}
-	</button>
+  <button
+    class="primary full-width"
+    type="submit"
+    data-tid="disburse-neuron-button"
+  >
+    {#if loading}
+      <Spinner />
+    {:else}
+      {$i18n.accounts.confirm_and_send}
+    {/if}
+  </button>
 </form>
 
 <style lang="scss">
-	@use '../../themes/mixins/modal';
+  @use "../../themes/mixins/modal";
 
-	.amount {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+  .amount {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-		flex-grow: 1;
+    flex-grow: 1;
 
-		--token-font-size: var(--font-size-huge);
+    --token-font-size: var(--font-size-huge);
 
-		@include modal.header;
-	}
+    @include modal.header;
+  }
 
-	button {
-		margin: var(--padding) 0 0;
-	}
+  button {
+    margin: var(--padding) 0 0;
+  }
 </style>

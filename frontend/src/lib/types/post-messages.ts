@@ -1,3 +1,3 @@
 export interface PostMessageEventData {
-	msg: 'nnsStartIdleTimer' | 'nnsStopIdleTimer' | 'nnsSignOut';
+  msg: "nnsStartIdleTimer" | "nnsStopIdleTimer" | "nnsSignOut";
 }

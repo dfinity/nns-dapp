@@ -1,23 +1,23 @@
 @mixin wrapper {
-	padding-bottom: var(--padding-2x);
+  padding-bottom: var(--padding-2x);
 
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: var(--padding-1_5x);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--padding-1_5x);
 
-	color: var(--background-contrast);
+  color: var(--background-contrast);
 }
 
 @mixin title {
-	margin: 0;
-	font-size: var(--font-size-h3);
+  margin: 0;
+  font-size: var(--font-size-h3);
 }
 
 @mixin text {
-	margin: 0;
+  margin: 0;
 
-	font-size: var(--font-size-h4);
-	text-align: center;
+  font-size: var(--font-size-h4);
+  text-align: center;
 }

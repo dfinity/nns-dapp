@@ -1,37 +1,41 @@
-import { AccountIdentifier, SubAccount } from '@dfinity/nns';
-import { Principal } from '@dfinity/principal';
-import type { SnsParams } from '@dfinity/sns';
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type { SnsParams } from "@dfinity/sns";
 import {
-	SnsMetadataResponseEntries,
-	type SnsGetMetadataResponse,
-	type SnsSwap,
-	type SnsSwapDerivedState,
-	type SnsTokenMetadataResponse
-} from '@dfinity/sns';
-import { fromNullable } from '@dfinity/utils';
+  SnsMetadataResponseEntries,
+  type SnsGetMetadataResponse,
+  type SnsSwap,
+  type SnsSwapDerivedState,
+  type SnsTokenMetadataResponse,
+} from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import type {
-	SnsSummary,
-	SnsSummaryMetadata,
-	SnsSummarySwap,
-	SnsSwapCommitment,
-	SnsTokenMetadata
-} from '../types/sns';
-import type { QuerySns, QuerySnsMetadata, QuerySnsSwapState } from '../types/sns.query';
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+  SnsTokenMetadata,
+} from "../types/sns";
+import type {
+  QuerySns,
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "../types/sns.query";
 
-type OptionalSnsSummarySwap = Omit<SnsSummarySwap, 'params'> & {
-	params?: SnsParams;
+type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
+  params?: SnsParams;
 };
 
 type OptionalSummary = QuerySns & {
-	metadata?: SnsSummaryMetadata;
-	token?: SnsTokenMetadata;
-	swap?: OptionalSnsSummarySwap;
-	derived?: SnsSwapDerivedState;
-	swapCanisterId?: Principal;
+  metadata?: SnsSummaryMetadata;
+  token?: SnsTokenMetadata;
+  swap?: OptionalSnsSummarySwap;
+  derived?: SnsSwapDerivedState;
+  swapCanisterId?: Principal;
 };
 
-type ValidSummary = Required<Omit<OptionalSummary, 'swap'>> & {
-	swap: SnsSummarySwap;
+type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
+  swap: SnsSummarySwap;
 };
 
 /**
@@ -39,84 +43,93 @@ type ValidSummary = Required<Omit<OptionalSummary, 'swap'>> & {
  * @param summaries
  */
 const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
-	summaries.sort(
-		(
-			{
-				swap: {
-					params: { swap_due_timestamp_seconds: endTimeWindowA }
-				}
-			}: SnsSummary,
-			{
-				swap: {
-					params: { swap_due_timestamp_seconds: endTimeWindowB }
-				}
-			}: SnsSummary
-		) => (endTimeWindowA < endTimeWindowB ? -1 : 1)
-	);
+  summaries.sort(
+    (
+      {
+        swap: {
+          params: { swap_due_timestamp_seconds: endTimeWindowA },
+        },
+      }: SnsSummary,
+      {
+        swap: {
+          params: { swap_due_timestamp_seconds: endTimeWindowB },
+        },
+      }: SnsSummary
+    ) => (endTimeWindowA < endTimeWindowB ? -1 : 1)
+  );
 
 /**
  * Metadata is given only if all its properties are defined.
  */
 const mapOptionalMetadata = ({
-	logo,
-	url,
-	name,
-	description
+  logo,
+  url,
+  name,
+  description,
 }: SnsGetMetadataResponse): SnsSummaryMetadata | undefined => {
-	const nullishLogo = fromNullable(logo);
-	const nullishUrl = fromNullable(url);
-	const nullishName = fromNullable(name);
-	const nullishDescription = fromNullable(description);
+  const nullishLogo = fromNullable(logo);
+  const nullishUrl = fromNullable(url);
+  const nullishName = fromNullable(name);
+  const nullishDescription = fromNullable(description);
 
-	if (nullishUrl === undefined || nullishName === undefined || nullishDescription === undefined) {
-		return undefined;
-	}
+  if (
+    nullishUrl === undefined ||
+    nullishName === undefined ||
+    nullishDescription === undefined
+  ) {
+    return undefined;
+  }
 
-	return {
-		// TODO: Use default logo if logo is nullish https://dfinity.atlassian.net/browse/GIX-1048
-		logo: nullishLogo ?? '',
-		url: nullishUrl,
-		name: nullishName,
-		description: nullishDescription
-	} as SnsSummaryMetadata;
+  return {
+    // TODO: Use default logo if logo is nullish https://dfinity.atlassian.net/browse/GIX-1048
+    logo: nullishLogo ?? "",
+    url: nullishUrl,
+    name: nullishName,
+    description: nullishDescription,
+  } as SnsSummaryMetadata;
 };
 
 /**
  * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
  */
 export const mapOptionalToken = (
-	response: SnsTokenMetadataResponse
+  response: SnsTokenMetadataResponse
 ): SnsTokenMetadata | undefined => {
-	const nullishToken: Partial<SnsTokenMetadata> = response.reduce((acc, [key, value]) => {
-		switch (key) {
-			case SnsMetadataResponseEntries.SYMBOL:
-				acc = { ...acc, ...('Text' in value && { symbol: value.Text }) };
-				break;
-			case SnsMetadataResponseEntries.NAME:
-				acc = { ...acc, ...('Text' in value && { name: value.Text }) };
-		}
+  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
+    (acc, [key, value]) => {
+      switch (key) {
+        case SnsMetadataResponseEntries.SYMBOL:
+          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
+          break;
+        case SnsMetadataResponseEntries.NAME:
+          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
+      }
 
-		return acc;
-	}, {});
+      return acc;
+    },
+    {}
+  );
 
-	if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
-		return undefined;
-	}
+  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
+    return undefined;
+  }
 
-	return nullishToken as SnsTokenMetadata;
+  return nullishToken as SnsTokenMetadata;
 };
 
 /**
  * Maps the properties of the SnsSwap type to the properties of the SnsSummarySwap type.
  * For now, the only property is extracted from candid optional type is `params`.
  */
-const mapOptionalSwap = (swapData: SnsSwap | undefined): OptionalSnsSummarySwap | undefined =>
-	swapData === undefined
-		? undefined
-		: {
-				...swapData,
-				params: fromNullable(swapData.params)
-		  };
+const mapOptionalSwap = (
+  swapData: SnsSwap | undefined
+): OptionalSnsSummarySwap | undefined =>
+  swapData === undefined
+    ? undefined
+    : {
+        ...swapData,
+        params: fromNullable(swapData.params),
+      };
 
 /**
  * 1. Concat Sns queries for metadata and swap state.
@@ -136,66 +149,69 @@ const mapOptionalSwap = (swapData: SnsSwap | undefined): OptionalSnsSummarySwap 
  *
  */
 export const mapAndSortSnsQueryToSummaries = ({
-	metadata,
-	swaps
+  metadata,
+  swaps,
 }: {
-	metadata: QuerySnsMetadata[];
-	swaps: QuerySnsSwapState[];
+  metadata: QuerySnsMetadata[];
+  swaps: QuerySnsSwapState[];
 }): SnsSummary[] => {
-	const allSummaries: OptionalSummary[] = metadata.map(
-		({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
-			const swapState = swaps.find(
-				({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
-					swapRootCanisterId === rootCanisterId
-			);
+  const allSummaries: OptionalSummary[] = metadata.map(
+    ({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
+      const swapState = swaps.find(
+        ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
+          swapRootCanisterId === rootCanisterId
+      );
 
-			const swapData = fromNullable(swapState?.swap ?? []);
-			return {
-				...rest,
-				rootCanisterId,
-				metadata: mapOptionalMetadata(metadata),
-				token: mapOptionalToken(token),
-				swapCanisterId: swapState?.swapCanisterId,
-				swap: mapOptionalSwap(swapData),
-				derived: fromNullable(swapState?.derived ?? [])
-			};
-		}
-	);
+      const swapData = fromNullable(swapState?.swap ?? []);
+      return {
+        ...rest,
+        rootCanisterId,
+        metadata: mapOptionalMetadata(metadata),
+        token: mapOptionalToken(token),
+        swapCanisterId: swapState?.swapCanisterId,
+        swap: mapOptionalSwap(swapData),
+        derived: fromNullable(swapState?.derived ?? []),
+      };
+    }
+  );
 
-	// Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
-	const validSwapSummaries: ValidSummary[] = allSummaries.filter(
-		(entry: OptionalSummary): entry is ValidSummary =>
-			entry.swap !== undefined &&
-			entry.swap.params !== undefined &&
-			entry.swapCanisterId !== undefined &&
-			entry.derived !== undefined &&
-			entry.metadata !== undefined &&
-			entry.token !== undefined
-	);
+  // Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
+  const validSwapSummaries: ValidSummary[] = allSummaries.filter(
+    (entry: OptionalSummary): entry is ValidSummary =>
+      entry.swap !== undefined &&
+      entry.swap.params !== undefined &&
+      entry.swapCanisterId !== undefined &&
+      entry.derived !== undefined &&
+      entry.metadata !== undefined &&
+      entry.token !== undefined
+  );
 
-	return sortSnsSummaries(
-		validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
-			rootCanisterId: Principal.fromText(rootCanisterId),
-			...rest
-		}))
-	);
+  return sortSnsSummaries(
+    validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      ...rest,
+    }))
+  );
 };
 
 export const getSwapCanisterAccount = ({
-	controller,
-	swapCanisterId
+  controller,
+  swapCanisterId,
 }: {
-	controller: Principal;
-	swapCanisterId: Principal;
+  controller: Principal;
+  swapCanisterId: Principal;
 }): AccountIdentifier => {
-	const principalSubaccount = SubAccount.fromPrincipal(controller);
-	const accountIdentifier = AccountIdentifier.fromPrincipal({
-		principal: swapCanisterId,
-		subAccount: principalSubaccount
-	});
+  const principalSubaccount = SubAccount.fromPrincipal(controller);
+  const accountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: swapCanisterId,
+    subAccount: principalSubaccount,
+  });
 
-	return accountIdentifier;
+  return accountIdentifier;
 };
 
-export const getCommitmentE8s = (swapCommitment?: SnsSwapCommitment | null): bigint | undefined =>
-	fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ?? undefined;
+export const getCommitmentE8s = (
+  swapCommitment?: SnsSwapCommitment | null
+): bigint | undefined =>
+  fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
+  undefined;

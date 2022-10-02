@@ -1,4 +1,4 @@
 export enum storeLocalStorageKey {
-	ProposalFilters = 'nnsProposalFilters',
-	Theme = 'nnsTheme'
+  ProposalFilters = "nnsProposalFilters",
+  Theme = "nnsTheme",
 }

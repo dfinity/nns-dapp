@@ -1,13 +1,13 @@
-import { derived, writable } from 'svelte/store';
-import { DEFAULT_TRANSACTION_FEE_E8S } from '../constants/icp.constants';
+import { derived, writable } from "svelte/store";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "../constants/icp.constants";
 
 export type TransactionFeesStore = {
-	// Main Ledger of IC
-	main: bigint;
+  // Main Ledger of IC
+  main: bigint;
 };
 
 const defaultTransactionFees = {
-	main: BigInt(DEFAULT_TRANSACTION_FEE_E8S)
+  main: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
 };
 
 /**
@@ -16,22 +16,25 @@ const defaultTransactionFees = {
  * - setMain: replace the current fee in `main`.
  */
 const initTransactionFeesStore = () => {
-	const { subscribe, update } = writable<TransactionFeesStore>(defaultTransactionFees);
+  const { subscribe, update } = writable<TransactionFeesStore>(
+    defaultTransactionFees
+  );
 
-	return {
-		subscribe,
+  return {
+    subscribe,
 
-		setMain(fee: bigint) {
-			update((data) => ({
-				...data,
-				main: fee
-			}));
-		}
-	};
+    setMain(fee: bigint) {
+      update((data) => ({
+        ...data,
+        main: fee,
+      }));
+    },
+  };
 };
 
 export const transactionsFeesStore = initTransactionFeesStore();
 
-export const mainTransactionFeeStore = derived(transactionsFeesStore, ($store) =>
-	Number($store.main)
+export const mainTransactionFeeStore = derived(
+  transactionsFeesStore,
+  ($store) => Number($store.main)
 );

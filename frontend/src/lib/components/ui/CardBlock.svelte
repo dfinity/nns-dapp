@@ -1,60 +1,61 @@
 <script lang="ts">
-	import Collapsible from './Collapsible.svelte';
+  import Collapsible from "./Collapsible.svelte";
 
-	export let expandable = false;
-	export let limitHeight = true;
+  export let expandable = false;
+  export let limitHeight = true;
 
-	let expanded: boolean = expandable;
+  let expanded: boolean = expandable;
 
-	const toggle = ({ detail }: { detail: { expanded: boolean } }) => (expanded = detail.expanded);
+  const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
+    (expanded = detail.expanded);
 </script>
 
 <article data-tid="card-block" class="card" class:expanded>
-	{#if expandable}
-		<Collapsible maxContentHeight={300} initiallyExpanded on:nnsToggle={toggle}>
-			<h3 slot="header"><slot name="title" /></h3>
-			<div class="content">
-				<slot />
-			</div>
-		</Collapsible>
-	{:else}
-		<h3><slot name="title" /></h3>
-		<div class="content" class:limit-height={limitHeight}>
-			<slot />
-		</div>
-	{/if}
+  {#if expandable}
+    <Collapsible maxContentHeight={300} initiallyExpanded on:nnsToggle={toggle}>
+      <h3 slot="header"><slot name="title" /></h3>
+      <div class="content">
+        <slot />
+      </div>
+    </Collapsible>
+  {:else}
+    <h3><slot name="title" /></h3>
+    <div class="content" class:limit-height={limitHeight}>
+      <slot />
+    </div>
+  {/if}
 </article>
 
 <style lang="scss">
-	@use '@dfinity/gix-components/styles/mixins/interaction';
-	@use '@dfinity/gix-components/styles/mixins/media';
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
-	article {
-		text-decoration: none;
+  article {
+    text-decoration: none;
 
-		background: var(--card-background);
-		box-shadow: var(--box-shadow);
+    background: var(--card-background);
+    box-shadow: var(--box-shadow);
 
-		padding: var(--padding-2x);
+    padding: var(--padding-2x);
 
-		border-radius: var(--border-radius);
+    border-radius: var(--border-radius);
 
-		transition: all var(--animation-time-normal);
-	}
+    transition: all var(--animation-time-normal);
+  }
 
-	h3 {
-		// increase click area
-		margin: calc(-1 * var(--padding));
-		padding: var(--padding);
-	}
+  h3 {
+    // increase click area
+    margin: calc(-1 * var(--padding));
+    padding: var(--padding);
+  }
 
-	.content {
-		margin: var(--padding-2x) 0 var(--padding);
-		overflow-x: auto;
+  .content {
+    margin: var(--padding-2x) 0 var(--padding);
+    overflow-x: auto;
 
-		&.limit-height {
-			max-height: 300px;
-			overflow-y: auto;
-		}
-	}
+    &.limit-height {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  }
 </style>

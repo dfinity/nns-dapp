@@ -1,49 +1,57 @@
-import { ProposalStatus, type ProposalInfo } from '@dfinity/nns';
-import { derived, writable } from 'svelte/store';
-import type { SnsSwapCommitment } from '../types/sns';
-import type { QuerySnsMetadata, QuerySnsSwapState } from '../types/sns.query';
-import { mapAndSortSnsQueryToSummaries } from '../utils/sns.utils';
-import { isNullish } from '../utils/utils';
+import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
+import { derived, writable } from "svelte/store";
+import type { SnsSwapCommitment } from "../types/sns";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import { mapAndSortSnsQueryToSummaries } from "../utils/sns.utils";
+import { isNullish } from "../utils/utils";
 
 // ************** Proposals for Launchpad **************
 
 export type SnsProposalsStore =
-	| {
-			proposals: ProposalInfo[];
-			certified: boolean;
-	  }
-	| undefined
-	| null;
+  | {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }
+  | undefined
+  | null;
 
 const initSnsProposalsStore = () => {
-	const { subscribe, set } = writable<SnsProposalsStore>(undefined);
+  const { subscribe, set } = writable<SnsProposalsStore>(undefined);
 
-	return {
-		subscribe,
+  return {
+    subscribe,
 
-		reset() {
-			set(undefined);
-		},
+    reset() {
+      set(undefined);
+    },
 
-		setLoadingState() {
-			set(null);
-		},
+    setLoadingState() {
+      set(null);
+    },
 
-		setProposals({ proposals, certified }: { proposals: ProposalInfo[]; certified: boolean }) {
-			set({
-				proposals,
-				certified
-			});
-		}
-	};
+    setProposals({
+      proposals,
+      certified,
+    }: {
+      proposals: ProposalInfo[];
+      certified: boolean;
+    }) {
+      set({
+        proposals,
+        certified,
+      });
+    },
+  };
 };
 
 const initOpenSnsProposalsStore = () =>
-	derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
-		isNullish($snsProposalsStore)
-			? []
-			: $snsProposalsStore.proposals.filter(({ status }) => status === ProposalStatus.Open)
-	);
+  derived([snsProposalsStore], ([$snsProposalsStore]): ProposalInfo[] =>
+    isNullish($snsProposalsStore)
+      ? []
+      : $snsProposalsStore.proposals.filter(
+          ({ status }) => status === ProposalStatus.Open
+        )
+  );
 
 export const snsProposalsStore = initSnsProposalsStore();
 export const openSnsProposalsStore = initOpenSnsProposalsStore();
@@ -51,12 +59,12 @@ export const openSnsProposalsStore = initOpenSnsProposalsStore();
 // ************** Sns summaries and swaps **************
 
 export type SnsQueryStore =
-	| {
-			metadata: QuerySnsMetadata[];
-			swaps: QuerySnsSwapState[];
-	  }
-	| undefined
-	| null;
+  | {
+      metadata: QuerySnsMetadata[];
+      swaps: QuerySnsSwapState[];
+    }
+  | undefined
+  | null;
 
 /**
  * A store that contains the results of the queries (query and update) calls NNS-dapp performs to fetch Sns data from the backend.
@@ -68,60 +76,64 @@ export type SnsQueryStore =
  * - updateData: a function to update the data of a particular root canister id - e.g. used to reload a particular sns project after user has participated to a sale
  */
 const initSnsQueryStore = () => {
-	const { subscribe, set, update } = writable<SnsQueryStore>(undefined);
+  const { subscribe, set, update } = writable<SnsQueryStore>(undefined);
 
-	return {
-		subscribe,
+  return {
+    subscribe,
 
-		reset() {
-			set(undefined);
-		},
+    reset() {
+      set(undefined);
+    },
 
-		setLoadingState() {
-			set(null);
-		},
+    setLoadingState() {
+      set(null);
+    },
 
-		setData([metadata, swaps]: [QuerySnsMetadata[], QuerySnsSwapState[]]) {
-			set({
-				metadata,
-				swaps
-			});
-		},
+    setData([metadata, swaps]: [QuerySnsMetadata[], QuerySnsSwapState[]]) {
+      set({
+        metadata,
+        swaps,
+      });
+    },
 
-		/**
-		 * Note about undefined data (edge case):
-		 *
-		 * The data parameter can contain undefined values if the backend does not find the related info for the root canister id.
-		 * This should not happen since we update the store if the user interact with a project that was actually already successfully fetched.
-		 * However, if this would ever happen and to prevent issues, we clean up the store for the related root canister id.
-		 */
-		updateData({
-			data: [updatedMetadata, updatedSwap],
-			rootCanisterId
-		}: {
-			data: [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined];
-			rootCanisterId: string;
-		}) {
-			update((store: SnsQueryStore) => ({
-				metadata:
-					updatedMetadata === undefined
-						? (store?.metadata ?? []).filter(
-								({ rootCanisterId: canisterId }) => canisterId !== rootCanisterId
-						  )
-						: (store?.metadata ?? []).map((metadata) =>
-								metadata.rootCanisterId === rootCanisterId ? updatedMetadata : metadata
-						  ),
-				swaps:
-					updatedSwap === undefined
-						? (store?.swaps ?? []).filter(
-								({ rootCanisterId: canisterId }) => canisterId !== rootCanisterId
-						  )
-						: (store?.swaps ?? []).map((swap) =>
-								swap.rootCanisterId === rootCanisterId ? updatedSwap : swap
-						  )
-			}));
-		}
-	};
+    /**
+     * Note about undefined data (edge case):
+     *
+     * The data parameter can contain undefined values if the backend does not find the related info for the root canister id.
+     * This should not happen since we update the store if the user interact with a project that was actually already successfully fetched.
+     * However, if this would ever happen and to prevent issues, we clean up the store for the related root canister id.
+     */
+    updateData({
+      data: [updatedMetadata, updatedSwap],
+      rootCanisterId,
+    }: {
+      data: [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined];
+      rootCanisterId: string;
+    }) {
+      update((store: SnsQueryStore) => ({
+        metadata:
+          updatedMetadata === undefined
+            ? (store?.metadata ?? []).filter(
+                ({ rootCanisterId: canisterId }) =>
+                  canisterId !== rootCanisterId
+              )
+            : (store?.metadata ?? []).map((metadata) =>
+                metadata.rootCanisterId === rootCanisterId
+                  ? updatedMetadata
+                  : metadata
+              ),
+        swaps:
+          updatedSwap === undefined
+            ? (store?.swaps ?? []).filter(
+                ({ rootCanisterId: canisterId }) =>
+                  canisterId !== rootCanisterId
+              )
+            : (store?.swaps ?? []).map((swap) =>
+                swap.rootCanisterId === rootCanisterId ? updatedSwap : swap
+              ),
+      }));
+    },
+  };
 };
 
 /**
@@ -133,55 +145,56 @@ export const snsQueryStore = initSnsQueryStore();
  * The response of the Snses about metadata and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
  */
 export const snsSummariesStore = derived(snsQueryStore, (data: SnsQueryStore) =>
-	mapAndSortSnsQueryToSummaries({
-		metadata: data?.metadata ?? [],
-		swaps: data?.swaps ?? []
-	})
+  mapAndSortSnsQueryToSummaries({
+    metadata: data?.metadata ?? [],
+    swaps: data?.swaps ?? [],
+  })
 );
 
 // ************** Sns commitment **************
 
 export type SnsSwapCommitmentsStore =
-	| {
-			swapCommitment: SnsSwapCommitment;
-			certified: boolean;
-	  }[]
-	| undefined
-	| null;
+  | {
+      swapCommitment: SnsSwapCommitment;
+      certified: boolean;
+    }[]
+  | undefined
+  | null;
 
 const initSnsSwapCommitmentsStore = () => {
-	const { subscribe, update, set } = writable<SnsSwapCommitmentsStore>(undefined);
+  const { subscribe, update, set } =
+    writable<SnsSwapCommitmentsStore>(undefined);
 
-	return {
-		subscribe,
+  return {
+    subscribe,
 
-		setSwapCommitment({
-			swapCommitment,
-			certified
-		}: {
-			swapCommitment: SnsSwapCommitment;
-			certified: boolean;
-		}) {
-			update((items) => [
-				...(items ?? []).filter(
-					({ swapCommitment: { rootCanisterId } }) =>
-						rootCanisterId.toText() !== swapCommitment.rootCanisterId.toText()
-				),
-				{
-					swapCommitment,
-					certified
-				}
-			]);
-		},
+    setSwapCommitment({
+      swapCommitment,
+      certified,
+    }: {
+      swapCommitment: SnsSwapCommitment;
+      certified: boolean;
+    }) {
+      update((items) => [
+        ...(items ?? []).filter(
+          ({ swapCommitment: { rootCanisterId } }) =>
+            rootCanisterId.toText() !== swapCommitment.rootCanisterId.toText()
+        ),
+        {
+          swapCommitment,
+          certified,
+        },
+      ]);
+    },
 
-		reset() {
-			set(undefined);
-		},
+    reset() {
+      set(undefined);
+    },
 
-		setLoadingState() {
-			set(null);
-		}
-	};
+    setLoadingState() {
+      set(null);
+    },
+  };
 };
 
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();

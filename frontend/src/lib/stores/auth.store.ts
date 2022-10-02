@@ -1,11 +1,14 @@
-import type { Identity } from '@dfinity/agent';
-import type { AuthClient } from '@dfinity/auth-client';
-import { writable } from 'svelte/store';
-import { AUTH_SESSION_DURATION, IDENTITY_SERVICE_URL } from '../constants/identity.constants';
-import { createAuthClient } from '../utils/auth.utils';
+import type { Identity } from "@dfinity/agent";
+import type { AuthClient } from "@dfinity/auth-client";
+import { writable } from "svelte/store";
+import {
+  AUTH_SESSION_DURATION,
+  IDENTITY_SERVICE_URL,
+} from "../constants/identity.constants";
+import { createAuthClient } from "../utils/auth.utils";
 
 export interface AuthStore {
-	identity: Identity | undefined | null;
+  identity: Identity | undefined | null;
 }
 
 // We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
@@ -31,62 +34,62 @@ let authClient: AuthClient | undefined | null;
  *
  */
 const initAuthStore = () => {
-	const { subscribe, set, update } = writable<AuthStore>({
-		identity: undefined
-	});
+  const { subscribe, set, update } = writable<AuthStore>({
+    identity: undefined,
+  });
 
-	return {
-		subscribe,
+  return {
+    subscribe,
 
-		sync: async () => {
-			authClient = authClient ?? (await createAuthClient());
-			const isAuthenticated: boolean = await authClient.isAuthenticated();
+    sync: async () => {
+      authClient = authClient ?? (await createAuthClient());
+      const isAuthenticated: boolean = await authClient.isAuthenticated();
 
-			set({
-				identity: isAuthenticated ? authClient.getIdentity() : null
-			});
-		},
+      set({
+        identity: isAuthenticated ? authClient.getIdentity() : null,
+      });
+    },
 
-		signIn: () =>
-			new Promise<void>((resolve, reject) => {
-				// This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
-				// @see `Guard.svelte`
-				if (authClient === undefined) {
-					reject();
-					return;
-				}
+    signIn: () =>
+      new Promise<void>((resolve, reject) => {
+        // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
+        // @see `Guard.svelte`
+        if (authClient === undefined) {
+          reject();
+          return;
+        }
 
-				authClient?.login({
-					identityProvider: IDENTITY_SERVICE_URL,
-					maxTimeToLive: AUTH_SESSION_DURATION,
-					onSuccess: () => {
-						update((state: AuthStore) => ({
-							...state,
-							identity: authClient?.getIdentity()
-						}));
+        authClient?.login({
+          identityProvider: IDENTITY_SERVICE_URL,
+          maxTimeToLive: AUTH_SESSION_DURATION,
+          onSuccess: () => {
+            update((state: AuthStore) => ({
+              ...state,
+              identity: authClient?.getIdentity(),
+            }));
 
-						resolve();
-					},
-					onError: reject
-				});
-			}),
+            resolve();
+          },
+          onError: reject,
+        });
+      }),
 
-		signOut: async () => {
-			const client: AuthClient = authClient ?? (await createAuthClient());
+    signOut: async () => {
+      const client: AuthClient = authClient ?? (await createAuthClient());
 
-			await client.logout();
+      await client.logout();
 
-			// We currently do not have issue because the all screen is reloaded after sign-out.
-			// But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
-			// This fix a "sign in -> sign out -> sign in again" flow without window reload.
-			authClient = null;
+      // We currently do not have issue because the all screen is reloaded after sign-out.
+      // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
+      // This fix a "sign in -> sign out -> sign in again" flow without window reload.
+      authClient = null;
 
-			update((state: AuthStore) => ({
-				...state,
-				identity: null
-			}));
-		}
-	};
+      update((state: AuthStore) => ({
+        ...state,
+        identity: null,
+      }));
+    },
+  };
 };
 
 export const authStore = initAuthStore();

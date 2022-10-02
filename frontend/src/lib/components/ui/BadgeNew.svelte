@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { IconFiberNew } from '@dfinity/gix-components';
-	import { i18n } from '../../stores/i18n';
+  import { IconFiberNew } from "@dfinity/gix-components";
+  import { i18n } from "../../stores/i18n";
 </script>
 
 <span aria-label={$i18n.core.badgeNew}>
-	<IconFiberNew />
+  <IconFiberNew />
 </span>
 
 <style lang="scss">
-	span {
-		width: var(--padding-4x);
-		height: auto;
-		line-height: 0;
-		color: var(--primary);
+  span {
+    width: var(--padding-4x);
+    height: auto;
+    line-height: 0;
+    color: var(--primary);
 
-		:global(svg) {
-			width: 100%;
-			height: auto;
-		}
-	}
+    :global(svg) {
+      width: 100%;
+      height: auto;
+    }
+  }
 </style>

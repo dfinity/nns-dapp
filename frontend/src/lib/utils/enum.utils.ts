@@ -4,7 +4,7 @@
  * e.g. enum Hello { World = 0; } => [0]
  */
 export const enumValues = <T>(obj: T): number[] => {
-	return Object.values(obj).filter((o: T) => typeof o === 'number');
+  return Object.values(obj).filter((o: T) => typeof o === "number");
 };
 
 /**
@@ -13,7 +13,7 @@ export const enumValues = <T>(obj: T): number[] => {
  * e.g. enum Hello { World = 0; } => ['World']
  */
 export const enumKeys = <T>(obj: T): string[] => {
-	return Object.values(obj).filter((o: T) => typeof o === 'string');
+  return Object.values(obj).filter((o: T) => typeof o === "string");
 };
 
 /**
@@ -21,8 +21,14 @@ export const enumKeys = <T>(obj: T): string[] => {
  *
  * e.g. enum Hello { A = 0; B = 1; C = 2; } with subset [Hello.A, Hello.B] => ['A', 'B']
  */
-export const enumsKeys = <T>({ obj, values }: { obj: T; values: T[] }): string[] => {
-	return values.map((value: T) => obj[value as unknown as string]);
+export const enumsKeys = <T>({
+  obj,
+  values,
+}: {
+  obj: T;
+  values: T[];
+}): string[] => {
+  return values.map((value: T) => obj[value as unknown as string]);
 };
 
 /**
@@ -30,15 +36,21 @@ export const enumsKeys = <T>({ obj, values }: { obj: T; values: T[] }): string[]
  *
  * e.g. enum Hello { A = 0; B = 1; C = 2; } with subset [Hello.A, Hello.B] => [Hello.C]
  */
-export const enumsExclude = <T>({ obj, values }: { obj: T; values: T[] }): T[] => {
-	const keys: string[] = enumsKeys<T>({
-		obj,
-		values
-	});
+export const enumsExclude = <T>({
+  obj,
+  values,
+}: {
+  obj: T;
+  values: T[];
+}): T[] => {
+  const keys: string[] = enumsKeys<T>({
+    obj,
+    values,
+  });
 
-	return enumKeys(obj)
-		.filter((key: string) => !keys.includes(key))
-		.map((key: string) => obj[key]);
+  return enumKeys(obj)
+    .filter((key: string) => !keys.includes(key))
+    .map((key: string) => obj[key]);
 };
 
 /**
@@ -47,13 +59,13 @@ export const enumsExclude = <T>({ obj, values }: { obj: T; values: T[] }): T[] =
  * e.g. enum Hello { A = 0; B = 1; C = 2; } => 3
  */
 export const enumSize = <T>(enm: T): number => {
-	return Object.values(enm).filter(isNaN).length;
+  return Object.values(enm).filter(isNaN).length;
 };
 
 export const enumFromStringExists = <T>({
-	obj,
-	value
+  obj,
+  value,
 }: {
-	obj: T;
-	value: string | null;
+  obj: T;
+  value: string | null;
 }): boolean => Object.values(obj).includes(value);

@@ -1,191 +1,193 @@
 <script lang="ts">
-	import { fade, scale } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
-	import { createEventDispatcher } from 'svelte';
-	import { i18n } from '../stores/i18n';
-	import { busy } from '../stores/busy.store';
-	import { triggerDebugReport } from '../services/debug.services';
-	import { Backdrop, IconBackIosNew, IconClose } from '@dfinity/gix-components';
+  import { fade, scale } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
+  import { createEventDispatcher } from "svelte";
+  import { i18n } from "../stores/i18n";
+  import { busy } from "../stores/busy.store";
+  import { triggerDebugReport } from "../services/debug.services";
+  import { Backdrop, IconBackIosNew, IconClose } from "@dfinity/gix-components";
 
-	export let visible: boolean = true;
-	export let size: 'small' | 'big' = 'small';
-	export let testId: string | undefined = undefined;
+  export let visible: boolean = true;
+  export let size: "small" | "big" = "small";
+  export let testId: string | undefined = undefined;
 
-	// There is no way to know whether a parent is listening to the "nnsBack" event
-	// https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
-	// Please do not use `showBackButton` without listening on `nnsBack`
-	export let showBackButton: boolean = false;
+  // There is no way to know whether a parent is listening to the "nnsBack" event
+  // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
+  // Please do not use `showBackButton` without listening on `nnsBack`
+  export let showBackButton: boolean = false;
 
-	let showToolbar: boolean;
-	$: showToolbar = $$slots.title ?? showBackButton;
+  let showToolbar: boolean;
+  $: showToolbar = $$slots.title ?? showBackButton;
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('nnsClose');
-	const back = () => dispatch('nnsBack');
+  const dispatch = createEventDispatcher();
+  const close = () => dispatch("nnsClose");
+  const back = () => dispatch("nnsBack");
 </script>
 
 {#if visible}
-	<div
-		class="modal legacy"
-		transition:fade
-		role="dialog"
-		data-tid={testId}
-		aria-labelledby={showToolbar ? 'modalTitle' : undefined}
-		aria-describedby="modalContent"
-		on:click|stopPropagation
-		on:introend
-	>
-		<Backdrop disablePointerEvents={$busy} on:nnsClose />
-		<div
-			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-			class={`wrapper ${size}`}
-		>
-			{#if showToolbar}
-				<div class="toolbar">
-					{#if showBackButton}
-						<button
-							transition:fade={{ duration: 150 }}
-							class="back"
-							on:click|stopPropagation={back}
-							aria-label={$i18n.core.back}
-							disabled={$busy}><IconBackIosNew /></button
-						>
-					{/if}
-					<h3 id="modalTitle" use:triggerDebugReport><slot name="title" /></h3>
-					<button
-						data-tid="close-modal"
-						on:click|stopPropagation={close}
-						aria-label={$i18n.core.close}
-						disabled={$busy}><IconClose /></button
-					>
-				</div>
-			{/if}
+  <div
+    class="modal legacy"
+    transition:fade
+    role="dialog"
+    data-tid={testId}
+    aria-labelledby={showToolbar ? "modalTitle" : undefined}
+    aria-describedby="modalContent"
+    on:click|stopPropagation
+    on:introend
+  >
+    <Backdrop disablePointerEvents={$busy} on:nnsClose />
+    <div
+      transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
+      class={`wrapper ${size}`}
+    >
+      {#if showToolbar}
+        <div class="toolbar">
+          {#if showBackButton}
+            <button
+              transition:fade={{ duration: 150 }}
+              class="back"
+              on:click|stopPropagation={back}
+              aria-label={$i18n.core.back}
+              disabled={$busy}><IconBackIosNew /></button
+            >
+          {/if}
+          <h3 id="modalTitle" use:triggerDebugReport><slot name="title" /></h3>
+          <button
+            data-tid="close-modal"
+            on:click|stopPropagation={close}
+            aria-label={$i18n.core.close}
+            disabled={$busy}><IconClose /></button
+          >
+        </div>
+      {/if}
 
-			<div class="content" id="modalContent" class:small={size === 'small'}>
-				<slot />
-			</div>
+      <div class="content" id="modalContent" class:small={size === "small"}>
+        <slot />
+      </div>
 
-			{#if $$slots.footer}
-				<div class="footer">
-					<slot name="footer" />
-				</div>
-			{/if}
-		</div>
-	</div>
+      {#if $$slots.footer}
+        <div class="footer">
+          <slot name="footer" />
+        </div>
+      {/if}
+    </div>
+  </div>
 {/if}
 
 <style lang="scss">
-	@use '@dfinity/gix-components/styles/mixins/interaction';
-	@use '@dfinity/gix-components/styles/mixins/text';
-	@use '@dfinity/gix-components/styles/mixins/display';
-	@use '@dfinity/gix-components/styles/mixins/media';
-	@use '../themes/mixins/modal';
+  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../themes/mixins/modal";
 
-	.modal {
-		position: fixed;
-		@include display.inset;
+  .modal {
+    position: fixed;
+    @include display.inset;
 
-		z-index: var(--modal-z-index);
+    z-index: var(--modal-z-index);
 
-		@include interaction.initial;
-	}
+    @include interaction.initial;
+  }
 
-	.wrapper {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+  .wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-		display: flex;
-		flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-		--modal-legacy-toolbar-height: 35px;
+    --modal-legacy-toolbar-height: 35px;
 
-		background: var(--background);
+    background: var(--background);
 
-		--select-color: var(--background-contrast);
-		--select-border-radius: 0;
+    --select-color: var(--background-contrast);
+    --select-border-radius: 0;
 
-		overflow: hidden;
+    overflow: hidden;
 
-		&.small {
-			width: var(--modal-legacy-small-width);
-			max-width: var(--modal-legacy-small-max-width);
+    &.small {
+      width: var(--modal-legacy-small-width);
+      max-width: var(--modal-legacy-small-max-width);
 
-			max-height: var(--modal-legacy-small-max-height);
+      max-height: var(--modal-legacy-small-max-height);
 
-			border-radius: var(--modal-legacy-small-border-radius);
-		}
+      border-radius: var(--modal-legacy-small-border-radius);
+    }
 
-		&.big {
-			width: var(--modal-legacy-big-width);
-			max-width: var(--modal-legacy-big-max-width);
+    &.big {
+      width: var(--modal-legacy-big-width);
+      max-width: var(--modal-legacy-big-max-width);
 
-			height: var(--modal-legacy-big-height);
+      height: var(--modal-legacy-big-height);
 
-			max-height: var(--modal-legacy-big-max-height, 100%);
+      max-height: var(--modal-legacy-big-max-height, 100%);
 
-			@supports (-webkit-touch-callout: none) {
-				max-height: -webkit-fill-available;
+      @supports (-webkit-touch-callout: none) {
+        max-height: -webkit-fill-available;
 
-				@include media.min-width(medium) {
-					max-height: var(--modal-legacy-big-max-height, 100%);
-				}
-			}
+        @include media.min-width(medium) {
+          max-height: var(--modal-legacy-big-max-height, 100%);
+        }
+      }
 
-			border-radius: var(--modal-legacy-big-border-radius);
-		}
-	}
+      border-radius: var(--modal-legacy-big-border-radius);
+    }
+  }
 
-	.toolbar {
-		padding: var(--padding) var(--padding-2x);
+  .toolbar {
+    padding: var(--padding) var(--padding-2x);
 
-		display: grid;
-		--toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
-		grid-template-columns: var(--toolbar-icon-width) 1fr var(--toolbar-icon-width);
+    display: grid;
+    --toolbar-icon-width: calc((var(--padding) / 2) + var(--icon-width));
+    grid-template-columns: var(--toolbar-icon-width) 1fr var(
+        --toolbar-icon-width
+      );
 
-		z-index: var(--z-index);
+    z-index: var(--z-index);
 
-		height: var(--modal-legacy-toolbar-height);
+    height: var(--modal-legacy-toolbar-height);
 
-		h3 {
-			@include text.clamp(1);
+    h3 {
+      @include text.clamp(1);
 
-			font-weight: 400;
-			margin-bottom: 0;
-			line-height: 1.5;
-			text-align: center;
-			grid-column-start: 2;
-		}
+      font-weight: 400;
+      margin-bottom: 0;
+      line-height: 1.5;
+      text-align: center;
+      grid-column-start: 2;
+    }
 
-		button {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			padding: 0;
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
 
-			&:active,
-			&:focus,
-			&:hover {
-				background: var(--background-shade);
-				border-radius: var(--border-radius);
-			}
-		}
-	}
+      &:active,
+      &:focus,
+      &:hover {
+        background: var(--background-shade);
+        border-radius: var(--border-radius);
+      }
+    }
+  }
 
-	.content {
-		position: relative;
+  .content {
+    position: relative;
 
-		display: flex;
-		flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-		height: calc(100% - var(--modal-legacy-toolbar-height));
-		overflow-y: auto;
-		overflow-x: hidden;
-	}
+    height: calc(100% - var(--modal-legacy-toolbar-height));
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
-	.footer {
-		padding: var(--padding-2x);
-		@include modal.bottom-buttons;
-	}
+  .footer {
+    padding: var(--padding-2x);
+    @include modal.bottom-buttons;
+  }
 </style>

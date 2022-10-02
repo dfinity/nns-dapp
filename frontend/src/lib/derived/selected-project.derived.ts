@@ -1,9 +1,9 @@
-import { Principal } from '@dfinity/principal';
-import { derived } from 'svelte/store';
-import { OWN_CANISTER_ID } from '../constants/canister-ids.constants';
-import { routeStore } from '../stores/route.store';
-import { getContextFromPath } from '../utils/app-path.utils';
-import { isNnsProject } from '../utils/projects.utils';
+import { Principal } from "@dfinity/principal";
+import { derived } from "svelte/store";
+import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
+import { routeStore } from "../stores/route.store";
+import { getContextFromPath } from "../utils/app-path.utils";
+import { isNnsProject } from "../utils/projects.utils";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "context" - e.g. display Neurons of Nns or a particular Sns
@@ -12,31 +12,34 @@ import { isNnsProject } from '../utils/projects.utils';
  * It defaults to NNS (OWN_CANISTER_ID) if the path is not a context path.
  */
 export const snsProjectSelectedStore = derived([routeStore], ([{ path }]) => {
-	const maybeContextId = getContextFromPath(path);
-	if (maybeContextId !== undefined) {
-		try {
-			return Principal.fromText(maybeContextId);
-		} catch (error) {
-			// Add execeptions, maybe bitcoin wallet?
-		}
-	}
-	// Consider NNS as default project
-	return OWN_CANISTER_ID;
+  const maybeContextId = getContextFromPath(path);
+  if (maybeContextId !== undefined) {
+    try {
+      return Principal.fromText(maybeContextId);
+    } catch (error) {
+      // Add execeptions, maybe bitcoin wallet?
+    }
+  }
+  // Consider NNS as default project
+  return OWN_CANISTER_ID;
 });
 
 /***
  * Is the selected project (universe) Nns?
  */
 export const isNnsProjectStore = derived(
-	snsProjectSelectedStore,
-	($snsProjectSelectedStore: Principal) => isNnsProject($snsProjectSelectedStore)
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    isNnsProject($snsProjectSelectedStore)
 );
 
 /***
  * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
  */
 export const snsOnlyProjectStore = derived(
-	snsProjectSelectedStore,
-	($snsProjectSelectedStore: Principal) =>
-		isNnsProject($snsProjectSelectedStore) ? undefined : $snsProjectSelectedStore
+  snsProjectSelectedStore,
+  ($snsProjectSelectedStore: Principal) =>
+    isNnsProject($snsProjectSelectedStore)
+      ? undefined
+      : $snsProjectSelectedStore
 );

@@ -2,63 +2,71 @@
  * @jest-environment jsdom
  */
 
-import { SnsSwapLifecycle } from '@dfinity/sns';
-import { render } from '@testing-library/svelte';
-import ProjectCardSwapInfo from '../../../../lib/components/launchpad/ProjectCardSwapInfo.svelte';
-import type { SnsSwapCommitment } from '../../../../lib/types/sns';
-import { secondsToDuration } from '../../../../lib/utils/date.utils';
-import { formatToken } from '../../../../lib/utils/icp.utils';
-import { getCommitmentE8s } from '../../../../lib/utils/sns.utils';
-import en from '../../../mocks/i18n.mock';
-import { mockSnsFullProject, summaryForLifecycle } from '../../../mocks/sns-projects.mock';
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
+import ProjectCardSwapInfo from "../../../../lib/components/launchpad/ProjectCardSwapInfo.svelte";
+import type { SnsSwapCommitment } from "../../../../lib/types/sns";
+import { secondsToDuration } from "../../../../lib/utils/date.utils";
+import { formatToken } from "../../../../lib/utils/icp.utils";
+import { getCommitmentE8s } from "../../../../lib/utils/sns.utils";
+import en from "../../../mocks/i18n.mock";
+import {
+  mockSnsFullProject,
+  summaryForLifecycle,
+} from "../../../mocks/sns-projects.mock";
 
-jest.mock('../../../../lib/services/sns.services', () => {
-	return {
-		loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-		loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
-		loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve())
-	};
+jest.mock("../../../../lib/services/sns.services", () => {
+  return {
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve()),
+  };
 });
 
-describe('ProjectCardSwapInfo', () => {
-	it('should render deadline', () => {
-		const { getByText } = render(ProjectCardSwapInfo, {
-			props: {
-				project: mockSnsFullProject
-			}
-		});
+describe("ProjectCardSwapInfo", () => {
+  it("should render deadline", () => {
+    const { getByText } = render(ProjectCardSwapInfo, {
+      props: {
+        project: mockSnsFullProject,
+      },
+    });
 
-		const durationTillDeadline =
-			mockSnsFullProject.summary.swap.params.swap_due_timestamp_seconds -
-			BigInt(Math.round(Date.now() / 1000));
+    const durationTillDeadline =
+      mockSnsFullProject.summary.swap.params.swap_due_timestamp_seconds -
+      BigInt(Math.round(Date.now() / 1000));
 
-		expect(getByText(secondsToDuration(durationTillDeadline))).toBeInTheDocument();
-	});
+    expect(
+      getByText(secondsToDuration(durationTillDeadline))
+    ).toBeInTheDocument();
+  });
 
-	it('should render my commitment', () => {
-		const { getByText } = render(ProjectCardSwapInfo, {
-			props: {
-				project: mockSnsFullProject
-			}
-		});
+  it("should render my commitment", () => {
+    const { getByText } = render(ProjectCardSwapInfo, {
+      props: {
+        project: mockSnsFullProject,
+      },
+    });
 
-		const icpValue = formatToken({
-			value: getCommitmentE8s(mockSnsFullProject.swapCommitment as SnsSwapCommitment) ?? BigInt(0)
-		});
+    const icpValue = formatToken({
+      value:
+        getCommitmentE8s(
+          mockSnsFullProject.swapCommitment as SnsSwapCommitment
+        ) ?? BigInt(0),
+    });
 
-		expect(getByText(icpValue, { exact: false })).toBeInTheDocument();
-	});
+    expect(getByText(icpValue, { exact: false })).toBeInTheDocument();
+  });
 
-	it('should render completed', () => {
-		const { getByText } = render(ProjectCardSwapInfo, {
-			props: {
-				project: {
-					...mockSnsFullProject,
-					summary: summaryForLifecycle(SnsSwapLifecycle.Committed)
-				}
-			}
-		});
+  it("should render completed", () => {
+    const { getByText } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+        },
+      },
+    });
 
-		expect(getByText(en.sns_project_detail.completed)).toBeInTheDocument();
-	});
+    expect(getByText(en.sns_project_detail.completed)).toBeInTheDocument();
+  });
 });

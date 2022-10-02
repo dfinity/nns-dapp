@@ -1,1 +1,1 @@
-export type CardType = 'card' | 'info';
+export type CardType = "card" | "info";

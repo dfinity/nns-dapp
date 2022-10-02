@@ -1,13 +1,13 @@
 export const DFINITY_NEURON = {
-	id: BigInt(27),
-	name: 'DFINITY Foundation',
-	description: undefined
+  id: BigInt(27),
+  name: "DFINITY Foundation",
+  description: undefined,
 };
 
 export const IC_NEURON = {
-	id: BigInt(28),
-	name: 'Internet Computer Association',
-	description: undefined
+  id: BigInt(28),
+  name: "Internet Computer Association",
+  description: undefined,
 };
 
 export const CREATE_CANISTER_MEMO = BigInt(0x41455243); // CREA,

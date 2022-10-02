@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '../../stores/i18n';
-	import type { Principal } from '@dfinity/principal';
+  import { i18n } from "../../stores/i18n";
+  import type { Principal } from "@dfinity/principal";
 
-	export let canisterId: Principal | undefined;
+  export let canisterId: Principal | undefined;
 </script>
 
 <p class="label">{$i18n.canister_detail.title}</p>
