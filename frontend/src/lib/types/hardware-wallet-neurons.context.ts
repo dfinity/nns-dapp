@@ -1,18 +1,16 @@
-import type { NeuronInfo } from "@dfinity/nns";
-import type { Writable } from "svelte/store";
+import type { NeuronInfo } from '@dfinity/nns';
+import type { Writable } from 'svelte/store';
 
 export interface HardwareWalletNeuronInfo extends NeuronInfo {
-  controlledByNNSDapp: boolean;
+	controlledByNNSDapp: boolean;
 }
 
 export interface HardwareWalletNeuronsStore {
-  neurons: HardwareWalletNeuronInfo[];
+	neurons: HardwareWalletNeuronInfo[];
 }
 
 export interface HardwareWalletNeuronsContext {
-  store: Writable<HardwareWalletNeuronsStore>;
+	store: Writable<HardwareWalletNeuronsStore>;
 }
 
-export const HARDWARE_WALLET_NEURONS_CONTEXT_KEY = Symbol(
-  "hardware-wallet-neurons"
-);
+export const HARDWARE_WALLET_NEURONS_CONTEXT_KEY = Symbol('hardware-wallet-neurons');

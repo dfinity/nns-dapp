@@ -2,145 +2,145 @@
  * @jest-environment jsdom
  */
 
-import type { Proposal } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import ProposalActions from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
-import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
+import type { Proposal } from '@dfinity/nns';
+import { render, waitFor } from '@testing-library/svelte';
+import { mock } from 'jest-mock-extended';
+import { NNSDappCanister } from '../../../../../lib/canisters/nns-dapp/nns-dapp.canister';
+import ProposalActions from '../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte';
+import { proposalPayloadsStore } from '../../../../../lib/stores/proposals.store';
 import {
-  getNnsFunctionKey,
-  proposalFirstActionKey,
-} from "../../../../../lib/utils/proposals.utils";
-import en from "../../../../mocks/i18n.mock";
+	getNnsFunctionKey,
+	proposalFirstActionKey
+} from '../../../../../lib/utils/proposals.utils';
+import en from '../../../../mocks/i18n.mock';
 import {
-  mockProposalInfo,
-  proposalActionMotion,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
-} from "../../../../mocks/proposal.mock";
+	mockProposalInfo,
+	proposalActionMotion,
+	proposalActionNnsFunction21,
+	proposalActionRewardNodeProvider
+} from '../../../../mocks/proposal.mock';
 
 const proposalWithMotionAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionMotion,
+	...mockProposalInfo.proposal,
+	action: proposalActionMotion
 } as Proposal;
 
 const proposalWithRewardNodeProviderAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
+	...mockProposalInfo.proposal,
+	action: proposalActionRewardNodeProvider
 } as Proposal;
 
 const proposalWithNnsFunctionAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionNnsFunction21,
+	...mockProposalInfo.proposal,
+	action: proposalActionNnsFunction21
 } as Proposal;
 
-describe("ProposalActions", () => {
-  it("should render action key", () => {
-    const { getByText } = render(ProposalActions, {
-      props: {
-        proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
-      },
-    });
+describe('ProposalActions', () => {
+	it('should render action key', () => {
+		const { getByText } = render(ProposalActions, {
+			props: {
+				proposal: proposalWithMotionAction,
+				proposalId: mockProposalInfo.id
+			}
+		});
 
-    const key = proposalFirstActionKey(proposalWithMotionAction) as string;
-    expect(getByText(key)).toBeInTheDocument();
-  });
+		const key = proposalFirstActionKey(proposalWithMotionAction) as string;
+		expect(getByText(key)).toBeInTheDocument();
+	});
 
-  it("should render action fields", () => {
-    const { getByText } = render(ProposalActions, {
-      props: {
-        proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
-      },
-    });
+	it('should render action fields', () => {
+		const { getByText } = render(ProposalActions, {
+			props: {
+				proposal: proposalWithMotionAction,
+				proposalId: mockProposalInfo.id
+			}
+		});
 
-    const [key, value] = Object.entries(
-      (proposalWithMotionAction?.action as { Motion: object }).Motion
-    )[0];
-    expect(getByText(key)).toBeInTheDocument();
-    expect(getByText(value)).toBeInTheDocument();
-  });
+		const [key, value] = Object.entries(
+			(proposalWithMotionAction?.action as { Motion: object }).Motion
+		)[0];
+		expect(getByText(key)).toBeInTheDocument();
+		expect(getByText(value)).toBeInTheDocument();
+	});
 
-  it("should render object fields as JSON", () => {
-    const nodeProviderActions = render(ProposalActions, {
-      props: {
-        proposal: proposalWithRewardNodeProviderAction,
-        proposalId: mockProposalInfo.id,
-      },
-    });
+	it('should render object fields as JSON', () => {
+		const nodeProviderActions = render(ProposalActions, {
+			props: {
+				proposal: proposalWithRewardNodeProviderAction,
+				proposalId: mockProposalInfo.id
+			}
+		});
 
-    expect(nodeProviderActions.queryAllByTestId("json").length).toBe(2);
-  });
+		expect(nodeProviderActions.queryAllByTestId('json').length).toBe(2);
+	});
 
-  it("should render text fields as plane text", () => {
-    const motionActions = render(ProposalActions, {
-      props: {
-        proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
-      },
-    });
+	it('should render text fields as plane text', () => {
+		const motionActions = render(ProposalActions, {
+			props: {
+				proposal: proposalWithMotionAction,
+				proposalId: mockProposalInfo.id
+			}
+		});
 
-    expect(motionActions.queryAllByTestId("json").length).toBe(0);
-  });
+		expect(motionActions.queryAllByTestId('json').length).toBe(0);
+	});
 
-  describe("nnsFunction", () => {
-    const nnsDappMock = mock<NNSDappCanister>();
-    nnsDappMock.getProposalPayload.mockResolvedValue({});
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+	describe('nnsFunction', () => {
+		const nnsDappMock = mock<NNSDappCanister>();
+		nnsDappMock.getProposalPayload.mockResolvedValue({});
+		jest.spyOn(NNSDappCanister, 'create').mockImplementation(() => nnsDappMock);
 
-    beforeEach(() => proposalPayloadsStore.reset);
+		beforeEach(() => proposalPayloadsStore.reset);
 
-    afterAll(jest.clearAllMocks);
+		afterAll(jest.clearAllMocks);
 
-    it("should render nnsFunction id", () => {
-      const { getByText } = render(ProposalActions, {
-        props: {
-          proposal: proposalWithNnsFunctionAction,
-          proposalId: mockProposalInfo.id,
-        },
-      });
+		it('should render nnsFunction id', () => {
+			const { getByText } = render(ProposalActions, {
+				props: {
+					proposal: proposalWithNnsFunctionAction,
+					proposalId: mockProposalInfo.id
+				}
+			});
 
-      const [key, value] = Object.entries(
-        (
-          proposalWithNnsFunctionAction?.action as {
-            ExecuteNnsFunction: object;
-          }
-        ).ExecuteNnsFunction
-      )[0];
+			const [key, value] = Object.entries(
+				(
+					proposalWithNnsFunctionAction?.action as {
+						ExecuteNnsFunction: object;
+					}
+				).ExecuteNnsFunction
+			)[0];
 
-      expect(getByText(key)).toBeInTheDocument();
-      expect(getByText(value)).toBeInTheDocument();
-    });
+			expect(getByText(key)).toBeInTheDocument();
+			expect(getByText(value)).toBeInTheDocument();
+		});
 
-    it("should render nnsFunction name", () => {
-      const { getByText } = render(ProposalActions, {
-        props: {
-          proposal: proposalWithNnsFunctionAction,
-          proposalId: mockProposalInfo.id,
-        },
-      });
+		it('should render nnsFunction name', () => {
+			const { getByText } = render(ProposalActions, {
+				props: {
+					proposal: proposalWithNnsFunctionAction,
+					proposalId: mockProposalInfo.id
+				}
+			});
 
-      const nnsFunctionKey = getNnsFunctionKey(proposalWithNnsFunctionAction);
-      const fnName = en.nns_functions[nnsFunctionKey as string];
+			const nnsFunctionKey = getNnsFunctionKey(proposalWithNnsFunctionAction);
+			const fnName = en.nns_functions[nnsFunctionKey as string];
 
-      expect(getByText(fnName)).toBeInTheDocument();
-    });
+			expect(getByText(fnName)).toBeInTheDocument();
+		});
 
-    it("should trigger getProposalPayload", async () => {
-      const spyGetProposalPayload = jest
-        .spyOn(nnsDappMock, "getProposalPayload")
-        .mockImplementation(async () => ({}));
+		it('should trigger getProposalPayload', async () => {
+			const spyGetProposalPayload = jest
+				.spyOn(nnsDappMock, 'getProposalPayload')
+				.mockImplementation(async () => ({}));
 
-      render(ProposalActions, {
-        props: {
-          proposal: proposalWithNnsFunctionAction,
-          proposalId: BigInt(0),
-        },
-      });
+			render(ProposalActions, {
+				props: {
+					proposal: proposalWithNnsFunctionAction,
+					proposalId: BigInt(0)
+				}
+			});
 
-      await waitFor(() => expect(spyGetProposalPayload).toBeCalledTimes(1));
-    });
-  });
+			await waitFor(() => expect(spyGetProposalPayload).toBeCalledTimes(1));
+		});
+	});
 });

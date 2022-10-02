@@ -18,6 +18,6 @@ module.exports = {
 		node: true
 	},
 	globals: {
-		NodeJS: true,
-	},
+		NodeJS: true
+	}
 };

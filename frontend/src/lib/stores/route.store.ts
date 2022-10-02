@@ -1,12 +1,12 @@
-import { writable } from "svelte/store";
-import type { AppPath } from "../constants/routes.constants";
-import { changePathContext, isAppPath } from "../utils/app-path.utils";
-import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
+import { writable } from 'svelte/store';
+import type { AppPath } from '../constants/routes.constants';
+import { changePathContext, isAppPath } from '../utils/app-path.utils';
+import { pushHistory, replaceHistory, routePath } from '../utils/route.utils';
 
 export interface RouteStore {
-  path: AppPath | string;
-  referrerPath?: AppPath | string;
-  isKnownPath: boolean;
+	path: AppPath | string;
+	referrerPath?: AppPath | string;
+	isKnownPath: boolean;
 }
 
 /**
@@ -24,68 +24,68 @@ export interface RouteStore {
  *
  */
 const initRouteStore = () => {
-  const { subscribe, update } = writable<RouteStore>({
-    path: routePath(),
-    isKnownPath: isAppPath(routePath()),
-  });
+	const { subscribe, update } = writable<RouteStore>({
+		path: routePath(),
+		isKnownPath: isAppPath(routePath())
+	});
 
-  return {
-    subscribe,
+	return {
+		subscribe,
 
-    update: ({ path }: { path: string }) =>
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      })),
+		update: ({ path }: { path: string }) =>
+			update((state: RouteStore) => ({
+				...state,
+				path,
+				referrerPath: state.path,
+				isKnownPath: isAppPath(path)
+			})),
 
-    navigate: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      }));
+		navigate: ({ path, query }: { path: string; query?: string }) => {
+			update((state: RouteStore) => ({
+				...state,
+				path,
+				referrerPath: state.path,
+				isKnownPath: isAppPath(path)
+			}));
 
-      pushHistory({ path, query });
-    },
+			pushHistory({ path, query });
+		},
 
-    replace: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      }));
+		replace: ({ path, query }: { path: string; query?: string }) => {
+			update((state: RouteStore) => ({
+				...state,
+				path,
+				referrerPath: state.path,
+				isKnownPath: isAppPath(path)
+			}));
 
-      replaceHistory({ path, query });
-    },
+			replaceHistory({ path, query });
+		},
 
-    /**
-     * Replaces the path with a new context.
-     * Doesn't do anything if the current path is not a context path.
-     *
-     * When called with `bbbbb-bb`
-     * Ex: `/#/u/aaaaa-aa/neurons` becomes `/#/u/bbbbb-bb/neurons`
-     * Ex: `/#/u/aaaaa-aa/account/1234` becomes `/#/u/bbbbb-bb/account/1234`
-     * Ex: `/#/neurons` doesn't change anything
-     *
-     * @param newContext string - the new context to navigate to
-     */
-    changeContext: (newContext: string) => {
-      let newPath;
-      update((state: RouteStore) => {
-        newPath = changePathContext({ path: state.path, newContext });
-        return {
-          ...state,
-          path: newPath,
-        };
-      });
+		/**
+		 * Replaces the path with a new context.
+		 * Doesn't do anything if the current path is not a context path.
+		 *
+		 * When called with `bbbbb-bb`
+		 * Ex: `/#/u/aaaaa-aa/neurons` becomes `/#/u/bbbbb-bb/neurons`
+		 * Ex: `/#/u/aaaaa-aa/account/1234` becomes `/#/u/bbbbb-bb/account/1234`
+		 * Ex: `/#/neurons` doesn't change anything
+		 *
+		 * @param newContext string - the new context to navigate to
+		 */
+		changeContext: (newContext: string) => {
+			let newPath;
+			update((state: RouteStore) => {
+				newPath = changePathContext({ path: state.path, newContext });
+				return {
+					...state,
+					path: newPath
+				};
+			});
 
-      replaceHistory({ path: newPath });
-    },
-  };
+			replaceHistory({ path: newPath });
+		}
+	};
 };
 
 export const routeStore = initRouteStore();

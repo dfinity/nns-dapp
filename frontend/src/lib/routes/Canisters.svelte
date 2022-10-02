@@ -1,120 +1,118 @@
 <script lang="ts">
-  import Footer from "../components/common/Footer.svelte";
-  import { onMount } from "svelte";
-  import { i18n } from "../stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
-  import { authStore } from "../stores/auth.store";
-  import { toastsError } from "../stores/toasts.store";
-  import { listCanisters } from "../services/canisters.services";
-  import { canistersStore } from "../stores/canisters.store";
-  import { AppPath } from "../constants/routes.constants";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import CanisterCard from "../components/canisters/CanisterCard.svelte";
-  import type { CanisterId } from "../canisters/nns-dapp/nns-dapp.types";
-  import { routeStore } from "../stores/route.store";
-  import CreateCanisterModal from "../modals/canisters/CreateCanisterModal.svelte";
-  import { reloadRouteData } from "../utils/navigation.utils";
-  import LinkCanisterModal from "../modals/canisters/LinkCanisterModal.svelte";
-  import Value from "../components/ui/Value.svelte";
+	import Footer from '../components/common/Footer.svelte';
+	import { onMount } from 'svelte';
+	import { i18n } from '../stores/i18n';
+	import { Toolbar } from '@dfinity/gix-components';
+	import { authStore } from '../stores/auth.store';
+	import { toastsError } from '../stores/toasts.store';
+	import { listCanisters } from '../services/canisters.services';
+	import { canistersStore } from '../stores/canisters.store';
+	import { AppPath } from '../constants/routes.constants';
+	import SkeletonCard from '../components/ui/SkeletonCard.svelte';
+	import CanisterCard from '../components/canisters/CanisterCard.svelte';
+	import type { CanisterId } from '../canisters/nns-dapp/nns-dapp.types';
+	import { routeStore } from '../stores/route.store';
+	import CreateCanisterModal from '../modals/canisters/CreateCanisterModal.svelte';
+	import { reloadRouteData } from '../utils/navigation.utils';
+	import LinkCanisterModal from '../modals/canisters/LinkCanisterModal.svelte';
+	import Value from '../components/ui/Value.svelte';
 
-  const loadCanisters = async () => {
-    try {
-      await listCanisters({
-        clearBeforeQuery: true,
-      });
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error.list_canisters",
-        err,
-      });
-    }
-  };
+	const loadCanisters = async () => {
+		try {
+			await listCanisters({
+				clearBeforeQuery: true
+			});
+		} catch (err: unknown) {
+			toastsError({
+				labelKey: 'error.list_canisters',
+				err
+			});
+		}
+	};
 
-  onMount(async () => {
-    const reload: boolean = reloadRouteData({
-      expectedPreviousPath: AppPath.CanisterDetail,
-      effectivePreviousPath: $routeStore.referrerPath,
-      currentData: $canistersStore.canisters,
-    });
+	onMount(async () => {
+		const reload: boolean = reloadRouteData({
+			expectedPreviousPath: AppPath.CanisterDetail,
+			effectivePreviousPath: $routeStore.referrerPath,
+			currentData: $canistersStore.canisters
+		});
 
-    if (!reload) {
-      return;
-    }
+		if (!reload) {
+			return;
+		}
 
-    await loadCanisters();
-  });
+		await loadCanisters();
+	});
 
-  const goToCanisterDetails = (canisterId: CanisterId) => () => {
-    routeStore.navigate({
-      path: `${AppPath.CanisterDetail}/${canisterId.toText()}`,
-    });
-  };
+	const goToCanisterDetails = (canisterId: CanisterId) => () => {
+		routeStore.navigate({
+			path: `${AppPath.CanisterDetail}/${canisterId.toText()}`
+		});
+	};
 
-  let loading: boolean;
-  $: loading = $canistersStore.canisters === undefined;
-  let noCanisters: boolean;
-  $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
+	let loading: boolean;
+	$: loading = $canistersStore.canisters === undefined;
+	let noCanisters: boolean;
+	$: noCanisters = !loading && $canistersStore.canisters?.length === 0;
 
-  type ModalKey = "CreateCanister" | "LinkCanister";
-  let modal: ModalKey | undefined = undefined;
-  const openModal = (key: ModalKey) => (modal = key);
-  const closeModal = () => (modal = undefined);
+	type ModalKey = 'CreateCanister' | 'LinkCanister';
+	let modal: ModalKey | undefined = undefined;
+	const openModal = (key: ModalKey) => (modal = key);
+	const closeModal = () => (modal = undefined);
 </script>
 
 <main class="legacy">
-  <section>
-    <p>{$i18n.canisters.text}</p>
-    <p class="last-info">
-      {$i18n.canisters.principal_is}
-      <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
-    </p>
+	<section>
+		<p>{$i18n.canisters.text}</p>
+		<p class="last-info">
+			{$i18n.canisters.principal_is}
+			<Value>{$authStore.identity?.getPrincipal().toText()}</Value>
+		</p>
 
-    {#each $canistersStore.canisters ?? [] as canister}
-      <CanisterCard
-        role="link"
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={goToCanisterDetails(canister.canister_id)}
-        {canister}
-      />
-    {/each}
+		{#each $canistersStore.canisters ?? [] as canister}
+			<CanisterCard
+				role="link"
+				ariaLabel={$i18n.neurons.aria_label_neuron_card}
+				on:click={goToCanisterDetails(canister.canister_id)}
+				{canister}
+			/>
+		{/each}
 
-    {#if noCanisters}
-      <p>{$i18n.canisters.empty}</p>
-    {/if}
+		{#if noCanisters}
+			<p>{$i18n.canisters.empty}</p>
+		{/if}
 
-    {#if loading}
-      <SkeletonCard />
-      <SkeletonCard />
-    {/if}
-  </section>
+		{#if loading}
+			<SkeletonCard />
+			<SkeletonCard />
+		{/if}
+	</section>
 </main>
 
-{#if modal === "CreateCanister"}
-  <CreateCanisterModal on:nnsClose={closeModal} />
+{#if modal === 'CreateCanister'}
+	<CreateCanisterModal on:nnsClose={closeModal} />
 {/if}
-{#if modal === "LinkCanister"}
-  <LinkCanisterModal on:nnsClose={closeModal} />
+{#if modal === 'LinkCanister'}
+	<LinkCanisterModal on:nnsClose={closeModal} />
 {/if}
 
 <Footer>
-  <Toolbar>
-    <button
-      data-tid="create-canister-button"
-      class="primary"
-      on:click={() => openModal("CreateCanister")}
-      >{$i18n.canisters.create_canister}</button
-    >
-    <button
-      data-tid="link-canister-button"
-      class="primary"
-      on:click={() => openModal("LinkCanister")}
-      >{$i18n.canisters.link_canister}</button
-    >
-  </Toolbar>
+	<Toolbar>
+		<button
+			data-tid="create-canister-button"
+			class="primary"
+			on:click={() => openModal('CreateCanister')}>{$i18n.canisters.create_canister}</button
+		>
+		<button
+			data-tid="link-canister-button"
+			class="primary"
+			on:click={() => openModal('LinkCanister')}>{$i18n.canisters.link_canister}</button
+		>
+	</Toolbar>
 </Footer>
 
 <style lang="scss">
-  .last-info {
-    margin-bottom: var(--padding-3x);
-  }
+	.last-info {
+		margin-bottom: var(--padding-3x);
+	}
 </style>

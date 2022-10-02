@@ -1,199 +1,192 @@
-import type { Identity } from "@dfinity/agent";
-import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
-import { queryNeurons } from "../api/governance.api";
-import { nnsDappCanister } from "../api/nns-dapp.api";
-import { LedgerConnectionState } from "../constants/ledger.constants";
-import { LedgerIdentity } from "../identities/ledger.identity";
-import { i18n } from "../stores/i18n";
-import { toastsError } from "../stores/toasts.store";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { toToastError } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
-import { smallerVersion } from "../utils/utils";
-import { syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import type { Identity } from '@dfinity/agent';
+import { principalToAccountIdentifier, type NeuronInfo } from '@dfinity/nns';
+import { get } from 'svelte/store';
+import { queryNeurons } from '../api/governance.api';
+import { nnsDappCanister } from '../api/nns-dapp.api';
+import { LedgerConnectionState } from '../constants/ledger.constants';
+import { LedgerIdentity } from '../identities/ledger.identity';
+import { i18n } from '../stores/i18n';
+import { toastsError } from '../stores/toasts.store';
+import { LedgerErrorKey, LedgerErrorMessage } from '../types/ledger.errors';
+import { hashCode, logWithTimestamp } from '../utils/dev.utils';
+import { toToastError } from '../utils/error.utils';
+import { replacePlaceholders } from '../utils/i18n.utils';
+import { smallerVersion } from '../utils/utils';
+import { syncAccounts } from './accounts.services';
+import { getIdentity } from './auth.services';
 
 export interface ConnectToHardwareWalletParams {
-  connectionState: LedgerConnectionState;
-  ledgerIdentity?: LedgerIdentity;
+	connectionState: LedgerConnectionState;
+	ledgerIdentity?: LedgerIdentity;
 }
 
 export interface RegisterHardwareWalletParams {
-  name: string | undefined;
-  ledgerIdentity: LedgerIdentity | undefined;
+	name: string | undefined;
+	ledgerIdentity: LedgerIdentity | undefined;
 }
 
 /**
  * Create a LedgerIdentity using the Web USB transport
  */
 export const connectToHardwareWallet = async (
-  callback: (params: ConnectToHardwareWalletParams) => void
+	callback: (params: ConnectToHardwareWalletParams) => void
 ): Promise<void> => {
-  try {
-    callback({ connectionState: LedgerConnectionState.CONNECTING });
+	try {
+		callback({ connectionState: LedgerConnectionState.CONNECTING });
 
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+		const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
 
-    callback({
-      connectionState: LedgerConnectionState.CONNECTED,
-      ledgerIdentity,
-    });
-  } catch (err: unknown) {
-    const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
+		callback({
+			connectionState: LedgerConnectionState.CONNECTED,
+			ledgerIdentity
+		});
+	} catch (err: unknown) {
+		const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
 
-    toastsError({
-      labelKey: ledgerErrorKey
-        ? (err as LedgerErrorKey).message
-        : "error__ledger.unexpected",
-      ...(!ledgerErrorKey && { err }),
-    });
+		toastsError({
+			labelKey: ledgerErrorKey ? (err as LedgerErrorKey).message : 'error__ledger.unexpected',
+			...(!ledgerErrorKey && { err })
+		});
 
-    callback({ connectionState: LedgerConnectionState.NOT_CONNECTED });
-  }
+		callback({ connectionState: LedgerConnectionState.NOT_CONNECTED });
+	}
 };
 
 export const registerHardwareWallet = async ({
-  name,
-  ledgerIdentity,
+	name,
+	ledgerIdentity
 }: RegisterHardwareWalletParams): Promise<void> => {
-  if (name === undefined) {
-    toastsError({
-      labelKey: "error__attach_wallet.no_name",
-    });
-    return;
-  }
+	if (name === undefined) {
+		toastsError({
+			labelKey: 'error__attach_wallet.no_name'
+		});
+		return;
+	}
 
-  if (ledgerIdentity === undefined) {
-    toastsError({
-      labelKey: "error__attach_wallet.no_identity",
-    });
-    return;
-  }
+	if (ledgerIdentity === undefined) {
+		toastsError({
+			labelKey: 'error__attach_wallet.no_identity'
+		});
+		return;
+	}
 
-  logWithTimestamp(`Register hardware wallet ${hashCode(name)}...`);
+	logWithTimestamp(`Register hardware wallet ${hashCode(name)}...`);
 
-  const identity: Identity = await getIdentity();
+	const identity: Identity = await getIdentity();
 
-  try {
-    const { canister } = await nnsDappCanister({ identity });
+	try {
+		const { canister } = await nnsDappCanister({ identity });
 
-    await canister.registerHardwareWallet({
-      name,
-      principal: ledgerIdentity.getPrincipal(),
-    });
+		await canister.registerHardwareWallet({
+			name,
+			principal: ledgerIdentity.getPrincipal()
+		});
 
-    logWithTimestamp(`Register hardware wallet ${hashCode(name)} complete.`);
+		logWithTimestamp(`Register hardware wallet ${hashCode(name)} complete.`);
 
-    await syncAccounts();
-  } catch (err: unknown) {
-    toastUnexpectedError({
-      err,
-      fallbackErrorLabelKey: "error__attach_wallet.unexpected",
-    });
-  }
+		await syncAccounts();
+	} catch (err: unknown) {
+		toastUnexpectedError({
+			err,
+			fallbackErrorLabelKey: 'error__attach_wallet.unexpected'
+		});
+	}
 };
 
-const createLedgerIdentity = (): Promise<LedgerIdentity> =>
-  LedgerIdentity.create();
+const createLedgerIdentity = (): Promise<LedgerIdentity> => LedgerIdentity.create();
 
 /**
  * Unlike getIdentity(), getting the ledger identity does not automatically logout if no identity is found - i.e. if errors happen.
  * User might need several tries to attach properly the ledger to the computer.
  */
-export const getLedgerIdentity = async (
-  identifier: string
-): Promise<LedgerIdentity> => {
-  const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+export const getLedgerIdentity = async (identifier: string): Promise<LedgerIdentity> => {
+	const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
 
-  const ledgerIdentifier: string = principalToAccountIdentifier(
-    ledgerIdentity.getPrincipal()
-  );
+	const ledgerIdentifier: string = principalToAccountIdentifier(ledgerIdentity.getPrincipal());
 
-  if (ledgerIdentifier !== identifier) {
-    const labels = get(i18n);
+	if (ledgerIdentifier !== identifier) {
+		const labels = get(i18n);
 
-    throw new LedgerErrorMessage(
-      replacePlaceholders(labels.error__ledger.incorrect_identifier, {
-        $identifier: `${identifier}`,
-        $ledgerIdentifier: `${ledgerIdentifier}`,
-      })
-    );
-  }
+		throw new LedgerErrorMessage(
+			replacePlaceholders(labels.error__ledger.incorrect_identifier, {
+				$identifier: `${identifier}`,
+				$ledgerIdentifier: `${ledgerIdentifier}`
+			})
+		);
+	}
 
-  return ledgerIdentity;
+	return ledgerIdentity;
 };
 
 export const showAddressAndPubKeyOnHardwareWallet = async () => {
-  try {
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
-    await ledgerIdentity.showAddressAndPubKeyOnDevice();
-  } catch (err: unknown) {
-    toastUnexpectedError({
-      err,
-      fallbackErrorLabelKey: "error__ledger.unexpected",
-    });
-  }
+	try {
+		const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+		await ledgerIdentity.showAddressAndPubKeyOnDevice();
+	} catch (err: unknown) {
+		toastUnexpectedError({
+			err,
+			fallbackErrorLabelKey: 'error__ledger.unexpected'
+		});
+	}
 };
 
 const toastUnexpectedError = ({
-  err,
-  fallbackErrorLabelKey,
+	err,
+	fallbackErrorLabelKey
 }: {
-  fallbackErrorLabelKey: string;
-  err: unknown;
+	fallbackErrorLabelKey: string;
+	err: unknown;
 }) =>
-  toastsError(
-    toToastError({
-      err,
-      fallbackErrorLabelKey,
-    })
-  );
+	toastsError(
+		toToastError({
+			err,
+			fallbackErrorLabelKey
+		})
+	);
 
 export const listNeuronsHardwareWallet = async (): Promise<{
-  neurons: NeuronInfo[];
-  err?: string;
+	neurons: NeuronInfo[];
+	err?: string;
 }> => {
-  try {
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
-    const neurons: NeuronInfo[] = await queryNeurons({
-      identity: ledgerIdentity,
-      certified: true,
-    });
+	try {
+		const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+		const neurons: NeuronInfo[] = await queryNeurons({
+			identity: ledgerIdentity,
+			certified: true
+		});
 
-    return { neurons };
-  } catch (err: unknown) {
-    const fallbackErrorLabelKey = "error__ledger.unexpected";
-    toastUnexpectedError({
-      err,
-      fallbackErrorLabelKey,
-    });
-    return { neurons: [], err: fallbackErrorLabelKey };
-  }
+		return { neurons };
+	} catch (err: unknown) {
+		const fallbackErrorLabelKey = 'error__ledger.unexpected';
+		toastUnexpectedError({
+			err,
+			fallbackErrorLabelKey
+		});
+		return { neurons: [], err: fallbackErrorLabelKey };
+	}
 };
 
 export const assertLedgerVersion = async ({
-  identity,
-  minVersion,
+	identity,
+	minVersion
 }: {
-  identity: Identity | LedgerIdentity;
-  minVersion: string;
+	identity: Identity | LedgerIdentity;
+	minVersion: string;
 }): Promise<void> => {
-  // Ignore when identity not LedgerIdentity
-  if (!(identity instanceof LedgerIdentity)) {
-    return;
-  }
+	// Ignore when identity not LedgerIdentity
+	if (!(identity instanceof LedgerIdentity)) {
+		return;
+	}
 
-  const { major, minor, patch } = await identity.getVersion();
-  const currentVersion = `${major}.${minor}.${patch}`;
-  if (smallerVersion({ currentVersion, minVersion })) {
-    const labels = get(i18n);
-    throw new LedgerErrorMessage(
-      replacePlaceholders(labels.error__ledger.version_not_supported, {
-        $minVersion: minVersion,
-        $currentVersion: currentVersion,
-      })
-    );
-  }
+	const { major, minor, patch } = await identity.getVersion();
+	const currentVersion = `${major}.${minor}.${patch}`;
+	if (smallerVersion({ currentVersion, minVersion })) {
+		const labels = get(i18n);
+		throw new LedgerErrorMessage(
+			replacePlaceholders(labels.error__ledger.version_not_supported, {
+				$minVersion: minVersion,
+				$currentVersion: currentVersion
+			})
+		);
+	}
 };

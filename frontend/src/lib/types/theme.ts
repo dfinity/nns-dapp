@@ -1,11 +1,11 @@
 export enum Theme {
-  DARK = "dark",
-  LIGHT = "light",
+	DARK = 'dark',
+	LIGHT = 'light'
 }
 
 export enum Color {
-  PRIMARY = "primary",
-  SUCCESS = "success",
-  WARNING = "warning",
-  ERROR = "error",
+	PRIMARY = 'primary',
+	SUCCESS = 'success',
+	WARNING = 'warning',
+	ERROR = 'error'
 }

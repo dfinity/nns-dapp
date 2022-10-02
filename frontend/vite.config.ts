@@ -1,17 +1,17 @@
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
 import type { UserConfig } from 'vite';
-import {readFileSync} from 'fs';
-import {fileURLToPath} from 'url';
-import {NodeGlobalsPolyfillPlugin} from '@esbuild-plugins/node-globals-polyfill';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
-const {version} = JSON.parse(json);
+const { version } = JSON.parse(json);
 
 const config: UserConfig = {
 	plugins: [sveltekit()],
 	build: {
-		target: "es2020",
+		target: 'es2020'
 	},
 	define: {
 		VITE_APP_VERSION: JSON.stringify(version)
@@ -31,7 +31,7 @@ const config: UserConfig = {
 				})
 			]
 		}
-	},
+	}
 };
 
 export default config;

@@ -1,19 +1,19 @@
 <script lang="ts">
-  import RenameSubAccountModal from "../../modals/accounts/RenameSubAccountModal.svelte";
-  import { i18n } from "../../stores/i18n";
+	import RenameSubAccountModal from '../../modals/accounts/RenameSubAccountModal.svelte';
+	import { i18n } from '../../stores/i18n';
 
-  let modalOpen = false;
+	let modalOpen = false;
 </script>
 
 <button
-  class="primary"
-  type="button"
-  on:click={() => (modalOpen = true)}
-  data-tid="open-rename-subaccount-button"
+	class="primary"
+	type="button"
+	on:click={() => (modalOpen = true)}
+	data-tid="open-rename-subaccount-button"
 >
-  {$i18n.accounts.rename}
+	{$i18n.accounts.rename}
 </button>
 
 {#if modalOpen}
-  <RenameSubAccountModal on:nnsClose={() => (modalOpen = false)} />
+	<RenameSubAccountModal on:nnsClose={() => (modalOpen = false)} />
 {/if}

@@ -1,1 +1,1 @@
-type Languages = "en";
+type Languages = 'en';

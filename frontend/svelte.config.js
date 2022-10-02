@@ -1,6 +1,6 @@
-import adapter from "@sveltejs/adapter-auto";
+import adapter from '@sveltejs/adapter-auto';
+import autoprefixer from 'autoprefixer';
 import preprocess from 'svelte-preprocess';
-import autoprefixer from "autoprefixer";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,15 +8,15 @@ const config = {
 	// for more information about preprocessors
 	preprocess: preprocess({
 		postcss: {
-			plugins: [autoprefixer],
-		},
+			plugins: [autoprefixer]
+		}
 	}),
 
 	kit: {
 		adapter: adapter(),
 		serviceWorker: {
-			register: false,
-		},
+			register: false
+		}
 	}
 };
 

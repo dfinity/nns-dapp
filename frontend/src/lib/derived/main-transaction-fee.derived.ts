@@ -1,8 +1,7 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { derived } from "svelte/store";
-import { transactionsFeesStore } from "../stores/transaction-fees.store";
+import { ICPToken, TokenAmount } from '@dfinity/nns';
+import { derived } from 'svelte/store';
+import { transactionsFeesStore } from '../stores/transaction-fees.store';
 
-export const mainTransactionFeeStoreAsToken = derived(
-  transactionsFeesStore,
-  ($store) => TokenAmount.fromE8s({ amount: $store.main, token: ICPToken })
+export const mainTransactionFeeStoreAsToken = derived(transactionsFeesStore, ($store) =>
+	TokenAmount.fromE8s({ amount: $store.main, token: ICPToken })
 );

@@ -1,21 +1,21 @@
-import { ENABLE_SNS } from "../constants/environment.constants";
-import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
-import { routePathAccountIdentifier } from "../services/accounts.services";
-import { routePathNeuronId } from "../services/neurons.services";
+import { ENABLE_SNS } from '../constants/environment.constants';
+import { AppPath, CONTEXT_PATH } from '../constants/routes.constants';
+import { routePathAccountIdentifier } from '../services/accounts.services';
+import { routePathNeuronId } from '../services/neurons.services';
 
-const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
+const IDENTIFIER_REGEX = '[a-zA-Z0-9-]+';
 
 const mapper: Record<string, string> = {
-  // exceptions only
-  [AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${IDENTIFIER_REGEX}`,
-  [AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
-  [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
-  [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
-  [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
-  [AppPath.Accounts]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/accounts`,
-  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
-  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
-  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
+	// exceptions only
+	[AppPath.LegacyWallet]: `${AppPath.LegacyWallet}/${IDENTIFIER_REGEX}`,
+	[AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
+	[AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
+	[AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
+	[AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
+	[AppPath.Accounts]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/accounts`,
+	[AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
+	[AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
+	[AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`
 };
 
 /**
@@ -23,41 +23,31 @@ const mapper: Record<string, string> = {
  * It interpolates the context and returns the path.
  */
 export const paths = {
-  neuronDetail: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/neuron`
-      : AppPath.LegacyNeuronDetail,
-  neurons: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
-      : AppPath.LegacyNeurons,
-  accounts: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/accounts`
-      : AppPath.LegacyAccounts,
-  wallet: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/wallet`
-      : AppPath.LegacyWallet,
+	neuronDetail: (rootCanisterId: string) =>
+		ENABLE_SNS ? `${CONTEXT_PATH}/${rootCanisterId}/neuron` : AppPath.LegacyNeuronDetail,
+	neurons: (rootCanisterId: string) =>
+		ENABLE_SNS ? `${CONTEXT_PATH}/${rootCanisterId}/neurons` : AppPath.LegacyNeurons,
+	accounts: (rootCanisterId: string) =>
+		ENABLE_SNS ? `${CONTEXT_PATH}/${rootCanisterId}/accounts` : AppPath.LegacyAccounts,
+	wallet: (rootCanisterId: string) =>
+		ENABLE_SNS ? `${CONTEXT_PATH}/${rootCanisterId}/wallet` : AppPath.LegacyWallet
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
 
 export const isAppPath = (routePath: string): routePath is AppPath =>
-  isRoutePath({ paths: Object.values(AppPath), routePath });
+	isRoutePath({ paths: Object.values(AppPath), routePath });
 
 export const isRoutePath = ({
-  paths,
-  routePath,
+	paths,
+	routePath
 }: {
-  paths: AppPath[];
-  routePath?: string;
+	paths: AppPath[];
+	routePath?: string;
 }): boolean =>
-  routePath !== undefined
-    ? paths.some((path) =>
-        new RegExp(`^${pathValidation(path)}$`).test(routePath)
-      )
-    : false;
+	routePath !== undefined
+		? paths.some((path) => new RegExp(`^${pathValidation(path)}$`).test(routePath))
+		: false;
 
 const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
 
@@ -72,12 +62,10 @@ const contextPathRegex = new RegExp(`^${CONTEXT_PATH}/${IDENTIFIER_REGEX}`);
  * @param routePath
  * @returns string or undefined
  */
-export const getContextDetailsFromPath = (
-  routePath: string
-): string | undefined => {
-  if (isContextPath(routePath)) {
-    return routePath.replace(contextPathRegex, "");
-  }
+export const getContextDetailsFromPath = (routePath: string): string | undefined => {
+	if (isContextPath(routePath)) {
+		return routePath.replace(contextPathRegex, '');
+	}
 };
 
 /**
@@ -92,7 +80,7 @@ export const getContextDetailsFromPath = (
  * @returns boolean
  */
 export const isContextPath = (routePath: string): boolean =>
-  new RegExp(`^${CONTEXT_PATH}/[a-zA-Z0-9-]+`).test(routePath);
+	new RegExp(`^${CONTEXT_PATH}/[a-zA-Z0-9-]+`).test(routePath);
 
 /**
  * Returns the context if the routePath is a path with a context prefix: `/#/u/:rootCanisterId{/...}`
@@ -105,28 +93,27 @@ export const isContextPath = (routePath: string): boolean =>
  * @param routePath Path of the app: `/proposals`, `/u/xxxxx/neurons`, etc.
  */
 export const getContextFromPath = (routePath: string): string | undefined => {
-  if (isContextPath(routePath)) {
-    return getParentPathDetail(routePath);
-  }
+	if (isContextPath(routePath)) {
+		return getParentPathDetail(routePath);
+	}
 };
 
 export const getLastPathDetailId = (path: string): bigint | undefined => {
-  const pathDetail = getLastPathDetail(path);
-  if (pathDetail === undefined) {
-    return undefined;
-  }
-  try {
-    const id = BigInt(pathDetail);
-    return `${id}` === pathDetail ? id : undefined;
-  } catch (err) {
-    console.error(`Couldn't get last detail id from ${pathDetail}`);
-    return undefined;
-  }
+	const pathDetail = getLastPathDetail(path);
+	if (pathDetail === undefined) {
+		return undefined;
+	}
+	try {
+		const id = BigInt(pathDetail);
+		return `${id}` === pathDetail ? id : undefined;
+	} catch (err) {
+		console.error(`Couldn't get last detail id from ${pathDetail}`);
+		return undefined;
+	}
 };
 
-export const getLastPathDetail = (
-  path: string | undefined
-): string | undefined => path?.split("/").pop();
+export const getLastPathDetail = (path: string | undefined): string | undefined =>
+	path?.split('/').pop();
 
 /**
  * Returns the third last path detail not taking into account trailing slashes
@@ -136,12 +123,10 @@ export const getLastPathDetail = (
  * @returns string
  * Ex: sp3hj-caaaa-aaaaa-aaajq-cai
  */
-export const getParentPathDetail = (
-  path: string | undefined
-): string | undefined => {
-  const steps = path?.replace(/\/+$/, "").split("/") ?? [];
-  // Do not return empty strings
-  return steps[3] === "" ? undefined : steps[3];
+export const getParentPathDetail = (path: string | undefined): string | undefined => {
+	const steps = path?.replace(/\/+$/, '').split('/') ?? [];
+	// Do not return empty strings
+	return steps[3] === '' ? undefined : steps[3];
 };
 
 /**
@@ -157,40 +142,40 @@ export const getParentPathDetail = (
  * @returns newPath string
  */
 const checkContextPathExceptions = ({
-  path,
-  newContext,
+	path,
+	newContext
 }: {
-  path: string;
-  newContext: string;
+	path: string;
+	newContext: string;
 }): string => {
-  if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
-    return `${CONTEXT_PATH}/${newContext}/neurons`;
-  }
-  if (isRoutePath({ paths: [AppPath.LegacyAccounts], routePath: path })) {
-    return `${CONTEXT_PATH}/${newContext}/accounts`;
-  }
-  if (
-    isRoutePath({
-      paths: [AppPath.LegacyNeuronDetail],
-      routePath: path,
-    })
-  ) {
-    const neuronId = routePathNeuronId(path);
-    return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
-  }
-  if (
-    isRoutePath({
-      paths: [AppPath.LegacyWallet],
-      routePath: path,
-    })
-  ) {
-    const routeAccountIdentifier = routePathAccountIdentifier(path);
-    if (routeAccountIdentifier !== undefined) {
-      return `${CONTEXT_PATH}/${newContext}/wallet/${routeAccountIdentifier.accountIdentifier}`;
-    }
-  }
-  // Returns same path if no exception
-  return path;
+	if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
+		return `${CONTEXT_PATH}/${newContext}/neurons`;
+	}
+	if (isRoutePath({ paths: [AppPath.LegacyAccounts], routePath: path })) {
+		return `${CONTEXT_PATH}/${newContext}/accounts`;
+	}
+	if (
+		isRoutePath({
+			paths: [AppPath.LegacyNeuronDetail],
+			routePath: path
+		})
+	) {
+		const neuronId = routePathNeuronId(path);
+		return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
+	}
+	if (
+		isRoutePath({
+			paths: [AppPath.LegacyWallet],
+			routePath: path
+		})
+	) {
+		const routeAccountIdentifier = routePathAccountIdentifier(path);
+		if (routeAccountIdentifier !== undefined) {
+			return `${CONTEXT_PATH}/${newContext}/wallet/${routeAccountIdentifier.accountIdentifier}`;
+		}
+	}
+	// Returns same path if no exception
+	return path;
 };
 
 /**
@@ -207,19 +192,13 @@ const checkContextPathExceptions = ({
  * @param path string - the path to change
  * @param newContext string - the new context to navigate to
  */
-export const changePathContext = ({
-  path,
-  newContext,
-}: {
-  path: string;
-  newContext: string;
-}) => {
-  // Check exceptions or return same path
-  let newPath = checkContextPathExceptions({ path, newContext });
-  // Check if the path is a context path and perform the change
-  if (isContextPath(path)) {
-    const contextDetails = getContextDetailsFromPath(path);
-    newPath = `${CONTEXT_PATH}/${newContext}${contextDetails}`;
-  }
-  return newPath;
+export const changePathContext = ({ path, newContext }: { path: string; newContext: string }) => {
+	// Check exceptions or return same path
+	let newPath = checkContextPathExceptions({ path, newContext });
+	// Check if the path is a context path and perform the change
+	if (isContextPath(path)) {
+		const contextDetails = getContextDetailsFromPath(path);
+		newPath = `${CONTEXT_PATH}/${newContext}${contextDetails}`;
+	}
+	return newPath;
 };

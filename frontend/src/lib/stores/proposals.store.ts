@@ -1,45 +1,40 @@
 import type {
-  NeuronId,
-  NeuronInfo,
-  ProposalId,
-  ProposalInfo,
-  ProposalRewardStatus,
-  ProposalStatus,
-  Topic,
-} from "@dfinity/nns";
-import { writable } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import { storeLocalStorageKey } from "../constants/stores.constants";
+	NeuronId,
+	NeuronInfo,
+	ProposalId,
+	ProposalInfo,
+	ProposalRewardStatus,
+	ProposalStatus,
+	Topic
+} from '@dfinity/nns';
+import { writable } from 'svelte/store';
+import { DEFAULT_PROPOSALS_FILTERS } from '../constants/proposals.constants';
+import { storeLocalStorageKey } from '../constants/stores.constants';
 import {
-  concatenateUniqueProposals,
-  excludeProposals,
-  preserveNeuronSelectionAfterUpdate,
-  replaceAndConcatenateProposals,
-  replaceProposals,
-} from "../utils/proposals.utils";
-import { writableStored } from "./writable-stored";
+	concatenateUniqueProposals,
+	excludeProposals,
+	preserveNeuronSelectionAfterUpdate,
+	replaceAndConcatenateProposals,
+	replaceProposals
+} from '../utils/proposals.utils';
+import { writableStored } from './writable-stored';
 
 export interface ProposalsFiltersStore {
-  topics: Topic[];
-  rewards: ProposalRewardStatus[];
-  status: ProposalStatus[];
-  excludeVotedProposals: boolean;
-  lastAppliedFilter:
-    | undefined
-    | "topics"
-    | "rewards"
-    | "status"
-    | "excludeVotedProposals";
+	topics: Topic[];
+	rewards: ProposalRewardStatus[];
+	status: ProposalStatus[];
+	excludeVotedProposals: boolean;
+	lastAppliedFilter: undefined | 'topics' | 'rewards' | 'status' | 'excludeVotedProposals';
 }
 
 export interface NeuronSelectionStore {
-  neurons: NeuronInfo[];
-  selectedIds: NeuronId[];
+	neurons: NeuronInfo[];
+	selectedIds: NeuronId[];
 }
 
 export interface ProposalsStore {
-  proposals: ProposalInfo[];
-  certified: boolean | undefined;
+	proposals: ProposalInfo[];
+	certified: boolean | undefined;
 }
 
 type ProposalPayload = object | null | undefined;
@@ -51,63 +46,57 @@ export type ProposalPayloadsStore = Map<ProposalId, ProposalPayload>;
  * - pushProposals: append proposals to the current list of proposals. Notably useful when the proposals are fetched in a page that implements an infinite scrolling.
  */
 const initProposalsStore = () => {
-  const { subscribe, update, set } = writable<ProposalsStore>({
-    proposals: [],
-    certified: undefined,
-  });
+	const { subscribe, update, set } = writable<ProposalsStore>({
+		proposals: [],
+		certified: undefined
+	});
 
-  return {
-    subscribe,
+	return {
+		subscribe,
 
-    setProposals({ proposals, certified }: ProposalsStore) {
-      set({ proposals: [...proposals], certified });
-    },
+		setProposals({ proposals, certified }: ProposalsStore) {
+			set({ proposals: [...proposals], certified });
+		},
 
-    /**
-     * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
-     */
-    removeProposals(proposalsToRemove: ProposalInfo[]) {
-      update(({ proposals, certified }) => ({
-        proposals: excludeProposals({
-          proposals,
-          exclusion: proposalsToRemove,
-        }),
-        certified,
-      }));
-    },
+		/**
+		 * Replace the current list of proposals with a new list without provided proposals to remove untrusted proposals from the store.
+		 */
+		removeProposals(proposalsToRemove: ProposalInfo[]) {
+			update(({ proposals, certified }) => ({
+				proposals: excludeProposals({
+					proposals,
+					exclusion: proposalsToRemove
+				}),
+				certified
+			}));
+		},
 
-    pushProposals({
-      proposals,
-      certified,
-    }: {
-      proposals: ProposalInfo[];
-      certified: boolean;
-    }) {
-      update(({ proposals: oldProposals }) => ({
-        proposals:
-          certified === true
-            ? replaceAndConcatenateProposals({
-                oldProposals,
-                newProposals: proposals,
-              })
-            : concatenateUniqueProposals({
-                oldProposals,
-                newProposals: proposals,
-              }),
-        certified,
-      }));
-    },
+		pushProposals({ proposals, certified }: { proposals: ProposalInfo[]; certified: boolean }) {
+			update(({ proposals: oldProposals }) => ({
+				proposals:
+					certified === true
+						? replaceAndConcatenateProposals({
+								oldProposals,
+								newProposals: proposals
+						  })
+						: concatenateUniqueProposals({
+								oldProposals,
+								newProposals: proposals
+						  }),
+				certified
+			}));
+		},
 
-    replaceProposals(proposals: ProposalInfo[]) {
-      update(({ proposals: oldProposals, certified }) => ({
-        proposals: replaceProposals({
-          oldProposals,
-          newProposals: proposals,
-        }),
-        certified,
-      }));
-    },
-  };
+		replaceProposals(proposals: ProposalInfo[]) {
+			update(({ proposals: oldProposals, certified }) => ({
+				proposals: replaceProposals({
+					oldProposals,
+					newProposals: proposals
+				}),
+				certified
+			}));
+		}
+	};
 };
 
 /**
@@ -126,133 +115,122 @@ const initProposalsStore = () => {
  *
  */
 const initProposalsFiltersStore = () => {
-  const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
-    key: storeLocalStorageKey.ProposalFilters,
-    defaultValue: DEFAULT_PROPOSALS_FILTERS,
-  });
+	const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
+		key: storeLocalStorageKey.ProposalFilters,
+		defaultValue: DEFAULT_PROPOSALS_FILTERS
+	});
 
-  return {
-    subscribe,
+	return {
+		subscribe,
 
-    filterTopics(topics: Topic[]) {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        topics,
-        lastAppliedFilter: "topics",
-      }));
-    },
+		filterTopics(topics: Topic[]) {
+			update((filters: ProposalsFiltersStore) => ({
+				...filters,
+				topics,
+				lastAppliedFilter: 'topics'
+			}));
+		},
 
-    filterRewards(rewards: ProposalRewardStatus[]) {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        rewards,
-        lastAppliedFilter: "rewards",
-      }));
-    },
+		filterRewards(rewards: ProposalRewardStatus[]) {
+			update((filters: ProposalsFiltersStore) => ({
+				...filters,
+				rewards,
+				lastAppliedFilter: 'rewards'
+			}));
+		},
 
-    filterStatus(status: ProposalStatus[]) {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        status,
-        lastAppliedFilter: "status",
-      }));
-    },
+		filterStatus(status: ProposalStatus[]) {
+			update((filters: ProposalsFiltersStore) => ({
+				...filters,
+				status,
+				lastAppliedFilter: 'status'
+			}));
+		},
 
-    toggleExcludeVotedProposals() {
-      update((filters: ProposalsFiltersStore) => ({
-        ...filters,
-        excludeVotedProposals: !filters.excludeVotedProposals,
-        lastAppliedFilter: "excludeVotedProposals",
-      }));
-    },
+		toggleExcludeVotedProposals() {
+			update((filters: ProposalsFiltersStore) => ({
+				...filters,
+				excludeVotedProposals: !filters.excludeVotedProposals,
+				lastAppliedFilter: 'excludeVotedProposals'
+			}));
+		},
 
-    reset() {
-      set(DEFAULT_PROPOSALS_FILTERS);
-    },
-  };
+		reset() {
+			set(DEFAULT_PROPOSALS_FILTERS);
+		}
+	};
 };
 
 /**
  * Contains available for voting neurons and their selection state
  */
 const initNeuronSelectStore = () => {
-  const { subscribe, update, set } = writable<NeuronSelectionStore>({
-    neurons: [],
-    selectedIds: [],
-  });
+	const { subscribe, update, set } = writable<NeuronSelectionStore>({
+		neurons: [],
+		selectedIds: []
+	});
 
-  return {
-    subscribe,
+	return {
+		subscribe,
 
-    set(neurons: NeuronInfo[]) {
-      set({
-        neurons: [...neurons],
-        selectedIds: neurons.map(({ neuronId }) => neuronId),
-      });
-    },
+		set(neurons: NeuronInfo[]) {
+			set({
+				neurons: [...neurons],
+				selectedIds: neurons.map(({ neuronId }) => neuronId)
+			});
+		},
 
-    updateNeurons(neurons: NeuronInfo[]) {
-      update(({ neurons: currentNeurons, selectedIds }) => {
-        return {
-          neurons,
-          selectedIds: preserveNeuronSelectionAfterUpdate({
-            neurons: currentNeurons,
-            updatedNeurons: neurons,
-            selectedIds,
-          }),
-        };
-      });
-    },
+		updateNeurons(neurons: NeuronInfo[]) {
+			update(({ neurons: currentNeurons, selectedIds }) => {
+				return {
+					neurons,
+					selectedIds: preserveNeuronSelectionAfterUpdate({
+						neurons: currentNeurons,
+						updatedNeurons: neurons,
+						selectedIds
+					})
+				};
+			});
+		},
 
-    reset() {
-      this.set([]);
-    },
+		reset() {
+			this.set([]);
+		},
 
-    toggleSelection(neuronId: NeuronId) {
-      update(({ neurons, selectedIds }) => ({
-        neurons,
-        selectedIds: selectedIds.includes(neuronId)
-          ? selectedIds.filter((id: NeuronId) => id !== neuronId)
-          : Array.from(new Set([...selectedIds, neuronId])),
-      }));
-    },
-  };
+		toggleSelection(neuronId: NeuronId) {
+			update(({ neurons, selectedIds }) => ({
+				neurons,
+				selectedIds: selectedIds.includes(neuronId)
+					? selectedIds.filter((id: NeuronId) => id !== neuronId)
+					: Array.from(new Set([...selectedIds, neuronId]))
+			}));
+		}
+	};
 };
 
 const initProposalPayloadsStore = () => {
-  const throwOnSet = (
-    map: Map<ProposalId, ProposalPayload>
-  ): Map<ProposalId, ProposalPayload> => {
-    map.set = () => {
-      throw new Error("Please use setPayload");
-    };
-    return map;
-  };
+	const throwOnSet = (map: Map<ProposalId, ProposalPayload>): Map<ProposalId, ProposalPayload> => {
+		map.set = () => {
+			throw new Error('Please use setPayload');
+		};
+		return map;
+	};
 
-  const { subscribe, update } = writable<ProposalPayloadsStore>(
-    throwOnSet(new Map<ProposalId, ProposalPayload>())
-  );
+	const { subscribe, update } = writable<ProposalPayloadsStore>(
+		throwOnSet(new Map<ProposalId, ProposalPayload>())
+	);
 
-  return {
-    subscribe,
-    setPayload: ({
-      proposalId,
-      payload,
-    }: {
-      proposalId: ProposalId;
-      payload: ProposalPayload;
-    }) =>
-      update((stateMap) =>
-        throwOnSet(
-          // Add new record to current state map and disable native Map.set()
-          new Map<ProposalId, ProposalPayload>(stateMap).set(
-            proposalId,
-            payload
-          )
-        )
-      ),
-    reset: () => update(() => throwOnSet(new Map())),
-  };
+	return {
+		subscribe,
+		setPayload: ({ proposalId, payload }: { proposalId: ProposalId; payload: ProposalPayload }) =>
+			update((stateMap) =>
+				throwOnSet(
+					// Add new record to current state map and disable native Map.set()
+					new Map<ProposalId, ProposalPayload>(stateMap).set(proposalId, payload)
+				)
+			),
+		reset: () => update(() => throwOnSet(new Map()))
+	};
 };
 
 export const proposalsStore = initProposalsStore();

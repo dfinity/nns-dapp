@@ -1,97 +1,94 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { formatNumber } from "../../utils/format.utils";
-  import { convertIcpToTCycles } from "../../utils/icp.utils";
+	import { createEventDispatcher } from 'svelte';
+	import FooterModal from '../../modals/FooterModal.svelte';
+	import { i18n } from '../../stores/i18n';
+	import type { Account } from '../../types/account';
+	import { formatNumber } from '../../utils/format.utils';
+	import { convertIcpToTCycles } from '../../utils/icp.utils';
 
-  export let amount: number;
-  export let account: Account;
-  export let icpToCyclesExchangeRate: bigint | undefined = undefined;
+	export let amount: number;
+	export let account: Account;
+	export let icpToCyclesExchangeRate: bigint | undefined = undefined;
 
-  let tCyclesFormatted: number | undefined;
-  $: tCyclesFormatted =
-    icpToCyclesExchangeRate !== undefined
-      ? convertIcpToTCycles({
-          icpNumber: amount,
-          exchangeRate: icpToCyclesExchangeRate,
-        })
-      : undefined;
+	let tCyclesFormatted: number | undefined;
+	$: tCyclesFormatted =
+		icpToCyclesExchangeRate !== undefined
+			? convertIcpToTCycles({
+					icpNumber: amount,
+					exchangeRate: icpToCyclesExchangeRate
+			  })
+			: undefined;
 
-  const dispatcher = createEventDispatcher();
-  const confirm = () => {
-    dispatcher("nnsConfirm");
-  };
+	const dispatcher = createEventDispatcher();
+	const confirm = () => {
+		dispatcher('nnsConfirm');
+	};
 </script>
 
 <div class="wizard-wrapper wrapper" data-tid="confirm-cycles-canister-screen">
-  <div class="content">
-    <div class="conversion">
-      <h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
-      <p>{$i18n.core.icp}</p>
-      {#if tCyclesFormatted !== undefined}
-        <p>{$i18n.canisters.converted_to}</p>
-        <h3>
-          {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
-        </h3>
-        <p>{$i18n.canisters.t_cycles}</p>
-      {/if}
-    </div>
-    <div>
-      <p class="label">{$i18n.accounts.source}</p>
-      <p class="value identifier">{account.identifier}</p>
-    </div>
-    <slot />
-  </div>
-  <FooterModal>
-    <button
-      class="secondary"
-      on:click={() => dispatcher("nnsBack")}
-      data-tid="confirm-cycles-canister-button-back"
-      >{$i18n.canisters.edit_cycles}</button
-    >
-    <button
-      class="primary"
-      on:click={confirm}
-      data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
-    >
-  </FooterModal>
+	<div class="content">
+		<div class="conversion">
+			<h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
+			<p>{$i18n.core.icp}</p>
+			{#if tCyclesFormatted !== undefined}
+				<p>{$i18n.canisters.converted_to}</p>
+				<h3>
+					{formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
+				</h3>
+				<p>{$i18n.canisters.t_cycles}</p>
+			{/if}
+		</div>
+		<div>
+			<p class="label">{$i18n.accounts.source}</p>
+			<p class="value identifier">{account.identifier}</p>
+		</div>
+		<slot />
+	</div>
+	<FooterModal>
+		<button
+			class="secondary"
+			on:click={() => dispatcher('nnsBack')}
+			data-tid="confirm-cycles-canister-button-back">{$i18n.canisters.edit_cycles}</button
+		>
+		<button class="primary" on:click={confirm} data-tid="confirm-cycles-canister-button"
+			>{$i18n.core.confirm}</button
+		>
+	</FooterModal>
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+	@use '@dfinity/gix-components/styles/mixins/media';
 
-  .wizard-wrapper.wrapper {
-    justify-content: space-between;
-  }
+	.wizard-wrapper.wrapper {
+		justify-content: space-between;
+	}
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    gap: var(--padding);
-  }
+	.content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 1;
+		gap: var(--padding);
+	}
 
-  .conversion {
-    margin-bottom: var(--padding-3x);
+	.conversion {
+		margin-bottom: var(--padding-3x);
 
-    p,
-    h3 {
-      margin: 0;
-      display: inline-block;
-    }
+		p,
+		h3 {
+			margin: 0;
+			display: inline-block;
+		}
 
-    @include media.min-width(small) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--padding);
-    }
-  }
+		@include media.min-width(small) {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: var(--padding);
+		}
+	}
 
-  .identifier {
-    word-break: break-word;
-  }
+	.identifier {
+		word-break: break-word;
+	}
 </style>

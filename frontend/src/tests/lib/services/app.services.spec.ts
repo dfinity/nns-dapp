@@ -1,75 +1,66 @@
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { initApp } from "../../../lib/services/app.services";
-import {
-  loadSnsSummaries,
-  loadSnsSwapCommitments,
-} from "../../../lib/services/sns.services";
-import { mockAccountDetails } from "../../mocks/accounts.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
+import { GovernanceCanister, LedgerCanister } from '@dfinity/nns';
+import { mock } from 'jest-mock-extended';
+import { NNSDappCanister } from '../../../lib/canisters/nns-dapp/nns-dapp.canister';
+import { initApp } from '../../../lib/services/app.services';
+import { loadSnsSummaries, loadSnsSwapCommitments } from '../../../lib/services/sns.services';
+import { mockAccountDetails } from '../../mocks/accounts.store.mock';
+import { mockNeuron } from '../../mocks/neurons.mock';
 
-jest.mock("../../../lib/services/sns.services", () => {
-  return {
-    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
+jest.mock('../../../lib/services/sns.services', () => {
+	return {
+		loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+		loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve())
+	};
 });
 
-describe("app-services", () => {
-  const mockLedgerCanister = mock<LedgerCanister>();
-  const mockNNSDappCanister = mock<NNSDappCanister>();
-  const mockGovernanceCanister = mock<GovernanceCanister>();
+describe('app-services', () => {
+	const mockLedgerCanister = mock<LedgerCanister>();
+	const mockNNSDappCanister = mock<NNSDappCanister>();
+	const mockGovernanceCanister = mock<GovernanceCanister>();
 
-  beforeEach(() => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+	beforeEach(() => {
+		jest
+			.spyOn(LedgerCanister, 'create')
+			.mockImplementation((): LedgerCanister => mockLedgerCanister);
 
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+		jest
+			.spyOn(NNSDappCanister, 'create')
+			.mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+		jest
+			.spyOn(GovernanceCanister, 'create')
+			.mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
-    mockCanisters();
-  });
+		mockCanisters();
+	});
 
-  const mockCanisters = () => {
-    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    mockGovernanceCanister.listNeurons.mockResolvedValue([mockNeuron]);
-  };
+	const mockCanisters = () => {
+		mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+		mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+		mockGovernanceCanister.listNeurons.mockResolvedValue([mockNeuron]);
+	};
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
 
-  it("should init Nns", async () => {
-    await initApp();
+	it('should init Nns', async () => {
+		await initApp();
 
-    // query + update calls
-    const numberOfCalls = 2;
+		// query + update calls
+		const numberOfCalls = 2;
 
-    await expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(
-      numberOfCalls
-    );
+		await expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(numberOfCalls);
 
-    await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
-      numberOfCalls
-    );
+		await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(numberOfCalls);
 
-    await expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
-      numberOfCalls
-    );
-  });
+		await expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(numberOfCalls);
+	});
 
-  it("should init Sns", async () => {
-    await initApp();
+	it('should init Sns', async () => {
+		await initApp();
 
-    await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
-    await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
-  });
+		await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
+		await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
+	});
 });

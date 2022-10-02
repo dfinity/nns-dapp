@@ -1,19 +1,19 @@
 <script lang="ts">
-  import LegacyModal from "../LegacyModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
+	import LegacyModal from '../LegacyModal.svelte';
+	import { i18n } from '../../stores/i18n';
+	import HardwareWalletNeurons from '../../components/accounts/HardwareWalletNeurons.svelte';
 </script>
 
 <LegacyModal on:nnsClose size="big">
-  <span slot="title">{$i18n.neurons.title}</span>
+	<span slot="title">{$i18n.neurons.title}</span>
 
-  <div>
-    <HardwareWalletNeurons />
-  </div>
+	<div>
+		<HardwareWalletNeurons />
+	</div>
 </LegacyModal>
 
 <style lang="scss">
-  div {
-    padding: var(--padding-2x);
-  }
+	div {
+		padding: var(--padding-2x);
+	}
 </style>

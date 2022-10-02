@@ -2,79 +2,73 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import WalletSummary from "../../../../lib/components/accounts/WalletSummary.svelte";
+import { render } from '@testing-library/svelte';
+import { writable } from 'svelte/store';
+import WalletSummary from '../../../../lib/components/accounts/WalletSummary.svelte';
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
-import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
-import { formatToken } from "../../../../lib/utils/icp.utils";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import ContextWrapperTest from "../ContextWrapperTest.svelte";
+	SELECTED_ACCOUNT_CONTEXT_KEY,
+	type SelectedAccountContext,
+	type SelectedAccountStore
+} from '../../../../lib/types/selected-account.context';
+import { replacePlaceholders } from '../../../../lib/utils/i18n.utils';
+import { formatToken } from '../../../../lib/utils/icp.utils';
+import { mockMainAccount } from '../../../mocks/accounts.store.mock';
+import en from '../../../mocks/i18n.mock';
+import ContextWrapperTest from '../ContextWrapperTest.svelte';
 
-describe("WalletSummary", () => {
-  const renderWalletSummary = () =>
-    render(ContextWrapperTest, {
-      props: {
-        contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
-        contextValue: {
-          store: writable<SelectedAccountStore>({
-            account: mockMainAccount,
-          }),
-        } as SelectedAccountContext,
-        Component: WalletSummary,
-      },
-    });
+describe('WalletSummary', () => {
+	const renderWalletSummary = () =>
+		render(ContextWrapperTest, {
+			props: {
+				contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+				contextValue: {
+					store: writable<SelectedAccountStore>({
+						account: mockMainAccount
+					})
+				} as SelectedAccountContext,
+				Component: WalletSummary
+			}
+		});
 
-  it("should render title", () => {
-    const { getByText } = renderWalletSummary();
+	it('should render title', () => {
+		const { getByText } = renderWalletSummary();
 
-    expect(getByText(en.accounts.main)).toBeInTheDocument();
-  });
+		expect(getByText(en.accounts.main)).toBeInTheDocument();
+	});
 
-  it("should render an account identifier", () => {
-    const { getByText } = renderWalletSummary();
+	it('should render an account identifier', () => {
+		const { getByText } = renderWalletSummary();
 
-    expect(
-      getByText(mockMainAccount.identifier, { exact: false })
-    ).toBeInTheDocument();
-  });
+		expect(getByText(mockMainAccount.identifier, { exact: false })).toBeInTheDocument();
+	});
 
-  it("should render a balance in ICP", () => {
-    const { getByText, queryByTestId } = renderWalletSummary();
+	it('should render a balance in ICP', () => {
+		const { getByText, queryByTestId } = renderWalletSummary();
 
-    const icp: HTMLSpanElement | null = queryByTestId("token-value");
+		const icp: HTMLSpanElement | null = queryByTestId('token-value');
 
-    expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
-    );
-    expect(getByText(`ICP`)).toBeTruthy();
-  });
+		expect(icp?.innerHTML).toEqual(`${formatToken({ value: mockMainAccount.balance.toE8s() })}`);
+		expect(getByText(`ICP`)).toBeTruthy();
+	});
 
-  it("should contain a tooltip", () => {
-    const { container } = renderWalletSummary();
+	it('should contain a tooltip', () => {
+		const { container } = renderWalletSummary();
 
-    expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-  });
+		expect(container.querySelector('.tooltip-wrapper')).toBeInTheDocument();
+	});
 
-  it("should render a detailed balance in ICP in a tooltip", () => {
-    const { container } = renderWalletSummary();
+	it('should render a detailed balance in ICP in a tooltip', () => {
+		const { container } = renderWalletSummary();
 
-    const icp: HTMLDivElement | null = container.querySelector(
-      "#wallet-detailed-icp"
-    );
+		const icp: HTMLDivElement | null = container.querySelector('#wallet-detailed-icp');
 
-    expect(icp?.textContent).toEqual(
-      replacePlaceholders(en.accounts.current_balance_detail, {
-        $amount: `${formatToken({
-          value: mockMainAccount.balance.toE8s(),
-          detailed: true,
-        })}`,
-      })
-    );
-  });
+		expect(icp?.textContent).toEqual(
+			replacePlaceholders(en.accounts.current_balance_detail, {
+				$amount: `${formatToken({
+					value: mockMainAccount.balance.toE8s(),
+					detailed: true
+				})}`
+			})
+		);
+	});
 });

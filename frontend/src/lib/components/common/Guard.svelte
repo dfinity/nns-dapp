@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { authStore } from "../../stores/auth.store";
-  import { routeStore } from "../../stores/route.store";
-  import { routePath } from "../../utils/route.utils";
-  import { Spinner } from "@dfinity/gix-components";
-  import { toastsError } from "../../stores/toasts.store";
+	import { authStore } from '../../stores/auth.store';
+	import { routeStore } from '../../stores/route.store';
+	import { routePath } from '../../utils/route.utils';
+	import { Spinner } from '@dfinity/gix-components';
+	import { toastsError } from '../../stores/toasts.store';
 
-  const syncAuthStore = async () => {
-    try {
-      await authStore.sync();
-    } catch (err) {
-      toastsError({ labelKey: "error.auth_sync", err });
-    }
-  };
+	const syncAuthStore = async () => {
+		try {
+			await authStore.sync();
+		} catch (err) {
+			toastsError({ labelKey: 'error.auth_sync', err });
+		}
+	};
 </script>
 
 <!-- popstate: browser back button has been clicked, we reflect the new browser url to the route -->
 <svelte:window on:popstate={() => routeStore.update({ path: routePath() })} />
 
 {#await syncAuthStore()}
-  <Spinner />
+	<Spinner />
 {:then}
-  <slot />
+	<slot />
 {/await}

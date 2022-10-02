@@ -1,17 +1,17 @@
-import type { Principal } from "@dfinity/principal";
-import { writable } from "svelte/store";
-import type { Account } from "../types/account";
-import { removeKeys } from "../utils/utils";
+import type { Principal } from '@dfinity/principal';
+import { writable } from 'svelte/store';
+import type { Account } from '../types/account';
+import { removeKeys } from '../utils/utils';
 
 interface SnsAccount {
-  accounts: Account[];
-  certified: boolean;
+	accounts: Account[];
+	certified: boolean;
 }
 
 export interface SnsAccountsStore {
-  // Each SNS Project is an entry in this Store.
-  // We use the root canister id as the key to identify the accounts for a specific project.
-  [rootCanisterId: string]: SnsAccount;
+	// Each SNS Project is an entry in this Store.
+	// We use the root canister id as the key to identify the accounts for a specific project.
+	[rootCanisterId: string]: SnsAccount;
 }
 
 /**
@@ -22,43 +22,43 @@ export interface SnsAccountsStore {
  * - resetProject: removed the accounts for a specific project.
  */
 const initSnsAccountsStore = () => {
-  const { subscribe, update, set } = writable<SnsAccountsStore>({});
+	const { subscribe, update, set } = writable<SnsAccountsStore>({});
 
-  return {
-    subscribe,
+	return {
+		subscribe,
 
-    setAccounts({
-      rootCanisterId,
-      accounts,
-      certified,
-    }: {
-      rootCanisterId: Principal;
-      accounts: Account[];
-      certified: boolean;
-    }) {
-      update((currentState: SnsAccountsStore) => ({
-        ...currentState,
-        [rootCanisterId.toText()]: {
-          accounts,
-          certified,
-        },
-      }));
-    },
+		setAccounts({
+			rootCanisterId,
+			accounts,
+			certified
+		}: {
+			rootCanisterId: Principal;
+			accounts: Account[];
+			certified: boolean;
+		}) {
+			update((currentState: SnsAccountsStore) => ({
+				...currentState,
+				[rootCanisterId.toText()]: {
+					accounts,
+					certified
+				}
+			}));
+		},
 
-    // Used in tests
-    reset() {
-      set({});
-    },
+		// Used in tests
+		reset() {
+			set({});
+		},
 
-    resetProject(rootCanisterId: Principal) {
-      update((currentState: SnsAccountsStore) =>
-        removeKeys({
-          obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
-        })
-      );
-    },
-  };
+		resetProject(rootCanisterId: Principal) {
+			update((currentState: SnsAccountsStore) =>
+				removeKeys({
+					obj: currentState,
+					keysToRemove: [rootCanisterId.toText()]
+				})
+			);
+		}
+	};
 };
 
 export const snsAccountsStore = initSnsAccountsStore();

@@ -2,31 +2,27 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import CurrentBalance from "../../../../lib/components/accounts/CurrentBalance.svelte";
-import { formatToken } from "../../../../lib/utils/icp.utils";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { render } from '@testing-library/svelte';
+import CurrentBalance from '../../../../lib/components/accounts/CurrentBalance.svelte';
+import { formatToken } from '../../../../lib/utils/icp.utils';
+import { mockMainAccount } from '../../../mocks/accounts.store.mock';
+import en from '../../../mocks/i18n.mock';
 
-describe("CurrentBalance", () => {
-  const props = { balance: mockMainAccount.balance };
+describe('CurrentBalance', () => {
+	const props = { balance: mockMainAccount.balance };
 
-  it("should render a title", () => {
-    const { getByText } = render(CurrentBalance, { props });
+	it('should render a title', () => {
+		const { getByText } = render(CurrentBalance, { props });
 
-    expect(
-      getByText(en.accounts.current_balance, { exact: false })
-    ).toBeTruthy();
-  });
+		expect(getByText(en.accounts.current_balance, { exact: false })).toBeTruthy();
+	});
 
-  it("should render a balance in ICP", () => {
-    const { getByText, queryByTestId } = render(CurrentBalance, { props });
+	it('should render a balance in ICP', () => {
+		const { getByText, queryByTestId } = render(CurrentBalance, { props });
 
-    const icp: HTMLSpanElement | null = queryByTestId("token-value");
+		const icp: HTMLSpanElement | null = queryByTestId('token-value');
 
-    expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
-    );
-    expect(getByText(`ICP`)).toBeTruthy();
-  });
+		expect(icp?.innerHTML).toEqual(`${formatToken({ value: mockMainAccount.balance.toE8s() })}`);
+		expect(getByText(`ICP`)).toBeTruthy();
+	});
 });

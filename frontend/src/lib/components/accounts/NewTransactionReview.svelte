@@ -1,112 +1,99 @@
 <script lang="ts">
-  import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
-  import type { TransactionContext } from "../../types/transaction.context";
-  import { createEventDispatcher, getContext } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { transferICP } from "../../services/accounts.services";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { toastsSuccess } from "../../stores/toasts.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+	import NewTransactionInfo from './NewTransactionInfo.svelte';
+	import AmountDisplay from '../ic/AmountDisplay.svelte';
+	import { ICPToken, TokenAmount } from '@dfinity/nns';
+	import { NEW_TRANSACTION_CONTEXT_KEY } from '../../types/transaction.context';
+	import type { TransactionContext } from '../../types/transaction.context';
+	import { createEventDispatcher, getContext } from 'svelte';
+	import { i18n } from '../../stores/i18n';
+	import { busy, startBusy, stopBusy } from '../../stores/busy.store';
+	import { transferICP } from '../../services/accounts.services';
+	import { isAccountHardwareWallet } from '../../utils/accounts.utils';
+	import { toastsSuccess } from '../../stores/toasts.store';
+	import FooterModal from '../../modals/FooterModal.svelte';
 
-  const context: TransactionContext = getContext<TransactionContext>(
-    NEW_TRANSACTION_CONTEXT_KEY
-  );
-  const {
-    store,
-    onTransactionComplete,
-    validateTransaction,
-    back,
-  }: TransactionContext = context;
+	const context: TransactionContext = getContext<TransactionContext>(NEW_TRANSACTION_CONTEXT_KEY);
+	const { store, onTransactionComplete, validateTransaction, back }: TransactionContext = context;
 
-  let amount: TokenAmount =
-    $store.amount ??
-    TokenAmount.fromE8s({ amount: BigInt(0), token: ICPToken });
+	let amount: TokenAmount =
+		$store.amount ?? TokenAmount.fromE8s({ amount: BigInt(0), token: ICPToken });
 
-  const dispatcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher();
 
-  const executeTransaction = async () => {
-    if (
-      validateTransaction === undefined ||
-      validateTransaction({
-        amount: $store.amount,
-        selectedAccount: $store.selectedAccount,
-        destinationAddress: $store.destinationAddress,
-      })
-    ) {
-      startBusy({
-        initiator: "accounts",
-        ...(isAccountHardwareWallet($store.selectedAccount) && {
-          labelKey: "busy_screen.pending_approval_hw",
-        }),
-      });
+	const executeTransaction = async () => {
+		if (
+			validateTransaction === undefined ||
+			validateTransaction({
+				amount: $store.amount,
+				selectedAccount: $store.selectedAccount,
+				destinationAddress: $store.destinationAddress
+			})
+		) {
+			startBusy({
+				initiator: 'accounts',
+				...(isAccountHardwareWallet($store.selectedAccount) && {
+					labelKey: 'busy_screen.pending_approval_hw'
+				})
+			});
 
-      const { success } = await transferICP($store);
+			const { success } = await transferICP($store);
 
-      if (success) {
-        await onTransactionComplete?.();
-        toastsSuccess({ labelKey: "accounts.transaction_success" });
-      }
+			if (success) {
+				await onTransactionComplete?.();
+				toastsSuccess({ labelKey: 'accounts.transaction_success' });
+			}
 
-      stopBusy("accounts");
+			stopBusy('accounts');
 
-      // We close the modal in case of success or error if the selected source is not a hardware wallet.
-      // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-      if (success || !isAccountHardwareWallet($store.selectedAccount)) {
-        dispatcher("nnsClose");
-      }
-    } else {
-      dispatcher("nnsClose");
-    }
-  };
+			// We close the modal in case of success or error if the selected source is not a hardware wallet.
+			// In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
+			if (success || !isAccountHardwareWallet($store.selectedAccount)) {
+				dispatcher('nnsClose');
+			}
+		} else {
+			dispatcher('nnsClose');
+		}
+	};
 </script>
 
 <form on:submit|preventDefault={executeTransaction} class="wizard-wrapper">
-  <div class="amount">
-    <AmountDisplay inline={true} {amount} detailed />
-  </div>
+	<div class="amount">
+		<AmountDisplay inline={true} {amount} detailed />
+	</div>
 
-  <NewTransactionInfo />
+	<NewTransactionInfo />
 
-  <FooterModal>
-    <button class="secondary" type="button" on:click={back}>
-      {$i18n.accounts.edit_amount}
-    </button>
-    <button
-      class="primary"
-      type="submit"
-      disabled={$busy}
-      data-tid="confirm-and-send"
-    >
-      {$i18n.accounts.confirm_and_send}
-    </button>
-  </FooterModal>
+	<FooterModal>
+		<button class="secondary" type="button" on:click={back}>
+			{$i18n.accounts.edit_amount}
+		</button>
+		<button class="primary" type="submit" disabled={$busy} data-tid="confirm-and-send">
+			{$i18n.accounts.confirm_and_send}
+		</button>
+	</FooterModal>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-  @use "@dfinity/gix-components/styles/mixins/media";
+	@use '../../themes/mixins/modal';
+	@use '@dfinity/gix-components/styles/mixins/media';
 
-  .amount {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	.amount {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 
-    flex-grow: 1;
+		flex-grow: 1;
 
-    padding: var(--padding) 0;
+		padding: var(--padding) 0;
 
-    @include media.min-width(medium) {
-      --token-font-size: var(--font-size-huge);
-      @include modal.header;
-    }
-  }
+		@include media.min-width(medium) {
+			--token-font-size: var(--font-size-huge);
+			@include modal.header;
+		}
+	}
 
-  button {
-    margin: var(--padding) 0 0;
-  }
+	button {
+		margin: var(--padding) 0 0;
+	}
 </style>

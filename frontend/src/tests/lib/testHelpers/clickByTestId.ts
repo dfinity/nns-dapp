@@ -1,11 +1,11 @@
-import { fireEvent } from "@testing-library/dom";
+import { fireEvent } from '@testing-library/dom';
 
 export const clickByTestId = async (
-  queryByTestId: (matcher: string) => HTMLElement | null,
-  testId: string
+	queryByTestId: (matcher: string) => HTMLElement | null,
+	testId: string
 ) => {
-  const element = queryByTestId(testId);
-  expect(element).toBeInTheDocument();
+	const element = queryByTestId(testId);
+	expect(element).toBeInTheDocument();
 
-  element && fireEvent.click(element);
+	element && fireEvent.click(element);
 };

@@ -1,29 +1,28 @@
 <script lang="ts">
-  import { IconCopy } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+	import { IconCopy } from '@dfinity/gix-components';
+	import { i18n } from '../../stores/i18n';
+	import { replacePlaceholders } from '../../utils/i18n.utils';
 
-  export let value: string;
+	export let value: string;
 
-  const copyToClipboard = async () =>
-    await navigator.clipboard.writeText(value);
+	const copyToClipboard = async () => await navigator.clipboard.writeText(value);
 </script>
 
 <button
-  on:click|stopPropagation={copyToClipboard}
-  aria-label={replacePlaceholders($i18n.core.copy, {
-    $value: value,
-  })}
-  class="icon-only"
+	on:click|stopPropagation={copyToClipboard}
+	aria-label={replacePlaceholders($i18n.core.copy, {
+		$value: value
+	})}
+	class="icon-only"
 >
-  <IconCopy />
+	<IconCopy />
 </button>
 
 <style lang="scss">
-  button {
-    height: 30px;
-    width: 30px;
+	button {
+		height: 30px;
+		width: 30px;
 
-    color: var(--primary-tint);
-  }
+		color: var(--primary-tint);
+	}
 </style>
