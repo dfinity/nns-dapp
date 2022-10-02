@@ -3,7 +3,7 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import App from "../App.svelte";
+import App from "../routes/App.svelte";
 import { initApp } from "../lib/services/app.services";
 import { worker } from "../lib/services/worker.services";
 import { authStore } from "../lib/stores/auth.store";

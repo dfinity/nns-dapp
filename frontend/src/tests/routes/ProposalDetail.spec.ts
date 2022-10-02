@@ -8,7 +8,7 @@ import { authStore } from "../../lib/stores/auth.store";
 import { neuronsStore } from "../../lib/stores/neurons.store";
 import { proposalsStore } from "../../lib/stores/proposals.store";
 import { routeStore } from "../../lib/stores/route.store";
-import ProposalDetail from "../../routes/ProposalDetail.svelte";
+import ProposalDetail from "../../lib/routes/ProposalDetail.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";

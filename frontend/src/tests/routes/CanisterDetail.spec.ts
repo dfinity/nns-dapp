@@ -11,7 +11,7 @@ import {
 } from "../../lib/services/canisters.services";
 import { canistersStore } from "../../lib/stores/canisters.store";
 import { routeStore } from "../../lib/stores/route.store";
-import CanisterDetail from "../../routes/CanisterDetail.svelte";
+import CanisterDetail from "../../lib/routes/CanisterDetail.svelte";
 import { mockCanister, mockCanisterDetails } from "../mocks/canisters.mock";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 

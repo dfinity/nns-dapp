@@ -1,6 +1,5 @@
-/node_modules/
-/public/
-
 .DS_Store
-
-coverage
+node_modules
+/build
+/.svelte-kit
+/package

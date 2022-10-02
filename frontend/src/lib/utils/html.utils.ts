@@ -83,5 +83,6 @@ export const markdownToSanitizedHTML = async (
  * See the jest-setup.ts for details.
  */
 export const sanitize = (text: string): string => {
-  return !isNode() ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
+  // TODO: sveltekit
+  return 'TODO'; // !isNode() ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
 };

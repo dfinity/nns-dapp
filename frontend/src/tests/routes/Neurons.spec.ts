@@ -8,7 +8,7 @@ import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
 import { AppPath } from "../../lib/constants/routes.constants";
 import { committedProjectsStore } from "../../lib/stores/projects.store";
 import { routeStore } from "../../lib/stores/route.store";
-import Neurons from "../../routes/Neurons.svelte";
+import Neurons from "../../lib/routes/Neurons.svelte";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,

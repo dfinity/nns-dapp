@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "../lib/constants/environment.constants";
-  import NnsAccounts from "../lib/pages/NnsAccounts.svelte";
-  import NnsAccountsFooter from "../lib/components/accounts/NnsAccountsFooter.svelte";
+  import { ENABLE_SNS } from "../constants/environment.constants";
+  import NnsAccounts from "../pages/NnsAccounts.svelte";
+  import NnsAccountsFooter from "../components/accounts/NnsAccountsFooter.svelte";
   import {
     isNnsProjectStore,
     snsProjectSelectedStore,
-  } from "../lib/derived/selected-project.derived";
+  } from "../derived/selected-project.derived";
   import { onMount } from "svelte";
-  import { routeStore } from "../lib/stores/route.store";
-  import { isRoutePath } from "../lib/utils/app-path.utils";
-  import { AppPath } from "../lib/constants/routes.constants";
-  import { OWN_CANISTER_ID } from "../lib/constants/canister-ids.constants";
-  import SnsAccounts from "../lib/pages/SnsAccounts.svelte";
-  import SelectProjectDropdownHeader from "../lib/components/ic/SelectProjectDropdownHeader.svelte";
+  import { routeStore } from "../stores/route.store";
+  import { isRoutePath } from "../utils/app-path.utils";
+  import { AppPath } from "../constants/routes.constants";
+  import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
+  import SnsAccounts from "../pages/SnsAccounts.svelte";
+  import SelectProjectDropdownHeader from "../components/ic/SelectProjectDropdownHeader.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {

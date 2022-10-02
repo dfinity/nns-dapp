@@ -5,7 +5,7 @@ import { render } from "@testing-library/svelte";
 import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
 import { CONTEXT_PATH } from "../../lib/constants/routes.constants";
 import { routeStore } from "../../lib/stores/route.store";
-import Wallet from "../../routes/Wallet.svelte";
+import Wallet from "../../lib/routes/Wallet.svelte";
 import { principal } from "../mocks/sns-projects.mock";
 
 describe("Wallet", () => {

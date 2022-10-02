@@ -17,33 +17,33 @@
     switch (path) {
       case AppPath.Accounts:
       case AppPath.LegacyAccounts:
-        return (await import("../../../routes/Accounts.svelte")).default;
+        return (await import("../../routes/Accounts.svelte")).default;
       case AppPath.LegacyNeurons:
       case AppPath.Neurons:
-        return (await import("../../../routes/Neurons.svelte")).default;
+        return (await import("../../routes/Neurons.svelte")).default;
       case AppPath.Proposals:
-        return (await import("../../../routes/Proposals.svelte")).default;
+        return (await import("../../routes/Proposals.svelte")).default;
       case AppPath.Canisters:
-        return (await import("../../../routes/Canisters.svelte")).default;
+        return (await import("../../routes/Canisters.svelte")).default;
       case AppPath.Wallet:
-        return (await import("../../../routes/Wallet.svelte")).default;
+        return (await import("../../routes/Wallet.svelte")).default;
       case AppPath.LegacyWallet:
-        return (await import("../../../routes/LegacyWallet.svelte")).default;
+        return (await import("../../routes/LegacyWallet.svelte")).default;
       case AppPath.ProposalDetail:
-        return (await import("../../../routes/ProposalDetail.svelte")).default;
+        return (await import("../../routes/ProposalDetail.svelte")).default;
       case AppPath.LegacyNeuronDetail:
-        return (await import("../../../routes/LegacyNeuronDetail.svelte"))
+        return (await import("../../routes/LegacyNeuronDetail.svelte"))
           .default;
       case AppPath.CanisterDetail:
-        return (await import("../../../routes/CanisterDetail.svelte")).default;
+        return (await import("../../routes/CanisterDetail.svelte")).default;
       case AppPath.Launchpad:
-        return (await import("../../../routes/Launchpad.svelte")).default;
+        return (await import("../../routes/Launchpad.svelte")).default;
       case AppPath.ProjectDetail:
-        return (await import("../../../routes/ProjectDetail.svelte")).default;
+        return (await import("../../routes/ProjectDetail.svelte")).default;
       case AppPath.NeuronDetail:
-        return (await import("../../../routes/NeuronDetail.svelte")).default;
+        return (await import("../../routes/NeuronDetail.svelte")).default;
       default:
-        return (await import("../../../routes/Auth.svelte")).default;
+        return (await import("../../routes/Auth.svelte")).default;
     }
   };
 

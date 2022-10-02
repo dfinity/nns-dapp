@@ -8,7 +8,7 @@ import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
 import { AppPath } from "../../lib/constants/routes.constants";
 import { committedProjectsStore } from "../../lib/stores/projects.store";
 import { routeStore } from "../../lib/stores/route.store";
-import Accounts from "../../routes/Accounts.svelte";
+import Accounts from "../../lib/routes/Accounts.svelte";
 import en from "../mocks/i18n.mock";
 import {
   mockProjectSubscribe,

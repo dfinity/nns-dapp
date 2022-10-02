@@ -3,27 +3,27 @@
   import {
     loadProposal,
     routePathProposalId,
-  } from "../lib/services/proposals.services";
-  import { routeStore } from "../lib/stores/route.store";
-  import { AppPath } from "../lib/constants/routes.constants";
+  } from "../services/proposals.services";
+  import { routeStore } from "../stores/route.store";
+  import { AppPath } from "../constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { neuronsStore } from "../lib/stores/neurons.store";
+  import { neuronsStore } from "../stores/neurons.store";
   import {
     layoutBackStore,
     layoutTitleStore,
-  } from "../lib/stores/layout.store";
+  } from "../stores/layout.store";
   import { get, writable } from "svelte/store";
   import type {
     SelectedProposalContext,
     SelectedProposalStore,
-  } from "../lib/types/selected-proposal.context";
-  import { debugSelectedProposalStore } from "../lib/stores/debug.store";
+  } from "../types/selected-proposal.context";
+  import { debugSelectedProposalStore } from "../stores/debug.store";
   import type { ProposalId } from "@dfinity/nns";
-  import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../lib/types/selected-proposal.context";
-  import { VOTING_UI } from "../lib/constants/environment.constants";
-  import ProposalLegacy from "../lib/components/proposal-detail/ProposalLegacy.svelte";
-  import ProposalModern from "../lib/components/proposal-detail/ProposalModern.svelte";
-  import { i18n } from "../lib/stores/i18n";
+  import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../types/selected-proposal.context";
+  import { VOTING_UI } from "../constants/environment.constants";
+  import ProposalLegacy from "../components/proposal-detail/ProposalLegacy.svelte";
+  import ProposalModern from "../components/proposal-detail/ProposalModern.svelte";
+  import { i18n } from "../stores/i18n";
 
   // Neurons are fetch on page load. No need to do it in the route.
 

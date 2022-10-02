@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { authStore } from "../lib/stores/auth.store";
-  import type { AuthStore } from "../lib/stores/auth.store";
-  import { routeStore } from "../lib/stores/route.store";
-  import { isSignedIn } from "../lib/utils/auth.utils";
-  import { i18n } from "../lib/stores/i18n";
-  import { toastsError } from "../lib/stores/toasts.store";
-  import { displayAndCleanLogoutMsg } from "../lib/services/auth.services";
+  import { authStore } from "../stores/auth.store";
+  import type { AuthStore } from "../stores/auth.store";
+  import { routeStore } from "../stores/route.store";
+  import { isSignedIn } from "../utils/auth.utils";
+  import { i18n } from "../stores/i18n";
+  import { toastsError } from "../stores/toasts.store";
+  import { displayAndCleanLogoutMsg } from "../services/auth.services";
 
   let signedIn: boolean = false;
 

@@ -15,7 +15,7 @@ import {
   snsSwapCommitmentsStore,
 } from "../../lib/stores/sns.store";
 import type { SnsSwapCommitment } from "../../lib/types/sns";
-import ProjectDetail from "../../routes/ProjectDetail.svelte";
+import ProjectDetail from "../../lib/routes/ProjectDetail.svelte";
 import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
 import { mockSnsFullProject } from "../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../mocks/sns-response.mock";

@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Launchpad from "../../routes/Launchpad.svelte";
+import Launchpad from "../../lib/routes/Launchpad.svelte";
 import en from "../mocks/i18n.mock";
 
 jest.mock("../../lib/services/sns.services", () => {

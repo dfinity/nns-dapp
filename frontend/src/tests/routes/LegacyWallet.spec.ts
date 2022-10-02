@@ -5,7 +5,7 @@ import { render } from "@testing-library/svelte";
 import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
 import { CONTEXT_PATH } from "../../lib/constants/routes.constants";
 import { routeStore } from "../../lib/stores/route.store";
-import LegacyWallet from "../../routes/LegacyWallet.svelte";
+import LegacyWallet from "../../lib/routes/LegacyWallet.svelte";
 
 describe("LegacyWallet", () => {
   it("should render NnsWallet", () => {

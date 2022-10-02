@@ -7,7 +7,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { listCanisters } from "../../lib/services/canisters.services";
 import { authStore } from "../../lib/stores/auth.store";
 import { canistersStore } from "../../lib/stores/canisters.store";
-import Canisters from "../../routes/Canisters.svelte";
+import Canisters from "../../lib/routes/Canisters.svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Projects from "../lib/components/launchpad/Projects.svelte";
-  import Proposals from "../lib/components/launchpad/Proposals.svelte";
-  import { IS_TESTNET } from "../lib/constants/environment.constants";
-  import { AppPath } from "../lib/constants/routes.constants";
-  import { i18n } from "../lib/stores/i18n";
-  import { routeStore } from "../lib/stores/route.store";
+  import Projects from "../components/launchpad/Projects.svelte";
+  import Proposals from "../components/launchpad/Proposals.svelte";
+  import { IS_TESTNET } from "../constants/environment.constants";
+  import { AppPath } from "../constants/routes.constants";
+  import { i18n } from "../stores/i18n";
+  import { routeStore } from "../stores/route.store";
 
   onMount(() => {
     if (!IS_TESTNET) {

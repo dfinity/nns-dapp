@@ -19,7 +19,7 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "../../lib/stores/proposals.store";
-import Proposals from "../../routes/Proposals.svelte";
+import Proposals from "../../lib/routes/Proposals.svelte";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../mocks/governance.canister.mock";
 import en from "../mocks/i18n.mock";
