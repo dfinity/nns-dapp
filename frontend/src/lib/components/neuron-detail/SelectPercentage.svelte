@@ -6,7 +6,7 @@
   import { Card } from "@dfinity/gix-components";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatToken } from "../../utils/icp.utils";
-  import InputRange from "../ui/InputRange.svelte";
+  import { InputRange } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { valueSpan } from "../../utils/utils";
@@ -27,11 +27,11 @@
 
 <div class="wrapper" data-tid="spawn-maturity-neuron-modal">
   <div>
-    <h5>{$i18n.neuron_detail.current_maturity}</h5>
+    <p class="label">{$i18n.neuron_detail.current_maturity}</p>
     <p class="value">
       {formattedMaturity(neuron)}
     </p>
-    <h5>{$i18n.neuron_detail.current_stake}</h5>
+    <p class="label">{$i18n.neuron_detail.current_stake}</p>
     <p data-tid="neuron-stake">
       {@html replacePlaceholders($i18n.neurons.icp_stake, {
         $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),

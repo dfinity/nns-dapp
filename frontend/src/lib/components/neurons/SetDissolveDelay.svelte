@@ -16,7 +16,7 @@
     votingPower,
   } from "../../utils/neuron.utils";
   import { replacePlaceholders } from "../../utils/i18n.utils";
-  import InputRange from "../ui/InputRange.svelte";
+  import { InputRange } from "@dfinity/gix-components";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { valueSpan } from "../../utils/utils";
 
@@ -50,10 +50,10 @@
 
 <div class="wizard-wrapper wrapper">
   <div>
-    <h5>{$i18n.neurons.neuron_id}</h5>
+    <p class="label">{$i18n.neurons.neuron_id}</p>
     <p class="value">{neuron.neuronId}</p>
 
-    <h5>{$i18n.neurons.neuron_balance}</h5>
+    <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p data-tid="neuron-stake">
       {@html replacePlaceholders($i18n.neurons.icp_stake, {
         $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
@@ -61,7 +61,7 @@
     </p>
 
     {#if neuron.state === NeuronState.Locked && neuron.dissolveDelaySeconds}
-      <h5>{$i18n.neurons.current_dissolve_delay}</h5>
+      <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
       <p class="duration">
         {@html valueSpan(secondsToDuration(neuron.dissolveDelaySeconds))} - {$i18n
           .neurons.staked}
@@ -85,21 +85,21 @@
         />
         <div class="details">
           <div>
-            <h5>
+            <p class="label">
               {formatVotingPower(
                 votingPower({
                   stake: neuronICP,
                   dissolveDelayInSeconds: delayInSeconds,
                 })
               )}
-            </h5>
+            </p>
             <p>{$i18n.neurons.voting_power}</p>
           </div>
           <div>
             {#if delayInSeconds > 0}
-              <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
+              <p class="label">{secondsToDuration(BigInt(delayInSeconds))}</p>
             {:else}
-              <h5>{$i18n.neurons.no_delay}</h5>
+              <p class="label">{$i18n.neurons.no_delay}</p>
             {/if}
             <p>{$i18n.neurons.dissolve_delay_title}</p>
           </div>

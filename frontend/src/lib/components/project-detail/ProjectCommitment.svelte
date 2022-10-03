@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import type { SnsSummary } from "../../types/sns";
   import { i18n } from "../../stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -35,6 +35,7 @@
   let buyersTotalCommitmentIcp: TokenAmount;
   $: buyersTotalCommitmentIcp = TokenAmount.fromE8s({
     amount: buyersTotalCommitment,
+    token: ICPToken,
   });
 </script>
 

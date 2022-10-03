@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
   import FooterModal from "../../FooterModal.svelte";
@@ -13,6 +13,7 @@
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
   export let transactionFee: TokenAmount;
+  export let token: Token;
 
   let sourceAccount: Account;
   let amount: number;
@@ -21,7 +22,10 @@
 
   // If we made it this far, the number is valid.
   let tokenAmount: TokenAmount;
-  $: tokenAmount = TokenAmount.fromNumber({ amount }) as TokenAmount;
+  $: tokenAmount = TokenAmount.fromNumber({
+    amount,
+    token,
+  }) as TokenAmount;
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -67,7 +71,6 @@
     </div>
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
-      <p />
       <slot name="destination-info" />
       <p class="account-identifier">{destinationAddress}</p>
     </div>

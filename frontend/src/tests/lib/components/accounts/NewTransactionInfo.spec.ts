@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NewTransactionInfo from "../../../../lib/components/accounts/NewTransactionInfo.svelte";
 import {
@@ -21,7 +21,10 @@ describe("NewTransactionInfo", () => {
     mockTransactionStore.set({
       selectedAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: TokenAmount.fromString({ amount: "10.25" }) as TokenAmount,
+      amount: TokenAmount.fromString({
+        amount: "10.25",
+        token: ICPToken,
+      }) as TokenAmount,
     });
   });
 
@@ -62,7 +65,10 @@ describe("NewTransactionInfo", () => {
     mockTransactionStore.set({
       selectedAccount: mockHardwareWalletAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: TokenAmount.fromString({ amount: "10.25" }) as TokenAmount,
+      amount: TokenAmount.fromString({
+        amount: "10.25",
+        token: ICPToken,
+      }) as TokenAmount,
     });
 
     const { getByText } = render(NewTransactionTest, { props });
