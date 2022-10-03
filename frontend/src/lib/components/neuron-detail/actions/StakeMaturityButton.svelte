@@ -10,7 +10,7 @@
   const closeModal = () => (isOpen = false);
 </script>
 
-<button class="primary" on:click={showModal}
+<button class="primary" on:click={showModal} data-tid="stake-maturity-button"
   >{$i18n.neuron_detail.stake_maturity}</button
 >
 
