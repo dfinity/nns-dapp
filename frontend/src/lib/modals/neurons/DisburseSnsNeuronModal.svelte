@@ -21,8 +21,10 @@
   import { transactionsFeesStore } from "../../stores/transaction-fees.store";
   import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import { neuronsPathStore } from "../../derived/paths.derived";
+  import { syncAccounts } from "../../services/accounts.services";
 
   export let neuron: SnsNeuron;
+  export let reloadContext: () => Promise<void>;
 
   let destinationAddress: string | undefined;
   $: destinationAddress = $accountsStore.main?.identifier;
@@ -71,6 +73,8 @@
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
     });
+
+    await Promise.all([syncAccounts(), reloadContext()]);
 
     loading = false;
 

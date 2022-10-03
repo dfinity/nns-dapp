@@ -6,6 +6,7 @@
 
   export let neuron: NeuronInfo | SnsNeuron;
   export let modal: typeof SvelteComponent;
+  export let reloadContext: (() => Promise<void>) | undefined = undefined;
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);
@@ -17,5 +18,10 @@
 >
 
 {#if showModal}
-  <svelte:component this={modal} {neuron} on:nnsClose={closeModal} />
+  <svelte:component
+    this={modal}
+    {neuron}
+    {reloadContext}
+    on:nnsClose={closeModal}
+  />
 {/if}

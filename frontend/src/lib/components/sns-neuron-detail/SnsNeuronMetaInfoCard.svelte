@@ -35,6 +35,10 @@
         neuron,
         identity: $authStore.identity,
       });
+
+  const { reload: reloadContext } = getContext<SelectedSnsNeuronContext>(
+    SELECTED_SNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
 {#if nonNullish(neuron)}
@@ -47,7 +51,11 @@
 
       <div class="buttons">
         {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton {neuron} modal={DisburseSnsNeuronModal} />
+          <DisburseButton
+            {neuron}
+            modal={DisburseSnsNeuronModal}
+            {reloadContext}
+          />
         {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
           <!-- TODO(GIX-985): Sns/DissolveActionButton -->
         {/if}
