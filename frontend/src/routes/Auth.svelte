@@ -64,13 +64,13 @@
     loading="lazy"
   />
 
-  <p>
+  <p class="value">
     <span>{$i18n.auth.ic}</span>
     <span>{$i18n.auth.nns}</span>
   </p>
 </div>
 
-<h1>{$i18n.auth.title}</h1>
+<h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
 
 <ul>
   <li><IconWallet /> {$i18n.auth.secure}</li>
@@ -95,14 +95,13 @@
 
   .nns {
     display: flex;
-    justify-content: flex-start;
     align-items: center;
 
     margin: var(--padding) 0 calc(5 * var(--padding));
     gap: var(--padding);
 
     img {
-      height: var(--padding-3x);
+      height: 38px;
     }
 
     p {
@@ -110,16 +109,20 @@
       flex-direction: column;
       align-items: flex-start;
 
-      // Non standard font-size used for the login screen only
-      font-size: 10px;
+      font-size: var(--font-size-small);
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.1rem;
     }
 
     @include media.min-width(medium) {
       justify-content: center;
+      flex-direction: column;
 
       margin: var(--padding) 0 var(--padding-4x);
+
+      p {
+        align-items: center;
+      }
     }
   }
 
@@ -146,13 +149,18 @@
     line-height: 1.4;
     font-size: var(--font-size-h2);
     margin: 0 0 var(--padding-2x);
-    max-width: 550px;
+    max-width: 330px;
+
+    span {
+      display: block;
+    }
 
     @media (min-width: 376px) {
       font-size: var(--font-size-h1);
     }
 
     @include media.min-width(medium) {
+      max-width: 550px;
       font-size: 2.441rem;
     }
   }
@@ -187,6 +195,7 @@
   }
 
   li {
+    font-size: var(--font-size-small);
     padding: var(--padding-1_5x) 0;
 
     :global(svg) {
