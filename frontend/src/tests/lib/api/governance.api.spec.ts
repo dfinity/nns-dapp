@@ -9,6 +9,7 @@ import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import {
   addHotkey,
+  autoStakeMaturity,
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -329,6 +330,76 @@ describe("neurons-api", () => {
         });
 
       await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("autoStakeMaturity", () => {
+    it("auto stake the maturity of a neuron successfully", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        autoStake: true,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalled();
+    });
+
+    it("throws error when autoStakeMaturity fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        autoStakeMaturity({
+          identity: mockIdentity,
+          autoStake: true,
+          neuronId: BigInt(10),
+        });
+
+      await expect(call).rejects.toThrow(error);
+    });
+
+    it("should enable auto stake the maturity of a neuron", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      const expected = {
+        autoStake: true,
+        neuronId: BigInt(10),
+      };
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        ...expected,
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalledWith(expected);
+    });
+
+    it("should disable auto stake the maturity of a neuron", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+          jest.fn().mockResolvedValue(undefined)
+      );
+
+      const expected = {
+        autoStake: false,
+        neuronId: BigInt(10),
+      };
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        ...expected,
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalledWith(expected);
     });
   });
 
