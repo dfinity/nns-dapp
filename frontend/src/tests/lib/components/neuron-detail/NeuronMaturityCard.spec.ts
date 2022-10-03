@@ -127,36 +127,49 @@ describe("NeuronMaturityCard", () => {
     expect(getByTestId("stake-maturity-button")).not.toBeNull();
   });
 
-  it("should render merge maturity action for hardware wallet", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
+  it("should render auto stake maturity action", async () => {
+    const { container } = render(NeuronMaturityCard, {
+      props,
+    });
 
-    const props = {
+    expect(
+      container.querySelector('input[id="auto-stake-maturity-checkbox"]')
+    ).not.toBeNull();
+  });
+
+  describe("hw", () => {
+    beforeAll(() =>
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        )
+    );
+
+    const propsHW = {
       neuron: {
-        ...mockNeuron,
+        ...props.neuron,
         fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: maturity,
-          controller: mockIdentity.getPrincipal().toText(),
+          ...props.neuron.fullNeuron,
+          controller: mockHardwareWalletAccount?.principal?.toText(),
         },
       },
     };
 
-    const { getByTestId } = render(NeuronMaturityCard, {
-      props: {
-        neuron: {
-          ...props.neuron,
-          fullNeuron: {
-            ...props.neuron.fullNeuron,
-            controller: mockHardwareWalletAccount?.principal?.toText(),
-          },
-        },
-      },
+    it("should render merge maturity action for hardware wallet", () => {
+      const { getByTestId } = render(NeuronMaturityCard, {
+        props: propsHW,
+      });
+
+      expect(getByTestId("merge-maturity-button")).not.toBeNull();
     });
 
-    expect(getByTestId("merge-maturity-button")).not.toBeNull();
+    it("should not render auto stake maturity action for hardware wallet", () => {
+      const { getByTestId } = render(NeuronMaturityCard, {
+        props: propsHW,
+      });
+
+      expect(() => getByTestId("auto-stake-maturity-checkbox")).toThrow();
+    });
   });
 });
