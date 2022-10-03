@@ -5,6 +5,5 @@
 </script>
 
 <NeuronConfirmActionScreen on:nnsConfirm={spy}>
-  <h3 slot="main-info" data-tid="test-main-info">Main information</h3>
-  <svelte:fragment slot="button-content">Confirm</svelte:fragment>
+  <h3 data-tid="test-main-info">Main information</h3>
 </NeuronConfirmActionScreen>
