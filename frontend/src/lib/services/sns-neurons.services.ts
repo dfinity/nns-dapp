@@ -13,6 +13,8 @@ import {
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
+  startDissolving as startDissolvingApi,
+  stopDissolving as stopDissolvingApi,
 } from "../api/sns.api";
 import {
   snsNeuronsStore,
@@ -226,6 +228,60 @@ export const disburse = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_disburse",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const startDissolving = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await startDissolvingApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    // TODO: await updateSnsNeuron(neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_start_dissolving",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const stopDissolving = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await stopDissolvingApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_stop_dissolving",
       err,
     });
     return { success: false };
