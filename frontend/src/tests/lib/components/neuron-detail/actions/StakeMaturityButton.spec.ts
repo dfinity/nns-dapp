@@ -22,19 +22,17 @@ describe("StakeMaturityButton", () => {
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("opens Merge Maturity Modal", async () => {
-    const { container, queryByTestId } = render(StakeMaturityButton, {
+  it("should open stake maturity modal", async () => {
+    const { getByText, getByTestId } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
       },
     });
 
-    const buttonElement = container.querySelector("button");
-    expect(buttonElement).not.toBeNull();
+    fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
 
-    buttonElement && (await fireEvent.click(buttonElement));
-
-    const modal = queryByTestId("merge-maturity-neuron-modal");
-    expect(modal).toBeInTheDocument();
+    expect(
+      getByText(en.neuron_detail.stake_maturity_modal_title)
+    ).toBeInTheDocument();
   });
 });
