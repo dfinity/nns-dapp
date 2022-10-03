@@ -5,11 +5,16 @@
 import { render } from "@testing-library/svelte";
 import NeuronMaturityCard from "../../../../lib/components/neuron-detail/NeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { authStore } from "../../../../lib/stores/auth.store";
 import {
   formattedMaturity,
   formattedStakedMaturity,
 } from "../../../../lib/utils/neuron.utils";
+import {
+  mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
+} from "../../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -112,5 +117,46 @@ describe("NeuronMaturityCard", () => {
       queryByText(en.neuron_detail.stake_maturity)
     ).not.toBeInTheDocument();
     expect(queryByText(en.neuron_detail.spawn_neuron)).not.toBeInTheDocument();
+  });
+
+  it("should render stake maturity action", () => {
+    const { getByTestId } = render(NeuronMaturityCard, {
+      props,
+    });
+
+    expect(getByTestId("stake-maturity-button")).not.toBeNull();
+  });
+
+  it("should render merge maturity action for hardware wallet", () => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+
+    const props = {
+      neuron: {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: maturity,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      },
+    };
+
+    const { getByTestId } = render(NeuronMaturityCard, {
+      props: {
+        neuron: {
+          ...props.neuron,
+          fullNeuron: {
+            ...props.neuron.fullNeuron,
+            controller: mockHardwareWalletAccount?.principal?.toText(),
+          },
+        },
+      },
+    });
+
+    expect(getByTestId("merge-maturity-button")).not.toBeNull();
   });
 });
