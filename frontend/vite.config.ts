@@ -1,9 +1,9 @@
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
-import inject from '@rollup/plugin-inject';
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
@@ -15,7 +15,7 @@ const config: UserConfig = {
     target: "es2020",
     // Polyfill buffer for production build
     rollupOptions: {
-      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
+      plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
     },
   },
   define: {
@@ -35,7 +35,7 @@ const config: UserConfig = {
         }),
       ],
     },
-  }
+  },
 };
 
 export default config;
