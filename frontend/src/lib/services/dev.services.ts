@@ -46,5 +46,5 @@ export const getTokens = async ({
     rootCanisterId,
   });
 
-  await syncAccounts();
+  // TODO: Sync SNS accounts
 };
