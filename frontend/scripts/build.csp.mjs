@@ -3,31 +3,14 @@
 import { createHash } from "crypto";
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import { envConfig } from "../env.config.mjs";
+import * as dotenv from 'dotenv';
 
-/**
- * Rollup takes care of the JS and CSS bundles. Here we copy the index.html from the source to the output folder.
- * At the same time, we also update the <base /> reference (see comment below).
- * By pre-rendering this information, we make it static and guarantee it will be set when the app - the JS code - accesses it at runtime.
- */
-const buildIndex = () => {
-  const buffer = readFileSync("./src/index.html");
-  const content = buffer.toString("utf-8");
+dotenv.config();
 
-  let updatedContent = updateBaseHref(content);
-  updatedContent = updateCSP(updatedContent);
-
-  writeFileSync("./public/index.html", updatedContent);
+const buildCsp = () => {
+  const updatedIndexHTML = updateCSP();
+  writeFileSync("./public/index.html", updatedIndexHTML);
 };
-
-/**
- * Specifies where the svelte app is loaded (typically "/" in both local development and in production)
- */
-const updateBaseHref = (content) =>
-  content.replace(
-    "<!-- BASE_HREF -->",
-    `<base href="${process.env.BASE_HREF || "/"}" />`
-  );
 
 /**
  * Inject "Content Security Policy" (CSP) into index.html for production build
@@ -54,14 +37,9 @@ const updateBaseHref = (content) =>
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-const updateCSP = (content) => {
-  // In local development mode, no CSP rule
-  if (envConfig.ENVIRONMENT === "local") {
-    return content.replace("<!-- CONTENT_SECURITY_POLICY -->", "");
-  }
-
+const updateCSP = () => {
   const indexHtml = readFileSync(
-    join(process.cwd(), "src", "index.html"),
+    join(process.cwd(), "public", "index.html"),
     "utf-8"
   );
   const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
@@ -94,26 +72,16 @@ const updateCSP = (content) => {
         upgrade-insecure-requests;"
     />`;
 
-  return content.replace("<!-- CONTENT_SECURITY_POLICY -->", csp);
+  return indexHtml.replace("<!-- CONTENT_SECURITY_POLICY -->", csp);
 };
 
 const cspConnectSrc = () => {
-  const {
-    IDENTITY_SERVICE_URL,
-    OWN_CANISTER_URL,
-    HOST,
-    GOVERNANCE_CANISTER_URL,
-    LEDGER_CANISTER_URL,
-    MAINNET,
-  } = envConfig;
-
   const src = [
-    IDENTITY_SERVICE_URL,
-    OWN_CANISTER_URL,
-    HOST,
-    GOVERNANCE_CANISTER_URL,
-    LEDGER_CANISTER_URL,
-    MAINNET,
+    process.env.VITE_IDENTITY_SERVICE_URL,
+    process.env.VITE_OWN_CANISTER_URL,
+    process.env.VITE_HOST,
+    process.env.VITE_GOVERNANCE_CANISTER_URL,
+    process.env.VITE_LEDGER_CANISTER_URL,
   ];
 
   return src
@@ -122,4 +90,4 @@ const cspConnectSrc = () => {
     .trim();
 };
 
-buildIndex();
+buildCsp();
