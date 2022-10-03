@@ -44,8 +44,8 @@
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
-      <svelte:fragment slot="value"
-        >{formattedStakedMaturity(neuron)}</svelte:fragment
+      <span slot="value" class="staked-maturity"
+        >{formattedStakedMaturity(neuron)}</span
       >
     </KeyValuePair>
   {/if}
@@ -72,6 +72,10 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--padding);
-    padding-top: var(--padding);
+    padding-top: var(--padding-2x);
+  }
+
+  .staked-maturity {
+    margin: var(--padding-0_5x) 0 0;
   }
 </style>
