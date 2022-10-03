@@ -17,7 +17,7 @@
     { duration = 200 }: { duration?: number }
   ) => ({
     duration,
-    css: (t) => {
+    css: (t: number) => {
       const opacityAnimation = cubicIn(t);
 
       return `

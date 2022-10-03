@@ -48,7 +48,7 @@ describe("ProposalCard", () => {
     const deadlineIn = BigInt(1000);
 
     beforeAll(() => {
-      jest.useFakeTimers("modern").setSystemTime(Date.now());
+      jest.useFakeTimers().setSystemTime(Date.now());
     });
 
     afterAll(() => jest.useRealTimers());

@@ -80,7 +80,7 @@ import {
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 
 describe("neuron-utils", () => {
-  beforeAll(() => jest.useFakeTimers("modern").setSystemTime(Date.now()));
+  beforeAll(() => jest.useFakeTimers().setSystemTime(Date.now()));
 
   afterAll(() => jest.useRealTimers());
 
