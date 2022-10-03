@@ -386,7 +386,7 @@ describe("neurons-api", () => {
 
     it("should disable auto stake the maturity of a neuron", async () => {
       mockGovernanceCanister.autoStakeMaturity.mockImplementation(
-          jest.fn().mockResolvedValue(undefined)
+        jest.fn().mockResolvedValue(undefined)
       );
 
       const expected = {
