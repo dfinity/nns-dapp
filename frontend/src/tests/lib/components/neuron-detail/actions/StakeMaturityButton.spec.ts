@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import StakeMaturityButton from "../../../../../lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
@@ -31,8 +31,10 @@ describe("StakeMaturityButton", () => {
 
     fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
 
-    expect(
-      getByText(en.neuron_detail.stake_maturity_modal_title)
-    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        getByText(en.neuron_detail.stake_maturity_modal_title)
+      ).toBeInTheDocument()
+    );
   });
 });

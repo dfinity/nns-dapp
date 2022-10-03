@@ -17,7 +17,7 @@
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
   $: actionFields =
-    (proposal !== undefined && proposalActionFields(proposal)) || [];
+    proposal !== undefined ? proposalActionFields(proposal) : [];
 
   let nnsFunctionKey: string | undefined;
   $: nnsFunctionKey = getNnsFunctionKey(proposal);
