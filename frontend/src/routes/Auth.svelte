@@ -98,7 +98,7 @@
     align-items: center;
 
     margin: var(--padding) 0 calc(5 * var(--padding));
-    gap: var(--padding);
+    gap: var(--padding-2x);
 
     img {
       height: 38px;
@@ -119,6 +119,7 @@
       flex-direction: column;
 
       margin: var(--padding) 0 var(--padding-4x);
+      gap: var(--padding);
 
       p {
         align-items: center;
