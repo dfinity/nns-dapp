@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { createHash } from "crypto";
+import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import * as dotenv from 'dotenv';
 
 dotenv.config();
 
