@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import StakeMaturityButton from "../../../../../lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
@@ -22,19 +22,19 @@ describe("StakeMaturityButton", () => {
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("opens Merge Maturity Modal", async () => {
-    const { container, queryByTestId } = render(StakeMaturityButton, {
+  it("should open stake maturity modal", async () => {
+    const { getByText, getByTestId } = render(StakeMaturityButton, {
       props: {
         neuron: mockNeuron,
       },
     });
 
-    const buttonElement = container.querySelector("button");
-    expect(buttonElement).not.toBeNull();
+    fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
 
-    buttonElement && (await fireEvent.click(buttonElement));
-
-    const modal = queryByTestId("merge-maturity-neuron-modal");
-    expect(modal).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        getByText(en.neuron_detail.merge_maturity_modal_title)
+      ).toBeInTheDocument()
+    );
   });
 });
