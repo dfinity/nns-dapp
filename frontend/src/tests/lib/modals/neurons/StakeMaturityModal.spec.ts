@@ -3,11 +3,11 @@
  */
 
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import StakeMaturityModal from "../../../../lib/modals/neurons/StakeMaturityModal.svelte";
 import { stakeMaturity } from "../../../../lib/services/neurons.services";
 import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
-import StakeMaturityModal from "../../../../lib/modals/neurons/StakeMaturityModal.svelte";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
@@ -50,14 +50,14 @@ describe("StakeMaturityModal", () => {
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).toBeInTheDocument();
     rangeElement &&
-    (await fireEvent.input(rangeElement, { target: { value: 50 } }));
+      (await fireEvent.input(rangeElement, { target: { value: 50 } }));
 
     const selectMaturityButton = queryByTestId(
-        "select-maturity-percentage-button"
+      "select-maturity-percentage-button"
     );
     expect(selectMaturityButton).toBeInTheDocument();
     selectMaturityButton && (await fireEvent.click(selectMaturityButton));
-  }
+  };
 
   it("should call stakeMaturity service on confirm click", async () => {
     const renderResult: RenderResult = await renderStakeMaturityModal();
@@ -85,7 +85,7 @@ describe("StakeMaturityModal", () => {
     const { queryByTestId } = renderResult;
 
     await waitFor(() =>
-        expect(queryByTestId("cancel-action-button")).toBeInTheDocument()
+      expect(queryByTestId("cancel-action-button")).toBeInTheDocument()
     );
 
     const cancelButton = queryByTestId("cancel-action-button");
