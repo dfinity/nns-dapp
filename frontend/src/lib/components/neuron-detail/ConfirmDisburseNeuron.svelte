@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { E8s, TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "../../stores/i18n";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
