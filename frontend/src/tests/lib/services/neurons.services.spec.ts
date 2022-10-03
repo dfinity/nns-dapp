@@ -153,6 +153,10 @@ describe("neurons-services", () => {
     .spyOn(api, "mergeMaturity")
     .mockImplementation(() => Promise.resolve());
 
+  const spyStakeMaturity = jest
+    .spyOn(api, "stakeMaturity")
+    .mockImplementation(() => Promise.resolve());
+
   const spySpawnNeuron = jest
     .spyOn(api, "spawnNeuron")
     .mockImplementation(() => Promise.resolve(newSpawnedNeuronId));
@@ -515,6 +519,54 @@ describe("neurons-services", () => {
 
       expect(toastsShow).toHaveBeenCalled();
       expect(spyMergeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+  });
+
+  describe("stakeMaturity", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should stake maturity of the neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const { success } = await services.stakeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expect(spyStakeMaturity).toHaveBeenCalled();
+      expect(success).toBe(true);
+    });
+
+    it("should not stake maturity if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await services.stakeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+
+      resetIdentity();
+    });
+
+    it("should not stake maturity if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      const { success } = await services.stakeMaturity({
+        neuronId: notControlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
   });
