@@ -6,7 +6,7 @@
   import { Card } from "@dfinity/gix-components";
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatToken } from "../../utils/icp.utils";
-  import InputRange from "../ui/InputRange.svelte";
+  import { InputRange } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import FooterModal from "../../modals/FooterModal.svelte";
   import { valueSpan } from "../../utils/utils";

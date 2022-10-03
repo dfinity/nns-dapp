@@ -26,7 +26,7 @@ describe("utils", () => {
   afterAll(() => jest.resetAllMocks());
 
   beforeEach(() => {
-    jest.useFakeTimers("modern");
+    jest.useFakeTimers();
     jest.spyOn(global, "setTimeout");
     callback = jest.fn();
   });
