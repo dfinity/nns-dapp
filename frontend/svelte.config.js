@@ -14,10 +14,10 @@ const config = {
 
   kit: {
     adapter: adapter({
-      pages: 'public',
-      assets: 'public',
-      fallback: 'index.html',
-      precompress: false
+      pages: "public",
+      assets: "public",
+      fallback: "index.html",
+      precompress: false,
     }),
     serviceWorker: {
       register: false,
