@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-auto";
+import adapter from "@sveltejs/adapter-static";
 import autoprefixer from "autoprefixer";
 import preprocess from "svelte-preprocess";
 
@@ -13,7 +13,12 @@ const config = {
   }),
 
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      pages: 'public',
+      assets: 'public',
+      fallback: 'index.html',
+      precompress: false
+    }),
     serviceWorker: {
       register: false,
     },
