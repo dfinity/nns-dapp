@@ -4,9 +4,12 @@ module.exports = {
       "svelte-jester",
       { preprocess: "./svelte.config.test.cjs" },
     ],
-    "^.+\\.(t|j)s$": ["ts-jest", {
-      tsconfig: "tsconfig.spec.json",
-    }]
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.spec.json",
+      },
+    ],
   },
   moduleFileExtensions: ["js", "ts", "svelte"],
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
