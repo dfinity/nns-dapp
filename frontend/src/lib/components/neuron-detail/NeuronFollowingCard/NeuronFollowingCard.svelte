@@ -65,7 +65,7 @@
   }
 
   .frame {
-    padding-bottom: var(--padding-2x);
+    padding-bottom: var(--padding-0_5x);
   }
 
   .actions {

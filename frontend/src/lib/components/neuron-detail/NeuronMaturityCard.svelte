@@ -17,6 +17,7 @@
   import { accountsStore } from "../../stores/accounts.store";
 
   export let neuron: NeuronInfo;
+
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,
@@ -44,14 +45,14 @@
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
-      <svelte:fragment slot="value"
-        >{formattedStakedMaturity(neuron)}</svelte:fragment
+      <span slot="value" class="staked-maturity"
+        >{formattedStakedMaturity(neuron)}</span
       >
     </KeyValuePair>
   {/if}
 
-  <div class="actions">
-    {#if isControllable}
+  {#if isControllable}
+    <div class="actions">
       {#if controlledByHardwareWallet}
         <MergeMaturityButton {neuron} />
       {:else}
@@ -59,8 +60,8 @@
       {/if}
 
       <SpawnNeuronButton {neuron} {controlledByHardwareWallet} />
-    {/if}
-  </div>
+    </div>
+  {/if}
 </CardInfo>
 
 <style lang="scss">
@@ -72,6 +73,10 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--padding);
-    padding-top: var(--padding);
+    padding-top: var(--padding-2x);
+  }
+
+  .staked-maturity {
+    margin: var(--padding-0_5x) 0 0;
   }
 </style>
