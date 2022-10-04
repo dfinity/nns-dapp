@@ -11,7 +11,7 @@
 <p class="label"><slot /></p>
 
 <div class="toolbar">
-  <button class="secondary" on:click={cancel}>
+  <button class="secondary" on:click={cancel} data-tid="cancel-action-button">
     {$i18n.neuron_detail.edit_percentage}
   </button>
   <button
