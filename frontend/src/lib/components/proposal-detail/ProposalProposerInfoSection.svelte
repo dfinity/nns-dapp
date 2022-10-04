@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import { mapProposalInfo } from "../../utils/proposals.utils";
-  import ProposalSummary from "./ProposalDetailCard/ProposalSummary.svelte";
+  import ProposalSummary from "./ProposalSummary.svelte";
   import type { Proposal } from "@dfinity/nns";
   import { i18n } from "../../stores/i18n";
 

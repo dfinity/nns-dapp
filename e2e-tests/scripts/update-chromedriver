@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+cd "$(dirname "$0")/.."
+npm install "chromedriver@$(google-chrome --version | sed -E 's/.*\s([0-9]+).*/\1/g')"

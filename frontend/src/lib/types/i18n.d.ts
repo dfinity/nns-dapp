@@ -443,7 +443,6 @@ interface I18nProposal_detail__vote {
   confirm_reject_headline: string;
   confirm_reject_text: string;
   vote_status: string;
-  accept_or_reject: string;
   cast_vote_neuronId: string;
   cast_vote_votingPower: string;
   vote_adopt_in_progress: string;
