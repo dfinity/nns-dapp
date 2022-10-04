@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
+  autoStakeMaturity,
   claimOrRefreshNeuron,
   disburse as disburseApi,
   increaseDissolveDelay,
@@ -24,6 +25,7 @@ import {
   setFollowees,
   spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
+  stakeMaturity as stakeMaturityApi,
   stakeNeuron as stakeNeuronApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -51,11 +53,15 @@ import {
   isAccountHardwareWallet,
 } from "../utils/accounts.utils";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
+import {
+  errorToString,
+  mapNeuronErrorToToastMessage,
+} from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   followeesByTopic,
+  hasAutoStakeMaturityOn,
   hasJoinedCommunityFund,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
@@ -354,6 +360,31 @@ export const toggleCommunityFund = async (
   }
 };
 
+export const toggleAutoStakeMaturity = async (
+  neuron: NeuronInfo
+): Promise<{ success: boolean; err?: string }> => {
+  try {
+    const { neuronId } = neuron;
+
+    const identity: Identity = await getIdentityOfControllerByNeuronId(
+      neuronId
+    );
+
+    await autoStakeMaturity({
+      neuronId,
+      identity,
+      autoStake: !hasAutoStakeMaturityOn(neuron),
+    });
+
+    await getAndLoadNeuron(neuron.neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+    return { success: false, err: errorToString(err) };
+  }
+};
+
 export const mergeNeurons = async ({
   sourceNeuronId,
   targetNeuronId,
@@ -591,6 +622,30 @@ export const mergeMaturity = async ({
     });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuron(neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+}: {
+  neuronId: NeuronId;
+  percentageToStake: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityOfControllerByNeuronId(
+      neuronId
+    );
+
+    await stakeMaturityApi({ neuronId, percentageToStake, identity });
 
     await getAndLoadNeuron(neuronId);
 

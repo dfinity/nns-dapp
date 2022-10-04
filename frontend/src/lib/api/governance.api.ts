@@ -97,6 +97,37 @@ export const leaveCommunityFund = async ({
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
+export const autoStakeMaturity = async ({
+  neuronId,
+  autoStake,
+  identity,
+}: {
+  neuronId: NeuronId;
+  autoStake: boolean;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) call...`
+  );
+
+  const {
+    canister: { autoStakeMaturity: autoStakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) complete.`
+  );
+};
+
 export const disburse = async ({
   neuronId,
   toAccountId,
@@ -131,6 +162,26 @@ export const mergeMaturity = async ({
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
 };
 
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+  identity,
+}: {
+  neuronId: NeuronId;
+  percentageToStake: number;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) call...`);
+
+  const {
+    canister: { stakeMaturity: stakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await stakeMaturityApi({ neuronId, percentageToStake });
+
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
+};
+
 export const spawnNeuron = async ({
   neuronId,
   percentageToSpawn,
@@ -141,14 +192,14 @@ export const spawnNeuron = async ({
   percentageToSpawn?: number;
   identity: Identity;
 }): Promise<NeuronId> => {
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
   const newNeuronId = await canister.spawnNeuron({
     neuronId,
     percentageToSpawn,
   });
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) complete.`);
   return newNeuronId;
 };
 
