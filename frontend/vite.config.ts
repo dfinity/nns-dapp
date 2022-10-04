@@ -1,5 +1,4 @@
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
-import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
@@ -13,16 +12,11 @@ const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
     target: "es2020",
-    // Polyfill buffer for production build
-    rollupOptions: {
-      plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
-    },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
   },
-  // Polyfill buffer for development build
-  // Thanks solution shared by chovyfu on the Discord channel.
+  // Polyfill buffer. Thanks solution shared by chovyfu on the Discord channel.
   // https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
   optimizeDeps: {
     esbuildOptions: {
