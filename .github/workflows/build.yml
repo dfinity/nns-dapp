@@ -161,6 +161,7 @@ jobs:
         working-directory: e2e-tests
         run: |
           npm ci
+          npm install "chromedriver@$(google-chrome --version | sed -E 's/.*\s([0-9]+).*/\1/g')"
 
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
