@@ -11,6 +11,7 @@ import {
 } from "../../../lib/constants/icp.constants";
 import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
 import * as services from "../../../lib/services/neurons.services";
+import { toggleAutoStakeMaturity } from "../../../lib/services/neurons.services";
 import * as busyStore from "../../../lib/stores/busy.store";
 import {
   definedNeuronsStore,
@@ -139,6 +140,10 @@ describe("neurons-services", () => {
 
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyAutoStakeMaturity = jest
+    .spyOn(api, "autoStakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spyLeaveCommunityFund = jest
@@ -424,6 +429,81 @@ describe("neurons-services", () => {
       expect(toastsShow).toHaveBeenCalled();
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("toggleAutoStakeMaturity", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+    });
+
+    const buildNeuron = (autoStakeMaturity: boolean | undefined) => ({
+      ...controlledNeuron,
+      fullNeuron: {
+        ...controlledNeuron.fullNeuron,
+        autoStakeMaturity,
+      },
+    });
+
+    it("should toggle auto stake maturity if not yet defined", async () => {
+      const neuron = buildNeuron(undefined);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: true,
+        identity: testIdentity,
+      });
+    });
+
+    it("should toggle auto stake maturity if currently set to false", async () => {
+      const neuron = buildNeuron(undefined);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: true,
+        identity: testIdentity,
+      });
+    });
+
+    it("should disable auto stake maturity if already on", async () => {
+      const neuron = buildNeuron(true);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: false,
+        identity: testIdentity,
+      });
+    });
+
+    it("should not toggle auto stake maturity for neuron if no identity", async () => {
+      const neuron = buildNeuron(true);
+      setNoIdentity();
+
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
+
+      resetIdentity();
+    });
+
+    it("should not toggle auto stake maturity if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await toggleAutoStakeMaturity(notControlledNeuron);
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
 

@@ -475,6 +475,11 @@ interface I18nNeuron_detail {
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
+  auto_stake_maturity: string;
+  auto_stake_maturity_on: string;
+  auto_stake_maturity_off: string;
+  auto_stake_maturity_on_success: string;
+  auto_stake_maturity_off_success: string;
   community_fund_more_info: string;
   maturity_title: string;
   merge_maturity: string;

@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
+  autoStakeMaturity,
   claimOrRefreshNeuron,
   disburse as disburseApi,
   increaseDissolveDelay,
@@ -52,11 +53,15 @@ import {
   isAccountHardwareWallet,
 } from "../utils/accounts.utils";
 import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
+import {
+  errorToString,
+  mapNeuronErrorToToastMessage,
+} from "../utils/error.utils";
 import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   followeesByTopic,
+  hasAutoStakeMaturityOn,
   hasJoinedCommunityFund,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
@@ -352,6 +357,31 @@ export const toggleCommunityFund = async (
 
     // To inform there was an error
     return undefined;
+  }
+};
+
+export const toggleAutoStakeMaturity = async (
+  neuron: NeuronInfo
+): Promise<{ success: boolean; err?: string }> => {
+  try {
+    const { neuronId } = neuron;
+
+    const identity: Identity = await getIdentityOfControllerByNeuronId(
+      neuronId
+    );
+
+    await autoStakeMaturity({
+      neuronId,
+      identity,
+      autoStake: !hasAutoStakeMaturityOn(neuron),
+    });
+
+    await getAndLoadNeuron(neuron.neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+    return { success: false, err: errorToString(err) };
   }
 };
 
