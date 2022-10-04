@@ -44,6 +44,9 @@
     neuron,
     identity: $authStore.identity,
   });
+
+  // Note about replacePlaceholders and $st4kedMaturity
+  // TODO: placeholders cannot contain ath the moment other placeholders keys - e.g. $stakedMaturity contains $stake would lead to replace errors therefore a distinctive selector $st4kedMaturity
 </script>
 
 <NeuronCard {neuron} cardType="info">

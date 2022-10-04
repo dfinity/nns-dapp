@@ -167,6 +167,10 @@ export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
 export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.maturityE8sEquivalent);
 
+/**
+ * Format the staked maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `stakedMaturityE8sEquivalent` that will be formatted if a `fullNeuron` is available
+ */
 export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
