@@ -129,7 +129,7 @@ export const detachCanister = async ({
   logWithTimestamp("Detaching canister call complete.");
 };
 
-const pollingLimit = (error: Error): boolean =>
+const pollingLimit = (error: unknown): boolean =>
   error instanceof PollingLimitExceededError;
 const notProcessingError = (error: Error): boolean =>
   !(error instanceof ProcessingError);
@@ -154,7 +154,7 @@ const pollNotifyCreateCanister = async ({
         }),
       shouldExit: notProcessingError,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_creating_canister");
     }
@@ -212,7 +212,7 @@ export const createCanister = async ({
       name: name ?? "",
       canisterId,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // If the background task finishes earlier, we might get CanisterAlreadyAttachedError.
     // Which can be safely ignored.
     if (!(error instanceof CanisterAlreadyAttachedError)) {
@@ -245,7 +245,7 @@ const pollNotifyTopUpCanister = async ({
         }),
       shouldExit: notProcessingError,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_topping_up_canister.");
     }

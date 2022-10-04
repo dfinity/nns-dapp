@@ -240,7 +240,7 @@ export const poll = async <T>({
   }
   try {
     return await fn();
-  } catch (error) {
+  } catch (error: unknown) {
     if (shouldExit(error)) {
       throw error;
     }

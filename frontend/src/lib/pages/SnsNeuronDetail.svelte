@@ -72,7 +72,7 @@
     let rootCanisterId: Principal | undefined;
     try {
       rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
-    } catch (error) {
+    } catch (error: unknown) {
       toastsError({
         labelKey: "error__sns.invalid_root_canister_id",
         substitutions: {

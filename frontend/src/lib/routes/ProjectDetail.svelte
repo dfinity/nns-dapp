@@ -96,7 +96,7 @@
       if (rootCanisterId !== undefined) {
         Principal.fromText(rootCanisterId);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       // set values as not found
       $projectDetailStore.summary = undefined;
       $projectDetailStore.swapCommitment = undefined;

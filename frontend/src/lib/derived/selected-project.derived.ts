@@ -16,7 +16,7 @@ export const snsProjectSelectedStore = derived([routeStore], ([{ path }]) => {
   if (maybeContextId !== undefined) {
     try {
       return Principal.fromText(maybeContextId);
-    } catch (error) {
+    } catch (error: unknown) {
       // Add execeptions, maybe bitcoin wallet?
     }
   }

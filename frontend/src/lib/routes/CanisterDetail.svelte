@@ -100,7 +100,7 @@
         controller: true,
         details: newDetails,
       }));
-    } catch (error) {
+    } catch (error: unknown) {
       const userNotController = error instanceof UserNotTheControllerError;
       // Show an error if the error is not expected.
       if (!userNotController) {

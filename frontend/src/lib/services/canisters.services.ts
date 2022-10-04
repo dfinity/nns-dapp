@@ -88,7 +88,7 @@ export const createCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return canisterId;
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
@@ -123,7 +123,7 @@ export const topUpCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
     );
@@ -200,7 +200,7 @@ export const updateSettings = async ({
       settings,
     });
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_update_settings")
     );

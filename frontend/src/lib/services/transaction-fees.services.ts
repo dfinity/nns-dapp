@@ -7,7 +7,7 @@ export const loadMainTransactionFee = async () => {
     const identity = await getIdentity();
     const fee = await transactionFee({ identity });
     transactionsFeesStore.setMain(fee);
-  } catch (error) {
+  } catch (error: unknown) {
     // Swallow error and continue with the DEFAULT_TRANSACTION_FEE value
     console.error("Error getting the transaction fee from the ledger");
     console.error(error);

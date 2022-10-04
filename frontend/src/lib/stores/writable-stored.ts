@@ -24,7 +24,7 @@ export const writableStored = <T>({
       ) {
         return JSON.parse(storedValue) as T;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
     }
     return defaultValue;
@@ -36,7 +36,7 @@ export const writableStored = <T>({
     // Do not break UI if local storage fails
     try {
       localStorage.setItem(key, JSON.stringify(store));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
     }
   });

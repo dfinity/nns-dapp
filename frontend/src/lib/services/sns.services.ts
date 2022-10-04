@@ -281,7 +281,7 @@ export const participateInSwap = async ({
         fromSubAccount:
           "subAccount" in account ? account.subAccount : undefined,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.
       // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
@@ -302,7 +302,7 @@ export const participateInSwap = async ({
     await syncAccounts();
 
     return { success };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsError(
       toToastError({
         err: error,

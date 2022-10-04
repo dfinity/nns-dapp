@@ -68,7 +68,7 @@
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
       errorMessage = undefined;
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
       }

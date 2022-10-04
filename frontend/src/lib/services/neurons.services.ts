@@ -883,7 +883,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
       labelKey: "neuron_detail.dummy_proposal_success",
     });
     return;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
   }

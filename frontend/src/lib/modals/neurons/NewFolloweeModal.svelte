@@ -65,7 +65,7 @@
 
     try {
       followee = BigInt(followeeAddress);
-    } catch (error) {
+    } catch (error: unknown) {
       // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
       alert(`Incorrect followee address ${followeeAddress}`);
       return;

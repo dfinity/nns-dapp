@@ -68,7 +68,7 @@ export const claimSeedNeurons = async () => {
         $neurons: ids.map((id) => id.toString()).join(", "),
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const toastError = mapNeuronErrorToToastMessage(error);
     toastsShow(toastError);
     const message = translate({ labelKey: toastError.labelKey });
