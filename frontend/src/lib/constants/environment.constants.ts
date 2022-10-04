@@ -1,7 +1,6 @@
 export const DFX_NETWORK: string = import.meta.env.VITE_DFX_NETWORK;
 export const HOST: string = import.meta.env.VITE_HOST as string;
-export const ROLLUP_WATCH: boolean =
-  import.meta.env.VITE_ROLLUP_WATCH === "true";
+export const DEV: boolean = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean =
   import.meta.env.VITE_FETCH_ROOT_KEY === "true";
 export const WASM_CANISTER_ID: string = import.meta.env.VITE_WASM_CANISTER_ID;

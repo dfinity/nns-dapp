@@ -2,8 +2,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
   import {
+    DEV,
     IS_TESTNET,
-    ROLLUP_WATCH,
   } from "$lib/constants/environment.constants";
 
   const localstorageKey: string = "nnsdapp-testnet-banner-display";
@@ -13,7 +13,7 @@
   ) as boolean;
 
   const testnet: boolean = IS_TESTNET;
-  const localEnv: boolean = ROLLUP_WATCH;
+  const localEnv: boolean = DEV;
   const banner: boolean = testnet && !localEnv;
 
   const close = () => {
