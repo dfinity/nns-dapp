@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "npm install chromedriver@$(google-chrome --version | sed -E 's/.*\s([0-9]+).*/\1/g') && wdio run ./wdio.conf.ts",
+    "test": "./scripts/update-chromedriver && wdio run ./wdio.conf.ts",
     "lint": "npx tsc --noEmit true --project . && eslint --max-warnings 0 './**/*.{js,ts}'",
     "format": "prettier --write --plugin-search-dir=. ."
   },
