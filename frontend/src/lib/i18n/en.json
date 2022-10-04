@@ -263,8 +263,8 @@
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
-    "topic_0_title": "All Topics Except Governance and SNS",
-    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic and SNS.",
+    "topic_0_title": "All Topics Except Governance, and SNS & Community Fund",
+    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic, and SNS & Community Fund.",
     "topic_1_title": "Manage Neuron",
     "topic_1_subtitle": "Proposals that manage specific neurons, for example making them perform actions.",
     "topic_2_title": "Exchange Rate",
