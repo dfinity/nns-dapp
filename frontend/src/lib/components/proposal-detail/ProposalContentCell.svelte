@@ -7,7 +7,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .content-cell-details:last-of-type {
     margin-bottom: 0;
