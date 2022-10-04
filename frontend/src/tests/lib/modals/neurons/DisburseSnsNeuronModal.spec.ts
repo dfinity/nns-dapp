@@ -39,10 +39,6 @@ describe("DisburseSnsNeuronModal", () => {
     });
   };
 
-  const spyNavigate = jest
-    .spyOn(routeStore, "replace")
-    .mockImplementation(jest.fn());
-
   beforeAll(() => {
     jest
       .spyOn(accountsStore, "subscribe")
