@@ -33,6 +33,8 @@ export const getTokens = async ({
   tokens: number;
   rootCanisterId: Principal;
 }) => {
+  // Accounts are loaded when user visits the Accounts page, so we need to load them here.
+  await loadSnsAccounts(rootCanisterId);
   const store: SnsAccountsStore = get(snsAccountsStore);
   const { accounts } = store[rootCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");

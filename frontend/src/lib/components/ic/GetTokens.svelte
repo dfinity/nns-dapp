@@ -10,6 +10,8 @@
   import { get } from "svelte/store";
   import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
   import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { ICPToken, type Token } from "@dfinity/nns";
+  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
 
   let visible: boolean = false;
   let transferring: boolean = false;
@@ -62,6 +64,9 @@
   let invalidForm: boolean;
 
   $: invalidForm = inputValue === undefined || inputValue <= 0;
+
+  let token: Token;
+  $: token = $snsTokenSymbolSelectedStore || ICPToken;
 </script>
 
 <button
@@ -71,11 +76,11 @@
   class="open"
 >
   <IconAccountBalance />
-  <span>Get ICPs</span>
+  <span>{`Get ${token.symbol}`}</span>
 </button>
 
 <Modal {visible} role="alert" on:nnsClose={onClose}>
-  <span slot="title">Get ICPs</span>
+  <span slot="title">{`Get ${token.symbol}`}</span>
 
   <form
     id="get-icp-form"
@@ -85,8 +90,8 @@
     <span class="label">How much?</span>
 
     <Input
-      placeholderLabelKey="core.icp"
-      name="icp"
+      placeholderLabelKey="core.amount"
+      name="tokens"
       inputType="icp"
       bind:value={inputValue}
       disabled={transferring}
@@ -104,7 +109,7 @@
     {#if transferring}
       <Spinner />
     {:else}
-      Get
+      Get tokens
     {/if}
   </button>
 </Modal>
