@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { markdownToSanitizedHTML } from "../../utils/html.utils";
+  import { markdownToSanitizedHTML } from "$lib/utils/html.utils";
 
   import { Spinner } from "@dfinity/gix-components";
 

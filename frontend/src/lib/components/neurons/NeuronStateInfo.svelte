@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
-  import type { StateInfo } from "../../utils/neuron.utils";
+  import type { StateInfo } from "$lib/utils/neuron.utils";
   import { NeuronState } from "@dfinity/nns";
-  import { getStateInfo } from "../../utils/neuron.utils";
+  import { getStateInfo } from "$lib/utils/neuron.utils";
 
   export let state: NeuronState;
 

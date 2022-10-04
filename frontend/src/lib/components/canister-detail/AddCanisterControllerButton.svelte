@@ -1,6 +1,6 @@
 <script lang="ts">
-  import AddControllerModal from "../../modals/canisters/AddControllerModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import AddControllerModal from "$lib/modals/canisters/AddControllerModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   let showModal: boolean = false;
   const openModal = () => (showModal = true);

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { routePath } from "../../utils/route.utils";
+  import { routePath } from "$lib/utils/route.utils";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { routeStore } from "../../stores/route.store";
-  import type { RouteStore } from "../../stores/route.store";
+  import { routeStore } from "$lib/stores/route.store";
+  import type { RouteStore } from "$lib/stores/route.store";
   import { onDestroy } from "svelte";
-  import type { AppPath } from "../../constants/routes.constants";
+  import type { AppPath } from "$lib/constants/routes.constants";
   import RouteModule from "./RouteModule.svelte";
-  import { isRoutePath } from "../../utils/app-path.utils";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
 
   export let path: AppPath;
 

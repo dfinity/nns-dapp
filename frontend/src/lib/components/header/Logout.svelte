@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { logout } from "../../services/auth.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { logout } from "$lib/services/auth.services";
   import { IconExit } from "@dfinity/gix-components";
 </script>
 

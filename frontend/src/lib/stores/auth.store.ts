@@ -4,8 +4,8 @@ import { writable } from "svelte/store";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
-} from "../constants/identity.constants";
-import { createAuthClient } from "../utils/auth.utils";
+} from "$lib/constants/identity.constants";
+import { createAuthClient } from "$lib/utils/auth.utils";
 
 export interface AuthStore {
   identity: Identity | undefined | null;

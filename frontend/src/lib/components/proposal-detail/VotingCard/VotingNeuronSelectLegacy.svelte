@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
-  import { formatVotingPower } from "../../../utils/neuron.utils";
-  import Value from "../../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import Value from "$lib/ui/Value.svelte";
   import type { ProposalInfo } from "@dfinity/nns";
   import VotingNeuronSelectList from "./VotingNeuronSelectList.svelte";
 

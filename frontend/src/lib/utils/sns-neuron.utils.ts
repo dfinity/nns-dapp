@@ -2,7 +2,7 @@ import type { Identity } from "@dfinity/agent";
 import { NeuronState } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
-import { AppPath } from "../constants/routes.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import {
   getLastPathDetail,
   getParentPathDetail,

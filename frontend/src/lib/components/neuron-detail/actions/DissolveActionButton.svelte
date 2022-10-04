@@ -1,14 +1,14 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronId } from "@dfinity/nns";
-  import ConfirmationModal from "../../../modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import {
     startDissolving,
     stopDissolving,
-  } from "../../../services/neurons.services";
-  import { stopBusy } from "../../../stores/busy.store";
-  import { i18n } from "../../../stores/i18n";
-  import { startBusyNeuron } from "../../../services/busy.services";
+  } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { startBusyNeuron } from "$lib/services/busy.services";
 
   export let neuronId: NeuronId;
   export let neuronState: NeuronState;
@@ -51,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @use "../../../themes/mixins/confirmation-modal";
+  @use "../../themes/mixins/confirmation-modal";
 
   div {
     @include confirmation-modal.wrapper;

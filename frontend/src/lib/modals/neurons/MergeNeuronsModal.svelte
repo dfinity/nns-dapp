@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import SelectNeuronsToMerge from "../../components/neurons/SelectNeuronsToMerge.svelte";
-  import ConfirmNeuronsMerge from "../../components/neurons/ConfirmNeuronsMerge.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
+  import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import {
     checkInvalidState,
     type InvalidState,
-  } from "../../utils/neuron.utils";
-  import { toastsError } from "../../stores/toasts.store";
+  } from "$lib/utils/neuron.utils";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
 
   let selectedNeurons: NeuronInfo[] | undefined;
 

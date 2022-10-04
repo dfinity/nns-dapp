@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { i18n } from "../stores/i18n";
+import { i18n } from "$lib/stores/i18n";
 
 /**
  * Translate a label key i.e. find the corresponding translation for a key.

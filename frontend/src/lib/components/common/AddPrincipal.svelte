@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { busy } from "../../stores/busy.store";
-  import PrincipalInput from "../ui/PrincipalInput.svelte";
+  import { busy } from "$lib/stores/busy.store";
+  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   export let principal: Principal | undefined = undefined;
 

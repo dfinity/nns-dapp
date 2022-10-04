@@ -9,12 +9,12 @@ import {
   queryCanisters,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
-} from "../api/canisters.api";
+} from "$lib/api/canisters.api";
 import type {
   CanisterDetails,
   CanisterSettings,
-} from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsError, toastsShow } from "../stores/toasts.store";

@@ -1,17 +1,17 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import type { SnsSummary } from "../../types/sns";
+  import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import ParticipateSwapModal from "../../modals/sns/SwapModal/ParticipateSwapModal.svelte";
+  } from "$lib/types/project-detail.context";
+  import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
-  } from "../../utils/projects.utils";
-  import { i18n } from "../../stores/i18n";
+  } from "$lib/utils/projects.utils";
+  import { i18n } from "$lib/stores/i18n";
   import Tooltip from "../ui/Tooltip.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(

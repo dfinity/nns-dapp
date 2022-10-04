@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-  import { AppPath } from "../constants/routes.constants";
+  import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import { AppPath } from "$lib/constants/routes.constants";
   import {
     getCanisterDetails,
     routePathCanisterId,
     listCanisters,
-  } from "../services/canisters.services";
-  import { i18n } from "../stores/i18n";
-  import { routeStore } from "../stores/route.store";
+  } from "$lib/services/canisters.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
   import { canistersStore } from "../stores/canisters.store";
   import { replacePlaceholders, translate } from "../utils/i18n.utils";
   import { SkeletonText } from "@dfinity/gix-components";

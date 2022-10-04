@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import Checkbox from "../../ui/Checkbox.svelte";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatVotingPower } from "../../../utils/neuron.utils";
-  import { getVotingPower } from "../../../utils/proposals.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import Checkbox from "$lib/ui/Checkbox.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { getVotingPower } from "$lib/utils/proposals.utils";
   import type { ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;

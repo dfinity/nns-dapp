@@ -2,21 +2,21 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import { ICON_SIZE_LARGE } from "../../constants/style.constants";
+  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
   import { IconClose, IconInfo, IconWarning } from "@dfinity/gix-components";
-  import { removeHotkey } from "../../services/sns-neurons.services";
-  import { authStore } from "../../stores/auth.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
+  import { removeHotkey } from "$lib/services/sns-neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
-  } from "../../types/sns-neuron-detail.context";
+  } from "$lib/types/sns-neuron-detail.context";
   import {
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
-  } from "../../utils/sns-neuron.utils";
+  } from "$lib/utils/sns-neuron.utils";
   import CardInfo from "../ui/CardInfo.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import Value from "../ui/Value.svelte";

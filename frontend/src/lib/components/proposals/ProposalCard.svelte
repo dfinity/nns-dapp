@@ -6,19 +6,19 @@
     type ProposalId,
     ProposalStatus,
   } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalMeta from "./ProposalMeta.svelte";
-  import type { Color } from "../../types/theme";
-  import Tag from "../ui/Tag.svelte";
+  import type { Color } from "$lib/types/theme";
+  import Tag from "$lib/components/ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
   // TODO(L2-965): delete property and use modern
   export let layout: "modern" | "legacy" = "legacy";
-  import Value from "../ui/Value.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
 
   let status: ProposalStatus = ProposalStatus.Unknown;

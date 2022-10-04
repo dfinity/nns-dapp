@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Account } from "../../types/account";
+  import type { Account } from "$lib/types/account";
   import { Card } from "@dfinity/gix-components";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Identifier from "../ui/Identifier.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
   import type { TokenAmount } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
 

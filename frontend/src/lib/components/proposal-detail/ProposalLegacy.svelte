@@ -4,14 +4,14 @@
   import MyVotes from "./MyVotes.svelte";
   import VotingCard from "./VotingCard/VotingCard.svelte";
   import IneligibleNeuronsCard from "./IneligibleNeuronsCard.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { getContext } from "svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../types/selected-proposal.context";
+  } from "$lib/types/selected-proposal.context";
 
   export let neuronsReady = false;
 

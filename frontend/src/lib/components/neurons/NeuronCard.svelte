@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
@@ -8,10 +8,10 @@
     isHotKeyControllable,
     isSpawning,
     neuronStake,
-  } from "../../utils/neuron.utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { authStore } from "../../stores/auth.store";
-  import type { CardType } from "../../types/card";
+  } from "$lib/utils/neuron.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import type { CardType } from "$lib/types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import { IconStackedLineChart } from "@dfinity/gix-components";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { attachCanister } from "../../services/canisters.services";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { attachCanister } from "$lib/services/canisters.services";
   import { createEventDispatcher } from "svelte";
-  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
-  import PrincipalInput from "../ui/PrincipalInput.svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   let principal: Principal | undefined;
 

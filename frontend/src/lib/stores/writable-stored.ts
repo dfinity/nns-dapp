@@ -1,5 +1,5 @@
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
-import type { storeLocalStorageKey } from "../constants/stores.constants";
+import type { storeLocalStorageKey } from "$lib/constants/stores.constants";
 
 type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;

@@ -23,21 +23,21 @@ import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
-} from "../constants/constants";
+} from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-} from "../constants/icp.constants";
+} from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
-} from "../constants/neurons.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import type { NeuronsStore } from "../stores/neurons.store";
-import type { Step } from "../stores/steps.state";
-import type { VoteRegistrationStore } from "../stores/vote-registration.store";
-import type { Account } from "../types/account";
+} from "$lib/constants/neurons.constants";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { NeuronsStore } from "$lib/stores/neurons.store";
+import type { Step } from "$lib/stores/steps.state";
+import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
+import type { Account } from "$lib/types/account";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,

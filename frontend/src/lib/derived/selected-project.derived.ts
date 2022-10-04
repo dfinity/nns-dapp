@@ -1,9 +1,9 @@
 import { Principal } from "@dfinity/principal";
 import { derived } from "svelte/store";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-import { routeStore } from "../stores/route.store";
-import { getContextFromPath } from "../utils/app-path.utils";
-import { isNnsProject } from "../utils/projects.utils";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { routeStore } from "$lib/stores/route.store";
+import { getContextFromPath } from "$lib/utils/app-path.utils";
+import { isNnsProject } from "$lib/utils/projects.utils";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "context" - e.g. display Neurons of Nns or a particular Sns

@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
-  import { VOTING_UI } from "../../../constants/environment.constants";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import VotingNeuronSelectLegacy from "./VotingNeuronSelectLegacy.svelte";
   import VotingNeuronSelectModern from "./VotingNeuronSelectModern.svelte";
-  import type { VoteRegistration } from "../../../stores/vote-registration.store";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 
   export let proposalInfo: ProposalInfo;
   export let voteRegistration: VoteRegistration | undefined = undefined;

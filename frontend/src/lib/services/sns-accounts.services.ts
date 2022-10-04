@@ -1,5 +1,5 @@
 import type { Principal } from "@dfinity/principal";
-import { getSnsAccounts } from "../api/sns-ledger.api";
+import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "../stores/sns-accounts.store";
 import { toastsError } from "../stores/toasts.store";
 import type { Account } from "../types/account";

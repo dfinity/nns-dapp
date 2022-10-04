@@ -3,7 +3,7 @@ import { derived, writable, type Readable } from "svelte/store";
 import {
   hasValidStake,
   sortNeuronsByCreatedTimestamp,
-} from "../utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
 
 export interface NeuronsStore {
   neurons?: NeuronInfo[];

@@ -1,5 +1,5 @@
 import type { Identity } from "@dfinity/agent";
-import { logWithTimestamp } from "../utils/dev.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getIdentity } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import IncreaseDissolveDelayModal from "../../../modals/neurons/IncreaseDissolveDelayModal.svelte";
-  import { i18n } from "../../../stores/i18n";
+  import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;

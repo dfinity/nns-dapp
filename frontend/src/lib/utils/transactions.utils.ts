@@ -2,8 +2,8 @@ import { ICP, ICPToken, TokenAmount } from "@dfinity/nns";
 import type {
   AccountIdentifierString,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "../types/account";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Account } from "$lib/types/account";
 import { stringifyJson } from "./utils";
 
 // Value should match the key in i18n "transaction_names"

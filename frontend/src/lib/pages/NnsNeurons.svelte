@@ -1,18 +1,18 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { authStore } from "../stores/auth.store";
-  import type { AuthStore } from "../stores/auth.store";
-  import { i18n } from "../stores/i18n";
-  import NeuronCard from "../components/neurons/NeuronCard.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import type { AuthStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { neuronsStore, sortedNeuronStore } from "../stores/neurons.store";
-  import { routeStore } from "../stores/route.store";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import Tooltip from "../components/ui/Tooltip.svelte";
-  import { isSpawning } from "../utils/neuron.utils";
-  import Value from "../components/ui/Value.svelte";
-  import { neuronPathStore } from "../derived/paths.derived";
+  import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
+  import { routeStore } from "$lib/stores/route.store";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { isSpawning } from "$lib/utils/neuron.utils";
+  import Value from "$lib/components/ui/Value.svelte";
+  import { neuronPathStore } from "$lib/derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 

@@ -6,23 +6,23 @@
   } from "@dfinity/nns";
 
   import { getContext, onDestroy } from "svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { definedNeuronsStore } from "../../../stores/neurons.store";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import CardInfo from "../../ui/CardInfo.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import CardInfo from "$lib/ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../../types/selected-proposal.context";
-  import { isProposalDeadlineInTheFuture } from "../../../utils/proposals.utils";
+  } from "$lib/types/selected-proposal.context";
+  import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
-  } from "../../../stores/vote-registration.store";
-  import { registerVotes } from "../../../services/vote-registration.services";
-  import { VOTING_UI } from "../../../constants/environment.constants";
+  } from "$lib/stores/vote-registration.store";
+  import { registerVotes } from "$lib/services/vote-registration.services";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;

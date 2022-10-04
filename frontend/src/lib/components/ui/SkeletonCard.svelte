@@ -3,7 +3,7 @@
   import CardInfo from "./CardInfo.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import type { CardType } from "../../types/card";
+  import type { CardType } from "$lib/types/card";
 
   export let size: "medium" | "large" = "medium";
   export let cardType: CardType = "card";

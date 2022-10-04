@@ -1,5 +1,5 @@
-import type { AuthStore } from "../stores/auth.store";
-import type { PostMessageEventData } from "../types/post-messages";
+import type { AuthStore } from "$lib/stores/auth.store";
+import type { PostMessageEventData } from "$lib/types/post-messages";
 import { logout } from "./auth.services";
 
 export const initWorker = async () => {

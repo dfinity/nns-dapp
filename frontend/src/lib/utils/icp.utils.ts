@@ -3,7 +3,7 @@ import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
-} from "../constants/icp.constants";
+} from "$lib/constants/icp.constants";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001

@@ -1,6 +1,6 @@
 import { GenesisTokenCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { HOST } from "../constants/environment.constants";
+import { HOST } from "$lib/constants/environment.constants";
 import type { Secp256k1PublicKey } from "../keys/secp256k1";
 import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
 import { accountsStore } from "../stores/accounts.store";

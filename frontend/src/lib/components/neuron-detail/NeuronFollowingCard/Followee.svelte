@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { Topic } from "@dfinity/nns";
-  import type { FolloweesNeuron } from "../../../utils/neuron.utils";
-  import { i18n } from "../../../stores/i18n";
-  import VotingHistoryModal from "../../../modals/neurons/VotingHistoryModal.svelte";
-  import { knownNeuronsStore } from "../../../stores/knownNeurons.store";
-  import Tag from "../../ui/Tag.svelte";
+  import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+  import Tag from "$lib/ui/Tag.svelte";
 
   export let followee: FolloweesNeuron;
 

@@ -1,19 +1,19 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { AppPath } from "../../constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { IconClose } from "@dfinity/gix-components";
-  import { getIdentity } from "../../services/auth.services";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { removeHotkey } from "../../services/neurons.services";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { authStore } from "../../stores/auth.store";
-  import { stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { toastsShow } from "../../stores/toasts.store";
-  import { isNeuronControllable } from "../../utils/neuron.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Value from "../ui/Value.svelte";
+  import { getIdentity } from "$lib/services/auth.services";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { removeHotkey } from "$lib/services/neurons.services";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { authStore } from "$lib/stores/auth.store";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { isNeuronControllable } from "$lib/utils/neuron.utils";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
 
   export let neuron: NeuronInfo;

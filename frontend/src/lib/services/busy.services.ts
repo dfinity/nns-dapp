@@ -1,8 +1,8 @@
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { accountsStore } from "../stores/accounts.store";
-import { startBusy, type BusyStateInitiatorType } from "../stores/busy.store";
-import { isNeuronControlledByHardwareWallet } from "../utils/neuron.utils";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
+import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
 import { getNeuronFromStore } from "./neurons.services";
 
 export const startBusyNeuron = ({

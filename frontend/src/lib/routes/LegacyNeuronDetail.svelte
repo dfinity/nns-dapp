@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ENABLE_SNS } from "../constants/environment.constants";
   import { AppPath } from "../constants/routes.constants";
   import NnsNeuronDetail from "../pages/NnsNeuronDetail.svelte";

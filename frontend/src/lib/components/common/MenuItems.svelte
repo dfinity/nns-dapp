@@ -8,21 +8,21 @@
     IconPsychology,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { baseHref } from "../../utils/route.utils";
-  import { isRoutePath } from "../../utils/app-path.utils";
-  import { AppPath } from "../../constants/routes.constants";
-  import { routeStore } from "../../stores/route.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { baseHref } from "$lib/utils/route.utils";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
   import {
     ENABLE_SNS,
     IS_TESTNET,
-  } from "../../constants/environment.constants";
-  import BadgeNew from "../ui/BadgeNew.svelte";
-  import GetICPs from "../ic/GetICPs.svelte";
+  } from "$lib/constants/environment.constants";
+  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
+  import GetICPs from "$lib/components/ic/GetICPs.svelte";
   import {
     accountsPathStore,
     neuronsPathStore,
-  } from "../../derived/paths.derived";
+  } from "$lib/derived/paths.derived";
 
   const baseUrl: string = baseHref();
 

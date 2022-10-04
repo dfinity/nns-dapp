@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { accountsListStore } from "../../derived/accounts-list.derived";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
+  import { accountsListStore } from "$lib/derived/accounts-list.derived";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
   import {
     getAccountFromStore,
     invalidAddress,
-  } from "../../utils/accounts.utils";
-  import Toggle from "../ui/Toggle.svelte";
+  } from "$lib/utils/accounts.utils";
+  import Toggle from "$lib/components/ui/Toggle.svelte";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
 

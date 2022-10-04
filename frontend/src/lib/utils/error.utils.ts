@@ -10,16 +10,16 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
-import { InsufficientAmountError } from "../types/common.errors";
-import { LedgerErrorMessage } from "../types/ledger.errors";
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import { InsufficientAmountError } from "$lib/types/common.errors";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import {
   CannotBeMerged,
   InvalidAmountError,
   NotAuthorizedNeuronError,
   NotFoundError,
-} from "../types/neurons.errors";
-import type { ToastMsg } from "../types/toast";
+} from "$lib/types/neurons.errors";
+import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {
@@ -38,7 +38,7 @@ export const errorToString = (err?: unknown): string | undefined => {
 
 const factoryMappingErrorToToastMessage =
   (collection: Array<[Function, string]>) =>
-  (error: Error, fallbackKey?: string): ToastMsg => {
+  (error: Error | unknown, fallbackKey?: string): ToastMsg => {
     // Check toToastError first
     const testFallbackKey = "fallback";
     const toastError = toToastError({

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import ProposalsFilters from "./ProposalsFilters.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import ProposalCard from "./ProposalCard.svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import { filteredProposals } from "../../derived/proposals.derived";
+  import { filteredProposals } from "$lib/derived/proposals.derived";
 
   export let neuronsLoaded: boolean;
   export let nothingFound: boolean;

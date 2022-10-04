@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
-  import { formatPercentage } from "../../utils/format.utils";
+  import { formattedMaturity, neuronStake } from "$lib/utils/neuron.utils";
+  import { formatPercentage } from "$lib/utils/format.utils";
   import { Card } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import { InputRange } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { valueSpan } from "../../utils/utils";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
   export let percentage: number;

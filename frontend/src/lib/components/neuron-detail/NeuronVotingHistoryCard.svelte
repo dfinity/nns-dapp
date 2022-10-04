@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import Ballots from "./Ballots/Ballots.svelte";
   import CardInfo from "../ui/CardInfo.svelte";
 

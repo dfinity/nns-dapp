@@ -3,11 +3,11 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
-  import { durationTillSwapDeadline } from "../../utils/projects.utils";
-  import { secondsToDuration } from "../../utils/date.utils";
+  } from "$lib/types/project-detail.context";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
+  import { secondsToDuration } from "$lib/utils/date.utils";
   import Value from "../ui/Value.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
 

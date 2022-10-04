@@ -1,15 +1,15 @@
 <script lang="ts">
-  import en from "../../../tests/mocks/i18n.mock";
+  import en from "$lib/tests/mocks/i18n.mock";
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
     uiProposals,
-  } from "../../derived/proposals.derived";
+  } from "$lib/derived/proposals.derived";
   import { onDestroy } from "svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   export let proposalInfo: ProposalInfo | undefined;
 

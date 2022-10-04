@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
 
   export let neuron: NeuronInfo;
 

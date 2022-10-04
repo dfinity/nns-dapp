@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import { isNeuronControllableByUser } from "../../utils/neuron.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { isNeuronControllableByUser } from "$lib/utils/neuron.utils";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
 
   export let neuron: NeuronInfo;

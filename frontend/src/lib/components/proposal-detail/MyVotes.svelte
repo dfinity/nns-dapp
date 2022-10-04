@@ -2,18 +2,18 @@
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
   import CardInfo from "../ui/CardInfo.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
     votedNeuronDetails,
     type CompactNeuronInfo,
-  } from "../../utils/neuron.utils";
+  } from "$lib/utils/neuron.utils";
   import Value from "../ui/Value.svelte";
   import type { SvelteComponent } from "svelte";
-  import { VOTING_UI } from "../../constants/environment.constants";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

@@ -12,7 +12,7 @@ import {
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
-} from "../api/sns.api";
+} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,

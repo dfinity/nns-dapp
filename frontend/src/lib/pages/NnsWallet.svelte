@@ -1,37 +1,37 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import { i18n } from "../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
-  import Footer from "../components/common/Footer.svelte";
-  import { routeStore } from "../stores/route.store";
+  import Footer from "$lib/components/common/Footer.svelte";
+  import { routeStore } from "$lib/stores/route.store";
   import {
     getAccountTransactions,
     routePathAccountIdentifier,
-  } from "../services/accounts.services";
-  import { accountsStore } from "../stores/accounts.store";
+  } from "$lib/services/accounts.services";
+  import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner } from "@dfinity/gix-components";
-  import { toastsError } from "../stores/toasts.store";
-  import { replacePlaceholders } from "../utils/i18n.utils";
-  import type { Account } from "../types/account";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
-  import WalletActions from "../components/accounts/WalletActions.svelte";
-  import WalletSummary from "../components/accounts/WalletSummary.svelte";
-  import { busy } from "../stores/busy.store";
-  import TransactionList from "../components/accounts/TransactionList.svelte";
+  import WalletActions from "$lib/components/accounts/WalletActions.svelte";
+  import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
+  import { busy } from "$lib/stores/busy.store";
+  import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
     type SelectedAccountStore,
-  } from "../types/selected-account.context";
-  import { getAccountFromStore } from "../utils/accounts.utils";
-  import { debugSelectedAccountStore } from "../stores/debug.store";
-  import { layoutBackStore } from "../stores/layout.store";
-  import IcpTransactionModal from "../modals/accounts/IcpTransactionModal.svelte";
-  import { accountsPathStore } from "../derived/paths.derived";
+  } from "$lib/types/selected-account.context";
+  import { getAccountFromStore } from "$lib/utils/accounts.utils";
+  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
+  import { layoutBackStore } from "$lib/stores/layout.store";
+  import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
+  import { accountsPathStore } from "$lib/derived/paths.derived";
   import type {
     AccountIdentifierString,
     Transaction,
-  } from "../canisters/nns-dapp/nns-dapp.types";
+  } from "$lib/canisters/nns-dapp/nns-dapp.types";
 
   const goBack = () =>
     routeStore.navigate({

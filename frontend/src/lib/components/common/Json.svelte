@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { bytesToHexString, isHash } from "../../utils/utils";
-  import { isPrincipal } from "../../utils/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { bytesToHexString, isHash } from "$lib/utils/utils";
+  import { isPrincipal } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel: number = Infinity;

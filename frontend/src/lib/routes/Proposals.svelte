@@ -3,29 +3,29 @@
   import {
     hasMatchingProposals,
     lastProposalId,
-  } from "../utils/proposals.utils";
+  } from "$lib/utils/proposals.utils";
   import {
     proposalsFiltersStore,
     proposalsStore,
-  } from "../stores/proposals.store";
+  } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { debounce } from "../utils/utils";
-  import { AppPath } from "../constants/routes.constants";
+  import { debounce } from "$lib/utils/utils";
+  import { AppPath } from "$lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
-  } from "../services/proposals.services";
-  import { toastsError } from "../stores/toasts.store";
-  import { routeStore } from "../stores/route.store";
-  import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-  import { reloadRouteData } from "../utils/navigation.utils";
-  import ProposalsLegacy from "../components/proposals/ProposalsLegacy.svelte";
-  import ProposalsModern from "../components/proposals/ProposalsModern.svelte";
-  import { VOTING_UI } from "../constants/environment.constants";
+  } from "$lib/services/proposals.services";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { routeStore } from "$lib/stores/route.store";
+  import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+  import { reloadRouteData } from "$lib/utils/navigation.utils";
+  import ProposalsLegacy from "$lib/components/proposals/ProposalsLegacy.svelte";
+  import ProposalsModern from "$lib/components/proposals/ProposalsModern.svelte";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import {
     sortedProposals,
     filteredProposals,
-  } from "../derived/proposals.derived";
+  } from "$lib/derived/proposals.derived";
 
   let loading: boolean = false;
   let hidden: boolean = false;

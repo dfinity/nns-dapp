@@ -1,18 +1,18 @@
 <script lang="ts">
   import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import {
     mapProposalInfo,
     selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { busy } from "../../../stores/busy.store";
+  } from "$lib/utils/proposals.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { busy } from "$lib/stores/busy.store";
   import { Spinner } from "@dfinity/gix-components";
-  import { sanitize } from "../../../utils/html.utils";
-  import type { VoteRegistration } from "../../../stores/vote-registration.store";
+  import { sanitize } from "$lib/utils/html.utils";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 

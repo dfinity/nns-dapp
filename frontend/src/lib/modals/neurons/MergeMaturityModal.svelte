@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formatPercentage } from "../../utils/format.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { stopBusy } from "../../stores/busy.store";
-  import { mergeMaturity } from "../../services/neurons.services";
-  import { toastsSuccess } from "../../stores/toasts.store";
+  import { formatPercentage } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { mergeMaturity } from "$lib/services/neurons.services";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
-  import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { valueSpan } from "../../utils/utils";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import SelectPercentage from "$lib/components/neuron-detail/SelectPercentage.svelte";
+  import ConfirmActionScreen from "$lib/components/ui/ConfirmActionScreen.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
 

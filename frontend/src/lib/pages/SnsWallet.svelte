@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { ENABLE_SNS } from "../constants/environment.constants";
-  import { AppPath } from "../constants/routes.constants";
-  import { routeStore } from "../stores/route.store";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {

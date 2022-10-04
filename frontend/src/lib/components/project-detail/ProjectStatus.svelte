@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
   import Tag from "../ui/Tag.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
+  } from "$lib/types/project-detail.context";
   import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(

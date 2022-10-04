@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import { stopBusy } from "../../stores/busy.store";
+  import SelectPercentage from "$lib/components/neuron-detail/SelectPercentage.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsShow } from "../../stores/toasts.store";
-  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
+  import { spawnNeuron } from "$lib/services/neurons.services";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;

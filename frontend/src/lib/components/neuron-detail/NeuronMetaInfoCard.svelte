@@ -2,10 +2,10 @@
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { IconInfo } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDate } from "../../utils/date.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDate } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
@@ -13,7 +13,7 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
-  import { authStore } from "../../stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -21,8 +21,8 @@
     isHotKeyControllable,
     isNeuronControllable,
     isNeuronControllableByUser,
-  } from "../../utils/neuron.utils";
-  import { accountsStore } from "../../stores/accounts.store";
+  } from "$lib/utils/neuron.utils";
+  import { accountsStore } from "$lib/stores/accounts.store";
   import Value from "../ui/Value.svelte";
 
   export let neuron: NeuronInfo;

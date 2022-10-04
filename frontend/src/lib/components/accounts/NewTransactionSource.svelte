@@ -1,9 +1,9 @@
 <script lang="ts">
   import SelectAccount from "./SelectAccount.svelte";
-  import type { Account } from "../../types/account";
+  import type { Account } from "$lib/types/account";
   import { getContext } from "svelte";
-  import type { TransactionContext } from "../../types/transaction.context";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { TransactionContext } from "$lib/types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "$lib/types/transaction.context";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

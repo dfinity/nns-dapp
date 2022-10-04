@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import BallotSummary from "./BallotSummary.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import { debounce } from "../../../utils/utils";
+  import { debounce } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo | undefined;
 

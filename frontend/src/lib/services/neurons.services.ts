@@ -8,7 +8,7 @@ import {
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
+import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import {
   addHotkey as addHotkeyApi,
   claimOrRefreshNeuron,
@@ -27,32 +27,32 @@ import {
   stakeNeuron as stakeNeuronApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
-} from "../api/governance.api";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { IS_TESTNET } from "../constants/environment.constants";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
-import { AppPath } from "../constants/routes.constants";
-import type { LedgerIdentity } from "../identities/ledger.identity";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { startBusy, stopBusy } from "../stores/busy.store";
-import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-import { toastsError, toastsShow, toastsSuccess } from "../stores/toasts.store";
-import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
-import type { Account } from "../types/account";
-import { InsufficientAmountError } from "../types/common.errors";
+} from "$lib/api/governance.api";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { IS_TESTNET } from "$lib/constants/environment.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+import { toastsError, toastsShow, toastsSuccess } from "$lib/stores/toasts.store";
+import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+import type { Account } from "$lib/types/account";
+import { InsufficientAmountError } from "$lib/types/common.errors";
 import {
   CannotBeMerged,
   NotAuthorizedNeuronError,
   NotFoundError,
-} from "../types/neurons.errors";
+} from "$lib/types/neurons.errors";
 import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
-} from "../utils/accounts.utils";
-import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
-import { translate } from "../utils/i18n.utils";
+} from "$lib/utils/accounts.utils";
+import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
+import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+import { translate } from "$lib/utils/i18n.utils";
 import {
   canBeMerged,
   followeesByTopic,
@@ -61,7 +61,7 @@ import {
   isHotKeyControllable,
   isIdentityController,
   userAuthorizedNeuron,
-} from "../utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,

@@ -7,10 +7,10 @@ import {
   ExtendedLedgerError,
   LEDGER_SIGNATURE_LENGTH,
   type AllLedgerError,
-} from "../constants/ledger.constants";
-import { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
+} from "$lib/constants/ledger.constants";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { i18n } from "$lib/stores/i18n";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "./i18n.utils";
 
 export const decodePublicKey = ({

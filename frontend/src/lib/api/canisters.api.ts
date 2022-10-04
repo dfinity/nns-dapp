@@ -3,27 +3,27 @@ import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { principalToSubAccount } from "@dfinity/utils";
-import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
+import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
   CanisterSettings,
-} from "../canisters/ic-management/ic-management.canister.types";
-import type { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import { CanisterAlreadyAttachedError } from "../canisters/nns-dapp/nns-dapp.errors";
+} from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { CanisterAlreadyAttachedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
-} from "../canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
-} from "../constants/api.constants";
-import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { ApiErrorKey } from "../types/api.errors";
-import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { poll, PollingLimitExceededError } from "../utils/utils";
+} from "$lib/constants/api.constants";
+import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { ApiErrorKey } from "$lib/types/api.errors";
+import { createAgent } from "$lib/utils/agent.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { poll, PollingLimitExceededError } from "$lib/utils/utils";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 

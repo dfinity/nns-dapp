@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { isNnsProjectStore } from "../derived/selected-project.derived";
-  import NnsWallet from "../pages/NnsWallet.svelte";
-  import SnsWallet from "../pages/SnsWallet.svelte";
+  import { isNnsProjectStore } from "$lib/derived/selected-project.derived";
+  import NnsWallet from "$lib/pages/NnsWallet.svelte";
+  import SnsWallet from "$lib/pages/SnsWallet.svelte";
 </script>
 
 {#if $isNnsProjectStore}

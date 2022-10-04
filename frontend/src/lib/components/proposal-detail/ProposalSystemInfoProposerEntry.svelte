@@ -1,9 +1,9 @@
 <script lang="ts">
   import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
-  import { sanitize } from "../../utils/html.utils";
-  import { i18n } from "../../stores/i18n";
+  import { sanitize } from "$lib/utils/html.utils";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
-  import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
+  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 
   export let proposer: NeuronId | undefined;
 

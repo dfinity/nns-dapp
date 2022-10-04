@@ -6,19 +6,19 @@
   import {
     SECONDS_IN_EIGHT_YEARS,
     SECONDS_IN_HALF_YEAR,
-  } from "../../constants/constants";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { formatToken } from "../../utils/icp.utils";
+  } from "$lib/constants/constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import {
     formatVotingPower,
     neuronStake,
     votingPower,
-  } from "../../utils/neuron.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+  } from "$lib/utils/neuron.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange } from "@dfinity/gix-components";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { valueSpan } from "../../utils/utils";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds: number = 0;

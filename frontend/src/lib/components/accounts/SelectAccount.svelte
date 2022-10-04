@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import AccountCard from "./AccountCard.svelte";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
 
   export let disableSelection: boolean = false;
   export let filterIdentifier: string | undefined = undefined;

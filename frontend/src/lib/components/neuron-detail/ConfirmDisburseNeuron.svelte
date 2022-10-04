@@ -1,14 +1,14 @@
 <script lang="ts">
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { disburse } from "../../services/neurons.services";
-  import { stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { toastsSuccess } from "../../stores/toasts.store";
-  import { neuronStake } from "../../utils/neuron.utils";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { disburse } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { neuronStake } from "$lib/utils/neuron.utils";
   import TransactionInfo from "../accounts/TransactionInfo.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Spinner } from "@dfinity/gix-components";

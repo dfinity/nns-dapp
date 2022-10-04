@@ -3,18 +3,18 @@
   import {
     loadProposal,
     routePathProposalId,
-  } from "../services/proposals.services";
-  import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
+  } from "$lib/services/proposals.services";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { neuronsStore } from "../stores/neurons.store";
-  import { layoutBackStore, layoutTitleStore } from "../stores/layout.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { get, writable } from "svelte/store";
   import type {
     SelectedProposalContext,
     SelectedProposalStore,
-  } from "../types/selected-proposal.context";
-  import { debugSelectedProposalStore } from "../stores/debug.store";
+  } from "$lib/types/selected-proposal.context";
+  import { debugSelectedProposalStore } from "$lib/stores/debug.store";
   import type { ProposalId } from "@dfinity/nns";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../types/selected-proposal.context";
   import { VOTING_UI } from "../constants/environment.constants";

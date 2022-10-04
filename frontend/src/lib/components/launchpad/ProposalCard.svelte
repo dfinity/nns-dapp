@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Card } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { ProposalId } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import ProposalMeta from "../proposals/ProposalMeta.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import ProposalMeta from "$lib/components/proposals/ProposalMeta.svelte";
 
   export let proposalInfo: ProposalInfo;
 

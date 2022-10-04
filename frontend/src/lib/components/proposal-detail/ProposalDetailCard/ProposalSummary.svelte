@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Proposal } from "@dfinity/nns";
-  import Markdown from "../../ui/Markdown.svelte";
+  import Markdown from "$lib/ui/Markdown.svelte";
 
   export let proposal: Proposal | undefined;
 

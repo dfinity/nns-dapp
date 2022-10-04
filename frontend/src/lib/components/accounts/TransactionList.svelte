@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { Transaction } from "../../canisters/nns-dapp/nns-dapp.types";
-  import type { Account } from "../../types/account";
-  import { i18n } from "../../stores/i18n";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import type { Account } from "$lib/types/account";
+  import { i18n } from "$lib/stores/i18n";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import TransactionCard from "./TransactionCard.svelte";
   import { getContext } from "svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-  import { mapToSelfTransaction } from "../../utils/transactions.utils";
+  } from "$lib/types/selected-account.context";
+  import { mapToSelfTransaction } from "$lib/utils/transactions.utils";
 
   export let transactions: Transaction[] | undefined;
 

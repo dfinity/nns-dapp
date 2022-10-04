@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import type { SnsSummary } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
+  import type { SnsSummary } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
@@ -9,8 +9,8 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import type { SnsSummarySwap } from "../../types/sns";
+  } from "$lib/types/project-detail.context";
+  import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(

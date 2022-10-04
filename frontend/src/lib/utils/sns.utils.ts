@@ -15,12 +15,12 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
   SnsTokenMetadata,
-} from "../types/sns";
+} from "$lib/types/sns";
 import type {
   QuerySns,
   QuerySnsMetadata,
   QuerySnsSwapState,
-} from "../types/sns.query";
+} from "$lib/types/sns.query";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
   params?: SnsParams;

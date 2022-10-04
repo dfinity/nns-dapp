@@ -1,10 +1,10 @@
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { addHotkey } from "../api/governance.api";
-import { generateDebugLogProxy } from "../proxy/debug.services.proxy";
-import { initDebugStore } from "../stores/debug.store";
-import { i18n } from "../stores/i18n";
-import { toastsError, toastsSuccess } from "../stores/toasts.store";
+import { addHotkey } from "$lib/api/governance.api";
+import { generateDebugLogProxy } from "$lib/proxy/debug.services.proxy";
+import { initDebugStore } from "$lib/stores/debug.store";
+import { i18n } from "$lib/stores/i18n";
+import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
@@ -15,11 +15,11 @@ import {
   anonymizeSnsSummary,
   anonymizeSnsSwapCommitment,
   cutAndAnonymize,
-} from "../utils/anonymize.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { enumKeys } from "../utils/enum.utils";
-import { saveToJSONFile } from "../utils/save.utils";
-import { mapPromises, stringifyJson } from "../utils/utils";
+} from "$lib/utils/anonymize.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { enumKeys } from "$lib/utils/enum.utils";
+import { saveToJSONFile } from "$lib/utils/save.utils";
+import { mapPromises, stringifyJson } from "$lib/utils/utils";
 import { getIdentity } from "./auth.services";
 import { claimSeedNeurons } from "./seed-neurons.services";
 

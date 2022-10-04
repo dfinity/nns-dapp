@@ -3,8 +3,8 @@
     SnsSummary,
     SnsSummaryMetadata,
     SnsTokenMetadata,
-  } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
+  } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
   import KeyValuePair from "../ui/KeyValuePair.svelte";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
   import Logo from "../ui/Logo.svelte";
@@ -12,8 +12,8 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import { isNullish } from "../../utils/utils";
+  } from "$lib/types/project-detail.context";
+  import { isNullish } from "$lib/utils/utils";
   import SkeletonDetails from "../ui/SkeletonDetails.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(

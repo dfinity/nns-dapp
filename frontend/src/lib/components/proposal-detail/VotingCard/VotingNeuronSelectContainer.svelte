@@ -2,7 +2,7 @@
   import VotingNeuronSelectList from "./VotingNeuronSelectList.svelte";
   import type { ProposalInfo } from "@dfinity/nns";
   import IneligibleNeuronsCard from "../IneligibleNeuronsCard.svelte";
-  import { definedNeuronsStore } from "../../../stores/neurons.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import MyVotes from "../MyVotes.svelte";
 
   export let proposalInfo: ProposalInfo;

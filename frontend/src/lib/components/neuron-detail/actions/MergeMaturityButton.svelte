@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import MergeMaturityModal from "../../../modals/neurons/MergeMaturityModal.svelte";
-  import Tooltip from "../../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatToken } from "../../../utils/icp.utils";
+  import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
+  import Tooltip from "$lib/ui/Tooltip.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import {
     hasEnoughMaturityToMerge,
     minMaturityMerge,
-  } from "../../../utils/neuron.utils";
-  import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
+  } from "$lib/utils/neuron.utils";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 

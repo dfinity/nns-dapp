@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
-  import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
-  import { i18n } from "../../stores/i18n";
-  import { isNode } from "../../utils/dev.utils";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { isNode } from "$lib/utils/dev.utils";
 
   export let path: AppPath;
 

@@ -1,20 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../../modals/FooterModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import type { Account } from "../../../types/account";
-  import { InvalidAmountError } from "../../../types/neurons.errors";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { InvalidAmountError } from "$lib/types/neurons.errors";
   import {
     assertEnoughAccountFunds,
     invalidAddress,
     isAccountHardwareWallet,
-  } from "../../../utils/accounts.utils";
-  import { getMaxTransactionAmount } from "../../../utils/icp.utils";
-  import SelectAccountDropdown from "../../../components/accounts/SelectAccountDropdown.svelte";
-  import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
-  import AmountInput from "../../../components/ui/AmountInput.svelte";
-  import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import SelectDestinationAddress from "../../../components/accounts/SelectDestinationAddress.svelte";
+  } from "$lib/utils/accounts.utils";
+  import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
+  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
 
   // Tested in the TransactionModal

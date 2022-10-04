@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { ProposalId } from "@dfinity/nns";
-  import Json from "../../common/Json.svelte";
-  import { loadProposalPayload } from "../../../services/proposals.services";
+  import Json from "$lib/common/Json.svelte";
+  import { loadProposalPayload } from "$lib/services/proposals.services";
   import { Spinner } from "@dfinity/gix-components";
-  import { i18n } from "../../../stores/i18n";
-  import { proposalPayloadsStore } from "../../../stores/proposals.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 
   export let proposalId: ProposalId;
   export let nnsFunctionKey: string;

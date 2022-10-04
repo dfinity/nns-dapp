@@ -1,10 +1,10 @@
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
-import type { SnsSummary, SnsSwapCommitment } from "../types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
-} from "../utils/projects.utils";
+} from "$lib/utils/projects.utils";
 import { snsSummariesStore, snsSwapCommitmentsStore } from "./sns.store";
 
 // ************** Sns full project - all information **************

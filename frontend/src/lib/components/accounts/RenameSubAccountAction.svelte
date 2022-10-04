@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import { i18n } from "../../stores/i18n";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
-  import { renameSubAccount } from "../../services/accounts.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import type { Account } from "../../types/account";
+  import { renameSubAccount } from "$lib/services/accounts.services";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import type { Account } from "$lib/types/account";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  } from "$lib/types/selected-account.context";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY

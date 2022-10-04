@@ -3,7 +3,7 @@
  */
 
 import { derived } from "svelte/store";
-import { accountsStore } from "../stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
 
 export const accountsListStore = derived(
   accountsStore,

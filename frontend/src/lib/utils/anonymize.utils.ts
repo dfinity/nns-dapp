@@ -11,15 +11,15 @@ import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
 import type {
   CanisterDetails,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "../types/account";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Account } from "$lib/types/account";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
   SnsTokenMetadata,
-} from "../types/sns";
+} from "$lib/types/sns";
 import { digestText } from "./dev.utils";
 import { mapTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";

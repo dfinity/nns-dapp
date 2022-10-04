@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { loadProposal } from "../../../services/proposals.services";
+  import { loadProposal } from "$lib/services/proposals.services";
   import { Vote } from "@dfinity/nns";
-  import { i18n } from "../../../stores/i18n";
-  import ProposalSummary from "../../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import ProposalSummary from "$lib/proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
 
   export let ballot: Required<BallotInfo>;

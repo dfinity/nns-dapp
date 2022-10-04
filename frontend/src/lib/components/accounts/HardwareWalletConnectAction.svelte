@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { LedgerConnectionState } from "$lib/constants/ledger.constants";
   import { Spinner } from "@dfinity/gix-components";
-  import type { LedgerIdentity } from "../../identities/ledger.identity";
+  import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
-  import { connectToHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
+  import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 
   export let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;

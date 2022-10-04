@@ -1,22 +1,22 @@
 <script lang="ts">
-  import ConfirmationModal from "../ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { addHotkeyForHardwareWalletNeuron } from "../../services/neurons.services";
-  import type { Account } from "../../types/account";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { addHotkeyForHardwareWalletNeuron } from "$lib/services/neurons.services";
+  import type { Account } from "$lib/types/account";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronInfo,
     type HardwareWalletNeuronsContext,
-  } from "../../types/hardware-wallet-neurons.context";
-  import { toastsError } from "../../stores/toasts.store";
+  } from "$lib/types/hardware-wallet-neurons.context";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../types/selected-account.context";
+  } from "$lib/types/selected-account.context";
 
   export let neuronId: NeuronId;
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { translate } from "../../utils/i18n.utils";
+  import { translate } from "$lib/utils/i18n.utils";
   import { Input } from "@dfinity/gix-components";
 
   export let name: string;

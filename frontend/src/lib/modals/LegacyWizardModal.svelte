@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { StepsState } from "../stores/steps.state";
-  import type { Steps, Step } from "../stores/steps.state";
+  import { StepsState } from "$lib/stores/steps.state";
+  import type { Steps, Step } from "$lib/stores/steps.state";
   import LegacyModal from "./LegacyModal.svelte";
-  import Transition from "../components/ui/Transition.svelte";
+  import Transition from "$lib/components/ui/Transition.svelte";
 
   export let steps: Steps;
 

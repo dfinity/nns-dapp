@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { busy } from "../../stores/busy.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { busy } from "$lib/stores/busy.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const dispatcher = createEventDispatcher();
   const confirm = async () => {

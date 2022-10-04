@@ -9,15 +9,15 @@ import type {
   SnsWrapper,
 } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import type { SnsSwapCommitment } from "../types/sns";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
   QuerySnsMetadata,
   QuerySnsSwapState,
-} from "../types/sns.query";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { getSwapCanisterAccount } from "../utils/sns.utils";
+} from "$lib/types/sns.query";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 import { wrapper, wrappers } from "./sns-wrapper.api";

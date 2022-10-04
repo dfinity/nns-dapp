@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import CardInfo from "../ui/CardInfo.svelte";
-  import { i18n } from "../../stores/i18n";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { formatNumber } from "../../utils/format.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { formatNumber } from "$lib/utils/format.utils";
   import type { SvelteComponent } from "svelte";
-  import { VOTING_UI } from "../../constants/environment.constants";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

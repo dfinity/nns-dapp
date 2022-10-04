@@ -1,18 +1,18 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { TransactionContext } from "../../types/transaction.context";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import { i18n } from "$lib/stores/i18n";
+  import type { TransactionContext } from "$lib/types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "$lib/types/transaction.context";
   import CurrentBalance from "./CurrentBalance.svelte";
-  import AmountInput from "../ui/AmountInput.svelte";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { toastsError } from "../../stores/toasts.store";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { toastsError } from "$lib/stores/toasts.store";
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { getMaxTransactionAmount } from "../../utils/icp.utils";
-  import { isValidInputAmount } from "../../utils/neuron.utils";
-  import { transactionsFeesStore } from "../../stores/transaction-fees.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
+  import { isValidInputAmount } from "$lib/utils/neuron.utils";
+  import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

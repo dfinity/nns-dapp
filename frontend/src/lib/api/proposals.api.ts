@@ -7,12 +7,12 @@ import type {
   Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister, Topic } from "@dfinity/nns";
-import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
-import { HOST } from "../constants/environment.constants";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import { createAgent } from "../utils/agent.utils";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { enumsExclude } from "../utils/enum.utils";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
+import { HOST } from "$lib/constants/environment.constants";
+import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import { createAgent } from "$lib/utils/agent.utils";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import { enumsExclude } from "$lib/utils/enum.utils";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({

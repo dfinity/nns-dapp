@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "../constants/environment.constants";
-  import NnsNeurons from "../pages/NnsNeurons.svelte";
-  import SnsNeurons from "../pages/SnsNeurons.svelte";
-  import NnsNeuronsFooter from "../components/neurons/NnsNeuronsFooter.svelte";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
+  import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+  import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
   import {
     isNnsProjectStore,
     snsProjectSelectedStore,
-  } from "../derived/selected-project.derived";
+  } from "$lib/derived/selected-project.derived";
   import { onMount } from "svelte";
-  import { routeStore } from "../stores/route.store";
-  import { isRoutePath } from "../utils/app-path.utils";
-  import { AppPath } from "../constants/routes.constants";
-  import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-  import SelectProjectDropdownHeader from "../components/ic/SelectProjectDropdownHeader.svelte";
+  import { routeStore } from "$lib/stores/route.store";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {

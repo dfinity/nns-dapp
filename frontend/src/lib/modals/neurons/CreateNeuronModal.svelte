@@ -1,21 +1,21 @@
 <script lang="ts">
   // TODO: Rename file
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
-  import StakeNeuron from "../../components/neurons/StakeNeuron.svelte";
-  import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+  import StakeNeuron from "$lib/components/neurons/StakeNeuron.svelte";
+  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
-  import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
-  import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import { stepIndex } from "../../utils/step.utils";
+  import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
+  import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import { stepIndex } from "$lib/utils/step.utils";
   import { createEventDispatcher, tick } from "svelte";
-  import { toastsError, toastsShow } from "../../stores/toasts.store";
-  import AddUserToHotkeys from "../../components/neurons/AddUserToHotkeys.svelte";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+  import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
 
   const lastSteps: Steps = [
     {

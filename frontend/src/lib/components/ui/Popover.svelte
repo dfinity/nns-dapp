@@ -2,8 +2,8 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
-  import { i18n } from "../../stores/i18n";
-  import { debounce } from "../../utils/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { debounce } from "$lib/utils/utils";
   import { Backdrop, IconClose } from "@dfinity/gix-components";
 
   export let anchor: HTMLElement | undefined = undefined;

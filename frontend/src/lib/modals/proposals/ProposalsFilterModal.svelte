@@ -4,17 +4,17 @@
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
-  } from "../../types/proposals";
-  import Checkbox from "../../components/ui/Checkbox.svelte";
-  import { i18n } from "../../stores/i18n";
-  import { enumValues } from "../../utils/enum.utils";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
+  } from "$lib/types/proposals";
+  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { enumValues } from "$lib/utils/enum.utils";
+  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import type {
     ProposalRewardStatus,
     ProposalStatus,
     Topic,
   } from "@dfinity/nns";
-  import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "../../types/proposals";
+  import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 
   export let props: ProposalsFilterModalProps | undefined;
 

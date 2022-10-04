@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { isNnsProjectStore } from "../derived/selected-project.derived";
-  import NnsNeuronDetail from "../pages/NnsNeuronDetail.svelte";
-  import SnsNeuronDetail from "../pages/SnsNeuronDetail.svelte";
+  import { isNnsProjectStore } from "$lib/derived/selected-project.derived";
+  import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+  import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 </script>
 
 {#if $isNnsProjectStore}

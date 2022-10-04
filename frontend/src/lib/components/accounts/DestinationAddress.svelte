@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { emptyAddress } from "../../utils/accounts.utils";
-  import type { Account } from "../../types/account";
+  import { emptyAddress } from "$lib/utils/accounts.utils";
+  import type { Account } from "$lib/types/account";
   import Address from "./Address.svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import { createEventDispatcher, onMount } from "svelte";

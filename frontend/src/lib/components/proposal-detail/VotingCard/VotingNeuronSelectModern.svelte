@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import Collapsible from "../../ui/Collapsible.svelte";
+  import Collapsible from "$lib/ui/Collapsible.svelte";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
-  import Value from "../../ui/Value.svelte";
-  import { formatVotingPower } from "../../../utils/neuron.utils";
+  import Value from "$lib/ui/Value.svelte";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
 
   export let proposalInfo: ProposalInfo;
   export let disabled: boolean;

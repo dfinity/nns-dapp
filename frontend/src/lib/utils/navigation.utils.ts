@@ -1,4 +1,4 @@
-import type { AppPath } from "../constants/routes.constants";
+import type { AppPath } from "$lib/constants/routes.constants";
 import { isRoutePath } from "./app-path.utils";
 import { isArrayEmpty } from "./utils";
 

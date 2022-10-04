@@ -1,11 +1,11 @@
 <script lang="ts">
-  import LegacyWizardModal from "../../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../../stores/steps.state";
-  import type { Account } from "../../../types/account";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import type { Account } from "$lib/types/account";
   import TransactionForm from "./TransactionForm.svelte";
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
-  import { mainTransactionFeeStoreAsToken } from "../../../derived/main-transaction-fee.derived";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;

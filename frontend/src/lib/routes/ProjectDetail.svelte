@@ -1,29 +1,29 @@
 <script lang="ts">
   import { onDestroy, onMount, setContext } from "svelte";
-  import ProjectInfoSection from "../components/project-detail/ProjectInfoSection.svelte";
-  import ProjectStatusSection from "../components/project-detail/ProjectStatusSection.svelte";
-  import { IS_TESTNET } from "../constants/environment.constants";
-  import { AppPath } from "../constants/routes.constants";
-  import { routeStore } from "../stores/route.store";
-  import { layoutBackStore, layoutTitleStore } from "../stores/layout.store";
+  import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
+  import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
     routePathRootCanisterId,
-  } from "../services/sns.services";
-  import { isRoutePath } from "../utils/app-path.utils";
-  import { snsSwapCommitmentsStore } from "../stores/sns.store";
+  } from "$lib/services/sns.services";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
+  import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
     type ProjectDetailStore,
-  } from "../types/project-detail.context";
-  import { isNullish } from "../utils/utils";
+  } from "$lib/types/project-detail.context";
+  import { isNullish } from "$lib/utils/utils";
   import { writable } from "svelte/store";
-  import { snsSummariesStore } from "../stores/sns.store";
+  import { snsSummariesStore } from "$lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
-  import { toastsError } from "../stores/toasts.store";
-  import { debugSelectedProjectStore } from "../stores/debug.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { debugSelectedProjectStore } from "$lib/stores/debug.store";
 
   onMount(() => {
     if (!IS_TESTNET) {

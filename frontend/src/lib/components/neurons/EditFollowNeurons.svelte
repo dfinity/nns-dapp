@@ -2,10 +2,10 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import type { Topic } from "@dfinity/nns";
   import FollowTopicSection from "./FollowTopicSection.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
-  import { listKnownNeurons } from "../../services/knownNeurons.services";
-  import { topicsToFollow } from "../../utils/neuron.utils";
+  import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+  import { topicsToFollow } from "$lib/utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 

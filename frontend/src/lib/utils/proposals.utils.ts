@@ -16,11 +16,11 @@ import {
   Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { PROPOSAL_COLOR } from "../constants/proposals.constants";
-import { i18n } from "../stores/i18n";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import type { VoteRegistration } from "../stores/vote-registration.store";
-import type { Color } from "../types/theme";
+import { PROPOSAL_COLOR } from "$lib/constants/proposals.constants";
+import { i18n } from "$lib/stores/i18n";
+import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { Color } from "$lib/types/theme";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";

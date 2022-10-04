@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Proposal } from "@dfinity/nns";
-  import CardBlock from "../../ui/CardBlock.svelte";
-  import { i18n } from "../../../stores/i18n";
+  import CardBlock from "$lib/ui/CardBlock.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import ProposalSummary from "./ProposalSummary.svelte";
 
   export let proposal: Proposal | undefined;

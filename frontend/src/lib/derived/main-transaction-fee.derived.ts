@@ -1,6 +1,6 @@
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { derived } from "svelte/store";
-import { transactionsFeesStore } from "../stores/transaction-fees.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 
 export const mainTransactionFeeStoreAsToken = derived(
   transactionsFeesStore,

@@ -1,17 +1,17 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { IconInfo } from "@dfinity/gix-components";
-  import { authStore } from "../../stores/auth.store";
-  import { i18n } from "../../stores/i18n";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import {
     formattedMaturity,
     isNeuronControllable,
-  } from "../../utils/neuron.utils";
-  import { accountsStore } from "../../stores/accounts.store";
+  } from "$lib/utils/neuron.utils";
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;

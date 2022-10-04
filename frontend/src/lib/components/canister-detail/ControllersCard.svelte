@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import { i18n } from "../../stores/i18n";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { i18n } from "$lib/stores/i18n";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
+  } from "$lib/types/canister-detail.context";
   import CardInfo from "../ui/CardInfo.svelte";
   import Value from "../ui/Value.svelte";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";

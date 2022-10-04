@@ -4,8 +4,8 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_MINUTE,
   SECONDS_IN_YEAR,
-} from "../constants/constants";
-import { i18n } from "../stores/i18n";
+} from "$lib/constants/constants";
+import { i18n } from "$lib/stores/i18n";
 
 type LabelKey = "year" | "day" | "hour" | "minute" | "second";
 type LabelInfo = {

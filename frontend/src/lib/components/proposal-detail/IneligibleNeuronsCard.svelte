@@ -1,10 +1,10 @@
 <script lang="ts">
   import { ineligibleNeurons as filterIneligibleNeurons } from "@dfinity/nns";
   import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import CardInfo from "../ui/CardInfo.svelte";
   import type { SvelteComponent } from "svelte";
-  import { VOTING_UI } from "../../constants/environment.constants";
+  import { VOTING_UI } from "$lib/constants/environment.constants";
   import ContentCell from "../ui/ContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

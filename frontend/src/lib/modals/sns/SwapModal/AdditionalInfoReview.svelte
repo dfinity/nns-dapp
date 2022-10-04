@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Checkbox from "../../../components/ui/Checkbox.svelte";
-  import { ICON_SIZE_LARGE } from "../../../constants/style.constants";
+  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
   import { IconWarning } from "@dfinity/gix-components";
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   export let accepted: boolean = false;
   const toggelAccept = () => (accepted = !accepted);

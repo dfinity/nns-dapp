@@ -2,9 +2,9 @@
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../stores/i18n";
-  import { busy } from "../stores/busy.store";
-  import { triggerDebugReport } from "../services/debug.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { busy } from "$lib/stores/busy.store";
+  import { triggerDebugReport } from "$lib/services/debug.services";
   import { Backdrop, IconBackIosNew, IconClose } from "@dfinity/gix-components";
 
   export let visible: boolean = true;

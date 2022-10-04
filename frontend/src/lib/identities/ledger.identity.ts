@@ -12,16 +12,16 @@ import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
 import LedgerApp, { type ResponseSign } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
-import { LEDGER_DEFAULT_DERIVE_PATH } from "../constants/ledger.constants";
-import type { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
+import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
+import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { i18n } from "$lib/stores/i18n";
 import {
   LedgerErrorKey,
   LedgerErrorMessage,
   type LedgerHQTransportError,
-} from "../types/ledger.errors";
-import { replacePlaceholders } from "../utils/i18n.utils";
-import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
+} from "$lib/types/ledger.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq
 

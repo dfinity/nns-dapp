@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDate } from "../../utils/date.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDate } from "$lib/utils/date.utils";
   import Value from "../ui/Value.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
-  } from "../../types/sns-neuron-detail.context";
+  } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
 
   const { store }: SelectedSnsNeuronContext =

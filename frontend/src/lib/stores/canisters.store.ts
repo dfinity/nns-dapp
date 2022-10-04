@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 
 export interface CanistersStore {
   canisters: CanisterInfo[] | undefined;

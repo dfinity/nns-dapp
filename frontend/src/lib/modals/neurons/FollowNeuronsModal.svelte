@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
-  import { i18n } from "../../stores/i18n";
-  import LegacyModal from "../LegacyModal.svelte";
+  import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
 
   export let neuron: NeuronInfo;
 </script>
@@ -15,7 +15,7 @@
 </LegacyModal>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
+  @use "../../../themes/mixins/modal";
 
   section {
     @include modal.section;

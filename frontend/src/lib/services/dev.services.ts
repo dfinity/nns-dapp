@@ -1,8 +1,8 @@
 import { get } from "svelte/store";
-import { acquireICPTs } from "../api/dev.api";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import { accountsStore } from "../stores/accounts.store";
+import { acquireICPTs } from "$lib/api/dev.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { syncAccounts } from "./accounts.services";
 
 export const getICPs = async (icps: number) => {

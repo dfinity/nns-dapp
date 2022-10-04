@@ -1,21 +1,21 @@
 <script lang="ts">
-  import Footer from "../components/common/Footer.svelte";
+  import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
-  import { i18n } from "../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
-  import { authStore } from "../stores/auth.store";
-  import { toastsError } from "../stores/toasts.store";
-  import { listCanisters } from "../services/canisters.services";
-  import { canistersStore } from "../stores/canisters.store";
-  import { AppPath } from "../constants/routes.constants";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import CanisterCard from "../components/canisters/CanisterCard.svelte";
-  import type { CanisterId } from "../canisters/nns-dapp/nns-dapp.types";
-  import { routeStore } from "../stores/route.store";
-  import CreateCanisterModal from "../modals/canisters/CreateCanisterModal.svelte";
-  import { reloadRouteData } from "../utils/navigation.utils";
-  import LinkCanisterModal from "../modals/canisters/LinkCanisterModal.svelte";
-  import Value from "../components/ui/Value.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { listCanisters } from "$lib/services/canisters.services";
+  import { canistersStore } from "$lib/stores/canisters.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
+  import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import { routeStore } from "$lib/stores/route.store";
+  import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
+  import { reloadRouteData } from "$lib/utils/navigation.utils";
+  import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
 
   const loadCanisters = async () => {
     try {

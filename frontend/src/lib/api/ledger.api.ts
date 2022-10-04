@@ -1,12 +1,12 @@
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { BlockHeight, TokenAmount } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { createAgent } from "$lib/utils/agent.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 
 /**
  * Transfer ICP between accounts.
