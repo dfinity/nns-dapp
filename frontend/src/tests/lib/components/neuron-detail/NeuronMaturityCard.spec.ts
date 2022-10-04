@@ -143,17 +143,17 @@ describe("NeuronMaturityCard", () => {
     });
 
     expect(
-        container.querySelector('input[id="auto-stake-maturity-checkbox"]')
+      container.querySelector('input[id="auto-stake-maturity-checkbox"]')
     ).not.toBeNull();
   });
 
   describe("hw", () => {
     beforeAll(() =>
-        jest
-            .spyOn(accountsStore, "subscribe")
-            .mockImplementation(
-                mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-            )
+      jest
+        .spyOn(accountsStore, "subscribe")
+        .mockImplementation(
+          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+        )
     );
 
     const propsHW = {
@@ -188,7 +188,7 @@ describe("NeuronMaturityCard", () => {
       });
 
       expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
-          en.neuron_detail.merge_maturity_tooltip
+        en.neuron_detail.merge_maturity_tooltip
       );
     });
   });
