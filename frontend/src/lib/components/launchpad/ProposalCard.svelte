@@ -21,7 +21,7 @@
     });
   };
 
-  // TODO(L2-965): delete legacy component
+  // TODO(L2-965): delete legacy components
 </script>
 
 <li>
