@@ -176,7 +176,7 @@ describe("NeuronMaturityCard", () => {
     });
 
     expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
-        en.neuron_detail.merge_maturity_tooltip
+      en.neuron_detail.merge_maturity_tooltip
     );
   });
 });
