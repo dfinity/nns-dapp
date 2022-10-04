@@ -12,6 +12,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
+    "test": "TZ=UTC jest",
     "update:next": "npm update @dfinity/nns @dfinity/sns @dfinity/cmc @dfinity/utils",
     "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/authentication @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/sns @dfinity/utils && npm i @dfinity/agent@beta @dfinity/auth-client@beta @dfinity/authentication@beta @dfinity/candid@beta @dfinity/identity@beta @dfinity/principal@beta @dfinity/nns@next @dfinity/sns@next @dfinity/utils@next",
     "update:gix": "npm update @dfinity/gix-components"
@@ -46,6 +47,7 @@
     "sass": "^1.54.5",
     "svelte": "^3.44.0",
     "svelte-check": "^2.7.1",
+    "svelte-jester": "^2.3.2",
     "svelte-preprocess": "^4.10.6",
     "svelte2tsx": "^0.5.16",
     "ts-jest": "^28.0.8",
