@@ -659,6 +659,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   sns_remove_hotkey: string;
+  sns_disburse: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;
