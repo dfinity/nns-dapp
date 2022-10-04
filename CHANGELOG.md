@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 84287
 * Upgrade nns-js, sns-js and utils-js.
 * Refactor to support multiple tokens in Accounts.
 * Extract CMC functionality to its own library cmc-js.
