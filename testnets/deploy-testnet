@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+help_text() {
+  cat <<-EOF
+	Deploy a testnet with the latest NNS and SNS canisters
+
+	Flags:
+	--network <DFX_NETWORK>
+	  The testnet network in dfx.json that is being deployed.
+	  Default: None, this is required.
+	EOF
+}
+
+dfx_network_is_valid() {
+  jq -e '.networks[env.DFX_NETWORK]' ../dfx.json >/dev/null
+}
+dfx_network_check_specified() {
+  test -n "${DFX_NETWORK:-}" || {
+    echo "ERROR: DFX_NETWORK not set.  Please use: --dfx-network <DFX_NETWORK>" >&2
+    exit 1
+  }
+}
+dfx_network_check_valid() {
+  DFX_NETWORK="$DFX_NETWORK" dfx_network_is_valid || {
+    cat <<-EOF
+
+	ERROR: No such network in dfx.json.
+	       Available networks are:
+	       $(jq -er '.networks | keys | join(" ")' ../dfx.json)
+
+	EOF
+    exit 1
+  }
+}
+
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "$arg" in
+  --help)
+    help_text
+    exit 0
+    ;;
+  --network)
+    DFX_NETWORK="$1"
+    shift 1
+    dfx_network_check_valid
+    ;;
+  *)
+    cat <<-EOF >&2
+	ERROR: Unrecognised argument: '$arg'
+	Please use --help for usage.
+	EOF
+    exit 1
+    ;;
+  esac
+done
+
+dfx_network_check_specified
+dfx_network_check_valid
+
+export DFX_NETWORK=$DFX_NETWORK
+TESTNET=$DFX_NETWORK
+IC_COMMIT=0cae81039809b9f13125b19981cb992e6b8e9657 # master Fri Sep 16
+IC_DOWNLOAD=$IC_COMMIT
+IC_DIR="$HOME"/tmp/ic/
+ND_COMMIT=7ce57b2d0c931e2911296241a3b86b501969fa95 # release Sep 14
+ND_DIR="$HOME"/tmp/nns-dapp
+
+#cd "$ND_DIR"
+dfx identity use default
+
+SHOULD_SPEAK=false
+esay() {
+  echo -- "${@}"
+  if $SHOULD_SPEAK; then
+    say "${@}"
+  fi
+}
+
+# Download and build NNS Canister using $IC_COMMIT and $ND_COMMIT (Note: does not build the nns-dapp or the II canister)
+( set -euxo pipefail
+  cd "$ND_DIR"
+  git fetch
+  git checkout "$ND_COMMIT"
+  git reset --hard "$ND_COMMIT"
+  rm -fr target/
+  IC_COMMIT=$IC_DOWNLOAD jq '.defaults.build.config.IC_COMMIT="\(env.IC_COMMIT)"' dfx.json >dfx.json.new
+  mv dfx.json.new dfx.json
+  tail dfx.json
+  ./e2e-tests/scripts/nns-canister-download --ic-commit "$IC_DOWNLOAD"
+  ./e2e-tests/scripts/nns-canister-build --ic-commit "$IC_COMMIT"
+  esay Created canisters
+) || esay fail fail fail
+
+
+# Deploy the testnet with the NNS Canisters, from within the $IC_DIR IC repo
+( set -euxo pipefail
+	cd "$IC_DIR"
+	cat <<-EOF > test-accounts.json
+	{
+	  "init_ledger_accounts":["5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"],
+	  "custom_canister_dir": "$ND_DIR/target/ic/"
+	}
+	EOF
+
+	./testnet/tools/icos_deploy.sh --git-revision "$IC_COMMIT" "$TESTNET" --ansible-args "-e @$PWD/test-accounts.json"
+	esay Deployed testnet
+	( cd testnet/env/$TESTNET/ && ./hosts --nns-nodes | awk '{printf "%s http://[%s]:8080\n", $1, $2}' ; )
+	( cd "$ND_DIR" && ./deploy.sh --delete "$DFX_NETWORK" )
+	cat <<< $(jq -S '.["nns-governance"][env.DFX_NETWORK]="rrkah-fqaaa-aaaaa-aaaaq-cai"' canister_ids.json) > canister_ids.json
+) || esay fail fail fail
+
+# Run the propose script in the current working project
+( set -euxo pipefail
+  cd $ND_DIR
+  echo "Setting the cycles exchange rate..."
+  ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK" --jfdi
+
+  esay "Set the cycles exchange rate..."
+) || esay fail fail fail
+
+( set -euxo pipefail
+  cd $ND_DIR
+  echo "Deploying II and creating nns-dapp"
+  ./deploy.sh --ii "$DFX_NETWORK"
+  # We just need to create the canister in this step. Deployment can be done later (since nn-dapp needs to know
+  # where sns-wasm is deployed)
+  dfx canister --network "$DFX_NETWORK" create nns-dapp
+  esay deployed frontends
+) || esay fail fail fail
+
+( set -euxo pipefail
+  cd $ND_DIR
+  ./deploy.sh --sns-wasm --ctl-nobuild-nns "$DFX_NETWORK"
+  esay deployed sns-wasmw
+) || esay fail fail fail
+
+( set -euxo pipefail
+    cd $ND_DIR
+  ./deploy.sh --nns-dapp "$DFX_NETWORK"
+  esay redeployed frontends
+) || esay fail fail fail
+
+(
+  cd $ND_DIR
+  jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
+)
+
+DATE=$(date +%s)
+DEPLOYMENT_REPORT_FILE="$DATE.$DFX_NETWORK.json"
+
+cat <<-EOF > $DEPLOYMENT_REPORT_FILE
+{
+  "time": "$DATE",
+  "testnet": "$DFX_NETWORK",
+  "ic_commit": "$IC_COMMIT",
+  "nns_dapp_commit": "$ND_COMMIT"
+}
+EOF
