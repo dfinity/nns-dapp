@@ -36,7 +36,9 @@
   <KeyValuePairInfo testId="maturity">
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
     <svelte:fragment slot="info"
-      >{$i18n.neuron_detail.maturity_tooltip}</svelte:fragment
+      >{controlledByHardwareWallet
+        ? $i18n.neuron_detail.merge_maturity_tooltip
+        : $i18n.neuron_detail.stake_maturity_tooltip}</svelte:fragment
     >
     <h3 slot="value">{formattedMaturity(neuron)}</h3>
   </KeyValuePairInfo>

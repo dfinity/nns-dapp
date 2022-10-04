@@ -24,6 +24,7 @@
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
   import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
+  import { sanitize } from "../../utils/html.utils";
 
   export let neuron: NeuronInfo;
 
@@ -64,19 +65,21 @@
         >
         <svelte:fragment slot="info">
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-            {replacePlaceholders($i18n.neuron_detail.voting_power_tooltip, {
-              $stake: formatToken({
-                value: neuron.fullNeuron.cachedNeuronStake,
-                detailed: true,
-              }),
-              $st4kedMaturity: formattedStakedMaturity(neuron),
-              $delayMultiplier: dissolveDelayMultiplier(
-                Number(neuron.dissolveDelaySeconds)
-              ).toFixed(2),
-              $ageMultiplier: ageMultiplier(Number(neuron.ageSeconds)).toFixed(
-                2
-              ),
-            })}
+            {@html sanitize(
+              replacePlaceholders($i18n.neuron_detail.voting_power_tooltip, {
+                $stake: formatToken({
+                  value: neuron.fullNeuron.cachedNeuronStake,
+                  detailed: true,
+                }),
+                $st4kedMaturity: formattedStakedMaturity(neuron),
+                $delayMultiplier: dissolveDelayMultiplier(
+                  Number(neuron.dissolveDelaySeconds)
+                ).toFixed(2),
+                $ageMultiplier: ageMultiplier(
+                  Number(neuron.ageSeconds)
+                ).toFixed(2),
+              })
+            )}
           {/if}
         </svelte:fragment>
       </KeyValuePairInfo>
