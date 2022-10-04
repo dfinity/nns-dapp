@@ -11,7 +11,6 @@
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
-    projectRemainingAmount,
   } from "../../../utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "../../../types/sns";
   import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
@@ -117,7 +116,7 @@
     {destinationAddress}
     disableSubmit={!accepted}
     skipHardwareWallets
-    maxAmount={projectRemainingAmount(summary)}
+    maxAmount={currentUserMaxCommitment({ summary, swapCommitment })}
   >
     <svelte:fragment slot="title"
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
