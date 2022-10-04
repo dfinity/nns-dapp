@@ -9,6 +9,7 @@ import {
   type SnsAccountsStore,
 } from "../stores/sns-accounts.store";
 import { syncAccounts } from "./accounts.services";
+import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getICPs = async (icps: number) => {
   const { main }: AccountsStore = get(accountsStore);
@@ -46,5 +47,5 @@ export const getTokens = async ({
     rootCanisterId,
   });
 
-  // TODO: Sync SNS accounts
+  await loadSnsAccounts(rootCanisterId);
 };
