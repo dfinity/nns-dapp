@@ -10,10 +10,10 @@
   } from "../../../services/sns-neurons.services";
   import { Principal } from "@dfinity/principal";
   import { snsOnlyProjectStore } from "../../../derived/selected-project.derived";
-  import { assertNonNullish } from "@dfinity/utils";
 
   export let neuronId: SnsNeuronId;
   export let neuronState: NeuronState;
+  export let reloadContext: () => Promise<void>;
 
   let isOpen: boolean = false;
 
@@ -40,6 +40,9 @@
     startBusy({ initiator: "dissolve-action" });
 
     await action({ rootCanisterId, neuronId });
+
+    await reloadContext();
+
     closeModal();
     stopBusy("dissolve-action");
   };

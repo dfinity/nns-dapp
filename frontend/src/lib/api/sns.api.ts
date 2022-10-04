@@ -417,3 +417,47 @@ export const disburse = async ({
 
   logWithTimestamp(`Disburse sns neuron complete.`);
 };
+
+export const startDissolving = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp(`Start dissolving sns neuron call...`);
+
+  const { startDissolving } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await startDissolving(neuronId);
+
+  logWithTimestamp(`Start dissolving sns neuron complete.`);
+};
+
+export const stopDissolving = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp(`Stop dissolving sns neuron call...`);
+
+  const { stopDissolving } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await stopDissolving(neuronId);
+
+  logWithTimestamp(`Stop dissolving sns neuron complete.`);
+};

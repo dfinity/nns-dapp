@@ -58,7 +58,11 @@
             {reloadContext}
           />
         {:else if neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked}
-          <DissolveSnsNeuronButton neuronId={neuron.id} {neuronState} />
+          <DissolveSnsNeuronButton
+            neuronId={neuron.id}
+            {neuronState}
+            {reloadContext}
+          />
         {/if}
       </div>
     </section>
