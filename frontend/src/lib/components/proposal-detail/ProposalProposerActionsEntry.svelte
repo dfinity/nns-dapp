@@ -14,7 +14,7 @@
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
   $: actionFields =
-    (proposal !== undefined && proposalActionFields(proposal)) || [];
+    proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>
 
 <h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">
