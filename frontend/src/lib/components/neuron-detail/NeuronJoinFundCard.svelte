@@ -40,16 +40,7 @@
   }
 
   .join {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-
-    // Changes order of the label of the JoinCommunityFundCheckbox
-    :global(label) {
-      order: 1;
-    }
-
-    // Changes padding of checkbox wrapper
+    --select-label-order: 1;
     --select-padding: var(--padding) 0;
   }
 

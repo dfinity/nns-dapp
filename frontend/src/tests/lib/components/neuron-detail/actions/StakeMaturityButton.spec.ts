@@ -33,7 +33,7 @@ describe("StakeMaturityButton", () => {
 
     await waitFor(() =>
       expect(
-        getByText(en.neuron_detail.merge_maturity_modal_title)
+        getByText(en.neuron_detail.stake_maturity_modal_title)
       ).toBeInTheDocument()
     );
   });
