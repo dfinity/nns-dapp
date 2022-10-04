@@ -443,7 +443,6 @@ interface I18nProposal_detail__vote {
   confirm_reject_headline: string;
   confirm_reject_text: string;
   vote_status: string;
-  accept_or_reject: string;
   cast_vote_neuronId: string;
   cast_vote_votingPower: string;
   vote_adopt_in_progress: string;
@@ -659,6 +658,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   sns_remove_hotkey: string;
+  sns_disburse: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;
