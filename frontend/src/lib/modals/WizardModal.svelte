@@ -23,7 +23,7 @@
 </script>
 
 <Modal on:nnsClose on:introend={() => (presented = true)}>
-  <svelte:fragment slot="title"><slot name="title" /></svelte:fragment>
+  <slot name="title" slot="title" />
 
   {#if presented}
     <Transition {transition}>
