@@ -153,6 +153,10 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
+/**
+ * Has the neuron the auto stake maturity feature turned on?
+ * @param {NeuronInfo} neuron The neuron which potential has the feature on
+ */
 export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
   fullNeuron?.autoStakeMaturity === true;
 
