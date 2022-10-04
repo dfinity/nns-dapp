@@ -24,6 +24,7 @@
   } from "../../utils/neuron.utils";
   import { accountsStore } from "../../stores/accounts.store";
   import Value from "../ui/Value.svelte";
+  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -89,7 +90,7 @@
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.Dissolved}
-          <DisburseButton {neuron} />
+          <DisburseButton {neuron} modal={DisburseNnsNeuronModal} />
         {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}
@@ -111,6 +112,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
   section {
     padding: var(--padding) 0 0 0;
     display: flex;
