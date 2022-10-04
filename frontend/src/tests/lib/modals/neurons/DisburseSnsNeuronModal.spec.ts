@@ -5,6 +5,7 @@
 import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import * as accountsApi from "../../../../lib/api/accounts.api";
 import { CONTEXT_PATH } from "../../../../lib/constants/routes.constants";
 import DisburseSnsNeuronModal from "../../../../lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import { disburse } from "../../../../lib/services/sns-neurons.services";
@@ -26,11 +27,15 @@ jest.mock("../../../../lib/services/sns-neurons.services", () => {
 
 describe("DisburseSnsNeuronModal", () => {
   const renderDisburseModal = async (
-    neuron: SnsNeuron
+    neuron: SnsNeuron,
+    reloadContext: () => Promise<void> = () => Promise.resolve()
   ): Promise<RenderResult> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
-      props: { neuron },
+      props: {
+        neuron,
+        reloadContext,
+      },
     });
   };
 
@@ -47,6 +52,12 @@ describe("DisburseSnsNeuronModal", () => {
       ...get(accountsStore),
       main: mockMainAccount,
     });
+
+    jest
+      .spyOn(accountsApi, "loadAccounts")
+      .mockImplementation(() =>
+        Promise.resolve({ main: mockMainAccount, subAccounts: [] })
+      );
   });
 
   afterAll(() => {
@@ -81,6 +92,26 @@ describe("DisburseSnsNeuronModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
     expect(disburse).toBeCalled();
-    await waitFor(() => expect(spyNavigate).toBeCalled());
+  });
+
+  it("should call reloadContext", async () => {
+    const principalString = "aaaaa-aa";
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
+    });
+    const reloadContext = jest.fn().mockResolvedValue(null);
+    const { queryByTestId } = await renderDisburseModal(
+      mockSnsNeuron,
+      reloadContext
+    );
+
+    expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
+
+    const confirmButton = queryByTestId("disburse-neuron-button");
+    expect(confirmButton).not.toBeNull();
+
+    confirmButton && (await fireEvent.click(confirmButton));
+
+    await waitFor(() => expect(reloadContext).toBeCalled());
   });
 });
