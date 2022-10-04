@@ -5,6 +5,7 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import * as api from "../../../lib/api/sns.api";
 import * as services from "../../../lib/services/sns-neurons.services";
+import { disburse } from "../../../lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "../../../lib/stores/sns-neurons.store";
 import { bytesToHexString } from "../../../lib/utils/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -208,6 +209,31 @@ describe("sns-neurons-services", () => {
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
         permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      });
+    });
+  });
+
+  describe("disburse", () => {
+    it("should call api.disburse", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+
+      const spyAdd = jest
+        .spyOn(api, "disburse")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await disburse({
+        rootCanisterId,
+        neuronId,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyAdd).toBeCalledWith({
+        neuronId,
+        identity,
+        rootCanisterId,
       });
     });
   });

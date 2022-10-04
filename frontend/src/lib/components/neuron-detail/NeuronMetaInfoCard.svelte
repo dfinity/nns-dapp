@@ -25,6 +25,7 @@
   import Value from "../ui/Value.svelte";
   import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
   import { sanitize } from "../../utils/html.utils";
+  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -92,7 +93,7 @@
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.Dissolved}
-          <DisburseButton {neuron} />
+          <DisburseButton {neuron} modal={DisburseNnsNeuronModal} />
         {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}
