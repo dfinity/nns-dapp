@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
