@@ -2,6 +2,20 @@ import { IdbStorage, type AuthClient } from "@dfinity/auth-client";
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
 import { createAuthClient } from "../utils/auth.utils";
+import type {PostMessageEventData} from "../types/post-messages";
+
+onmessage = ({ data }: MessageEvent<PostMessageEventData>) => {
+  const { msg } = data;
+
+  switch (msg) {
+    case "nnsStartIdleTimer":
+      startIdleTimer();
+      return;
+    case "nnsStopIdleTimer":
+      stopIdleTimer();
+      return;
+  }
+};
 
 let timer: NodeJS.Timeout | undefined = undefined;
 

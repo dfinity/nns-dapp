@@ -3,23 +3,26 @@
   import PrivateRoute from "../lib/components/common/PrivateRoute.svelte";
   import Guard from "../lib/components/common/Guard.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { onDestroy } from "svelte";
+  import {onDestroy, onMount} from "svelte";
   import { authStore } from "../lib/stores/auth.store";
   import type { AuthStore } from "../lib/stores/auth.store";
   import { routeStore } from "../lib/stores/route.store";
   import { AppPath } from "../lib/constants/routes.constants";
   import { Toasts } from "@dfinity/gix-components";
   import BusyScreen from "../lib/components/ui/BusyScreen.svelte";
-  import { worker } from "../lib/services/worker.services";
+  import {initWorker} from "../lib/services/worker.services";
   import { initApp } from "../lib/services/app.services";
   import { syncBeforeUnload } from "../lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "../lib/utils/proposals.utils";
   import { voteRegistrationStore } from "../lib/stores/vote-registration.store";
 
+  let worker: {syncAuthIdle: (auth: AuthStore) => void} | undefined;
+
+  onMount(async () => worker = await initWorker());
+
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
-      // TODO: sveltekit
-      // await worker.syncAuthIdle(auth);
+      await worker?.syncAuthIdle(auth);
 
       if (!auth.identity) {
         return;
