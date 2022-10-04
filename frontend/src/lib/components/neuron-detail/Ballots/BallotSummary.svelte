@@ -4,7 +4,7 @@
   import { loadProposal } from "../../../services/proposals.services";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "../../../stores/i18n";
-  import ProposalSummary from "../../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import ProposalSummary from "../../proposal-detail/ProposalSummary.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
 
   export let ballot: Required<BallotInfo>;

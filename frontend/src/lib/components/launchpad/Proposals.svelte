@@ -8,9 +8,7 @@
   } from "../../stores/sns.store";
   import { isNullish } from "../../utils/utils";
   import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
-  import ProjectProposalCard from "./ProposalCard.svelte";
   import ProposalCard from "../proposals/ProposalCard.svelte";
-  import { VOTING_UI } from "../../constants/environment.constants";
 
   let loading: boolean = false;
   $: loading = isNullish($snsProposalsStore);
@@ -34,11 +32,7 @@
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
-      {#if VOTING_UI === "legacy"}
-        <ProjectProposalCard {proposalInfo} />
-      {:else}
-        <ProposalCard {proposalInfo} layout="modern" />
-      {/if}
+      <ProposalCard {proposalInfo} />
     {/each}
   </ul>
 {/if}

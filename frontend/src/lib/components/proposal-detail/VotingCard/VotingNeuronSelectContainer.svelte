@@ -7,8 +7,6 @@
 
   export let proposalInfo: ProposalInfo;
   export let disabled: boolean;
-
-  // TODO(L2-965): remove :global selector and move style to component
 </script>
 
 <div class="neurons">
