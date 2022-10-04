@@ -231,7 +231,7 @@ export const poll = async <T>({
   counter = 0,
 }: {
   fn: () => Promise<T>;
-  shouldExit: (err: Error) => boolean;
+  shouldExit: (err: unknown) => boolean;
   maxAttempts?: number;
   counter?: number;
 }): Promise<T> => {
