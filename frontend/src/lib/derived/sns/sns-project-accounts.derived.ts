@@ -1,7 +1,7 @@
-import { derived, type Readable } from "svelte/store";
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { derived, type Readable } from "svelte/store";
 
 /**
  * Main account is put in the first position. The rest of the accounts keep the same order.

@@ -1,7 +1,7 @@
-import { writable } from "svelte/store";
 import type { AppPath } from "$lib/constants/routes.constants";
 import { changePathContext, isAppPath } from "$lib/utils/app-path.utils";
 import { pushHistory, replaceHistory, routePath } from "$lib/utils/route.utils";
+import { writable } from "svelte/store";
 
 export interface RouteStore {
   path: AppPath | string;

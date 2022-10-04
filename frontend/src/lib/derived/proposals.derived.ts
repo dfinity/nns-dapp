@@ -1,5 +1,3 @@
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
-import { derived, type Readable } from "svelte/store";
 import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import type {
   ProposalsFiltersStore,
@@ -14,6 +12,8 @@ import {
   type VoteRegistration,
 } from "$lib/stores/vote-registration.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
+import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
+import { derived, type Readable } from "svelte/store";
 
 /**
  * A derived store of the proposals store that ensure the proposals are sorted by their proposal ids descendant (as provided back by the backend)

@@ -1,8 +1,8 @@
-import { checkAccountId } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
+import { checkAccountId } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 
 /*
  * Returns the principal's main or hardware account

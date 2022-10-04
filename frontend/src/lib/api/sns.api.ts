@@ -1,3 +1,12 @@
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type {
+  QueryRootCanisterId,
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "$lib/types/sns.query";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -9,15 +18,6 @@ import type {
   SnsWrapper,
 } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
-import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { SnsSwapCommitment } from "$lib/types/sns";
-import type {
-  QueryRootCanisterId,
-  QuerySnsMetadata,
-  QuerySnsSwapState,
-} from "$lib/types/sns.query";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { ledgerCanister } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 import { wrapper, wrappers } from "./sns-wrapper.api";

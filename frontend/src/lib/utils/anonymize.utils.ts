@@ -1,13 +1,3 @@
-import {
-  TokenAmount,
-  type Ballot,
-  type Followees,
-  type KnownNeuron,
-  type Neuron,
-  type NeuronInfo,
-  type ProposalInfo,
-} from "@dfinity/nns";
-import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
 import type {
   CanisterDetails,
   Transaction,
@@ -20,6 +10,16 @@ import type {
   SnsSwapCommitment,
   SnsTokenMetadata,
 } from "$lib/types/sns";
+import {
+  TokenAmount,
+  type Ballot,
+  type Followees,
+  type KnownNeuron,
+  type Neuron,
+  type NeuronInfo,
+  type ProposalInfo,
+} from "@dfinity/nns";
+import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
 import { digestText } from "./dev.utils";
 import { mapTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";

@@ -1,5 +1,5 @@
-import { derived, writable } from "svelte/store";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { derived, writable } from "svelte/store";
 
 export type TransactionFeesStore = {
   // Main Ledger of IC

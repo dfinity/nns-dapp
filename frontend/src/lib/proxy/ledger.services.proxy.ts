@@ -1,10 +1,10 @@
-import type { Identity } from "@dfinity/agent";
-import type { NeuronInfo } from "@dfinity/nns";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import type {
   ConnectToHardwareWalletParams,
   RegisterHardwareWalletParams,
 } from "$lib/services/ledger.services";
+import type { Identity } from "@dfinity/agent";
+import type { NeuronInfo } from "@dfinity/nns";
 
 const importLedgerServices = () => import("../services/ledger.services");
 

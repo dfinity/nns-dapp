@@ -1,5 +1,3 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
   createCanister as createCanisterApi,
@@ -15,6 +13,8 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { AppPath } from "../constants/routes.constants";
 import { canistersStore } from "../stores/canisters.store";
 import { toastsError, toastsShow } from "../stores/toasts.store";

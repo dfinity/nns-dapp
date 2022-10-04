@@ -1,9 +1,9 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
 } from "$lib/constants/icp.constants";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001

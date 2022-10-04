@@ -1,7 +1,7 @@
-import type { KnownNeuron } from "@dfinity/nns";
 import * as api from "$lib/api/governance.api";
 import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { KnownNeuron } from "@dfinity/nns";
 import { queryAndUpdate } from "./utils.services";
 
 export const listKnownNeurons = (): Promise<void> => {

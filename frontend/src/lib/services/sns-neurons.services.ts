@@ -1,3 +1,9 @@
+import {
+  addNeuronPermissions,
+  querySnsNeuron,
+  querySnsNeurons,
+  removeNeuronPermissions,
+} from "$lib/api/sns.api";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
@@ -7,12 +13,6 @@ import {
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
-import {
-  addNeuronPermissions,
-  querySnsNeuron,
-  querySnsNeurons,
-  removeNeuronPermissions,
-} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,

@@ -1,6 +1,3 @@
-import type { Identity } from "@dfinity/agent";
-import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   queryProposal,
   queryProposalPayload,
@@ -26,6 +23,9 @@ import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
+import type { Identity } from "@dfinity/agent";
+import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import {
   queryAndUpdate,
@@ -34,7 +34,13 @@ import {
   type QueryAndUpdateStrategy,
 } from "./utils.services";
 
-const handleFindProposalsError = ({ error: err, certified }: {error: unknown, certified: boolean}) => {
+const handleFindProposalsError = ({
+  error: err,
+  certified,
+}: {
+  error: unknown;
+  certified: boolean;
+}) => {
   console.error(err);
 
   // Explicitly handle only UPDATE errors

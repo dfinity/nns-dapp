@@ -1,12 +1,4 @@
 import {
-  Topic,
-  type AccountIdentifier,
-  type ProposalInfo,
-  type TokenAmount,
-} from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
-import {
   participateInSnsSwap,
   queryAllSnsMetadata,
   querySnsMetadata,
@@ -36,6 +28,14 @@ import {
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import {
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+  type TokenAmount,
+} from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
@@ -285,7 +285,9 @@ export const participateInSwap = async ({
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.
       // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
-      const openStateError = error instanceof Error && error.message?.includes("'open' state") === true;
+      const openStateError =
+        error instanceof Error &&
+        error.message?.includes("'open' state") === true;
       // If it's the last commitment, it means that one more e8 is not a valid participation.
       const lastCommitment =
         project?.summary !== undefined &&

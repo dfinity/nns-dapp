@@ -1,5 +1,5 @@
-import { derived } from "svelte/store";
 import { paths } from "$lib/utils/app-path.utils";
+import { derived } from "svelte/store";
 import { snsProjectSelectedStore } from "./selected-project.derived";
 
 export const accountsPathStore = derived(

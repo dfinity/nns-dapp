@@ -1,4 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import { InsufficientAmountError } from "$lib/types/common.errors";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import {
+  CannotBeMerged,
+  InvalidAmountError,
+  NotAuthorizedNeuronError,
+  NotFoundError,
+} from "$lib/types/neurons.errors";
+import type { ToastMsg } from "$lib/types/toast";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   CouldNotClaimNeuronError,
@@ -10,16 +20,6 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-import { InsufficientAmountError } from "$lib/types/common.errors";
-import { LedgerErrorMessage } from "$lib/types/ledger.errors";
-import {
-  CannotBeMerged,
-  InvalidAmountError,
-  NotAuthorizedNeuronError,
-  NotFoundError,
-} from "$lib/types/neurons.errors";
-import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {

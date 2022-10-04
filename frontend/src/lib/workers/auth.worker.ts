@@ -1,8 +1,8 @@
+import type { PostMessageEventData } from "$lib/types/post-messages";
+import { createAuthClient } from "$lib/utils/auth.utils";
 import { IdbStorage, type AuthClient } from "@dfinity/auth-client";
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
-import type { PostMessageEventData } from "$lib/types/post-messages";
-import { createAuthClient } from "$lib/utils/auth.utils";
 
 onmessage = ({ data }: MessageEvent<PostMessageEventData>) => {
   const { msg } = data;

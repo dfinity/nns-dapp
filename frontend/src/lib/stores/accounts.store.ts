@@ -1,5 +1,5 @@
-import { writable } from "svelte/store";
 import type { Account } from "$lib/types/account";
+import { writable } from "svelte/store";
 
 export interface AccountsStore {
   main?: Account;

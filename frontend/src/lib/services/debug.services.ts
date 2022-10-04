@@ -1,5 +1,3 @@
-import type { NeuronId } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { addHotkey } from "$lib/api/governance.api";
 import { generateDebugLogProxy } from "$lib/proxy/debug.services.proxy";
 import { initDebugStore } from "$lib/stores/debug.store";
@@ -20,6 +18,8 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { saveToJSONFile } from "$lib/utils/save.utils";
 import { mapPromises, stringifyJson } from "$lib/utils/utils";
+import type { NeuronId } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { claimSeedNeurons } from "./seed-neurons.services";
 

@@ -1,5 +1,3 @@
-import type { Identity } from "@dfinity/agent";
-import { get } from "svelte/store";
 import {
   createSubAccount,
   getTransactions,
@@ -26,6 +24,8 @@ import {
 } from "$lib/utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 

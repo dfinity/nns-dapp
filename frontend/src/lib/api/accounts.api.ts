@@ -1,10 +1,3 @@
-import type { Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-} from "@dfinity/nns";
 import type {
   AccountDetails,
   AccountIdentifierString,
@@ -16,6 +9,13 @@ import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import type { Identity } from "@dfinity/agent";
+import {
+  AccountIdentifier,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+} from "@dfinity/nns";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const loadAccounts = async ({

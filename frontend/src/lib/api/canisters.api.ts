@@ -1,8 +1,3 @@
-import type { Identity } from "@dfinity/agent";
-import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
-import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { principalToSubAccount } from "@dfinity/utils";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
@@ -24,6 +19,11 @@ import { ApiErrorKey } from "$lib/types/api.errors";
 import { createAgent } from "$lib/utils/agent.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, PollingLimitExceededError } from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
+import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { principalToSubAccount } from "@dfinity/utils";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 

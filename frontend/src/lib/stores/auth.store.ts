@@ -1,11 +1,11 @@
-import type { Identity } from "@dfinity/agent";
-import type { AuthClient } from "@dfinity/auth-client";
-import { writable } from "svelte/store";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
 import { createAuthClient } from "$lib/utils/auth.utils";
+import type { Identity } from "@dfinity/agent";
+import type { AuthClient } from "@dfinity/auth-client";
+import { writable } from "svelte/store";
 
 export interface AuthStore {
   identity: Identity | undefined | null;

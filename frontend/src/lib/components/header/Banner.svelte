@@ -1,10 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
-  import {
-    DEV,
-    IS_TESTNET,
-  } from "$lib/constants/environment.constants";
+  import { DEV, IS_TESTNET } from "$lib/constants/environment.constants";
 
   const localstorageKey: string = "nnsdapp-testnet-banner-display";
 

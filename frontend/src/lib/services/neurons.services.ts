@@ -1,13 +1,3 @@
-import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import {
-  ICPToken,
-  TokenAmount,
-  Topic,
-  type NeuronId,
-  type NeuronInfo,
-} from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import {
   addHotkey as addHotkeyApi,
@@ -37,7 +27,11 @@ import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import { toastsError, toastsShow, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  toastsError,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
 import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
@@ -62,6 +56,16 @@ import {
   isIdentityController,
   userAuthorizedNeuron,
 } from "$lib/utils/neuron.utils";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
+import {
+  ICPToken,
+  TokenAmount,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,

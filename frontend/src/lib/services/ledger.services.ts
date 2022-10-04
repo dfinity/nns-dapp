@@ -1,10 +1,10 @@
-import type { Identity } from "@dfinity/agent";
-import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { queryNeurons } from "$lib/api/governance.api";
 import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import type { Identity } from "@dfinity/agent";
+import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { i18n } from "../stores/i18n";
 import { toastsError } from "../stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";

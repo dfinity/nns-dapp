@@ -1,7 +1,3 @@
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 import { HOST, WASM_CANISTER_ID } from "$lib/constants/environment.constants";
 import {
   importInitSnsWrapper,
@@ -13,6 +9,10 @@ import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { createAgent } from "$lib/utils/agent.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:

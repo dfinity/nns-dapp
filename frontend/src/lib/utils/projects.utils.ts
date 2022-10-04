@@ -1,6 +1,3 @@
-import type { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "$lib/stores/projects.store";
 import type {
@@ -8,6 +5,9 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
+import type { TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { formatToken } from "./icp.utils";

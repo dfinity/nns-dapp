@@ -1,9 +1,9 @@
+import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import { governanceCanister } from "./governance.api";
 
 /*

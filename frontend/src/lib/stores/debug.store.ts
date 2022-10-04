@@ -1,5 +1,3 @@
-import { toastsStore } from "@dfinity/gix-components";
-import { derived, readable, type Readable, type Writable } from "svelte/store";
 import type { AddAccountStore } from "$lib/types/add-account.context";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neurons.context";
@@ -7,6 +5,8 @@ import type { ProjectDetailStore } from "$lib/types/project-detail.context";
 import type { SelectedAccountStore } from "$lib/types/selected-account.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
 import type { TransactionStore } from "$lib/types/transaction.context";
+import { toastsStore } from "@dfinity/gix-components";
+import { derived, readable, type Readable, type Writable } from "svelte/store";
 import { accountsStore } from "./accounts.store";
 import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";

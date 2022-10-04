@@ -1,9 +1,9 @@
-import type { NeuronInfo } from "@dfinity/nns";
-import { derived, writable, type Readable } from "svelte/store";
 import {
   hasValidStake,
   sortNeuronsByCreatedTimestamp,
 } from "$lib/utils/neuron.utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { derived, writable, type Readable } from "svelte/store";
 
 export interface NeuronsStore {
   neurons?: NeuronInfo[];
