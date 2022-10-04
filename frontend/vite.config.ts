@@ -1,9 +1,9 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
-import inject from '@rollup/plugin-inject';
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
@@ -15,8 +15,8 @@ const config: UserConfig = {
     target: "es2020",
     rollupOptions: {
       // Polyfill Buffer for production build
-      plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
-    }
+      plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
+    },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
@@ -27,17 +27,17 @@ const config: UserConfig = {
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
-        global: 'globalThis'
+        global: "globalThis",
       },
       // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
           process: true,
-          buffer: true
+          buffer: true,
         }),
-      ]
-    }
-  }
+      ],
+    },
+  },
 };
 
 export default config;
