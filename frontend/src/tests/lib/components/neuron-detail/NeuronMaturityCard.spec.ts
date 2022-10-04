@@ -127,6 +127,16 @@ describe("NeuronMaturityCard", () => {
     expect(getByTestId("stake-maturity-button")).not.toBeNull();
   });
 
+  it("should render stake maturity description", () => {
+    const { getByTestId } = render(NeuronMaturityCard, {
+      props,
+    });
+
+    expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
+      en.neuron_detail.stake_maturity_tooltip
+    );
+  });
+
   it("should render merge maturity action for hardware wallet", () => {
     jest
       .spyOn(accountsStore, "subscribe")
@@ -158,5 +168,15 @@ describe("NeuronMaturityCard", () => {
     });
 
     expect(getByTestId("merge-maturity-button")).not.toBeNull();
+  });
+
+  it("should render merge maturity description", () => {
+    const { getByTestId } = render(NeuronMaturityCard, {
+      props,
+    });
+
+    expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
+      en.neuron_detail.merge_maturity_tooltip
+    );
   });
 });
