@@ -137,50 +137,6 @@ describe("NeuronMaturityCard", () => {
     );
   });
 
-  it("should render merge maturity action for hardware wallet", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
-
-    const props = {
-      neuron: {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: maturity,
-          controller: mockIdentity.getPrincipal().toText(),
-        },
-      },
-    };
-
-    const { getByTestId } = render(NeuronMaturityCard, {
-      props: {
-        neuron: {
-          ...props.neuron,
-          fullNeuron: {
-            ...props.neuron.fullNeuron,
-            controller: mockHardwareWalletAccount?.principal?.toText(),
-          },
-        },
-      },
-    });
-
-    expect(getByTestId("merge-maturity-button")).not.toBeNull();
-  });
-
-  it("should render merge maturity description", () => {
-    const { getByTestId } = render(NeuronMaturityCard, {
-      props,
-    });
-
-    expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
-      en.neuron_detail.merge_maturity_tooltip
-    );
-  });
-
-
   it("should render auto stake maturity action", async () => {
     const { container } = render(NeuronMaturityCard, {
       props,
@@ -224,6 +180,16 @@ describe("NeuronMaturityCard", () => {
       });
 
       expect(() => getByTestId("auto-stake-maturity-checkbox")).toThrow();
+    });
+
+    it("should render merge maturity description", () => {
+      const { getByTestId } = render(NeuronMaturityCard, {
+        props,
+      });
+
+      expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
+          en.neuron_detail.merge_maturity_tooltip
+      );
     });
   });
 });
