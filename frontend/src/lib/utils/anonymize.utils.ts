@@ -100,7 +100,7 @@ export const anonymizeAccount = async (
   { [key in keyof Required<Account>]: unknown } | undefined | null
 > => {
   if (account === undefined || account === null) {
-    return account;
+    return account as undefined | null;
   }
 
   const { identifier, principal, balance, name, type, subAccount } = account;
