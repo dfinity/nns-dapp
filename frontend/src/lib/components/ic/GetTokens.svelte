@@ -18,16 +18,13 @@
 
   let inputValue: number | undefined = undefined;
 
-  const onSubmit = async ({ target }) => {
-    if (invalidForm) {
+  const onSubmit = async () => {
+    if (invalidForm || inputValue === undefined) {
       toastsError({
         labelKey: "Invalid ICPs input.",
       });
       return;
     }
-
-    const formData: FormData = new FormData(target);
-    const tokensNumber: number = formData.get("icp") as unknown as number;
 
     transferring = true;
 
@@ -35,10 +32,10 @@
 
     try {
       if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
-        await getICPs(tokensNumber);
+        await getICPs(inputValue);
       } else {
         await getTokens({
-          tokens: tokensNumber,
+          tokens: inputValue,
           rootCanisterId: selectedProjectId,
         });
       }
@@ -72,7 +69,7 @@
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click|stopPropagation={() => (visible = true)}
+  on:click|preventDefault|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
