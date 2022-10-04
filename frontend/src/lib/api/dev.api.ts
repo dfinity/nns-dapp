@@ -83,10 +83,6 @@ export const acquireSnsTokens = async ({
           ? []
           : toNullable(arrayOfNumberToUint8Array(account.subAccount)),
     },
-    fee: [],
-    memo: [],
-    from_subaccount: [],
-    created_at_time: [],
   });
 };
 
