@@ -89,7 +89,7 @@ describe("AutoStakeMaturity", () => {
     confirmButton && (await fireEvent.click(confirmButton));
   };
 
-  it("should set auto stake maturity to on", async () => {
+  it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
     expect(toggleAutoStakeMaturity).toBeCalled();
   });
