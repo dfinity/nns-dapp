@@ -143,10 +143,10 @@ export const stakeMaturity = async ({
   logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) call...`);
 
   const {
-    canister: { stakeMaturity },
+    canister: { stakeMaturity: stakeMaturityApi },
   } = await governanceCanister({ identity });
 
-  await stakeMaturity({ neuronId, percentageToStake });
+  await stakeMaturityApi({ neuronId, percentageToStake });
 
   logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
 };
