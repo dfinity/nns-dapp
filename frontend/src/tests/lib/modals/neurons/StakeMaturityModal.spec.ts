@@ -3,20 +3,20 @@
  */
 
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import MergeMaturityModal from "../../../../lib/modals/neurons/MergeMaturityModal.svelte";
-import { mergeMaturity } from "../../../../lib/services/neurons.services";
+import StakeMaturityModal from "../../../../lib/modals/neurons/StakeMaturityModal.svelte";
+import { stakeMaturity } from "../../../../lib/services/neurons.services";
 import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("../../../../lib/services/neurons.services", () => {
   return {
-    mergeMaturity: jest.fn().mockResolvedValue(BigInt(10)),
+    stakeMaturity: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),
   };
 });
 
-describe("MergeMaturityModal", () => {
+describe("StakeMaturityModal", () => {
   const neuron = {
     ...mockNeuron,
     fullNeuron: {
@@ -24,9 +24,9 @@ describe("MergeMaturityModal", () => {
       maturityE8sEquivalent: BigInt(1_000_000),
     },
   };
-  const renderMergeMaturityModal = async (): Promise<RenderResult> => {
+  const renderStakeMaturityModal = async (): Promise<RenderResult> => {
     return renderModal({
-      component: MergeMaturityModal,
+      component: StakeMaturityModal,
       props: {
         neuron,
       },
@@ -34,20 +34,19 @@ describe("MergeMaturityModal", () => {
   };
 
   it("should display modal", async () => {
-    const { container } = await renderMergeMaturityModal();
+    const { container } = await renderStakeMaturityModal();
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should display current maturity", async () => {
-    const { queryByText } = await renderMergeMaturityModal();
+    const { queryByText } = await renderStakeMaturityModal();
 
     expect(queryByText(formattedMaturity(neuron))).toBeInTheDocument();
   });
 
-  it("should call mergeMaturity service on confirm click", async () => {
-    const { queryByTestId } = await renderMergeMaturityModal();
-
+  const selectPercentage = async (renderResult: RenderResult) => {
+    const { queryByTestId } = renderResult;
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).toBeInTheDocument();
     rangeElement &&
@@ -58,6 +57,14 @@ describe("MergeMaturityModal", () => {
     );
     expect(selectMaturityButton).toBeInTheDocument();
     selectMaturityButton && (await fireEvent.click(selectMaturityButton));
+  };
+
+  it("should call stakeMaturity service on confirm click", async () => {
+    const renderResult: RenderResult = await renderStakeMaturityModal();
+
+    await selectPercentage(renderResult);
+
+    const { queryByTestId } = renderResult;
 
     await waitFor(() =>
       expect(queryByTestId("confirm-action-button")).toBeInTheDocument()
@@ -67,6 +74,24 @@ describe("MergeMaturityModal", () => {
     expect(confirmButton).toBeInTheDocument();
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(mergeMaturity).toBeCalled();
+    expect(stakeMaturity).toBeCalled();
+  });
+
+  it("should go back in modal on cancel click", async () => {
+    const renderResult: RenderResult = await renderStakeMaturityModal();
+
+    await selectPercentage(renderResult);
+
+    const { queryByTestId } = renderResult;
+
+    await waitFor(() =>
+      expect(queryByTestId("cancel-action-button")).toBeInTheDocument()
+    );
+
+    const cancelButton = queryByTestId("cancel-action-button");
+    expect(cancelButton).toBeInTheDocument();
+    cancelButton && (await fireEvent.click(cancelButton));
+
+    expect(queryByTestId("input-range")).not.toBeNull();
   });
 });

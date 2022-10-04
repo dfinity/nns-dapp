@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "../../../stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import MergeMaturityModal from "../../../modals/neurons/MergeMaturityModal.svelte";
+  import StakeMaturityModal from "../../../modals/neurons/StakeMaturityModal.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -15,5 +15,5 @@
 >
 
 {#if isOpen}
-  <MergeMaturityModal on:nnsClose={closeModal} {neuron} />
+  <StakeMaturityModal on:nnsClose={closeModal} {neuron} />
 {/if}

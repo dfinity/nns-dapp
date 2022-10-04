@@ -1,6 +1,7 @@
 export interface Step {
   readonly name: string;
   readonly title: string;
+  // @deprecated no show back button on new modal design
   readonly showBackButton: boolean;
 }
 

@@ -154,6 +154,13 @@ export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
 /**
+ * Has the neuron the auto stake maturity feature turned on?
+ * @param {NeuronInfo} neuron The neuron which potential has the feature on
+ */
+export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
+  fullNeuron?.autoStakeMaturity === true;
+
+/**
  * Format the maturity in a value (token "currency") way.
  * @param {NeuronInfo} neuron The neuron that contains the `maturityE8sEquivalent` that will be formatted if a `fullNeuron` is available
  */
