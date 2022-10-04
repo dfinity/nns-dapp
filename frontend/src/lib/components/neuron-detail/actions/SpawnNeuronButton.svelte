@@ -14,7 +14,7 @@
     isEnoughMaturityToSpawn,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/ui/Tooltip.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let neuron: NeuronInfo;
 

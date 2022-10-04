@@ -11,7 +11,7 @@
     isNeuronControllable,
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
-  import CardInfo from "$lib/ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
 

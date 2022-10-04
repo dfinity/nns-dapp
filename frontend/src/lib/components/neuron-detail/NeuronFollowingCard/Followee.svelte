@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
-  import Tag from "$lib/ui/Tag.svelte";
+  import Tag from "$lib/components/ui/Tag.svelte";
 
   export let followee: FolloweesNeuron;
 

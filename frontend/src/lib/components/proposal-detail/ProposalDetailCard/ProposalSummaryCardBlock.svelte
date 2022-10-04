@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Proposal } from "@dfinity/nns";
-  import CardBlock from "$lib/ui/CardBlock.svelte";
+  import CardBlock from "$lib/components/ui/CardBlock.svelte";
   import { i18n } from "$lib/stores/i18n";
   import ProposalSummary from "./ProposalSummary.svelte";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
-  import Checkbox from "$lib/ui/Checkbox.svelte";
+  import Checkbox from "$lib/components/ui/Checkbox.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { getVotingPower } from "$lib/utils/proposals.utils";

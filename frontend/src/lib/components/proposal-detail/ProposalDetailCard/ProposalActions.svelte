@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { Proposal, ProposalId } from "@dfinity/nns";
-  import CardBlock from "$lib/ui/CardBlock.svelte";
+  import CardBlock from "$lib/components/ui/CardBlock.svelte";
   import {
     proposalFirstActionKey,
     proposalActionFields,
     getNnsFunctionKey,
   } from "$lib/utils/proposals.utils";
-  import Json from "$lib/common/Json.svelte";
+  import Json from "$lib/components/common/Json.svelte";
   import NnsFunctionDetails from "./NnsFunctionDetails.svelte";
 
   export let proposalId: ProposalId | undefined;

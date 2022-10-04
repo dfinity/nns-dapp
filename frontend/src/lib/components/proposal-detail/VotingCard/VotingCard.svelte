@@ -9,7 +9,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
-  import CardInfo from "$lib/ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import en from "$lib/tests/mocks/i18n.mock";
   import { IconWest, IconEast } from "@dfinity/gix-components";
   import { routeStore } from "$lib/stores/route.store";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -87,7 +86,7 @@
       data-tid="proposal-nav-previous"
     >
       <IconWest />
-      {en.core.previous}</button
+      {$i18n.core.previous}</button
     >
 
     <button
@@ -99,7 +98,7 @@
       disabled={proposalInfo !== undefined && nextProposal === undefined}
       data-tid="proposal-nav-next"
     >
-      {en.core.next}
+      {$i18n.core.next}
       <IconEast />
     </button>
   </div>

@@ -15,7 +15,7 @@
 </LegacyModal>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
+  @use "../../themes/mixins/modal";
 
   section {
     @include modal.section;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProposalId } from "@dfinity/nns";
-  import Json from "$lib/common/Json.svelte";
+  import Json from "$lib/components/common/Json.svelte";
   import { loadProposalPayload } from "$lib/services/proposals.services";
   import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";

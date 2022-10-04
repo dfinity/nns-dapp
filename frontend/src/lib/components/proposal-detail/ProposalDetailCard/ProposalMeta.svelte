@@ -3,7 +3,7 @@
   import { i18n } from "$lib/../lib/stores/i18n";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import Value from "$lib/ui/Value.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 

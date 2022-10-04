@@ -1,14 +1,14 @@
 <script lang="ts">
   import { type ProposalId, ProposalStatus } from "@dfinity/nns";
   import type { Proposal, ProposalInfo } from "@dfinity/nns";
-  import CardInfo from "$lib/ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import ProposalMeta from "$lib/proposals/ProposalMeta.svelte";
+  import ProposalMeta from "$lib/components/proposals/ProposalMeta.svelte";
   import ProposalActions from "./ProposalActions.svelte";
   import ProposalSummaryCardBlock from "./ProposalSummaryCardBlock.svelte";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Color } from "$lib/types/theme";
-  import Tag from "$lib/ui/Tag.svelte";
+  import Tag from "$lib/components/ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
 

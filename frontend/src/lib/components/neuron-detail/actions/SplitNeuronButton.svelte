@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/icp.utils";
-  import Tooltip from "$lib/ui/Tooltip.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
