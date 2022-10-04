@@ -101,7 +101,7 @@
     gap: var(--padding-2x);
 
     img {
-      height: 38px;
+      height: 32px;
     }
 
     p {
@@ -109,7 +109,7 @@
       flex-direction: column;
       align-items: flex-start;
 
-      font-size: var(--font-size-small);
+      font-size: var(--font-size-ultra-small);
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.1rem;
     }
@@ -121,7 +121,12 @@
       margin: var(--padding) 0 var(--padding-4x);
       gap: var(--padding);
 
+      img {
+        height: 38px;
+      }
+
       p {
+        font-size: var(--font-size-small);
         align-items: center;
       }
     }
