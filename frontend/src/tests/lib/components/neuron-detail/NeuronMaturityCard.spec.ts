@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
 import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -11,6 +10,7 @@ import {
   formattedMaturity,
   formattedStakedMaturity,
 } from "$lib/utils/neuron.utils";
+import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,

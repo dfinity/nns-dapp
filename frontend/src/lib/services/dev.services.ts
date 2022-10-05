@@ -1,6 +1,3 @@
-import type { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
-import { acquireICPTs, acquireSnsTokens } from "../api/dev.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -8,6 +5,9 @@ import {
   snsAccountsStore,
   type SnsAccountsStore,
 } from "$lib/stores/sns-accounts.store";
+import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
+import { acquireICPTs, acquireSnsTokens } from "../api/dev.api";
 import { syncAccounts } from "./accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 

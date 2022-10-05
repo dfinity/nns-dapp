@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
+import type { Proposal, ProposalInfo } from "@dfinity/nns";
+import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";

@@ -1,8 +1,3 @@
-import type { SnsNeuron } from "@dfinity/sns";
-import type { RenderResult } from "@testing-library/svelte";
-import { render } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { writable } from "svelte/store";
 import type { Account } from "$lib/types/account";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
@@ -14,6 +9,11 @@ import {
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import type { SnsNeuron } from "@dfinity/sns";
+import type { RenderResult } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 import { rootCanisterIdMock } from "./sns.api.mock";
 

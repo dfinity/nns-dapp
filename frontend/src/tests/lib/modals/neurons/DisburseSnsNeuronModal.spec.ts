@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
-import type { SnsNeuron } from "@dfinity/sns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import * as accountsApi from "$lib/api/accounts.api";
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import { disburse } from "$lib/services/sns-neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { routeStore } from "$lib/stores/route.store";
+import type { SnsNeuron } from "@dfinity/sns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,

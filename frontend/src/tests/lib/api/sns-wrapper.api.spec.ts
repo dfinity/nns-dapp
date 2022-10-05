@@ -1,6 +1,6 @@
+import { initSns, wrappers } from "$lib/api/sns-wrapper.api";
 import type { HttpAgent } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
-import { initSns, wrappers } from "$lib/api/sns-wrapper.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,

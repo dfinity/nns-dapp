@@ -115,11 +115,13 @@ const loadSnsWrappers = async ({
     throw new ApiErrorKey("error__sns.init");
   }
 
-  return results
-    .filter(({ status }) => status === "fulfilled")
+  return (
+    results
+      .filter(({ status }) => status === "fulfilled")
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore we know for sure the type is PromiseFulfilledResult and not PromiseSettledResult since we filter with previous line
-      .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
+      .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper)
+  );
 };
 
 const initWrappers = async ({
