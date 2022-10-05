@@ -58,14 +58,13 @@ export const makeDummyProposals = async ({
 
   const { canister } = await governanceCanister({ identity });
 
-  // TODO: sveltekit
-  // const dummyProposalsScriptPath: string =
-  //   "/assets/libs/dummy-proposals.utils.js";
-  // const { makeDummyProposals: makeProposals } = await import(
-  //   dummyProposalsScriptPath
-  // );
-  //
-  // await makeProposals({ neuronId, canister, swapCanisterId });
+  const dummyProposalsScriptPath =
+    "/assets/libs/dummy-proposals.utils.js";
+  const { makeDummyProposals: makeProposals } = await import(
+    dummyProposalsScriptPath
+  );
+
+  await makeProposals({ neuronId, canister, swapCanisterId });
 };
 
 const assertTestnet = () => {
