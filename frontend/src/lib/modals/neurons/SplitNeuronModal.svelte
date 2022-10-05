@@ -25,7 +25,7 @@
   let balance: TokenAmount;
   $: balance = TokenAmount.fromE8s({ amount: stakeE8s, token: ICPToken });
 
-  let max: number = 0;
+  let max = 0;
   $: max =
     stakeE8s === BigInt(0)
       ? 0

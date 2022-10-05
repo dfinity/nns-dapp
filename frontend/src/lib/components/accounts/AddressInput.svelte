@@ -7,7 +7,7 @@
 
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
 
-  export let address: string = "";
+  export let address = "";
 
   let showError = false;
   const dispatcher = createEventDispatcher();

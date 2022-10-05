@@ -27,10 +27,10 @@
     filteredProposals,
   } from "$lib/derived/proposals.derived";
 
-  let loading: boolean = false;
-  let hidden: boolean = false;
-  let initialized: boolean = false;
-  let disableInfiniteScroll: boolean = false;
+  let loading = false;
+  let hidden = false;
+  let initialized = false;
+  let disableInfiniteScroll = false;
 
   const loadFinished = ({ paginationOver }) => {
     loading = false;
@@ -78,7 +78,7 @@
   };
 
   onMount(async () => {
-    const reload: boolean = reloadRouteData({
+    const reload = reloadRouteData({
       expectedPreviousPath: AppPath.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $sortedProposals.proposals,

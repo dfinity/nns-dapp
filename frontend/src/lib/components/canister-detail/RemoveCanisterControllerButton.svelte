@@ -27,7 +27,7 @@
   let lastController: boolean;
   $: lastController = $store.details?.settings.controllers.length === 1;
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
   const remove = async () => {

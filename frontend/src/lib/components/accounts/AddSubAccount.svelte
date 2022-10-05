@@ -10,7 +10,7 @@
     type AddAccountContext,
   } from "$lib/types/add-account.context";
 
-  let newAccountName: string = "";
+  let newAccountName = "";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY

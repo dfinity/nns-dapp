@@ -19,7 +19,7 @@
 
   export let account: Account;
   export let transaction: Transaction;
-  export let toSelfTransaction: boolean = false;
+  export let toSelfTransaction = false;
 
   let type: AccountTransactionType;
   let isReceive: boolean;

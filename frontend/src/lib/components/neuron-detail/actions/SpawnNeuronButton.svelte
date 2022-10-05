@@ -18,7 +18,7 @@
 
   export let neuron: NeuronInfo;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
   let controlledByHardwareWallet: boolean;
   $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
     neuron,

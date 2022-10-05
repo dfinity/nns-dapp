@@ -8,7 +8,7 @@
   export let filterIdentifier: string | undefined = undefined;
 
   let address: string;
-  let mounted: boolean = false;
+  let mounted = false;
 
   onMount(() => (mounted = true));
 

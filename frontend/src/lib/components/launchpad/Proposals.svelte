@@ -12,7 +12,7 @@
   import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import { VOTING_UI } from "$lib/constants/environment.constants";
 
-  let loading: boolean = false;
+  let loading = false;
   $: loading = isNullish($snsProposalsStore);
 
   const load = () => {

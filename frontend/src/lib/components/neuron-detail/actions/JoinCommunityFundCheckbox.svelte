@@ -13,7 +13,7 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);

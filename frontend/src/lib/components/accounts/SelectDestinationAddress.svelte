@@ -13,7 +13,7 @@
 
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
-  export let showManualAddress: boolean = true;
+  export let showManualAddress = true;
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountFromStore({
@@ -32,7 +32,7 @@
   }
 
   // Show the toggle if there are more than one account to select from.
-  let showToggle: boolean = true;
+  let showToggle = true;
   $: showToggle = $accountsListStore.filter(filterAccounts).length > 0;
 
   const onToggleManualInput = () => {

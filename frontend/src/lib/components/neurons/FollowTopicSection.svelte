@@ -19,7 +19,7 @@
   let id: string | undefined;
   $: id = Topic[topic];
 
-  let showNewFolloweeModal: boolean = false;
+  let showNewFolloweeModal = false;
   type FolloweeData = {
     neuronId: NeuronId;
     name?: string;

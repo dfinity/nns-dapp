@@ -6,7 +6,7 @@
 
   export let neuron: NeuronInfo;
 
-  let loading: boolean = false;
+  let loading = false;
 
   const makeProposals = async () => {
     loading = true;

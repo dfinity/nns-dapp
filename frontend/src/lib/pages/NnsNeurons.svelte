@@ -16,10 +16,10 @@
 
   // Neurons are fetch on page load. No need to do it in the route.
 
-  let isLoading: boolean = false;
+  let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
 
-  let principalText: string = "";
+  let principalText = "";
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     ({ identity }: AuthStore) =>

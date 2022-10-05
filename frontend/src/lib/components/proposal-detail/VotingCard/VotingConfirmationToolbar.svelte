@@ -26,8 +26,8 @@
   $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
-  let disabled: boolean = true;
-  let showConfirmationModal: boolean = false;
+  let disabled = true;
+  let showConfirmationModal = false;
   let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({

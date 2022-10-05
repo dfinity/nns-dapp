@@ -6,8 +6,8 @@
 
   export let id: string;
   export let text = "";
-  export let noWrap: boolean = false;
-  export let top: boolean = false;
+  export let noWrap = false;
+  export let top = false;
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
   let target: HTMLDivElement | undefined = undefined;
@@ -31,7 +31,7 @@
     const { innerWidth } = window;
 
     const { clientWidth, offsetWidth } = main;
-    const scrollbarWidth: number = offsetWidth - clientWidth;
+    const scrollbarWidth = offsetWidth - clientWidth;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
@@ -57,7 +57,7 @@
 
   $: innerWidth, tooltipComponent, target, setPosition();
 
-  let destroyed: boolean = false;
+  let destroyed = false;
   onDestroy(() => (destroyed = true));
 </script>
 

@@ -7,7 +7,7 @@
 
   export let proposalInfo: ProposalInfo;
 
-  const ZERO: bigint = BigInt(0);
+  const ZERO = BigInt(0);
 
   let clear: NodeJS.Timeout | undefined;
   let countdown: bigint | undefined = undefined;

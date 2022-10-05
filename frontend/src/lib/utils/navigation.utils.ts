@@ -13,7 +13,7 @@ export const reloadRouteData = <T>({
   effectivePreviousPath: AppPath | string | undefined;
   currentData: T[] | undefined;
 }): boolean => {
-  const isReferrerDetail: boolean = isRoutePath({
+  const isReferrerDetail = isRoutePath({
     paths: [expectedPreviousPath],
     routePath: effectivePreviousPath,
   });

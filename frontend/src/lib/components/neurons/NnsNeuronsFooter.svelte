@@ -14,7 +14,7 @@
   const openModal = (key: ModalKey) => (showModal = key);
   const closeModal = () => (showModal = undefined);
 
-  let votingInProgress: boolean = false;
+  let votingInProgress = false;
   $: votingInProgress = $voteRegistrationStore.registrations.length > 0;
   let enoughNeuronsToMerge: boolean;
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;

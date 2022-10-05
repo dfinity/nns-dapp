@@ -45,9 +45,9 @@ export enum LogType {
  */
 export function triggerDebugReport(node: HTMLElement) {
   const TWO_SECONDS = 2 * 1000;
-  const originalTouchActionValue: string = node.style.touchAction;
+  const originalTouchActionValue = node.style.touchAction;
 
-  let startTime: number = 0;
+  let startTime = 0;
   let count = 0;
 
   const click = () => {

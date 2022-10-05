@@ -5,7 +5,7 @@
 
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
-  export let selected: boolean = false;
+  export let selected = false;
   export let disabled: boolean | undefined = undefined;
 
   export let cardType: CardType;

@@ -16,7 +16,7 @@
 
   const { store, next, back }: AddAccountContext = context;
 
-  let hardwareWalletName: string = $store.hardwareWalletName ?? "";
+  let hardwareWalletName = $store.hardwareWalletName ?? "";
 
   const invalidInputLength = (): boolean =>
     hardwareWalletName.length < HARDWARE_WALLET_NAME_MIN_LENGTH;
@@ -28,7 +28,7 @@
   const showInvalidInputLength = () =>
     (invalidInputMessage =
       hardwareWalletName.length > 0 && invalidInputLength());
-  let invalidInputMessage: boolean = false;
+  let invalidInputMessage = false;
 
   const onSubmit = () => {
     store.update((data) => ({

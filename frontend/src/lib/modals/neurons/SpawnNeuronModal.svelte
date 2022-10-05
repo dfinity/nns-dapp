@@ -42,7 +42,7 @@
 
   let currentStep: Step;
 
-  let percentageToSpawn: number = 0;
+  let percentageToSpawn = 0;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({

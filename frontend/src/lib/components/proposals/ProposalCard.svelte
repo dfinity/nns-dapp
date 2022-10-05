@@ -15,7 +15,7 @@
   import Tag from "$lib/components/ui/Tag.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let hidden: boolean = false;
+  export let hidden = false;
   // TODO(L2-965): delete property and use modern
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "$lib/components/ui/Value.svelte";

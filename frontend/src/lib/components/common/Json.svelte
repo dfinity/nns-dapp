@@ -4,9 +4,9 @@
   import { isPrincipal } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
-  export let defaultExpandedLevel: number = Infinity;
-  export let _key: string = "";
-  export let _level: number = 1;
+  export let defaultExpandedLevel = Infinity;
+  export let _key = "";
+  export let _level = 1;
   export let _collapsed: boolean | undefined = undefined;
 
   type ValueType =
@@ -88,7 +88,7 @@
   let title: string | undefined;
   $: title = valueType === "hash" ? (json as number[]).join() : undefined;
 
-  let collapsed: boolean = true;
+  let collapsed = true;
   $: collapsed =
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 

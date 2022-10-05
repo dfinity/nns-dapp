@@ -7,8 +7,8 @@
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let showUrl: boolean = false;
-  export let showTopic: boolean = false;
+  export let showUrl = false;
+  export let showTopic = false;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;

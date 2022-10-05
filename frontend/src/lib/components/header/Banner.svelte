@@ -3,15 +3,15 @@
   import { IconClose } from "@dfinity/gix-components";
   import { DEV, IS_TESTNET } from "$lib/constants/environment.constants";
 
-  const localstorageKey: string = "nnsdapp-testnet-banner-display";
+  const localstorageKey = "nnsdapp-testnet-banner-display";
 
-  let visible: boolean = JSON.parse(
+  let visible = JSON.parse(
     localStorage.getItem(localstorageKey) ?? "true"
   ) as boolean;
 
-  const testnet: boolean = IS_TESTNET;
-  const localEnv: boolean = DEV;
-  const banner: boolean = testnet && !localEnv;
+  const testnet = IS_TESTNET;
+  const localEnv = DEV;
+  const banner = testnet && !localEnv;
 
   const close = () => {
     visible = false;

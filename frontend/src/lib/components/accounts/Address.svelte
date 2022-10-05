@@ -3,7 +3,7 @@
   import { invalidAddress } from "$lib/utils/accounts.utils";
   import AddressInput from "./AddressInput.svelte";
 
-  export let address: string = "";
+  export let address = "";
 </script>
 
 <article>

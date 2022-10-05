@@ -117,11 +117,11 @@ export const toToastError = ({
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
 }): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
-  let errorKey: boolean = false;
+  let errorKey = false;
   const message: string | undefined = (err as Error)?.message;
 
   if (message !== undefined) {
-    const label: string = translate({ labelKey: message });
+    const label = translate({ labelKey: message });
     errorKey = label !== message;
   }
 

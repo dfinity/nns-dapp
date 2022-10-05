@@ -7,7 +7,7 @@
   import AccountBadge from "./AccountBadge.svelte";
 
   export let account: Account;
-  export let showCopy: boolean = false;
+  export let showCopy = false;
   export let role: "button" | "link" | undefined = undefined;
 
   let identifier: string;

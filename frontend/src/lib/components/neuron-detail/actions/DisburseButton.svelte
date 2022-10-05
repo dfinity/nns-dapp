@@ -5,7 +5,7 @@
 
   export let neuron: NeuronInfo;
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>

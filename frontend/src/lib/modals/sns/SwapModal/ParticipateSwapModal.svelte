@@ -34,7 +34,7 @@
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
   $: swapCommitment = $projectDetailStore.swapCommitment;
-  let userHasParticipatedToSwap: boolean = false;
+  let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment,
   });

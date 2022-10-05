@@ -21,7 +21,7 @@
     neuronsPathStore,
   } from "$lib/derived/paths.derived";
 
-  const baseUrl: string = baseHref();
+  const baseUrl = baseHref();
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
     isRoutePath({ paths, routePath: $routeStore.path });

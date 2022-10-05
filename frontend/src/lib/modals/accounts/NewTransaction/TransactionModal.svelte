@@ -12,10 +12,10 @@
   export let sourceAccount: Account | undefined = undefined;
   export let token: Token = ICPToken;
   export let transactionFee: TokenAmount = $mainTransactionFeeStoreAsToken;
-  export let disableSubmit: boolean = false;
+  export let disableSubmit = false;
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
-  export let skipHardwareWallets: boolean = false;
+  export let skipHardwareWallets = false;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   const steps: Steps = [
@@ -37,11 +37,11 @@
   // But the component doesn't bind them to the props.
   // This way we can identify whether to show a dropdown to select destination or source.
   let selectedDestinationAddress: string | undefined = destinationAddress;
-  let canSelectDestination: boolean = destinationAddress === undefined;
+  let canSelectDestination = destinationAddress === undefined;
   let selectedAccount: Account | undefined = sourceAccount;
-  let canSelectSource: boolean = sourceAccount === undefined;
+  let canSelectSource = sourceAccount === undefined;
   let amount: number | undefined;
-  let showManualAddress: boolean = true;
+  let showManualAddress = true;
 
   const goNext = () => {
     modal.next();

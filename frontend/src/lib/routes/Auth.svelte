@@ -9,7 +9,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 
-  let signedIn: boolean = false;
+  let signedIn = false;
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
@@ -35,7 +35,7 @@
       const urlParams: URLSearchParams = new URLSearchParams(
         window.location.search
       );
-      const redirectPath: string = `/#/${
+      const redirectPath = `/#/${
         urlParams.get("redirect") ?? "accounts"
       }`;
 

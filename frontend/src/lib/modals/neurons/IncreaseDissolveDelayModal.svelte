@@ -25,7 +25,7 @@
   let currentStep: Step;
   let modal: LegacyWizardModal;
 
-  let delayInSeconds: number = Number(neuron.dissolveDelaySeconds);
+  let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {

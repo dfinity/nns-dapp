@@ -13,7 +13,7 @@
 
   export let neuron: NeuronInfo;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const openModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);

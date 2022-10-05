@@ -5,7 +5,7 @@
 
   export let neuronId: NeuronId;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);

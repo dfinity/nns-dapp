@@ -76,7 +76,7 @@
 
   debugSelectedCanisterStore(selectedCanisterStore);
 
-  let loadingDetails: boolean = true;
+  let loadingDetails = true;
   let canisterInfo: CanisterInfo | undefined;
   let canisterDetails: CanisterDetails | undefined = undefined;
   $: canisterDetails = $selectedCanisterStore.details;
@@ -88,7 +88,7 @@
       ? "error.canister_details_not_found"
       : undefined;
 
-  let showAddCyclesModal: boolean = false;
+  let showAddCyclesModal = false;
   const closeAddCyclesModal = async () => (showAddCyclesModal = false);
 
   const reloadDetails = async (canisterId: Principal) => {

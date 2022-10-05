@@ -12,7 +12,7 @@
 
   export let path: AppPath;
 
-  let signedIn: boolean = false;
+  let signedIn = false;
 
   const redirectLogin = () => {
     if (signedIn || !isRoutePath({ paths: [path], routePath: routePath() })) {

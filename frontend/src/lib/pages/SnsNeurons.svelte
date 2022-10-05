@@ -28,7 +28,7 @@
 
   onDestroy(unsubscribe);
 
-  let principalText: string = "";
+  let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   const goToNeuronDetails = (neuron: SnsNeuron) => () => {

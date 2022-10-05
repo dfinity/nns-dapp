@@ -102,7 +102,7 @@
     component = await loadModule();
   });
 
-  let authLayout: boolean = true;
+  let authLayout = true;
   $: authLayout = path === AppPath.Authentication;
 
   let layout: typeof SvelteComponent | undefined = undefined;

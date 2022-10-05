@@ -13,7 +13,7 @@ export type QueryAndUpdateOnError<E> = (options: {
 }) => void;
 
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
-let lastIndex: number = 0;
+let lastIndex = 0;
 
 /**
  * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).

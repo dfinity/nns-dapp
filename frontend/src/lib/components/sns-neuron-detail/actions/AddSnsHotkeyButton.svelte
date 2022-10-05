@@ -3,7 +3,7 @@
 
   import { i18n } from "$lib/stores/i18n";
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>

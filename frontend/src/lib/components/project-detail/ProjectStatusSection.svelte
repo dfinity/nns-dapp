@@ -47,7 +47,7 @@
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let displayStatusSection: boolean = false;
+  let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
     !loadingSwapState &&

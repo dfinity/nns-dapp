@@ -31,7 +31,7 @@ export const mapCanisterDetails = ({
   validName: boolean;
   canisterId: string;
 } => {
-  const canisterId: string = canister_id.toText();
+  const canisterId = canister_id.toText();
   return {
     name: name ?? canisterId,
     validName: name.length > 0,

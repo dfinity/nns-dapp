@@ -33,7 +33,7 @@
       proposal: proposalInfo,
     });
 
-  let visible: boolean = false;
+  let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
   let voteRegistration: VoteRegistration | undefined = undefined;

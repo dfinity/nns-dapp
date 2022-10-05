@@ -27,17 +27,17 @@
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 
-  let userCanParticipateToSwap: boolean = false;
+  let userCanParticipateToSwap = false;
   $: userCanParticipateToSwap = canUserParticipateToSwap({
     summary: $projectDetailStore.summary,
     swapCommitment: $projectDetailStore.swapCommitment,
   });
 
-  let userHasParticipatedToSwap: boolean = false;
+  let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
   });

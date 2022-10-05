@@ -4,11 +4,11 @@
 
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;
-  export let inline: boolean = false;
-  export let singleLine: boolean = false;
-  export let inheritSize: boolean = false;
+  export let inline = false;
+  export let singleLine = false;
+  export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
-  export let detailed: boolean = false;
+  export let detailed = false;
 </script>
 
 <div

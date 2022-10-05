@@ -31,7 +31,7 @@
   $: neuronId =
     neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
 
-  let canManageHotkeys: boolean = true;
+  let canManageHotkeys = true;
   $: canManageHotkeys =
     neuron !== undefined && neuron !== null
       ? canIdentityManageHotkeys({

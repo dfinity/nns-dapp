@@ -14,7 +14,7 @@
   export let neuron: NeuronInfo;
   export let percentage: number;
   export let buttonText: string;
-  export let disabled: boolean = false;
+  export let disabled = false;
 
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);

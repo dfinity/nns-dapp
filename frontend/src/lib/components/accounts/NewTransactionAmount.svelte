@@ -23,7 +23,7 @@
     ? Number($store.amount.toE8s()) / E8S_PER_ICP
     : undefined;
 
-  let max: number = 0;
+  let max = 0;
   $: max = getMaxTransactionAmount({
     balance: $store.selectedAccount?.balance.toE8s(),
     fee: $transactionsFeesStore.main,

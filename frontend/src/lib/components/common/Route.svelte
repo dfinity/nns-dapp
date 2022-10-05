@@ -10,7 +10,7 @@
 
   export let path: AppPath;
 
-  let currentPath: string = routePath();
+  let currentPath = routePath();
 
   const unsubscribe: Unsubscriber = routeStore.subscribe(
     ({ path }: RouteStore) => (currentPath = path)

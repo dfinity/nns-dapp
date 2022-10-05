@@ -21,10 +21,10 @@
   import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
-  export let delayInSeconds: number = 0;
+  export let delayInSeconds = 0;
   export let cancelButtonText: string;
   export let confirmButtonText: string;
-  export let minDelayInSeconds: number = 0;
+  export let minDelayInSeconds = 0;
 
   const checkMinimum = () => {
     if (delayInSeconds < minDelayInSeconds) {

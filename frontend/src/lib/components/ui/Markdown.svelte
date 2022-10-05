@@ -6,7 +6,7 @@
   export let text: string | undefined;
 
   let html: string | undefined;
-  let error: boolean = false;
+  let error = false;
   const transform = async (text: string) => {
     try {
       html = await markdownToSanitizedHTML(text);

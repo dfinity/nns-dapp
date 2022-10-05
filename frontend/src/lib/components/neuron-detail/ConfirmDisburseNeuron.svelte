@@ -16,7 +16,7 @@
   export let neuron: NeuronInfo;
   export let destinationAddress: string;
 
-  let loading: boolean = false;
+  let loading = false;
 
   const dispatcher = createEventDispatcher();
   const executeTransaction = async () => {

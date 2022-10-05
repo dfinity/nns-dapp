@@ -6,8 +6,8 @@ import type { Identity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
-const msgParam: string = "msg";
-const levelParam: string = "level";
+const msgParam = "msg";
+const levelParam = "level";
 
 export const logout = async ({
   msg = undefined,

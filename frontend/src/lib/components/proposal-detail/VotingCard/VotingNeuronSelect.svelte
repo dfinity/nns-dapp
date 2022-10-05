@@ -11,7 +11,7 @@
   export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let totalNeuronsVotingPower: bigint;
-  let disabled: boolean = false;
+  let disabled = false;
 
   $: disabled = voteRegistration !== undefined;
 

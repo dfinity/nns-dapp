@@ -32,7 +32,7 @@
   let currentStep: Step;
   let modal: LegacyWizardModal;
 
-  let percentageToMerge: number = 0;
+  let percentageToMerge = 0;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

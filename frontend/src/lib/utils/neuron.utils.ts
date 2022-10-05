@@ -316,7 +316,7 @@ export const isEnoughMaturityToSpawn = ({
   if (fullNeuron === undefined) {
     return false;
   }
-  const maturitySelected: number = Math.floor(
+  const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
   return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;

@@ -43,7 +43,7 @@ const initAuthStore = () => {
 
     sync: async () => {
       authClient = authClient ?? (await createAuthClient());
-      const isAuthenticated: boolean = await authClient.isAuthenticated();
+      const isAuthenticated = await authClient.isAuthenticated();
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,

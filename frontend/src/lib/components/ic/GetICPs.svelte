@@ -8,8 +8,8 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
 
-  let visible: boolean = false;
-  let transferring: boolean = false;
+  let visible = false;
+  let transferring = false;
 
   let inputValue: number | undefined = undefined;
 
@@ -22,7 +22,7 @@
     }
 
     const formData: FormData = new FormData(target);
-    const icps: number = formData.get("icp") as unknown as number;
+    const icps = formData.get("icp") as unknown as number;
 
     transferring = true;
 

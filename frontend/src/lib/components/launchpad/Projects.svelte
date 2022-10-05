@@ -20,7 +20,7 @@
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
-  let loading: boolean = false;
+  let loading = false;
   $: loading =
     isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
 </script>

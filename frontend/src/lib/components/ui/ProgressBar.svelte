@@ -1,7 +1,7 @@
 <script lang="ts">
   // Html default is 1 anyway
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress?retiredLocale=ca#attr-max
-  export let max: number = 1;
+  export let max = 1;
   export let value: number;
   export let color: "yellow" | "blue" = "yellow";
 </script>

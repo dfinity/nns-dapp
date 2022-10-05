@@ -38,7 +38,7 @@
       ? isControllableByUser
       : isControllableByUser || isControllableByHotkey;
 
-  let followeeAddress: string = "";
+  let followeeAddress = "";
 
   let topicFollowees: NeuronId[];
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];

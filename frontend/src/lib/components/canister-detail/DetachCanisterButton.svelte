@@ -10,7 +10,7 @@
 
   export let canisterId: Principal;
 
-  let showConfirmation: boolean = false;
+  let showConfirmation = false;
   const openConfirmation = () => (showConfirmation = true);
   const close = () => (showConfirmation = false);
 

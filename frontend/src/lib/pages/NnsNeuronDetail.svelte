@@ -94,7 +94,7 @@
 
   layoutBackStore.set(goBack);
 
-  let inVotingProcess: boolean = false;
+  let inVotingProcess = false;
   $: inVotingProcess =
     neuron !== undefined &&
     neuronVoting({

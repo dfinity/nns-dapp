@@ -27,8 +27,8 @@
   export let transactionFee: TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
-  export let skipHardwareWallets: boolean = false;
-  export let showManualAddress: boolean = true;
+  export let skipHardwareWallets = false;
+  export let showManualAddress = true;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -38,7 +38,7 @@
     );
   };
 
-  let max: number = 0;
+  let max = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balance.toE8s(),
     fee: transactionFee.toE8s(),

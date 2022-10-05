@@ -8,7 +8,7 @@
   export let knownNeuron: KnownNeuron;
   export let topic: Topic;
   export let neuronId: NeuronId;
-  export let isFollowed: boolean = false;
+  export let isFollowed = false;
 
   const dispatcher = createEventDispatcher();
   const toggleKnownNeuronFollowee = async () => {

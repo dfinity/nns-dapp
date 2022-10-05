@@ -374,10 +374,10 @@ export const mapProposalInfo = (
       ? undefined
       : deadlineTimestampSeconds - BigInt(nowInSeconds());
 
-  const topicKey: string = Topic[proposalInfo?.topic];
+  const topicKey = Topic[proposalInfo?.topic];
 
-  const statusKey: string = ProposalStatus[status];
-  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
+  const statusKey = ProposalStatus[status];
+  const rewardStatusKey = ProposalRewardStatus[rewardStatus];
 
   return {
     id,
@@ -476,7 +476,7 @@ const votingPeriodEndFallback = ({
   proposalTimestampSeconds,
   topic,
 }: ProposalInfo): Date => {
-  const durationInSeconds: number = [
+  const durationInSeconds = [
     Topic.ManageNeuron,
     Topic.ExchangeRate,
   ].includes(topic)

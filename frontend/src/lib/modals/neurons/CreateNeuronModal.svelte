@@ -117,7 +117,7 @@
       close();
     }
   }
-  let delayInSeconds: number = 0;
+  let delayInSeconds = 0;
 
   const chooseAccount = async ({
     detail,

@@ -132,7 +132,7 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const myCommitment: bigint = getCommitmentE8s(swapCommitment) ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
 
   return (
     summary !== undefined &&

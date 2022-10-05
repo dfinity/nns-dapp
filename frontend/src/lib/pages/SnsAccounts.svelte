@@ -14,7 +14,7 @@
   import { routeStore } from "$lib/stores/route.store";
   import { walletPathStore } from "$lib/derived/paths.derived";
 
-  let loading: boolean = false;
+  let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {

@@ -4,10 +4,10 @@
   import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
   import Value from "$lib/components/ui/Value.svelte";
 
-  export let feeOnly: boolean = false;
+  export let feeOnly = false;
   export let source: string;
   export let destination: string;
-  export let hardwareWallet: boolean = false;
+  export let hardwareWallet = false;
 </script>
 
 {#if !feeOnly}

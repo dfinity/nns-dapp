@@ -4,7 +4,7 @@
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
-  export let accepted: boolean = false;
+  export let accepted = false;
   const toggelAccept = () => (accepted = !accepted);
 </script>
 

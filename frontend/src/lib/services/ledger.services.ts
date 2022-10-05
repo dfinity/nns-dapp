@@ -41,7 +41,7 @@ export const connectToHardwareWallet = async (
       ledgerIdentity,
     });
   } catch (err: unknown) {
-    const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
+    const ledgerErrorKey = err instanceof LedgerErrorKey;
 
     toastsError({
       labelKey: ledgerErrorKey
@@ -107,7 +107,7 @@ export const getLedgerIdentity = async (
 ): Promise<LedgerIdentity> => {
   const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
 
-  const ledgerIdentifier: string = principalToAccountIdentifier(
+  const ledgerIdentifier = principalToAccountIdentifier(
     ledgerIdentity.getPrincipal()
   );
 

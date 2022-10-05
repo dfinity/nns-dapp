@@ -10,9 +10,9 @@
   );
   const { store }: TransactionContext = context;
 
-  export let feeOnly: boolean = false;
+  export let feeOnly = false;
 
-  let hardwareWallet: boolean = false;
+  let hardwareWallet = false;
   $: hardwareWallet = isAccountHardwareWallet($store.selectedAccount);
 </script>
 

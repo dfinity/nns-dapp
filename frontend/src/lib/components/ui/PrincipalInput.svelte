@@ -8,9 +8,9 @@
   export let name: string;
   export let principal: Principal | undefined = undefined;
 
-  let address: string = principal?.toText() ?? "";
+  let address = principal?.toText() ?? "";
   $: principal = getPrincipalFromString(address);
-  let showError: boolean = false;
+  let showError = false;
 
   const showErrorIfAny = () => {
     showError = address.length > 0 && principal === undefined;

@@ -50,7 +50,7 @@
     stopBusy("stake-neuron");
   };
 
-  let max: number = 0;
+  let max = 0;
   $: max = getMaxTransactionAmount({
     balance: account.balance.toE8s(),
     fee: $transactionsFeesStore.main,
