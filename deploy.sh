@@ -91,7 +91,7 @@ help_text() {
 GUESS="true"                           # figure out which steps to run, as opposed to just performing the requested steps.
 DRY_RUN="false"                        # print what would be done but don't do anything
 DFX_NETWORK=local                      # which network to deploy to
-CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
+CONFIG_FILE="./frontend/.env"          # the location of the dapp .env config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 DELETE_CANISTER_IDS="false"
@@ -326,7 +326,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
   dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
+  OWN_CANISTER_URL="$(cat "$CONFIG_FILE" | grep OWN_CANISTER_URL | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
@@ -387,7 +387,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
+  OWN_CANISTER_URL="$(cat "$CONFIG_FILE" | grep OWN_CANISTER_URL | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Opening: $OWN_CANISTER_URL"
   case "$(uname)" in
   Linux) xdg-open "$OWN_CANISTER_URL" ;;
