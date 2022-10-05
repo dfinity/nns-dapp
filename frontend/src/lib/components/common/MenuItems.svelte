@@ -13,10 +13,7 @@
   import { isRoutePath } from "$lib/utils/app-path.utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
-  import {
-    ENABLE_SNS,
-    IS_TESTNET,
-  } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "../ic/GetTokens.svelte";
   import {
