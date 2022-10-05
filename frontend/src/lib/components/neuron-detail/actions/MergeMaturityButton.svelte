@@ -25,7 +25,7 @@
 </script>
 
 {#if enoughMaturity}
-  <button class="primary" on:click={showModal}
+  <button class="primary" on:click={showModal} data-tid="merge-maturity-button"
     >{$i18n.neuron_detail.merge_maturity}</button
   >
 {:else}
@@ -41,7 +41,11 @@
       }
     )}
   >
-    <button disabled class="primary" on:click={showModal}
+    <button
+      disabled
+      class="primary"
+      on:click={showModal}
+      data-tid="merge-maturity-button"
       >{$i18n.neuron_detail.merge_maturity}</button
     >
   </Tooltip>

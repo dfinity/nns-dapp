@@ -20,9 +20,7 @@
   import { debugSelectedProposalStore } from "../lib/stores/debug.store";
   import type { ProposalId } from "@dfinity/nns";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "../lib/types/selected-proposal.context";
-  import { VOTING_UI } from "../lib/constants/environment.constants";
-  import ProposalLegacy from "../lib/components/proposal-detail/ProposalLegacy.svelte";
-  import ProposalModern from "../lib/components/proposal-detail/ProposalModern.svelte";
+  import Proposal from "../lib/components/proposal-detail/Proposal.svelte";
   import { i18n } from "../lib/stores/i18n";
 
   // Neurons are fetch on page load. No need to do it in the route.
@@ -131,10 +129,6 @@
   );
 </script>
 
-<main class={VOTING_UI}>
-  {#if VOTING_UI === "modern"}
-    <ProposalModern {neuronsReady} />
-  {:else}
-    <ProposalLegacy {neuronsReady} />
-  {/if}
+<main>
+  <Proposal {neuronsReady} />
 </main>

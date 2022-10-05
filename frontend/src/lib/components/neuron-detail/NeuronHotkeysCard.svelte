@@ -82,6 +82,10 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
 
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   .actions {
     display: flex;
     justify-content: flex-start;

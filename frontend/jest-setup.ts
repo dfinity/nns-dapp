@@ -23,7 +23,6 @@ process.env.IDENTITY_SERVICE_URL =
 process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
 process.env.FEATURE_FLAGS = JSON.stringify({
   ENABLE_SNS: true,
-  VOTING_UI: "modern",
 });
 
 global.localStorage = localStorageMock;

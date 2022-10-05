@@ -153,17 +153,31 @@ export const formatVotingPower = (value: bigint): string =>
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
-export const formattedMaturity = (neuron: NeuronInfo): string => {
-  let value = neuron?.fullNeuron?.maturityE8sEquivalent;
+/**
+ * Has the neuron the auto stake maturity feature turned on?
+ * @param {NeuronInfo} neuron The neuron which potential has the feature on
+ */
+export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
+  fullNeuron?.autoStakeMaturity === true;
 
-  if (isNullish(value)) {
-    value = BigInt(0);
-  }
+/**
+ * Format the maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `maturityE8sEquivalent` that will be formatted if a `fullNeuron` is available
+ */
+export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
+  formatMaturity(fullNeuron?.maturityE8sEquivalent);
 
-  return formatToken({
-    value,
+/**
+ * Format the staked maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `stakedMaturityE8sEquivalent` that will be formatted if a `fullNeuron` is available
+ */
+export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
+  formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
+
+const formatMaturity = (value?: bigint): string =>
+  formatToken({
+    value: isNullish(value) ? BigInt(0) : value,
   });
-};
 
 export const sortNeuronsByCreatedTimestamp = (
   neurons: NeuronInfo[]
@@ -623,8 +637,14 @@ export const votedNeuronDetails = ({
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
 
+/**
+ * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
+ */
 export const minMaturityMerge = (fee: number): number => fee;
 
+/**
+ * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
+ */
 export const hasEnoughMaturityToMerge = ({
   neuron: { fullNeuron },
   fee,
