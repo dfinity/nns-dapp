@@ -88,10 +88,10 @@ help_text() {
 }
 
 #
-GUESS="true"                           # figure out which steps to run, as opposed to just performing the requested steps.
-DRY_RUN="false"                        # print what would be done but don't do anything
-DFX_NETWORK=local                      # which network to deploy to
-CONFIG_FILE="./frontend/.env"          # the location of the dapp .env config, computed from dfx.json for the specific network.
+GUESS="true"                  # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false"               # print what would be done but don't do anything
+DFX_NETWORK=local             # which network to deploy to
+CONFIG_FILE="./frontend/.env" # the location of the dapp .env config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 DELETE_CANISTER_IDS="false"

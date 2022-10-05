@@ -41,9 +41,7 @@
       const urlParams: URLSearchParams = new URLSearchParams(
         window.location.search
       );
-      const redirectPath = `/#/${
-        urlParams.get("redirect") ?? "accounts"
-      }`;
+      const redirectPath = `/#/${urlParams.get("redirect") ?? "accounts"}`;
 
       // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack
       routeStore.replace({ path: redirectPath });
