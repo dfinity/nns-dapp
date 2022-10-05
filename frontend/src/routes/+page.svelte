@@ -22,7 +22,7 @@
 
   const unsubscribeAuth: Unsubscriber = authStore.subscribe(
     async (auth: AuthStore) => {
-      await worker?.syncAuthIdle(auth);
+      worker?.syncAuthIdle(auth);
 
       if (!auth.identity) {
         return;
