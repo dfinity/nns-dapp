@@ -117,7 +117,9 @@ const loadSnsWrappers = async ({
 
   return results
     .filter(({ status }) => status === "fulfilled")
-    .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore we know for sure the type is PromiseFulfilledResult and not PromiseSettledResult since we filter with previous line
+      .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
 };
 
 const initWrappers = async ({
