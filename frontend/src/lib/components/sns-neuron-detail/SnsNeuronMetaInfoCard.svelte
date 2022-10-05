@@ -19,8 +19,9 @@
   import { isNullish, nonNullish } from "../../utils/utils";
   import { NeuronState } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
-  const { store }: SelectedSnsNeuronContext =
+  const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
@@ -59,7 +60,7 @@
           />
         {:else if neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked}
           <DissolveSnsNeuronButton
-            neuronId={neuron.id}
+            neuronId={fromDefinedNullable(neuron.id)}
             {neuronState}
             {reloadContext}
           />
