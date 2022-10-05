@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import LegacyWizardModal from "$lib/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
