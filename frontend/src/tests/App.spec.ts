@@ -4,9 +4,9 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import { initApp } from "../lib/services/app.services";
-import { worker } from "../lib/services/worker.services";
+import { initWorker } from "../lib/services/worker.services";
 import { authStore } from "../lib/stores/auth.store";
-import App from "../routes/App.svelte";
+import App from "../routes/+page.svelte";
 import {
   authStoreMock,
   mockIdentity,
@@ -14,9 +14,9 @@ import {
 } from "./mocks/auth.store.mock";
 
 jest.mock("../lib/services/worker.services", () => ({
-  worker: {
-    syncAuthIdle: jest.fn(() => Promise.resolve()),
-  },
+  initWorker: jest.fn(() => Promise.resolve({ syncAuthIdle: () => {
+    // Do nothing
+    } })),
 }));
 
 jest.mock("../lib/services/app.services", () => ({
@@ -54,6 +54,6 @@ describe("App", () => {
       identity: mockIdentity,
     });
 
-    expect(worker.syncAuthIdle).toHaveBeenCalled();
+    expect(initWorker).toHaveBeenCalled();
   });
 });
