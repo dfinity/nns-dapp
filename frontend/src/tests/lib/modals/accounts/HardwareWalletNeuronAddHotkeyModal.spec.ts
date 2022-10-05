@@ -18,7 +18,7 @@ import {
 } from "../../../mocks/hardware-wallet-neurons.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
-import HardwareWalletAddNeuronHotkeyTest from "$lib/components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
+import HardwareWalletAddNeuronHotkeyTest from "../lib/components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
 jest.mock("$lib/proxy/ledger.services.proxy");
 
