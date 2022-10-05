@@ -24,7 +24,7 @@
     disabled={disableInfiniteScroll || loading}
   >
     {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-      <ProposalCard {hidden} {proposalInfo} layout="modern" />
+      <ProposalCard {hidden} {proposalInfo} />
     {/each}
   </InfiniteScroll>
 

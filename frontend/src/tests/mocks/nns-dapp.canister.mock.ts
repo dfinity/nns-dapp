@@ -1,10 +1,10 @@
 import { AccountIdentifier } from "@dfinity/nns";
-import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import type {
   AccountDetails,
   RegisterHardwareWalletRequest,
   SubAccountDetails,
-} from "../../lib/canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   mockAccountDetails,
   mockMainAccount,

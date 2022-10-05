@@ -5,9 +5,9 @@ import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
   type ProjectDetailStore,
-} from "../../lib/types/project-detail.context";
-import type { SnsSummary, SnsSwapCommitment } from "../../lib/types/sns";
-import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
+} from "$lib/types/project-detail.context";
+import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import ContextWrapperTest from "../lib/omponents/ContextWrapperTest.svelte";
 
 export const renderContextCmp = ({
   Component,

@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { HardwareWalletNeuronsStore } from "../../lib/types/hardware-wallet-neurons.context";
+import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neurons.context";
 import { mockFullNeuron, mockNeuron } from "./neurons.mock";
 
 export const mockNeuronStake = {

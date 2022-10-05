@@ -56,7 +56,7 @@ const listSnses = async ({
   );
 };
 
-const initSns = async ({
+export const initSns = async ({
   agent,
   rootCanisterId,
   certified,

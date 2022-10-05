@@ -1,6 +1,6 @@
 import { TokenAmount } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
-import type { Account } from "../../lib/types/account";
+import type { Account } from "$lib/types/account";
 import { mockPrincipal } from "./auth.store.mock";
 
 export const mockSnsMainAccount: Account = {

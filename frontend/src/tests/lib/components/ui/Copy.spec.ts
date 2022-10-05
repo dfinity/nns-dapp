@@ -6,7 +6,7 @@ import Copy from "$lib/components/ui/Copy.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("Copy", () => {
-  const value: string = "test-copy";
+  const value = "test-copy";
   const props: { value: string } = { value };
 
   it("should render an accessible button", () => {

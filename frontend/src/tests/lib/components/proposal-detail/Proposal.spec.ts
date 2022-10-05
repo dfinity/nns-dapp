@@ -4,16 +4,16 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
-import ProposalModernTest from "./ProposalModernTest.svelte";
+import ProposalTest from "./ProposalTest.svelte";
 
 jest.mock("$lib/utils/html.utils", () => ({
   markdownToSanitizedHTML: (value) => Promise.resolve(value),
   sanitize: (value) => value,
 }));
 
-describe("ProposalModern", () => {
+describe("Proposal", () => {
   const renderProposalModern = (neuronsReady: boolean) =>
-    render(ProposalModernTest, {
+    render(ProposalTest, {
       props: {
         proposalInfo: mockProposalInfo,
         neuronsReady,

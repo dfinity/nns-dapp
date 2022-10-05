@@ -7,7 +7,7 @@ import {
   type Ballot,
 } from "@dfinity/nns";
 import type { Subscriber } from "svelte/store";
-import type { ProposalsStore } from "../../lib/stores/proposals.store";
+import type { ProposalsStore } from "$lib/stores/proposals.store";
 import { mockNeuron } from "./neurons.mock";
 
 export const deadlineTimestampSeconds = BigInt(

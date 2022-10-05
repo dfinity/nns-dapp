@@ -1,9 +1,3 @@
-import {
-  addNeuronPermissions,
-  querySnsNeuron,
-  querySnsNeurons,
-  removeNeuronPermissions,
-} from "$lib/api/sns.api";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
@@ -13,6 +7,13 @@ import {
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
+import {
+  addNeuronPermissions,
+  disburse as disburseApi,
+  querySnsNeuron,
+  querySnsNeurons,
+  removeNeuronPermissions,
+} from "../api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -199,6 +200,32 @@ export const removeHotkey = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_remove_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const disburse = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await disburseApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_disburse",
       err,
     });
     return { success: false };

@@ -60,7 +60,7 @@ describe("MergeMaturityModal", () => {
     selectMaturityButton && (await fireEvent.click(selectMaturityButton));
 
     await waitFor(() =>
-      expect(queryByTestId("confirm-action-screen")).toBeInTheDocument()
+      expect(queryByTestId("confirm-action-button")).toBeInTheDocument()
     );
 
     const confirmButton = queryByTestId("confirm-action-button");

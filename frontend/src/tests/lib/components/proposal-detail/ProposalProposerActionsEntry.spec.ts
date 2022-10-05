@@ -2,13 +2,14 @@
  * @jest-environment jsdom
  */
 
-import ProposalActions from "$lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
-import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
+import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import {
   mockProposalInfo,
   proposalActionMotion,
+  proposalActionNnsFunction21,
   proposalActionRewardNodeProvider,
 } from "../../../mocks/proposal.mock";
 
@@ -24,10 +25,9 @@ const proposalWithRewardNodeProviderAction = {
 
 describe("ProposalProposerActionsEntry", () => {
   it("should render action key", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -36,10 +36,9 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render action fields", () => {
-    const { getByText } = render(ProposalActions, {
+    const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -51,10 +50,9 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render object fields as JSON", () => {
-    const nodeProviderActions = render(ProposalActions, {
+    const nodeProviderActions = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithRewardNodeProviderAction,
-        proposalId: mockProposalInfo.id,
       },
     });
 
@@ -62,13 +60,36 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render text fields as plane text", () => {
-    const motionActions = render(ProposalActions, {
+    const motionActions = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithMotionAction,
-        proposalId: mockProposalInfo.id,
       },
     });
 
     expect(motionActions.queryAllByTestId("json").length).toBe(0);
+  });
+
+  it("should render nnsFunction id", () => {
+    const proposalWithNnsFunctionAction = {
+      ...mockProposalInfo.proposal,
+      action: proposalActionNnsFunction21,
+    } as Proposal;
+
+    const { getByText } = render(ProposalProposerActionsEntry, {
+      props: {
+        proposal: proposalWithNnsFunctionAction,
+      },
+    });
+
+    const [key, value] = Object.entries(
+      (
+        proposalWithNnsFunctionAction?.action as {
+          ExecuteNnsFunction: object;
+        }
+      ).ExecuteNnsFunction
+    )[0];
+
+    expect(getByText(key)).toBeInTheDocument();
+    expect(getByText(value)).toBeInTheDocument();
   });
 });

@@ -1,20 +1,17 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import { i18n } from "$lib/stores/i18n";
+  import { i18n } from "../../stores/i18n";
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { definedNeuronsStore } from "../../stores/neurons.store";
+  import { replacePlaceholders } from "../../utils/i18n.utils";
   import {
     formatVotingPower,
     votedNeuronDetails,
     type CompactNeuronInfo,
-  } from "$lib/utils/neuron.utils";
+  } from "../../utils/neuron.utils";
   import Value from "../ui/Value.svelte";
-  import type { SvelteComponent } from "svelte";
-  import { VOTING_UI } from "$lib/constants/environment.constants";
-  import ContentCell from "../ui/ContentCell.svelte";
+  import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -44,14 +41,10 @@
       proposal: proposalInfo,
     });
   }
-
-  // TODO(L2-965): delete legacy component <CardInfo />, inline styles (.content-cell-title and .content-cell-details) and delete ContentCell
-  let cmp: typeof SvelteComponent =
-    VOTING_UI === "legacy" ? CardInfo : ContentCell;
 </script>
 
 {#if neuronsVotedForProposal.length}
-  <svelte:component this={cmp}>
+  <ProposalContentCell>
     <h4 slot="start">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
@@ -70,7 +63,7 @@
         </li>
       {/each}
     </ul>
-  </svelte:component>
+  </ProposalContentCell>
 {/if}
 
 <style lang="scss">

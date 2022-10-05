@@ -1,5 +1,5 @@
 import { Vote, type Action, type ProposalInfo } from "@dfinity/nns";
-import type { VoteRegistration } from "../../lib/stores/vote-registration.store";
+import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 import { deadlineTimestampSeconds } from "./proposals.store.mock";
 
 /**

@@ -5,9 +5,9 @@ import type {
   AccountDetails,
   HardwareWalletAccountDetails,
   SubAccountDetails,
-} from "../../lib/canisters/nns-dapp/nns-dapp.types";
-import type { AccountsStore } from "../../lib/stores/accounts.store";
-import type { Account } from "../../lib/types/account";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { Account } from "$lib/types/account";
 
 export const mockMainAccount: Account = {
   identifier:

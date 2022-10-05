@@ -6,19 +6,15 @@
     type ProposalId,
     ProposalStatus,
   } from "@dfinity/nns";
-  import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import ProposalMeta from "./ProposalMeta.svelte";
-  import type { Color } from "$lib/types/theme";
-  import Tag from "$lib/components/ui/Tag.svelte";
+  import { i18n } from "../../stores/i18n";
+  import { routeStore } from "../../stores/route.store";
+  import { AppPath } from "../../constants/routes.constants";
+  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import type { Color } from "../../types/theme";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
-  // TODO(L2-965): delete property and use modern
-  export let layout: "modern" | "legacy" = "legacy";
-  import Value from "$lib/components/ui/Value.svelte";
+  import Value from "../ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import {keyOfOptional} from "$lib/utils/utils";
 
@@ -42,56 +38,45 @@
 </script>
 
 <li class:hidden>
-  {#if layout === "legacy"}
-    <Card role="link" on:click={showProposal} testId="proposal-card">
-      <div slot="start" class="title-container">
-        <p class="title" {title}>{title}</p>
-      </div>
-      <Tag slot="end" {color}>{keyOfOptional({obj: $i18n.status, key: ProposalStatus[status]}) ?? ""}</Tag>
+  <Card
+    role="link"
+    on:click={showProposal}
+    testId="proposal-card"
+    withArrow={true}
+  >
+    <div class="card-meta id">
+      <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+    </div>
 
-      <ProposalMeta {proposalInfo} showTopic />
-    </Card>
-  {:else}
-    <Card
-      role="link"
-      on:click={showProposal}
-      testId="proposal-card"
-      withArrow={true}
-    >
-      <div class="card-meta id">
-        <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
-      </div>
+    <div class="card-meta">
+      <span>{$i18n.proposal_detail.type_prefix}</span>
+      <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
+    </div>
 
+    <div class="card-meta">
+      <span>{$i18n.proposal_detail.topic_prefix}</span>
+      <Value>{topic ?? ""}</Value>
+    </div>
+
+    {#if proposer !== undefined}
       <div class="card-meta">
-        <span>{$i18n.proposal_detail.type_prefix}</span>
-        <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
+        <span>{$i18n.proposal_detail.proposer_prefix}</span>
+        <Value>{proposer}</Value>
       </div>
+    {/if}
 
-      <div class="card-meta">
-        <span>{$i18n.proposal_detail.topic_prefix}</span>
-        <Value>{topic ?? ""}</Value>
-      </div>
+    <blockquote class="title-placeholder">
+      <p class="description">{title}</p>
+    </blockquote>
 
-      {#if proposer !== undefined}
-        <div class="card-meta">
-          <span>{$i18n.proposal_detail.proposer_prefix}</span>
-          <Value>{proposer}</Value>
-        </div>
-      {/if}
+    <div class="card-meta">
+      <p class={`${color ?? ""} status`}>
+        {keyOfOptional({obj: status, key: ProposalStatus[status]}) ?? ""}
+      </p>
 
-      <blockquote class="title-placeholder">
-        <p class="description">{title}</p>
-      </blockquote>
-
-      <div class="card-meta">
-        <p class={`${color ?? ""} status`}>
-          {keyOfOptional({obj: $i18n.status, key: ProposalStatus[status]}) ?? ""}
-        </p>
-
-        <ProposalCountdown {proposalInfo} />
-      </div>
-    </Card>
-  {/if}
+      <ProposalCountdown {proposalInfo} />
+    </div>
+  </Card>
 </li>
 
 <style lang="scss">

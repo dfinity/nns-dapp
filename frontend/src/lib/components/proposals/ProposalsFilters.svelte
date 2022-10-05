@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { ProposalsFilterModalProps } from "$lib/types/proposals";
-  import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
-  import { i18n } from "$lib/stores/i18n";
+  import type { ProposalsFilterModalProps } from "../../types/proposals";
+  import ProposalsFilterModal from "../../modals/proposals/ProposalsFilterModal.svelte";
+  import Checkbox from "../ui/Checkbox.svelte";
+  import { i18n } from "../../stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-  import { enumsExclude } from "$lib/utils/enum.utils";
+  import { proposalsFiltersStore } from "../../stores/proposals.store";
+  import { enumsExclude } from "../../utils/enum.utils";
   import FiltersButton from "../ui/FiltersButton.svelte";
-  import { VOTING_UI } from "$lib/constants/environment.constants";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -37,7 +36,7 @@
   }).length;
 </script>
 
-<div class={`filters ${VOTING_UI}`}>
+<div class="filters">
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
@@ -94,11 +93,6 @@
     display: flex;
     flex-wrap: wrap;
     padding: 0 0 var(--padding-3x);
-
-    // TODO(L2-965): delete legacy style
-    &.legacy {
-      padding: var(--padding) 0;
-    }
 
     --select-flex-direction: row-reverse;
 

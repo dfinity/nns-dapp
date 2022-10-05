@@ -1,9 +1,10 @@
-import type { Account } from "$lib/types/account";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { encodeSnsAccount } from "@dfinity/sns";
+import type { Account } from "../types/account";
+import { logWithTimestamp } from "../utils/dev.utils";
+import { mapOptionalToken } from "../utils/sns.utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getSnsAccounts = async ({
@@ -23,14 +24,14 @@ export const getSnsAccounts = async ({
     certified,
   });
 
+  const snsMainAccount = { owner: identity.getPrincipal() };
   const [mainBalanceE8s, metadata] = await Promise.all([
-    balance({ owner: identity.getPrincipal() }),
+    balance(snsMainAccount),
     ledgerMetadata({}),
   ]);
 
   const mainAccount: Account = {
-    // TODO: Implement string representation https://dfinity.atlassian.net/browse/GIX-1025
-    identifier: "sns-main-account-identifier",
+    identifier: encodeSnsAccount(snsMainAccount),
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,

@@ -3,11 +3,11 @@ import type {
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
-import type { SnsSummarySwap } from "../../lib/types/sns";
+import type { SnsSummarySwap } from "$lib/types/sns";
 import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
-} from "../../lib/types/sns.query";
+} from "$lib/types/sns.query";
 import {
   mockDerived,
   mockQueryMetadata,

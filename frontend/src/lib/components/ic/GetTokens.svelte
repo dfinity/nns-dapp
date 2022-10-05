@@ -3,31 +3,42 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import { Modal } from "@dfinity/gix-components";
-  import Input from "$lib/components/ui/Input.svelte";
-  import { getICPs } from "$lib/services/dev.services";
+  import Input from "../ui/Input.svelte";
+  import { getICPs, getTokens } from "../../services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError } from "../../stores/toasts.store";
+  import { get } from "svelte/store";
+  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
+  import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { ICPToken, type Token } from "@dfinity/nns";
+  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
 
   let visible = false;
   let transferring = false;
 
   let inputValue: number | undefined = undefined;
 
-  const onSubmit = async ({ target }) => {
-    if (invalidForm) {
+  const onSubmit = async () => {
+    if (invalidForm || inputValue === undefined) {
       toastsError({
         labelKey: "Invalid ICPs input.",
       });
       return;
     }
 
-    const formData: FormData = new FormData(target);
-    const icps = formData.get("icp") as unknown as number;
-
     transferring = true;
 
+    const selectedProjectId = get(snsProjectSelectedStore);
+
     try {
-      await getICPs(icps);
+      if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
+        await getICPs(inputValue);
+      } else {
+        await getTokens({
+          tokens: inputValue,
+          rootCanisterId: selectedProjectId,
+        });
+      }
 
       reset();
     } catch (err: unknown) {
@@ -50,20 +61,23 @@
   let invalidForm: boolean;
 
   $: invalidForm = inputValue === undefined || inputValue <= 0;
+
+  let token: Token;
+  $: token = $snsTokenSymbolSelectedStore || ICPToken;
 </script>
 
 <button
   role="menuitem"
   data-tid="get-icp-button"
-  on:click|stopPropagation={() => (visible = true)}
+  on:click|preventDefault|stopPropagation={() => (visible = true)}
   class="open"
 >
   <IconAccountBalance />
-  <span>Get ICPs</span>
+  <span>{`Get ${token.symbol}`}</span>
 </button>
 
 <Modal {visible} role="alert" on:nnsClose={onClose}>
-  <span slot="title">Get ICPs</span>
+  <span slot="title">{`Get ${token.symbol}`}</span>
 
   <form
     id="get-icp-form"
@@ -73,8 +87,8 @@
     <span class="label">How much?</span>
 
     <Input
-      placeholderLabelKey="core.icp"
-      name="icp"
+      placeholderLabelKey="core.amount"
+      name="tokens"
       inputType="icp"
       bind:value={inputValue}
       disabled={transferring}
@@ -92,7 +106,7 @@
     {#if transferring}
       <Spinner />
     {:else}
-      Get
+      Get tokens
     {/if}
   </button>
 </Modal>
@@ -136,5 +150,9 @@
     flex-direction: column;
 
     padding: var(--padding-2x) var(--padding);
+  }
+
+  button.primary {
+    min-width: var(--padding-8x);
   }
 </style>

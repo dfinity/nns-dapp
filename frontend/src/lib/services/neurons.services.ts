@@ -1,6 +1,17 @@
-import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
+import {
+  ICPToken,
+  TokenAmount,
+  Topic,
+  type NeuronId,
+  type NeuronInfo,
+} from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
+import { makeDummyProposals as makeDummyProposalsApi } from "../api/dev.api";
 import {
   addHotkey as addHotkeyApi,
+  autoStakeMaturity,
   claimOrRefreshNeuron,
   disburse as disburseApi,
   increaseDissolveDelay,
@@ -14,58 +25,49 @@ import {
   setFollowees,
   spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
+  stakeMaturity as stakeMaturityApi,
   stakeNeuron as stakeNeuronApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
-} from "$lib/api/governance.api";
-import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import {
-  toastsError,
-  toastsShow,
-  toastsSuccess,
-} from "$lib/stores/toasts.store";
-import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-import type { Account } from "$lib/types/account";
-import { InsufficientAmountError } from "$lib/types/common.errors";
+} from "../api/governance.api";
+import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
+import { IS_TESTNET } from "../constants/environment.constants";
+import { E8S_PER_ICP } from "../constants/icp.constants";
+import { MIN_VERSION_MERGE_MATURITY } from "../constants/neurons.constants";
+import { AppPath } from "../constants/routes.constants";
+import type { LedgerIdentity } from "../identities/ledger.identity";
+import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
+import { startBusy, stopBusy } from "../stores/busy.store";
+import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
+import { toastsError, toastsShow, toastsSuccess } from "../stores/toasts.store";
+import { mainTransactionFeeStore } from "../stores/transaction-fees.store";
+import type { Account } from "../types/account";
+import { InsufficientAmountError } from "../types/common.errors";
 import {
   CannotBeMerged,
   NotAuthorizedNeuronError,
   NotFoundError,
-} from "$lib/types/neurons.errors";
+} from "../types/neurons.errors";
 import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
-} from "$lib/utils/accounts.utils";
-import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
-import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
-import { translate } from "$lib/utils/i18n.utils";
+} from "../utils/accounts.utils";
+import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
+import {
+  errorToString,
+  mapNeuronErrorToToastMessage,
+} from "../utils/error.utils";
+import { translate } from "../utils/i18n.utils";
 import {
   canBeMerged,
   followeesByTopic,
+  hasAutoStakeMaturityOn,
   hasJoinedCommunityFund,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
   userAuthorizedNeuron,
-} from "$lib/utils/neuron.utils";
-import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import {
-  ICPToken,
-  TokenAmount,
-  Topic,
-  type NeuronId,
-  type NeuronInfo,
-} from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
+} from "../utils/neuron.utils";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
@@ -358,6 +360,31 @@ export const toggleCommunityFund = async (
   }
 };
 
+export const toggleAutoStakeMaturity = async (
+  neuron: NeuronInfo
+): Promise<{ success: boolean; err?: string }> => {
+  try {
+    const { neuronId } = neuron;
+
+    const identity: Identity = await getIdentityOfControllerByNeuronId(
+      neuronId
+    );
+
+    await autoStakeMaturity({
+      neuronId,
+      identity,
+      autoStake: !hasAutoStakeMaturityOn(neuron),
+    });
+
+    await getAndLoadNeuron(neuron.neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+    return { success: false, err: errorToString(err) };
+  }
+};
+
 export const mergeNeurons = async ({
   sourceNeuronId,
   targetNeuronId,
@@ -595,6 +622,30 @@ export const mergeMaturity = async ({
     });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+
+    await getAndLoadNeuron(neuronId);
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
+  }
+};
+
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+}: {
+  neuronId: NeuronId;
+  percentageToStake: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getIdentityOfControllerByNeuronId(
+      neuronId
+    );
+
+    await stakeMaturityApi({ neuronId, percentageToStake, identity });
 
     await getAndLoadNeuron(neuronId);
 
@@ -887,7 +938,7 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
       labelKey: "neuron_detail.dummy_proposal_success",
     });
     return;
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
   }

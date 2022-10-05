@@ -1,34 +1,4 @@
 import {
-  participateInSnsSwap,
-  queryAllSnsMetadata,
-  querySnsMetadata,
-  querySnsSwapCommitment,
-  querySnsSwapCommitments,
-  querySnsSwapState,
-  querySnsSwapStates,
-} from "$lib/api/sns.api";
-import { AppPath } from "$lib/constants/routes.constants";
-import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
-import {
-  snsProposalsStore,
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
-import { toastsError } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import type { Account } from "$lib/types/account";
-import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import type { SnsSwapCommitment } from "$lib/types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
-import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
-import { toToastError } from "$lib/utils/error.utils";
-import {
-  commitmentExceedsAmountLeft,
-  validParticipation,
-} from "$lib/utils/projects.utils";
-import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import {
   Topic,
   type AccountIdentifier,
   type ProposalInfo,
@@ -36,6 +6,36 @@ import {
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import {
+  participateInSnsSwap,
+  queryAllSnsMetadata,
+  querySnsMetadata,
+  querySnsSwapCommitment,
+  querySnsSwapCommitments,
+  querySnsSwapState,
+  querySnsSwapStates,
+} from "../api/sns.api";
+import { AppPath } from "../constants/routes.constants";
+import { projectsStore, type SnsFullProject } from "../stores/projects.store";
+import {
+  snsProposalsStore,
+  snsQueryStore,
+  snsSwapCommitmentsStore,
+} from "../stores/sns.store";
+import { toastsError } from "../stores/toasts.store";
+import { transactionsFeesStore } from "../stores/transaction-fees.store";
+import type { Account } from "../types/account";
+import { LedgerErrorKey } from "../types/ledger.errors";
+import type { SnsSwapCommitment } from "../types/sns";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import { assertEnoughAccountFunds } from "../utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
+import { toToastError } from "../utils/error.utils";
+import {
+  commitmentExceedsAmountLeft,
+  validParticipation,
+} from "../utils/projects.utils";
+import { getSwapCanisterAccount } from "../utils/sns.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
@@ -287,7 +287,7 @@ export const participateInSwap = async ({
       // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
       const openStateError =
         error instanceof Error &&
-        error.message?.includes("'open' state") === true;
+        error.message?.includes("OPEN state") === true;
       // If it's the last commitment, it means that one more e8 is not a valid participation.
       const lastCommitment =
         project?.summary !== undefined &&

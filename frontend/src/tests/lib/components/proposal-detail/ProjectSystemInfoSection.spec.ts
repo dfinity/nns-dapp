@@ -2,13 +2,20 @@
  * @jest-environment jsdom
  */
 
-import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
-import { secondsToDateTime } from "$lib/utils/date.utils";
-import { mapProposalInfo } from "$lib/utils/proposals.utils";
+import type { Proposal } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
+import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
+import { secondsToDateTime } from "$lib/utils/date.utils";
+import {
+  getNnsFunctionKey,
+  mapProposalInfo,
+} from "$lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import {
+  mockProposalInfo,
+  proposalActionNnsFunction21,
+} from "../../../mocks/proposal.mock";
 
 describe("ProposalSystemInfoSection", () => {
   const {
@@ -255,5 +262,28 @@ describe("ProposalSystemInfoSection", () => {
     const { getByTestId } = renderResult;
 
     expect(() => getByTestId(`proposal-system-info-proposer-value`)).toThrow();
+  });
+
+  it("should render nnsFunction name", async () => {
+    const proposalWithNnsFunctionAction = {
+      ...mockProposalInfo.proposal,
+      action: proposalActionNnsFunction21,
+    } as Proposal;
+
+    const { getByTestId } = render(ProposalSystemInfoSection, {
+      props: {
+        proposalInfo: {
+          ...mockProposalInfo,
+          proposal: proposalWithNnsFunctionAction,
+        },
+      },
+    });
+
+    const nnsFunctionKey = getNnsFunctionKey(proposalWithNnsFunctionAction);
+    const fnName = en.nns_functions[nnsFunctionKey as string];
+
+    expect(getByTestId("proposal-system-info-type-value")?.textContent).toEqual(
+      fnName
+    );
   });
 });

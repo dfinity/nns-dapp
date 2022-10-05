@@ -1,16 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { listSnsProposals } from "$lib/services/sns.services";
-  import { i18n } from "$lib/stores/i18n";
+  import { listSnsProposals } from "../../services/sns.services";
+  import { i18n } from "../../stores/i18n";
   import {
     openSnsProposalsStore,
     snsProposalsStore,
-  } from "$lib/stores/sns.store";
-  import { isNullish } from "$lib/utils/utils";
-  import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
-  import ProjectProposalCard from "./ProposalCard.svelte";
-  import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
-  import { VOTING_UI } from "$lib/constants/environment.constants";
+  } from "../../stores/sns.store";
+  import { isNullish } from "../../utils/utils";
+  import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
+  import ProposalCard from "../proposals/ProposalCard.svelte";
 
   let loading = false;
   $: loading = isNullish($snsProposalsStore);
@@ -34,11 +32,7 @@
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
-      {#if VOTING_UI === "legacy"}
-        <ProjectProposalCard {proposalInfo} />
-      {:else}
-        <ProposalCard {proposalInfo} layout="modern" />
-      {/if}
+      <ProposalCard {proposalInfo} />
     {/each}
   </ul>
 {/if}

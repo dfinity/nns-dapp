@@ -1,29 +1,18 @@
 <script lang="ts">
-  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
+  import { type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
-  import {
-    mapProposalInfo,
-    selectedNeuronsVotingPower,
-  } from "$lib/utils/proposals.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { busy } from "$lib/stores/busy.store";
+  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
+  import { i18n } from "../../../stores/i18n";
+  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import { busy } from "../../../stores/busy.store";
   import { Spinner } from "@dfinity/gix-components";
-  import { sanitize } from "$lib/utils/html.utils";
-  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+  import type { VoteRegistration } from "../../../stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
   export let voteRegistration: VoteRegistration | undefined = undefined;
-  export let layout: "legacy" | "modern";
-
-  let id: ProposalId | undefined;
-  let topic: string | undefined;
-  let title: string | undefined;
-  $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
 
   let total: bigint;
   let disabled = true;
@@ -55,21 +44,9 @@
       voteType: selectedVoteType,
     });
   };
-
-  // TODO(L2-965): delete question
 </script>
 
-{#if layout === "legacy"}
-  <p class="question">
-    {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-      $id: `${id ?? ""}`,
-      $title: sanitize(title ?? ""),
-      $topic: sanitize(topic ?? ""),
-    })}
-  </p>
-{/if}
-
-<div role="toolbar" class={`${layout}`} data-tid="voting-confirmation-toolbar">
+<div role="toolbar" data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
@@ -109,27 +86,17 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   [role="toolbar"] {
-    padding: var(--padding) 0 0;
-
     display: flex;
-    gap: var(--padding);
 
-    &.modern {
-      padding: var(--padding-2x) var(--padding-2x) 0;
-      justify-content: center;
-      gap: var(--padding-2x);
+    padding: var(--padding-2x) var(--padding-2x) 0;
+    justify-content: center;
+    gap: var(--padding-2x);
 
-      @include media.min-width(large) {
-        padding: 0;
-        justify-content: flex-start;
-        gap: var(--padding);
-      }
+    @include media.min-width(large) {
+      padding: 0;
+      justify-content: flex-start;
+      gap: var(--padding);
     }
-  }
-
-  .question {
-    margin: var(--padding-4x) 0 var(--padding-2x);
-    word-break: break-word;
   }
 
   button {

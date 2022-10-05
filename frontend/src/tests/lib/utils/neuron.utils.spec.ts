@@ -27,6 +27,7 @@ import {
   followeesByTopic,
   followeesNeurons,
   formattedMaturity,
+  formattedStakedMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
@@ -355,6 +356,48 @@ describe("neuron-utils", () => {
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
+    });
+  });
+
+  describe("formattedStakedMaturity", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
+    });
+
+    it("returns staked maturity with two decimals", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("1.00");
+    });
+
+    it("returns 0 when staked maturity is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          stakedMaturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
     });
   });
 

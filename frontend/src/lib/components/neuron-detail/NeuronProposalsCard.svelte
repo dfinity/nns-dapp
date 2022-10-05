@@ -35,6 +35,10 @@
 </CardInfo>
 
 <style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   div {
     display: flex;
     justify-content: flex-start;

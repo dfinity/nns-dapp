@@ -4,7 +4,7 @@
   import { loadProposal } from "$lib/services/proposals.services";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import ProposalSummary from "$lib/components/proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import {keyOf} from "$lib/utils/utils";
 
