@@ -8,10 +8,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import {
-    layoutBackStore,
-    layoutTitleStore,
-  } from "$lib/stores/layout.store";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { get, writable } from "svelte/store";
   import type {
     SelectedProposalContext,

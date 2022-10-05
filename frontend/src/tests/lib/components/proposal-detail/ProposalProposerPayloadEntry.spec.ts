@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import type { Proposal } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
+import type { Proposal } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,

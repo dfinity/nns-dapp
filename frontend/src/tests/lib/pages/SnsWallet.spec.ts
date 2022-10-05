@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { render, waitFor } from "@testing-library/svelte";
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
+import { render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsAccountsStoreSubscribe,

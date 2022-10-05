@@ -24,7 +24,10 @@ export const translate = ({
   }
 
   const firstKey = split[0];
-  const key = translations !== undefined ? translations[firstKey] : get(i18n)[firstKey as keyof I18n];
+  const key =
+    translations !== undefined
+      ? translations[firstKey]
+      : get(i18n)[firstKey as keyof I18n];
 
   if (key === undefined) {
     return labelKey;

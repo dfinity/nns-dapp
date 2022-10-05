@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { routeStore } from "$lib/stores/route.store";
+import type { NeuronInfo } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,

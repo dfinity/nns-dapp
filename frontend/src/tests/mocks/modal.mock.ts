@@ -1,12 +1,12 @@
-import type { RenderResult } from "@testing-library/svelte";
-import { render, waitFor } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { writable } from "svelte/store";
 import type { Account } from "$lib/types/account";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountStore,
 } from "$lib/types/selected-account.context";
+import type { RenderResult } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
 const waitModalIntroEnd = async ({

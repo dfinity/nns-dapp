@@ -16,7 +16,7 @@
   export let hidden = false;
   import Value from "../ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
-  import {keyOfOptional} from "$lib/utils/utils";
+  import { keyOfOptional } from "$lib/utils/utils";
 
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
@@ -71,7 +71,7 @@
 
     <div class="card-meta">
       <p class={`${color ?? ""} status`}>
-        {keyOfOptional({obj: status, key: ProposalStatus[status]}) ?? ""}
+        {keyOfOptional({ obj: status, key: ProposalStatus[status] }) ?? ""}
       </p>
 
       <ProposalCountdown {proposalInfo} />

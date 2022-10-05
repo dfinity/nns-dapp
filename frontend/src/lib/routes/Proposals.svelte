@@ -17,10 +17,7 @@
   } from "$lib/services/proposals.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
-  import {
-    definedNeuronsStore,
-    neuronsStore,
-  } from "$lib/stores/neurons.store";
+  import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import ProposalsList from "$lib/components/proposals/ProposalsList.svelte";
   import {

@@ -6,7 +6,9 @@
 
   export let neuron: NeuronInfo | SnsNeuron;
   export let modal: typeof SvelteComponent;
-  export let reloadContext: ((params: { forceFetch: boolean }) => Promise<void>) | undefined = undefined;
+  export let reloadContext:
+    | ((params: { forceFetch: boolean }) => Promise<void>)
+    | undefined = undefined;
 
   let showModal = false;
   const openModal = () => (showModal = true);

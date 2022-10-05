@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { routeStore } from "$lib/stores/route.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";

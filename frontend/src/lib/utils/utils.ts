@@ -285,5 +285,17 @@ export const removeKeys = <T extends Record<string, unknown>>({
  * Access an object key with an index as string.
  * Cast to avoid issue "No index signature with a parameter of type 'string' was found on type '...'"
  */
-export const keyOf = <T>({obj, key}: {obj: T, key: string | keyof T}): T[keyof T] => obj[key as keyof T];
-export const keyOfOptional = <T>({obj, key}: {obj: T | undefined, key: string | keyof T}): T[keyof T] | undefined => obj?.[key as keyof T];
+export const keyOf = <T>({
+  obj,
+  key,
+}: {
+  obj: T;
+  key: string | keyof T;
+}): T[keyof T] => obj[key as keyof T];
+export const keyOfOptional = <T>({
+  obj,
+  key,
+}: {
+  obj: T | undefined;
+  key: string | keyof T;
+}): T[keyof T] | undefined => obj?.[key as keyof T];

@@ -1,3 +1,4 @@
+import { keyOf } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
   Topic,
@@ -32,7 +33,6 @@ import {
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import { loadProposal } from "./proposals.services";
-import {keyOf} from "$lib/utils/utils";
 
 /**
  * Create Makes multiple registerVote calls (1 per neuronId).
@@ -136,7 +136,7 @@ const createRegisterVotesToast = ({
     spinner: true,
     substitutions: {
       $proposalId: `${id}`,
-      $topic: keyOf({obj: $i18n.topics, key: Topic[topic]}),
+      $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
       $status: status,
     },
   });
@@ -250,7 +250,7 @@ const updateVoteRegistrationToastMessage = ({
       spinner: true,
       substitutions: {
         $proposalId: `${id}`,
-        $topic: keyOf({obj: $i18n.topics, key: Topic[topic]}),
+        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
         $status: status,
       },
     },
@@ -359,7 +359,7 @@ const processRegisterVoteErrors = ({
       level: "error",
       substitutions: {
         $proposalId: `${proposalId}`,
-        $topic: keyOf({obj: $i18n.topics, key: Topic[topic]}),
+        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
       },
       detail: details.join(", "),
     });
