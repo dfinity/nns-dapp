@@ -20,6 +20,7 @@
     accountsPathStore,
     neuronsPathStore,
   } from "$lib/derived/paths.derived";
+  import {keyOf} from "$lib/utils/utils";
 
   const baseUrl = baseHref();
 
@@ -95,7 +96,7 @@
 {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
   <MenuItem {href} testId={`menuitem-${context}`} {selected}>
     <svelte:component this={icon} slot="icon" />
-    <svelte:fragment>{$i18n.navigation[label]}</svelte:fragment>
+    <svelte:fragment>{keyOf({obj: $i18n.navigation, key: label})}</svelte:fragment>
     <svelte:component this={statusIcon} slot="statusIcon" />
   </MenuItem>
 {/each}

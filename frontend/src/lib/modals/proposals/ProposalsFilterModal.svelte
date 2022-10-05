@@ -15,6 +15,7 @@
     Topic,
   } from "@dfinity/nns";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
+  import {keyOf, keyOfOptional} from "$lib/utils/utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -79,16 +80,17 @@
 </script>
 
 <Modal {visible} on:nnsClose={close} role="alert">
-  <span slot="title">{$i18n.voting?.[category] ?? ""}</span>
+  <span slot="title">{keyOfOptional({obj: $i18n.voting, key: category}) ?? ""}</span>
 
   {#if filters}
     <div class="filters">
       {#each filtersValues as key (key)}
+        {@const keys = keyOf({obj: $i18n, key: category})}
         <Checkbox
           inputId={`${key}`}
           checked={selectedFilters.includes(key)}
           on:nnsChange={() => onChange(key)}
-          >{$i18n[category][filters[key]]}</Checkbox
+          >{keyOf({obj: keys, key: filters[key]})}</Checkbox
         >
       {/each}
     </div>

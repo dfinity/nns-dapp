@@ -9,6 +9,7 @@
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { startBusyNeuron } from "$lib/services/busy.services";
+  import {keyOf} from "$lib/utils/utils";
 
   export let neuronId: NeuronId;
   export let neuronState: NeuronState;
@@ -39,13 +40,13 @@
 </script>
 
 <button on:click={showModal} class="warning"
-  >{$i18n.neuron_detail[buttonKey]}</button
+  >{keyOf({obj: $i18n.neuron_detail, key: buttonKey})}</button
 >
 {#if isOpen}
   <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={dissolveAction}>
     <div data-tid="dissolve-action-modal">
       <h4>{$i18n.core.confirm}</h4>
-      <p>{$i18n.neuron_detail[descriptionKey]}</p>
+      <p>{keyOf({obj: $i18n.neuron_detail, key: descriptionKey})}</p>
     </div>
   </ConfirmationModal>
 {/if}

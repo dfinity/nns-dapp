@@ -6,6 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import ProposalSummary from "$lib/components/proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
+  import {keyOf} from "$lib/utils/utils";
 
   export let ballot: Required<BallotInfo>;
 
@@ -25,7 +26,7 @@
 {#if proposal?.proposal !== undefined}
   <p class="value">{proposal.id}</p>
 
-  <p class="vote value">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
+  <p class="vote value">{keyOf({obj: $i18n.core, key: Vote[ballot.vote]}).toLowerCase()}</p>
 
   <div class="summary">
     <ProposalSummary proposal={proposal.proposal} />

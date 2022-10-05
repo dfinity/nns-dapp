@@ -8,6 +8,7 @@
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import {keyOf} from "$lib/utils/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -31,7 +32,7 @@
 
 <div>
   <h2 class="content-cell-title">{$i18n.sns_project_detail.status}</h2>
-  <Tag>{statusTextMapper[lifecycle]}</Tag>
+  <Tag>{keyOf({obj: statusTextMapper, key: lifecycle})}</Tag>
 </div>
 
 <style lang="scss">

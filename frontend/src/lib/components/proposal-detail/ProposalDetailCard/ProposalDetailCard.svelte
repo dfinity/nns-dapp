@@ -9,6 +9,7 @@
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Color } from "$lib/types/theme";
   import Tag from "$lib/components/ui/Tag.svelte";
+  import {keyOf} from "$lib/utils/utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -24,7 +25,7 @@
 <CardInfo>
   <h2 class="title" slot="start" {title}>{title}</h2>
   <Tag tagName="h3" slot="end" {color}>
-    {$i18n.status[ProposalStatus[status]]}
+    {keyOf({obj: $i18n.status, key: ProposalStatus[status]})}
   </Tag>
   <ProposalSummaryCardBlock {proposal} />
 

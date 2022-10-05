@@ -20,6 +20,7 @@
   export let layout: "modern" | "legacy" = "legacy";
   import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
+  import {keyOfOptional} from "$lib/utils/utils";
 
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
@@ -46,7 +47,7 @@
       <div slot="start" class="title-container">
         <p class="title" {title}>{title}</p>
       </div>
-      <Tag slot="end" {color}>{$i18n.status[ProposalStatus[status]] ?? ""}</Tag>
+      <Tag slot="end" {color}>{keyOfOptional({obj: $i18n.status, key: ProposalStatus[status]}) ?? ""}</Tag>
 
       <ProposalMeta {proposalInfo} showTopic />
     </Card>
@@ -84,7 +85,7 @@
 
       <div class="card-meta">
         <p class={`${color ?? ""} status`}>
-          {$i18n.status[ProposalStatus[status]] ?? ""}
+          {keyOfOptional({obj: $i18n.status, key: ProposalStatus[status]}) ?? ""}
         </p>
 
         <ProposalCountdown {proposalInfo} />
