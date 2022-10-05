@@ -32,7 +32,13 @@ To develop and run locally the dapp against a testnet, proceed as following:
 
 e.g. replace `<testnet_name>` with `small11`
 
-### Requirement
+## e2e
+
+e2e tests also need a `.env` configuration. Such file can also be generated with the help of the `./config.sh` script by providing a specific output parameter.
+
+e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
+
+## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
 
