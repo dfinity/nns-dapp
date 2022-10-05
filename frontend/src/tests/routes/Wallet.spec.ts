@@ -8,6 +8,12 @@ import { routeStore } from "../../lib/stores/route.store";
 import Wallet from "../../routes/Wallet.svelte";
 import { principal } from "../mocks/sns-projects.mock";
 
+jest.mock("../../lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Wallet", () => {
   describe("nns context", () => {
     it("should render NnsWallet", () => {
