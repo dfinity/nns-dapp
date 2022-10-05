@@ -23,8 +23,8 @@ export const translate = ({
     return labelKey;
   }
 
-  const key: string | Record<string, string> | undefined = (translations ||
-    get(i18n))[split[0]];
+  const firstKey = split[0];
+  const key = translations !== undefined ? translations[firstKey] : get(i18n)[firstKey as keyof I18n];
 
   if (key === undefined) {
     return labelKey;
@@ -32,7 +32,7 @@ export const translate = ({
 
   if (typeof key === "object") {
     return translate({
-      translations: key,
+      translations: key as unknown as Record<string, string>,
       labelKey,
       childKey: split.slice(1).join("."),
     });

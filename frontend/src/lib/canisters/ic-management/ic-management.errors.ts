@@ -3,10 +3,10 @@
  *
  * @throws UserNotTheControllerError and Error.
  */
-export function mapError(error: Error): Error {
+export function mapError(error: Error | unknown): Error | unknown {
   let code = 500;
 
-  const statusLine = error.message
+  const statusLine = error instanceof Error ? error.message : ""
     .split("\n")
     .map((l) => l.trim().toLowerCase())
     .find((l) => l.startsWith("code:") || l.startsWith("http status code:"));
