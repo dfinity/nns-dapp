@@ -13,8 +13,6 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { AppPath } from "$lib/constants/routes.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
@@ -27,6 +25,8 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
