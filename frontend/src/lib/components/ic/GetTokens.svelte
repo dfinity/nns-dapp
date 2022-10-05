@@ -151,4 +151,8 @@
 
     padding: var(--padding-2x) var(--padding);
   }
+
+  button.primary {
+    min-width: var(--padding-8x);
+  }
 </style>
