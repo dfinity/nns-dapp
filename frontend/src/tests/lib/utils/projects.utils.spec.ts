@@ -1,10 +1,7 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import type { SnsFullProject } from "../../../lib/stores/projects.store";
-import type { SnsSummary, SnsSwapCommitment } from "../../../lib/types/sns";
-import { nowInSeconds } from "../../../lib/utils/date.utils";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import type { SnsFullProject } from "$lib/stores/projects.store";
+import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
@@ -16,7 +13,10 @@ import {
   isNnsProject,
   projectRemainingAmount,
   validParticipation,
-} from "../../../lib/utils/projects.utils";
+} from "$lib/utils/projects.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import {
   createTransferableAmount,
   mockSnsFullProject,

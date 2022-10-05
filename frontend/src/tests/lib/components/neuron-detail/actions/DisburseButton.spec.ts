@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import DisburseButton from "../../../../../lib/components/neuron-detail/actions/DisburseButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 

@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import Ballots from "../../../../lib/components/neuron-detail/Ballots/Ballots.svelte";
-import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";

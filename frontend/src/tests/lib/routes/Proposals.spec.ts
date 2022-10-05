@@ -2,6 +2,14 @@
  * @jest-environment jsdom
  */
 
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import Proposals from "$lib/routes/Proposals.svelte";
+import { authStore } from "$lib/stores/auth.store";
+import { neuronsStore, type NeuronsStore } from "$lib/stores/neurons.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "$lib/stores/proposals.store";
 import {
   GovernanceCanister,
   type Proposal,
@@ -9,17 +17,6 @@ import {
 } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
-import Proposals from "../../../lib/routes/Proposals.svelte";
-import { authStore } from "../../../lib/stores/auth.store";
-import {
-  neuronsStore,
-  type NeuronsStore,
-} from "../../../lib/stores/neurons.store";
-import {
-  proposalsFiltersStore,
-  proposalsStore,
-} from "../../../lib/stores/proposals.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 import en from "../../mocks/i18n.mock";

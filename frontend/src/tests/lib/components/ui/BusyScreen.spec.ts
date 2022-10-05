@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import BusyScreen from "$lib/components/ui/BusyScreen.svelte";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { render, waitFor } from "@testing-library/svelte";
-import BusyScreen from "../../../../lib/components/ui/BusyScreen.svelte";
-import { startBusy, stopBusy } from "../../../../lib/stores/busy.store";
 
 describe("BusyScreen", () => {
   it("should show the spinner", async () => {

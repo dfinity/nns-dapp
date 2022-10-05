@@ -1,11 +1,11 @@
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/ledger.api";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { loadMainTransactionFee } from "../../../lib/services/transaction-fees.services";
+import * as api from "$lib/api/ledger.api";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { loadMainTransactionFee } from "$lib/services/transaction-fees.services";
 import {
   mainTransactionFeeStore,
   transactionsFeesStore,
-} from "../../../lib/stores/transaction-fees.store";
+} from "$lib/stores/transaction-fees.store";
+import { get } from "svelte/store";
 import { resetIdentity, setNoIdentity } from "../../mocks/auth.store.mock";
 
 describe("transactionFee-services", () => {

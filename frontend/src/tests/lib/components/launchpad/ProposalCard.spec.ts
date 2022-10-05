@@ -2,16 +2,13 @@
  * @jest-environment jsdom
  */
 
+import ProposalCard from "$lib/components/launchpad/ProposalCard.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import { routeStore } from "$lib/stores/route.store";
+import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import ProposalCard from "../../../../lib/components/launchpad/ProposalCard.svelte";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { routeStore } from "../../../../lib/stores/route.store";
-import {
-  nowInSeconds,
-  secondsToDuration,
-} from "../../../../lib/utils/date.utils";
-import { mapProposalInfo } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 

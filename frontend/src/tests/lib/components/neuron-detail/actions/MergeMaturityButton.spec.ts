@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import MergeMaturityButton from "$lib/components/neuron-detail/actions/MergeMaturityButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import MergeMaturityButton from "../../../../../lib/components/neuron-detail/actions/MergeMaturityButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 

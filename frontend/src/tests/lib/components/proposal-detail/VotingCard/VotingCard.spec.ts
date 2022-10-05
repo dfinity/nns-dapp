@@ -2,22 +2,22 @@
  * @jest-environment jsdom
  */
 
+import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { authStore } from "$lib/stores/auth.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import {
+  SELECTED_PROPOSAL_CONTEXT_KEY,
+  type SelectedProposalContext,
+  type SelectedProposalStore,
+} from "$lib/types/selected-proposal.context";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
-import VotingCard from "../../../../../lib/components/proposal-detail/VotingCard/VotingCard.svelte";
-import { SECONDS_IN_YEAR } from "../../../../../lib/constants/constants";
-import { authStore } from "../../../../../lib/stores/auth.store";
-import { neuronsStore } from "../../../../../lib/stores/neurons.store";
-import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
-import {
-  SELECTED_PROPOSAL_CONTEXT_KEY,
-  type SelectedProposalContext,
-  type SelectedProposalStore,
-} from "../../../../../lib/types/selected-proposal.context";
 import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";

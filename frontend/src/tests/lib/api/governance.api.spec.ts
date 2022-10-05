@@ -1,13 +1,4 @@
 import {
-  GovernanceCanister,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-  Topic,
-} from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import {
   addHotkey,
   disburse,
   increaseDissolveDelay,
@@ -25,7 +16,16 @@ import {
   stakeNeuron,
   startDissolving,
   stopDissolving,
-} from "../../../lib/api/governance.api";
+} from "$lib/api/governance.api";
+import {
+  GovernanceCanister,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+  Topic,
+} from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";

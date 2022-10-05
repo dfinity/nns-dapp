@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
+import { secondsToDateTime } from "$lib/utils/date.utils";
+import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import ProposalSystemInfoSection from "../../../../lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
-import { secondsToDateTime } from "../../../../lib/utils/date.utils";
-import { mapProposalInfo } from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 

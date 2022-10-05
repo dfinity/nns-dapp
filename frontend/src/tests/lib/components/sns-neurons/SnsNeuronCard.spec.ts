@@ -2,6 +2,16 @@
  * @jest-environment jsdom
  */
 
+import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { authStore } from "$lib/stores/auth.store";
+import { routeStore } from "$lib/stores/route.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/icp.utils";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -9,19 +19,6 @@ import {
 } from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.svelte";
-import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import {
-  AppPath,
-  CONTEXT_PATH,
-} from "../../../../lib/constants/routes.constants";
-import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { routeStore } from "../../../../lib/stores/route.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
-import { nowInSeconds } from "../../../../lib/utils/date.utils";
-import { formatToken } from "../../../../lib/utils/icp.utils";
-import { getSnsNeuronIdAsHexString } from "../../../../lib/utils/sns-neuron.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,

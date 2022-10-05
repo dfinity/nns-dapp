@@ -1,5 +1,5 @@
+import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
 import { get } from "svelte/store";
-import { busy, startBusy, stopBusy } from "../../../lib/stores/busy.store";
 
 describe("busy.store", () => {
   it("should add initiator", () => {

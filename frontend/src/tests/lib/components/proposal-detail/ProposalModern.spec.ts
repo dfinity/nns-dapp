@@ -6,7 +6,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 import ProposalModernTest from "./ProposalModernTest.svelte";
 
-jest.mock("../../../../lib/utils/html.utils", () => ({
+jest.mock("$lib/utils/html.utils", () => ({
   markdownToSanitizedHTML: (value) => Promise.resolve(value),
   sanitize: (value) => value,
 }));

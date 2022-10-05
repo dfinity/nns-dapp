@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
-} from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsSuccess } from "../../../../lib/stores/toasts.store";
+} from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsSuccess } from "$lib/stores/toasts.store";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -19,14 +19,14 @@ import { renderModal } from "../../../mocks/modal.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
     topUpCanister: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsSuccess: jest.fn(),
   };

@@ -1,6 +1,6 @@
+import { queryAndUpdate } from "$lib/services/utils.services";
+import * as devUtils from "$lib/utils/dev.utils";
 import { tick } from "svelte";
-import { queryAndUpdate } from "../../../lib/services/utils.services";
-import * as devUtils from "../../../lib/utils/dev.utils";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {

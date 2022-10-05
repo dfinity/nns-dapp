@@ -2,25 +2,25 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import Neurons from "$lib/routes/Neurons.svelte";
+import { committedProjectsStore } from "$lib/stores/projects.store";
+import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import { AppPath } from "../../../lib/constants/routes.constants";
-import Neurons from "../../../lib/routes/Neurons.svelte";
-import { committedProjectsStore } from "../../../lib/stores/projects.store";
-import { routeStore } from "../../../lib/stores/route.store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 
-jest.mock("../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../lib/services/sns-neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     loadSnsNeurons: jest.fn().mockResolvedValue(undefined),
   };

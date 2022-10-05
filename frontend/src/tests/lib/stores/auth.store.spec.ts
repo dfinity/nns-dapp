@@ -1,6 +1,6 @@
+import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
-import { authStore } from "../../../lib/stores/auth.store";
 
 describe("auth-store", () => {
   const mockAuthClient = mock<AuthClient>();

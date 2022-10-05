@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import AccountCard from "$lib/components/accounts/AccountCard.svelte";
+import type { Account } from "$lib/types/account";
+import { formatToken } from "$lib/utils/icp.utils";
 import { render } from "@testing-library/svelte";
-import AccountCard from "../../../../lib/components/accounts/AccountCard.svelte";
-import type { Account } from "../../../../lib/types/account";
-import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
 describe("AccountCard", () => {

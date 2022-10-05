@@ -1,8 +1,8 @@
-import { wrappers } from "../../../lib/api/sns-wrapper.api";
+import { wrappers } from "$lib/api/sns-wrapper.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
-} from "../../../lib/proxy/api.import.proxy";
+} from "$lib/proxy/api.import.proxy";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -12,7 +12,7 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
+jest.mock("$lib/proxy/api.import.proxy");
 
 describe("sns-wrapper api", () => {
   describe("wrappers", () => {

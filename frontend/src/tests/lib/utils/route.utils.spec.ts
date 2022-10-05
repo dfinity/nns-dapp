@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import * as routeUtils from "../../../lib/utils/route.utils";
+import * as routeUtils from "$lib/utils/route.utils";
 import {
   baseHref,
   pushHistory,
   replaceHistory,
   routeContext,
   routePath,
-} from "../../../lib/utils/route.utils";
+} from "$lib/utils/route.utils";
 
 describe("route-utils", () => {
   describe("base href", () => {

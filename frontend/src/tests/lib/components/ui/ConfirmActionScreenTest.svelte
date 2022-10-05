@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ConfirmActionScreen from "../../../../lib/components/ui/ConfirmActionScreen.svelte";
+  import ConfirmActionScreen from "$lib/components/ui/ConfirmActionScreen.svelte";
 
   export let spy: () => void = () => undefined;
 </script>

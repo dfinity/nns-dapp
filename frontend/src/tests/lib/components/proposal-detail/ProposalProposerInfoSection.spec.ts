@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import ProposalProposerInfoSection from "$lib/components/proposal-detail/ProposalProposerInfoSection.svelte";
+import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { render, waitFor } from "@testing-library/svelte";
-import ProposalProposerInfoSection from "../../../../lib/components/proposal-detail/ProposalProposerInfoSection.svelte";
-import { mapProposalInfo } from "../../../../lib/utils/proposals.utils";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-jest.mock("../../../../lib/utils/html.utils", () => ({
+jest.mock("$lib/utils/html.utils", () => ({
   markdownToSanitizedHTML: (value) => Promise.resolve(value),
 }));
 

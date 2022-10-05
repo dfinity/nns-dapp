@@ -1,12 +1,12 @@
+import * as api from "$lib/api/sns.api";
+import * as services from "$lib/services/sns-neurons.services";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import * as api from "../../../lib/api/sns.api";
-import * as services from "../../../lib/services/sns-neurons.services";
-import { snsNeuronsStore } from "../../../lib/stores/sns-neurons.store";
-import { bytesToHexString } from "../../../lib/utils/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 

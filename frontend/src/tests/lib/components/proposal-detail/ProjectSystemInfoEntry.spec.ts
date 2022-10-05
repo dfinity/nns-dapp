@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import ProposalSystemInfoEntry from "../../../../lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("ProjectSystemInfoEntry", () => {

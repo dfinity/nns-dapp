@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import { proposalsStore } from "$lib/stores/proposals.store";
+import { routeStore } from "$lib/stores/route.store";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import ProposalNavigation from "../../../../lib/components/proposal-detail/ProposalNavigation.svelte";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { proposalsStore } from "../../../../lib/stores/proposals.store";
-import { routeStore } from "../../../../lib/stores/route.store";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("ProposalNavigation", () => {

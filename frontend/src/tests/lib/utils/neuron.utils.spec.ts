@@ -1,31 +1,22 @@
 import {
-  ICPToken,
-  NeuronState,
-  TokenAmount,
-  Topic,
-  Vote,
-  type BallotInfo,
-} from "@dfinity/nns";
-import { get } from "svelte/store";
-import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
-} from "../../../lib/constants/constants";
+} from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-} from "../../../lib/constants/icp.constants";
+} from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-} from "../../../lib/constants/neurons.constants";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
-import type { Step } from "../../../lib/stores/steps.state";
-import { nowInSeconds } from "../../../lib/utils/date.utils";
-import { enumValues } from "../../../lib/utils/enum.utils";
+} from "$lib/constants/neurons.constants";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import type { Step } from "$lib/stores/steps.state";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   ageMultiplier,
   allHaveSameFollowees,
@@ -64,7 +55,16 @@ import {
   votedNeuronDetails,
   votingPower,
   type InvalidState,
-} from "../../../lib/utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
+import {
+  ICPToken,
+  NeuronState,
+  TokenAmount,
+  Topic,
+  Vote,
+  type BallotInfo,
+} from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,

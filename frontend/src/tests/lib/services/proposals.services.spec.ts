@@ -2,27 +2,27 @@
  * @jest-environment jsdom
  */
 
-import type { ProposalInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/proposals.api";
+import * as api from "$lib/api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import {
   listNextProposals,
   listProposals,
   loadProposal,
   loadProposalPayload,
   routePathProposalId,
-} from "../../../lib/services/proposals.services";
+} from "$lib/services/proposals.services";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
-} from "../../../lib/stores/proposals.store";
-import * as toastsFunctions from "../../../lib/stores/toasts.store";
+} from "$lib/stores/proposals.store";
+import * as toastsFunctions from "$lib/stores/toasts.store";
+import type { ProposalInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   mockIdentityErrorMsg,
   resetIdentity,

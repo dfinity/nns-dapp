@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import VotingNeuronSelectModern from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectModern.svelte";
+import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
 import { render } from "@testing-library/svelte";
-import VotingNeuronSelectModern from "../../../../../lib/components/proposal-detail/VotingCard/VotingNeuronSelectModern.svelte";
-import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";

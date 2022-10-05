@@ -3,7 +3,7 @@
   import {
     NEW_TRANSACTION_CONTEXT_KEY,
     type TransactionContext,
-  } from "../../../../lib/types/transaction.context";
+  } from "$lib/types/transaction.context";
   import { mockTransactionStore } from "../../../mocks/transaction.store.mock";
 
   export let testComponent: typeof SvelteComponent;

@@ -1,8 +1,8 @@
-import { getSnsAccounts } from "../../../lib/api/sns-ledger.api";
+import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
-} from "../../../lib/proxy/api.import.proxy";
+} from "$lib/proxy/api.import.proxy";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
 import {
@@ -13,7 +13,7 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
+jest.mock("$lib/proxy/api.import.proxy");
 
 describe("sns-ledger api", () => {
   const mainBalance = BigInt(10_000_000);

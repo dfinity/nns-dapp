@@ -2,25 +2,22 @@
  * @jest-environment jsdom
  */
 
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
-import { AppPath } from "../../../lib/constants/routes.constants";
-import ProjectDetail from "../../../lib/routes/ProjectDetail.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import ProjectDetail from "$lib/routes/ProjectDetail.svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
-} from "../../../lib/services/sns.services";
-import { routeStore } from "../../../lib/stores/route.store";
-import {
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "../../../lib/stores/sns.store";
-import type { SnsSwapCommitment } from "../../../lib/types/sns";
+} from "$lib/services/sns.services";
+import { routeStore } from "$lib/stores/route.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render, waitFor } from "@testing-library/svelte";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-jest.mock("../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),

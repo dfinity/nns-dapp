@@ -1,5 +1,4 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   convertIcpToTCycles,
   convertTCyclesToIcpNumber,
@@ -7,7 +6,8 @@ import {
   formatToken,
   getMaxTransactionAmount,
   sumTokenAmounts,
-} from "../../../lib/utils/icp.utils";
+} from "$lib/utils/icp.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("icp-utils", () => {
   it("should format icp", () => {

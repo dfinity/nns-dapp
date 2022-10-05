@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import DisburseNeuronModal from "$lib/modals/neurons/DisburseNeuronModal.svelte";
+import { disburse } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { routeStore } from "$lib/stores/route.store";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import DisburseNeuronModal from "../../../../lib/modals/neurons/DisburseNeuronModal.svelte";
-import { disburse } from "../../../../lib/services/neurons.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { routeStore } from "../../../../lib/stores/route.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -16,7 +16,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     disburse: jest.fn().mockResolvedValue({ success: true }),
     getNeuronFromStore: jest.fn(),

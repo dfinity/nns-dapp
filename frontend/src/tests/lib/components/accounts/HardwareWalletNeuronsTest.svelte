@@ -3,7 +3,7 @@
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
-  } from "../../../../lib/types/hardware-wallet-neurons.context";
+  } from "$lib/types/hardware-wallet-neurons.context";
   import { mockHardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
 
   export let testComponent: typeof SvelteComponent;

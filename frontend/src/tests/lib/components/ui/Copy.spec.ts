@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import Copy from "$lib/components/ui/Copy.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import Copy from "../../../../lib/components/ui/Copy.svelte";
 
 describe("Copy", () => {
   const value: string = "test-copy";

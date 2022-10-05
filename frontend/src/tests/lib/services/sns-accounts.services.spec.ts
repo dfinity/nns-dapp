@@ -1,8 +1,8 @@
+import * as api from "$lib/api/sns-ledger.api";
+import * as services from "$lib/services/sns-accounts.services";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import * as api from "../../../lib/api/sns-ledger.api";
-import * as services from "../../../lib/services/sns-accounts.services";
-import { snsAccountsStore } from "../../../lib/stores/sns-accounts.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 

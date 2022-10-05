@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { themeStore } from "$lib/stores/theme.store";
+import * as themeUtils from "$lib/utils/theme.utils";
 import { get } from "svelte/store";
-import { themeStore } from "../../../lib/stores/theme.store";
-import * as themeUtils from "../../../lib/utils/theme.utils";
 
 enum TestTheme {
   DARK = "dark",

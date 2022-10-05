@@ -1,8 +1,6 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
-import * as accountsApi from "../../../lib/api/accounts.api";
-import * as ledgerApi from "../../../lib/api/ledger.api";
-import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
+import * as accountsApi from "$lib/api/accounts.api";
+import * as ledgerApi from "$lib/api/ledger.api";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
   getAccountIdentity,
@@ -12,10 +10,12 @@ import {
   routePathAccountIdentifier,
   syncAccounts,
   transferICP,
-} from "../../../lib/services/accounts.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import * as toastsFunctions from "../../../lib/stores/toasts.store";
-import type { TransactionStore } from "../../../lib/types/transaction.context";
+} from "$lib/services/accounts.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import * as toastsFunctions from "$lib/stores/toasts.store";
+import type { TransactionStore } from "$lib/types/transaction.context";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -30,7 +30,7 @@ import {
 import en from "../../mocks/i18n.mock";
 import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
 
-jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProgressBar from "../../../../lib/components/ui/ProgressBar.svelte";
+  import ProgressBar from "$lib/components/ui/ProgressBar.svelte";
 
   export let value: number | undefined = undefined;
   export let max: number | undefined = undefined;

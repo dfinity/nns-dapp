@@ -1,23 +1,20 @@
+import * as api from "$lib/api/governance.api";
+import {
+  DEFAULT_TRANSACTION_FEE_E8S,
+  E8S_PER_ICP,
+} from "$lib/constants/icp.constants";
+import { getAccountIdentityByPrincipal } from "$lib/services/accounts.services";
+import * as services from "$lib/services/neurons.services";
+import * as busyStore from "$lib/stores/busy.store";
+import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
-import * as api from "../../../lib/api/governance.api";
-import {
-  DEFAULT_TRANSACTION_FEE_E8S,
-  E8S_PER_ICP,
-} from "../../../lib/constants/icp.constants";
-import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
-import * as services from "../../../lib/services/neurons.services";
-import * as busyStore from "../../../lib/stores/busy.store";
-import {
-  definedNeuronsStore,
-  neuronsStore,
-} from "../../../lib/stores/neurons.store";
-import { toastsError, toastsShow } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedNeuronError } from "../../../lib/types/neurons.errors";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -50,7 +47,7 @@ const {
   reloadNeuron,
 } = services;
 
-jest.mock("../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
     toastsShow: jest.fn(),
@@ -63,7 +60,7 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
     getAccountIdentityByPrincipal: jest
@@ -84,7 +81,7 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()

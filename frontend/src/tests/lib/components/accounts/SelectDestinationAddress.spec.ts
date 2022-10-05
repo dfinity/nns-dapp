@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import SelectDestinationAddress from "../../../../lib/components/accounts/SelectDestinationAddress.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,

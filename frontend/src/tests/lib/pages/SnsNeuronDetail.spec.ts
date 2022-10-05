@@ -2,18 +2,18 @@
  * @jest-environment jsdom
  */
 
+import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
+import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+import { routeStore } from "$lib/stores/route.store";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
-import SnsNeuronDetail from "../../../lib/pages/SnsNeuronDetail.svelte";
-import { getSnsNeuron } from "../../../lib/services/sns-neurons.services";
-import { routeStore } from "../../../lib/stores/route.store";
-import { getSnsNeuronIdAsHexString } from "../../../lib/utils/sns-neuron.utils";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 let validNeuron = true;
-jest.mock("../../../lib/services/sns-neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     getSnsNeuron: jest.fn().mockImplementation(({ onLoad, onError }) => {
       if (validNeuron) {

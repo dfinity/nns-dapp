@@ -1,9 +1,9 @@
-import type { ProposalId } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   voteRegistrationStore,
   type VoteRegistration,
-} from "../../../lib/stores/vote-registration.store";
+} from "$lib/stores/vote-registration.store";
+import type { ProposalId } from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   mockProposalInfo,
   mockVoteRegistration,

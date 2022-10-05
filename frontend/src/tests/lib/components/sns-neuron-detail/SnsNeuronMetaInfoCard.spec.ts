@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsNeuronMetaInfoCard from "../../../../lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
+import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 

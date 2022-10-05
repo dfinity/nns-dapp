@@ -2,15 +2,12 @@
  * @jest-environment jsdom
  */
 
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { routeStore } from "$lib/stores/route.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import {
-  AppPath,
-  CONTEXT_PATH,
-} from "../../../../lib/constants/routes.constants";
-import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
-import { routeStore } from "../../../../lib/stores/route.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("currentSnsTokenLabelStore", () => {

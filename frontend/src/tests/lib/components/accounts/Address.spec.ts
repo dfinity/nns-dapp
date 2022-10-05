@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import Address from "$lib/components/accounts/Address.svelte";
+import { ACCOUNT_ADDRESS_MIN_LENGTH } from "$lib/constants/accounts.constants";
 import { fireEvent, render } from "@testing-library/svelte";
-import Address from "../../../../lib/components/accounts/Address.svelte";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../../lib/constants/accounts.constants";
 import { mockAddressInputValid } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 

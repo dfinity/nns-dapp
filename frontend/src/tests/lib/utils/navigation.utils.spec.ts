@@ -1,5 +1,5 @@
-import { AppPath } from "../../../lib/constants/routes.constants";
-import { reloadRouteData } from "../../../lib/utils/navigation.utils";
+import { AppPath } from "$lib/constants/routes.constants";
+import { reloadRouteData } from "$lib/utils/navigation.utils";
 
 describe("navigation-utils", () => {
   it("should not reload on back", () => {

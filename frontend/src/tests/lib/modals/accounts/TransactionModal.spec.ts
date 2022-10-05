@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import type { Account } from "$lib/types/account";
+import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../../lib/constants/icp.constants";
-import TransactionModal from "../../../../lib/modals/accounts/NewTransaction/TransactionModal.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import type { Account } from "../../../../lib/types/account";
-import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,

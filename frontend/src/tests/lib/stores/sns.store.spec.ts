@@ -1,13 +1,13 @@
-import { ProposalStatus } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   openSnsProposalsStore,
   snsProposalsStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../../../lib/stores/sns.store";
-import type { SnsSwapCommitment } from "../../../lib/types/sns";
+} from "$lib/stores/sns.store";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { ProposalStatus } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import {
   mockSnsSummaryList,

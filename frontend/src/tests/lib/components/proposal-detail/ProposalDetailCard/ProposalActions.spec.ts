@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
-import type { Proposal } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import ProposalActions from "../../../../../lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
-import { proposalPayloadsStore } from "../../../../../lib/stores/proposals.store";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import ProposalActions from "$lib/components/proposal-detail/ProposalDetailCard/ProposalActions.svelte";
+import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   getNnsFunctionKey,
   proposalFirstActionKey,
-} from "../../../../../lib/utils/proposals.utils";
+} from "$lib/utils/proposals.utils";
+import type { Proposal } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import en from "../../../../mocks/i18n.mock";
 import {
   mockProposalInfo,

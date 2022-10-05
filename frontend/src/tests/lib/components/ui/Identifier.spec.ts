@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import Identifier from "$lib/components/ui/Identifier.svelte";
 import { render } from "@testing-library/svelte";
-import Identifier from "../../../../lib/components/ui/Identifier.svelte";
 
 describe("Identifier", () => {
   const identifier: string = "test-identifier";

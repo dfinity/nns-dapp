@@ -1,7 +1,4 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
   CanisterAlreadyAttachedError,
@@ -16,13 +13,16 @@ import {
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   UnknownProposalPayloadError,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { createAgent } from "../../../lib/utils/agent.utils";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { createAgent } from "$lib/utils/agent.utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
   mockSubAccountDetails,

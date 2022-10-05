@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
+import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { Topic, Vote } from "@dfinity/nns";
 import type { Proposal } from "@dfinity/nns/dist/types/types/governance_converters";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import VotingConfirmationToolbar from "../../../../../lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
-import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
-import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
-import { replacePlaceholders } from "../../../../../lib/utils/i18n.utils";
-import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import {

@@ -13,7 +13,7 @@ import {
   smallerVersion,
   stringifyJson,
   uniqueObjects,
-} from "../../../lib/utils/utils";
+} from "$lib/utils/utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {

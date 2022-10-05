@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+import { formatToken } from "$lib/utils/icp.utils";
 import { render } from "@testing-library/svelte";
-import CurrentBalance from "../../../../lib/components/accounts/CurrentBalance.svelte";
-import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 

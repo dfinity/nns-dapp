@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { authStore } from "$lib/stores/auth.store";
+import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { render } from "@testing-library/svelte";
-import NeuronMaturityCard from "../../../../lib/components/neuron-detail/NeuronMaturityCard.svelte";
-import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
