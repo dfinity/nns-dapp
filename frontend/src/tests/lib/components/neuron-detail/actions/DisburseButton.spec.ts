@@ -8,6 +8,7 @@ import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.s
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 
 describe("DisburseButton", () => {
   afterEach(() => {
@@ -17,7 +18,7 @@ describe("DisburseButton", () => {
   it("renders title", () => {
     const { getByText } = render(DisburseButton, {
       props: {
-        neuron: mockNeuron,
+        nnsNeuron: mockNeuron,
       },
     });
 
@@ -27,8 +28,7 @@ describe("DisburseButton", () => {
   it("opens disburse nns neuron modal", async () => {
     const { container, queryByTestId } = render(DisburseButton, {
       props: {
-        neuron: mockNeuron,
-        modal: DisburseNnsNeuronModal,
+        nnsNeuron: mockNeuron,
       },
     });
 
@@ -44,8 +44,7 @@ describe("DisburseButton", () => {
   it("opens sns modal", async () => {
     const { container, queryByTestId } = render(DisburseButton, {
       props: {
-        neuron: mockNeuron,
-        modal: DisburseSnsNeuronModal,
+        snsNeuron: mockSnsNeuron,
       },
     });
 

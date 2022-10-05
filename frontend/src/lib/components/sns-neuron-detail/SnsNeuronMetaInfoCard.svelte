@@ -48,7 +48,7 @@
       <div class="buttons">
         {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseButton
-            {neuron}
+            snsNeuron={neuron}
             modal={DisburseSnsNeuronModal}
             {reloadContext}
           />
