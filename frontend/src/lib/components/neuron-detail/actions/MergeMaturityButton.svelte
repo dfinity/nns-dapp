@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import MergeMaturityModal from "$lib/components/modals/neurons/MergeMaturityModal.svelte";
+  import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/icp.utils";

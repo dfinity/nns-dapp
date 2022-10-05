@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import { i18n } from "$lib/stores/i18n";
   import NewTransactionDestination from "$lib/components/accounts/NewTransactionDestination.svelte";

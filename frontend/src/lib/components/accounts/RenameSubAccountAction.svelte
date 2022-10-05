@@ -9,7 +9,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY

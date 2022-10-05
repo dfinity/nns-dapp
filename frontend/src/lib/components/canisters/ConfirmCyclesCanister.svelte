@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { formatNumber } from "$lib/utils/format.utils";

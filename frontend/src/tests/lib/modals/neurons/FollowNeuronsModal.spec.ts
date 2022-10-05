@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import FollowNeuronsModal from "$lib/components/modals/neurons/FollowNeuronsModal.svelte";
+import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";

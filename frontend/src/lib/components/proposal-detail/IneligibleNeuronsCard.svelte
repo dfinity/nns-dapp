@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ineligibleNeurons as filterIneligibleNeurons } from "@dfinity/nns";
   import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import StakeMaturityModal from "$lib/components/modals/neurons/StakeMaturityModal.svelte";
+import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";

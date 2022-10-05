@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
 </script>

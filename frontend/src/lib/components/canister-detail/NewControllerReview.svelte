@@ -10,7 +10,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import { addController } from "$lib/services/canisters.services";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   export let controller: Principal;
 

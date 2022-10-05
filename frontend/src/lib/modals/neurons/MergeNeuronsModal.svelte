@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
   import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import AddCyclesModal from "$lib/components/modals/canisters/AddCyclesModal.svelte";
+  import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,

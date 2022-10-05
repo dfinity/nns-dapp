@@ -3,7 +3,7 @@
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalSummary from "./ProposalSummary.svelte";
   import type { Proposal } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   export let proposalInfo: ProposalInfo;
 

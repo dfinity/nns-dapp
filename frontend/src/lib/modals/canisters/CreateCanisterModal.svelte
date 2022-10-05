@@ -17,7 +17,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {

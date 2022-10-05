@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import { formattedMaturity, neuronStake } from "$lib/utils/neuron.utils";
   import { formatPercentage } from "$lib/utils/format.utils";

@@ -14,7 +14,7 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { SkeletonText } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import CyclesCard from "../components/canister-detail/CyclesCard.svelte";
+  import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
   import { writable } from "svelte/store";
   import {
@@ -24,7 +24,7 @@
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import AddCyclesModal from "$lib/components/modals/canisters/AddCyclesModal.svelte";
+  import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
   import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";

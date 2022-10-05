@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import DisburseNnsNeuronModal from "$lib/components/modals/neurons/DisburseNnsNeuronModal.svelte";
+import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { routeStore } from "$lib/stores/route.store";

@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { stopBusy } from "$lib/utils/busy.store";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { stakeMaturity } from "$lib/services/neurons.services";
-  import { toastsSuccess } from "$lib/utils/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "$lib/utils/steps.state";
-  import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
-  import NeuronConfirmActionScreen from "../../components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import WizardModal from "../WizardModal.svelte";
   import type { NeuronId } from "@dfinity/nns";

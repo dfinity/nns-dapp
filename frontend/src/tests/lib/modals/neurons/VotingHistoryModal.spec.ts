@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import VotingHistoryModal from "$lib/components/modals/neurons/VotingHistoryModal.svelte";
+import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";

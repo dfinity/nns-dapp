@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { authStore } from "$lib/utils/auth.store";
-  import { i18n } from "$lib/utils/i18n";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
@@ -15,7 +15,7 @@
     formattedStakedMaturity,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/utils/accounts.store";
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   export let neuron: NeuronInfo;
 

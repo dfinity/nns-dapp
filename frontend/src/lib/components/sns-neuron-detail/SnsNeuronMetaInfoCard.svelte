@@ -10,12 +10,12 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
   import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
-  import DisburseSnsNeuronModal from "$lib/components/modals/neurons/DisburseSnsNeuronModal.svelte";
+  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,
   } from "$lib/utils/sns-neuron.utils";
-  import { authStore } from "$lib/utils/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
 

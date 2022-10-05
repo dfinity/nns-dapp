@@ -13,7 +13,7 @@
   } from "$lib/utils/neuron.utils";
   import { busy, stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { valueSpan } from "$lib/utils/utils";
 
   export let delayInSeconds: number;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { secondsToDate } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/icp.utils";
@@ -11,7 +11,7 @@
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
-  import { authStore } from "$lib/utils/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -21,11 +21,11 @@
     isNeuronControllableByUser,
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/utils/accounts.store";
+  import { accountsStore } from "$lib/stores/accounts.store";
   import Value from "$lib/components/ui/Value.svelte";
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { sanitize } from "$lib/utils/html.utils";
-  import DisburseNnsNeuronModal from "$lib/components/modals/neurons/DisburseNnsNeuronModal.svelte";
+  import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 

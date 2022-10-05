@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ParticipateSwapModal from "$lib/components/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
 import { participateInSwap } from "$lib/services/sns.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {

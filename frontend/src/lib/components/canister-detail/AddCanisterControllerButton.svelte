@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AddControllerModal from "$lib/components/modals/canisters/AddControllerModal.svelte";
+  import AddControllerModal from "$lib/modals/canisters/AddControllerModal.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   let showModal = false;

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SpawnNeuronModal from "$lib/components/modals/neurons/SpawnNeuronModal.svelte";
+import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent } from "@testing-library/svelte";

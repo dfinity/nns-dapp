@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronId } from "@dfinity/nns";
-  import ConfirmationModal from "$lib/components/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import {
     startDissolving,
     stopDissolving,

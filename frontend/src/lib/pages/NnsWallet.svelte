@@ -26,7 +26,7 @@
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { layoutBackStore } from "$lib/stores/layout.store";
-  import IcpTransactionModal from "$lib/components/modals/accounts/IcpTransactionModal.svelte";
+  import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { accountsPathStore } from "$lib/derived/paths.derived";
   import type {
     AccountIdentifierString,

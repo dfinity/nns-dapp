@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { listSnsProposals } from "$lib/services/sns.services";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
     snsProposalsStore,
-  } from "$lib/utils/sns.store";
+  } from "$lib/stores/sns.store";
   import { isNullish } from "$lib/utils/utils";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import ProposalCard from "../proposals/ProposalCard.svelte";

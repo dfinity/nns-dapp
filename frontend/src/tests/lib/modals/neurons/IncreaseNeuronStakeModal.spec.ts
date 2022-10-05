@@ -3,7 +3,7 @@
  */
 
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import IncreaseNeuronStakeModal from "$lib/components/modals/neurons/IncreaseNeuronStakeModal.svelte";
+import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { reloadNeuron } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { LedgerCanister } from "@dfinity/nns";

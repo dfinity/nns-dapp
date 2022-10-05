@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
-  import ProposalsFilterModal from "$lib/components/modals/proposals/ProposalsFilterModal.svelte";
+  import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
   import Checkbox from "$lib/components/ui/Checkbox.svelte";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import { proposalsFiltersStore } from "$lib/utils/proposals.store";
+  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import { enumsExclude } from "$lib/utils/enum.utils";
   import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
 

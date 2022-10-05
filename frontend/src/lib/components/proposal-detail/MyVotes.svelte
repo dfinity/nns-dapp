@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "$lib/utils/neurons.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,

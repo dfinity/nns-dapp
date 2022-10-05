@@ -2,7 +2,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";

@@ -4,7 +4,7 @@
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Step, Steps } from "$lib/stores/steps.state";
-  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
 
   const steps: Steps = [
     {

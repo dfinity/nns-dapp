@@ -1,6 +1,6 @@
 <script lang="ts">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-  import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
@@ -12,7 +12,7 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;

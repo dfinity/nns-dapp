@@ -11,7 +11,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import type { Account } from "$lib/types/account";
-  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {

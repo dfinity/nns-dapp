@@ -8,7 +8,7 @@
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "$lib/constants/accounts.constants";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY

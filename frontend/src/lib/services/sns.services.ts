@@ -15,7 +15,7 @@ import {
   querySnsSwapState,
   querySnsSwapStates,
 } from "../api/sns.api";
-import { AppPath } from "../constants/routes.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { projectsStore, type SnsFullProject } from "../stores/projects.store";
 import {
   snsProposalsStore,
@@ -24,10 +24,10 @@ import {
 } from "../stores/sns.store";
 import { toastsError } from "../stores/toasts.store";
 import { transactionsFeesStore } from "../stores/transaction-fees.store";
-import type { Account } from "$lib/typesces/account";
-import { LedgerErrorKey } from "$lib/typesces/ledger.errors";
-import type { SnsSwapCommitment } from "$lib/typesces/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/typesces/sns.query";
+import type { Account } from "$lib/types/account";
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";

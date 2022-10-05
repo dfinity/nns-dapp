@@ -6,9 +6,9 @@
     type ProposalId,
     ProposalStatus,
   } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
-  import { routeStore } from "$lib/utils/route.store";
-  import { AppPath } from "../../constants/routes.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Color } from "$lib/types/theme";
 

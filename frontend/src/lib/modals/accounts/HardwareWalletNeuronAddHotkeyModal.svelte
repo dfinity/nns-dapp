@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ConfirmationModal from "$lib/components/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

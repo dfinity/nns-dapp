@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { i18n } from "$lib/utils/i18n";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 

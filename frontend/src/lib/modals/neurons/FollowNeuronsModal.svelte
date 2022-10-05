@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
 
   export let neuron: NeuronInfo;
 </script>

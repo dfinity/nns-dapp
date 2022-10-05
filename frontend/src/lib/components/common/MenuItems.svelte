@@ -8,15 +8,15 @@
     IconPsychology,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import { i18n } from "$lib/utils/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { baseHref } from "$lib/utils/route.utils";
   import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath } from "../../constants/routes.constants";
-  import { routeStore } from "$lib/utils/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
   import {
     ENABLE_SNS,
     IS_TESTNET,
-  } from "../../constants/environment.constants";
+  } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "../ic/GetTokens.svelte";
   import {

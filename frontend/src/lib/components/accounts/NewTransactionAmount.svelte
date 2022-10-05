@@ -12,7 +12,7 @@
   import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

@@ -3,7 +3,7 @@
   import { busy } from "$lib/stores/busy.store";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/components/modals/FooterModal.svelte";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let principal: Principal | undefined = undefined;

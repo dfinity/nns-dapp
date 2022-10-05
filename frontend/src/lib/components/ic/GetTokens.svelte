@@ -6,10 +6,10 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { getICPs, getTokens } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
-  import { toastsError } from "$lib/utils/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
   import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
-  import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
 

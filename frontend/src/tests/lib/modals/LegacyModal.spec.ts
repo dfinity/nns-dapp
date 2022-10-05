@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
+import LegacyModal from "$lib/modals/LegacyModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("LegacyModal", () => {

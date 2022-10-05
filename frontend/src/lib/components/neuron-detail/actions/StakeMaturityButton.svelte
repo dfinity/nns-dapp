@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import StakeMaturityModal from "$lib/components/modals/neurons/StakeMaturityModal.svelte";
+  import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
 
   export let neuron: NeuronInfo;
 
