@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 import { render } from "@testing-library/svelte";
-import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
-import { CONTEXT_PATH } from "../../lib/constants/routes.constants";
-import Wallet from "../../lib/routes/Wallet.svelte";
-import { routeStore } from "../../lib/stores/route.store";
-import { principal } from "../mocks/sns-projects.mock";
+import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
+import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
+import Wallet from "../../../lib/routes/Wallet.svelte";
+import { routeStore } from "../../../lib/stores/route.store";
+import { principal } from "../../mocks/sns-projects.mock";
 
 describe("Wallet", () => {
   describe("nns context", () => {

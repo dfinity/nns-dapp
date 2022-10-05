@@ -4,18 +4,18 @@
 
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import Canisters from "../../lib/routes/Canisters.svelte";
-import { listCanisters } from "../../lib/services/canisters.services";
-import { authStore } from "../../lib/stores/auth.store";
-import { canistersStore } from "../../lib/stores/canisters.store";
+import Canisters from "../../../lib/routes/Canisters.svelte";
+import { listCanisters } from "../../../lib/services/canisters.services";
+import { authStore } from "../../../lib/stores/auth.store";
+import { canistersStore } from "../../../lib/stores/canisters.store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../mocks/auth.store.mock";
-import { mockCanistersStoreSubscribe } from "../mocks/canisters.mock";
-import en from "../mocks/i18n.mock";
+} from "../../mocks/auth.store.mock";
+import { mockCanistersStoreSubscribe } from "../../mocks/canisters.mock";
+import en from "../../mocks/i18n.mock";
 
-jest.mock("../../lib/services/canisters.services", () => {
+jest.mock("../../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
     getIcpToCyclesExchangeRate: jest.fn(),

@@ -3,17 +3,17 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
-import type { CanisterDetails } from "../../lib/canisters/ic-management/ic-management.canister.types";
-import { UserNotTheControllerError } from "../../lib/canisters/ic-management/ic-management.errors";
-import CanisterDetail from "../../lib/routes/CanisterDetail.svelte";
+import type { CanisterDetails } from "../../../lib/canisters/ic-management/ic-management.canister.types";
+import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
+import CanisterDetail from "../../../lib/routes/CanisterDetail.svelte";
 import {
   getCanisterDetails,
   listCanisters,
-} from "../../lib/services/canisters.services";
-import { canistersStore } from "../../lib/stores/canisters.store";
-import { routeStore } from "../../lib/stores/route.store";
-import { mockCanister, mockCanisterDetails } from "../mocks/canisters.mock";
-import { mockRouteStoreSubscribe } from "../mocks/route.store.mock";
+} from "../../../lib/services/canisters.services";
+import { canistersStore } from "../../../lib/stores/canisters.store";
+import { routeStore } from "../../../lib/stores/route.store";
+import { mockCanister, mockCanisterDetails } from "../../mocks/canisters.mock";
+import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;
@@ -21,7 +21,7 @@ const setGetCanisterDetailReturn = (value: Promise<CanisterDetails>) =>
   (getCanisterDetailsReturn = value);
 const resetGetCanisterDetailReturn = () =>
   (getCanisterDetailsReturn = defaultReturn);
-jest.mock("../../lib/services/canisters.services", () => {
+jest.mock("../../../lib/services/canisters.services", () => {
   return {
     listCanisters: jest.fn(),
     routePathCanisterId: () => mockCanister.canister_id.toText(),

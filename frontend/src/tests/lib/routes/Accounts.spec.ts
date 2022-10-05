@@ -4,18 +4,18 @@
 
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { OWN_CANISTER_ID } from "../../lib/constants/canister-ids.constants";
-import { AppPath } from "../../lib/constants/routes.constants";
-import Accounts from "../../lib/routes/Accounts.svelte";
-import { committedProjectsStore } from "../../lib/stores/projects.store";
-import { routeStore } from "../../lib/stores/route.store";
-import en from "../mocks/i18n.mock";
+import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
+import { AppPath } from "../../../lib/constants/routes.constants";
+import Accounts from "../../../lib/routes/Accounts.svelte";
+import { committedProjectsStore } from "../../../lib/stores/projects.store";
+import { routeStore } from "../../../lib/stores/route.store";
+import en from "../../mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../mocks/sns-projects.mock";
+} from "../../mocks/sns-projects.mock";
 
-jest.mock("../../lib/services/sns-accounts.services", () => {
+jest.mock("../../../lib/services/sns-accounts.services", () => {
   return {
     loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };

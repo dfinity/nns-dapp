@@ -3,10 +3,10 @@
  */
 
 import { render } from "@testing-library/svelte";
-import Launchpad from "../../lib/routes/Launchpad.svelte";
-import en from "../mocks/i18n.mock";
+import Launchpad from "../../../lib/routes/Launchpad.svelte";
+import en from "../../mocks/i18n.mock";
 
-jest.mock("../../lib/services/sns.services", () => {
+jest.mock("../../../lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
