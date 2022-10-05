@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import ProposalsFilterModal from "$lib/components/modals/proposals/ProposalsFilterModal.svelte";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "$lib/types/proposals";
 import { enumKeys } from "$lib/utils/enum.utils";

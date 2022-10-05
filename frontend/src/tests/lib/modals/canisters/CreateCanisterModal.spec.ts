@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
 import CreateCanisterModal from "$lib/components/modals/canisters/CreateCanisterModal.svelte";
+import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
 import {
   createCanister,
   getIcpToCyclesExchangeRate,

@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/components/modals/accounts/AddAccountModal.svelte";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { addSubAccount } from "$lib/services/accounts.services";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";

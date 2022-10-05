@@ -1,3 +1,10 @@
+import type { Account } from "$lib/typesces/account";
+import { LedgerErrorKey } from "$lib/typesces/ledger.errors";
+import type { SnsSwapCommitment } from "$lib/typesces/sns";
+import type {
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "$lib/typesces/sns.query";
 import {
   Topic,
   type AccountIdentifier,
@@ -24,10 +31,6 @@ import {
 } from "../stores/sns.store";
 import { toastsError } from "../stores/toasts.store";
 import { transactionsFeesStore } from "../stores/transaction-fees.store";
-import type { Account } from "$lib/typesces/account";
-import { LedgerErrorKey } from "$lib/typesces/ledger.errors";
-import type { SnsSwapCommitment } from "$lib/typesces/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/typesces/sns.query";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";
