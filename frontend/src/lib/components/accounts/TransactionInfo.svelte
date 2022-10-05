@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
+  import { i18n } from "$lib/utils/i18n";
+  import { mainTransactionFeeStore } from "$lib/utils/transaction-fees.store";
+  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
   import Value from "../ui/Value.svelte";
   import type { TokenAmount } from "@dfinity/nns";
 

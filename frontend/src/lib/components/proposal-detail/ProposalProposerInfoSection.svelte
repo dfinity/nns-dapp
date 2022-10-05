@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalSummary from "./ProposalSummary.svelte";
   import type { Proposal } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/utils/i18n";
 
   export let proposalInfo: ProposalInfo;
 

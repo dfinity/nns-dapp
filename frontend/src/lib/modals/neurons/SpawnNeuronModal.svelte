@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/utils/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
+  import type { Step, Steps } from "$lib/utils/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import { stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "$lib/utils/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsShow } from "../../stores/toasts.store";
-  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
+  import { toastsShow } from "$lib/utils/toasts.store";
+  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import { startBusyNeuron } from "../../services/busy.services";
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "../../stores/route.store";
+  import { routeStore } from "$lib/utils/route.store";
   import { AppPath } from "../../constants/routes.constants";
 
   export let neuron: NeuronInfo;

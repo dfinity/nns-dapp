@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import Collapsible from "../../ui/Collapsible.svelte";
-  import type { VoteRegistration } from "../../../stores/vote-registration.store";
-  import { i18n } from "../../../stores/i18n";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+  import { i18n } from "$lib/stores/i18n";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import Value from "../../ui/Value.svelte";
-  import { formatVotingPower } from "../../../utils/neuron.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
 
   export let proposalInfo: ProposalInfo;

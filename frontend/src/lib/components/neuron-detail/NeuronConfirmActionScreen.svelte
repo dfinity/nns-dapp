@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { busy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
+  import { busy } from "$lib/utils/busy.store";
+  import { i18n } from "$lib/utils/i18n";
 
   const dispatcher = createEventDispatcher();
   const confirm = () => dispatcher("nnsConfirm");

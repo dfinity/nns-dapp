@@ -14,9 +14,9 @@
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,
-  } from "../../utils/sns-neuron.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { isNullish, nonNullish } from "../../utils/utils";
+  } from "$lib/utils/sns-neuron.utils";
+  import { authStore } from "$lib/utils/auth.store";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
 
   const { store }: SelectedSnsNeuronContext =

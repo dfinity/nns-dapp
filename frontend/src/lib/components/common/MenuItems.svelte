@@ -8,11 +8,11 @@
     IconPsychology,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { baseHref } from "../../utils/route.utils";
-  import { isRoutePath } from "../../utils/app-path.utils";
+  import { i18n } from "$lib/utils/i18n";
+  import { baseHref } from "$lib/utils/route.utils";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
   import { AppPath } from "../../constants/routes.constants";
-  import { routeStore } from "../../stores/route.store";
+  import { routeStore } from "$lib/utils/route.store";
   import {
     ENABLE_SNS,
     IS_TESTNET,

@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { toastsSuccess } from "../../stores/toasts.store";
-  import { routeStore } from "../../stores/route.store";
+  import { i18n } from "$lib/utils/i18n";
+  import type { Step, Steps } from "$lib/utils/steps.state";
+  import { startBusy, stopBusy } from "$lib/utils/busy.store";
+  import { toastsSuccess } from "$lib/utils/toasts.store";
+  import { routeStore } from "$lib/utils/route.store";
   import { createEventDispatcher } from "svelte";
   import { disburse } from "../../services/sns-neurons.services";
   import { snsOnlyProjectStore } from "../../derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
-  import { accountsStore } from "../../stores/accounts.store";
+  import { accountsStore } from "$lib/utils/accounts.store";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
-  } from "../../utils/sns-neuron.utils";
+  } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
-  import { transactionsFeesStore } from "../../stores/transaction-fees.store";
+  import { transactionsFeesStore } from "$lib/utils/transaction-fees.store";
   import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import { neuronsPathStore } from "../../derived/paths.derived";
   import { syncAccounts } from "../../services/accounts.services";

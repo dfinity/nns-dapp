@@ -15,18 +15,18 @@ import type {
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { AppPath } from "../constants/routes.constants";
-import { canistersStore } from "../stores/canisters.store";
-import { toastsError, toastsShow } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import { LedgerErrorMessage } from "../types/ledger.errors";
-import { assertEnoughAccountFunds } from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { isController } from "../utils/canisters.utils";
+import { AppPath } from "$lib/constants/routes.constants";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
+import { isController } from "$lib/utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
-} from "../utils/error.utils";
+} from "$lib/utils/error.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";

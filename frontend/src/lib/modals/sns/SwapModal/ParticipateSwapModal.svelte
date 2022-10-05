@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
-  import type { Step } from "../../../stores/steps.state";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Step } from "$lib/stores/steps.state";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import {
@@ -11,16 +11,16 @@
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
-  } from "../../../utils/projects.utils";
+  } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "../../../types/sns";
   import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
-  import { nonNullish } from "../../../utils/utils";
-  import { startBusy, stopBusy } from "../../../stores/busy.store";
+  import { nonNullish } from "$lib/utils/utils";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     getSwapAccount,
     participateInSwap,
   } from "../../../services/sns.services";
-  import { toastsSuccess } from "../../../stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "../../../types/transaction.context";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";

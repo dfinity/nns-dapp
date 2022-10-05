@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "../../components/accounts/DestinationAddress.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { stopBusy } from "../../stores/busy.store";
-  import { toastsSuccess } from "../../stores/toasts.store";
-  import { routeStore } from "../../stores/route.store";
+  import LegacyWizardModal from "$lib/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+  import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";
-  import { disburse } from "../../services/neurons.services";
-  import { neuronStake } from "../../utils/neuron.utils";
-  import { neuronsPathStore } from "../../derived/paths.derived";
+  import { disburse } from "$lib/services/neurons.services";
+  import { neuronStake } from "$lib/utils/neuron.utils";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
 
   export let neuron: NeuronInfo;
 

@@ -6,10 +6,10 @@
     type ProposalId,
     ProposalStatus,
   } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
+  import { i18n } from "$lib/utils/i18n";
+  import { routeStore } from "$lib/utils/route.store";
   import { AppPath } from "../../constants/routes.constants";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Color } from "../../types/theme";
 
   export let proposalInfo: ProposalInfo;
