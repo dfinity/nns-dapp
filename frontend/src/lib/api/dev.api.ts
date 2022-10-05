@@ -3,22 +3,14 @@ import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { HOST, IS_TESTNET } from "../constants/environment.constants";
+import type { Account } from "../types/account";
 import { governanceCanister } from "./governance.api";
+import { initSns } from "./sns-wrapper.api";
 
-/*
- * Gives the caller the specified amount of (fake) ICPs.
- * Should/can only be used on testnets.
- */
-export const acquireICPTs = async ({
-  accountIdentifier,
-  e8s,
-}: {
-  accountIdentifier: string;
-  e8s: E8s;
-}): Promise<BlockHeight> => {
-  assertTestnet();
-
+const getTestAccountAgent = async (): Promise<HttpAgent> => {
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
   // identity to send the current user some ICP to test things with.
   // The identity's principal is jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe
@@ -37,11 +29,60 @@ export const acquireICPTs = async ({
   });
   await agent.fetchRootKey();
 
+  return agent;
+};
+
+/*
+ * Gives the caller the specified amount of (fake) ICPs.
+ * Should/can only be used on testnets.
+ */
+export const acquireICPTs = async ({
+  accountIdentifier,
+  e8s,
+}: {
+  accountIdentifier: string;
+  e8s: E8s;
+}): Promise<BlockHeight> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
   const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
 
   return ledgerCanister.transfer({
     amount: e8s,
     to: AccountIdentifier.fromHex(accountIdentifier),
+  });
+};
+
+export const acquireSnsTokens = async ({
+  account,
+  e8s,
+  rootCanisterId,
+}: {
+  account: Account;
+  e8s: bigint;
+  rootCanisterId: Principal;
+}): Promise<void> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  const { transfer } = await initSns({
+    agent,
+    rootCanisterId,
+    certified: true,
+  });
+
+  await transfer({
+    amount: e8s,
+    to: {
+      owner: account.principal as Principal,
+      subaccount:
+        account.subAccount === undefined
+          ? []
+          : toNullable(arrayOfNumberToUint8Array(account.subAccount)),
+    },
   });
 };
 

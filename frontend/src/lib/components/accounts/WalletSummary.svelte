@@ -36,7 +36,7 @@
   });
 </script>
 
-<div class="title">
+<div class="title" data-tid="wallet-summary">
   <h1>{accountName}</h1>
   <Tooltip
     id="wallet-detailed-icp"

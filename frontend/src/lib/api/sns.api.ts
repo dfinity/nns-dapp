@@ -393,3 +393,27 @@ export const removeNeuronPermissions = async ({
 
   logWithTimestamp("Removing neuron permissions: done");
 };
+
+export const disburse = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp(`Disburse sns neuron call...`);
+
+  const { disburse } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await disburse({
+    neuronId,
+  });
+
+  logWithTimestamp(`Disburse sns neuron complete.`);
+};

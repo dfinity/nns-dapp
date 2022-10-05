@@ -22,9 +22,7 @@
     neuronsStore,
   } from "../lib/stores/neurons.store";
   import { reloadRouteData } from "../lib/utils/navigation.utils";
-  import ProposalsLegacy from "../lib/components/proposals/ProposalsLegacy.svelte";
-  import ProposalsModern from "../lib/components/proposals/ProposalsModern.svelte";
-  import { VOTING_UI } from "../lib/constants/environment.constants";
+  import ProposalsList from "../lib/components/proposals/ProposalsList.svelte";
   import {
     sortedProposals,
     filteredProposals,
@@ -162,28 +160,14 @@
     : "skeleton";
 </script>
 
-<main
-  class={VOTING_UI}
-  data-tid={`proposals-scroll-${disableInfiniteScroll ? "off" : "on"}`}
->
-  {#if VOTING_UI === "modern"}
-    <ProposalsModern
-      {hidden}
-      {neuronsLoaded}
-      {nothingFound}
-      {disableInfiniteScroll}
-      {loading}
-      {loadingAnimation}
-      on:nnsIntersect={findNextProposals}
-    />
-  {:else}
-    <ProposalsLegacy
-      {hidden}
-      {neuronsLoaded}
-      {nothingFound}
-      {disableInfiniteScroll}
-      {loadingAnimation}
-      on:nnsIntersect={findNextProposals}
-    />
-  {/if}
+<main data-tid={`proposals-scroll-${disableInfiniteScroll ? "off" : "on"}`}>
+  <ProposalsList
+    {hidden}
+    {neuronsLoaded}
+    {nothingFound}
+    {disableInfiniteScroll}
+    {loading}
+    {loadingAnimation}
+    on:nnsIntersect={findNextProposals}
+  />
 </main>

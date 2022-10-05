@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { ProposalInfo } from "@dfinity/nns";
-  import ProposalModern from "../../../../lib/components/proposal-detail/ProposalModern.svelte";
+  import Proposal from "../../../../lib/components/proposal-detail/Proposal.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalStore,
@@ -19,4 +19,4 @@
   setContext(SELECTED_PROPOSAL_CONTEXT_KEY, { store });
 </script>
 
-<ProposalModern {neuronsReady} />
+<Proposal {neuronsReady} />
