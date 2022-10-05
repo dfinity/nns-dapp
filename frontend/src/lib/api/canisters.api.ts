@@ -131,7 +131,7 @@ export const detachCanister = async ({
 
 const pollingLimit = (error: unknown): boolean =>
   error instanceof PollingLimitExceededError;
-const notProcessingError = (error: Error): boolean =>
+const notProcessingError = (error: unknown): boolean =>
   !(error instanceof ProcessingError);
 
 // Polls CMC waiting for a reponse that is not a ProcessingError.

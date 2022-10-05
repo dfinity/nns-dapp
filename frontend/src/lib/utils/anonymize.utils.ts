@@ -19,7 +19,7 @@ import {
   type NeuronInfo,
   type ProposalInfo,
 } from "@dfinity/nns";
-import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
+import type { SnsSwapBuyerState, SnsSwapDerivedState, SnsTransferableAmount } from "@dfinity/sns";
 import { digestText } from "./dev.utils";
 import { mapTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";
@@ -293,7 +293,7 @@ export const anonymizeProposal = async (
   };
 };
 
-const anonymizeBuyer = async ([buyer, state]): Promise<
+const anonymizeBuyer = async ([buyer, state]: [string, SnsSwapBuyerState]): Promise<
   [string, SnsSwapBuyerState]
 > => [
   buyer,
@@ -303,7 +303,7 @@ const anonymizeBuyer = async ([buyer, state]): Promise<
         ...state.icp[0],
         amount_e8s:
           (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
-      },
+      } as SnsTransferableAmount,
     ],
   },
 ];

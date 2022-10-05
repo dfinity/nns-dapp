@@ -74,7 +74,7 @@ const initRouteStore = () => {
      * @param newContext string - the new context to navigate to
      */
     changeContext: (newContext: string) => {
-      let newPath;
+      let newPath = "/";
       update((state: RouteStore) => {
         newPath = changePathContext({ path: state.path, newContext });
         return {
