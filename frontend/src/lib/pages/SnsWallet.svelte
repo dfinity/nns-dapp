@@ -10,6 +10,7 @@
   import { snsProjectAccountsStore } from "../derived/sns/sns-project-accounts.derived";
   import { routePathAccountIdentifier } from "../services/accounts.services";
   import { loadSnsAccounts } from "../services/sns-accounts.services";
+  import { loadSnsTransactionFee } from "../services/transaction-fees.services";
   import { debugSelectedAccountStore } from "../stores/debug.store";
   import { routeStore } from "../stores/route.store";
   import {
@@ -30,7 +31,10 @@
       if (selectedProjectCanisterId !== undefined) {
         // Reload accounts always.
         // Do not set to loading because we might use the account in the store.
-        await loadSnsAccounts(selectedProjectCanisterId);
+        await Promise.all([
+          loadSnsAccounts(selectedProjectCanisterId),
+          loadSnsTransactionFee(selectedProjectCanisterId),
+        ]);
       }
     }
   );

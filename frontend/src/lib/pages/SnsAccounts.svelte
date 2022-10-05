@@ -13,6 +13,7 @@
   import SkeletonCard from "../components/ui/SkeletonCard.svelte";
   import { routeStore } from "../stores/route.store";
   import { walletPathStore } from "../derived/paths.derived";
+  import { loadSnsTransactionFee } from "../services/transaction-fees.services";
 
   let loading: boolean = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -21,6 +22,8 @@
         // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
         await loadSnsAccounts(selectedProjectCanisterId);
+        // No need to wait for the transaction fee
+        loadSnsTransactionFee(selectedProjectCanisterId);
         loading = false;
       }
     }
