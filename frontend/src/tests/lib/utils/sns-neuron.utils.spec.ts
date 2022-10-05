@@ -94,6 +94,19 @@ describe("sns-neuron utils", () => {
       });
       expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
     });
+
+    it("returns DISSOLVED when DissolveDelaySeconds=0", () => {
+      const neuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: undefined,
+      });
+      neuron.dissolve_state = [
+        {
+          DissolveDelaySeconds: BigInt(0),
+        },
+      ];
+      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
+    });
   });
 
   describe("getSnsDissolvingTimeInSeconds", () => {

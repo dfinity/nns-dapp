@@ -100,6 +100,11 @@
   @use "@dfinity/gix-components/styles/mixins/interaction";
 
   article {
+    h3 {
+      // Titles longer than one line had too much space with the default line-height for h3
+      line-height: normal;
+    }
+
     :global(.collapsible-expand-icon) {
       align-items: start;
       padding-top: var(--padding-3x);
@@ -122,8 +127,9 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    // Used to align with the collapsible icon
     padding-right: var(--padding-2x);
-    margin-top: var(--padding-2x);
+    margin-top: var(--padding);
     margin-right: var(--padding-2x);
   }
 

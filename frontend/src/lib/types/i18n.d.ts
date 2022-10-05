@@ -130,9 +130,13 @@ interface I18nHeader {
 interface I18nAuth {
   ic: string;
   nns: string;
-  icp_governance: string;
   login: string;
+  title: string;
   on_chain: string;
+  secure: string;
+  stake: string;
+  earn: string;
+  ic_logo: string;
 }
 
 interface I18nAccounts {

@@ -51,7 +51,7 @@
   @use "@dfinity/gix-components/styles/mixins/text";
 
   div {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;

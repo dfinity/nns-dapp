@@ -122,9 +122,13 @@
   "auth": {
     "ic": "INTERNET COMPUTER",
     "nns": "NETWORK NERVOUS SYSTEM",
-    "icp_governance": "ICP and governance",
-    "login": "Login",
-    "on_chain": "100% on-chain Internet Computer"
+    "login": "Sign in with Internet Identity",
+    "title": "Open and autonomous governance running",
+    "on_chain": "100% on-chain",
+    "secure": "MANAGE TOKENS",
+    "stake": "STAKE NEURONS",
+    "earn": "VOTE & EARN REWARDS",
+    "ic_logo": "Internet Computer logo"
   },
   "accounts": {
     "total": "Total",
@@ -263,8 +267,8 @@
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
-    "topic_0_title": "All Topics Except Governance",
-    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic",
+    "topic_0_title": "All Except Governance, and SNS & Community Fund",
+    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic, and SNS & Community Fund.",
     "topic_1_title": "Manage Neuron",
     "topic_1_subtitle": "Proposals that manage specific neurons, for example making them perform actions.",
     "topic_2_title": "Exchange Rate",

@@ -113,16 +113,17 @@
   {#if component !== undefined}
     <svelte:component this={component} />
   {:else}
-    <section class:authLayout>
+    <div class:authLayout>
       <Spinner />
-    </section>
+    </div>
   {/if}
 </svelte:component>
 
 <style lang="scss">
+  @use "../../themes/mixins/login";
   @use "@dfinity/gix-components/styles/mixins/display";
 
-  section {
+  div {
     position: absolute;
     @include display.inset;
 
@@ -130,7 +131,6 @@
   }
 
   .authLayout {
-    // Fancy color based on the milky way of the auth background image
-    color: rgba(112, 71, 224, 0.6);
+    @include login.background;
   }
 </style>
