@@ -19,7 +19,7 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
-ENV_FILE="$PWD/frontend/.env"
+ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.

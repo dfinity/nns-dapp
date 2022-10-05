@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-dotenv.config({ path: "../../frontend/.env" });
+dotenv.config();
 
 /**
  * Returns the given environment variable, if defined and non-empty, else throws an error.
