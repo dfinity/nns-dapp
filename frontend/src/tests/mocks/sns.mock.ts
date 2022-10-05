@@ -7,7 +7,7 @@ import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import ContextWrapperTest from "../lib/omponents/ContextWrapperTest.svelte";
+import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
 export const renderContextCmp = ({
   Component,
