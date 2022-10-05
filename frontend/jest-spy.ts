@@ -6,7 +6,6 @@ import { mockGetIdentity } from "./src/tests/mocks/auth.store.mock";
 
 const mockCreateAgent = () => Promise.resolve(mock<HttpAgent>());
 jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
-
 jest
   .spyOn(authServices, "getIdentity")
   .mockImplementation(() => Promise.resolve(mockGetIdentity()));
