@@ -19,7 +19,7 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
-JSON_CONFIG_FILE="$PWD/deployment-config.json"
+ENV_FILE="$PWD/frontend/.env"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
@@ -76,7 +76,7 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-jq -s --sort-keys '
+json=$(jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
@@ -84,39 +84,63 @@ jq -s --sort-keys '
   .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
-' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
-echo "Config has been defined in '${JSON_CONFIG_FILE}'" >&2
+' dfx.json <(echo "$local_deployment_data"))
 
-: "Export values used by bash:"
-get_var() {
-  var_name="$1" jq -r '.[env.var_name] | if (. == null) or (. == "") then "ERROR: Undefined config item: \(env.var_name)\n" | halt_error(1) else . end' "$JSON_CONFIG_FILE"
-}
+dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
+cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
+wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
+governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
+governanceCanisterUrl=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_URL")
+ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
+ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
+ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
+ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
+fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
+featureFlagsEnableSns=$(echo "$json" | jq -r ".FEATURE_FLAGS.ENABLE_SNS")
+host=$(echo "$json" | jq -r ".HOST")
+identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 
-IDENTITY_SERVICE_URL="$(get_var IDENTITY_SERVICE_URL)"
+echo "VITE_DFX_NETWORK=$dfxNetwork
+VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
+VITE_WASM_CANISTER_ID=$wasmCanisterId
+VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
+VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
+VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
+VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
+VITE_OWN_CANISTER_ID=$ownCanisterId
+VITE_OWN_CANISTER_URL=$ownCanisterUrl
+VITE_FETCH_ROOT_KEY=$fetchRootKey
+VITE_FEATURE_FLAGS_ENABLE_SNS=$featureFlagsEnableSns
+VITE_HOST=$host
+VITE_IDENTITY_SERVICE_URL=$identityServiceUrl" | tee "$ENV_FILE"
+
+echo "Config has been defined in '${ENV_FILE}'" >&2
+
+IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
 
-GOVERNANCE_CANISTER_ID="$(get_var GOVERNANCE_CANISTER_ID)"
+GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
-GOVERNANCE_CANISTER_URL="$(get_var GOVERNANCE_CANISTER_URL)"
+GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
 export GOVERNANCE_CANISTER_URL
 
-LEDGER_CANISTER_ID="$(get_var LEDGER_CANISTER_ID)"
+LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
-LEDGER_CANISTER_URL="$(get_var LEDGER_CANISTER_URL)"
+LEDGER_CANISTER_URL="$ledgerCanisterUrl"
 export LEDGER_CANISTER_URL
 
-OWN_CANISTER_ID="$(get_var OWN_CANISTER_ID)"
+OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID
-OWN_CANISTER_URL="$(get_var OWN_CANISTER_URL)"
+OWN_CANISTER_URL="$ownCanisterUrl"
 export OWN_CANISTER_URL
 
-HOST="$(get_var HOST)"
+HOST="$host"
 export HOST
 
-FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
+FETCH_ROOT_KEY="$fetchRootKey"
 export FETCH_ROOT_KEY
 
-WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
+WASM_CANISTER_ID="$wasmCanisterId"
 export WASM_CANISTER_ID
 
 : "Return to the original working directory."

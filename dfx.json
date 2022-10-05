@@ -88,7 +88,6 @@
   "networks": {
     "mainnet": {
       "config": {
-        "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
@@ -106,7 +105,6 @@
     },
     "staging": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
@@ -121,7 +119,6 @@
     },
     "testnet": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
@@ -136,7 +133,6 @@
     },
     "small13": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
@@ -151,7 +147,6 @@
     },
     "small12": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
@@ -166,7 +161,6 @@
     },
     "small11": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
@@ -181,7 +175,6 @@
     },
     "small06": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
@@ -196,7 +189,6 @@
     },
     "local": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
