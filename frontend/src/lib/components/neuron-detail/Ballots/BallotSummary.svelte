@@ -27,7 +27,7 @@
   <p class="value">{proposal.id}</p>
 
   <p class="vote value">
-    {keyOf({ obj: $i18n.core, key: Vote[ballot.vote] }).toLowerCase()}
+    {keyOf({ obj: $i18n.core, key: Vote[ballot.vote].toLowerCase() })}
   </p>
 
   <div class="summary">
