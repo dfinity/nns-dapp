@@ -71,7 +71,7 @@
 
     <div class="card-meta">
       <p class={`${color ?? ""} status`}>
-        {keyOfOptional({ obj: status, key: ProposalStatus[status] }) ?? ""}
+        {keyOfOptional({ obj: $i18n.status, key: ProposalStatus[status] }) ?? ""}
       </p>
 
       <ProposalCountdown {proposalInfo} />
