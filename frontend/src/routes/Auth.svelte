@@ -60,7 +60,6 @@
     src="/assets/ic-logo.svg"
     role="presentation"
     alt={$i18n.auth.ic_logo}
-    class="bottom-banner"
     loading="lazy"
   />
 
