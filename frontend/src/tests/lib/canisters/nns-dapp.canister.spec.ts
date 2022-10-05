@@ -44,7 +44,7 @@ describe("NNSDapp", () => {
 
   describe("NNSDapp.addAccount", () => {
     it("returns account identifier when success", async () => {
-      const response: string =
+      const response =
         "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
       const service = mock<NNSDappService>();
       service.add_account.mockResolvedValue(response);

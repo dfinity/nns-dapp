@@ -2,6 +2,7 @@
 //@ts-nocheck
 
 class LocalStorageMock {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   store: any;
   constructor() {
     this.store = {};

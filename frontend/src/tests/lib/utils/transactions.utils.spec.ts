@@ -149,6 +149,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionType({
           ...mockSentToSubAccountTransaction,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore-line: test
           transaction_type: [{ Unknown: null }],
         })

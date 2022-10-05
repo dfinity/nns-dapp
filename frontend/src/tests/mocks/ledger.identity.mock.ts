@@ -28,6 +28,7 @@ type MockIdentityOptions = {
 // @ts-ignore: test file
 export class MockLedgerIdentity extends LedgerIdentity {
   constructor({ version }: MockIdentityOptions = {}) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - we do not use the service for mocking purpose
     super(
       LEDGER_DEFAULT_DERIVE_PATH,

@@ -20,6 +20,7 @@ describe("auth-store", () => {
   });
 
   it("should call auth-client login on sign-in", async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: test file
     mockAuthClient.login = async ({ onSuccess }: { onSuccess: () => void }) => {
       expect(true).toBeTruthy();

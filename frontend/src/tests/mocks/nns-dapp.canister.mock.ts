@@ -15,6 +15,7 @@ import {
 // @ts-ignore: test file
 export class MockNNSDappCanister extends NNSDappCanister {
   constructor() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - we do not use the service for mocking purpose
     super(undefined, undefined);
   }
