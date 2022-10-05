@@ -19,7 +19,7 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
 
-  const { store }: SelectedSnsNeuronContext =
+  const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
@@ -35,10 +35,6 @@
         neuron,
         identity: $authStore.identity,
       });
-
-  const { reload: reloadContext } = getContext<SelectedSnsNeuronContext>(
-    SELECTED_SNS_NEURON_CONTEXT_KEY
-  );
 </script>
 
 {#if nonNullish(neuron)}

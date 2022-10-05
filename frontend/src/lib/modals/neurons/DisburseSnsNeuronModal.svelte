@@ -27,7 +27,24 @@
   export let reloadContext: () => Promise<void>;
 
   let destinationAddress: string | undefined;
-  $: destinationAddress = $accountsStore.main?.identifier;
+  $: destinationAddress = $snsProjectMainAccountStore?.identifier;
+
+  // load project accounts if not available
+  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+    async (selectedProjectCanisterId) => {
+      if (
+        selectedProjectCanisterId === undefined ||
+        $snsProjectMainAccountStore !== undefined
+      ) {
+        return;
+      }
+
+      loading = true;
+      await loadSnsAccounts(selectedProjectCanisterId);
+      loading = false;
+    }
+  );
+  onDestroy(unsubscribe);
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
