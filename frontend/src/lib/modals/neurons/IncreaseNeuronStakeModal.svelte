@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { reloadNeuron } from "$lib/services/neurons.services";
-  import NewTransactionModal from "$lib/modals/accounts/NewTransactionModal.svelte";
+  import NewTransactionModal from "$lib/components/modals/accounts/NewTransactionModal.svelte";
   import type { TransactionStore } from "$lib/types/transaction.context";
   import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
   import { toastsError } from "$lib/stores/toasts.store";

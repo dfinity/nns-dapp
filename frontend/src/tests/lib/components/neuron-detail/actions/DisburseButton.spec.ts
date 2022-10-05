@@ -3,8 +3,8 @@
  */
 
 import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
-import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
-import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+import DisburseNnsNeuronModal from "$lib/components/modals/neurons/DisburseNnsNeuronModal.svelte";
+import DisburseSnsNeuronModal from "$lib/components/modals/neurons/DisburseSnsNeuronModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
+  import FollowNeuronsModal from "$lib/components/modals/neurons/FollowNeuronsModal.svelte";
 
   export let neuron: NeuronInfo;
 

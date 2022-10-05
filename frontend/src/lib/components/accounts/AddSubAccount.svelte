@@ -4,7 +4,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import { addSubAccount } from "$lib/services/accounts.services";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,

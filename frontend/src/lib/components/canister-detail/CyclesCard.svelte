@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
 
   export let cycles: bigint;
 </script>

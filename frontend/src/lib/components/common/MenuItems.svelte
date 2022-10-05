@@ -17,7 +17,7 @@
     ENABLE_SNS,
     IS_TESTNET,
   } from "../../constants/environment.constants";
-  import BadgeNew from "../ui/BadgeNew.svelte";
+  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "../ic/GetTokens.svelte";
   import {
     accountsPathStore,

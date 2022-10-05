@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+import VoteConfirmationModal from "$lib/components/modals/proposals/VoteConfirmationModal.svelte";
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";

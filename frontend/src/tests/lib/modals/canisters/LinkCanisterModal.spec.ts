@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+import LinkCanisterModal from "$lib/components/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent } from "@testing-library/dom";

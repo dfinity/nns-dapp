@@ -2,7 +2,7 @@
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import ProgressBar from "../ui/ProgressBar.svelte";
+  import ProgressBar from "$lib/components/ui/ProgressBar.svelte";
 
   export let max: bigint;
   export let value: bigint;

@@ -17,9 +17,9 @@
     getSnsNeuronHotkeys,
     canIdentityManageHotkeys,
   } from "$lib/utils/sns-neuron.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import Value from "../ui/Value.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   const { reload, store }: SelectedSnsNeuronContext =

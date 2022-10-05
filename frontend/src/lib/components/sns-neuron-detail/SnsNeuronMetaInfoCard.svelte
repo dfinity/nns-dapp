@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDate } from "$lib/utils/date.utils";
-  import Value from "../ui/Value.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {
@@ -10,7 +10,7 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
   import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
-  import DisburseSnsNeuronModal from "../../modals/neurons/DisburseSnsNeuronModal.svelte";
+  import DisburseSnsNeuronModal from "$lib/components/modals/neurons/DisburseSnsNeuronModal.svelte";
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,

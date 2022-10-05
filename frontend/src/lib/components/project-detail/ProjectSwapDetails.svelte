@@ -6,11 +6,11 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsParams } from "@dfinity/sns";
-  import DateSeconds from "../ui/DateSeconds.svelte";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

@@ -16,7 +16,7 @@
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Hash from "../ui/Hash.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   export let neuron: SnsNeuron;

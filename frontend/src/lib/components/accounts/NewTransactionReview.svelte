@@ -10,7 +10,7 @@
   import { transferICP } from "$lib/services/accounts.services";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

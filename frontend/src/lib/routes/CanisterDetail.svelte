@@ -24,7 +24,7 @@
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
+  import AddCyclesModal from "$lib/components/modals/canisters/AddCyclesModal.svelte";
   import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";

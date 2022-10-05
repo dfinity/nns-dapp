@@ -3,7 +3,7 @@
  */
 
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import CreateNeuronModal from "$lib/modals/neurons/CreateNeuronModal.svelte";
+import CreateNeuronModal from "$lib/components/modals/neurons/CreateNeuronModal.svelte";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,

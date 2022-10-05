@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
+import MergeNeuronsModal from "$lib/components/modals/neurons/MergeNeuronsModal.svelte";
 import { mergeNeurons } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";

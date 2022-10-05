@@ -11,7 +11,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;

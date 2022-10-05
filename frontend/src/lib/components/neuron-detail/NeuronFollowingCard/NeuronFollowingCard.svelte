@@ -14,7 +14,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
-  import KeyValuePairInfo from "../../ui/KeyValuePairInfo.svelte";
+  import KeyValuePairInfo from "../$lib/components/ui/KeyValuePairInfo.svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;

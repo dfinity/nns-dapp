@@ -10,7 +10,7 @@
     votedNeuronDetails,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
-  import Value from "../ui/Value.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

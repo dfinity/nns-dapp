@@ -16,7 +16,7 @@
     mainTransactionFeeStore,
     transactionsFeesStore,
   } from "$lib/stores/transaction-fees.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
 
   export let account: Account;

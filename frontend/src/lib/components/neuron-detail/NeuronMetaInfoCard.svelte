@@ -22,10 +22,10 @@
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/utils/accounts.store";
-  import Value from "../ui/Value.svelte";
-  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
+  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { sanitize } from "$lib/utils/html.utils";
-  import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
+  import DisburseNnsNeuronModal from "$lib/components/modals/neurons/DisburseNnsNeuronModal.svelte";
 
   export let neuron: NeuronInfo;
 

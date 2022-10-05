@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import Tag from "../ui/Tag.svelte";
+  import Tag from "$lib/components/ui/Tag.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,

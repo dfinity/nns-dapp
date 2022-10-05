@@ -11,7 +11,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
-  import SkeletonDetails from "../ui/SkeletonDetails.svelte";
+  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
 
   export let neuronsReady = false;
 

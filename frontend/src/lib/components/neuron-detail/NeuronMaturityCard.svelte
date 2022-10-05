@@ -2,9 +2,9 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { authStore } from "$lib/utils/auth.store";
   import { i18n } from "$lib/utils/i18n";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";

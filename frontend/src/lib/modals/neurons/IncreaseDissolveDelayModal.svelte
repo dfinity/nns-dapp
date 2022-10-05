@@ -3,7 +3,7 @@
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import { createEventDispatcher } from "svelte";
 

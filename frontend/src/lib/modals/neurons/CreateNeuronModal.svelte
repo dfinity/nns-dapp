@@ -8,7 +8,7 @@
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import LegacyWizardModal from "$lib/components/modals/LegacyWizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import { stepIndex } from "$lib/utils/step.utils";
   import { createEventDispatcher, tick } from "svelte";

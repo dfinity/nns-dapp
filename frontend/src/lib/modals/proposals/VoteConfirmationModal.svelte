@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/components/modals/ConfirmationModal.svelte";
 
   export let voteType: Vote;
   export let votingPower: bigint;

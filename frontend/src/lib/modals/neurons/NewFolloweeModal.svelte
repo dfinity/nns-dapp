@@ -16,7 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;

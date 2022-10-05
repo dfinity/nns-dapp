@@ -5,7 +5,7 @@
   import { toastsSuccess } from "$lib/utils/toasts.store";
   import { routeStore } from "$lib/utils/route.store";
   import { createEventDispatcher } from "svelte";
-  import { disburse } from "../../services/sns-neurons.services";
+  import { disburse } from "$lib/services/sns-neurons.services";
   import { snsOnlyProjectStore } from "../../derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
@@ -21,7 +21,7 @@
   import { transactionsFeesStore } from "$lib/utils/transaction-fees.store";
   import LegacyWizardModal from "../LegacyWizardModal.svelte";
   import { neuronsPathStore } from "../../derived/paths.derived";
-  import { syncAccounts } from "../../services/accounts.services";
+  import { syncAccounts } from "$lib/services/accounts.services";
 
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;

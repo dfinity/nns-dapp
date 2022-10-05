@@ -12,9 +12,9 @@
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { routeStore } from "$lib/stores/route.store";
-  import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
+  import CreateCanisterModal from "$lib/components/modals/canisters/CreateCanisterModal.svelte";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
-  import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+  import LinkCanisterModal from "$lib/components/modals/canisters/LinkCanisterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
 
   const loadCanisters = async () => {

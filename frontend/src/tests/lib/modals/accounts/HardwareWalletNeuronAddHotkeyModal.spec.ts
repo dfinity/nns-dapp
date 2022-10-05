@@ -3,7 +3,7 @@
  */
 
 import * as api from "$lib/api/governance.api";
-import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
+import HardwareWalletNeuronAddHotkeyModal from "$lib/components/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
+import RenameSubAccountModal from "$lib/components/modals/accounts/RenameSubAccountModal.svelte";
 import type { Account } from "$lib/types/account";
 import { mockSubAccount } from "../../../mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";

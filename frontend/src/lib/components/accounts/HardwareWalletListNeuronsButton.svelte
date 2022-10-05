@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
+  import HardwareWalletListNeuronsModal from "$lib/components/modals/accounts/HardwareWalletListNeuronsModal.svelte";
   import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import { writable } from "svelte/store";

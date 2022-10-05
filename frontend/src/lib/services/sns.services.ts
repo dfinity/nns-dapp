@@ -24,10 +24,10 @@ import {
 } from "../stores/sns.store";
 import { toastsError } from "../stores/toasts.store";
 import { transactionsFeesStore } from "../stores/transaction-fees.store";
-import type { Account } from "../types/account";
-import { LedgerErrorKey } from "../types/ledger.errors";
-import type { SnsSwapCommitment } from "../types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "../types/sns.query";
+import type { Account } from "$lib/typesces/account";
+import { LedgerErrorKey } from "$lib/typesces/ledger.errors";
+import type { SnsSwapCommitment } from "$lib/typesces/sns";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/typesces/sns.query";
 import { assertEnoughAccountFunds } from "../utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
 import { toToastError } from "../utils/error.utils";

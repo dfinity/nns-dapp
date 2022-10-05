@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import LegacyModal from "$lib/components/modals/LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";

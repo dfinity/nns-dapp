@@ -6,8 +6,8 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Value from "../ui/Value.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
   import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
 

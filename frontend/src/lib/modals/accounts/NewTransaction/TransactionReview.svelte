@@ -2,7 +2,7 @@
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
   import { busy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";

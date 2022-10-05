@@ -1,5 +1,5 @@
 <script lang="ts">
-  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
+  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { sanitize } from "$lib/utils/html.utils";
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";

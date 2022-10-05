@@ -3,8 +3,8 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import { Modal } from "@dfinity/gix-components";
-  import Input from "../ui/Input.svelte";
-  import { getICPs, getTokens } from "../../services/dev.services";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { getICPs, getTokens } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/utils/toasts.store";
   import { get } from "svelte/store";

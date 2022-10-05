@@ -3,7 +3,7 @@
  */
 
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
+import IncreaseDissolveDelayModal from "$lib/components/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";

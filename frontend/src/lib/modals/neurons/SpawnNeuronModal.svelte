@@ -6,10 +6,10 @@
   import WizardModal from "../WizardModal.svelte";
   import { stopBusy } from "$lib/utils/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "../../services/neurons.services";
+  import { spawnNeuron } from "$lib/services/neurons.services";
   import { toastsShow } from "$lib/utils/toasts.store";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
-  import { startBusyNeuron } from "../../services/busy.services";
+  import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
   import { routeStore } from "$lib/utils/route.store";
   import { AppPath } from "../../constants/routes.constants";

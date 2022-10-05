@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/components/modals/ConfirmationModal.svelte";
   import { toggleCommunityFund } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";

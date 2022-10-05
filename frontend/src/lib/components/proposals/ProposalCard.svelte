@@ -10,11 +10,11 @@
   import { routeStore } from "$lib/utils/route.store";
   import { AppPath } from "../../constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import type { Color } from "../../types/theme";
+  import type { Color } from "$lib/types/theme";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
-  import Value from "../ui/Value.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
 

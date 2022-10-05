@@ -1,7 +1,7 @@
 <script lang="ts">
   // Tested in EditFollowNeurons.spec.ts
   import { type NeuronId, Topic, type NeuronInfo } from "@dfinity/nns";
-  import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
+  import NewFolloweeModal from "$lib/components/modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";

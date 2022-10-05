@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronId } from "@dfinity/nns";
-  import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
+  import AddHotkeyModal from "$lib/components/modals/neurons/AddHotkeyModal.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let neuronId: NeuronId;

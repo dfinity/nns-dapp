@@ -6,7 +6,7 @@
   import { createEventDispatcher } from "svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
 
   let principal: Principal | undefined;
 

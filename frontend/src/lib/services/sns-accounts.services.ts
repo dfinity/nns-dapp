@@ -2,7 +2,7 @@ import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import type { Principal } from "@dfinity/principal";
 import { snsAccountsStore } from "../stores/sns-accounts.store";
 import { toastsError } from "../stores/toasts.store";
-import type { Account } from "../types/account";
+import type { Account } from "$lib/typesces/account";
 import { toToastError } from "../utils/error.utils";
 import { queryAndUpdate } from "./utils.services";
 

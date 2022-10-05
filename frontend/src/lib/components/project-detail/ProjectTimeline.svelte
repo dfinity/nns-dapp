@@ -8,8 +8,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
-  import Value from "../ui/Value.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

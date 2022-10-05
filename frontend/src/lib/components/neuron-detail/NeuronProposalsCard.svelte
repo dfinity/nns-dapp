@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { makeDummyProposals } from "$lib/services/neurons.services";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;

@@ -5,7 +5,7 @@
   import { formatPercentage } from "$lib/utils/format.utils";
   import { InputRange } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   export let neuron: NeuronInfo;
   export let percentage: number;

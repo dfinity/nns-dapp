@@ -3,7 +3,7 @@
  */
 
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import NewTransactionModal from "$lib/modals/accounts/NewTransactionModal.svelte";
+import NewTransactionModal from "$lib/components/modals/accounts/NewTransactionModal.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {} from "$lib/stores/toasts.store";
 import { toastsStore } from "@dfinity/gix-components";

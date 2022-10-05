@@ -13,13 +13,13 @@
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../../types/selected-proposal.context";
+  } from "$lib/types/selected-proposal.context";
   import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
   } from "$lib/stores/vote-registration.store";
-  import { registerVotes } from "../../../services/vote-registration.services";
+  import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;

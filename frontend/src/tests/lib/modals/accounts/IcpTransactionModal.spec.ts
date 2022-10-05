@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
+import IcpTransactionModal from "$lib/components/modals/accounts/IcpTransactionModal.svelte";
 import { transferICP } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent, waitFor } from "@testing-library/svelte";

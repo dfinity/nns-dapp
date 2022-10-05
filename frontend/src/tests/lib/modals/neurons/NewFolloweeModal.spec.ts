@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
+import NewFolloweeModal from "$lib/components/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";

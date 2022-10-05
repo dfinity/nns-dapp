@@ -4,7 +4,7 @@
   import { layoutTitleStore, layoutBackStore } from "$lib/utils/layout.store";
   import { Layout, HeaderTitle } from "@dfinity/gix-components";
   import AccountMenu from "../header/AccountMenu.svelte";
-  import { triggerDebugReport } from "../../services/debug.services";
+  import { triggerDebugReport } from "$lib/services/debug.services";
 
   let back = false;
   $: back = $layoutBackStore !== undefined;

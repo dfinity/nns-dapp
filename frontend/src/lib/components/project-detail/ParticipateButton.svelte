@@ -6,13 +6,13 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+  import ParticipateSwapModal from "$lib/components/modals/sns/SwapModal/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

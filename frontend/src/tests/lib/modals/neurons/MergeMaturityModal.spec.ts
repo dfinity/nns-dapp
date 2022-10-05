@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
+import MergeMaturityModal from "$lib/components/modals/neurons/MergeMaturityModal.svelte";
 import { mergeMaturity } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";

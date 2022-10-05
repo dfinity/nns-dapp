@@ -17,7 +17,7 @@
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange } from "@dfinity/gix-components";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import FooterModal from "$lib/components/modals/FooterModal.svelte";
   import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;

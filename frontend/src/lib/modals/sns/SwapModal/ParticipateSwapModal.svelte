@@ -6,22 +6,22 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../../types/project-detail.context";
+  } from "$lib/types/project-detail.context";
   import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
   } from "$lib/utils/projects.utils";
-  import type { SnsSummary, SnsSwapCommitment } from "../../../types/sns";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     getSwapAccount,
     participateInSwap,
-  } from "../../../services/sns.services";
+  } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "../../../types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction.context";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
 
