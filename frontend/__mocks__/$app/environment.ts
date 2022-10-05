@@ -1,1 +1,1 @@
-export const browser = true;
+export const browser = false;

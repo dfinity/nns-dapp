@@ -21,7 +21,7 @@ module.exports = {
     "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
   ],
   moduleNameMapper: {
-    "^\\$lib(.*)$": "<rootDir>/src/lib$1"
+    "^\\$lib(.*)$": "<rootDir>/src/lib$1",
   },
   setupFiles: ["fake-indexeddb/auto"],
 };
