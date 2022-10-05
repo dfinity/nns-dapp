@@ -68,7 +68,7 @@ describe("sns-project-accounts store", () => {
         certified: true,
       });
       const value = get(snsProjectMainAccountStore);
-      expect(value.type).toEqual("main");
+      expect(value?.type).toEqual("main");
     });
   });
 });
