@@ -17,7 +17,12 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "../../../mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 
@@ -27,7 +32,14 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
+jest.mock("../../../../lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("DisburseSnsNeuronModal", () => {
+  const principalString = `${mockSnsMainAccount.principal}`;
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadContext: () => Promise<void> = () => Promise.resolve()
@@ -46,11 +58,6 @@ describe("DisburseSnsNeuronModal", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
 
-    accountsStore.set({
-      ...get(accountsStore),
-      main: mockMainAccount,
-    });
-
     jest
       .spyOn(accountsApi, "loadAccounts")
       .mockImplementation(() =>
@@ -66,6 +73,21 @@ describe("DisburseSnsNeuronModal", () => {
     jest.clearAllMocks();
   });
 
+  beforeEach(() => {
+    accountsStore.set({
+      ...get(accountsStore),
+      main: mockMainAccount,
+    });
+
+    snsAccountsStore.setAccounts({
+      rootCanisterId: mockPrincipal,
+      accounts: [mockSnsMainAccount, mockSnsSubAccount],
+      certified: true,
+    });
+
+    (loadSnsAccounts as jest.Mock).mockClear();
+  });
+
   it("should display modal", async () => {
     const { container } = await renderDisburseModal(mockSnsNeuron);
 
@@ -73,14 +95,17 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should render a confirmation screen", async () => {
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
+    });
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
 
-    const confirmScreen = queryByTestId("confirm-disburse-screen");
-    expect(confirmScreen).not.toBeNull();
+    await waitFor(() =>
+      expect(queryByTestId("confirm-disburse-screen")).not.toBeNull()
+    );
   });
 
   it("should call disburse service", async () => {
-    const principalString = "aaaaa-aa";
     routeStore.update({
       path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
     });
@@ -97,7 +122,6 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should call reloadContext", async () => {
-    const principalString = "aaaaa-aa";
     routeStore.update({
       path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
     });
@@ -115,5 +139,39 @@ describe("DisburseSnsNeuronModal", () => {
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() => expect(reloadContext).toBeCalled());
+  });
+
+  it("should trigger the project account load", async () => {
+    snsAccountsStore.reset();
+
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
+    });
+    const reloadContext = jest.fn().mockResolvedValue(null);
+    const { queryByTestId } = await renderDisburseModal(
+      mockSnsNeuron,
+      reloadContext
+    );
+
+    await waitFor(() => expect(loadSnsAccounts).toBeCalled());
+  });
+
+  it("should not trigger the project account load if already available", async () => {
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
+    });
+    const reloadContext = jest.fn().mockResolvedValue(null);
+    const { queryByTestId } = await renderDisburseModal(
+      mockSnsNeuron,
+      reloadContext
+    );
+
+    await waitFor(() =>
+      expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
+    );
+
+    await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
+
+    await waitFor(() => expect(loadSnsAccounts).not.toBeCalled());
   });
 });
