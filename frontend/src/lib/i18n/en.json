@@ -122,9 +122,13 @@
   "auth": {
     "ic": "INTERNET COMPUTER",
     "nns": "NETWORK NERVOUS SYSTEM",
-    "icp_governance": "ICP and governance",
-    "login": "Login",
-    "on_chain": "100% on-chain Internet Computer"
+    "login": "Sign in with Internet Identity",
+    "title": "Open and autonomous governance running",
+    "on_chain": "100% on-chain",
+    "secure": "MANAGE TOKENS",
+    "stake": "STAKE NEURONS",
+    "earn": "VOTE & EARN REWARDS",
+    "ic_logo": "Internet Computer logo"
   },
   "accounts": {
     "total": "Total",
