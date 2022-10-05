@@ -6,7 +6,8 @@ export const FETCH_ROOT_KEY: boolean =
 export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
 export const { ENABLE_SNS }: { ENABLE_SNS: boolean } = JSON.parse(
-    import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g,"\"") ?? '{"ENABLE_SNS":false}'
+  import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
+    '{"ENABLE_SNS":false}'
 );
 
 export const IS_TESTNET: boolean =
