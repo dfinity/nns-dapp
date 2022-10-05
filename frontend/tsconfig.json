@@ -10,10 +10,7 @@
     "sourceMap": true,
     "strict": true
   },
-  "include": ["src/**/*"],
   "exclude": [
-    "node_modules/*",
-    "public/*",
     "**/*.spec.ts",
     "jest.setup.ts",
     "**/*.mock.ts",
