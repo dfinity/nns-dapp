@@ -326,7 +326,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        to deploy these other canisters as well, but you probbaly don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
   dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
-  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL < "$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
+  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
@@ -387,7 +387,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
-  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL < "$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
+  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Opening: $OWN_CANISTER_URL"
   case "$(uname)" in
   Linux) xdg-open "$OWN_CANISTER_URL" ;;
