@@ -6,24 +6,16 @@
     SPAWN_VARIANCE_PERCENTAGE,
   } from "../../../constants/neurons.constants";
   import SpawnNeuronModal from "../../../modals/neurons/SpawnNeuronModal.svelte";
-  import { accountsStore } from "../../../stores/accounts.store";
   import { i18n } from "../../../stores/i18n";
   import { formatNumber, formatPercentage } from "../../../utils/format.utils";
   import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import {
-    isEnoughMaturityToSpawn,
-    isNeuronControlledByHardwareWallet,
-  } from "../../../utils/neuron.utils";
+  import { isEnoughMaturityToSpawn } from "../../../utils/neuron.utils";
   import Tooltip from "../../ui/Tooltip.svelte";
 
   export let neuron: NeuronInfo;
+  export let controlledByHardwareWallet: boolean;
 
   let isOpen: boolean = false;
-  let controlledByHardwareWallet: boolean;
-  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
-    neuron,
-    accounts: $accountsStore,
-  });
   const showModal = async () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 
@@ -38,14 +30,14 @@
 </script>
 
 {#if enoughMaturity}
-  <button class="primary" on:click={showModal}>
+  <button class="secondary" on:click={showModal}>
     {$i18n.neuron_detail.spawn_neuron}
   </button>
 {:else}
   <Tooltip
     id="spawn-maturity-button"
     text={replacePlaceholders(
-      $i18n.neuron_detail.spawn_maturity_disabled_tooltip,
+      $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
       {
         $amount: formatNumber(
           MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,
@@ -62,7 +54,7 @@
       }
     )}
   >
-    <button disabled class="primary" on:click={showModal}>
+    <button disabled class="secondary" on:click={showModal}>
       {$i18n.neuron_detail.spawn_neuron}
     </button>
   </Tooltip>

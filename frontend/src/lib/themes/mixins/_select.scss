@@ -30,6 +30,7 @@
   cursor: pointer;
 
   flex: 1;
+  order: var(--select-label-order);
 }
 
 /** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/

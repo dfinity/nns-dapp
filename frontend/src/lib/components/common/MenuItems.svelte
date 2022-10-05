@@ -18,7 +18,7 @@
     IS_TESTNET,
   } from "../../constants/environment.constants";
   import BadgeNew from "../ui/BadgeNew.svelte";
-  import GetICPs from "../ic/GetICPs.svelte";
+  import GetTokens from "../ic/GetTokens.svelte";
   import {
     accountsPathStore,
     neuronsPathStore,
@@ -104,5 +104,5 @@
 {/each}
 
 {#if IS_TESTNET}
-  <GetICPs />
+  <GetTokens />
 {/if}

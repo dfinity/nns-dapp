@@ -4,7 +4,7 @@
 
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import ProposalCard from "../../../../lib/components/proposals/ProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "../../../../lib/constants/proposals.constants";
 import { authStore } from "../../../../lib/stores/auth.store";
@@ -92,7 +92,6 @@ describe("ProposalCard", () => {
     const { getByText } = render(ProposalCard, {
       props: {
         proposalInfo: mockProposals[0],
-        layout: "modern",
       },
     });
 
@@ -103,7 +102,6 @@ describe("ProposalCard", () => {
     const { getByText } = render(ProposalCard, {
       props: {
         proposalInfo: mockProposals[0],
-        layout: "modern",
       },
     });
 
@@ -122,7 +120,6 @@ describe("ProposalCard", () => {
     const { container } = render(ProposalCard, {
       props: {
         proposalInfo: mockProposals[0],
-        layout: "modern",
       },
     });
 
@@ -142,7 +139,7 @@ describe("ProposalCard", () => {
       ProposalStatus.Executed,
     ]);
 
-    const { queryByTestId } = render(ProposalCard, {
+    const { container } = render(ProposalCard, {
       props: {
         proposalInfo: {
           ...mockProposals[1],
@@ -151,28 +148,8 @@ describe("ProposalCard", () => {
       },
     });
 
-    const tag = queryByTestId("tag");
-    expect(tag).not.toBeNull();
-    expect(tag?.classList.contains("success")).toBe(true);
+    expect(container.querySelector(".success")).not.toBeNull();
 
     proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
-  });
-
-  it("should open neuron modal", async () => {
-    proposalsFiltersStore.reset();
-
-    const { container } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[1],
-      },
-    });
-
-    const button = container.querySelector("button.text");
-    expect(button).not.toBeNull();
-    button && (await fireEvent.click(button));
-
-    await waitFor(() =>
-      expect(container.querySelector("div.modal")).not.toBeNull()
-    );
   });
 });

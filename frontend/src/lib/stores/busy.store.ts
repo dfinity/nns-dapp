@@ -11,6 +11,7 @@ export type BusyStateInitiatorType =
   | "remove-controller-canister"
   | "accounts"
   | "toggle-community-fund"
+  | "auto-stake-maturity"
   | "split-neuron"
   | "dissolve-action"
   | "add-followee"
@@ -20,11 +21,13 @@ export type BusyStateInitiatorType =
   | "merge-neurons"
   | "merge-maturity"
   | "spawn-neuron"
+  | "stake-maturity"
   | "claim_seed_neurons"
   | "project-participate"
   | "add-sns-hotkey-neuron"
   | "remove-sns-hotkey-neuron"
-  | "disburse-neuron";
+  | "disburse-neuron"
+  | "disburse-sns-neuron";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

@@ -19,10 +19,11 @@
     isSpawning,
     neuronVoting,
   } from "../utils/neuron.utils";
-  import { layoutBackStore } from "../stores/layout.store";
+  import { layoutBackStore, layoutTitleStore } from "../stores/layout.store";
   import NeuronJoinFundCard from "../components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsError } from "../stores/toasts.store";
   import { voteRegistrationStore } from "../stores/vote-registration.store";
+  import { i18n } from "../stores/i18n";
   import { neuronsPathStore } from "../derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
@@ -98,6 +99,10 @@
       neuronId: neuron.neuronId,
       store: $voteRegistrationStore,
     });
+
+  $: layoutTitleStore.set(
+    neuronId !== undefined ? `${$i18n.core.icp} – ${neuronId}` : ""
+  );
 </script>
 
 <main class="legacy">

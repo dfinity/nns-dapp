@@ -10,7 +10,7 @@ import {
 } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
-import { bytesToHexString, nonNullish } from "./utils";
+import { bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -31,7 +31,10 @@ export const getSnsNeuronState = ({
     return NeuronState.Dissolved;
   }
   if ("DissolveDelaySeconds" in dissolveState) {
-    return NeuronState.Locked;
+    return dissolveState.DissolveDelaySeconds === BigInt(0)
+      ? // 0 = already dissolved (more info: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/nns/governance/src/governance.rs#L827)
+        NeuronState.Dissolved
+      : NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
     return NeuronState.Dissolving;
@@ -109,26 +112,30 @@ export const routePathSnsNeuronRootCanisterId = (
 };
 
 export const canIdentityManageHotkeys = ({
-  neuron: { id, permissions },
+  neuron,
   identity,
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
-}): boolean => {
-  const neuronId = fromNullable(id);
-  if (neuronId === undefined || identity === undefined || identity === null) {
-    return false;
-  }
-  const principalPermission = permissions.find(
-    ({ principal }) =>
-      fromNullable(principal)?.toText() === identity.getPrincipal().toText()
-  );
-  return (
-    principalPermission?.permission_type.includes(
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
-    ) ?? false
-  );
-};
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+  });
+
+export const hasPermissionToDisburse = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
+  });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {
   const permissionsNumbers = Array.from(permission_type);
@@ -139,6 +146,37 @@ const hasAllPermissions = (permission_type: Int32Array): boolean => {
       permissionsNumbers.includes(permission)
     )
   );
+};
+
+/*
+ * Returns true if the neuron contains provided permissions
+ */
+export const hasPermissions = ({
+  neuron: { id, permissions: neuronPermissions },
+  identity,
+  permissions,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+  permissions: SnsNeuronPermissionType[];
+}): boolean => {
+  const neuronId = fromNullable(id);
+  const principalAsText = identity?.getPrincipal().toText();
+
+  if (isNullish(neuronId) || principalAsText === undefined) {
+    return false;
+  }
+
+  const principalPermissions = Array.from(
+    neuronPermissions.find(
+      ({ principal }) => fromNullable(principal)?.toText() === principalAsText
+    )?.permission_type ?? []
+  );
+
+  const notFound = (permission: SnsNeuronPermissionType) =>
+    !principalPermissions.includes(permission);
+
+  return !permissions.some(notFound);
 };
 
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>

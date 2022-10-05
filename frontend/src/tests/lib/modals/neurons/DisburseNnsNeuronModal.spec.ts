@@ -4,7 +4,7 @@
 
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import DisburseNeuronModal from "../../../../lib/modals/neurons/DisburseNeuronModal.svelte";
+import DisburseNnsNeuronModal from "../../../../lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { disburse } from "../../../../lib/services/neurons.services";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import { routeStore } from "../../../../lib/stores/route.store";
@@ -23,12 +23,12 @@ jest.mock("../../../../lib/services/neurons.services", () => {
   };
 });
 
-describe("DisburseNeuronModal", () => {
+describe("DisburseNnsNeuronModal", () => {
   const renderDisburseModal = async (
     neuron: NeuronInfo
   ): Promise<RenderResult> => {
     return renderModal({
-      component: DisburseNeuronModal,
+      component: DisburseNnsNeuronModal,
       props: { neuron },
     });
   };
