@@ -17,7 +17,7 @@ To run the dapp against canisters deployed locally on a simulated IC network, pr
 - Once deployed, the canister IDs should be collected the "local" network of `dfx.json` should be updated accordingly
 - Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file
 - Start `npm run dev` in the `./frontend/` folder to serve the application
-- 
+
 ## Testnet
 
 The [canister_ids.json] data provides the list of canister IDs available for various test environments.

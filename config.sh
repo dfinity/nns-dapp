@@ -96,7 +96,7 @@ ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
 ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
-featureFlagsEnableSns=$(echo "$json" | jq -r ".FEATURE_FLAGS.ENABLE_SNS")
+featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 
@@ -110,7 +110,7 @@ VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
 VITE_OWN_CANISTER_ID=$ownCanisterId
 VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
-VITE_FEATURE_FLAGS_ENABLE_SNS=$featureFlagsEnableSns
+VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl" | tee "$ENV_FILE"
 

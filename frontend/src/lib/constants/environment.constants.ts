@@ -5,8 +5,9 @@ export const FETCH_ROOT_KEY: boolean =
   import.meta.env.VITE_FETCH_ROOT_KEY === "true";
 export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
-export const ENABLE_SNS = import.meta.env
-  .VITE_FEATURE_FLAGS_ENABLE_SNS as string;
+export const { ENABLE_SNS }: { ENABLE_SNS: boolean } = JSON.parse(
+    import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g,"\"") ?? '{"ENABLE_SNS":false}'
+);
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
