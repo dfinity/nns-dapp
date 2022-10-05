@@ -38,7 +38,7 @@
 <style lang="scss">
   p {
     margin: 0 0 var(--padding-0_5x);
-    word-break: break-all;
+    word-wrap: break-word;
   }
 
   .fee {
