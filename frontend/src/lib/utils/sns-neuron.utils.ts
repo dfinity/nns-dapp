@@ -31,7 +31,10 @@ export const getSnsNeuronState = ({
     return NeuronState.Dissolved;
   }
   if ("DissolveDelaySeconds" in dissolveState) {
-    return NeuronState.Locked;
+    return dissolveState.DissolveDelaySeconds === BigInt(0)
+      ? // 0 = already dissolved (more info: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/nns/governance/src/governance.rs#L827)
+        NeuronState.Dissolved
+      : NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
     return NeuronState.Dissolving;
