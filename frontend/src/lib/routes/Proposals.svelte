@@ -33,7 +33,7 @@
   let initialized = false;
   let disableInfiniteScroll = false;
 
-  const loadFinished = ({ paginationOver }) => {
+  const loadFinished = ({ paginationOver }: {paginationOver: boolean}) => {
     loading = false;
     disableInfiniteScroll = paginationOver;
   };

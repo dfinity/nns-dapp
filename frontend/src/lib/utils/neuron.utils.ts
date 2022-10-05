@@ -539,7 +539,7 @@ export const checkInvalidState = <T>({
 }: {
   invalidStates: InvalidState<T>[];
   currentStep?: Step;
-  args: T;
+  args: T | undefined;
 }): void => {
   invalidStates
     .filter(
