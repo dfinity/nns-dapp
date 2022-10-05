@@ -1,4 +1,4 @@
-import { ENABLE_SNS } from "../constants/environment.constants";
+import { ENABLE_SNS, ENABLE_SNS_2 } from "../constants/environment.constants";
 import { AppPath, CONTEXT_PATH } from "../constants/routes.constants";
 import { routePathAccountIdentifier } from "../services/accounts.services";
 import { routePathNeuronId } from "../services/neurons.services";
@@ -32,11 +32,11 @@ export const paths = {
       ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
       : AppPath.LegacyNeurons,
   accounts: (rootCanisterId: string) =>
-    ENABLE_SNS
+    ENABLE_SNS_2
       ? `${CONTEXT_PATH}/${rootCanisterId}/accounts`
       : AppPath.LegacyAccounts,
   wallet: (rootCanisterId: string) =>
-    ENABLE_SNS
+    ENABLE_SNS_2
       ? `${CONTEXT_PATH}/${rootCanisterId}/wallet`
       : AppPath.LegacyWallet,
 };
