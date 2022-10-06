@@ -69,7 +69,7 @@
       }
 
       loading = true;
-      await loadSnsAccounts(selectedProjectCanisterId);
+      await syncSnsAccounts(selectedProjectCanisterId);
       loading = false;
     }
   );
