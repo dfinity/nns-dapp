@@ -44,3 +44,25 @@ export const getSnsAccounts = async ({
   logWithTimestamp("Getting sns neuron: done");
   return [mainAccount];
 };
+
+export const transactionFee = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<bigint> => {
+  logWithTimestamp("Getting sns transaction fee: call...");
+  const { transactionFee: transactionFeeApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const fee = await transactionFeeApi({ certified });
+
+  logWithTimestamp("Getting sns transaction fee: done");
+  return fee;
+};

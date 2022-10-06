@@ -4,7 +4,7 @@
   import type { Unsubscriber } from "svelte/store";
   import AccountsTitle from "../components/accounts/AccountsTitle.svelte";
   import { snsOnlyProjectStore } from "../derived/selected-project.derived";
-  import { loadSnsAccounts } from "../services/sns-accounts.services";
+  import { syncSnsAccounts } from "../services/sns-accounts.services";
   import { snsProjectAccountsStore } from "../derived/sns/sns-project-accounts.derived";
   import AccountCard from "../components/accounts/AccountCard.svelte";
   import { i18n } from "../stores/i18n";
@@ -20,7 +20,7 @@
       if (selectedProjectCanisterId !== undefined) {
         // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
-        await loadSnsAccounts(selectedProjectCanisterId);
+        await syncSnsAccounts(selectedProjectCanisterId);
         loading = false;
       }
     }
