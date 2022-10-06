@@ -202,6 +202,10 @@ export const isUserHotkey = ({
     ? false
     : getSnsNeuronHotkeys(neuron).includes(identity.getPrincipal().toText());
 
+/**
+ * A type guard that performs a runtime check that the argument is a type SnsNeuron.
+ * @param neuron
+ */
 export const isSnsNeuron = (
   neuron: SnsNeuron | NeuronInfo
 ): neuron is SnsNeuron =>
