@@ -72,9 +72,18 @@
 <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
 
 <ul>
-  <li><IconWallet /> {$i18n.auth.secure}</li>
-  <li><IconPsychology /> {$i18n.auth.stake}</li>
-  <li><IconHowToVote /> {$i18n.auth.earn}</li>
+  <li>
+    <IconWallet />
+    {$i18n.auth.secure}
+  </li>
+  <li>
+    <IconPsychology />
+    {$i18n.auth.stake}
+  </li>
+  <li>
+    <IconHowToVote />
+    {$i18n.auth.earn}
+  </li>
 </ul>
 
 <button
@@ -85,7 +94,9 @@
 >
   {$i18n.auth.login}
   {#if signedIn}
-    <div class="spinner"><Spinner size="small" inline /></div>
+    <div class="spinner">
+      <Spinner size="small" inline />
+    </div>
   {/if}
 </button>
 
@@ -113,7 +124,7 @@
       letter-spacing: 0.1rem;
     }
 
-    @include media.min-width(medium) {
+    @media (min-width: 768px) and (min-height: 620px) {
       justify-content: center;
       flex-direction: column;
 
@@ -140,7 +151,7 @@
     width: 100%;
     max-width: 475px;
 
-    @include media.min-width(medium) {
+    @media (min-width: 768px) and (min-height: 620px) {
       margin: var(--padding-6x) 0 calc(14 * var(--padding));
       width: auto;
     }
@@ -164,7 +175,7 @@
       font-size: var(--font-size-h1);
     }
 
-    @include media.min-width(medium) {
+    @media (min-width: 768px) and (min-height: 620px) {
       max-width: 550px;
       font-size: 2.441rem;
     }
@@ -178,7 +189,7 @@
     font-weight: var(--font-weight-bold);
     letter-spacing: 0.05rem;
 
-    @include media.min-width(medium) {
+    @media (min-width: 768px) and (min-height: 620px) {
       flex-grow: inherit;
 
       position: absolute;
