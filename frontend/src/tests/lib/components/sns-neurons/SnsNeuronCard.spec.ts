@@ -28,6 +28,7 @@ import {
 } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("SnsNeuronCard", () => {
@@ -35,6 +36,9 @@ describe("SnsNeuronCard", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest
+      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
+      .mockImplementation(mockTokenStore);
   });
 
   const defaultProps = {
