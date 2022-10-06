@@ -17,13 +17,7 @@ import {
 
 jest.mock("../../lib/services/sns-accounts.services", () => {
   return {
-    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
-
-jest.mock("../../lib/services/transaction-fees.services", () => {
-  return {
-    loadSnsTransactionFee: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
