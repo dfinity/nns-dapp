@@ -4,6 +4,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import DisburseNnsNeuronModal from "../../../modals/neurons/DisburseNnsNeuronModal.svelte";
   import DisburseSnsNeuronModal from "../../../modals/neurons/DisburseSnsNeuronModal.svelte";
+  import { isSnsNeuron } from "../../../utils/sns-neuron.utils";
 
   export let neuron: NeuronInfo | SnsNeuron;
   export let modal: typeof SvelteComponent;
@@ -21,13 +22,9 @@
 >
 
 {#if showModal}
-  {#if nnsNeuron !== undefined}
-    <DisburseNnsNeuronModal neuron={nnsNeuron} on:nnsClose={closeModal} />
-  {:else if snsNeuron !== undefined}
-    <DisburseSnsNeuronModal
-      neuron={snsNeuron}
-      {reloadContext}
-      on:nnsClose={closeModal}
-    />
+  {#if isSnsNeuron(neuron)}
+    <DisburseSnsNeuronModal {neuron} {reloadContext} on:nnsClose={closeModal} />
+  {:else}
+    <DisburseNnsNeuronModal {neuron} on:nnsClose={closeModal} />
   {/if}
 {/if}

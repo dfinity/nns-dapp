@@ -99,7 +99,7 @@
       {#if isControllable}
         <IncreaseDissolveDelayButton {neuron} />
         {#if neuron.state === NeuronState.Dissolved}
-          <DisburseButton nnsNeuron={neuron} />
+          <DisburseButton {neuron} />
         {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
           <DissolveActionButton
             neuronState={neuron.state}

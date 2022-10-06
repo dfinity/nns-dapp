@@ -1,6 +1,6 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import {
@@ -201,3 +201,9 @@ export const isUserHotkey = ({
   identity === null || identity === undefined
     ? false
     : getSnsNeuronHotkeys(neuron).includes(identity.getPrincipal().toText());
+
+export const isSnsNeuron = (
+  neuron: SnsNeuron | NeuronInfo
+): neuron is SnsNeuron =>
+  Array.isArray((neuron as SnsNeuron).id) &&
+  Array.isArray((neuron as SnsNeuron).permissions);

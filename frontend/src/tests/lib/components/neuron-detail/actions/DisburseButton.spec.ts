@@ -18,7 +18,7 @@ describe("DisburseButton", () => {
   it("renders title", () => {
     const { getByText } = render(DisburseButton, {
       props: {
-        nnsNeuron: mockNeuron,
+        neuron: mockNeuron,
       },
     });
 
@@ -28,7 +28,7 @@ describe("DisburseButton", () => {
   it("opens disburse nns neuron modal", async () => {
     const { container, queryByTestId } = render(DisburseButton, {
       props: {
-        nnsNeuron: mockNeuron,
+        neuron: mockNeuron,
       },
     });
 
@@ -44,7 +44,7 @@ describe("DisburseButton", () => {
   it("opens sns modal", async () => {
     const { container, queryByTestId } = render(DisburseButton, {
       props: {
-        snsNeuron: mockSnsNeuron,
+        neuron: mockSnsNeuron,
       },
     });
 

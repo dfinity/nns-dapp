@@ -47,11 +47,7 @@
 
       <div class="buttons">
         {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton
-            snsNeuron={neuron}
-            modal={DisburseSnsNeuronModal}
-            {reloadContext}
-          />
+          <DisburseButton {neuron} {reloadContext} />
         {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
           <!-- TODO(GIX-985): Sns/DissolveActionButton -->
         {/if}
