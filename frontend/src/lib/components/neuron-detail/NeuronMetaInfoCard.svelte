@@ -26,6 +26,7 @@
   import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
   import { sanitize } from "../../utils/html.utils";
   import DisburseNnsNeuronModal from "../../modals/neurons/DisburseNnsNeuronModal.svelte";
+  import { STAKE_MATURITY } from "../../constants/environment.constants";
 
   export let neuron: NeuronInfo;
 
@@ -70,19 +71,24 @@
         <svelte:fragment slot="info">
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
             {@html sanitize(
-              replacePlaceholders($i18n.neuron_detail.voting_power_tooltip, {
-                $stake: formatToken({
-                  value: neuron.fullNeuron.cachedNeuronStake,
-                  detailed: true,
-                }),
-                $st4kedMaturity: formattedStakedMaturity(neuron),
-                $delayMultiplier: dissolveDelayMultiplier(
-                  Number(neuron.dissolveDelaySeconds)
-                ).toFixed(2),
-                $ageMultiplier: ageMultiplier(
-                  Number(neuron.ageSeconds)
-                ).toFixed(2),
-              })
+              replacePlaceholders(
+                STAKE_MATURITY
+                  ? $i18n.neuron_detail.voting_power_tooltip_with_stake
+                  : $i18n.neuron_detail.voting_power_tooltip_without_stake,
+                {
+                  $stake: formatToken({
+                    value: neuron.fullNeuron.cachedNeuronStake,
+                    detailed: true,
+                  }),
+                  $st4kedMaturity: formattedStakedMaturity(neuron),
+                  $delayMultiplier: dissolveDelayMultiplier(
+                    Number(neuron.dissolveDelaySeconds)
+                  ).toFixed(2),
+                  $ageMultiplier: ageMultiplier(
+                    Number(neuron.ageSeconds)
+                  ).toFixed(2),
+                }
+              )
             )}
           {/if}
         </svelte:fragment>

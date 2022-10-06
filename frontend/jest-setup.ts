@@ -24,6 +24,7 @@ process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
 process.env.FEATURE_FLAGS = JSON.stringify({
   ENABLE_SNS: true,
   ENABLE_SNS_2: true,
+  STAKE_MATURITY: true,
 });
 
 global.localStorage = localStorageMock;

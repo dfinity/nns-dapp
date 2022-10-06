@@ -7,10 +7,13 @@ export const WASM_CANISTER_ID: string = String(process.env.WASM_CANISTER_ID);
 interface FEATURE_FLAGS {
   ENABLE_SNS: boolean;
   ENABLE_SNS_2: boolean;
+  STAKE_MATURITY: boolean;
 }
-export const { ENABLE_SNS, ENABLE_SNS_2 }: FEATURE_FLAGS = JSON.parse(
-  process.env.FEATURE_FLAGS ?? '{"ENABLE_SNS":false,"ENABLE_SNS_2":false}'
-);
+export const { ENABLE_SNS, ENABLE_SNS_2, STAKE_MATURITY }: FEATURE_FLAGS =
+  JSON.parse(
+    process.env.FEATURE_FLAGS ??
+      '{"ENABLE_SNS":false,"ENABLE_SNS_2":false,"STAKE_MATURITY":false}'
+  );
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
