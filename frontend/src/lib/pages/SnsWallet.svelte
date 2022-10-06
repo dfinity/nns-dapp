@@ -4,7 +4,7 @@
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "../components/accounts/WalletSummary.svelte";
-  import { ENABLE_SNS } from "../constants/environment.constants";
+  import { ENABLE_SNS_2 } from "../constants/environment.constants";
   import { AppPath } from "../constants/routes.constants";
   import { snsOnlyProjectStore } from "../derived/selected-project.derived";
   import { snsProjectAccountsStore } from "../derived/sns/sns-project-accounts.derived";
@@ -20,7 +20,7 @@
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
-    if (!ENABLE_SNS) {
+    if (!ENABLE_SNS_2) {
       routeStore.update({ path: AppPath.LegacyAccounts });
     }
   });

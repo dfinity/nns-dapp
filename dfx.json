@@ -96,6 +96,7 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
+          "ENABLE_SNS_2": false,
           "VOTING_UI": "modern"
         }
       },
@@ -111,6 +112,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
+          "ENABLE_SNS_2": false,
           "VOTING_UI": "modern"
         }
       },
@@ -126,6 +128,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
@@ -141,6 +144,7 @@
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
@@ -156,6 +160,7 @@
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
@@ -171,6 +176,7 @@
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
@@ -186,6 +192,7 @@
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
@@ -201,6 +208,7 @@
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true,
           "VOTING_UI": "modern"
         }
       },
