@@ -14,6 +14,12 @@ jest.mock("../../lib/services/sns-accounts.services", () => {
   };
 });
 
+jest.mock("../../lib/services/transaction-fees.services", () => {
+  return {
+    loadSnsTransactionFee: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Wallet", () => {
   describe("nns context", () => {
     it("should render NnsWallet", () => {
