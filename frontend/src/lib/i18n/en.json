@@ -38,6 +38,7 @@
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
     "sns_accounts_load": "An error occurred while loading the accounts.",
+    "sns_token_load": "An error occurred while loading the project token.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",

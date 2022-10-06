@@ -15,7 +15,7 @@
     getSnsNeuronStake,
   } from "../../utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "../../components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
   import { transactionsFeesStore } from "../../stores/transaction-fees.store";
@@ -35,14 +35,14 @@
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   let fee: TokenAmount;
   $: fee = TokenAmount.fromE8s({
     // TODO(GIX-1044): update FeesStore with the current sns project value
     amount: $transactionsFeesStore.main,
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   const dispatcher = createEventDispatcher();
