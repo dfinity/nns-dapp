@@ -97,7 +97,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
           "ENABLE_SNS_2": false,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": false
         }
       },
       "providers": [
@@ -113,7 +113,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
           "ENABLE_SNS_2": false,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": false
         }
       },
       "providers": [
@@ -129,7 +129,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -145,7 +145,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -161,7 +161,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -177,7 +177,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -193,7 +193,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -209,7 +209,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
           "ENABLE_SNS_2": true,
-          "VOTING_UI": "modern"
+          "STAKE_MATURITY": true
         }
       },
       "bind": "127.0.0.1:8080",
