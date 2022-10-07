@@ -7,7 +7,7 @@
     "build:robots": "node scripts/build.robots.mjs",
     "i18n": "node scripts/i18n.types.js",
     "dev": "vite dev",
-    "build": "vite build && npm run robots && npm run build:csp",
+    "build": "vite build && npm run build:robots && npm run build:csp",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
