@@ -1,12 +1,3 @@
-import type { Identity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import {
-  SnsNeuronPermissionType,
-  type SnsNeuron,
-  type SnsNeuronId,
-} from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { get } from "svelte/store";
 import {
   addNeuronPermissions,
   disburse as disburseApi,
@@ -22,6 +13,15 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import {
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+  type SnsNeuronId,
+} from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 

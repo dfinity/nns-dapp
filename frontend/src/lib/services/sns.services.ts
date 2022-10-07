@@ -1,16 +1,3 @@
-import { AppPath } from "$lib/constants/routes.constants";
-import type { Account } from "$lib/types/account";
-import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import type { SnsSwapCommitment } from "$lib/types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
-import {
-  Topic,
-  type AccountIdentifier,
-  type ProposalInfo,
-  type TokenAmount,
-} from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import {
   participateInSnsSwap,
   queryAllSnsMetadata,
@@ -20,6 +7,7 @@ import {
   querySnsSwapState,
   querySnsSwapStates,
 } from "$lib/api/sns.api";
+import { AppPath } from "$lib/constants/routes.constants";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
 import {
   snsProposalsStore,
@@ -28,6 +16,10 @@ import {
 } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { Account } from "$lib/types/account";
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -36,6 +28,14 @@ import {
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import {
+  Topic,
+  type AccountIdentifier,
+  type ProposalInfo,
+  type TokenAmount,
+} from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";

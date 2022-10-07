@@ -1,11 +1,11 @@
-import type { Identity } from "@dfinity/agent";
-import { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { encodeSnsAccount } from "@dfinity/sns";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/sns.utils";
+import type { Identity } from "@dfinity/agent";
+import { TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { encodeSnsAccount } from "@dfinity/sns";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getSnsAccounts = async ({
