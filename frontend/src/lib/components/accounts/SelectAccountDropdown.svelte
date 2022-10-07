@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { accountsStore } from "$lib/stores/accounts.store";
   import { accountsListStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
@@ -16,7 +15,7 @@
     selectedAccount?.identifier;
   $: selectedAccount = getAccountFromStore({
     identifier: selectedAccountIdentifier,
-    accountsStore: $accountsStore,
+    accounts: $accountsListStore,
   });
 
   $: selectableAccounts = $accountsListStore.filter(filterAccounts);

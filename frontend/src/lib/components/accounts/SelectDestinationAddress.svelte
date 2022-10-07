@@ -1,6 +1,5 @@
 <script lang="ts">
   import { accountsListStore } from "$lib/derived/accounts-list.derived";
-  import { accountsStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
@@ -18,7 +17,7 @@
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountFromStore({
     identifier: selectedDestinationAddress,
-    accountsStore: $accountsStore,
+    accounts: $accountsListStore,
   });
   let address: string;
   $: {
