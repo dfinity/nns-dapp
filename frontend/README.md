@@ -1,4 +1,4 @@
-# NNS Dapp Frontend (Svelte)
+# NNS Dapp Frontend
 
 All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
 
