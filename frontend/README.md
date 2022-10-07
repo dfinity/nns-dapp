@@ -1,38 +1,39 @@
-# create-svelte
+# NNS Dapp Frontend (Svelte)
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
 
-## Creating a project
+- **Stack**: [Typescript](https://www.typescriptlang.org/), [SvelteKit](https://kit.svelte.dev/) and [Jest](https://jestjs.io/).
 
-If you're seeing this, you've probably already done this step. Congrats!
+We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [ic-js](https://github.com/dfinity/ic-js).
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+All the Internet computer interactions are done through ic-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Installation and local development
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Clone the project on your computer and install the libraries:
 
 ```bash
-npm run dev
+npm ci
+```
+Then proceed as displayed in the [HACKING.md](/HACKING.md) documentation.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+## Testing
+
+Every Pull Request needs unit tests.
+
+After installing the project, you can run the test suite:
+
+```
+npm run test
 ```
 
-## Building
+There is also a project to run e2e tests [here](../e2e-tests/README.md).
 
-To create a production version of your app:
+## Style
 
-```bash
-npm run build
-```
+This project uses [Prettier](https://prettier.io/) and [Eslint](https://eslint.org/) to ensure a consistent style.
 
-You can preview the production build with `npm run preview`.
+There are a few helpful commands:
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- `npm run format` automatically formats the code according to prettier. This command also runs in the Github pipeline.
+- `npm run check` runs Typescript and Eslint checks.
