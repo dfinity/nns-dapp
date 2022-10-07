@@ -16,6 +16,7 @@
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
+  import { STAKE_MATURITY } from "$lib/constants/environment.constants";
 
   export let neuron: NeuronInfo;
 
@@ -31,20 +32,23 @@
     neuron,
     accounts: $accountsStore,
   });
+
+  let stakeMaturityEnabled: boolean;
+  $: stakeMaturityEnabled = !controlledByHardwareWallet && STAKE_MATURITY;
 </script>
 
 <CardInfo>
   <KeyValuePairInfo testId="maturity">
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
     <svelte:fragment slot="info"
-      >{controlledByHardwareWallet
-        ? $i18n.neuron_detail.merge_maturity_tooltip
-        : $i18n.neuron_detail.stake_maturity_tooltip}</svelte:fragment
+      >{stakeMaturityEnabled
+        ? $i18n.neuron_detail.stake_maturity_tooltip
+        : $i18n.neuron_detail.merge_maturity_tooltip}</svelte:fragment
     >
     <h3 slot="value">{formattedMaturity(neuron)}</h3>
   </KeyValuePairInfo>
 
-  {#if neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
+  {#if stakeMaturityEnabled && neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
@@ -56,16 +60,16 @@
 
   {#if isControllable}
     <div class="actions">
-      {#if controlledByHardwareWallet}
-        <MergeMaturityButton {neuron} />
-      {:else}
+      {#if stakeMaturityEnabled}
         <StakeMaturityButton {neuron} />
+      {:else}
+        <MergeMaturityButton {neuron} />
       {/if}
 
       <SpawnNeuronButton {neuron} {controlledByHardwareWallet} />
     </div>
 
-    {#if !controlledByHardwareWallet}
+    {#if stakeMaturityEnabled}
       <AutoStakeMaturity {neuron} />
     {/if}
   {/if}

@@ -15,11 +15,11 @@
   import { routeStore } from "$lib/stores/route.store";
   import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
-  import GetTokens from "../ic/GetTokens.svelte";
+  import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
     neuronsPathStore,
-  } from "../../derived/paths.derived";
+  } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
 
   const baseUrl = baseHref();

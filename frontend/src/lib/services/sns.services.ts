@@ -19,23 +19,23 @@ import {
   querySnsSwapCommitments,
   querySnsSwapState,
   querySnsSwapStates,
-} from "../api/sns.api";
-import { projectsStore, type SnsFullProject } from "../stores/projects.store";
+} from "$lib/api/sns.api";
+import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
 import {
   snsProposalsStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../stores/sns.store";
-import { toastsError } from "../stores/toasts.store";
-import { transactionsFeesStore } from "../stores/transaction-fees.store";
-import { assertEnoughAccountFunds } from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { toToastError } from "../utils/error.utils";
+} from "$lib/stores/sns.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
+import { toToastError } from "$lib/utils/error.utils";
 import {
   commitmentExceedsAmountLeft,
   validParticipation,
-} from "../utils/projects.utils";
-import { getSwapCanisterAccount } from "../utils/sns.utils";
+} from "$lib/utils/projects.utils";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";

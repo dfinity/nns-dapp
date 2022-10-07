@@ -4,12 +4,12 @@
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { routePathAccountIdentifier } from "$lib/services/accounts.services";
-  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { routeStore } from "$lib/stores/route.store";
   import {
@@ -20,7 +20,7 @@
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
-    if (!ENABLE_SNS) {
+    if (!ENABLE_SNS_2) {
       routeStore.update({ path: AppPath.LegacyAccounts });
     }
   });
@@ -30,7 +30,7 @@
       if (selectedProjectCanisterId !== undefined) {
         // Reload accounts always.
         // Do not set to loading because we might use the account in the store.
-        await loadSnsAccounts(selectedProjectCanisterId);
+        await syncSnsAccounts(selectedProjectCanisterId);
       }
     }
   );

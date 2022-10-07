@@ -1,9 +1,10 @@
 import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import type { Account } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
-import { snsAccountsStore } from "../stores/sns-accounts.store";
-import { toastsError } from "../stores/toasts.store";
-import { toToastError } from "../utils/error.utils";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import { toToastError } from "$lib/utils/error.utils";
+import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsAccounts = async (
@@ -31,10 +32,17 @@ export const loadSnsAccounts = async (
       toastsError(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.sns_neurons_load",
+          fallbackErrorLabelKey: "error.sns_accounts_load",
         })
       );
     },
     logMessage: "Syncing Sns Accounts",
   });
+};
+
+export const syncSnsAccounts = async (rootCanisterId: Principal) => {
+  await Promise.all([
+    loadSnsAccounts(rootCanisterId),
+    loadSnsTransactionFee(rootCanisterId),
+  ]);
 };

@@ -4,7 +4,7 @@
   import type { Unsubscriber } from "svelte/store";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -14,13 +14,13 @@
   import { routeStore } from "$lib/stores/route.store";
   import { walletPathStore } from "$lib/derived/paths.derived";
 
-  let loading = false;
+  let loading: boolean = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
-        await loadSnsAccounts(selectedProjectCanisterId);
+        await syncSnsAccounts(selectedProjectCanisterId);
         loading = false;
       }
     }

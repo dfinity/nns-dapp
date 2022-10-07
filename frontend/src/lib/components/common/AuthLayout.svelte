@@ -28,21 +28,17 @@
   main {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     background: transparent;
+    overflow-y: auto;
 
     padding: var(--padding-6x) var(--padding-4x);
 
-    @include media.min-width(medium) {
+    @media (min-width: 768px) and (min-height: 620px) {
       justify-content: center;
       align-items: center;
       max-width: 540px;
       text-align: center;
-    }
-
-    @supports (-webkit-touch-callout: none) {
-      // webkit-fill-available does not strech to full height
-      height: calc(100vh - (12 * var(--padding)));
     }
   }
 </style>

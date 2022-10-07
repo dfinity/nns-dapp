@@ -52,7 +52,7 @@
   position: relative;
 
   &:checked {
-    box-shadow: var(--current-box-inset-shadow);
+    box-shadow: var(--input-box-shadow);
   }
 
   &[disabled],

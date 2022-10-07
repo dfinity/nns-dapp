@@ -13,15 +13,15 @@ import {
   querySnsNeuron,
   querySnsNeurons,
   removeNeuronPermissions,
-} from "../api/sns.api";
+} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
-} from "../stores/sns-neurons.store";
-import { toastsError } from "../stores/toasts.store";
-import { toToastError } from "../utils/error.utils";
-import { getSnsNeuronByHexId } from "../utils/sns-neuron.utils";
-import { hexStringToBytes } from "../utils/utils";
+} from "$lib/stores/sns-neurons.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import { toToastError } from "$lib/utils/error.utils";
+import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
+import { hexStringToBytes } from "$lib/utils/utils";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 

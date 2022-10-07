@@ -8,10 +8,10 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
-  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
-  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   let visible = false;
   let transferring = false;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, NeuronState, TokenAmount } from "@dfinity/nns";
+  import { type Token, NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -36,8 +36,9 @@
   let neuronStake: TokenAmount;
   $: neuronStake = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    // If we got here is because the token symbol is present.
+    // The projects without token are discarded filtered out.
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   let neuronState: NeuronState;

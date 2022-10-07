@@ -8,8 +8,8 @@ import { translate } from "$lib/utils/i18n.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { GenesisTokenCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { accountsStore } from "../stores/accounts.store";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { accountsStore } from "$lib/stores/accounts.store";
 
 const buf2hex = (buffer: ArrayBuffer): string =>
   bytesToHexString([...new Uint8Array(buffer)]);

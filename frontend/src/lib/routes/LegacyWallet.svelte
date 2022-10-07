@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import NnsWallet from "$lib/pages/NnsWallet.svelte";
   import { routeStore } from "$lib/stores/route.store";
@@ -10,7 +10,7 @@
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (
-      ENABLE_SNS &&
+      ENABLE_SNS_2 &&
       isRoutePath({
         paths: [AppPath.LegacyWallet],
         routePath: $routeStore.path,

@@ -5,7 +5,7 @@
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
-import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
@@ -16,7 +16,7 @@ import {
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
-    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -37,10 +37,10 @@ describe("SnsWallet", () => {
       expect(getByTestId("spinner")).not.toBeNull();
     });
 
-    it("should call to load sns accounts", async () => {
+    it("should call to load sns accounts and transaction fee", async () => {
       render(SnsWallet);
 
-      await waitFor(() => expect(loadSnsAccounts).toBeCalled());
+      await waitFor(() => expect(syncSnsAccounts).toBeCalled());
     });
   });
 

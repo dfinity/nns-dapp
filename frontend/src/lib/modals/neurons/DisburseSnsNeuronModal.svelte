@@ -6,7 +6,7 @@
   import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
-  import { snsOnlyProjectStore } from "../../derived/selected-project.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -15,12 +15,12 @@
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import { neuronsPathStore } from "../../derived/paths.derived";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
 
   export let neuron: SnsNeuron;
@@ -35,14 +35,14 @@
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   let fee: TokenAmount;
   $: fee = TokenAmount.fromE8s({
     // TODO(GIX-1044): update FeesStore with the current sns project value
     amount: $transactionsFeesStore.main,
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   const dispatcher = createEventDispatcher();
@@ -56,7 +56,7 @@
   ];
 
   let currentStep: Step;
-  let loading = false;
+  let loading: boolean = false;
 
   const executeTransaction = async () => {
     startBusy({

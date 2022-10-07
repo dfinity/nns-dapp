@@ -4,6 +4,7 @@
 
 import * as accountsApi from "$lib/api/accounts.api";
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import { disburse } from "$lib/services/sns-neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -18,6 +19,7 @@ import {
 } from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -54,6 +56,10 @@ describe("DisburseSnsNeuronModal", () => {
       .mockImplementation(() =>
         Promise.resolve({ main: mockMainAccount, subAccounts: [] })
       );
+
+    jest
+      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
+      .mockImplementation(mockTokenStore);
   });
 
   afterAll(() => {

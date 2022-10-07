@@ -78,5 +78,8 @@
     {/each}
   </Dropdown>
 {:else}
-  <Spinner inline />
+  <!-- Extra div needed to make sure the Spinner is centered in the same place as the Dropdown -->
+  <div>
+    <Spinner inline />
+  </div>
 {/if}
