@@ -10,7 +10,7 @@
   import { routeStore } from "../../stores/route.store";
   import { AppPath } from "../../constants/routes.constants";
   import { mapProposalInfo } from "../../utils/proposals.utils";
-  import type { Color } from "../../types/theme";
+  import type { Color } from "../../types/colors";
 
   export let proposalInfo: ProposalInfo;
   export let hidden: boolean = false;
