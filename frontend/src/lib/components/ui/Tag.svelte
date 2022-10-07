@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Color } from "../../types/colors";
+  import type { Color } from "$lib/types/colors";
 
   export let color: Color | undefined = undefined;
   export let tagName: "span" | "h3" | "li" = "span";

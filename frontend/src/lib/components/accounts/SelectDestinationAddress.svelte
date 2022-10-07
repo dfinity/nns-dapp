@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { accountsListStore } from "../../derived/accounts-list.derived";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
+  import { accountsListStore } from "$lib/derived/accounts-list.derived";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
   import {
     getAccountFromStore,
     invalidAddress,
-  } from "../../utils/accounts.utils";
+  } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
 
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
-  export let showManualAddress: boolean = true;
+  export let showManualAddress = true;
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountFromStore({
@@ -32,7 +32,7 @@
   }
 
   // Show the toggle if there are more than one account to select from.
-  let showToggle: boolean = true;
+  let showToggle = true;
   $: showToggle = $accountsListStore.filter(filterAccounts).length > 0;
 
   const onToggleManualInput = () => {

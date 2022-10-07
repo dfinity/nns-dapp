@@ -5,7 +5,7 @@ import {
   enumSize,
   enumsKeys,
   enumValues,
-} from "../../../lib/utils/enum.utils";
+} from "$lib/utils/enum.utils";
 
 describe("enum-utils", () => {
   enum TestEnum {
