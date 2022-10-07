@@ -13,4 +13,4 @@ package-lock.json
 yarn.lock
 
 public
-static/libs
+static/assets/libs

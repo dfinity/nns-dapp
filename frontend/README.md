@@ -15,6 +15,7 @@ Clone the project on your computer and install the libraries:
 ```bash
 npm ci
 ```
+
 Then proceed as displayed in the [HACKING.md](/HACKING.md) documentation.
 
 ## Testing
