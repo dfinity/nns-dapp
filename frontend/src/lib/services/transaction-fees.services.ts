@@ -1,7 +1,7 @@
-import type { Principal } from "@dfinity/principal/lib/cjs";
 import { transactionFee as nnsTransactionFee } from "$lib/api/ledger.api";
 import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { Principal } from "@dfinity/principal/lib/cjs";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 

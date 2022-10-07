@@ -1,6 +1,6 @@
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { TokenAmount } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { snsProjectSelectedStore } from "../selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "./sns-token-symbol-selected.store";
 

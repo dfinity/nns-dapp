@@ -1,9 +1,9 @@
 import { getSnsAccounts } from "$lib/api/sns-ledger.api";
-import type { Account } from "$lib/types/account";
-import type { Principal } from "@dfinity/principal";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import type { Principal } from "@dfinity/principal";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
