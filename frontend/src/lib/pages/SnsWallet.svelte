@@ -8,7 +8,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { routePathAccountIdentifier } from "$lib/services/accounts.services";
+  import { routePathAccountIdentifier } from "$lib/utils/accounts.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { routeStore } from "$lib/stores/route.store";

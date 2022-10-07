@@ -1,7 +1,7 @@
 import { ENABLE_SNS, ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
-import { routePathAccountIdentifier } from "$lib/services/accounts.services";
-import { routePathNeuronId } from "$lib/services/neurons.services";
+import { routePathAccountIdentifier } from "$lib/utils/accounts.utils";
+import { routePathNeuronId } from "$lib/utils/neuron.utils";
 
 const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 

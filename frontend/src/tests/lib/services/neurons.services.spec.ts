@@ -37,7 +37,6 @@ const {
   addHotkey,
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
-  routePathNeuronId,
   getIdentityOfControllerByNeuronId,
   toggleCommunityFund,
   listNeurons,
@@ -1329,26 +1328,6 @@ describe("neurons-services", () => {
         followee,
       });
       expect(spySetFollowees).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-    it("should get neuronId from valid path", async () => {
-      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
-      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
-    });
-
-    it("should not get neuronId from invalid path", async () => {
-      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
-      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
-      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
     });
   });
 

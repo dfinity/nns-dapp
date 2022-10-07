@@ -12,6 +12,7 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "$lib/constants/neurons.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { Step } from "$lib/stores/steps.state";
@@ -42,6 +43,7 @@ import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
 } from "./accounts.utils";
+import { getLastPathDetailId, isRoutePath } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
@@ -734,4 +736,16 @@ export const validTopUpAmount = ({
   const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
   const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
   return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+};
+
+export const routePathNeuronId = (path: string): NeuronId | undefined => {
+  if (
+    !isRoutePath({
+      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+      routePath: path,
+    })
+  ) {
+    return undefined;
+  }
+  return getLastPathDetailId(path);
 };

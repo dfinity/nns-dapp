@@ -4,10 +4,7 @@
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
   import { routeStore } from "$lib/stores/route.store";
-  import {
-    getAccountTransactions,
-    routePathAccountIdentifier,
-  } from "$lib/services/accounts.services";
+  import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -23,7 +20,10 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
-  import { getAccountFromStore } from "$lib/utils/accounts.utils";
+  import {
+    getAccountFromStore,
+    routePathAccountIdentifier,
+  } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
