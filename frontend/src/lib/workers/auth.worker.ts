@@ -1,6 +1,10 @@
 import type { PostMessageEventData } from "$lib/types/post-messages";
 import { createAuthClient } from "$lib/utils/auth.utils";
-import {IdbStorage, type AuthClient, KEY_STORAGE_DELEGATION} from "@dfinity/auth-client";
+import {
+  IdbStorage,
+  KEY_STORAGE_DELEGATION,
+  type AuthClient,
+} from "@dfinity/auth-client";
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
 
@@ -65,7 +69,9 @@ const checkAuthentication = async (): Promise<boolean> => {
  */
 const checkDelegationChain = async (): Promise<boolean> => {
   const idbStorage: IdbStorage = new IdbStorage();
-  const delegationChain: string | null = await idbStorage.get(KEY_STORAGE_DELEGATION);
+  const delegationChain: string | null = await idbStorage.get(
+    KEY_STORAGE_DELEGATION
+  );
 
   return (
     delegationChain !== null &&
