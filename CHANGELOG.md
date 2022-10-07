@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 84936
 * New login page.
 * Minor UI improvements.
 * Clean unused code.
