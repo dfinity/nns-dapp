@@ -18,6 +18,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
+  import DisburseSnsButton from "../neuron-detail/actions/DisburseSnsButton.svelte";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -47,7 +48,7 @@
 
       <div class="buttons">
         {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton {neuron} {reloadContext} />
+          <DisburseSnsButton {neuron} {reloadContext} />
         {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
           <!-- TODO(GIX-985): Sns/DissolveActionButton -->
         {/if}

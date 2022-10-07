@@ -34,7 +34,7 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 
 jest.mock("../../../../lib/services/sns-accounts.services", () => {
   return {
-    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -85,7 +85,7 @@ describe("DisburseSnsNeuronModal", () => {
       certified: true,
     });
 
-    (loadSnsAccounts as jest.Mock).mockClear();
+    (syncSnsAccounts as jest.Mock).mockClear();
   });
 
   it("should display modal", async () => {
@@ -148,12 +148,9 @@ describe("DisburseSnsNeuronModal", () => {
       path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
     });
     const reloadContext = jest.fn().mockResolvedValue(null);
-    const { queryByTestId } = await renderDisburseModal(
-      mockSnsNeuron,
-      reloadContext
-    );
+    await renderDisburseModal(mockSnsNeuron, reloadContext);
 
-    await waitFor(() => expect(loadSnsAccounts).toBeCalled());
+    await waitFor(() => expect(syncSnsAccounts).toBeCalled());
   });
 
   it("should not trigger the project account load if already available", async () => {
@@ -172,6 +169,6 @@ describe("DisburseSnsNeuronModal", () => {
 
     await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
 
-    await waitFor(() => expect(loadSnsAccounts).not.toBeCalled());
+    await waitFor(() => expect(syncSnsAccounts).not.toBeCalled());
   });
 });

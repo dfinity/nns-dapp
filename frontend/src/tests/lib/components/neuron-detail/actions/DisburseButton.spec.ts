@@ -8,7 +8,6 @@ import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.s
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
-import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 
 describe("DisburseButton", () => {
   afterEach(() => {
@@ -38,22 +37,6 @@ describe("DisburseButton", () => {
     buttonElement && (await fireEvent.click(buttonElement));
 
     const modal = queryByTestId("disburse-neuron-modal");
-    expect(modal).toBeInTheDocument();
-  });
-
-  it("opens sns modal", async () => {
-    const { container, queryByTestId } = render(DisburseButton, {
-      props: {
-        neuron: mockSnsNeuron,
-      },
-    });
-
-    const buttonElement = container.querySelector("button");
-    expect(buttonElement).not.toBeNull();
-
-    buttonElement && (await fireEvent.click(buttonElement));
-
-    const modal = queryByTestId("disburse-sns-neuron-modal");
     expect(modal).toBeInTheDocument();
   });
 });
