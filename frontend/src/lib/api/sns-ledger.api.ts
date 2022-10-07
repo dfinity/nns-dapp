@@ -1,8 +1,9 @@
 import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { encodeSnsAccount } from "@dfinity/sns";
 import type { Account } from "../types/account";
+import { LedgerErrorKey } from "../types/ledger.errors";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { mapOptionalToken } from "../utils/sns.utils";
 import { wrapper } from "./sns-wrapper.api";
@@ -30,13 +31,18 @@ export const getSnsAccounts = async ({
     ledgerMetadata({}),
   ]);
 
+  const projectToken = mapOptionalToken(metadata);
+
+  if (projectToken === undefined) {
+    throw new LedgerErrorKey("error.sns_token_load");
+  }
+
   const mainAccount: Account = {
     identifier: encodeSnsAccount(snsMainAccount),
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1045
-      token: mapOptionalToken(metadata) ?? ICPToken,
+      token: projectToken,
     }),
     type: "main",
   };

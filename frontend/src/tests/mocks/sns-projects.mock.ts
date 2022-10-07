@@ -1,3 +1,4 @@
+import type { Token } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsMetadataResponseEntries,
@@ -231,4 +232,9 @@ export const mockQueryMetadata: QuerySnsMetadata = {
   certified: true,
   metadata: mockQueryMetadataResponse,
   token: mockQueryTokenResponse,
+};
+
+export const mockTokenStore = (run: Subscriber<Token>) => {
+  run({ symbol: "TST", name: "test" });
+  return () => undefined;
 };
