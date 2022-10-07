@@ -1,18 +1,18 @@
 <script lang="ts">
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import Value from "../components/ui/Value.svelte";
-  import { authStore } from "../stores/auth.store";
-  import { sortedSnsNeuronStore } from "../derived/sorted-sns-neurons.derived";
-  import { i18n } from "../stores/i18n";
-  import { loadSnsNeurons } from "../services/sns-neurons.services";
-  import SnsNeuronCard from "../components/sns-neurons/SnsNeuronCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { sortedSnsNeuronStore } from "$lib/derived/sorted-sns-neurons.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+  import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { snsOnlyProjectStore } from "../derived/selected-project.derived";
-  import { getSnsNeuronIdAsHexString } from "../utils/sns-neuron.utils";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
-  import { routeStore } from "../stores/route.store";
-  import { neuronPathStore } from "../derived/paths.derived";
+  import { routeStore } from "$lib/stores/route.store";
+  import { neuronPathStore } from "$lib/derived/paths.derived";
 
   let loading = true;
 
@@ -28,7 +28,7 @@
 
   onDestroy(unsubscribe);
 
-  let principalText: string = "";
+  let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   const goToNeuronDetails = (neuron: SnsNeuron) => () => {

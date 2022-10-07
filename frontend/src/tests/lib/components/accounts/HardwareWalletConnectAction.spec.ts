@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import HardwareWalletConnectAction from "../../../../lib/components/accounts/HardwareWalletConnectAction.svelte";
-import { LedgerConnectionState } from "../../../../lib/constants/ledger.constants";
-import { connectToHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
   afterEach(() => {

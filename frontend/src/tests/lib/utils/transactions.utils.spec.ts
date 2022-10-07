@@ -1,6 +1,5 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import type { Transaction } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { enumKeys } from "../../../lib/utils/enum.utils";
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { enumKeys } from "$lib/utils/enum.utils";
 import {
   accountName,
   AccountTransactionType,
@@ -10,7 +9,8 @@ import {
   transactionDisplayAmount,
   transactionName,
   transactionType,
-} from "../../../lib/utils/transactions.utils";
+} from "$lib/utils/transactions.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -149,6 +149,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionType({
           ...mockSentToSubAccountTransaction,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore-line: test
           transaction_type: [{ Unknown: null }],
         })

@@ -1,4 +1,4 @@
-import type { Step } from "../stores/steps.state";
+import type { Step } from "$lib/stores/steps.state";
 
 export const stepIndex = ({
   name: stepName,

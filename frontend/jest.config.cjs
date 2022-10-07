@@ -14,12 +14,14 @@ module.exports = {
   moduleFileExtensions: ["js", "ts", "svelte"],
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
-  testPathIgnorePatterns: ["nns-js"],
   testEnvironmentOptions: {
     url: "https://nns.ic0.app/",
   },
   transformIgnorePatterns: [
     "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
   ],
+  moduleNameMapper: {
+    "^\\$lib(.*)$": "<rootDir>/src/lib$1",
+  },
   setupFiles: ["fake-indexeddb/auto"],
 };

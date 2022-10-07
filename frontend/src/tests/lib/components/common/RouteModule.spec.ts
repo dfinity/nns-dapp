@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import RouteModule from "$lib/components/common/RouteModule.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import { routeStore } from "$lib/stores/route.store";
 import { render } from "@testing-library/svelte";
-import RouteModule from "../../../../lib/components/common/RouteModule.svelte";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { routeStore } from "../../../../lib/stores/route.store";
 import en from "../../../mocks/i18n.mock";
 import { mockRouteStoreSubscribe } from "../../../mocks/route.store.mock";
 

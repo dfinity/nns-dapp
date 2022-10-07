@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
 import { fireEvent } from "@testing-library/svelte";
-import AddSnsHotkeyButton from "../../../../../lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
 import { renderSelectedSnsNeuronContext } from "../../../../mocks/context-wrapper.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";

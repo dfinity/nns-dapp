@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { nowInSeconds, secondsToDuration } from "../../utils/date.utils";
-  import { i18n } from "../../stores/i18n";
+  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+  import { i18n } from "$lib/stores/i18n";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { AUTH_SESSION_DURATION } from "../../constants/identity.constants";
+  import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 
   export let proposalInfo: ProposalInfo;
 
-  const ZERO: bigint = BigInt(0);
+  const ZERO = BigInt(0);
 
   let clear: NodeJS.Timeout | undefined;
   let countdown: bigint | undefined = undefined;

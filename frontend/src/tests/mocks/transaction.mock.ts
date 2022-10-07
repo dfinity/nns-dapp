@@ -1,4 +1,4 @@
-import type { Transaction } from "../../lib/canisters/nns-dapp/nns-dapp.types";
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockMainAccount, mockSubAccount } from "./accounts.store.mock";
 
 export const mockSentToSubAccountTransaction = {

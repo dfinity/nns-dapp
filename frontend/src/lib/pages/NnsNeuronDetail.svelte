@@ -1,29 +1,33 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { onDestroy } from "svelte";
-  import { routePathNeuronId, loadNeuron } from "../services/neurons.services";
-  import NeuronFollowingCard from "../components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-  import NeuronHotkeysCard from "../components/neuron-detail/NeuronHotkeysCard.svelte";
-  import NeuronMaturityCard from "../components/neuron-detail/NeuronMaturityCard.svelte";
-  import NeuronMetaInfoCard from "../components/neuron-detail/NeuronMetaInfoCard.svelte";
-  import NeuronProposalsCard from "../components/neuron-detail/NeuronProposalsCard.svelte";
-  import NeuronVotingHistoryCard from "../components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import { AppPath } from "../constants/routes.constants";
-  import { routeStore } from "../stores/route.store";
-  import { neuronsStore } from "../stores/neurons.store";
-  import { IS_TESTNET } from "../constants/environment.constants";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import { isRoutePath } from "../utils/app-path.utils";
+  import {
+    routePathNeuronId,
+    loadNeuron,
+  } from "$lib/services/neurons.services";
+  import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
+  import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+  import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
+  import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
+  import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { routeStore } from "$lib/stores/route.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
   import {
     getNeuronById,
     isSpawning,
     neuronVoting,
-  } from "../utils/neuron.utils";
-  import { layoutBackStore } from "../stores/layout.store";
-  import NeuronJoinFundCard from "../components/neuron-detail/NeuronJoinFundCard.svelte";
-  import { toastsError } from "../stores/toasts.store";
-  import { voteRegistrationStore } from "../stores/vote-registration.store";
-  import { neuronsPathStore } from "../derived/paths.derived";
+  } from "$lib/utils/neuron.utils";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -91,13 +95,17 @@
 
   layoutBackStore.set(goBack);
 
-  let inVotingProcess: boolean = false;
+  let inVotingProcess = false;
   $: inVotingProcess =
     neuron !== undefined &&
     neuronVoting({
       neuronId: neuron.neuronId,
       store: $voteRegistrationStore,
     });
+
+  $: layoutTitleStore.set(
+    neuronId !== undefined ? `${$i18n.core.icp} – ${neuronId}` : ""
+  );
 </script>
 
 <main class="legacy">

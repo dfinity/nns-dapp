@@ -1,6 +1,6 @@
-import type { Steps } from "../../../lib/stores/steps.state";
-import { StepsState } from "../../../lib/stores/steps.state";
-import { stepIndex } from "../../../lib/utils/step.utils";
+import type { Steps } from "$lib/stores/steps.state";
+import { StepsState } from "$lib/stores/steps.state";
+import { stepIndex } from "$lib/utils/step.utils";
 
 describe("StepsState", () => {
   const steps: Steps = [

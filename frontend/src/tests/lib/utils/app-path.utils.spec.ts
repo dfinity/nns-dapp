@@ -1,4 +1,4 @@
-import { AppPath, CONTEXT_PATH } from "../../../lib/constants/routes.constants";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
   changePathContext,
   getContextDetailsFromPath,
@@ -9,7 +9,7 @@ import {
   isAppPath,
   isContextPath,
   isRoutePath,
-} from "../../../lib/utils/app-path.utils";
+} from "$lib/utils/app-path.utils";
 
 describe("routes", () => {
   describe("isAppPath()", () => {

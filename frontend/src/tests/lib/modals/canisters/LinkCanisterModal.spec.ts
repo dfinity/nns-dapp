@@ -1,11 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+import { attachCanister } from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import LinkCanisterModal from "../../../../lib/modals/canisters/LinkCanisterModal.svelte";
-import { attachCanister } from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -15,13 +15,13 @@ import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     attachCanister: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsShow: jest.fn(),
     toastsSuccess: jest.fn(),

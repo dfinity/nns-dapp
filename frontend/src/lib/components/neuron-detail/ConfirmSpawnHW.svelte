@@ -1,15 +1,15 @@
 <script lang="ts">
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,
     neuronStake,
-  } from "../../utils/neuron.utils";
-  import { valueSpan } from "../../utils/utils";
+  } from "$lib/utils/neuron.utils";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
 
@@ -46,14 +46,14 @@
     </div>
     <div>
       <p>
-        {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
+        {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
       </p>
       <p>
-        {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
+        {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
       </p>
     </div>
     <p>
-      {@html $i18n.neuron_detail.spawn_maturity_note_hw}
+      {@html $i18n.neuron_detail.spawn_neuron_note_hw}
     </p>
   </div>
   <button
@@ -83,7 +83,7 @@
       gap: var(--padding-3x);
     }
 
-    // For the link inside "i18n.neuron_detail.spawn_maturity_explanation_hw"
+    // For the link inside "i18n.neuron_detail.spawn_neuron_explanation_hw"
     :global(a) {
       color: var(--primary);
       text-decoration: none;

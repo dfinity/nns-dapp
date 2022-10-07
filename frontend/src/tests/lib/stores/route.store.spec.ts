@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { get } from "svelte/store";
-import { AppPath, CONTEXT_PATH } from "../../../lib/constants/routes.constants";
-import { routeStore } from "../../../lib/stores/route.store";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { routeStore } from "$lib/stores/route.store";
 import {
   getContextFromPath,
   isContextPath,
   isRoutePath,
-} from "../../../lib/utils/app-path.utils";
+} from "$lib/utils/app-path.utils";
+import { get } from "svelte/store";
 
 describe("route-store", () => {
   it("should set referrer path", () => {

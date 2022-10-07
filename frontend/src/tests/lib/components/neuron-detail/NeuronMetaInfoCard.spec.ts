@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
+import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { render } from "@testing-library/svelte";
-import NeuronMetaInfoCard from "../../../../lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,

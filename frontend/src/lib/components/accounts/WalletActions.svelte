@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AccountType } from "../../types/account";
+  import type { AccountType } from "$lib/types/account";
   import { getContext } from "svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../types/selected-account.context";
+  } from "$lib/types/selected-account.context";
   import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
   import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
   import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";

@@ -6,23 +6,20 @@
   } from "@dfinity/nns";
 
   import { getContext, onDestroy } from "svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { definedNeuronsStore } from "../../../stores/neurons.store";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import CardInfo from "../../ui/CardInfo.svelte";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../../types/selected-proposal.context";
-  import { isProposalDeadlineInTheFuture } from "../../../utils/proposals.utils";
+  } from "$lib/types/selected-proposal.context";
+  import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
-  } from "../../../stores/vote-registration.store";
-  import { registerVotes } from "../../../services/vote-registration.services";
-  import { VOTING_UI } from "../../../constants/environment.constants";
+  } from "$lib/stores/vote-registration.store";
+  import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;
@@ -33,7 +30,7 @@
       proposal: proposalInfo,
     });
 
-  let visible: boolean = false;
+  let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
   let voteRegistration: VoteRegistration | undefined = undefined;
@@ -79,31 +76,15 @@
     unsubscribe();
     votingNeuronSelectStore.reset();
   });
-
-  // TODO(L2-965): delete legacy component <CardInfo />
 </script>
 
-{#if VOTING_UI === "legacy"}
-  {#if visible}
-    <CardInfo>
-      <h2 slot="start">{$i18n.proposal_detail__vote.headline}</h2>
-      <VotingNeuronSelect {proposalInfo} {voteRegistration} />
-      <VotingConfirmationToolbar
-        {proposalInfo}
-        {voteRegistration}
-        on:nnsConfirm={vote}
-        layout="legacy"
-      />
-    </CardInfo>
-  {/if}
-{:else if $definedNeuronsStore.length > 0}
+{#if $definedNeuronsStore.length > 0}
   <BottomSheet>
     {#if visible}
       <VotingConfirmationToolbar
         {proposalInfo}
         {voteRegistration}
         on:nnsConfirm={vote}
-        layout="modern"
       />
     {/if}
 

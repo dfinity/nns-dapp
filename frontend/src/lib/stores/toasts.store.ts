@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
+import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+import type { ToastMsg } from "$lib/types/toast";
+import { errorToString } from "$lib/utils/error.utils";
+import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
+import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
-import type { ToastMsg } from "../types/toast";
-import { errorToString } from "../utils/error.utils";
-import type { I18nSubstitutions } from "../utils/i18n.utils";
-import { replacePlaceholders, translate } from "../utils/i18n.utils";
 
 const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
   `${replacePlaceholders(translate({ labelKey }), substitutions ?? {})}${

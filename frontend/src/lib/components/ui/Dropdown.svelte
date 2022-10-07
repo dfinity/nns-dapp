@@ -6,7 +6,7 @@
   export let selectedValue: string | undefined = undefined;
   export let name: string;
   export let testId: string | undefined = undefined;
-  export let disabled: boolean = false;
+  export let disabled = false;
 </script>
 
 <div>

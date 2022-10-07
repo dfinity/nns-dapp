@@ -1,23 +1,23 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { syncAccounts } from "../../services/accounts.services";
-  import { stakeNeuron } from "../../services/neurons.services";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import { syncAccounts } from "$lib/services/accounts.services";
+  import { stakeNeuron } from "$lib/services/neurons.services";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
-  } from "../../utils/icp.utils";
-  import AmountInput from "../ui/AmountInput.svelte";
-  import CurrentBalance from "../accounts/CurrentBalance.svelte";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  } from "$lib/utils/icp.utils";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     mainTransactionFeeStore,
     transactionsFeesStore,
-  } from "../../stores/transaction-fees.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import Value from "../ui/Value.svelte";
+  } from "$lib/stores/transaction-fees.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
 
   export let account: Account;
   let amount: number;
@@ -50,7 +50,7 @@
     stopBusy("stake-neuron");
   };
 
-  let max: number = 0;
+  let max = 0;
   $: max = getMaxTransactionAmount({
     balance: account.balance.toE8s(),
     fee: $transactionsFeesStore.main,

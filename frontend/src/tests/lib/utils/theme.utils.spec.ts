@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { Theme } from "../../../lib/types/theme";
-import { applyTheme, THEME_ATTRIBUTE } from "../../../lib/utils/theme.utils";
+import { Theme } from "$lib/types/theme";
+import { applyTheme, THEME_ATTRIBUTE } from "$lib/utils/theme.utils";
 
 describe("theme-utils", () => {
   it("should apply theme to root html element", () => {

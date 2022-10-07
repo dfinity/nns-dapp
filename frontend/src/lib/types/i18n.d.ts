@@ -42,6 +42,7 @@ interface I18nError {
   neuron_load: string;
   sns_neurons_load: string;
   sns_accounts_load: string;
+  sns_token_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -130,9 +131,13 @@ interface I18nHeader {
 interface I18nAuth {
   ic: string;
   nns: string;
-  icp_governance: string;
   login: string;
+  title: string;
   on_chain: string;
+  secure: string;
+  stake: string;
+  earn: string;
+  ic_logo: string;
 }
 
 interface I18nAccounts {
@@ -443,7 +448,6 @@ interface I18nProposal_detail__vote {
   confirm_reject_headline: string;
   confirm_reject_text: string;
   vote_status: string;
-  accept_or_reject: string;
   cast_vote_neuronId: string;
   cast_vote_votingPower: string;
   vote_adopt_in_progress: string;
@@ -471,18 +475,26 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
-  voting_power_tooltip: string;
+  voting_power_tooltip_without_stake: string;
+  voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
+  auto_stake_maturity: string;
+  auto_stake_maturity_on: string;
+  auto_stake_maturity_off: string;
+  auto_stake_maturity_on_success: string;
+  auto_stake_maturity_off_success: string;
   community_fund_more_info: string;
   maturity_title: string;
-  maturity_description: string;
   merge_maturity: string;
+  stake_maturity: string;
   merge: string;
+  stake: string;
   spawn_neuron: string;
   spawn: string;
-  maturity_tooltip: string;
+  stake_maturity_tooltip: string;
+  merge_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
@@ -498,7 +510,7 @@ interface I18nNeuron_detail {
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
   merge_maturity_disabled_tooltip: string;
-  spawn_maturity_disabled_tooltip: string;
+  spawn_neuron_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
@@ -510,22 +522,27 @@ interface I18nNeuron_detail {
   merge_maturity_modal_title: string;
   merge_confirmation_modal_title: string;
   merge_maturity_modal_description: string;
-  merge_maturity_confirmation_q: string;
-  merge_maturity_confirmation_a: string;
-  merge_maturity_edit_percentage: string;
+  merge_maturity_confirmation: string;
+  edit_percentage: string;
   merge_maturity_success: string;
-  spawn_maturity_modal_title: string;
+  stake_maturity_modal_title: string;
+  stake_confirmation_modal_title: string;
+  stake_maturity_modal_description: string;
+  stake_maturity_confirmation: string;
+  stake_maturity_success: string;
+  spawn_neuron_modal_title: string;
   spawn_confirmation_modal_title: string;
-  spawn_maturity_modal_description: string;
-  spawn_maturity_success: string;
-  spawn_maturity_confirmation_q: string;
-  spawn_maturity_confirmation_a: string;
-  spawn_maturity_choose: string;
-  spawn_maturity_explanation_1: string;
-  spawn_maturity_explanation_2: string;
-  spawn_maturity_note_hw: string;
+  spawn_neuron_modal_description: string;
+  spawn_neuron_success: string;
+  spawn_neuron_confirmation_q: string;
+  spawn_neuron_confirmation_a: string;
+  spawn_neuron_choose: string;
+  spawn_neuron_explanation_1: string;
+  spawn_neuron_explanation_2: string;
+  spawn_neuron_note_hw: string;
   current_stake: string;
   current_maturity: string;
+  available_maturity: string;
   dissolve_delay_range: string;
   maturity_range: string;
   spawning_neuron_info: string;
@@ -659,6 +676,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   sns_remove_hotkey: string;
+  sns_disburse: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;

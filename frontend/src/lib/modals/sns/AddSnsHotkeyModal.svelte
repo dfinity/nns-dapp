@@ -1,17 +1,17 @@
 <script lang="ts">
-  import LegacyModal from "../LegacyModal.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { i18n } from "../../stores/i18n";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { addHotkey } from "../../services/sns-neurons.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { addHotkey } from "$lib/services/sns-neurons.services";
   import { createEventDispatcher, getContext } from "svelte";
-  import { toastsError } from "../../stores/toasts.store";
-  import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
-  } from "../../types/sns-neuron-detail.context";
+  } from "$lib/types/sns-neuron-detail.context";
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

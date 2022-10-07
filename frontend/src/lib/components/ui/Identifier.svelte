@@ -4,7 +4,7 @@
 
   export let identifier: string;
   export let label: string | undefined = undefined;
-  export let showCopy: boolean = false;
+  export let showCopy = false;
   export let size: "small" | "medium" = "small";
 
   let labelText: string;

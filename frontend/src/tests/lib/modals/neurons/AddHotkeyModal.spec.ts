@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
+import { addHotkey } from "$lib/services/neurons.services";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import AddHotkeyModal from "../../../../lib/modals/neurons/AddHotkeyModal.svelte";
-import { addHotkey } from "../../../../lib/services/neurons.services";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     addHotkey: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),

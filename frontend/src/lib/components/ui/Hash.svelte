@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { shortenWithMiddleEllipsis } from "../../utils/format.utils";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import Copy from "./Copy.svelte";
 
   import Tooltip from "./Tooltip.svelte";

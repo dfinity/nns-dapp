@@ -1,5 +1,5 @@
-import { HardwareWalletAttachError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import { errorToString, toToastError } from "../../../lib/utils/error.utils";
+import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { errorToString, toToastError } from "$lib/utils/error.utils";
 import en from "../../mocks/i18n.mock";
 
 class TestError extends Error {

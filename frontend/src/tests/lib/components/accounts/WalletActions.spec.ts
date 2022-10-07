@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import WalletActions from "../../../../lib/components/accounts/WalletActions.svelte";
+import WalletActions from "$lib/components/accounts/WalletActions.svelte";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountContext,
   type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
+} from "$lib/types/selected-account.context";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,

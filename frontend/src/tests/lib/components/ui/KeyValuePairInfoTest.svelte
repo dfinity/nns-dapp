@@ -1,5 +1,5 @@
 <script lang="ts">
-  import KeyValuePairInfo from "../../../../lib/components/ui/KeyValuePairInfo.svelte";
+  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
 
   export let key: string;
   export let value: string;

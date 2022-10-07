@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
-  import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
+  import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import { isNullish } from "../../utils/utils";
+  import { isNullish } from "$lib/utils/utils";
   import {
     snsesCountStore,
     snsSummariesStore,
     snsSwapCommitmentsStore,
-  } from "../../stores/sns.store";
+  } from "$lib/stores/sns.store";
   import {
     activePadProjectsStore,
     type SnsFullProject,
-  } from "../../stores/projects.store";
+  } from "$lib/stores/projects.store";
 
   let projects: SnsFullProject[] | undefined;
   $: projects = $activePadProjectsStore;
@@ -20,7 +20,7 @@
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
 
-  let loading: boolean = false;
+  let loading = false;
   $: loading =
     isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
 </script>

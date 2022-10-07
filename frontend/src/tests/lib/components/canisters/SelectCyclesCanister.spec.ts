@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import SelectCyclesCanister from "../../../../lib/components/canisters/SelectCyclesCanister.svelte";
 import en from "../../../mocks/i18n.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
   };

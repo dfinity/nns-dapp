@@ -1,19 +1,19 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import SplitNeuronModal from "../../../modals/neurons/SplitNeuronModal.svelte";
+  import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
   import {
     minNeuronSplittable,
     neuronCanBeSplit,
-  } from "../../../utils/neuron.utils";
-  import { i18n } from "../../../stores/i18n";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { formatToken } from "../../../utils/icp.utils";
-  import Tooltip from "../../ui/Tooltip.svelte";
-  import { mainTransactionFeeStore } from "../../../stores/transaction-fees.store";
+  } from "$lib/utils/neuron.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const openModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);

@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
+import { formatToken } from "$lib/utils/icp.utils";
 import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render } from "@testing-library/svelte";
-import HardwareWalletNeurons from "../../../../lib/components/accounts/HardwareWalletNeurons.svelte";
-import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockNeuronStake } from "../../../mocks/hardware-wallet-neurons.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";

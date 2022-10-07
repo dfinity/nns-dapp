@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { CanisterDetails } from "../../canisters/nns-dapp/nns-dapp.types";
-  import Identifier from "../ui/Identifier.svelte";
-  import { mapCanisterDetails } from "../../utils/canisters.utils";
+  import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
+  import { mapCanisterDetails } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
 

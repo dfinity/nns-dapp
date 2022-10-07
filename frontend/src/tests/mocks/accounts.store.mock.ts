@@ -1,13 +1,13 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type { Subscriber } from "svelte/store";
 import type {
   AccountDetails,
   HardwareWalletAccountDetails,
   SubAccountDetails,
-} from "../../lib/canisters/nns-dapp/nns-dapp.types";
-import type { AccountsStore } from "../../lib/stores/accounts.store";
-import type { Account } from "../../lib/types/account";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { Account } from "$lib/types/account";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type { Subscriber } from "svelte/store";
 
 export const mockMainAccount: Account = {
   identifier:

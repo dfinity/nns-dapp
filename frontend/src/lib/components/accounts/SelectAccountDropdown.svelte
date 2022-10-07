@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { accountsStore } from "../../stores/accounts.store";
-  import { accountsListStore } from "../../derived/accounts-list.derived";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { getAccountFromStore } from "../../utils/accounts.utils";
-  import Dropdown from "../ui/Dropdown.svelte";
-  import DropdownItem from "../ui/DropdownItem.svelte";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { accountsListStore } from "$lib/derived/accounts-list.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { getAccountFromStore } from "$lib/utils/accounts.utils";
+  import Dropdown from "$lib/components/ui/Dropdown.svelte";
+  import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;

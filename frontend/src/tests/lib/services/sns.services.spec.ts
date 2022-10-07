@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import * as api from "$lib/api/sns.api";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { syncAccounts } from "$lib/services/accounts.services";
+import * as services from "$lib/services/sns.services";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import * as api from "../../../lib/api/sns.api";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { syncAccounts } from "../../../lib/services/accounts.services";
-import * as services from "../../../lib/services/sns.services";
-import { snsQueryStore } from "../../../lib/stores/sns.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
@@ -19,7 +19,7 @@ const setNoAccountIdentity = () =>
 const resetAccountIdentity = () =>
   (testGetIdentityReturn = Promise.resolve(mockIdentity));
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     getAccountIdentity: jest
       .fn()
@@ -93,7 +93,7 @@ describe("sns-services", () => {
         .mockImplementation(() =>
           Promise.reject(
             new Error(
-              "Sorry, There was an unexpected error while participating. Call was rejected: Request ID: a26e17bac91489a89f8b1aef858efeebe9993654ee1ace64efc46a60f3a219c8 Reject code: 5 Reject text: Canister tcvdh-niaaa-aaaaa-aaaoa-cai trapped explicitly: Panicked at 'The token amount can only be refreshed when the canister is in the 'open' state', sns/swap/canister/canister.rs:165:21"
+              "Sorry, There was an unexpected error while participating. Call was rejected: Request ID: a26e17bac91489a89f8b1aef858efeebe9993654ee1ace64efc46a60f3a219c8 Reject code: 5 Reject text: Canister tcvdh-niaaa-aaaaa-aaaoa-cai trapped explicitly: Panicked at 'The token amount can only be refreshed when the canister is in the OPEN state', sns/swap/canister/canister.rs:165:21"
             )
           )
         );

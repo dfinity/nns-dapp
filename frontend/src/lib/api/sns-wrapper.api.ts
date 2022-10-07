@@ -1,18 +1,18 @@
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
-import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
+import { HOST, WASM_CANISTER_ID } from "$lib/constants/environment.constants";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
-} from "../proxy/api.import.proxy";
-import { snsesCountStore } from "../stores/sns.store";
-import { ApiErrorKey } from "../types/api.errors";
-import type { QueryRootCanisterId } from "../types/sns.query";
-import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
+} from "$lib/proxy/api.import.proxy";
+import { snsesCountStore } from "$lib/stores/sns.store";
+import { ApiErrorKey } from "$lib/types/api.errors";
+import type { QueryRootCanisterId } from "$lib/types/sns.query";
+import { createAgent } from "$lib/utils/agent.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -56,7 +56,7 @@ const listSnses = async ({
   );
 };
 
-const initSns = async ({
+export const initSns = async ({
   agent,
   rootCanisterId,
   certified,
@@ -115,9 +115,13 @@ const loadSnsWrappers = async ({
     throw new ApiErrorKey("error__sns.init");
   }
 
-  return results
-    .filter(({ status }) => status === "fulfilled")
-    .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
+  return (
+    results
+      .filter(({ status }) => status === "fulfilled")
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore we know for sure the type is PromiseFulfilledResult and not PromiseSettledResult since we filter with previous line
+      .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper)
+  );
 };
 
 const initWrappers = async ({

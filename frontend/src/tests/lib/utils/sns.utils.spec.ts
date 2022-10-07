@@ -1,13 +1,13 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries } from "@dfinity/sns";
-import type { SnsSwapCommitment } from "../../../lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
   mapOptionalToken,
-} from "../../../lib/utils/sns.utils";
+} from "$lib/utils/sns.utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { SnsMetadataResponseEntries } from "@dfinity/sns";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,

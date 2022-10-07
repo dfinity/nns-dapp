@@ -1,7 +1,4 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
   CanisterAlreadyAttachedError,
@@ -16,13 +13,16 @@ import {
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   UnknownProposalPayloadError,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { createAgent } from "../../../lib/utils/agent.utils";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { createAgent } from "$lib/utils/agent.utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
@@ -44,7 +44,7 @@ describe("NNSDapp", () => {
 
   describe("NNSDapp.addAccount", () => {
     it("returns account identifier when success", async () => {
-      const response: string =
+      const response =
         "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
       const service = mock<NNSDappService>();
       service.add_account.mockResolvedValue(response);
@@ -248,7 +248,9 @@ describe("NNSDapp", () => {
         },
         new NameTooLongError(
           "error__attach_wallet.create_hardware_wallet_too_long",
-          { $accountName: "test" }
+          {
+            $accountName: "test",
+          }
         )
       ));
 

@@ -1,19 +1,20 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import type { NeuronId } from "@dfinity/nns";
-  import ConfirmationModal from "../../../modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import {
     startDissolving,
     stopDissolving,
-  } from "../../../services/neurons.services";
-  import { stopBusy } from "../../../stores/busy.store";
-  import { i18n } from "../../../stores/i18n";
-  import { startBusyNeuron } from "../../../services/busy.services";
+  } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { keyOf } from "$lib/utils/utils";
 
   export let neuronId: NeuronId;
   export let neuronState: NeuronState;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
@@ -39,13 +40,13 @@
 </script>
 
 <button on:click={showModal} class="warning"
-  >{$i18n.neuron_detail[buttonKey]}</button
+  >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button
 >
 {#if isOpen}
   <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={dissolveAction}>
     <div data-tid="dissolve-action-modal">
       <h4>{$i18n.core.confirm}</h4>
-      <p>{$i18n.neuron_detail[descriptionKey]}</p>
+      <p>{keyOf({ obj: $i18n.neuron_detail, key: descriptionKey })}</p>
     </div>
   </ConfirmationModal>
 {/if}

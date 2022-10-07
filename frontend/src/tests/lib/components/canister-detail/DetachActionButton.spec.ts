@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import DetachActionButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
+import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import DetachActionButton from "../../../../lib/components/canister-detail/DetachCanisterButton.svelte";
-import { detachCanister } from "../../../../lib/services/canisters.services";
 import { mockCanister } from "../../../mocks/canisters.mock";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     detachCanister: jest.fn().mockResolvedValue({ success: true }),
   };

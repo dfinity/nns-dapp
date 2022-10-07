@@ -1,7 +1,25 @@
-import { IdbStorage, type AuthClient } from "@dfinity/auth-client";
+import type { PostMessageEventData } from "$lib/types/post-messages";
+import { createAuthClient } from "$lib/utils/auth.utils";
+import {
+  IdbStorage,
+  KEY_STORAGE_DELEGATION,
+  type AuthClient,
+} from "@dfinity/auth-client";
 import { isDelegationValid } from "@dfinity/authentication";
 import { DelegationChain } from "@dfinity/identity";
-import { createAuthClient } from "../utils/auth.utils";
+
+onmessage = ({ data }: MessageEvent<PostMessageEventData>) => {
+  const { msg } = data;
+
+  switch (msg) {
+    case "nnsStartIdleTimer":
+      startIdleTimer();
+      return;
+    case "nnsStopIdleTimer":
+      stopIdleTimer();
+      return;
+  }
+};
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
@@ -51,7 +69,9 @@ const checkAuthentication = async (): Promise<boolean> => {
  */
 const checkDelegationChain = async (): Promise<boolean> => {
   const idbStorage: IdbStorage = new IdbStorage();
-  const delegationChain: string | null = await idbStorage.get("delegation");
+  const delegationChain: string | null = await idbStorage.get(
+    KEY_STORAGE_DELEGATION
+  );
 
   return (
     delegationChain !== null &&

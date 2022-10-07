@@ -1,5 +1,5 @@
+import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
 import { get } from "svelte/store";
-import { knownNeuronsStore } from "../../../lib/stores/knownNeurons.store";
 import { mockKnownNeuron } from "../../mocks/neurons.mock";
 
 describe("knownNeurons", () => {

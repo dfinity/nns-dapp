@@ -147,6 +147,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate .env configuration for e2e-tests
+        run: |
+          DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
+
       - name: Create initial state
         run: |
           ./deploy.sh --populate local

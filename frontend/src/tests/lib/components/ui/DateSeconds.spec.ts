@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 import { render } from "@testing-library/svelte";
-import DateSeconds from "../../../../lib/components/ui/DateSeconds.svelte";
 
 describe("DateSeconds", () => {
   const seconds = Number(BigInt("0"));

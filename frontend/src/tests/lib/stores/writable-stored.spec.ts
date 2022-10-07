@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
+import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
-import { storeLocalStorageKey } from "../../../lib/constants/stores.constants";
-import { writableStored } from "../../../lib/stores/writable-stored";
 
 describe("writableStored", () => {
   afterEach(() => {

@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import HardwareWalletListNeuronsModal from "../../modals/accounts/HardwareWalletListNeuronsModal.svelte";
-  import { listNeuronsHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
+  import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
   import type {
     HardwareWalletNeuronsContext,
     HardwareWalletNeuronsStore,
-  } from "../../types/hardware-wallet-neurons.context";
-  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "../../types/hardware-wallet-neurons.context";
+  } from "$lib/types/hardware-wallet-neurons.context";
+  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "$lib/types/hardware-wallet-neurons.context";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { mapHardwareWalletNeuronInfo } from "../../utils/hardware-wallet-neurons.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { debugHardwareWalletNeuronsStore } from "../../stores/debug.store";
+  import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { debugHardwareWalletNeuronsStore } from "$lib/stores/debug.store";
 
   let modalOpen = false;
 

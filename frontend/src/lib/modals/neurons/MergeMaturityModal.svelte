@@ -1,18 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formatPercentage } from "../../utils/format.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { stopBusy } from "../../stores/busy.store";
-  import { mergeMaturity } from "../../services/neurons.services";
-  import { toastsSuccess } from "../../stores/toasts.store";
+  import { formatPercentage } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { mergeMaturity } from "$lib/services/neurons.services";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
-  import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { valueSpan } from "../../utils/utils";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import WizardModal from "../WizardModal.svelte";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
 
   export let neuron: NeuronInfo;
 
@@ -30,12 +29,13 @@
   ];
 
   let currentStep: Step;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
-  let percentageToMerge: number = 0;
+  let percentageToMerge = 0;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
+
   const mergeNeuronMaturity = async () => {
     startBusyNeuron({ initiator: "merge-maturity", neuronId: neuron.neuronId });
 
@@ -53,75 +53,42 @@
 
     stopBusy("merge-maturity");
   };
-  const goToConfirm = () => {
-    modal.next();
-  };
+
+  const goToConfirm = () => modal.next();
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <span slot="title" data-tid="merge-maturity-neuron-modal"
-    >{currentStep?.title ??
-      $i18n.neuron_detail.merge_maturity_modal_title}</span
+<WizardModal {steps} bind:currentStep on:nnsClose bind:this={modal}>
+  <svelte:fragment slot="title"
+    >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
+
   {#if currentStep.name === "SelectPercentage"}
-    <SelectPercentage
+    <NeuronSelectPercentage
       {neuron}
       buttonText={$i18n.neuron_detail.merge}
       on:nnsSelectPercentage={goToConfirm}
-      on:nnsBack={close}
+      on:nnsCancel={close}
       bind:percentage={percentageToMerge}
       disabled={percentageToMerge === 0}
     >
       <svelte:fragment slot="text">
-        <h5>{$i18n.neuron_detail.merge_maturity_modal_title}</h5>
-        <p class="description">
-          {$i18n.neuron_detail.merge_maturity_modal_description}
-        </p>
+        {$i18n.neuron_detail.merge_maturity_modal_description}
       </svelte:fragment>
-    </SelectPercentage>
+    </NeuronSelectPercentage>
   {:else if currentStep.name === "ConfirmMerge"}
-    <ConfirmActionScreen
+    <NeuronConfirmActionScreen
       on:nnsConfirm={mergeNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      <div class="confirm" slot="main-info">
-        <h4>{$i18n.neuron_detail.merge_maturity_confirmation_q}</h4>
-        <p class="confirm-answer">
-          {@html replacePlaceholders(
-            $i18n.neuron_detail.merge_maturity_confirmation_a,
-            {
-              $percentage: valueSpan(
-                formatPercentage(percentageToMerge / 100, {
-                  minFraction: 0,
-                  maxFraction: 0,
-                })
-              ),
-            }
-          )}
-        </p>
-      </div>
-      <svelte:fragment slot="button-content"
-        >{$i18n.core.confirm}</svelte:fragment
-      >
-      <svelte:fragment slot="button-cancel-content"
-        >{$i18n.neuron_detail.merge_maturity_edit_percentage}</svelte:fragment
-      >
-    </ConfirmActionScreen>
+      {@html replacePlaceholders(
+        $i18n.neuron_detail.merge_maturity_confirmation,
+        {
+          $percentage: formatPercentage(percentageToMerge / 100, {
+            minFraction: 0,
+            maxFraction: 0,
+          }),
+        }
+      )}
+    </NeuronConfirmActionScreen>
   {/if}
-</LegacyWizardModal>
-
-<style lang="scss">
-  h4 {
-    text-align: center;
-  }
-
-  .confirm-answer {
-    margin: 0;
-    text-align: center;
-  }
-
-  .confirm {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
+</WizardModal>

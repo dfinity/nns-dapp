@@ -1,31 +1,22 @@
 import {
-  ICPToken,
-  NeuronState,
-  TokenAmount,
-  Topic,
-  Vote,
-  type BallotInfo,
-} from "@dfinity/nns";
-import { get } from "svelte/store";
-import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
-} from "../../../lib/constants/constants";
+} from "$lib/constants/constants";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-} from "../../../lib/constants/icp.constants";
+} from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-} from "../../../lib/constants/neurons.constants";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
-import type { Step } from "../../../lib/stores/steps.state";
-import { nowInSeconds } from "../../../lib/utils/date.utils";
-import { enumValues } from "../../../lib/utils/enum.utils";
+} from "$lib/constants/neurons.constants";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import type { Step } from "$lib/stores/steps.state";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   ageMultiplier,
   allHaveSameFollowees,
@@ -36,6 +27,7 @@ import {
   followeesByTopic,
   followeesNeurons,
   formattedMaturity,
+  formattedStakedMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
@@ -64,7 +56,16 @@ import {
   votedNeuronDetails,
   votingPower,
   type InvalidState,
-} from "../../../lib/utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
+import {
+  ICPToken,
+  NeuronState,
+  TokenAmount,
+  Topic,
+  Vote,
+  type BallotInfo,
+} from "@dfinity/nns";
+import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -355,6 +356,48 @@ describe("neuron-utils", () => {
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
+    });
+  });
+
+  describe("formattedStakedMaturity", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
+    });
+
+    it("returns staked maturity with two decimals", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("1.00");
+    });
+
+    it("returns 0 when staked maturity is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: stake.toE8s(),
+          stakedMaturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
     });
   });
 

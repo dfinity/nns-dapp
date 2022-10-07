@@ -1,3 +1,10 @@
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
+import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { createAgent } from "$lib/utils/agent.utils";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type {
   E8s,
@@ -9,13 +16,6 @@ import type {
 } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { DFINITY_NEURON, IC_NEURON } from "../constants/api.constants";
-import { GOVERNANCE_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { createAgent } from "../utils/agent.utils";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { ledgerCanister as getLedgerCanister } from "./ledger.api";
 
 export const queryNeuron = async ({
@@ -97,6 +97,37 @@ export const leaveCommunityFund = async ({
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
+export const autoStakeMaturity = async ({
+  neuronId,
+  autoStake,
+  identity,
+}: {
+  neuronId: NeuronId;
+  autoStake: boolean;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) call...`
+  );
+
+  const {
+    canister: { autoStakeMaturity: autoStakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) complete.`
+  );
+};
+
 export const disburse = async ({
   neuronId,
   toAccountId,
@@ -131,6 +162,26 @@ export const mergeMaturity = async ({
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
 };
 
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+  identity,
+}: {
+  neuronId: NeuronId;
+  percentageToStake: number;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) call...`);
+
+  const {
+    canister: { stakeMaturity: stakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await stakeMaturityApi({ neuronId, percentageToStake });
+
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
+};
+
 export const spawnNeuron = async ({
   neuronId,
   percentageToSpawn,
@@ -141,14 +192,14 @@ export const spawnNeuron = async ({
   percentageToSpawn?: number;
   identity: Identity;
 }): Promise<NeuronId> => {
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
   const newNeuronId = await canister.spawnNeuron({
     neuronId,
     percentageToSpawn,
   });
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) complete.`);
   return newNeuronId;
 };
 

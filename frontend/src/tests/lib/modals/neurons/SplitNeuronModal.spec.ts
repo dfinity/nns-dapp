@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
+import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
+import { splitNeuron } from "$lib/services/neurons.services";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
-import SplitNeuronModal from "../../../../lib/modals/neurons/SplitNeuronModal.svelte";
-import { splitNeuron } from "../../../../lib/services/neurons.services";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     splitNeuron: jest.fn().mockResolvedValue(undefined),
   };

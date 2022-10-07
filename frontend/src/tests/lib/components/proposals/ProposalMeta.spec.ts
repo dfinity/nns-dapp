@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import ProposalMeta from "$lib/components/proposals/ProposalMeta.svelte";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import ProposalMeta from "../../../../lib/components/proposals/ProposalMeta.svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
@@ -8,22 +8,22 @@
     isHotKeyControllable,
     isSpawning,
     neuronStake,
-  } from "../../utils/neuron.utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { authStore } from "../../stores/auth.store";
-  import type { CardType } from "../../types/card";
+  } from "$lib/utils/neuron.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import type { CardType } from "$lib/types/card";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import { IconStackedLineChart } from "@dfinity/gix-components";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "./NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
-  export let proposerNeuron: boolean = false;
+  export let proposerNeuron = false;
   // Setting default value avoids warning missing props during testing
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
-  export let selected: boolean = false;
-  export let disabled: boolean = false;
+  export let selected = false;
+  export let disabled = false;
   export let cardType: CardType = "card";
 
   let isCommunityFund: boolean;

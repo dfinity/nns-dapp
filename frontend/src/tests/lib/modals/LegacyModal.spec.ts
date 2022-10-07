@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import LegacyModal from "$lib/modals/LegacyModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import LegacyModal from "../../../lib/modals/LegacyModal.svelte";
 
 describe("LegacyModal", () => {
   const props: { visible: boolean } = { visible: true };

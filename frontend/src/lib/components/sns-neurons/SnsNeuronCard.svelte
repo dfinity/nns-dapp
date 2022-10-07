@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { ICPToken, NeuronState, TokenAmount } from "@dfinity/nns";
+  import { type Token, NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { authStore } from "../../stores/auth.store";
-  import { i18n } from "../../stores/i18n";
-  import type { CardType } from "../../types/card";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { CardType } from "$lib/types/card";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
@@ -11,13 +11,13 @@
     getSnsNeuronStake,
     getSnsNeuronState,
     isUserHotkey,
-  } from "../../utils/sns-neuron.utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  } from "$lib/utils/sns-neuron.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
@@ -36,8 +36,9 @@
   let neuronStake: TokenAmount;
   $: neuronStake = TokenAmount.fromE8s({
     amount: getSnsNeuronStake(neuron),
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1045
-    token: $snsTokenSymbolSelectedStore ?? ICPToken,
+    // If we got here is because the token symbol is present.
+    // The projects without token are discarded filtered out.
+    token: $snsTokenSymbolSelectedStore as Token,
   });
 
   let neuronState: NeuronState;

@@ -2,20 +2,20 @@
  * @jest-environment jsdom
  */
 
+import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { secondsToDuration } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/icp.utils";
+import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import ProjectCardSwapInfo from "../../../../lib/components/launchpad/ProjectCardSwapInfo.svelte";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
-import { secondsToDuration } from "../../../../lib/utils/date.utils";
-import { formatToken } from "../../../../lib/utils/icp.utils";
-import { getCommitmentE8s } from "../../../../lib/utils/sns.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),

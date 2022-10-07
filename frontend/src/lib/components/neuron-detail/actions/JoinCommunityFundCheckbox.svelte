@@ -1,19 +1,19 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmationModal from "../../../modals/ConfirmationModal.svelte";
-  import { toggleCommunityFund } from "../../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../../stores/busy.store";
-  import { i18n } from "../../../stores/i18n";
-  import { toastsSuccess } from "../../../stores/toasts.store";
-  import { hasJoinedCommunityFund } from "../../../utils/neuron.utils";
-  import Checkbox from "../../ui/Checkbox.svelte";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import { toggleCommunityFund } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
+  import Checkbox from "$lib/components/ui/Checkbox.svelte";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);

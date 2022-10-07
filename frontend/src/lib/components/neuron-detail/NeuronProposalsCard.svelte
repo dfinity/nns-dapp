@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { makeDummyProposals } from "../../services/neurons.services";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import { makeDummyProposals } from "$lib/services/neurons.services";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
-  let loading: boolean = false;
+  let loading = false;
 
   const makeProposals = async () => {
     loading = true;
@@ -35,6 +35,10 @@
 </CardInfo>
 
 <style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   div {
     display: flex;
     justify-content: flex-start;

@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { render } from "@testing-library/svelte";
-import ProjectCard from "../../../../lib/components/launchpad/ProjectCard.svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 

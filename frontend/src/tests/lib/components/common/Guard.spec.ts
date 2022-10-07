@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import Guard from "$lib/components/common/Guard.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
-import Guard from "../../../../lib/components/common/Guard.svelte";
-import { authStore } from "../../../../lib/stores/auth.store";
 
 describe("Guard", () => {
   it("should render a spinner while loading", () => {

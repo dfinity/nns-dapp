@@ -1,13 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
-  import { i18n } from "../../stores/i18n";
-  import { invalidAddress } from "../../utils/accounts.utils";
+  import { ACCOUNT_ADDRESS_MIN_LENGTH } from "$lib/constants/accounts.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { invalidAddress } from "$lib/utils/accounts.utils";
 
-  import InputWithError from "../ui/InputWithError.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
 
-  export let address: string = "";
+  export let address = "";
 
   let showError = false;
   const dispatcher = createEventDispatcher();

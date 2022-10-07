@@ -1,4 +1,4 @@
-import type { AppPath } from "../constants/routes.constants";
+import type { AppPath } from "$lib/constants/routes.constants";
 import { isRoutePath } from "./app-path.utils";
 import { isArrayEmpty } from "./utils";
 
@@ -13,7 +13,7 @@ export const reloadRouteData = <T>({
   effectivePreviousPath: AppPath | string | undefined;
   currentData: T[] | undefined;
 }): boolean => {
-  const isReferrerDetail: boolean = isRoutePath({
+  const isReferrerDetail = isRoutePath({
     paths: [expectedPreviousPath],
     routePath: effectivePreviousPath,
   });

@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { removeController } from "$lib/services/canisters.services";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { removeController } from "../../../../lib/services/canisters.services";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     removeController: jest.fn().mockResolvedValue({ success: true }),
   };
