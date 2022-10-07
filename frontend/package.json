@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
-    "i18n": "node scripts/i18n.types.js",
-    "dev": "vite dev",
-    "build": "vite build && npm run build:csp",
+    "i18n": "node --experimental-json-modules scripts/i18n.types.js",
+    "dev": "npm run i18n && vite dev",
+    "build": "npm run i18n && vite build && npm run build:csp",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

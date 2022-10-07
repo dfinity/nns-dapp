@@ -101,6 +101,7 @@ export const makeDummyProposals = async ({
 
   const dummyProposalsScriptPath = "/assets/libs/dummy-proposals.utils.js";
   const { makeDummyProposals: makeProposals } = await import(
+    /* @vite-ignore */
     dummyProposalsScriptPath
   );
 
