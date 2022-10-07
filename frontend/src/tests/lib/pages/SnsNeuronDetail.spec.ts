@@ -4,12 +4,14 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
+import { snsTokenSymbolSelectedStore } from "../../../lib/derived/sns/sns-token-symbol-selected.store";
 import SnsNeuronDetail from "../../../lib/pages/SnsNeuronDetail.svelte";
 import { getSnsNeuron } from "../../../lib/services/sns-neurons.services";
 import { routeStore } from "../../../lib/stores/route.store";
 import { getSnsNeuronIdAsHexString } from "../../../lib/utils/sns-neuron.utils";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import { mockTokenStore } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 let validNeuron = true;
@@ -26,6 +28,11 @@ jest.mock("../../../lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsNeuronDetail", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
+      .mockImplementation(mockTokenStore);
+  });
   afterEach(() => {
     jest.clearAllMocks();
     validNeuron = true;
