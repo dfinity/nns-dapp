@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formattedMaturity, neuronStake } from "../../utils/neuron.utils";
-  import { formatPercentage } from "../../utils/format.utils";
+  import { formattedMaturity, neuronStake } from "$lib/utils/neuron.utils";
+  import { formatPercentage } from "$lib/utils/format.utils";
   import { InputRange } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   export let neuron: NeuronInfo;
   export let percentage: number;
   export let buttonText: string;
-  export let disabled: boolean = false;
+  export let disabled = false;
 
   let neuronICP: bigint;
   $: neuronICP = neuronStake(neuron);

@@ -2,15 +2,12 @@
  * @jest-environment jsdom
  */
 
+import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
+import { secondsToDateTime } from "$lib/utils/date.utils";
+import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";
 import type { Proposal } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import ProposalSystemInfoSection from "../../../../lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
-import { secondsToDateTime } from "../../../../lib/utils/date.utils";
-import {
-  getNnsFunctionKey,
-  mapProposalInfo,
-} from "../../../../lib/utils/proposals.utils";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProposalInfo,

@@ -1,4 +1,4 @@
-import { sanitize as DOMPurifySanitize } from "dompurify";
+import DOMPurify from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
 import { isNode } from "./dev.utils";
 
@@ -83,5 +83,5 @@ export const markdownToSanitizedHTML = async (
  * See the jest-setup.ts for details.
  */
 export const sanitize = (text: string): string => {
-  return !isNode() ? DOMPurifySanitize(text) : global.DOMPurify.sanitize(text);
+  return !isNode() ? DOMPurify.sanitize(text) : global.DOMPurify.sanitize(text);
 };

@@ -2,17 +2,17 @@
  * @jest-environment jsdom
  */
 
+import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
+import { transferICP } from "$lib/services/accounts.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import IcpTransactionModal from "../../../../lib/modals/accounts/IcpTransactionModal.svelte";
-import { transferICP } from "../../../../lib/services/accounts.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
-jest.mock("../../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     transferICP: jest.fn().mockResolvedValue({ success: true }),
   };

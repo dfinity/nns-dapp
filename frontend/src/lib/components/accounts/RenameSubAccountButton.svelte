@@ -1,6 +1,6 @@
 <script lang="ts">
-  import RenameSubAccountModal from "../../modals/accounts/RenameSubAccountModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   let modalOpen = false;
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Banner from "../header/Banner.svelte";
+  import Banner from "$lib/components/header/Banner.svelte";
 </script>
 
 <div class="container" data-tid="auth-layout">

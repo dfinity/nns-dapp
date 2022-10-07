@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import NewTransactionDestination from "$lib/components/accounts/NewTransactionDestination.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import NewTransactionDestination from "../../../../lib/components/accounts/NewTransactionDestination.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,

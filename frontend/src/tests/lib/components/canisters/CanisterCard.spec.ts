@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import CanisterCard from "../../../../lib/components/canisters/CanisterCard.svelte";
 import { mockCanister } from "../../../mocks/canisters.mock";
 
 describe("CanisterCard", () => {

@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { i18n } from "../../stores/i18n";
-  import { getPrincipalFromString } from "../../utils/accounts.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { getPrincipalFromString } from "$lib/utils/accounts.utils";
   import InputWithError from "./InputWithError.svelte";
 
   export let placeholderLabelKey: string;
   export let name: string;
   export let principal: Principal | undefined = undefined;
 
-  let address: string = principal?.toText() ?? "";
+  let address = principal?.toText() ?? "";
   $: principal = getPrincipalFromString(address);
-  let showError: boolean = false;
+  let showError = false;
 
   const showErrorIfAny = () => {
     showError = address.length > 0 && principal === undefined;

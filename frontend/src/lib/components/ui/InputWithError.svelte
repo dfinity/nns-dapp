@@ -5,10 +5,10 @@
   // Same props as Input
   export let name: string;
   export let inputType: "number" | "text" | "icp" = "number";
-  export let required: boolean = true;
+  export let required = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
-  export let disabled: boolean = false;
+  export let disabled = false;
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;

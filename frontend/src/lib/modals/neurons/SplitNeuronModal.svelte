@@ -1,19 +1,19 @@
 <script lang="ts">
-  import CurrentBalance from "../../components/accounts/CurrentBalance.svelte";
-  import LegacyModal from "../LegacyModal.svelte";
+  import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import { isValidInputAmount, neuronStake } from "../../utils/neuron.utils";
-  import AmountInput from "../../components/ui/AmountInput.svelte";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { i18n } from "../../stores/i18n";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { splitNeuron } from "../../services/neurons.services";
-  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import FooterModal from "../FooterModal.svelte";
-  import Value from "../../components/ui/Value.svelte";
+  import { splitNeuron } from "$lib/services/neurons.services";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import Value from "$lib/components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -25,7 +25,7 @@
   let balance: TokenAmount;
   $: balance = TokenAmount.fromE8s({ amount: stakeE8s, token: ICPToken });
 
-  let max: number = 0;
+  let max = 0;
   $: max =
     stakeE8s === BigInt(0)
       ? 0

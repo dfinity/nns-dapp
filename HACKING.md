@@ -1,44 +1,44 @@
 # Hacking
 
-This document list a couple of useful information to develop NNS-dapp.
+This document list a couple of useful information to develop the NNS-dapp frontend.
 
-## Environments
+## dapp development
 
-Testnets [canister_ids.json] provides an overview of the canister IDs that should be currently deployed and available on various test environments.
+NNS-dapp frontend uses an `.env` file to read various environment information and variables.
 
-## Configure an environment
+The repo itself does **not** contain any such file because the source of truth we are using is `dfx.json`.
+That is why we are providing a `./config.sh` script that generate the above environment file automatically.
 
-If you wish to work against a testnet, there are two options:
+## Local
 
-### 1. Copy canister_ids.json
+To run the dapp against canisters deployed locally on a simulated IC network, proceed as following:
+
+- Deploy the Nns, and optionally Sns, backend canisters locally. The [snsdemo](https://github.com/dfinity/snsdemo) provides command lines and an handy tutorial to achieve such goal
+- Once deployed, the canister IDs should be collected the "local" network of `dfx.json` should be updated accordingly
+- Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file
+- Start `npm run dev` in the `./frontend/` folder to serve the application
+
+## Testnet
+
+The [canister_ids.json] data provides the list of canister IDs available for various test environments.
+
+### Configure
+
+To develop and run locally the dapp against a testnet, proceed as following:
 
 - Copy the [canister_ids.json] to the root of your local project
-- Change the `DFX_NETWORK=<testnet_name>` in the `dev` target script of [package.json]
+- Run `DFX_NETWORK=<testnet_name> ./config.sh` to populate the `.env` file
+- Start `npm run dev` in the `./frontend/` folder to serve the application
 
-e.g. `small11`:
+e.g. replace `<testnet_name>` with `small11`
 
-```
-"dev": "... DFX_NETWORK=small11 npm run build:config...",
-```
+## e2e
 
-### 2. Manual setup
+e2e tests also need a `.env` configuration. Such file can also be generated with the help of the `./config.sh` script by providing a specific output parameter.
 
-If you need more granularity than above solution:
+e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
 
-- collect canister IDs in [canister_ids.json]
-- add a new `script` tag in [package.json] and provide `CANISTER_ID` (NNS-dapp self canister ID), `DFX_NETWORK` and `WASM_CANISTER_ID` (if you are developing anything SNS related).
-
-e.g. `small06`:
-
-```json
-{
-  "script": {
-    "small06": "npm run import-assets && npm run i18n && CANISTER_ID=qsgjb-riaaa-aaaaa-aaaga-cai WASM_CANISTER_ID=qvhpv-4qaaa-aaaaa-aaagq-cai DFX_NETWORK=small06 npm run build:config && BASE_HREF=/ ROLLUP_WATCH=true npm run build:index && rollup -c -w"
-  }
-}
-```
-
-### Requirement
+## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
 

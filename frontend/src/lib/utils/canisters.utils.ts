@@ -1,8 +1,8 @@
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-import { ONE_TRILLION } from "../constants/icp.constants";
-import type { AuthStore } from "../stores/auth.store";
-import type { CanistersStore } from "../stores/canisters.store";
+import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { ONE_TRILLION } from "$lib/constants/icp.constants";
+import type { AuthStore } from "$lib/stores/auth.store";
+import type { CanistersStore } from "$lib/stores/canisters.store";
 import { formatNumber } from "./format.utils";
 
 export const getCanisterFromStore = ({
@@ -31,7 +31,7 @@ export const mapCanisterDetails = ({
   validName: boolean;
   canisterId: string;
 } => {
-  const canisterId: string = canister_id.toText();
+  const canisterId = canister_id.toText();
   return {
     name: name ?? canisterId,
     validName: name.length > 0,

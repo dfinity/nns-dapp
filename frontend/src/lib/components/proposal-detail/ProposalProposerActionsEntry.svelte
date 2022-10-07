@@ -2,10 +2,10 @@
   import {
     proposalActionFields,
     proposalFirstActionKey,
-  } from "../../utils/proposals.utils";
+  } from "$lib/utils/proposals.utils";
   import type { Proposal } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   export let proposal: Proposal | undefined;
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import NewControllerReview from "../../components/canister-detail/NewControllerReview.svelte";
-  import AddPrincipal from "../../components/common/AddPrincipal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
+  import NewControllerReview from "$lib/components/canister-detail/NewControllerReview.svelte";
+  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
 
   const steps: Steps = [
     {

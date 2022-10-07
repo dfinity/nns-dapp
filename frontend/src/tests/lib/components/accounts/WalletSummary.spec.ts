@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import WalletSummary from "../../../../lib/components/accounts/WalletSummary.svelte";
+import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountContext,
   type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
-import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
-import { formatToken } from "../../../../lib/utils/icp.utils";
+} from "$lib/types/selected-account.context";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatToken } from "$lib/utils/icp.utils";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";

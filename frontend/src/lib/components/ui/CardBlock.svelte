@@ -4,7 +4,7 @@
   export let expandable = false;
   export let limitHeight = true;
 
-  let expanded: boolean = expandable;
+  let expanded = expandable;
 
   const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
     (expanded = detail.expanded);

@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
+import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ProposalProposerActionsEntry from "../../../../lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
-import { proposalFirstActionKey } from "../../../../lib/utils/proposals.utils";
 import {
   mockProposalInfo,
   proposalActionMotion,

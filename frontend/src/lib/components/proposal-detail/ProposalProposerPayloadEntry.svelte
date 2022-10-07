@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { ProposalId } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import { loadProposalPayload } from "../../services/proposals.services";
-  import { proposalPayloadsStore } from "../../stores/proposals.store";
-  import { i18n } from "../../stores/i18n";
+  import { loadProposalPayload } from "$lib/services/proposals.services";
+  import { proposalPayloadsStore } from "$lib/stores/proposals.store";
+  import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
   import type { Proposal } from "@dfinity/nns";
-  import { getNnsFunctionKey } from "../../utils/proposals.utils";
+  import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;

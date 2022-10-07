@@ -1,15 +1,15 @@
+import { HOST } from "$lib/constants/environment.constants";
+import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import { createAgent } from "$lib/utils/agent.utils";
+import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+import { translate } from "$lib/utils/i18n.utils";
+import { bytesToHexString } from "$lib/utils/utils";
 import { GenesisTokenCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { HOST } from "../constants/environment.constants";
-import type { Secp256k1PublicKey } from "../keys/secp256k1";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { accountsStore } from "../stores/accounts.store";
-import { startBusy, stopBusy } from "../stores/busy.store";
-import { toastsError, toastsShow } from "../stores/toasts.store";
-import { createAgent } from "../utils/agent.utils";
-import { mapNeuronErrorToToastMessage } from "../utils/error.utils";
-import { translate } from "../utils/i18n.utils";
-import { bytesToHexString } from "../utils/utils";
 
 const buf2hex = (buffer: ArrayBuffer): string =>
   bytesToHexString([...new Uint8Array(buffer)]);
@@ -68,7 +68,7 @@ export const claimSeedNeurons = async () => {
         $neurons: ids.map((id) => id.toString()).join(", "),
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const toastError = mapNeuronErrorToToastMessage(error);
     toastsShow(toastError);
     const message = translate({ labelKey: toastError.labelKey });

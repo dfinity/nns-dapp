@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import StakeMaturityButton from "../../../../../lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 

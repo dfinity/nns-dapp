@@ -1,3 +1,22 @@
+import {
+  SECONDS_IN_EIGHT_YEARS,
+  SECONDS_IN_FOUR_YEARS,
+  SECONDS_IN_HALF_YEAR,
+} from "$lib/constants/constants";
+import {
+  DEFAULT_TRANSACTION_FEE_E8S,
+  E8S_PER_ICP,
+} from "$lib/constants/icp.constants";
+import {
+  MAX_NEURONS_MERGED,
+  MIN_NEURON_STAKE,
+  SPAWN_VARIANCE_PERCENTAGE,
+} from "$lib/constants/neurons.constants";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { NeuronsStore } from "$lib/stores/neurons.store";
+import type { Step } from "$lib/stores/steps.state";
+import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
+import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import {
   IconHistoryToggleOff,
@@ -19,25 +38,6 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { SvelteComponent } from "svelte";
-import {
-  SECONDS_IN_EIGHT_YEARS,
-  SECONDS_IN_FOUR_YEARS,
-  SECONDS_IN_HALF_YEAR,
-} from "../constants/constants";
-import {
-  DEFAULT_TRANSACTION_FEE_E8S,
-  E8S_PER_ICP,
-} from "../constants/icp.constants";
-import {
-  MAX_NEURONS_MERGED,
-  MIN_NEURON_STAKE,
-  SPAWN_VARIANCE_PERCENTAGE,
-} from "../constants/neurons.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import type { NeuronsStore } from "../stores/neurons.store";
-import type { Step } from "../stores/steps.state";
-import type { VoteRegistrationStore } from "../stores/vote-registration.store";
-import type { Account } from "../types/account";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
@@ -330,7 +330,7 @@ export const isEnoughMaturityToSpawn = ({
   if (fullNeuron === undefined) {
     return false;
   }
-  const maturitySelected: number = Math.floor(
+  const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
   return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;
@@ -539,7 +539,7 @@ export const checkInvalidState = <T>({
 }: {
   invalidStates: InvalidState<T>[];
   currentStep?: Step;
-  args: T;
+  args: T | undefined;
 }): void => {
   invalidStates
     .filter(

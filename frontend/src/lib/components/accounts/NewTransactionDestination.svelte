@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { getContext } from "svelte";
-  import type { Account } from "../../types/account";
-  import type { TransactionContext } from "../../types/transaction.context";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
+  import type { Account } from "$lib/types/account";
+  import type { TransactionContext } from "$lib/types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "$lib/types/transaction.context";
   import DestinationAddress from "./DestinationAddress.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(

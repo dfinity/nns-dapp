@@ -1,8 +1,8 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { busy, busyMessageKey } from "../../stores/busy.store";
-  import { triggerDebugReport } from "../../services/debug.services";
-  import { translate } from "../../utils/i18n.utils";
+  import { busy, busyMessageKey } from "$lib/stores/busy.store";
+  import { triggerDebugReport } from "$lib/services/debug.services";
+  import { translate } from "$lib/utils/i18n.utils";
   import { Spinner } from "@dfinity/gix-components";
 </script>
 

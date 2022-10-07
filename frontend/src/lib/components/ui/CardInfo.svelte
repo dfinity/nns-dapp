@@ -1,6 +1,6 @@
 <script lang="ts">
   // Same data-tid as <Card /> for backwards compatibility with existing jest test
-  export let testId: string = "card";
+  export let testId = "card";
 
   let showHeadline: boolean;
   $: showHeadline = $$slots.start !== undefined || $$slots.end !== undefined;

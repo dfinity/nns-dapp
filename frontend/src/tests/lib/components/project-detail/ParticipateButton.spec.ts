@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
-import ParticipateButton from "../../../../lib/components/project-detail/ParticipateButton.svelte";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import en from "../../../mocks/i18n.mock";
 import {
   createTransferableAmount,

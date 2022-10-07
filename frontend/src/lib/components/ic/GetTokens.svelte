@@ -3,18 +3,18 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import { Modal } from "@dfinity/gix-components";
-  import Input from "../ui/Input.svelte";
-  import { getICPs, getTokens } from "../../services/dev.services";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { getICPs, getTokens } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
-  import { toastsError } from "../../stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
-  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
-  import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
-  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
-  let visible: boolean = false;
-  let transferring: boolean = false;
+  let visible = false;
+  let transferring = false;
 
   let inputValue: number | undefined = undefined;
 

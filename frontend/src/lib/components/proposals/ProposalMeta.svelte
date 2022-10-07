@@ -1,14 +1,14 @@
 <script lang="ts">
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
-  import Value from "../ui/Value.svelte";
-  import { secondsToDuration } from "../../utils/date.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
+  import Value from "$lib/components/ui/Value.svelte";
+  import { secondsToDuration } from "$lib/utils/date.utils";
   import Proposer from "./Proposer.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let showUrl: boolean = false;
-  export let showTopic: boolean = false;
+  export let showUrl = false;
+  export let showTopic = false;
 
   let id: ProposalId | undefined;
   let topic: string | undefined;

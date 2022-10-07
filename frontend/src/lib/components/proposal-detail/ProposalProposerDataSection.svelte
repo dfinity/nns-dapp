@@ -3,7 +3,7 @@
   import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
   import ProposalProposerActionsEntry from "./ProposalProposerActionsEntry.svelte";
   import type { Proposal, ProposalId } from "@dfinity/nns";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
 
   export let proposalInfo: ProposalInfo;
 

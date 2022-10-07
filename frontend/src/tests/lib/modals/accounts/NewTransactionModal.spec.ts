@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import NewTransactionModal from "$lib/modals/accounts/NewTransactionModal.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import {} from "$lib/stores/toasts.store";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import NewTransactionModal from "../../../../lib/modals/accounts/NewTransactionModal.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import {} from "../../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,

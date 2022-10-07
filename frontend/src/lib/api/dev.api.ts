@@ -1,3 +1,5 @@
+import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
+import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
@@ -5,8 +7,6 @@ import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
-import { HOST, IS_TESTNET } from "../constants/environment.constants";
-import type { Account } from "../types/account";
 import { governanceCanister } from "./governance.api";
 import { initSns } from "./sns-wrapper.api";
 
@@ -99,8 +99,7 @@ export const makeDummyProposals = async ({
 
   const { canister } = await governanceCanister({ identity });
 
-  const dummyProposalsScriptPath: string =
-    "/assets/libs/dummy-proposals.utils.js";
+  const dummyProposalsScriptPath = "/assets/libs/dummy-proposals.utils.js";
   const { makeDummyProposals: makeProposals } = await import(
     dummyProposalsScriptPath
   );

@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import TransactionInfo from "../accounts/TransactionInfo.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import TransactionInfo from "$lib/components/accounts/TransactionInfo.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   export let amount: TokenAmount;
   export let fee: TokenAmount | undefined = undefined;
   export let source: string;
   export let destinationAddress: string;
-  export let loading: boolean = false;
+  export let loading = false;
 
   const dispatcher = createEventDispatcher();
 </script>

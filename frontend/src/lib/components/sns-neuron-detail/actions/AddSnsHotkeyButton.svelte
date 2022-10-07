@@ -1,9 +1,9 @@
 <script lang="ts">
-  import AddSnsHotkeyModal from "../../../modals/sns/AddSnsHotkeyModal.svelte";
+  import AddSnsHotkeyModal from "$lib/modals/sns/AddSnsHotkeyModal.svelte";
 
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>

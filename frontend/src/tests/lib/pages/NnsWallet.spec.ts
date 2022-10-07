@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import NnsWallet from "$lib/pages/NnsWallet.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
+import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import NnsWallet from "../../../lib/pages/NnsWallet.svelte";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import { authStore } from "../../../lib/stores/auth.store";
-import { routeStore } from "../../../lib/stores/route.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -16,8 +16,8 @@ import {
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
-jest.mock("../../../lib/services/accounts.services", () => ({
-  ...(jest.requireActual("../../../lib/services/accounts.services") as object),
+jest.mock("$lib/services/accounts.services", () => ({
+  ...(jest.requireActual("$lib/services/accounts.services") as object),
   getAccountTransactions: jest.fn(),
 }));
 

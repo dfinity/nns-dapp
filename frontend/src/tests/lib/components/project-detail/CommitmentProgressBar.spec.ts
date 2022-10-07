@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
 import { render } from "@testing-library/svelte";
-import CommitmentProgressBar from "../../../../lib/components/project-detail/CommitmentProgressBar.svelte";
 
 describe("CommitmentProgressBar", () => {
   const props = {

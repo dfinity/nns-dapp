@@ -1,14 +1,14 @@
 <script lang="ts">
-  import LegacyModal from "../LegacyModal.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { stopBusy } from "../../stores/busy.store";
-  import { addHotkey } from "../../services/neurons.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { addHotkey } from "$lib/services/neurons.services";
   import { createEventDispatcher } from "svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { toastsError } from "../../stores/toasts.store";
-  import AddPrincipal from "../../components/common/AddPrincipal.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
 
   export let neuronId: NeuronId;
 

@@ -1,14 +1,14 @@
 /**
  * @jest-environment jsdom
  */
+import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { sortedSnsNeuronStore } from "$lib/derived/sorted-sns-neurons.derived";
+import { routeStore } from "$lib/stores/route.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
-import { sortedSnsNeuronStore } from "../../../lib/derived/sorted-sns-neurons.derived";
-import { routeStore } from "../../../lib/stores/route.store";
-import { snsNeuronsStore } from "../../../lib/stores/sns-neurons.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { TokenAmount } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let balance: TokenAmount | undefined;
 

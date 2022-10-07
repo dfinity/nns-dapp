@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import NnsNeuronsFooter from "../../../../lib/components/neurons/NnsNeuronsFooter.svelte";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import { voteRegistrationStore } from "../../../../lib/stores/vote-registration.store";
 import en from "../../../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
@@ -15,7 +15,7 @@ import {
 } from "../../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../../mocks/proposal.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     listNeurons: jest.fn().mockResolvedValue(undefined),
   };

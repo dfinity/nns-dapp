@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import StakeMaturityModal from "../../../modals/neurons/StakeMaturityModal.svelte";
+  import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
 
   export let neuron: NeuronInfo;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 </script>

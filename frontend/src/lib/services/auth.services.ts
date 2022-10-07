@@ -1,13 +1,13 @@
+import { authStore } from "$lib/stores/auth.store";
+import { toastsShow } from "$lib/stores/toasts.store";
+import type { ToastMsg } from "$lib/types/toast";
+import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { authStore } from "../stores/auth.store";
-import { toastsShow } from "../stores/toasts.store";
-import type { ToastMsg } from "../types/toast";
-import { replaceHistory } from "../utils/route.utils";
 
-const msgParam: string = "msg";
-const levelParam: string = "level";
+const msgParam = "msg";
+const levelParam = "level";
 
 export const logout = async ({
   msg = undefined,

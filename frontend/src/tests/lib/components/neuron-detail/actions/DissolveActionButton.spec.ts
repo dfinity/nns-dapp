@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
-import { NeuronState } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
-import DissolveActionButton from "../../../../../lib/components/neuron-detail/actions/DissolveActionButton.svelte";
+import DissolveActionButton from "$lib/components/neuron-detail/actions/DissolveActionButton.svelte";
 import {
   startDissolving,
   stopDissolving,
-} from "../../../../../lib/services/neurons.services";
+} from "$lib/services/neurons.services";
+import { NeuronState } from "@dfinity/nns";
+import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 
-jest.mock("../../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     startDissolving: jest.fn().mockResolvedValue(undefined),
     stopDissolving: jest.fn().mockResolvedValue(undefined),

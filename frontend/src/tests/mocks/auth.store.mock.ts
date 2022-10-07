@@ -1,7 +1,7 @@
+import type { AuthStore } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
-import type { AuthStore } from "../../lib/stores/auth.store";
 import en from "./i18n.mock";
 
 export const mockPrincipalText =

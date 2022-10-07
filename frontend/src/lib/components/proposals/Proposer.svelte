@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import type { NeuronId } from "@dfinity/nns";
-  import VotingHistoryModal from "../../modals/neurons/VotingHistoryModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
-  import Value from "../ui/Value.svelte";
+  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
+  import Value from "$lib/components/ui/Value.svelte";
 
   export let proposalInfo: ProposalInfo;
 

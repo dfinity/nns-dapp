@@ -1,3 +1,14 @@
+import type {
+  AccountDetails,
+  AccountIdentifierString,
+  HardwareWalletAccountDetails,
+  SubAccountDetails,
+  Transaction,
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { Account, AccountType } from "$lib/types/account";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   AccountIdentifier,
@@ -5,17 +16,6 @@ import {
   LedgerCanister,
   TokenAmount,
 } from "@dfinity/nns";
-import type {
-  AccountDetails,
-  AccountIdentifierString,
-  HardwareWalletAccountDetails,
-  SubAccountDetails,
-  Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import type { Account, AccountType } from "../types/account";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const loadAccounts = async ({

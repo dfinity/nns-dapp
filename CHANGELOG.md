@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal 84936
+* New login page.
+* Minor UI improvements.
+* Clean unused code.
+
 ## Proposal 84287
 * Upgrade nns-js, sns-js and utils-js.
 * Refactor to support multiple tokens in Accounts.
