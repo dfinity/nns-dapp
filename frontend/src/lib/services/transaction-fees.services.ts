@@ -1,7 +1,7 @@
+import { transactionFee as nnsTransactionFee } from "$lib/api/ledger.api";
+import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Principal } from "@dfinity/principal/lib/cjs";
-import { transactionFee as nnsTransactionFee } from "../api/ledger.api";
-import { transactionFee as snsTransactionFee } from "../api/sns-ledger.api";
-import { transactionsFeesStore } from "../stores/transaction-fees.store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -10,7 +10,7 @@ export const loadMainTransactionFee = async () => {
     const identity = await getIdentity();
     const fee = await nnsTransactionFee({ identity });
     transactionsFeesStore.setMain(fee);
-  } catch (error) {
+  } catch (error: unknown) {
     // Swallow error and continue with the DEFAULT_TRANSACTION_FEE value
     console.error("Error getting the transaction fee from the ledger");
     console.error(error);

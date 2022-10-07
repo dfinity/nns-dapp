@@ -2,19 +2,19 @@
  * @jest-environment jsdom
  */
 
+import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import FollowNeuronsModal from "../../../../lib/modals/neurons/FollowNeuronsModal.svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     removeFollowee: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/knownNeurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

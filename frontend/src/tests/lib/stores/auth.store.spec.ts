@@ -1,6 +1,6 @@
+import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
-import { authStore } from "../../../lib/stores/auth.store";
 
 describe("auth-store", () => {
   const mockAuthClient = mock<AuthClient>();
@@ -20,6 +20,7 @@ describe("auth-store", () => {
   });
 
   it("should call auth-client login on sign-in", async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: test file
     mockAuthClient.login = async ({ onSuccess }: { onSuccess: () => void }) => {
       expect(true).toBeTruthy();

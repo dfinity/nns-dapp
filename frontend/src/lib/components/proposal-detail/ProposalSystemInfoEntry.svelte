@@ -1,7 +1,8 @@
 <script lang="ts">
-  import KeyValuePairInfo from "../ui/KeyValuePairInfo.svelte";
-  import { sanitize } from "../../utils/html.utils";
-  import { i18n } from "../../stores/i18n";
+  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
+  import { sanitize } from "$lib/utils/html.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { keyOf } from "$lib/utils/utils";
 
   export let labelKey: string;
   export let testId: string;
@@ -10,7 +11,8 @@
 </script>
 
 <KeyValuePairInfo {testId}>
-  <svelte:fragment slot="key">{$i18n.proposal_detail[labelKey]}</svelte:fragment
+  <svelte:fragment slot="key"
+    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
   >
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
 

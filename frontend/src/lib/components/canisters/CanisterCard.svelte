@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CanisterDetails } from "../../canisters/nns-dapp/nns-dapp.types";
+  import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { Card } from "@dfinity/gix-components";
   import CanisterCardTitle from "./CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "./CanisterCardSubTitle.svelte";

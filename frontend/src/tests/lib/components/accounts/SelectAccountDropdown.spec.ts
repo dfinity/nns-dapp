@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import { fireEvent, render } from "@testing-library/svelte";
-import SelectAccountDropdown from "../../../../lib/components/accounts/SelectAccountDropdown.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { isAccountHardwareWallet } from "../../../../lib/utils/accounts.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,

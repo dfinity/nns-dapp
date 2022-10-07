@@ -1,25 +1,25 @@
 <script lang="ts">
   import { afterUpdate, createEventDispatcher } from "svelte";
   import { IconExpandMore } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let id: string | undefined = undefined;
-  export let initiallyExpanded: boolean = false;
+  export let initiallyExpanded = false;
   export let maxContentHeight: number | undefined = undefined;
 
   export let iconSize: "small" | "medium" = "small";
-  export let expandButton: boolean = true;
-  export let externalToggle: boolean = false;
-  export let wrapHeight: boolean = false;
+  export let expandButton = true;
+  export let externalToggle = false;
+  export let wrapHeight = false;
 
   // Minimum height when some part of the text-content is visible (empirical value)
   const CONTENT_MIN_HEIGHT = 40;
   const dispatch = createEventDispatcher();
 
-  export let expanded: boolean = initiallyExpanded;
+  export let expanded = initiallyExpanded;
   let offsetHeight: number | undefined;
-  let userUpdated: boolean = false;
+  let userUpdated = false;
   let maxHeight: number | undefined;
 
   const dispatchUpdate = () => dispatch("nnsToggle", { expanded });

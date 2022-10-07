@@ -1,15 +1,15 @@
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/ledger.api";
-import * as snsApi from "../../../lib/api/sns-ledger.api";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import * as api from "$lib/api/ledger.api";
+import * as snsApi from "$lib/api/sns-ledger.api";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   loadMainTransactionFee,
   loadSnsTransactionFee,
-} from "../../../lib/services/transaction-fees.services";
+} from "$lib/services/transaction-fees.services";
 import {
   mainTransactionFeeStore,
   transactionsFeesStore,
-} from "../../../lib/stores/transaction-fees.store";
+} from "$lib/stores/transaction-fees.store";
+import { get } from "svelte/store";
 import {
   mockPrincipal,
   resetIdentity,

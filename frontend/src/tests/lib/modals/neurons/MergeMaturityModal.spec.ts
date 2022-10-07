@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
+import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
+import { mergeMaturity } from "$lib/services/neurons.services";
+import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import MergeMaturityModal from "../../../../lib/modals/neurons/MergeMaturityModal.svelte";
-import { mergeMaturity } from "../../../../lib/services/neurons.services";
-import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     mergeMaturity: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),

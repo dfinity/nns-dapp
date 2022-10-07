@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-nocheck
+
 export const IntersectionObserverPassive = jest.fn();
 IntersectionObserverPassive.mockReturnValue({
   observe: () => null,

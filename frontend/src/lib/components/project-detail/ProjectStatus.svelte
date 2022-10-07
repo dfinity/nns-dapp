@@ -1,13 +1,14 @@
 <script lang="ts">
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
-  import Tag from "../ui/Tag.svelte";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import Tag from "$lib/components/ui/Tag.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
+  } from "$lib/types/project-detail.context";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { keyOf } from "$lib/utils/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -31,7 +32,7 @@
 
 <div>
   <h2 class="content-cell-title">{$i18n.sns_project_detail.status}</h2>
-  <Tag>{statusTextMapper[lifecycle]}</Tag>
+  <Tag>{keyOf({ obj: statusTextMapper, key: lifecycle })}</Tag>
 </div>
 
 <style lang="scss">

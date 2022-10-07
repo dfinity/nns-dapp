@@ -1,25 +1,25 @@
 <script lang="ts">
-  import type { Account } from "../../types/account";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import DateSeconds from "../ui/DateSeconds.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Identifier from "../ui/Identifier.svelte";
+  import type { Account } from "$lib/types/account";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
   import type { TokenAmount } from "@dfinity/nns";
   import type {
     AccountIdentifierString,
     Transaction,
-  } from "../../canisters/nns-dapp/nns-dapp.types";
-  import { i18n } from "../../stores/i18n";
+  } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import { i18n } from "$lib/stores/i18n";
   import {
     AccountTransactionType,
     mapTransaction,
     transactionName,
-  } from "../../utils/transactions.utils";
-  import { toastsError } from "../../stores/toasts.store";
+  } from "$lib/utils/transactions.utils";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   export let account: Account;
   export let transaction: Transaction;
-  export let toSelfTransaction: boolean = false;
+  export let toSelfTransaction = false;
 
   let type: AccountTransactionType;
   let isReceive: boolean;

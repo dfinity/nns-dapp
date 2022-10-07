@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import { i18n } from "../../stores/i18n";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
-  import { addSubAccount } from "../../services/accounts.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { addSubAccount } from "$lib/services/accounts.services";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
+  } from "$lib/types/add-account.context";
 
-  let newAccountName: string = "";
+  let newAccountName = "";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY

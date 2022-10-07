@@ -2,18 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import ParticipateSwapModal from "../../../../lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
-import { participateInSwap } from "../../../../lib/services/sns.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
+import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import { participateInSwap } from "$lib/services/sns.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
   type ProjectDetailStore,
-} from "../../../../lib/types/project-detail.context";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
+} from "$lib/types/project-detail.context";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { AccountIdentifier } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -21,7 +21,7 @@ import {
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     participateInSwap: jest.fn().mockResolvedValue({ success: true }),
     getSwapAccount: jest

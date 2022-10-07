@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+import { routeStore } from "$lib/stores/route.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { paths } from "$lib/utils/app-path.utils";
 import { Principal } from "@dfinity/principal";
 import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { snsSelectedTransactionFeeStore } from "../../../../lib/derived/sns/sns-selected-transaction-fee.store";
-import { routeStore } from "../../../../lib/stores/route.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
-import { transactionsFeesStore } from "../../../../lib/stores/transaction-fees.store";
-import { paths } from "../../../../lib/utils/app-path.utils";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 

@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
+import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
+import { mergeNeurons } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import type { Account } from "$lib/types/account";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
-import MergeNeuronsModal from "../../../../lib/modals/neurons/MergeNeuronsModal.svelte";
-import { mergeNeurons } from "../../../../lib/services/neurons.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import type { Account } from "../../../../lib/types/account";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -22,7 +22,7 @@ import {
   mockNeuron,
 } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     mergeNeurons: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),

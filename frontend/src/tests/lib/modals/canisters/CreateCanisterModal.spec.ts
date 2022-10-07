@@ -1,17 +1,17 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
-import { NEW_CANISTER_MIN_T_CYCLES } from "../../../../lib/constants/canisters.constants";
-import CreateCanisterModal from "../../../../lib/modals/canisters/CreateCanisterModal.svelte";
+import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
   createCanister,
   getIcpToCyclesExchangeRate,
-} from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsShow } from "../../../../lib/stores/toasts.store";
+} from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsShow } from "$lib/stores/toasts.store";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -21,7 +21,7 @@ import { mockCanister } from "../../../mocks/canisters.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { clickByTestId } from "../../testHelpers/clickByTestId";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
     createCanister: jest
@@ -30,7 +30,7 @@ jest.mock("../../../../lib/services/canisters.services", () => {
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsShow: jest.fn(),
     toastsSuccess: jest.fn(),

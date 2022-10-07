@@ -1,7 +1,7 @@
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { snsNeuronsStore } from "../../../lib/stores/sns-neurons.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 

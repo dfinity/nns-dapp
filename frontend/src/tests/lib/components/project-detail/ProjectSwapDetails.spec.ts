@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import ProjectSwapDetails from "../../../../lib/components/project-detail/ProjectSwapDetails.svelte";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
-import { secondsToDate, secondsToTime } from "../../../../lib/utils/date.utils";
+import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { secondsToDate, secondsToTime } from "$lib/utils/date.utils";
 import {
   mockSnsFullProject,
   mockSnsParams,

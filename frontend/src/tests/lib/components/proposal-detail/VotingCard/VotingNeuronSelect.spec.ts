@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import VotingNeuronSelect from "../../../../../lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
-import { E8S_PER_ICP } from "../../../../../lib/constants/icp.constants";
-import { votingNeuronSelectStore } from "../../../../../lib/stores/proposals.store";
-import { formatVotingPower } from "../../../../../lib/utils/neuron.utils";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../../mocks/proposal.mock";

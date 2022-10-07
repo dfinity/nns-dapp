@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import NewTransactionReview from "$lib/components/accounts/NewTransactionReview.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
+import { formatToken } from "$lib/utils/icp.utils";
 import { ICPToken, LedgerCanister, TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import NewTransactionReview from "../../../../lib/components/accounts/NewTransactionReview.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { formatToken } from "../../../../lib/utils/icp.utils";
 import {
   mockMainAccount,
   mockSubAccount,

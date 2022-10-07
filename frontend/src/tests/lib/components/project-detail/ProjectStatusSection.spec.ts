@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import ProjectStatusSection from "../../../../lib/components/project-detail/ProjectStatusSection.svelte";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
 import {
   mockSnsFullProject,
   summaryForLifecycle,

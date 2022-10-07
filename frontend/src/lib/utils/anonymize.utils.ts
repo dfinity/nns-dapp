@@ -1,3 +1,15 @@
+import type {
+  CanisterDetails,
+  Transaction,
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Account } from "$lib/types/account";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+  SnsTokenMetadata,
+} from "$lib/types/sns";
 import {
   TokenAmount,
   type Ballot,
@@ -7,19 +19,11 @@ import {
   type NeuronInfo,
   type ProposalInfo,
 } from "@dfinity/nns";
-import type { SnsSwapBuyerState, SnsSwapDerivedState } from "@dfinity/sns";
 import type {
-  CanisterDetails,
-  Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "../types/account";
-import type {
-  SnsSummary,
-  SnsSummaryMetadata,
-  SnsSummarySwap,
-  SnsSwapCommitment,
-  SnsTokenMetadata,
-} from "../types/sns";
+  SnsSwapBuyerState,
+  SnsSwapDerivedState,
+  SnsTransferableAmount,
+} from "@dfinity/sns";
 import { digestText } from "./dev.utils";
 import { mapTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";
@@ -100,7 +104,7 @@ export const anonymizeAccount = async (
   { [key in keyof Required<Account>]: unknown } | undefined | null
 > => {
   if (account === undefined || account === null) {
-    return account;
+    return account as undefined | null;
   }
 
   const { identifier, principal, balance, name, type, subAccount } = account;
@@ -256,7 +260,10 @@ export const anonymizeTransaction = async ({
   const { transaction_type, memo, timestamp, block_height } = transaction;
 
   const { isReceive, isSend, type, from, to, displayAmount, date } =
-    mapTransaction({ transaction, account });
+    mapTransaction({
+      transaction,
+      account,
+    });
 
   return {
     transaction_type,
@@ -290,9 +297,10 @@ export const anonymizeProposal = async (
   };
 };
 
-const anonymizeBuyer = async ([buyer, state]): Promise<
-  [string, SnsSwapBuyerState]
-> => [
+const anonymizeBuyer = async ([buyer, state]: [
+  string,
+  SnsSwapBuyerState
+]): Promise<[string, SnsSwapBuyerState]> => [
   buyer,
   {
     icp: [
@@ -300,7 +308,7 @@ const anonymizeBuyer = async ([buyer, state]): Promise<
         ...state.icp[0],
         amount_e8s:
           (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
-      },
+      } as SnsTransferableAmount,
     ],
   },
 ];

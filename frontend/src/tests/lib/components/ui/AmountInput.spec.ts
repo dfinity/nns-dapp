@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import AmountInput from "$lib/components/ui/AmountInput.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import AmountInput from "../../../../lib/components/ui/AmountInput.svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("AmountInput", () => {

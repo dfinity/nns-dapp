@@ -3,13 +3,13 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
-  import { durationTillSwapDeadline } from "../../utils/projects.utils";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import Value from "../ui/Value.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  } from "$lib/types/project-detail.context";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import Value from "$lib/components/ui/Value.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

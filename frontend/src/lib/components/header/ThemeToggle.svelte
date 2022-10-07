@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Toggle from "../ui/Toggle.svelte";
+  import Toggle from "$lib/components/ui/Toggle.svelte";
   import { IconLightMode, IconDarkMode } from "@dfinity/gix-components";
 
-  import { Theme } from "../../types/theme";
-  import { themeStore } from "../../stores/theme.store";
-  import { i18n } from "../../stores/i18n";
+  import { Theme } from "$lib/types/theme";
+  import { themeStore } from "$lib/stores/theme.store";
+  import { i18n } from "$lib/stores/i18n";
 
   const switchTheme = ({ detail }: CustomEvent<boolean>) =>
     themeStore.select(detail ? Theme.DARK : Theme.LIGHT);

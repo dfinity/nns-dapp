@@ -1,28 +1,28 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
-  import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
-  import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
+  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+  import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
+  import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
     getIcpToCyclesExchangeRate,
     topUpCanister,
-  } from "../../services/canisters.services";
-  import { i18n } from "../../stores/i18n";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import type { Account } from "../../types/account";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  } from "$lib/services/canisters.services";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import type { Account } from "$lib/types/account";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import { valueSpan } from "../../utils/utils";
+  } from "$lib/types/canister-detail.context";
+  import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { valueSpan } from "$lib/utils/utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {

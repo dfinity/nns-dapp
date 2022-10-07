@@ -1,11 +1,14 @@
-import type { AuthStore } from "../stores/auth.store";
-import type { PostMessageEventData } from "../types/post-messages";
+import type { AuthStore } from "$lib/stores/auth.store";
+import type { PostMessageEventData } from "$lib/types/post-messages";
 import { logout } from "./auth.services";
 
-const initWorker = () => {
-  const worker = new Worker("./build/worker.js", { type: "module" });
+export const initWorker = async () => {
+  const AuthWorker = await import("$lib/workers/auth.worker?worker");
+  const authWorker: Worker = new AuthWorker.default();
 
-  worker.onmessage = async ({ data }: MessageEvent<PostMessageEventData>) => {
+  authWorker.onmessage = async ({
+    data,
+  }: MessageEvent<PostMessageEventData>) => {
     const { msg } = data;
 
     switch (msg) {
@@ -22,17 +25,15 @@ const initWorker = () => {
   };
 
   return {
-    syncAuthIdle: async (auth: AuthStore) => {
+    syncAuthIdle: (auth: AuthStore) => {
       if (!auth.identity) {
-        worker.postMessage({ msg: "nnsStopIdleTimer" });
+        authWorker.postMessage({ msg: "nnsStopIdleTimer" });
         return;
       }
 
-      worker.postMessage({
+      authWorker.postMessage({
         msg: "nnsStartIdleTimer",
       });
     },
   };
 };
-
-export const worker = initWorker();

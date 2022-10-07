@@ -1,6 +1,6 @@
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 
 export type AccountType = "main" | "subAccount" | "hardwareWallet";
 export interface Account {

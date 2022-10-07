@@ -1,7 +1,7 @@
+import type { Account } from "$lib/types/account";
+import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import { writable } from "svelte/store";
-import type { Account } from "../types/account";
-import { removeKeys } from "../utils/utils";
 
 interface SnsAccount {
   accounts: Account[];

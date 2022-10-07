@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { accountsStore } from "../../stores/accounts.store";
-  import type { AccountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import type { AccountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
-  import AddAcountModal from "../../modals/accounts/AddAccountModal.svelte";
-  import Footer from "../common/Footer.svelte";
-  import IcpTransactionModal from "../../modals/accounts/IcpTransactionModal.svelte";
+  import AddAcountModal from "$lib/modals/accounts/AddAccountModal.svelte";
+  import Footer from "$lib/components/common/Footer.svelte";
+  import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 
   let accounts: AccountsStore | undefined;
 

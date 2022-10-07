@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import Json from "$lib/components/common/Json.svelte";
+import { bytesToHexString, stringifyJson } from "$lib/utils/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import Json from "../../../../lib/components/common/Json.svelte";
-import { bytesToHexString, stringifyJson } from "../../../../lib/utils/utils";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 

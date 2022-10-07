@@ -1,22 +1,22 @@
 <script lang="ts">
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
-  import KnownNeuronFollowItem from "../../components/neurons/KnownNeuronFollowItem.svelte";
-  import Input from "../../components/ui/Input.svelte";
+  import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
+  import Input from "$lib/components/ui/Input.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import { listKnownNeurons } from "../../services/knownNeurons.services";
-  import { addFollowee } from "../../services/neurons.services";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { authStore } from "../../stores/auth.store";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { sortedknownNeuronsStore } from "../../stores/knownNeurons.store";
+  import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+  import { addFollowee } from "$lib/services/neurons.services";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { authStore } from "$lib/stores/auth.store";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { sortedknownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import {
     followeesByTopic,
     isHotKeyControllable,
     isNeuronControllable,
-  } from "../../utils/neuron.utils";
-  import LegacyModal from "../LegacyModal.svelte";
+  } from "$lib/utils/neuron.utils";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -38,7 +38,7 @@
       ? isControllableByUser
       : isControllableByUser || isControllableByHotkey;
 
-  let followeeAddress: string = "";
+  let followeeAddress = "";
 
   let topicFollowees: NeuronId[];
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
@@ -65,7 +65,7 @@
 
     try {
       followee = BigInt(followeeAddress);
-    } catch (error) {
+    } catch (error: unknown) {
       // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
       alert(`Incorrect followee address ${followeeAddress}`);
       return;

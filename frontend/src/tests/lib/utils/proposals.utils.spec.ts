@@ -1,23 +1,8 @@
-import type {
-  Ballot,
-  ExecuteNnsFunction,
-  NeuronInfo,
-  Proposal,
-  ProposalInfo,
-} from "@dfinity/nns";
-import {
-  NnsFunction,
-  ProposalRewardStatus,
-  ProposalStatus,
-  Topic,
-  Vote,
-} from "@dfinity/nns";
-import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import {
   DEFAULT_PROPOSALS_FILTERS,
   PROPOSAL_COLOR,
-} from "../../../lib/constants/proposals.constants";
-import { nowInSeconds } from "../../../lib/utils/date.utils";
+} from "$lib/constants/proposals.constants";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -37,7 +22,22 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
   selectedNeuronsVotingPower,
-} from "../../../lib/utils/proposals.utils";
+} from "$lib/utils/proposals.utils";
+import type {
+  Ballot,
+  ExecuteNnsFunction,
+  NeuronInfo,
+  Proposal,
+  ProposalInfo,
+} from "@dfinity/nns";
+import {
+  NnsFunction,
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  Vote,
+} from "@dfinity/nns";
+import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import {

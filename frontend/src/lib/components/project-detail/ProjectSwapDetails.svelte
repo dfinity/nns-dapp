@@ -1,16 +1,16 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import type { SnsSummary } from "../../types/sns";
+  import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  } from "$lib/types/project-detail.context";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { SnsParams } from "@dfinity/sns";
-  import DateSeconds from "../ui/DateSeconds.svelte";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

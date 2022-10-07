@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
+import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
+import { spawnNeuron } from "$lib/services/neurons.services";
+import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent } from "@testing-library/svelte";
-import SpawnNeuronModal from "../../../../lib/modals/neurons/SpawnNeuronModal.svelte";
-import { spawnNeuron } from "../../../../lib/services/neurons.services";
-import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),

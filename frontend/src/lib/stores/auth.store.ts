@@ -1,11 +1,11 @@
-import type { Identity } from "@dfinity/agent";
-import type { AuthClient } from "@dfinity/auth-client";
-import { writable } from "svelte/store";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
-} from "../constants/identity.constants";
-import { createAuthClient } from "../utils/auth.utils";
+} from "$lib/constants/identity.constants";
+import { createAuthClient } from "$lib/utils/auth.utils";
+import type { Identity } from "@dfinity/agent";
+import type { AuthClient } from "@dfinity/auth-client";
+import { writable } from "svelte/store";
 
 export interface AuthStore {
   identity: Identity | undefined | null;
@@ -43,7 +43,7 @@ const initAuthStore = () => {
 
     sync: async () => {
       authClient = authClient ?? (await createAuthClient());
-      const isAuthenticated: boolean = await authClient.isAuthenticated();
+      const isAuthenticated = await authClient.isAuthenticated();
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,

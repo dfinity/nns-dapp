@@ -1,18 +1,18 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import { IconClose } from "@dfinity/gix-components";
-  import ConfirmationModal from "../../modals/ConfirmationModal.svelte";
-  import { removeController } from "../../services/canisters.services";
-  import { authStore } from "../../stores/auth.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { toastsError } from "../../stores/toasts.store";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import { removeController } from "$lib/services/canisters.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import { isUserController } from "../../utils/canisters.utils";
+  } from "$lib/types/canister-detail.context";
+  import { isUserController } from "$lib/utils/canisters.utils";
 
   export let controller: string;
 
@@ -27,7 +27,7 @@
   let lastController: boolean;
   $: lastController = $store.details?.settings.controllers.length === 1;
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
   const remove = async () => {

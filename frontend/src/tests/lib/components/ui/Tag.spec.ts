@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import Tag from "$lib/components/ui/Tag.svelte";
+import { Color } from "$lib/types/theme";
 import { render } from "@testing-library/svelte";
-import Tag from "../../../../lib/components/ui/Tag.svelte";
-import { Color } from "../../../../lib/types/theme";
 import TagTest from "./TagTest.svelte";
 
 describe("Tag", () => {

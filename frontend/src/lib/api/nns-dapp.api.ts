@@ -1,8 +1,8 @@
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { createAgent } from "$lib/utils/agent.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { createAgent } from "../utils/agent.utils";
 
 export const nnsDappCanister = async ({
   identity,

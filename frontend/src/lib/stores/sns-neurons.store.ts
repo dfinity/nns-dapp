@@ -1,7 +1,7 @@
+import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { writable } from "svelte/store";
-import { removeKeys } from "../utils/utils";
 
 export interface ProjectNeuronStore {
   neurons: SnsNeuron[];

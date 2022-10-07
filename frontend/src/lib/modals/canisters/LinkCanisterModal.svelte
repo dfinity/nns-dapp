@@ -1,7 +1,7 @@
 <script lang="ts">
-  import AttachCanister from "../../components/canisters/AttachCanister.svelte";
-  import { i18n } from "../../stores/i18n";
-  import LegacyModal from "../LegacyModal.svelte";
+  import AttachCanister from "$lib/components/canisters/AttachCanister.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
 </script>
 
 <LegacyModal on:nnsClose size="big">

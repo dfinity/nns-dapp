@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { LedgerConnectionState } from "$lib/constants/ledger.constants";
   import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
-  import { toastsError } from "../../stores/toasts.store";
-  import { registerHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { registerHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
+  } from "$lib/types/add-account.context";
   import { createEventDispatcher, getContext } from "svelte";
-  import type { LedgerIdentity } from "../../identities/ledger.identity";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;

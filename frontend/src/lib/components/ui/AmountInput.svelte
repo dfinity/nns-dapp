@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
-  import MaxButton from "../common/MaxButton.svelte";
+  import MaxButton from "$lib/components/common/MaxButton.svelte";
   import InputWithError from "./InputWithError.svelte";
 
   export let amount: number | undefined = undefined;

@@ -3,8 +3,8 @@
 
   export let inputId: string;
   export let checked: boolean;
-  export let preventDefault: boolean = false;
-  export let disabled: boolean = false;
+  export let preventDefault = false;
+  export let disabled = false;
 
   export let text: "block" | "inline" = "inline";
 

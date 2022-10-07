@@ -6,20 +6,20 @@
   } from "@dfinity/nns";
 
   import { getContext, onDestroy } from "svelte";
-  import { definedNeuronsStore } from "../../../stores/neurons.store";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../../types/selected-proposal.context";
-  import { isProposalDeadlineInTheFuture } from "../../../utils/proposals.utils";
+  } from "$lib/types/selected-proposal.context";
+  import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
-  } from "../../../stores/vote-registration.store";
-  import { registerVotes } from "../../../services/vote-registration.services";
+  } from "$lib/stores/vote-registration.store";
+  import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
 
   export let proposalInfo: ProposalInfo;
@@ -30,7 +30,7 @@
       proposal: proposalInfo,
     });
 
-  let visible: boolean = false;
+  let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
   let voteRegistration: VoteRegistration | undefined = undefined;

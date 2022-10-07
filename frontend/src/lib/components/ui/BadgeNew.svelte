@@ -1,6 +1,6 @@
 <script lang="ts">
   import { IconFiberNew } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 </script>
 
 <span aria-label={$i18n.core.badgeNew}>

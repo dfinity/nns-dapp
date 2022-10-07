@@ -1,12 +1,9 @@
-import {
-  getSnsAccounts,
-  transactionFee,
-} from "../../../lib/api/sns-ledger.api";
+import { getSnsAccounts, transactionFee } from "$lib/api/sns-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
+jest.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);
 const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
 const fee = BigInt(10_000);
@@ -18,7 +15,7 @@ const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
 const metadataSpy = jest
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
-jest.mock("../../../lib/api/sns-wrapper.api", () => {
+jest.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
       balance: balanceSpy,

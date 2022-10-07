@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import MyVotes from "../../../../lib/components/proposal-detail/MyVotes.svelte";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";

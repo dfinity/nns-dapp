@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { listSnsProposals } from "../../services/sns.services";
-  import { i18n } from "../../stores/i18n";
+  import { listSnsProposals } from "$lib/services/sns.services";
+  import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
     snsProposalsStore,
-  } from "../../stores/sns.store";
-  import { isNullish } from "../../utils/utils";
-  import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
+  } from "$lib/stores/sns.store";
+  import { isNullish } from "$lib/utils/utils";
+  import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import ProposalCard from "../proposals/ProposalCard.svelte";
 
-  let loading: boolean = false;
+  let loading = false;
   $: loading = isNullish($snsProposalsStore);
 
   const load = () => {

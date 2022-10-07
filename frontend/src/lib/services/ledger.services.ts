@@ -1,17 +1,17 @@
+import { queryNeurons } from "$lib/api/governance.api";
+import { nnsDappCanister } from "$lib/api/nns-dapp.api";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { i18n } from "$lib/stores/i18n";
+import { toastsError } from "$lib/stores/toasts.store";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import { toToastError } from "$lib/utils/error.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { smallerVersion } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { queryNeurons } from "../api/governance.api";
-import { nnsDappCanister } from "../api/nns-dapp.api";
-import { LedgerConnectionState } from "../constants/ledger.constants";
-import { LedgerIdentity } from "../identities/ledger.identity";
-import { i18n } from "../stores/i18n";
-import { toastsError } from "../stores/toasts.store";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { toToastError } from "../utils/error.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
-import { smallerVersion } from "../utils/utils";
 import { syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 
@@ -41,7 +41,7 @@ export const connectToHardwareWallet = async (
       ledgerIdentity,
     });
   } catch (err: unknown) {
-    const ledgerErrorKey: boolean = err instanceof LedgerErrorKey;
+    const ledgerErrorKey = err instanceof LedgerErrorKey;
 
     toastsError({
       labelKey: ledgerErrorKey
@@ -107,7 +107,7 @@ export const getLedgerIdentity = async (
 ): Promise<LedgerIdentity> => {
   const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
 
-  const ledgerIdentifier: string = principalToAccountIdentifier(
+  const ledgerIdentifier = principalToAccountIdentifier(
     ledgerIdentity.getPrincipal()
   );
 

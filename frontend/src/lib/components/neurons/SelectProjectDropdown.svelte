@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { OWN_CANISTER_ID } from "../../constants/canister-ids.constants";
-  import { snsProjectSelectedStore } from "../../derived/selected-project.derived";
-  import { i18n } from "../../stores/i18n";
-  import { committedProjectsStore } from "../../stores/projects.store";
-  import { routeStore } from "../../stores/route.store";
-  import Dropdown from "../ui/Dropdown.svelte";
-  import DropdownItem from "../ui/DropdownItem.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { i18n } from "$lib/stores/i18n";
+  import { committedProjectsStore } from "$lib/stores/projects.store";
+  import { routeStore } from "$lib/stores/route.store";
+  import Dropdown from "$lib/components/ui/Dropdown.svelte";
+  import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
   import { Spinner } from "@dfinity/gix-components";
 
   let selectedCanisterId: string | undefined;

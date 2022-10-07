@@ -1,9 +1,9 @@
-import { get } from "svelte/store";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   mainTransactionFeeStore,
   transactionsFeesStore,
-} from "../../../lib/stores/transaction-fees.store";
+} from "$lib/stores/transaction-fees.store";
+import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("transactionsFeesStore", () => {

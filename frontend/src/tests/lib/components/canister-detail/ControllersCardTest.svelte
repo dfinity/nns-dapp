@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount, setContext } from "svelte";
-  import ControllersCard from "../../../../lib/components/canister-detail/ControllersCard.svelte";
+  import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../../../lib/types/canister-detail.context";
+  } from "$lib/types/canister-detail.context";
   import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
 
   export let controllers: string[];

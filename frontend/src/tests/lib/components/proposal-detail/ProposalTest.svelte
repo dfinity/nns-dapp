@@ -1,11 +1,11 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { ProposalInfo } from "@dfinity/nns";
-  import Proposal from "../../../../lib/components/proposal-detail/Proposal.svelte";
+  import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalStore,
-  } from "../../../../lib/types/selected-proposal.context";
+  } from "$lib/types/selected-proposal.context";
   import { writable } from "svelte/store";
 
   export let proposalInfo: ProposalInfo;

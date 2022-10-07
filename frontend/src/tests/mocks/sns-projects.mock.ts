@@ -1,3 +1,12 @@
+import type { SnsFullProject } from "$lib/stores/projects.store";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+  SnsTokenMetadata,
+} from "$lib/types/sns";
+import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Token } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
@@ -11,15 +20,6 @@ import {
   type SnsTransferableAmount,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
-import type { SnsFullProject } from "../../lib/stores/projects.store";
-import type {
-  SnsSummary,
-  SnsSummaryMetadata,
-  SnsSummarySwap,
-  SnsSwapCommitment,
-  SnsTokenMetadata,
-} from "../../lib/types/sns";
-import type { QuerySnsMetadata } from "../../lib/types/sns.query";
 
 export const mockProjectSubscribe =
   (projects: SnsFullProject[]) =>

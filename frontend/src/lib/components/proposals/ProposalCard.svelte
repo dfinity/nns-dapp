@@ -6,16 +6,17 @@
     type ProposalId,
     ProposalStatus,
   } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
-  import type { Color } from "../../types/theme";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
+  import type { Color } from "$lib/types/theme";
 
   export let proposalInfo: ProposalInfo;
-  export let hidden: boolean = false;
-  import Value from "../ui/Value.svelte";
+  export let hidden = false;
+  import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
+  import { keyOfOptional } from "$lib/utils/utils";
 
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
@@ -70,7 +71,8 @@
 
     <div class="card-meta">
       <p class={`${color ?? ""} status`}>
-        {$i18n.status[ProposalStatus[status]] ?? ""}
+        {keyOfOptional({ obj: $i18n.status, key: ProposalStatus[status] }) ??
+          ""}
       </p>
 
       <ProposalCountdown {proposalInfo} />

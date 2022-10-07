@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
-  import type { StateInfo } from "../../utils/neuron.utils";
+  import type { StateInfo } from "$lib/utils/neuron.utils";
   import { NeuronState } from "@dfinity/nns";
-  import { getStateInfo } from "../../utils/neuron.utils";
+  import { getStateInfo } from "$lib/utils/neuron.utils";
+  import { keyOf } from "$lib/utils/utils";
 
   export let state: NeuronState;
 
@@ -18,7 +19,7 @@
 {#if stateInfo !== undefined}
   <div class="info">
     <p style={iconStyle} class="status">
-      {$i18n.neuron_state[NeuronState[state]]}
+      {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
       <svelte:component this={stateInfo.Icon} />
     </p>
   </div>
