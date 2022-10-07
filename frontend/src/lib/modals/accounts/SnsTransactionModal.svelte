@@ -7,6 +7,9 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction.context";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   let currentStep: Step;
 
@@ -45,11 +48,19 @@
   };
 </script>
 
-<TransactionModal on:nnsSubmit={transfer} on:nnsClose bind:currentStep>
+<TransactionModal
+  on:nnsSubmit={transfer}
+  on:nnsClose
+  bind:currentStep
+  token={$snsTokenSymbolSelectedStore}
+  transactionFee={$snsSelectedTransactionFeeStore}
+>
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
   <p slot="description">
-    {$i18n.accounts.icp_transaction_description}
+    {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+      $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
+    })}
   </p>
 </TransactionModal>

@@ -2,8 +2,8 @@
   import { i18n } from "../../stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../common/Footer.svelte";
-  import IcpTransactionModal from "../../modals/accounts/IcpTransactionModal.svelte";
   import { snsProjectAccountsStore } from "../../derived/sns/sns-project-accounts.derived";
+  import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -12,7 +12,7 @@
 </script>
 
 {#if modal === "NewTransaction"}
-  <IcpTransactionModal on:nnsClose={closeModal} />
+  <SnsTransactionModal on:nnsClose={closeModal} />
 {/if}
 
 {#if $snsProjectAccountsStore !== undefined}

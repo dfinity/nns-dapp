@@ -4,6 +4,7 @@ import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { decodeSnsAccount } from "@dfinity/sns";
 import { getLastPathDetail, isRoutePath } from "./app-path.utils";
 
 /*
@@ -38,7 +39,16 @@ export const invalidAddress = (address: string | undefined): boolean => {
     checkAccountId(address);
     return false;
   } catch (_) {
-    return true;
+    try {
+      // It might also be an SNS address
+      decodeSnsAccount(address);
+      return false;
+    } catch {
+      _;
+    }
+    {
+      return true;
+    }
   }
 };
 
