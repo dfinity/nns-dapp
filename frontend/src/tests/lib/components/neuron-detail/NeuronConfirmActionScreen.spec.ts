@@ -3,18 +3,18 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import ConfirmActionScreenTest from "./ConfirmActionScreenTest.svelte";
+import NeuronConfirmActionScreenTest from "./NeuronConfirmActionScreenTest.svelte";
 
-describe("ConfirmActionScreen", () => {
+describe("NeuronConfirmActionScreen", () => {
   it("should render main information", () => {
-    const { queryByTestId } = render(ConfirmActionScreenTest);
+    const { queryByTestId } = render(NeuronConfirmActionScreenTest);
 
     const element = queryByTestId("test-main-info");
     expect(element).toBeInTheDocument();
   });
 
   it("should render confirmation button", () => {
-    const { queryByTestId } = render(ConfirmActionScreenTest);
+    const { queryByTestId } = render(NeuronConfirmActionScreenTest);
 
     const element = queryByTestId("confirm-action-button");
     expect(element).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe("ConfirmActionScreen", () => {
 
   it("should trigger nnsConfirm event on click button", async () => {
     const spy = jest.fn();
-    const { queryByTestId } = render(ConfirmActionScreenTest, {
+    const { queryByTestId } = render(NeuronConfirmActionScreenTest, {
       props: { spy },
     });
 

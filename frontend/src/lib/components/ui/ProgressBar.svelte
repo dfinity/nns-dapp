@@ -36,12 +36,12 @@
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
       border: 0;
 
       &::-moz-progress-bar {
         border-radius: var(--current-height);
-        box-shadow: var(--current-box-inset-shadow);
+        box-shadow: var(--input-box-shadow);
       }
 
       &.yellow {
@@ -73,12 +73,12 @@
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
     }
 
     &::-webkit-progress-value {
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
     }
 
     &.yellow {

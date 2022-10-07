@@ -3,6 +3,7 @@ import { get } from "svelte/store";
 import * as api from "../../../lib/api/sns-ledger.api";
 import * as services from "../../../lib/services/sns-accounts.services";
 import { snsAccountsStore } from "../../../lib/stores/sns-accounts.store";
+import { transactionsFeesStore } from "../../../lib/stores/transaction-fees.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 
@@ -44,6 +45,34 @@ describe("sns-accounts-services", () => {
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("syncSnsAccounts", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsAccountsStore.reset();
+    });
+    it("should call sns accounts and transaction fee and load them in store", async () => {
+      const spyAccountsQuery = jest
+        .spyOn(api, "getSnsAccounts")
+        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+      const fee = BigInt(10_000);
+      const spyFeeQuery = jest
+        .spyOn(api, "transactionFee")
+        .mockImplementation(() => Promise.resolve(fee));
+
+      await services.syncSnsAccounts(mockPrincipal);
+
+      await tick();
+      expect(spyAccountsQuery).toBeCalled();
+      expect(spyFeeQuery).toBeCalled();
+
+      const store = get(snsAccountsStore);
+      expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
+
+      const feeStore = get(transactionsFeesStore);
+      expect(feeStore.projects[mockPrincipal.toText()]?.fee).toEqual(fee);
     });
   });
 });

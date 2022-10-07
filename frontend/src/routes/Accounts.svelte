@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "../lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "../lib/constants/environment.constants";
   import NnsAccounts from "../lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "../lib/components/accounts/NnsAccountsFooter.svelte";
   import {
@@ -17,7 +17,7 @@
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (
-      ENABLE_SNS &&
+      ENABLE_SNS_2 &&
       isRoutePath({
         paths: [AppPath.LegacyAccounts],
         routePath: $routeStore.path,
@@ -29,7 +29,7 @@
 </script>
 
 <main class="legacy">
-  {#if ENABLE_SNS}
+  {#if ENABLE_SNS_2}
     <SelectProjectDropdownHeader />
   {/if}
 

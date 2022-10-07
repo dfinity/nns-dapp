@@ -7,7 +7,7 @@ import type { Subscriber } from "svelte/store";
 import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
 import { snsProjectAccountsStore } from "../../../lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "../../../lib/pages/SnsAccounts.svelte";
-import { loadSnsAccounts } from "../../../lib/services/sns-accounts.services";
+import { syncSnsAccounts } from "../../../lib/services/sns-accounts.services";
 import { routeStore } from "../../../lib/stores/route.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
@@ -15,7 +15,7 @@ import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
 
 jest.mock("../../../lib/services/sns-accounts.services", () => {
   return {
-    loadSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -35,6 +35,12 @@ describe("SnsAccounts", () => {
       const { getByTestId } = render(SnsAccounts);
 
       expect(getByTestId("accounts-title")).toBeInTheDocument();
+    });
+
+    it("should load accounts and transaction fee", () => {
+      render(SnsAccounts);
+
+      expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
     it("should contain a tooltip", () => {
@@ -62,7 +68,7 @@ describe("SnsAccounts", () => {
     it("should load sns accounts of the project", () => {
       render(SnsAccounts);
 
-      expect(loadSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
+      expect(syncSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
     });
   });
 

@@ -4,6 +4,7 @@ import { snsAccountsStore } from "../stores/sns-accounts.store";
 import { toastsError } from "../stores/toasts.store";
 import type { Account } from "../types/account";
 import { toToastError } from "../utils/error.utils";
+import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsAccounts = async (
@@ -37,4 +38,11 @@ export const loadSnsAccounts = async (
     },
     logMessage: "Syncing Sns Accounts",
   });
+};
+
+export const syncSnsAccounts = async (rootCanisterId: Principal) => {
+  await Promise.all([
+    loadSnsAccounts(rootCanisterId),
+    loadSnsTransactionFee(rootCanisterId),
+  ]);
 };

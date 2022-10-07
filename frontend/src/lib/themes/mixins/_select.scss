@@ -30,6 +30,7 @@
   cursor: pointer;
 
   flex: 1;
+  order: var(--select-label-order);
 }
 
 /** https://moderncss.dev/pure-css-custom-styled-radio-buttons/ **/
@@ -51,7 +52,7 @@
   position: relative;
 
   &:checked {
-    box-shadow: var(--current-box-inset-shadow);
+    box-shadow: var(--input-box-shadow);
   }
 
   &[disabled],

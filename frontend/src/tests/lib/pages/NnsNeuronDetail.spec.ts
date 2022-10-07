@@ -3,11 +3,14 @@
  */
 
 import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { CONTEXT_PATH } from "../../../lib/constants/routes.constants";
 import NeuronDetail from "../../../lib/pages/NnsNeuronDetail.svelte";
+import { layoutTitleStore } from "../../../lib/stores/layout.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
 import { routeStore } from "../../../lib/stores/route.store";
 import { voteRegistrationStore } from "../../../lib/stores/vote-registration.store";
+import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
@@ -52,6 +55,14 @@ describe("NeuronDetail", () => {
     const { container } = render(NeuronDetail);
 
     expect(querySkeleton(container)).not.toBeNull();
+  });
+
+  it("should render a title with neuron ID", () => {
+    render(NeuronDetail);
+
+    const title = get(layoutTitleStore);
+
+    expect(title).toEqual(`${en.core.icp} – ${neuronId}`);
   });
 
   it("should hide skeletons after neuron data are available", async () => {
