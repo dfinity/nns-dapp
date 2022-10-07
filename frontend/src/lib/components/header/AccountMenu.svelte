@@ -2,7 +2,7 @@
   import Popover from "$lib/components/ui/Popover.svelte";
   import { IconAccount, ThemeToggle } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
-  import { i18n } from "$lib/components/stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
