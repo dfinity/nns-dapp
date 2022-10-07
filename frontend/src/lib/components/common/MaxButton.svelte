@@ -1,6 +1,6 @@
 <script lang="ts">
   import { IconSubdirectory } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 </script>
 
 <button on:click|preventDefault class="ghost" type="button">

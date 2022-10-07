@@ -1,16 +1,16 @@
-import { LedgerCanister } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
 import {
   createSubAccount,
   getTransactions,
   loadAccounts,
   renameSubAccount,
-} from "../../../lib/api/accounts.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+} from "$lib/api/accounts.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import type {
   AccountDetails,
   GetTransactionsResponse,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { LedgerCanister } from "@dfinity/nns";
+import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
   mockHardwareWalletAccountDetails,

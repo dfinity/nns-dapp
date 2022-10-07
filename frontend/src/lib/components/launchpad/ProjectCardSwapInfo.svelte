@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { SnsFullProject } from "../../stores/projects.store";
+  import type { SnsFullProject } from "$lib/stores/projects.store";
   import type {
     SnsSummary,
     SnsSwapCommitment,
     SnsSummarySwap,
-  } from "../../types/sns";
-  import { durationTillSwapDeadline } from "../../utils/projects.utils";
+  } from "$lib/types/sns";
+  import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import ProjectUserCommitmentLabel from "../project-detail/ProjectUserCommitmentLabel.svelte";
-  import { getCommitmentE8s } from "../../utils/sns.utils";
+  import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
 
   export let project: SnsFullProject;
 

@@ -1,6 +1,6 @@
+import { initSns, wrappers } from "$lib/api/sns-wrapper.api";
 import type { HttpAgent } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
-import { initSns, wrappers } from "../../../lib/api/sns-wrapper.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -22,7 +22,7 @@ const initSnsWrapperSpy = jest.fn().mockResolvedValue(
   })
 );
 
-jest.mock("../../../lib/proxy/api.import.proxy", () => {
+jest.mock("$lib/proxy/api.import.proxy", () => {
   return {
     importSnsWasmCanister: jest.fn().mockImplementation(() => ({
       create: () => ({

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import {
     convertIcpToTCycles,
     convertTCyclesToIcpNumber,
-  } from "../../utils/icp.utils";
-  import Input from "../ui/Input.svelte";
+  } from "$lib/utils/icp.utils";
+  import Input from "$lib/components/ui/Input.svelte";
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;

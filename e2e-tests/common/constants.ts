@@ -18,5 +18,5 @@ export enum RedirectToLegacy {
   both = "both",
 }
 
-export const NNS_DAPP_URL: string = getRequiredEnvVar("OWN_CANISTER_URL");
-export const DFX_NETWORK: string = getRequiredEnvVar("DFX_NETWORK");
+export const NNS_DAPP_URL: string = getRequiredEnvVar("VITE_OWN_CANISTER_URL");
+export const DFX_NETWORK: string = getRequiredEnvVar("VITE_DFX_NETWORK");

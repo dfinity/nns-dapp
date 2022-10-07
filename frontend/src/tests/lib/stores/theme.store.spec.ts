@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { themeStore } from "$lib/stores/theme.store";
+import * as themeUtils from "$lib/utils/theme.utils";
 import { get } from "svelte/store";
-import { themeStore } from "../../../lib/stores/theme.store";
-import * as themeUtils from "../../../lib/utils/theme.utils";
 
 enum TestTheme {
   DARK = "dark",
@@ -15,6 +15,7 @@ describe("theme-store", () => {
   it("should select and apply theme", () => {
     const applyTheme = jest.spyOn(themeUtils, "applyTheme");
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore we have just one theme at the moment therefore we use pseudo themes for test purpose
     themeStore.select(TestTheme.LIGHT);
 

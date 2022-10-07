@@ -1,21 +1,21 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { E8S_PER_ICP } from "../../../constants/icp.constants";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import {
     MIN_NEURON_STAKE,
     SPAWN_VARIANCE_PERCENTAGE,
-  } from "../../../constants/neurons.constants";
-  import SpawnNeuronModal from "../../../modals/neurons/SpawnNeuronModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { formatNumber, formatPercentage } from "../../../utils/format.utils";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { isEnoughMaturityToSpawn } from "../../../utils/neuron.utils";
-  import Tooltip from "../../ui/Tooltip.svelte";
+  } from "$lib/constants/neurons.constants";
+  import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
   const showModal = async () => (isOpen = true);
   const closeModal = () => (isOpen = false);
 

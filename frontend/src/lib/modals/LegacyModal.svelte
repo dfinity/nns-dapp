@@ -2,19 +2,19 @@
   import { fade, scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../stores/i18n";
-  import { busy } from "../stores/busy.store";
-  import { triggerDebugReport } from "../services/debug.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { busy } from "$lib/stores/busy.store";
+  import { triggerDebugReport } from "$lib/services/debug.services";
   import { Backdrop, IconBackIosNew, IconClose } from "@dfinity/gix-components";
 
-  export let visible: boolean = true;
+  export let visible = true;
   export let size: "small" | "big" = "small";
   export let testId: string | undefined = undefined;
 
   // There is no way to know whether a parent is listening to the "nnsBack" event
   // https://github.com/sveltejs/svelte/issues/4249#issuecomment-573312191
   // Please do not use `showBackButton` without listening on `nnsBack`
-  export let showBackButton: boolean = false;
+  export let showBackButton = false;
 
   let showToolbar: boolean;
   $: showToolbar = $$slots.title ?? showBackButton;

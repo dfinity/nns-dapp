@@ -1,4 +1,4 @@
-import type { LogType } from "../services/debug.services";
+import type { LogType } from "$lib/services/debug.services";
 
 const importDebugServices = () => import("../services/debug.services");
 

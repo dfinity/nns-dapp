@@ -1,13 +1,13 @@
 <script lang="ts">
   import { type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import { selectedNeuronsVotingPower } from "../../../utils/proposals.utils";
-  import { busy } from "../../../stores/busy.store";
+  import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import { busy } from "$lib/stores/busy.store";
   import { Spinner } from "@dfinity/gix-components";
-  import type { VoteRegistration } from "../../../stores/vote-registration.store";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
@@ -15,8 +15,8 @@
   export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let total: bigint;
-  let disabled: boolean = true;
-  let showConfirmationModal: boolean = false;
+  let disabled = true;
+  let showConfirmationModal = false;
   let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({

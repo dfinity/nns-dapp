@@ -1,7 +1,7 @@
+import type { AppPath } from "$lib/constants/routes.constants";
+import { changePathContext, isAppPath } from "$lib/utils/app-path.utils";
+import { pushHistory, replaceHistory, routePath } from "$lib/utils/route.utils";
 import { writable } from "svelte/store";
-import type { AppPath } from "../constants/routes.constants";
-import { changePathContext, isAppPath } from "../utils/app-path.utils";
-import { pushHistory, replaceHistory, routePath } from "../utils/route.utils";
 
 export interface RouteStore {
   path: AppPath | string;
@@ -74,7 +74,7 @@ const initRouteStore = () => {
      * @param newContext string - the new context to navigate to
      */
     changeContext: (newContext: string) => {
-      let newPath;
+      let newPath = "/";
       update((state: RouteStore) => {
         newPath = changePathContext({ path: state.path, newContext });
         return {

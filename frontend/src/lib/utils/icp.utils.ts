@@ -1,9 +1,9 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
-} from "../constants/icp.constants";
+} from "$lib/constants/icp.constants";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -31,7 +31,7 @@ export const formatToken = ({
     return "0";
   }
 
-  const converted: number = Number(value) / E8S_PER_ICP;
+  const converted = Number(value) / E8S_PER_ICP;
   const decimals: number =
     converted < 0.01
       ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)

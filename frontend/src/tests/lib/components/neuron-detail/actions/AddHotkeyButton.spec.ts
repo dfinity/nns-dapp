@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import AddHotkeyButton from "../../../../../lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 
 describe("AddHotkeyButton", () => {

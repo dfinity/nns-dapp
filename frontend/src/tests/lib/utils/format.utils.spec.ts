@@ -2,7 +2,7 @@ import {
   formatNumber,
   formatPercentage,
   shortenWithMiddleEllipsis,
-} from "../../../lib/utils/format.utils";
+} from "$lib/utils/format.utils";
 
 describe("format.utils", () => {
   it("should format number", () => {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
-  import { busy } from "../stores/busy.store";
+  import { busy } from "$lib/stores/busy.store";
 
   const dispatch = createEventDispatcher();
 </script>

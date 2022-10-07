@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+import { removeHotkey } from "$lib/services/neurons.services";
+import { authStore } from "$lib/stores/auth.store";
+import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import NeuronHotkeysCard from "../../../../lib/components/neuron-detail/NeuronHotkeysCard.svelte";
-import { removeHotkey } from "../../../../lib/services/neurons.services";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { routeStore } from "../../../../lib/stores/route.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -14,7 +14,7 @@ import {
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     removeHotkey: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),

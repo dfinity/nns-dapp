@@ -1,3 +1,15 @@
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+  SnsSwapCommitment,
+  SnsTokenMetadata,
+} from "$lib/types/sns";
+import type {
+  QuerySns,
+  QuerySnsMetadata,
+  QuerySnsSwapState,
+} from "$lib/types/sns.query";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsParams } from "@dfinity/sns";
@@ -9,18 +21,6 @@ import {
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
-import type {
-  SnsSummary,
-  SnsSummaryMetadata,
-  SnsSummarySwap,
-  SnsSwapCommitment,
-  SnsTokenMetadata,
-} from "../types/sns";
-import type {
-  QuerySns,
-  QuerySnsMetadata,
-  QuerySnsSwapState,
-} from "../types/sns.query";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
   params?: SnsParams;

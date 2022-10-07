@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { AuthStore } from "../../stores/auth.store";
-  import { authStore } from "../../stores/auth.store";
+  import type { AuthStore } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { onDestroy } from "svelte";
   import Route from "./Route.svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { routeContext, routePath } from "../../utils/route.utils";
-  import { routeStore } from "../../stores/route.store";
-  import { isSignedIn } from "../../utils/auth.utils";
-  import { isRoutePath } from "../../utils/app-path.utils";
-  import type { AppPath } from "../../constants/routes.constants";
+  import { routeContext, routePath } from "$lib/utils/route.utils";
+  import { routeStore } from "$lib/stores/route.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { isRoutePath } from "$lib/utils/app-path.utils";
+  import type { AppPath } from "$lib/constants/routes.constants";
 
   export let path: AppPath;
 
-  let signedIn: boolean = false;
+  let signedIn = false;
 
   const redirectLogin = () => {
     if (signedIn || !isRoutePath({ paths: [path], routePath: routePath() })) {

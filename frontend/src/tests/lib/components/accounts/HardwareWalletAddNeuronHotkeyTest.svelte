@@ -3,7 +3,7 @@
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
-  } from "../../../../lib/types/hardware-wallet-neurons.context";
+  } from "$lib/types/hardware-wallet-neurons.context";
   import {
     mockHardwareWalletNeuronsStore,
     mockNeuronStake,
@@ -11,7 +11,7 @@
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     SelectedAccountContext,
-  } from "../../../../lib/types/selected-account.context";
+  } from "$lib/types/selected-account.context";
   import { mockSelectedAccountStore } from "../../../mocks/selected-account.store.mock";
 
   export let testComponent: typeof SvelteComponent;

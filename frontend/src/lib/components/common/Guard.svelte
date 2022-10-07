@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { authStore } from "../../stores/auth.store";
-  import { routeStore } from "../../stores/route.store";
-  import { routePath } from "../../utils/route.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { routeStore } from "$lib/stores/route.store";
+  import { routePath } from "$lib/utils/route.utils";
   import { Spinner } from "@dfinity/gix-components";
-  import { toastsError } from "../../stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   const syncAuthStore = async () => {
     try {

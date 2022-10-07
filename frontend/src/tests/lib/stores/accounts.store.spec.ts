@@ -1,6 +1,6 @@
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { get } from "svelte/store";
-import type { AccountsStore } from "../../../lib/stores/accounts.store";
-import { accountsStore } from "../../../lib/stores/accounts.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 
 describe("accountsStore", () => {

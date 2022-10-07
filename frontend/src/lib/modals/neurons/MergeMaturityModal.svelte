@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { formatPercentage } from "../../utils/format.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { stopBusy } from "../../stores/busy.store";
-  import { mergeMaturity } from "../../services/neurons.services";
-  import { toastsSuccess } from "../../stores/toasts.store";
+  import { formatPercentage } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { mergeMaturity } from "$lib/services/neurons.services";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
+  import type { Step, Steps } from "$lib/stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
-  import NeuronConfirmActionScreen from "../../components/neuron-detail/NeuronConfirmActionScreen.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
 
   export let neuron: NeuronInfo;
 
@@ -31,7 +31,7 @@
   let currentStep: Step;
   let modal: WizardModal;
 
-  let percentageToMerge: number = 0;
+  let percentageToMerge = 0;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

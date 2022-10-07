@@ -1,7 +1,7 @@
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import type { Account } from "$lib/types/account";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { snsAccountsStore } from "../../../lib/stores/sns-accounts.store";
-import type { Account } from "../../../lib/types/account";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsMainAccount,

@@ -1,14 +1,11 @@
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   activePadProjectsStore,
   committedProjectsStore,
   projectsStore,
-} from "../../../lib/stores/projects.store";
-import {
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "../../../lib/stores/sns.store";
+} from "$lib/stores/projects.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,

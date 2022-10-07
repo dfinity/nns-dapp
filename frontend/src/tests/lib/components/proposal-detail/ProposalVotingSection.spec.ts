@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { ProposalStatus, type Ballot, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";

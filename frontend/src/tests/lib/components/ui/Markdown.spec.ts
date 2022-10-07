@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import Markdown from "$lib/components/ui/Markdown.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import Markdown from "../../../../lib/components/ui/Markdown.svelte";
 import { mockWaiting, silentConsoleErrors } from "../../../mocks/utils.mock";
 
 let transform: (unknown) => Promise<unknown>;
-jest.mock("../../../../lib/utils/html.utils", () => ({
+jest.mock("$lib/utils/html.utils", () => ({
   markdownToSanitizedHTML: (value) => transform(value),
 }));
 

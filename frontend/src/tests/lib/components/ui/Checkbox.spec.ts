@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import Checkbox from "$lib/components/ui/Checkbox.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import Checkbox from "../../../../lib/components/ui/Checkbox.svelte";
 
 describe("Checkbox", () => {
   const props: { inputId: string; checked: boolean } = {

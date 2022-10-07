@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Spinner } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
   import ProposalVotingSection from "./ProposalVotingSection.svelte";
@@ -10,8 +10,8 @@
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
-  } from "../../types/selected-proposal.context";
-  import SkeletonDetails from "../ui/SkeletonDetails.svelte";
+  } from "$lib/types/selected-proposal.context";
+  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
 
   export let neuronsReady = false;
 

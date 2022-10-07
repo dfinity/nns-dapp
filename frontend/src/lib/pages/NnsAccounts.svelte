@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { accountsStore } from "../stores/accounts.store";
-  import type { AccountsStore } from "../stores/accounts.store";
-  import AccountCard from "../components/accounts/AccountCard.svelte";
-  import { i18n } from "../stores/i18n";
-  import { routeStore } from "../stores/route.store";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import type { AccountsStore } from "$lib/stores/accounts.store";
+  import AccountCard from "$lib/components/accounts/AccountCard.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
   import type { TokenAmount } from "@dfinity/nns";
-  import { sumTokenAmounts } from "../utils/icp.utils";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import AccountsTitle from "../components/accounts/AccountsTitle.svelte";
-  import { walletPathStore } from "../derived/paths.derived";
+  import { sumTokenAmounts } from "$lib/utils/icp.utils";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
+  import { walletPathStore } from "$lib/derived/paths.derived";
 
   let accounts: AccountsStore | undefined;
 

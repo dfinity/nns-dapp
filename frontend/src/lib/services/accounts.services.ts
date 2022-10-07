@@ -1,31 +1,31 @@
-import type { Identity } from "@dfinity/agent";
-import { get } from "svelte/store";
 import {
   createSubAccount,
   getTransactions,
   loadAccounts,
   renameSubAccount as renameSubAccountApi,
-} from "../api/accounts.api";
-import { sendICP } from "../api/ledger.api";
+} from "$lib/api/accounts.api";
+import { sendICP } from "$lib/api/ledger.api";
 import type {
   AccountIdentifierString,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
-import { AppPath } from "../constants/routes.constants";
-import type { LedgerIdentity } from "../identities/ledger.identity";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import type { AccountsStore } from "../stores/accounts.store";
-import { accountsStore } from "../stores/accounts.store";
-import { toastsError } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import type { TransactionStore } from "../types/transaction.context";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
+import type { TransactionStore } from "$lib/types/transaction.context";
 import {
   getAccountByPrincipal,
   getAccountFromStore,
-} from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { toToastError } from "../utils/error.utils";
+} from "$lib/utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
+import { toToastError } from "$lib/utils/error.utils";
+import type { Identity } from "@dfinity/agent";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 

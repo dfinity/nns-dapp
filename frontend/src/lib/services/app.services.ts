@@ -1,8 +1,8 @@
-import { ENABLE_SNS } from "../constants/environment.constants";
+import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import {
   loadSnsSummariesProxy,
   loadSnsSwapCommitmentsProxy,
-} from "../proxy/sns.services.proxy";
+} from "$lib/proxy/sns.services.proxy";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 import { loadMainTransactionFee } from "./transaction-fees.services";

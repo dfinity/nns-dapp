@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CardItem from "../../../../lib/components/ui/CardItem.svelte";
+  import CardItem from "$lib/components/ui/CardItem.svelte";
 
   export let title: string;
   export let subtitle: string;

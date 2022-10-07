@@ -2,7 +2,7 @@
  * The pathname and the hash without base href and without the query string
  */
 export const routePath = (): string => {
-  const base: string = baseHref();
+  const base = baseHref();
   const { pathname, hash } = window.location;
   return `${pathname.replace(base, "/")}${hash
     .replace(/\?.*/, "")
@@ -12,7 +12,7 @@ export const routePath = (): string => {
 // e.g. #/accounts => accounts
 // e.g. #/wallet/123?a=b => wallet/123
 export const routeContext = (): string => {
-  const path: string = routePath();
+  const path = routePath();
 
   // remove leading "/" and query params
   return removeHash({ path })
@@ -23,7 +23,7 @@ export const routeContext = (): string => {
 const removeHash = ({ path }: { path: string }) => path.replace("/#", "");
 
 export const replaceHistory = (params: { path: string; query?: string }) => {
-  const path: string = fullPath(params);
+  const path = fullPath(params);
 
   if (!supportsHistory()) {
     window.location.replace(path);
@@ -34,7 +34,7 @@ export const replaceHistory = (params: { path: string; query?: string }) => {
 };
 
 export const pushHistory = (params: { path: string; query?: string }) => {
-  const path: string = fullPath(params);
+  const path = fullPath(params);
 
   if (!supportsHistory()) {
     window.location.hash = removeHash({ path });

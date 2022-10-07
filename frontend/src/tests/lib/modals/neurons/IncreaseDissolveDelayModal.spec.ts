@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
+import { updateDelay } from "$lib/services/neurons.services";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
-import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import IncreaseDissolveDelayModal from "../../../../lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
-import { updateDelay } from "../../../../lib/services/neurons.services";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     updateDelay: jest.fn().mockResolvedValue(undefined),
     getNeuronFromStore: jest.fn(),

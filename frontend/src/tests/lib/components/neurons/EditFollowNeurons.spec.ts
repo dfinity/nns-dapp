@@ -1,11 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
 import { render } from "@testing-library/svelte";
-import EditFollowNeurons from "../../../../lib/components/neurons/EditFollowNeurons.svelte";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/knownNeurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

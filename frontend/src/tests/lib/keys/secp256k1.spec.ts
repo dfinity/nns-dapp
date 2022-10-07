@@ -1,5 +1,5 @@
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import type { DerEncodedPublicKey } from "@dfinity/agent";
-import { Secp256k1PublicKey } from "../../../lib/keys/secp256k1";
 import {
   fromHexString,
   testSecp256k1Vectors,

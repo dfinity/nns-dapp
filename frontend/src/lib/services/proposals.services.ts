@@ -1,31 +1,31 @@
-import type { Identity } from "@dfinity/agent";
-import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
-} from "../api/proposals.api";
+} from "$lib/api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
-} from "../canisters/nns-dapp/nns-dapp.errors";
-import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
-import { AppPath } from "../constants/routes.constants";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   type ProposalsFiltersStore,
-} from "../stores/proposals.store";
-import { toastsError, toastsShow } from "../stores/toasts.store";
-import { getLastPathDetailId, isRoutePath } from "../utils/app-path.utils";
-import { hashCode } from "../utils/dev.utils";
-import { errorToString } from "../utils/error.utils";
+} from "$lib/stores/proposals.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
+import { hashCode } from "$lib/utils/dev.utils";
+import { errorToString } from "$lib/utils/error.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
-} from "../utils/proposals.utils";
+} from "$lib/utils/proposals.utils";
+import type { Identity } from "@dfinity/agent";
+import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import {
   queryAndUpdate,
@@ -34,7 +34,13 @@ import {
   type QueryAndUpdateStrategy,
 } from "./utils.services";
 
-const handleFindProposalsError = ({ error: err, certified }) => {
+const handleFindProposalsError = ({
+  error: err,
+  certified,
+}: {
+  error: unknown;
+  certified: boolean;
+}) => {
   console.error(err);
 
   // Explicitly handle only UPDATE errors
@@ -289,7 +295,7 @@ const getProposal = async ({
 }: {
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
-  onError: QueryAndUpdateOnError<Error | undefined>;
+  onError: QueryAndUpdateOnError<Error | unknown | undefined>;
   strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const identity: Identity = await getIdentity();

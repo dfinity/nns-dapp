@@ -1,13 +1,13 @@
 <script lang="ts">
   // Tested in EditFollowNeurons.spec.ts
   import { type NeuronId, Topic, type NeuronInfo } from "@dfinity/nns";
-  import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
-  import { removeFollowee } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { knownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { followeesByTopic } from "../../utils/neuron.utils";
-  import Collapsible from "../ui/Collapsible.svelte";
+  import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
+  import { removeFollowee } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+  import { followeesByTopic } from "$lib/utils/neuron.utils";
+  import Collapsible from "$lib/components/ui/Collapsible.svelte";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
@@ -19,7 +19,7 @@
   let id: string | undefined;
   $: id = Topic[topic];
 
-  let showNewFolloweeModal: boolean = false;
+  let showNewFolloweeModal = false;
   type FolloweeData = {
     neuronId: NeuronId;
     name?: string;

@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { AppPath } from "../../constants/routes.constants";
-  import ConfirmationModal from "../../modals/ConfirmationModal.svelte";
-  import { detachCanister } from "../../services/canisters.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { toastsSuccess } from "../../stores/toasts.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import { detachCanister } from "$lib/services/canisters.services";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
 
   export let canisterId: Principal;
 
-  let showConfirmation: boolean = false;
+  let showConfirmation = false;
   const openConfirmation = () => (showConfirmation = true);
   const close = () => (showConfirmation = false);
 

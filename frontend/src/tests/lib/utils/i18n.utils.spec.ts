@@ -1,4 +1,4 @@
-import { replacePlaceholders, translate } from "../../../lib/utils/i18n.utils";
+import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 
 describe("i18n-utils", () => {
   it("should translate", () => {

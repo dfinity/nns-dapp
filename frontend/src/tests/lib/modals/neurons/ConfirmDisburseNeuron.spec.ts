@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
+import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import ConfirmDisburseNeuron from "../../../../lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-import { formattedTransactionFeeICP } from "../../../../lib/utils/icp.utils";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     disburse: jest.fn().mockResolvedValue({ success: true }),
     getNeuronFromStore: jest.fn(),

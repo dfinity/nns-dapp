@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { invalidAddress } from "../../utils/accounts.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { invalidAddress } from "$lib/utils/accounts.utils";
   import AddressInput from "./AddressInput.svelte";
 
-  export let address: string = "";
+  export let address = "";
 </script>
 
 <article>

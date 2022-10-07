@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { formatToken } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { formatToken } from "$lib/utils/icp.utils";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
   import type {
     HardwareWalletNeuronInfo,
     HardwareWalletNeuronsContext,
-  } from "../../types/hardware-wallet-neurons.context";
-  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "../../types/hardware-wallet-neurons.context";
+  } from "$lib/types/hardware-wallet-neurons.context";
+  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "$lib/types/hardware-wallet-neurons.context";
 
   const context: HardwareWalletNeuronsContext =
     getContext<HardwareWalletNeuronsContext>(

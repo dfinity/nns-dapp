@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { formatNumber } from "../../utils/format.utils";
-  import { convertIcpToTCycles } from "../../utils/icp.utils";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { formatNumber } from "$lib/utils/format.utils";
+  import { convertIcpToTCycles } from "$lib/utils/icp.utils";
 
   export let amount: number;
   export let account: Account;

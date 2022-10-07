@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import RenameSubAccount from "$lib/components/accounts/RenameSubAccountButton.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import RenameSubAccount from "../../../../lib/components/accounts/RenameSubAccountButton.svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("RenameSubAccountButton", () => {

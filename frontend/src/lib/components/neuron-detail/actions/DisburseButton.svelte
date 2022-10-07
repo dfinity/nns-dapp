@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import type { SvelteComponent } from "svelte";
   import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: NeuronInfo | SnsNeuron;
   export let modal: typeof SvelteComponent;
-  export let reloadContext: (() => Promise<void>) | undefined = undefined;
+  export let reloadContext:
+    | ((params: { forceFetch: boolean }) => Promise<void>)
+    | undefined = undefined;
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>

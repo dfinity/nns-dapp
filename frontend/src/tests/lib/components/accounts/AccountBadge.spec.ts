@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import AccountBadge from "$lib/components/accounts/AccountBadge.svelte";
 import { render } from "@testing-library/svelte";
-import AccountBadge from "../../../../lib/components/accounts/AccountBadge.svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,

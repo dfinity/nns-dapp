@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import { addController } from "$lib/services/canisters.services";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { addController } from "../../../../lib/services/canisters.services";
 import { renderModal } from "../../../mocks/modal.mock";
 import AddControllerModal from "./AddControllerModalTest.svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     addController: jest.fn().mockResolvedValue({ success: true }),
   };

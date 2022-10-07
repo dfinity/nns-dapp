@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { reloadNeuron } from "../../services/neurons.services";
-  import NewTransactionModal from "../accounts/NewTransactionModal.svelte";
-  import type { TransactionStore } from "../../types/transaction.context";
-  import { MIN_NEURON_STAKE } from "../../constants/neurons.constants";
-  import { toastsError } from "../../stores/toasts.store";
+  import { reloadNeuron } from "$lib/services/neurons.services";
+  import NewTransactionModal from "$lib/modals/accounts/NewTransactionModal.svelte";
+  import type { TransactionStore } from "$lib/types/transaction.context";
+  import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
+  import { toastsError } from "$lib/stores/toasts.store";
   export let neuron: NeuronInfo;
 
   const fetchUpdatedNeuron = () => reloadNeuron(neuron.neuronId);

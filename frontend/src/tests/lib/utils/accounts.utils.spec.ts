@@ -1,5 +1,3 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   assertEnoughAccountFunds,
   emptyAddress,
@@ -8,7 +6,9 @@ import {
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
-} from "../../../lib/utils/accounts.utils";
+} from "$lib/utils/accounts.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,

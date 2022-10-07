@@ -1,9 +1,9 @@
 <script lang="ts">
-  import RenameSubAccountAction from "../../components/accounts/RenameSubAccountAction.svelte";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Steps } from "../../stores/steps.state";
-  import type { Step } from "../../stores/steps.state";
+  import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Steps } from "$lib/stores/steps.state";
+  import type { Step } from "$lib/stores/steps.state";
 
   let steps: Steps = [
     {

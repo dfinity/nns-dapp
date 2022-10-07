@@ -1,4 +1,4 @@
-import { Theme } from "../types/theme";
+import { Theme } from "$lib/types/theme";
 import { isNode } from "./dev.utils";
 import { enumFromStringExists } from "./enum.utils";
 

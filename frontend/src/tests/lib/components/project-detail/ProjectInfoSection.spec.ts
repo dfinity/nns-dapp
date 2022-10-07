@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import ProjectInfoSection from "../../../../lib/components/project-detail/ProjectInfoSection.svelte";
+import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
   type ProjectDetailStore,
-} from "../../../../lib/types/project-detail.context";
-import type { SnsSummary } from "../../../../lib/types/sns";
+} from "$lib/types/project-detail.context";
+import type { SnsSummary } from "$lib/types/sns";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 

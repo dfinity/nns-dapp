@@ -1,7 +1,7 @@
 <script lang="ts">
-  import LegacyModal from "../LegacyModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
+  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
 </script>
 
 <LegacyModal on:nnsClose size="big">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import NeuronConfirmActionScreen from "../../../../lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
+  import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
 
   export let spy: () => void = () => undefined;
 </script>

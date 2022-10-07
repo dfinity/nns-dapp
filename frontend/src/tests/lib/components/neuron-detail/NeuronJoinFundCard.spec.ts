@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
-import NeuronJoinFundCard from "../../../../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { authStore } from "../../../../lib/stores/auth.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,

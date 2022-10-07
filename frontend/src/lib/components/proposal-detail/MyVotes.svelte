@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
     votedNeuronDetails,
     type CompactNeuronInfo,
-  } from "../../utils/neuron.utils";
-  import Value from "../ui/Value.svelte";
+  } from "$lib/utils/neuron.utils";
+  import Value from "$lib/components/ui/Value.svelte";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

@@ -1,5 +1,4 @@
-import { Topic } from "@dfinity/nns";
-import { Theme } from "../../../lib/types/theme";
+import { Theme } from "$lib/types/theme";
 import {
   enumFromStringExists,
   enumKeys,
@@ -7,7 +6,8 @@ import {
   enumSize,
   enumsKeys,
   enumValues,
-} from "../../../lib/utils/enum.utils";
+} from "$lib/utils/enum.utils";
+import { Topic } from "@dfinity/nns";
 
 describe("enum-utils", () => {
   enum TestEnum {

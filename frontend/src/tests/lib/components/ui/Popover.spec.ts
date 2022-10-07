@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import Popover from "$lib/components/ui/Popover.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import Popover from "../../../../lib/components/ui/Popover.svelte";
 import PopoverTest from "./PopoverTest.svelte";
 
 describe("Popover", () => {

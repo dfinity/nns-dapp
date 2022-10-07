@@ -1,21 +1,21 @@
 <script lang="ts">
-  import AddSubAccount from "../../components/accounts/AddSubAccount.svelte";
-  import AddAccountType from "../../components/accounts/AddAccountType.svelte";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Steps } from "../../stores/steps.state";
-  import type { Step } from "../../stores/steps.state";
-  import HardwareWalletName from "../../components/accounts/HardwareWalletName.svelte";
+  import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
+  import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Steps } from "$lib/stores/steps.state";
+  import type { Step } from "$lib/stores/steps.state";
+  import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
   import { setContext, tick } from "svelte";
-  import HardwareWalletConnect from "../../components/accounts/HardwareWalletConnect.svelte";
+  import HardwareWalletConnect from "$lib/components/accounts/HardwareWalletConnect.svelte";
   import { writable } from "svelte/store";
   import type {
     AddAccountContext,
     AddAccountStore,
     AccountType,
-  } from "../../types/add-account.context";
-  import { ADD_ACCOUNT_CONTEXT_KEY } from "../../types/add-account.context";
-  import { debugAddAccountStore } from "../../stores/debug.store";
+  } from "$lib/types/add-account.context";
+  import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
+  import { debugAddAccountStore } from "$lib/stores/debug.store";
 
   const subAccountSteps: Steps = [
     {

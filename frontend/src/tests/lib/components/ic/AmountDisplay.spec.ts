@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+import { formatToken } from "$lib/utils/icp.utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import AmountDisplay from "../../../../lib/components/ic/AmountDisplay.svelte";
-import { formatToken } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 
 describe("AmountDisplay", () => {

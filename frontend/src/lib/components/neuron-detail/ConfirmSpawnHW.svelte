@@ -1,15 +1,15 @@
 <script lang="ts">
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,
     neuronStake,
-  } from "../../utils/neuron.utils";
-  import { valueSpan } from "../../utils/utils";
+  } from "$lib/utils/neuron.utils";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neuron: NeuronInfo;
 

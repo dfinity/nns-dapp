@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import * as api from "$lib/api/sns.api";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { syncAccounts } from "$lib/services/accounts.services";
+import * as services from "$lib/services/sns.services";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import * as api from "../../../lib/api/sns.api";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { syncAccounts } from "../../../lib/services/accounts.services";
-import * as services from "../../../lib/services/sns.services";
-import { snsQueryStore } from "../../../lib/stores/sns.store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
@@ -19,7 +19,7 @@ const setNoAccountIdentity = () =>
 const resetAccountIdentity = () =>
   (testGetIdentityReturn = Promise.resolve(mockIdentity));
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     getAccountIdentity: jest
       .fn()

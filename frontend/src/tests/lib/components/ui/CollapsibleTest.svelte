@@ -1,5 +1,5 @@
 <script>
-  import Collapsible from "../../../../lib/components/ui/Collapsible.svelte";
+  import Collapsible from "$lib/components/ui/Collapsible.svelte";
 
   export let props = {};
 </script>

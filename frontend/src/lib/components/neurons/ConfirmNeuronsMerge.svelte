@@ -1,17 +1,17 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { mergeNeurons } from "../../services/neurons.services";
-  import { busy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { toastsError, toastsSuccess } from "../../stores/toasts.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatToken } from "../../utils/icp.utils";
-  import { neuronStake } from "../../utils/neuron.utils";
-  import { valueSpan } from "../../utils/utils";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { mergeNeurons } from "$lib/services/neurons.services";
+  import { busy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/icp.utils";
+  import { neuronStake } from "$lib/utils/neuron.utils";
+  import { valueSpan } from "$lib/utils/utils";
 
   export let neurons: NeuronInfo[];
 

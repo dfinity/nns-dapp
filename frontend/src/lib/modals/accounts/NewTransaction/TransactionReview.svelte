@@ -2,13 +2,13 @@
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
-  import FooterModal from "../../FooterModal.svelte";
-  import { busy } from "../../../stores/busy.store";
-  import { i18n } from "../../../stores/i18n";
-  import type { Account } from "../../../types/account";
-  import AmountDisplay from "../../../components/ic/AmountDisplay.svelte";
-  import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import type { NewTransaction } from "../../../types/transaction.context";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { busy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import type { NewTransaction } from "$lib/types/transaction.context";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;

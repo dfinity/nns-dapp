@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import MenuItems from "$lib/components/common/MenuItems.svelte";
 import { render } from "@testing-library/svelte";
-import MenuItems from "../../../../lib/components/common/MenuItems.svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("MenuItems", () => {

@@ -1,6 +1,6 @@
-import { storeLocalStorageKey } from "../constants/stores.constants";
-import type { Theme } from "../types/theme";
-import { applyTheme, initTheme } from "../utils/theme.utils";
+import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import type { Theme } from "$lib/types/theme";
+import { applyTheme, initTheme } from "$lib/utils/theme.utils";
 import { writableStored } from "./writable-stored";
 
 const initialTheme: Theme = initTheme();
