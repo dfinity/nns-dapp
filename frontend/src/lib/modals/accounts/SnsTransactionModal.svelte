@@ -10,6 +10,8 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { snsTransferTokens } from "$lib/services/sns-accounts.services";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
   let currentStep: Step;
 
@@ -32,19 +34,19 @@
       token: ICPToken,
     });
 
-    console.log("transfer", sourceAccount, destinationAddress, tokenAmount);
-
-    // if (success) {
-    //   toastsSuccess({ labelKey: "accounts.transaction_success" });
-    // }
+    const { success } = await snsTransferTokens({
+      source: sourceAccount,
+      destinationAddress,
+      amount: tokenAmount,
+      rootCanisterId: $snsProjectSelectedStore,
+    });
 
     stopBusy("accounts");
 
-    // // We close the modal in case of success or error if the selected source is not a hardware wallet.
-    // // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    // if (success || !isAccountHardwareWallet(sourceAccount)) {
-    //   dispatcher("nnsClose");
-    // }
+    if (success) {
+      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      dispatcher("nnsClose");
+    }
   };
 </script>
 
