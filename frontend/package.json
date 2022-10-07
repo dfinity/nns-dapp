@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
-    "i18n": "node scripts/i18n.types.js",
+    "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "vite dev",
     "build": "vite build && npm run build:csp",
     "preview": "vite preview",
