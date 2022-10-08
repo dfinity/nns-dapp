@@ -11,9 +11,10 @@
     "strict": true
   },
   "exclude": [
-    "**/*.spec.ts",
     "jest.setup.ts",
     "**/*.mock.ts",
-    "**/*Test.svelte"
+    "**/*Test.svelte",
+    "svelte/**/*",
+    "public/**/*"
   ]
 }
