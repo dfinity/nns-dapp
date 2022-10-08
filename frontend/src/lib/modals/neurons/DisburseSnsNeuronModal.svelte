@@ -4,15 +4,18 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
+    routePathSnsNeuronRootCanisterId,
   } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
   import { type Token, TokenAmount } from "@dfinity/nns";
@@ -22,6 +25,9 @@
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
+  import type { Unsubscriber } from "svelte/store";
+  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
@@ -35,12 +41,16 @@
     token: $snsTokenSymbolSelectedStore as Token,
   });
 
-  let fee: TokenAmount;
-  $: fee = TokenAmount.fromE8s({
-    // TODO(GIX-1044): update FeesStore with the current sns project value
-    amount: $transactionsFeesStore.main,
-    token: $snsTokenSymbolSelectedStore as Token,
-  });
+  let feeAmount: bigint | undefined;
+  $: feeAmount =
+    $transactionsFeesStore.projects[$snsOnlyProjectStore?.toText()]?.fee;
+  let fee: TokenAmount | undefined;
+  $: fee =
+    feeAmount &&
+    TokenAmount.fromE8s({
+      amount: feeAmount,
+      token: $snsTokenSymbolSelectedStore as Token,
+    });
 
   const dispatcher = createEventDispatcher();
   // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
@@ -53,7 +63,7 @@
   ];
 
   let currentStep: Step;
-  let loading: boolean = false;
+  let loading = false;
 
   let destinationAddress: string | undefined;
   $: destinationAddress = $snsProjectMainAccountStore?.identifier;

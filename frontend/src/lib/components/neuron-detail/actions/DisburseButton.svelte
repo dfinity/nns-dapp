@@ -3,11 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import DisburseNnsNeuronModal from "../../../modals/neurons/DisburseNnsNeuronModal.svelte";
 
-  export let neuron: NeuronInfo | SnsNeuron;
-  export let modal: typeof SvelteComponent;
-  export let reloadContext:
-    | ((params: { forceFetch: boolean }) => Promise<void>)
-    | undefined = undefined;
+  export let neuron: NeuronInfo;
 
   let showModal = false;
   const openModal = () => (showModal = true);

@@ -6,6 +6,7 @@ import {
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
+  mainAccount,
 } from "$lib/utils/accounts.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";

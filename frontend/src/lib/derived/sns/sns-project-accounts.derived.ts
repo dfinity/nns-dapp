@@ -1,6 +1,7 @@
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
+import { mainAccount } from "$lib/utils/accounts.utils";
 import { derived, type Readable } from "svelte/store";
 
 /**

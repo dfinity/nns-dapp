@@ -16,6 +16,7 @@ describe("DisburseSnsButton", () => {
     const { getByText } = render(DisburseSnsButton, {
       props: {
         neuron: mockSnsNeuron,
+        reloadContext: () => Promise.resolve(),
       },
     });
 
@@ -26,6 +27,7 @@ describe("DisburseSnsButton", () => {
     const { container, queryByTestId } = render(DisburseSnsButton, {
       props: {
         neuron: mockSnsNeuron,
+        reloadContext: () => Promise.resolve(),
       },
     });
 

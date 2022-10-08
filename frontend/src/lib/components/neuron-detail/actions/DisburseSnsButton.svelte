@@ -6,7 +6,7 @@
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
 
-  let showModal: boolean = false;
+  let showModal = false;
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 </script>
