@@ -1,13 +1,13 @@
 import * as api from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { TokenAmount } from "@dfinity/nns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-
-const { loadSnsAccounts } = services;
 
 describe("sns-accounts-services", () => {
   describe("loadSnsAccounts", () => {
@@ -21,7 +21,7 @@ describe("sns-accounts-services", () => {
         .spyOn(api, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
-      await loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts(mockPrincipal);
 
       await tick();
       const store = get(snsAccountsStore);
@@ -39,7 +39,7 @@ describe("sns-accounts-services", () => {
         .spyOn(api, "getSnsAccounts")
         .mockImplementation(() => Promise.reject(undefined));
 
-      await loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts(mockPrincipal);
 
       await tick();
       const store = get(snsAccountsStore);
@@ -73,6 +73,59 @@ describe("sns-accounts-services", () => {
 
       const feeStore = get(transactionsFeesStore);
       expect(feeStore.projects[mockPrincipal.toText()]?.fee).toEqual(fee);
+    });
+  });
+
+  describe("snsTransferTokens", () => {
+    const spyAccounts = jest
+      .spyOn(api, "getSnsAccounts")
+      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsAccountsStore.reset();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    it("should call sns transfer tokens", async () => {
+      const spyTransfer = jest
+        .spyOn(api, "transfer")
+        .mockResolvedValue(undefined);
+
+      const { success } = await services.snsTransferTokens({
+        rootCanisterId: mockPrincipal,
+        source: mockSnsMainAccount,
+        destinationAddress: "aaaaa-aa",
+        amount: TokenAmount.fromE8s({
+          amount: BigInt(10_000_000),
+          token: { name: "test", symbol: "TST" },
+        }),
+      });
+
+      expect(success).toBe(true);
+      expect(spyTransfer).toBeCalled();
+      expect(spyAccounts).toBeCalled();
+    });
+
+    it("should show toast and return success false if transfer fails", async () => {
+      const spyTransfer = jest
+        .spyOn(api, "transfer")
+        .mockRejectedValue(new Error("test error"));
+      const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+
+      const { success } = await services.snsTransferTokens({
+        rootCanisterId: mockPrincipal,
+        source: mockSnsMainAccount,
+        destinationAddress: "aaaaa-aa",
+        amount: TokenAmount.fromE8s({
+          amount: BigInt(10_000_000),
+          token: { name: "test", symbol: "TST" },
+        }),
+      });
+
+      expect(success).toBe(false);
+      expect(spyTransfer).toBeCalled();
+      expect(spyAccounts).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
     });
   });
 });

@@ -85,7 +85,9 @@ export const snsTransferTokens = async ({
 
     return { success: true };
   } catch (err) {
-    toToastError({ fallbackErrorLabelKey: "error.transaction_error", err });
+    toastsError(
+      toToastError({ fallbackErrorLabelKey: "error.transaction_error", err })
+    );
     return { success: false };
   }
 };

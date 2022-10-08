@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
