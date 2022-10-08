@@ -1,9 +1,8 @@
 <script lang="ts">
   import Popover from "$lib/components/ui/Popover.svelte";
-  import { IconAccount } from "@dfinity/gix-components";
+  import { IconAccount, ThemeToggle } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import ThemeToggle from "./ThemeToggle.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
