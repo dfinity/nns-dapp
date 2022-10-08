@@ -7,7 +7,7 @@
     getAccountFromStore,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
-  import Toggle from "$lib/components/ui/Toggle.svelte";
+  import { Toggle } from "@dfinity/gix-components";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
 
