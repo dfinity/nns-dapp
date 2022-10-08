@@ -3,7 +3,10 @@
  */
 
 import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
-import {snsProjectAccountsStore, snsProjectMainAccountStore} from "$lib/derived/sns/sns-project-accounts.derived";
+import {
+  snsProjectAccountsStore,
+  snsProjectMainAccountStore,
+} from "$lib/derived/sns/sns-project-accounts.derived";
 import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { get } from "svelte/store";
