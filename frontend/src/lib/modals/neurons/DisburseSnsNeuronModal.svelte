@@ -6,22 +6,20 @@
   import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
-  import {
-    snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/selected-project.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
-    routePathSnsNeuronRootCanisterId,
   } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
   import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+  import {
+    selectedProjectTransactionFeeTokenAmountStore,
+  } from "$lib/stores/transaction-fees.store";
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
@@ -41,16 +39,8 @@
     token: $snsTokenSymbolSelectedStore as Token,
   });
 
-  let feeAmount: bigint | undefined;
-  $: feeAmount =
-    $transactionsFeesStore.projects[$snsOnlyProjectStore?.toText()]?.fee;
   let fee: TokenAmount | undefined;
-  $: fee =
-    feeAmount &&
-    TokenAmount.fromE8s({
-      amount: feeAmount,
-      token: $snsTokenSymbolSelectedStore as Token,
-    });
+  $: fee = $selectedProjectTransactionFeeTokenAmountStore;
 
   const dispatcher = createEventDispatcher();
   // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
