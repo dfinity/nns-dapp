@@ -17,9 +17,7 @@
   import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import {
-    selectedProjectTransactionFeeTokenAmountStore,
-  } from "$lib/stores/transaction-fees.store";
+  import { selectedProjectTransactionFeeTokenAmountStore } from "$lib/stores/transaction-fees.store";
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";

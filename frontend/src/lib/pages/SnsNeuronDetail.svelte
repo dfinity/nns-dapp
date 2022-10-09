@@ -55,7 +55,7 @@
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
     store: selectedSnsNeuronStore,
-    reload: () => loadNeuron({forceFetch: true}),
+    reload: () => loadNeuron({ forceFetch: true }),
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
