@@ -25,7 +25,6 @@
   import Value from "$lib/components/ui/Value.svelte";
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { sanitize } from "$lib/utils/html.utils";
-  import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
   import { STAKE_MATURITY } from "$lib/constants/environment.constants";
 
   export let neuron: NeuronInfo;
