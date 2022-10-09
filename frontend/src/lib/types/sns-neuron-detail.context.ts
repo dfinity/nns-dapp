@@ -20,7 +20,7 @@ export interface SelectedSnsNeuronStore {
 
 export interface SelectedSnsNeuronContext {
   store: Writable<SelectedSnsNeuronStore>;
-  reload: (params: { forceFetch: boolean }) => Promise<void>;
+  reload: () => Promise<void>;
 }
 
 export const SELECTED_SNS_NEURON_CONTEXT_KEY = Symbol("selected-sns-neuron");

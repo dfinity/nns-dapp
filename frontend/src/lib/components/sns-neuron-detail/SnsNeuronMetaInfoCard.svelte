@@ -9,8 +9,6 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
-  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,
@@ -18,8 +16,9 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
+  import DisburseSnsButton from "../neuron-detail/actions/DisburseSnsButton.svelte";
 
-  const { store }: SelectedSnsNeuronContext =
+  const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
@@ -35,10 +34,6 @@
         neuron,
         identity: $authStore.identity,
       });
-
-  const { reload: reloadContext } = getContext<SelectedSnsNeuronContext>(
-    SELECTED_SNS_NEURON_CONTEXT_KEY
-  );
 </script>
 
 {#if nonNullish(neuron)}
@@ -51,11 +46,7 @@
 
       <div class="buttons">
         {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton
-            {neuron}
-            modal={DisburseSnsNeuronModal}
-            {reloadContext}
-          />
+          <DisburseSnsButton {neuron} {reloadContext} />
         {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
           <!-- TODO(GIX-985): Sns/DissolveActionButton -->
         {/if}

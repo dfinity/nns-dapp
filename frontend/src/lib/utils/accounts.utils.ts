@@ -108,3 +108,11 @@ export const assertEnoughAccountFunds = ({
     throw new InsufficientAmountError("error.insufficient_funds");
   }
 };
+
+/**
+ * Returns `undefined` if the "main" account was not find.
+ * @param accounts
+ */
+export const mainAccount = (accounts: Account[]): Account | undefined => {
+  return accounts.find((account) => account.type === "main");
+};

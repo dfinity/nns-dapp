@@ -6,6 +6,7 @@ import {
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
+  mainAccount,
 } from "$lib/utils/accounts.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -16,6 +17,10 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "../../mocks/sns-accounts.mock";
 
 describe("accounts-utils", () => {
   describe("getAccountByPrincipal", () => {
@@ -165,6 +170,22 @@ describe("accounts-utils", () => {
           amountE8s: amountE8s - BigInt(10_000),
         });
       }).not.toThrow();
+    });
+  });
+
+  describe("mainAccount", () => {
+    it("should return `main` nns account", () => {
+      const accounts = [mockSubAccount, mockMainAccount, mockSubAccount];
+      expect(mainAccount(accounts)).toEqual(mockMainAccount);
+    });
+
+    it("should return `main` sns account", () => {
+      const accounts = [
+        mockSnsSubAccount,
+        mockSnsMainAccount,
+        mockSnsSubAccount,
+      ];
+      expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
     });
   });
 });

@@ -25,12 +25,12 @@ const defaultTransactionFees: TransactionFeesStore = {
  * - setMain: replace the current fee in `main`.
  */
 const initTransactionFeesStore = () => {
-  const { subscribe, update } = writable<TransactionFeesStore>(
-    defaultTransactionFees
-  );
+  const store = writable<TransactionFeesStore>(defaultTransactionFees);
+
+  const { update } = store;
 
   return {
-    subscribe,
+    ...store,
 
     setMain(fee: bigint) {
       update((data) => ({
