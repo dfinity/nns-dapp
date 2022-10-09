@@ -1,6 +1,6 @@
-import {DEFAULT_TRANSACTION_FEE_E8S} from "$lib/constants/icp.constants";
-import type {Principal} from "@dfinity/principal";
-import {derived, writable} from "svelte/store";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import type { Principal } from "@dfinity/principal";
+import { derived, writable } from "svelte/store";
 
 export type TransactionFeesStore = {
   // Main Ledger of IC
@@ -27,7 +27,7 @@ const defaultTransactionFees: TransactionFeesStore = {
 const initTransactionFeesStore = () => {
   const store = writable<TransactionFeesStore>(defaultTransactionFees);
 
-  const {update} = store;
+  const { update } = store;
 
   return {
     ...store,
@@ -40,10 +40,10 @@ const initTransactionFeesStore = () => {
     },
 
     setFee({
-             rootCanisterId,
-             fee,
-             certified,
-           }: {
+      rootCanisterId,
+      fee,
+      certified,
+    }: {
       rootCanisterId: Principal;
       fee: bigint;
       certified: boolean;
