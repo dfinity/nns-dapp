@@ -1,29 +1,26 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
-  import { createEventDispatcher, onDestroy } from "svelte";
-  import { disburse } from "$lib/services/sns-neurons.services";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
-  import {
-    getSnsNeuronIdAsHexString,
-    getSnsNeuronStake,
-  } from "$lib/utils/sns-neuron.utils";
-  import type { Principal } from "@dfinity/principal";
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import {i18n} from "$lib/stores/i18n";
+  import type {Step, Steps} from "$lib/stores/steps.state";
+  import {startBusy, stopBusy} from "$lib/stores/busy.store";
+  import {toastsSuccess} from "$lib/stores/toasts.store";
+  import {routeStore} from "$lib/stores/route.store";
+  import {createEventDispatcher, onDestroy} from "svelte";
+  import {disburse} from "$lib/services/sns-neurons.services";
+  import {snsOnlyProjectStore} from "$lib/derived/selected-project.derived";
+  import type {SnsNeuron} from "@dfinity/sns";
+  import {assertNonNullish, fromDefinedNullable} from "@dfinity/utils";
+  import {getSnsNeuronIdAsHexString, getSnsNeuronStake,} from "$lib/utils/sns-neuron.utils";
+  import type {Principal} from "@dfinity/principal";
+  import {type Token, TokenAmount} from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { selectedProjectTransactionFeeTokenAmountStore } from "$lib/stores/transaction-fees.store";
+  import {snsTokenSymbolSelectedStore} from "$lib/derived/sns/sns-token-symbol-selected.store";
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import { syncAccounts } from "$lib/services/accounts.services";
-  import type { Unsubscriber } from "svelte/store";
-  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import {neuronsPathStore} from "$lib/derived/paths.derived";
+  import {syncAccounts} from "$lib/services/accounts.services";
+  import type {Unsubscriber} from "svelte/store";
+  import {snsProjectMainAccountStore} from "$lib/derived/sns/sns-project-accounts.derived";
+  import {syncSnsAccounts} from "$lib/services/sns-accounts.services";
+  import {snsSelectedTransactionFeeStore} from "$lib/derived/sns/sns-selected-transaction-fee.store";
 
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
@@ -38,7 +35,7 @@
   });
 
   let fee: TokenAmount | undefined;
-  $: fee = $selectedProjectTransactionFeeTokenAmountStore;
+  $: fee = $snsSelectedTransactionFeeStore;
 
   const dispatcher = createEventDispatcher();
   // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
@@ -85,7 +82,7 @@
 
     assertNonNullish(rootCanisterId);
 
-    const { success } = await disburse({
+    const {success} = await disburse({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
     });
@@ -110,20 +107,20 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep on:nnsClose>
-  <svelte:fragment slot="title"
+<LegacyWizardModal bind:currentStep on:nnsClose {steps}>
+    <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
-  >
-  {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
-    <ConfirmDisburseNeuron
-      on:nnsClose
-      on:nnsConfirm={executeTransaction}
-      {amount}
-      {source}
-      {loading}
-      {destinationAddress}
-      {fee}
-    />
-  {/if}
+    >
+    {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
+        <ConfirmDisburseNeuron
+                on:nnsClose
+                on:nnsConfirm={executeTransaction}
+                {amount}
+                {source}
+                {loading}
+                {destinationAddress}
+                {fee}
+        />
+    {/if}
 </LegacyWizardModal>
