@@ -121,3 +121,6 @@ export const convertTCyclesToIcpNumber = ({
   tCycles: number;
   exchangeRate: bigint;
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
+
+export const numberToE8s = (amount: number): bigint =>
+  BigInt(Math.floor(amount * E8S_PER_ICP));

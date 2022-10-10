@@ -144,6 +144,7 @@ interface I18nAccounts {
   balance: string;
   new_transaction: string;
   icp_transaction_description: string;
+  sns_transaction_description: string;
   review_action: string;
   add_account: string;
   new_linked_title: string;

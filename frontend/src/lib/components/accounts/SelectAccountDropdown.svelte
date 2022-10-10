@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { accountsStore } from "$lib/stores/accounts.store";
-  import { accountsListStore } from "$lib/derived/accounts-list.derived";
+  import { accountsSelectedProjectStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
@@ -16,10 +15,10 @@
     selectedAccount?.identifier;
   $: selectedAccount = getAccountFromStore({
     identifier: selectedAccountIdentifier,
-    accountsStore: $accountsStore,
+    accounts: $accountsSelectedProjectStore,
   });
 
-  $: selectableAccounts = $accountsListStore.filter(filterAccounts);
+  $: selectableAccounts = $accountsSelectedProjectStore.filter(filterAccounts);
 </script>
 
 {#if selectableAccounts.length === 0}

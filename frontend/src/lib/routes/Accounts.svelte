@@ -13,6 +13,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
+  import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -42,4 +43,6 @@
 
 {#if $isNnsProjectStore}
   <NnsAccountsFooter />
+{:else}
+  <SnsAccountsFooter />
 {/if}

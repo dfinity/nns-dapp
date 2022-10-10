@@ -1,3 +1,4 @@
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -5,7 +6,8 @@ import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { encodeSnsAccount } from "@dfinity/sns";
+import { encodeSnsAccount, type SnsAccount } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getSnsAccounts = async ({
@@ -71,4 +73,39 @@ export const transactionFee = async ({
 
   logWithTimestamp("Getting sns transaction fee: done");
   return fee;
+};
+
+export const transfer = async ({
+  identity,
+  to,
+  e8s,
+  rootCanisterId,
+  memo,
+  fromSubAccount,
+}: {
+  identity: Identity;
+  to: SnsAccount;
+  e8s: bigint;
+  rootCanisterId: Principal;
+  memo?: Uint8Array;
+  fromSubAccount?: SubAccountArray;
+}): Promise<void> => {
+  const { transfer: transferApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await transferApi({
+    amount: e8s,
+    to: {
+      owner: to.owner,
+      subaccount: toNullable(to.subaccount),
+    },
+    memo,
+    from_subaccount:
+      fromSubAccount !== undefined
+        ? arrayOfNumberToUint8Array(fromSubAccount)
+        : undefined,
+  });
 };

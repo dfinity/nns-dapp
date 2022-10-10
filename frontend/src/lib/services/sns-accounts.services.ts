@@ -1,9 +1,12 @@
-import { getSnsAccounts } from "$lib/api/sns-ledger.api";
+import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
+import { decodeSnsAccount } from "@dfinity/sns";
+import { getIdentity } from "./auth.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -45,4 +48,45 @@ export const syncSnsAccounts = async (rootCanisterId: Principal) => {
     loadSnsAccounts(rootCanisterId),
     loadSnsTransactionFee(rootCanisterId),
   ]);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getAccountIdentity = async (_: Account): Promise<Identity> => {
+  // TODO: Support Hardware Wallets
+  const identity = await getIdentity();
+  return identity;
+};
+
+export const snsTransferTokens = async ({
+  rootCanisterId,
+  source,
+  destinationAddress,
+  e8s,
+}: {
+  rootCanisterId: Principal;
+  source: Account;
+  destinationAddress: string;
+  e8s: bigint;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity = await getAccountIdentity(source);
+    const to = decodeSnsAccount(destinationAddress);
+
+    await transfer({
+      identity,
+      to,
+      fromSubAccount: source.subAccount,
+      e8s,
+      rootCanisterId,
+    });
+
+    await loadSnsAccounts(rootCanisterId);
+
+    return { success: true };
+  } catch (err) {
+    toastsError(
+      toToastError({ fallbackErrorLabelKey: "error.transaction_error", err })
+    );
+    return { success: false };
+  }
 };

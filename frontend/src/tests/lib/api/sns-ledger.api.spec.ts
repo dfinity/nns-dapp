@@ -1,4 +1,8 @@
-import { getSnsAccounts, transactionFee } from "$lib/api/sns-ledger.api";
+import {
+  getSnsAccounts,
+  transactionFee,
+  transfer,
+} from "$lib/api/sns-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
@@ -8,6 +12,7 @@ const mainBalance = BigInt(10_000_000);
 const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
 const fee = BigInt(10_000);
 const transactionFeeSpy = jest.fn().mockResolvedValue(fee);
+const transferSpy = jest.fn().mockResolvedValue(BigInt(10));
 
 let metadataReturn = mockQueryTokenResponse;
 const setMetadataError = () => (metadataReturn = []);
@@ -21,6 +26,7 @@ jest.mock("$lib/api/sns-wrapper.api", () => {
       balance: balanceSpy,
       ledgerMetadata: metadataSpy,
       transactionFee: transactionFeeSpy,
+      transfer: transferSpy,
     }),
   };
 });
@@ -71,6 +77,19 @@ describe("sns-ledger api", () => {
 
       expect(actualFee).toBe(fee);
       expect(transactionFeeSpy).toBeCalled();
+    });
+  });
+
+  describe("transfer", () => {
+    it("successfully calls transfer api", async () => {
+      await transfer({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        to: { owner: mockIdentity.getPrincipal() },
+        e8s: BigInt(10_000_000),
+      });
+
+      expect(transferSpy).toBeCalled();
     });
   });
 });
