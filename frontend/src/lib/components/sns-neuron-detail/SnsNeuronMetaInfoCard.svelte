@@ -16,7 +16,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
-  import DissolveSnsNeuronButton from "$lib/actions/DissolveSnsNeuronButton.svelte";
+  import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import DisburseSnsButton from "$lib/components/neuron-detail/actions/DisburseSnsButton.svelte";
 
