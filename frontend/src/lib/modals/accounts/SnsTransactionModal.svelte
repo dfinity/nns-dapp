@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
