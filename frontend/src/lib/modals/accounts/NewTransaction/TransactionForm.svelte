@@ -126,7 +126,7 @@
     />
   {/if}
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       data-tid="transaction-button-cancel"
@@ -139,7 +139,7 @@
       disabled={disableButton}
       type="submit">{$i18n.accounts.review_action}</button
     >
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">

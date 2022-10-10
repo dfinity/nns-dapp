@@ -78,22 +78,24 @@
       <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
     </div>
+
+    <div class="additional-info">
+      <slot name="additional-info" />
+    </div>
   </div>
-  <div class="actions">
-    <slot name="additional-info" />
-    <FooterModal>
-      <button
-        class="secondary"
-        data-tid="transaction-button-back"
-        on:click={back}>{$i18n.accounts.edit_transaction}</button
-      >
-      <button
-        class="primary"
-        data-tid="transaction-button-execute"
-        disabled={$busy || disableSubmit}
-        on:click={submit}>{$i18n.accounts.execute}</button
-      >
-    </FooterModal>
+
+  <div class="toolbar">
+    <button
+            class="secondary"
+            data-tid="transaction-button-back"
+            on:click={back}>{$i18n.accounts.edit_transaction}</button
+    >
+    <button
+            class="primary"
+            data-tid="transaction-button-execute"
+            disabled={$busy || disableSubmit}
+            on:click={submit}>{$i18n.accounts.execute}</button
+    >
   </div>
 </div>
 
@@ -138,13 +140,7 @@
     gap: var(--padding);
   }
 
-  .actions {
-    margin-top: var(--padding-4x);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    --select-padding: var(--padding-2x) 0;
+  .additional-info {
+    padding-top: var(--padding-2x);
   }
 </style>

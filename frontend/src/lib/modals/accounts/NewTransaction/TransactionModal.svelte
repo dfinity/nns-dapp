@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "./TransactionForm.svelte";
@@ -51,7 +51,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
@@ -90,4 +90,4 @@
       <slot name="description" slot="description" />
     </TransactionReview>
   {/if}
-</LegacyWizardModal>
+</WizardModal>
