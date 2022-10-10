@@ -70,9 +70,6 @@ interface I18nError {
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
   stake_neuron: string;
-  transaction_invalid_amount: string;
-  transaction_no_source_account: string;
-  transaction_no_destination_address: string;
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
@@ -84,6 +81,7 @@ interface I18nError {
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  neuron_account_not_found: string;
   governance_error: string;
   not_mergeable: string;
   invalid_account_id: string;
@@ -146,6 +144,7 @@ interface I18nAccounts {
   balance: string;
   new_transaction: string;
   icp_transaction_description: string;
+  sns_transaction_description: string;
   review_action: string;
   add_account: string;
   new_linked_title: string;
@@ -264,6 +263,8 @@ interface I18nNeurons {
   enter_neuron_id_prompt: string;
   add_hotkey_prompt_error: string;
   add_hotkey_prompt_success: string;
+  top_up_neuron: string;
+  top_up_description: string;
   stake_amount: string;
 }
 
@@ -708,6 +709,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nTopics_description {
@@ -723,6 +726,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nRewards {
@@ -820,6 +825,7 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -857,6 +863,7 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18n {

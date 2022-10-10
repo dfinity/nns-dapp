@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { accountsListStore } from "$lib/derived/accounts-list.derived";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { accountsSelectedProjectStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
@@ -18,7 +17,7 @@
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountFromStore({
     identifier: selectedDestinationAddress,
-    accountsStore: $accountsStore,
+    accounts: $accountsSelectedProjectStore,
   });
   let address: string;
   $: {
@@ -33,7 +32,8 @@
 
   // Show the toggle if there are more than one account to select from.
   let showToggle = true;
-  $: showToggle = $accountsListStore.filter(filterAccounts).length > 0;
+  $: showToggle =
+    $accountsSelectedProjectStore.filter(filterAccounts).length > 0;
 
   const onToggleManualInput = () => {
     showManualAddress = !showManualAddress;

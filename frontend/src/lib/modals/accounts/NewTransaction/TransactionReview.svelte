@@ -8,7 +8,7 @@
   import type { Account } from "$lib/types/account";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -25,7 +25,7 @@
   $: tokenAmount = TokenAmount.fromNumber({
     amount,
     token,
-  }) as TokenAmount;
+  });
 
   const dispatcher = createEventDispatcher();
   const submit = () => {

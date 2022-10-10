@@ -11,7 +11,7 @@ import { derived, type Readable } from "svelte/store";
  * The store reads the routeStore and returns the context.
  * It defaults to NNS (OWN_CANISTER_ID) if the path is not a context path.
  */
-export const snsProjectSelectedStore = derived([routeStore], ([{ path }]) => {
+export const snsProjectSelectedStore = derived(routeStore, ({ path }) => {
   const maybeContextId = getContextFromPath(path);
   if (maybeContextId !== undefined) {
     try {
