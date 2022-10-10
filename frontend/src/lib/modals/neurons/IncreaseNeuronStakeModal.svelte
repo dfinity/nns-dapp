@@ -1,30 +1,72 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { reloadNeuron } from "$lib/services/neurons.services";
-  import NewTransactionModal from "$lib/modals/accounts/NewTransactionModal.svelte";
-  import type { TransactionStore } from "$lib/types/transaction.context";
-  import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { topUpNeuron } from "$lib/services/neurons.services";
+  import type { NewTransaction } from "$lib/types/transaction.context";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import TransactionModal from "../accounts/NewTransaction/TransactionModal.svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import { createEventDispatcher } from "svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Step } from "$lib/stores/steps.state";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+
   export let neuron: NeuronInfo;
 
-  const fetchUpdatedNeuron = () => reloadNeuron(neuron.neuronId);
+  let currentStep: Step;
 
-  const checkAmount = ({ amount }: TransactionStore): boolean => {
-    const amountE8s = amount?.toE8s() ?? BigInt(0);
-    const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
-    if (amountE8s + neuronStakeE8s < MIN_NEURON_STAKE) {
-      toastsError({
-        labelKey: "error.amount_not_enough_top_up_neuron",
-      });
-      return false;
+  $: title =
+    currentStep?.name === "Form"
+      ? $i18n.neurons.top_up_neuron
+      : $i18n.accounts.review_transaction;
+
+  const dispatcher = createEventDispatcher();
+  const topUp = async ({
+    detail: { sourceAccount, amount },
+  }: CustomEvent<NewTransaction>) => {
+    startBusy({
+      initiator: "top-up-neuron",
+      labelKey: isAccountHardwareWallet(sourceAccount)
+        ? "busy_screen.pending_approval_hw"
+        : "neurons.may_take_while",
+    });
+
+    const { success } = await topUpNeuron({
+      neuron,
+      sourceAccount,
+      amount,
+    });
+
+    if (success) {
+      toastsSuccess({ labelKey: "accounts.transaction_success" });
     }
-    return true;
+
+    stopBusy("top-up-neuron");
+
+    // We close the modal in case of success or error if the selected source is not a hardware wallet.
+    // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
+    if (success || !isAccountHardwareWallet(sourceAccount)) {
+      dispatcher("nnsClose");
+    }
   };
 </script>
 
-<NewTransactionModal
-  on:nnsClose
-  validateTransaction={checkAmount}
-  onTransactionComplete={fetchUpdatedNeuron}
-  destinationAddress={neuron.fullNeuron?.accountIdentifier}
-/>
+<!-- Don't show the modal if neuron doesn't have the account -->
+<!-- That would be an edge case that would not happen becuase then the button won't even be there -->
+{#if neuron.fullNeuron?.accountIdentifier !== undefined}
+  <TransactionModal
+    on:nnsSubmit={topUp}
+    on:nnsClose
+    bind:currentStep
+    destinationAddress={neuron.fullNeuron?.accountIdentifier}
+  >
+    <svelte:fragment slot="title"
+      >{title ?? $i18n.neurons.top_up_neuron}</svelte:fragment
+    >
+    <p slot="description">
+      {replacePlaceholders($i18n.neurons.top_up_description, {
+        $neuronId: neuron.neuronId.toString(),
+      })}
+    </p>
+  </TransactionModal>
+{/if}

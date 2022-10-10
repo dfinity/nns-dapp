@@ -31,16 +31,10 @@
       }),
     });
 
-    // Errors in amount already handled by TransactionModal
-    const tokenAmount = TokenAmount.fromNumber({
-      amount,
-      token: ICPToken,
-    });
-
     const { success } = await transferICP({
-      selectedAccount: sourceAccount,
+      sourceAccount,
       destinationAddress,
-      amount: tokenAmount,
+      amount: amount,
     });
 
     if (success) {

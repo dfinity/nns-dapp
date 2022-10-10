@@ -721,3 +721,17 @@ export const neuronVoting = ({
       neuronIds.includes(neuronId) &&
       !successfullyVotedNeuronIds.includes(neuronId)
   ) !== undefined;
+
+// Check whether the amount to top up is valid.
+// Otherwise the claiming neuron doesn't work because the amount is too small.
+export const validTopUpAmount = ({
+  amount,
+  neuron,
+}: {
+  neuron: NeuronInfo;
+  amount: number;
+}): boolean => {
+  const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
+  const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+};

@@ -1,27 +1,7 @@
-import type { TokenAmount } from "@dfinity/nns";
-import type { Writable } from "svelte/store";
 import type { Account } from "./account";
-
-// @deprecated
-// https://dfinity.atlassian.net/browse/L2-841
-export interface TransactionStore {
-  selectedAccount: Account | undefined;
-  destinationAddress: string | undefined;
-  amount: TokenAmount | undefined;
-}
 
 export type NewTransaction = {
   sourceAccount: Account;
   destinationAddress: string;
   amount: number;
 };
-
-export interface TransactionContext {
-  store: Writable<TransactionStore>;
-  next: () => void;
-  back: () => void;
-  onTransactionComplete?: () => Promise<void>;
-  validateTransaction?: (store: TransactionStore) => boolean;
-}
-
-export const NEW_TRANSACTION_CONTEXT_KEY = Symbol("new-transaction");

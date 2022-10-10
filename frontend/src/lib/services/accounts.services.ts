@@ -17,7 +17,7 @@ import type { AccountsStore } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { TransactionStore } from "$lib/types/transaction.context";
+import type { NewTransaction } from "$lib/types/transaction.context";
 import {
   getAccountByPrincipal,
   getAccountFromStore,
@@ -25,6 +25,7 @@ import {
 import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -79,30 +80,23 @@ export const addSubAccount = async ({
 };
 
 export const transferICP = async ({
-  selectedAccount,
+  sourceAccount,
   destinationAddress: to,
   amount,
-}: TransactionStore): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
-    return transferError({ labelKey: "error.transaction_no_source_account" });
-  }
-
-  if (to === undefined) {
-    return transferError({
-      labelKey: "error.transaction_no_destination_address",
-    });
-  }
-
-  if (!amount) {
-    return transferError({ labelKey: "error.transaction_invalid_amount" });
-  }
-
+}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
   try {
-    const { identifier, subAccount } = selectedAccount;
+    const { identifier, subAccount } = sourceAccount;
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    await sendICP({ identity, to, fromSubAccount: subAccount, amount });
+    const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+
+    await sendICP({
+      identity,
+      to,
+      fromSubAccount: subAccount,
+      amount: tokenAmount,
+    });
 
     await syncAccounts();
 
