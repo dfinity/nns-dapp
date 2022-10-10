@@ -10,7 +10,7 @@ import type {
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import { accountsSelectedProjectStore } from "$lib/derived/accounts-list.derived";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import type { AccountsStore } from "$lib/stores/accounts.store";
@@ -166,7 +166,7 @@ export const getAccountIdentity = async (
 ): Promise<Identity | LedgerIdentity> => {
   const account: Account | undefined = getAccountFromStore({
     identifier,
-    accounts: get(accountsSelectedProjectStore),
+    accounts: get(nnsAccountsListStore),
   });
 
   if (account?.type === "hardwareWallet") {

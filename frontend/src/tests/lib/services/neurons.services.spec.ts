@@ -96,6 +96,7 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("neurons-services", () => {
+  jest.spyOn(console, "error").mockImplementation(jest.fn);
   const notControlledNeuron = {
     ...mockNeuron,
     neuronId: BigInt(123),
