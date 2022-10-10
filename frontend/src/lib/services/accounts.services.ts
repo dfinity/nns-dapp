@@ -17,7 +17,7 @@ import type { AccountsStore } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { NewTransaction } from "$lib/types/transaction.context";
+import type { NewTransaction } from "$lib/types/transaction";
 import {
   getAccountByPrincipal,
   getAccountFromStore,

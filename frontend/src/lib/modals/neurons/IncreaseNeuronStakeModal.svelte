@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { topUpNeuron } from "$lib/services/neurons.services";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import TransactionModal from "../accounts/NewTransaction/TransactionModal.svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";

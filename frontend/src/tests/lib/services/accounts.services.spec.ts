@@ -13,7 +13,7 @@ import {
 } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
-import type { NewTransaction } from "$lib/types/transaction.context";
+import type { NewTransaction } from "$lib/types/transaction";
 import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { transferICP } from "$lib/services/accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -7,7 +6,7 @@
   import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
 
