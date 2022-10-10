@@ -3,7 +3,6 @@ import * as services from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { TokenAmount } from "@dfinity/nns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
@@ -95,10 +94,7 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
-        amount: TokenAmount.fromE8s({
-          amount: BigInt(10_000_000),
-          token: { name: "test", symbol: "TST" },
-        }),
+        e8s: BigInt(10_000_000),
       });
 
       expect(success).toBe(true);
@@ -116,10 +112,7 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
-        amount: TokenAmount.fromE8s({
-          amount: BigInt(10_000_000),
-          token: { name: "test", symbol: "TST" },
-        }),
+        e8s: BigInt(10_000_000),
       });
 
       expect(success).toBe(false);

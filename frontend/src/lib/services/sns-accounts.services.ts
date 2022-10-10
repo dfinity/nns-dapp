@@ -4,7 +4,6 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
-import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
 import { getIdentity } from "./auth.services";
@@ -62,12 +61,12 @@ export const snsTransferTokens = async ({
   rootCanisterId,
   source,
   destinationAddress,
-  amount,
+  e8s,
 }: {
   rootCanisterId: Principal;
   source: Account;
   destinationAddress: string;
-  amount: TokenAmount;
+  e8s: bigint;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity = await getAccountIdentity(source);
@@ -77,7 +76,7 @@ export const snsTransferTokens = async ({
       identity,
       to,
       fromSubAccount: source.subAccount,
-      e8s: amount.toE8s(),
+      e8s,
       rootCanisterId,
     });
 

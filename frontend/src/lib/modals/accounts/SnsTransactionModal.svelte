@@ -12,6 +12,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { numberToE8s } from "$lib/utils/icp.utils";
 
   let currentStep: Step;
 
@@ -28,16 +29,10 @@
       initiator: "accounts",
     });
 
-    // Errors in amount already handled by TransactionModal
-    const tokenAmount = TokenAmount.fromNumber({
-      amount,
-      token: ICPToken,
-    });
-
     const { success } = await snsTransferTokens({
       source: sourceAccount,
       destinationAddress,
-      amount: tokenAmount,
+      e8s: numberToE8s(amount),
       rootCanisterId: $snsProjectSelectedStore,
     });
 
