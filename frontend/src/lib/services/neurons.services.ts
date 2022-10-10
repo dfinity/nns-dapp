@@ -61,6 +61,7 @@ import {
   isHotKeyControllable,
   isIdentityController,
   userAuthorizedNeuron,
+  validTopUpAmount,
 } from "$lib/utils/neuron.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
@@ -76,6 +77,7 @@ import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   syncAccounts,
+  transferICP,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { assertLedgerVersion } from "./ledger.services";
@@ -915,6 +917,44 @@ export const reloadNeuron = (neuronId: NeuronId) =>
         });
       });
   });
+
+export const topUpNeuron = async ({
+  amount,
+  neuron,
+  sourceAccount,
+}: {
+  amount: number;
+  neuron: NeuronInfo;
+  sourceAccount: Account;
+}): Promise<{ success: boolean }> => {
+  if (neuron.fullNeuron?.accountIdentifier === undefined) {
+    toastsError({
+      labelKey: "errors.neuron_account_not_found",
+    });
+    return { success: false };
+  }
+
+  // TODO: Check the amount when the user enters amount in the input field.
+  // https://dfinity.atlassian.net/browse/GIX-798
+  if (!validTopUpAmount({ neuron, amount })) {
+    toastsError({
+      labelKey: "error.amount_not_enough_top_up_neuron",
+    });
+    return { success: false };
+  }
+
+  const { success } = await transferICP({
+    sourceAccount,
+    destinationAddress: neuron.fullNeuron?.accountIdentifier,
+    amount,
+  });
+
+  if (success) {
+    await reloadNeuron(neuron.neuronId);
+  }
+
+  return { success };
+};
 
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet

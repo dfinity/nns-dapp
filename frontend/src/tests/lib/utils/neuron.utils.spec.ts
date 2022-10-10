@@ -53,6 +53,7 @@ import {
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
+  validTopUpAmount,
   votedNeuronDetails,
   votingPower,
   type InvalidState,
@@ -1695,6 +1696,51 @@ describe("neuron-utils", () => {
       const store = get(neuronsStore);
       const received = getNeuronById({ neuronsStore: store, neuronId });
       expect(received).toBeUndefined();
+    });
+  });
+
+  describe("validTopUpAmount", () => {
+    it("should return true if neuron has enough stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE * 2),
+        },
+      };
+      expect(validTopUpAmount({ neuron, amount: 0.001 })).toBe(true);
+    });
+
+    it("should return true if amount to top is large enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: (MIN_NEURON_STAKE * 2) / E8S_PER_ICP,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if amount and stake are not big enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
+        })
+      ).toBe(false);
     });
   });
 });

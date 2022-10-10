@@ -19,7 +19,8 @@ export const mockFullNeuron: Neuron = {
   spawnAtTimesSeconds: undefined,
   neuronFees: BigInt(0),
   hotKeys: [],
-  accountIdentifier: "account-identifier-text",
+  accountIdentifier:
+    "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
   joinedCommunityFundTimestampSeconds: undefined,
   dissolveState: undefined,
   followees: [],
