@@ -25,7 +25,7 @@
 </Popover>
 
 <style lang="scss">
-  @use "../../themes/mixins/overlay";
+  @use "@dfinity/gix-components/styles/mixins/overlay";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/header";
 
