@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import Popover from "$lib/components/ui/Popover.svelte";
+import { Popover } from "@dfinity/gix-components";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import PopoverTest from "./PopoverTest.svelte";
 

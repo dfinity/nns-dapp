@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Popover from "$lib/components/ui/Popover.svelte";
-  import { IconAccount, ThemeToggle } from "@dfinity/gix-components";
+  import { IconAccount, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import { i18n } from "$lib/stores/i18n";
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Popover from "$lib/components/ui/Popover.svelte";
+  import { Popover } from "@dfinity/gix-components";
 </script>
 
 <Popover visible={true}>
