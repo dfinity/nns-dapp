@@ -10,7 +10,7 @@ const { version } = JSON.parse(json);
 const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
-    target: "es2020"
+    target: "es2020",
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
@@ -22,7 +22,7 @@ const config: UserConfig = {
       // Node.js global to browser globalThis
       define: {
         global: "globalThis",
-      }
+      },
     },
   },
 };
