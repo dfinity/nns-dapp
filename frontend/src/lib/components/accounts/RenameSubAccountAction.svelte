@@ -38,27 +38,27 @@
   <div>
     <p class="label">{$i18n.accounts.rename_account_enter_new_name}</p>
     <Input
-            inputType="text"
-            placeholderLabelKey="accounts.rename_new_name_placeholder"
-            name="newAccountName"
-            bind:value={newAccountName}
-            disabled={$busy}
+      inputType="text"
+      placeholderLabelKey="accounts.rename_new_name_placeholder"
+      name="newAccountName"
+      bind:value={newAccountName}
+      disabled={$busy}
     />
   </div>
 
   <div class="toolbar">
     <button
-            class="secondary"
-            type="button"
-            on:click={() => dispatcher("nnsClose")}
+      class="secondary"
+      type="button"
+      on:click={() => dispatcher("nnsClose")}
     >
       {$i18n.core.cancel}
     </button>
     <button
-            class="primary"
-            type="submit"
-            data-tid="rename-subaccount-button"
-            disabled={newAccountName.length === 0 ||
+      class="primary"
+      type="submit"
+      data-tid="rename-subaccount-button"
+      disabled={newAccountName.length === 0 ||
         $busy ||
         selectedAccount === undefined}
     >

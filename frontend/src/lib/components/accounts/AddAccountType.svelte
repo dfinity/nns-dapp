@@ -17,16 +17,18 @@
   const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
-<Card role="button"
-      on:click={selectNewSubAccount}
-      testId="choose-linked-as-account-type"
+<Card
+  role="button"
+  on:click={selectNewSubAccount}
+  testId="choose-linked-as-account-type"
 >
   <h4>{$i18n.accounts.new_linked_title}</h4>
   <span>{$i18n.accounts.new_linked_subtitle}</span>
 </Card>
-<Card role="button"
-      on:click={selectNewHardwareWallet}
-      testId="choose-hardware-wallet-as-account-type"
+<Card
+  role="button"
+  on:click={selectNewHardwareWallet}
+  testId="choose-hardware-wallet-as-account-type"
 >
   <h4>{$i18n.accounts.attach_hardware_title}</h4>
   <span>{$i18n.accounts.attach_hardware_subtitle}</span>

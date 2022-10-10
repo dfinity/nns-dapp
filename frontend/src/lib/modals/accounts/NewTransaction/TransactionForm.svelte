@@ -85,10 +85,7 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={goNext}
-  data-tid="transaction-step-1"
->
+<form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>

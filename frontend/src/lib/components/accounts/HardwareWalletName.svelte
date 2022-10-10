@@ -72,4 +72,3 @@
     padding-bottom: var(--padding);
   }
 </style>
-
