@@ -28,7 +28,6 @@
 </script>
 
 {#if connected && ledgerIdentity !== undefined}
-  <p class="description">{$i18n.accounts.hardware_wallet_connected}</p>
   <HardwareWalletInfo {ledgerIdentity} />
 {:else}
   <p class="label">{$i18n.accounts.connect_hardware_wallet_text}</p>

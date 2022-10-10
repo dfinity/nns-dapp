@@ -154,7 +154,6 @@
     "show_info_hardware_wallet": "Show Principal And Address On Device",
     "attach_wallet": "Attach Wallet",
     "edit_name": "Edit Name",
-    "hardware_wallet_connected": "Connected to Hardware Wallet",
     "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
     "subAccount": "LINKED ACCOUNT",

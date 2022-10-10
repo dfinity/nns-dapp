@@ -55,16 +55,10 @@ describe("HardwareWalletConnectAction", () => {
       );
     });
 
-    it("should display a connected inforation", async () => {
+    it("should display a connected information", async () => {
       const { getByRole, getByText } = render(HardwareWalletConnectAction);
 
       fireEvent.click(getByRole("button"));
-
-      await waitFor(() =>
-        expect(
-          getByText(en.accounts.hardware_wallet_connected)
-        ).toBeInTheDocument()
-      );
 
       expect(getByText(en.core.principal)).toBeInTheDocument();
       expect(
