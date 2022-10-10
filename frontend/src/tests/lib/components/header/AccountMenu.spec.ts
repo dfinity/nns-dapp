@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import AccountMenu from "../../../../lib/components/header/AccountMenu.svelte";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {

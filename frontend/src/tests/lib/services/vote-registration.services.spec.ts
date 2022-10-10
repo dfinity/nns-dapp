@@ -2,6 +2,14 @@
  * @jest-environment jsdom
  */
 
+import * as proposalsApi from "$lib/api/proposals.api";
+import * as neuronsServices from "$lib/services/neurons.services";
+import { registerVotes } from "$lib/services/vote-registration.services";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import * as toastsStore from "$lib/stores/toasts.store";
+import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { waitForMilliseconds } from "$lib/utils/utils";
 import {
   GovernanceError,
   Topic,
@@ -11,14 +19,6 @@ import {
 } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import * as proposalsApi from "../../../lib/api/proposals.api";
-import * as neuronsServices from "../../../lib/services/neurons.services";
-import { registerVotes } from "../../../lib/services/vote-registration.services";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
-import * as toastsStore from "../../../lib/stores/toasts.store";
-import { voteRegistrationStore } from "../../../lib/stores/vote-registration.store";
-import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
-import { waitForMilliseconds } from "../../../lib/utils/utils";
 import { resetIdentity, setNoIdentity } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
@@ -30,7 +30,7 @@ const proposalInfo = (): ProposalInfo => ({
   ...mockProposalInfo,
   id: BigInt(++proposalInfoIdIndex),
 });
-jest.mock("../../../lib/services/proposals.services", () => {
+jest.mock("$lib/services/proposals.services", () => {
   return {
     loadProposal: ({ setProposal }) => {
       setProposal(proposalInfo);

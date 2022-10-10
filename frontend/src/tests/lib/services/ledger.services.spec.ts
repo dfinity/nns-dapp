@@ -1,13 +1,9 @@
-import type { HttpAgent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
-import * as api from "../../../lib/api/governance.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
-import { LedgerIdentity } from "../../../lib/identities/ledger.identity";
-import * as accountsServices from "../../../lib/services/accounts.services";
-import * as authServices from "../../../lib/services/auth.services";
+import * as api from "$lib/api/governance.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import * as accountsServices from "$lib/services/accounts.services";
+import * as authServices from "$lib/services/auth.services";
 import {
   assertLedgerVersion,
   connectToHardwareWallet,
@@ -15,15 +11,16 @@ import {
   listNeuronsHardwareWallet,
   registerHardwareWallet,
   showAddressAndPubKeyOnHardwareWallet,
-} from "../../../lib/services/ledger.services";
-import { authStore } from "../../../lib/stores/auth.store";
-import * as toastsStore from "../../../lib/stores/toasts.store";
-import {
-  LedgerErrorKey,
-  LedgerErrorMessage,
-} from "../../../lib/types/ledger.errors";
-import * as agent from "../../../lib/utils/agent.utils";
-import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
+} from "$lib/services/ledger.services";
+import { authStore } from "$lib/stores/auth.store";
+import * as toastsStore from "$lib/stores/toasts.store";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
+import * as agent from "$lib/utils/agent.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import type { HttpAgent } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,

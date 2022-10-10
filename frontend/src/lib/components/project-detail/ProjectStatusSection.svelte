@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
+  import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
@@ -11,11 +11,11 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import { isNullish } from "../../utils/utils";
+  } from "$lib/types/project-detail.context";
+  import { isNullish } from "$lib/utils/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
-  import { getCommitmentE8s } from "../../utils/sns.utils";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -47,7 +47,7 @@
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let displayStatusSection: boolean = false;
+  let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
     !loadingSwapState &&

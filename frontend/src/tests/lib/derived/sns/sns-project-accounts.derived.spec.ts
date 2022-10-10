@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { get } from "svelte/store";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
-  AppPath,
-  CONTEXT_PATH,
-} from "../../../../lib/constants/routes.constants";
-import { snsProjectAccountsStore } from "../../../../lib/derived/sns/sns-project-accounts.derived";
-import { routeStore } from "../../../../lib/stores/route.store";
-import { snsAccountsStore } from "../../../../lib/stores/sns-accounts.store";
+  snsProjectAccountsStore,
+  snsProjectMainAccountStore,
+} from "$lib/derived/sns/sns-project-accounts.derived";
+import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
@@ -31,7 +31,7 @@ describe("sns-project-accounts store", () => {
     expect(value).toBeUndefined();
   });
 
-  it("should retun array of accounts of the selected project", () => {
+  it("should return array of accounts of the selected project", () => {
     routeStore.update({
       path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
     });
@@ -45,7 +45,7 @@ describe("sns-project-accounts store", () => {
     expect(value?.length).toEqual(2);
   });
 
-  it("should retun first the main account", () => {
+  it("should return first the main account", () => {
     routeStore.update({
       path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
     });
@@ -57,5 +57,21 @@ describe("sns-project-accounts store", () => {
     });
     const value = get(snsProjectAccountsStore);
     expect(value?.[0]?.type).toEqual("main");
+  });
+
+  describe("snsProjectMainAccountStore", () => {
+    it("should return main account", () => {
+      routeStore.update({
+        path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
+      });
+      const accounts = [mockSnsSubAccount, mockSnsMainAccount];
+      snsAccountsStore.setAccounts({
+        rootCanisterId: mockPrincipal,
+        accounts,
+        certified: true,
+      });
+      const value = get(snsProjectMainAccountStore);
+      expect(value?.type).toEqual("main");
+    });
   });
 });

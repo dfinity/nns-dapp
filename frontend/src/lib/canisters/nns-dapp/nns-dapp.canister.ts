@@ -1,8 +1,8 @@
+import { nonNullish } from "$lib/utils/utils";
 import { Actor } from "@dfinity/agent";
 import type { ProposalId } from "@dfinity/nns";
 import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { nonNullish } from "../../utils/utils";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {

@@ -11,7 +11,7 @@ FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
 ARG rust_version=1.63.0
-ENV NODE_VERSION=16.13.2
+ENV NODE_VERSION=16.17.1
 
 ENV TZ=UTC
 

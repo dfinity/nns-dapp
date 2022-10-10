@@ -1,3 +1,12 @@
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import {
+  concatenateUniqueProposals,
+  excludeProposals,
+  preserveNeuronSelectionAfterUpdate,
+  replaceAndConcatenateProposals,
+  replaceProposals,
+} from "$lib/utils/proposals.utils";
 import type {
   NeuronId,
   NeuronInfo,
@@ -8,15 +17,6 @@ import type {
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import { storeLocalStorageKey } from "../constants/stores.constants";
-import {
-  concatenateUniqueProposals,
-  excludeProposals,
-  preserveNeuronSelectionAfterUpdate,
-  replaceAndConcatenateProposals,
-  replaceProposals,
-} from "../utils/proposals.utils";
 import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {

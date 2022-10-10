@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
-  import { AppPath } from "../../constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
-  import { layoutBackStore, layoutTitleStore } from "../../stores/layout.store";
-  import { i18n } from "../../stores/i18n";
-  import { isNode } from "../../utils/dev.utils";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { isNode } from "$lib/utils/dev.utils";
 
   export let path: AppPath;
 
@@ -17,33 +17,32 @@
     switch (path) {
       case AppPath.Accounts:
       case AppPath.LegacyAccounts:
-        return (await import("../../../routes/Accounts.svelte")).default;
+        return (await import("../../routes/Accounts.svelte")).default;
       case AppPath.LegacyNeurons:
       case AppPath.Neurons:
-        return (await import("../../../routes/Neurons.svelte")).default;
+        return (await import("../../routes/Neurons.svelte")).default;
       case AppPath.Proposals:
-        return (await import("../../../routes/Proposals.svelte")).default;
+        return (await import("../../routes/Proposals.svelte")).default;
       case AppPath.Canisters:
-        return (await import("../../../routes/Canisters.svelte")).default;
+        return (await import("../../routes/Canisters.svelte")).default;
       case AppPath.Wallet:
-        return (await import("../../../routes/Wallet.svelte")).default;
+        return (await import("../../routes/Wallet.svelte")).default;
       case AppPath.LegacyWallet:
-        return (await import("../../../routes/LegacyWallet.svelte")).default;
+        return (await import("../../routes/LegacyWallet.svelte")).default;
       case AppPath.ProposalDetail:
-        return (await import("../../../routes/ProposalDetail.svelte")).default;
+        return (await import("../../routes/ProposalDetail.svelte")).default;
       case AppPath.LegacyNeuronDetail:
-        return (await import("../../../routes/LegacyNeuronDetail.svelte"))
-          .default;
+        return (await import("../../routes/LegacyNeuronDetail.svelte")).default;
       case AppPath.CanisterDetail:
-        return (await import("../../../routes/CanisterDetail.svelte")).default;
+        return (await import("../../routes/CanisterDetail.svelte")).default;
       case AppPath.Launchpad:
-        return (await import("../../../routes/Launchpad.svelte")).default;
+        return (await import("../../routes/Launchpad.svelte")).default;
       case AppPath.ProjectDetail:
-        return (await import("../../../routes/ProjectDetail.svelte")).default;
+        return (await import("../../routes/ProjectDetail.svelte")).default;
       case AppPath.NeuronDetail:
-        return (await import("../../../routes/NeuronDetail.svelte")).default;
+        return (await import("../../routes/NeuronDetail.svelte")).default;
       default:
-        return (await import("../../../routes/Auth.svelte")).default;
+        return (await import("../../routes/Auth.svelte")).default;
     }
   };
 
@@ -103,7 +102,7 @@
     component = await loadModule();
   });
 
-  let authLayout: boolean = true;
+  let authLayout = true;
   $: authLayout = path === AppPath.Authentication;
 
   let layout: typeof SvelteComponent | undefined = undefined;
@@ -114,16 +113,17 @@
   {#if component !== undefined}
     <svelte:component this={component} />
   {:else}
-    <section class:authLayout>
+    <div class:authLayout>
       <Spinner />
-    </section>
+    </div>
   {/if}
 </svelte:component>
 
 <style lang="scss">
+  @use "../../themes/mixins/login";
   @use "@dfinity/gix-components/styles/mixins/display";
 
-  section {
+  div {
     position: absolute;
     @include display.inset;
 
@@ -131,7 +131,6 @@
   }
 
   .authLayout {
-    // Fancy color based on the milky way of the auth background image
-    color: rgba(112, 71, 224, 0.6);
+    @include login.background;
   }
 </style>

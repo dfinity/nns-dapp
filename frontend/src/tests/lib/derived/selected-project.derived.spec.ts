@@ -1,15 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import { get } from "svelte/store";
-import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import { AppPath, CONTEXT_PATH } from "../../../lib/constants/routes.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
   isNnsProjectStore,
   snsOnlyProjectStore,
   snsProjectSelectedStore,
-} from "../../../lib/derived/selected-project.derived";
-import { routeStore } from "../../../lib/stores/route.store";
+} from "$lib/derived/selected-project.derived";
+import { routeStore } from "$lib/stores/route.store";
+import { get } from "svelte/store";
 
 describe("selected project derived stores", () => {
   describe("isNnsProjectStore", () => {

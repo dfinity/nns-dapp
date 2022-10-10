@@ -1,9 +1,5 @@
-import type { Identity } from "@dfinity/agent";
-import { NeuronState } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { SECONDS_IN_YEAR } from "../../../lib/constants/constants";
-import { enumValues } from "../../../lib/utils/enum.utils";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
   getSnsDissolvingTimeInSeconds,
@@ -15,13 +11,19 @@ import {
   getSnsNeuronState,
   hasPermissions,
   hasPermissionToDisburse,
+  isSnsNeuron,
   isUserHotkey,
   routePathSnsNeuronId,
   routePathSnsNeuronRootCanisterId,
   sortSnsNeuronsByCreatedTimestamp,
-} from "../../../lib/utils/sns-neuron.utils";
-import { bytesToHexString } from "../../../lib/utils/utils";
+} from "$lib/utils/sns-neuron.utils";
+import { bytesToHexString } from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockNeuron } from "../../mocks/neurons.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -614,6 +616,18 @@ describe("sns-neuron utils", () => {
           permissions,
         })
       ).toBe(true);
+    });
+  });
+
+  describe("isSnsNeuron", () => {
+    it("returns true for snsNeuron", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron };
+      expect(isSnsNeuron(neuron)).toBeTruthy();
+    });
+
+    it("returns false for NeuronInfo (nnsNeuron)", () => {
+      const neuron: NeuronInfo = { ...mockNeuron };
+      expect(isSnsNeuron(neuron)).toBeFalsy();
     });
   });
 });

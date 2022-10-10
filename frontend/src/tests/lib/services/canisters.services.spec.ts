@@ -1,9 +1,6 @@
-import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/canisters.api";
-import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
-import { syncAccounts } from "../../../lib/services/accounts.services";
+import * as api from "$lib/api/canisters.api";
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import { syncAccounts } from "$lib/services/accounts.services";
 import {
   addController,
   attachCanister,
@@ -16,9 +13,12 @@ import {
   routePathCanisterId,
   topUpCanister,
   updateSettings,
-} from "../../../lib/services/canisters.services";
-import { canistersStore } from "../../../lib/stores/canisters.store";
-import { toastsError, toastsShow } from "../../../lib/stores/toasts.store";
+} from "$lib/services/canisters.services";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import type { Identity } from "@dfinity/agent";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockIdentity,
@@ -36,7 +36,7 @@ import {
 let identity: Identity | undefined = mockIdentity;
 const setNoAccountIdentity = () => (identity = undefined);
 const resetAccountIdentity = () => (identity = mockIdentity);
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
     getAccountIdentity: jest.fn().mockImplementation(() => {
@@ -49,7 +49,7 @@ jest.mock("../../../lib/services/accounts.services", () => {
   };
 });
 
-jest.mock("../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
     toastsShow: jest.fn(),

@@ -1,5 +1,3 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
   createCanister as createCanisterApi,
@@ -9,24 +7,26 @@ import {
   queryCanisters,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
-} from "../api/canisters.api";
+} from "$lib/api/canisters.api";
 import type {
   CanisterDetails,
   CanisterSettings,
-} from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-import { AppPath } from "../constants/routes.constants";
-import { canistersStore } from "../stores/canisters.store";
-import { toastsError, toastsShow } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import { LedgerErrorMessage } from "../types/ledger.errors";
-import { assertEnoughAccountFunds } from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { isController } from "../utils/canisters.utils";
+} from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { AppPath } from "$lib/constants/routes.constants";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
+import { isController } from "$lib/utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
-} from "../utils/error.utils";
+} from "$lib/utils/error.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -88,7 +88,7 @@ export const createCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return canisterId;
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
@@ -123,7 +123,7 @@ export const topUpCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
     );
@@ -200,7 +200,7 @@ export const updateSettings = async ({
       settings,
     });
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_update_settings")
     );

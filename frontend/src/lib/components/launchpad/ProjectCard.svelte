@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { AppPath } from "../../constants/routes.constants";
-  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import type { SnsFullProject } from "../../stores/projects.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import { routeStore } from "$lib/stores/route.store";
+  import type { SnsFullProject } from "$lib/stores/projects.store";
   import { Card } from "@dfinity/gix-components";
-  import Logo from "../ui/Logo.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
-  import { getCommitmentE8s } from "../../utils/sns.utils";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
 
   export let project: SnsFullProject;
 

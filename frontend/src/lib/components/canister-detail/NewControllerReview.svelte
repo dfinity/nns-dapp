@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import { toastsError } from "../../stores/toasts.store";
-  import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import { addController } from "../../services/canisters.services";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  } from "$lib/types/canister-detail.context";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { addController } from "$lib/services/canisters.services";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   export let controller: Principal;
 

@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import AddressInput from "$lib/components/accounts/AddressInput.svelte";
+import { ACCOUNT_ADDRESS_MIN_LENGTH } from "$lib/constants/accounts.constants";
 import { fireEvent, render } from "@testing-library/svelte";
-import AddressInput from "../../../../lib/components/accounts/AddressInput.svelte";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../../../lib/constants/accounts.constants";
 
 describe("AddressInput", () => {
   const props = { props: { address: undefined } };

@@ -1,10 +1,10 @@
-import { Principal } from "@dfinity/principal";
 import {
   formatCyclesToTCycles,
   getCanisterFromStore,
   isController,
   isUserController,
-} from "../../../lib/utils/canisters.utils";
+} from "$lib/utils/canisters.utils";
+import { Principal } from "@dfinity/principal";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
 

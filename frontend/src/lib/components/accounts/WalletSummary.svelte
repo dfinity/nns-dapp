@@ -1,18 +1,18 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { accountName as getAccountName } from "../../utils/transactions.utils";
-  import { i18n } from "../../stores/i18n";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import Identifier from "../ui/Identifier.svelte";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  import { accountName as getAccountName } from "$lib/utils/transactions.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getContext } from "svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-  import { formatToken } from "../../utils/icp.utils";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
+  } from "$lib/types/selected-account.context";
+  import { formatToken } from "$lib/utils/icp.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY

@@ -1,20 +1,20 @@
 <script lang="ts">
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import { i18n } from "../../stores/i18n";
-  import NewTransactionDestination from "../../components/accounts/NewTransactionDestination.svelte";
-  import NewTransactionSource from "../../components/accounts/NewTransactionSource.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
+  import { i18n } from "$lib/stores/i18n";
+  import NewTransactionDestination from "$lib/components/accounts/NewTransactionDestination.svelte";
+  import NewTransactionSource from "$lib/components/accounts/NewTransactionSource.svelte";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
   import type {
     TransactionContext,
     TransactionStore,
-  } from "../../types/transaction.context";
-  import NewTransactionAmount from "../../components/accounts/NewTransactionAmount.svelte";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
-  import NewTransactionReview from "../../components/accounts/NewTransactionReview.svelte";
-  import type { Account } from "../../types/account";
-  import { debugTransactionStore } from "../../stores/debug.store";
+  } from "$lib/types/transaction.context";
+  import NewTransactionAmount from "$lib/components/accounts/NewTransactionAmount.svelte";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "$lib/types/transaction.context";
+  import NewTransactionReview from "$lib/components/accounts/NewTransactionReview.svelte";
+  import type { Account } from "$lib/types/account";
+  import { debugTransactionStore } from "$lib/stores/debug.store";
 
   // TODO: Remove when implementing https://dfinity.atlassian.net/browse/L2-841
 

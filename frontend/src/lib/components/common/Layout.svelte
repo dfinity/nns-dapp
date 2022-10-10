@@ -1,10 +1,10 @@
 <script lang="ts">
   import Banner from "../header/Banner.svelte";
   import MenuItems from "./MenuItems.svelte";
-  import { layoutTitleStore, layoutBackStore } from "../../stores/layout.store";
+  import { layoutTitleStore, layoutBackStore } from "$lib/stores/layout.store";
   import { Layout, HeaderTitle } from "@dfinity/gix-components";
-  import AccountMenu from "../header/AccountMenu.svelte";
-  import { triggerDebugReport } from "../../services/debug.services";
+  import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+  import { triggerDebugReport } from "$lib/services/debug.services";
 
   let back = false;
   $: back = $layoutBackStore !== undefined;

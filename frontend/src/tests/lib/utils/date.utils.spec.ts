@@ -3,7 +3,7 @@ import {
   secondsToDateTime,
   secondsToDuration,
   secondsToTime,
-} from "../../../lib/utils/date.utils";
+} from "$lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
 
 describe("secondsToDuration", () => {

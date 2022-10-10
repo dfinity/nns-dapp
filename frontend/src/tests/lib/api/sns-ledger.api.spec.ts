@@ -1,46 +1,35 @@
-import { getSnsAccounts } from "../../../lib/api/sns-ledger.api";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "../../../lib/proxy/api.import.proxy";
+import { getSnsAccounts, transactionFee } from "$lib/api/sns-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  ledgerCanisterIdMock,
-  rootCanisterIdMock,
-  swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
+import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
+jest.mock("$lib/proxy/api.import.proxy");
+const mainBalance = BigInt(10_000_000);
+const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
+const fee = BigInt(10_000);
+const transactionFeeSpy = jest.fn().mockResolvedValue(fee);
+
+let metadataReturn = mockQueryTokenResponse;
+const setMetadataError = () => (metadataReturn = []);
+const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
+const metadataSpy = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve(metadataReturn));
+jest.mock("$lib/api/sns-wrapper.api", () => {
+  return {
+    wrapper: () => ({
+      balance: balanceSpy,
+      ledgerMetadata: metadataSpy,
+      transactionFee: transactionFeeSpy,
+    }),
+  };
+});
 
 describe("sns-ledger api", () => {
-  const mainBalance = BigInt(10_000_000);
-  const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
-  const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
-
-  beforeEach(() => {
-    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
-      create: () => ({
-        listSnses: () => Promise.resolve(deployedSnsMock),
-      }),
-    });
-
-    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
-      Promise.resolve({
-        canisterIds: {
-          rootCanisterId: rootCanisterIdMock,
-          ledgerCanisterId: ledgerCanisterIdMock,
-          governanceCanisterId: governanceCanisterIdMock,
-          swapCanisterId: swapCanisterIdMock,
-        },
-        balance: balanceSpy,
-        ledgerMetadata: metadataSpy,
-      })
-    );
-  });
   describe("getSnsAccounts", () => {
+    beforeEach(() => {
+      setMetadataSuccess();
+    });
     it("returns main account with balance and project token metadata", async () => {
       const accounts = await getSnsAccounts({
         certified: true,
@@ -57,6 +46,31 @@ describe("sns-ledger api", () => {
 
       expect(balanceSpy).toBeCalled();
       expect(metadataSpy).toBeCalled();
+    });
+
+    it("throws an error if no token", () => {
+      setMetadataError();
+      const call = () =>
+        getSnsAccounts({
+          certified: true,
+          identity: mockIdentity,
+          rootCanisterId: rootCanisterIdMock,
+        });
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("transactionFee", () => {
+    it("returns transaction fee for an sns project", async () => {
+      const actualFee = await transactionFee({
+        certified: true,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+      });
+
+      expect(actualFee).toBe(fee);
+      expect(transactionFeeSpy).toBeCalled();
     });
   });
 });

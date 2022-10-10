@@ -1,3 +1,8 @@
+import { PROPOSAL_COLOR } from "$lib/constants/proposals.constants";
+import { i18n } from "$lib/stores/i18n";
+import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { Color } from "$lib/types/colors";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -16,15 +21,10 @@ import {
   Vote,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { PROPOSAL_COLOR } from "../constants/proposals.constants";
-import { i18n } from "../stores/i18n";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import type { VoteRegistration } from "../stores/vote-registration.store";
-import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
-import { isDefined } from "./utils";
+import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
@@ -44,7 +44,9 @@ export const proposalActionFields = (
   if (key === undefined) {
     return [];
   }
-  return Object.entries(proposal.action?.[key] ?? {}).filter(([, value]) => {
+  return Object.entries(
+    keyOfOptional({ obj: proposal.action, key }) ?? {}
+  ).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
@@ -68,7 +70,10 @@ export const getNnsFunctionKey = (
   }
 
   // 0 equals Unspecified
-  const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
+  const { nnsFunctionId }: ExecuteNnsFunction = keyOfOptional({
+    obj: proposal?.action,
+    key: action,
+  }) ?? {
     nnsFunctionId: 0,
   };
 
@@ -374,10 +379,10 @@ export const mapProposalInfo = (
       ? undefined
       : deadlineTimestampSeconds - BigInt(nowInSeconds());
 
-  const topicKey: string = Topic[proposalInfo?.topic];
+  const topicKey = Topic[proposalInfo?.topic];
 
-  const statusKey: string = ProposalStatus[status];
-  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
+  const statusKey = ProposalStatus[status];
+  const rewardStatusKey = ProposalRewardStatus[rewardStatus];
 
   return {
     id,
@@ -394,14 +399,17 @@ export const mapProposalInfo = (
     failed: failedTimestampSeconds > 0 ? failedTimestampSeconds : undefined,
     deadline,
 
-    topic: topics[topicKey],
-    topicDescription: topics_description[topicKey],
+    topic: keyOf({ obj: topics, key: topicKey }),
+    topicDescription: keyOf({ obj: topics_description, key: topicKey }),
     status,
-    statusString: statusLabels[statusKey],
-    statusDescription: status_description[statusKey],
+    statusString: keyOf({ obj: statusLabels, key: statusKey }),
+    statusDescription: keyOf({ obj: status_description, key: statusKey }),
     rewardStatus,
-    rewardStatusString: rewards[rewardStatusKey],
-    rewardStatusDescription: rewards_description[rewardStatusKey],
+    rewardStatusString: keyOf({ obj: rewards, key: rewardStatusKey }),
+    rewardStatusDescription: keyOf({
+      obj: rewards_description,
+      key: rewardStatusKey,
+    }),
     ...mapProposalType(proposal),
   };
 };
@@ -432,15 +440,21 @@ const mapProposalType = (
 
   if (nnsFunctionKey !== undefined) {
     return {
-      type: nns_functions[nnsFunctionKey],
-      typeDescription: nns_functions_description[nnsFunctionKey],
+      type: keyOf({ obj: nns_functions, key: nnsFunctionKey }),
+      typeDescription: keyOf({
+        obj: nns_functions_description,
+        key: nnsFunctionKey,
+      }),
     };
   }
 
   const action: string | undefined = proposalFirstActionKey(proposal);
 
   return action !== undefined
-    ? { type: actions[action], typeDescription: actions_description[action] }
+    ? {
+        type: keyOf({ obj: actions, key: action }),
+        typeDescription: keyOf({ obj: actions_description, key: action }),
+      }
     : NO_MATCH;
 };
 
@@ -476,10 +490,9 @@ const votingPeriodEndFallback = ({
   proposalTimestampSeconds,
   topic,
 }: ProposalInfo): Date => {
-  const durationInSeconds: number = [
-    Topic.ManageNeuron,
-    Topic.ExchangeRate,
-  ].includes(topic)
+  const durationInSeconds = [Topic.ManageNeuron, Topic.ExchangeRate].includes(
+    topic
+  )
     ? SHORT_VOTING_PERIOD_SECONDS
     : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
 

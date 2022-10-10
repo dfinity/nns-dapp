@@ -42,6 +42,7 @@ interface I18nError {
   neuron_load: string;
   sns_neurons_load: string;
   sns_accounts_load: string;
+  sns_token_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -130,9 +131,13 @@ interface I18nHeader {
 interface I18nAuth {
   ic: string;
   nns: string;
-  icp_governance: string;
   login: string;
+  title: string;
   on_chain: string;
+  secure: string;
+  stake: string;
+  earn: string;
+  ic_logo: string;
 }
 
 interface I18nAccounts {
@@ -470,7 +475,8 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
-  voting_power_tooltip: string;
+  voting_power_tooltip_without_stake: string;
+  voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;

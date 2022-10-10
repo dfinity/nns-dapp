@@ -4,7 +4,7 @@ import {
   markdownToSanitizedHTML,
   sanitize,
   targetBlankLinkRenderer,
-} from "../../../lib/utils/html.utils";
+} from "$lib/utils/html.utils";
 
 describe("markdown.utils", () => {
   describe("targetBlankLinkRenderer", () => {

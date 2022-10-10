@@ -1,9 +1,6 @@
+import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  neuronsStore,
-  sortedNeuronStore,
-} from "../../../lib/stores/neurons.store";
 import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("neurons-store", () => {

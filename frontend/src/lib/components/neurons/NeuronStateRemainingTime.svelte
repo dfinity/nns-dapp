@@ -1,10 +1,10 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { valueSpan } from "../../utils/utils";
-  import Value from "../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { valueSpan } from "$lib/utils/utils";
+  import Value from "$lib/components/ui/Value.svelte";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;

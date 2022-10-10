@@ -1,13 +1,13 @@
-import type { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-import type { SnsFullProject } from "../stores/projects.store";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import type { SnsFullProject } from "$lib/stores/projects.store";
 import type {
   SnsSummary,
   SnsSummarySwap,
   SnsSwapCommitment,
-} from "../types/sns";
+} from "$lib/types/sns";
+import type { TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { formatToken } from "./icp.utils";
@@ -132,7 +132,7 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const myCommitment: bigint = getCommitmentE8s(swapCommitment) ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
 
   return (
     summary !== undefined &&

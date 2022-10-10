@@ -1,5 +1,5 @@
+import { Color } from "$lib/types/colors";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { Color } from "../types/theme";
 
 // TODO: suggest to move into the store and add typing
 export const DEFAULT_PROPOSALS_FILTERS = {

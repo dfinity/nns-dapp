@@ -2,6 +2,25 @@
  * @jest-environment jsdom
  */
 
+import {
+  addNeuronPermissions,
+  participateInSnsSwap,
+  queryAllSnsMetadata,
+  querySnsMetadata,
+  querySnsNeuron,
+  querySnsNeurons,
+  querySnsSwapCommitment,
+  querySnsSwapState,
+  querySnsSwapStates,
+  removeNeuronPermissions,
+} from "$lib/api/sns.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { NotAuthorizedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  importInitSnsWrapper,
+  importSnsWasmCanister,
+} from "$lib/proxy/api.import.proxy";
+import { snsesCountStore } from "$lib/stores/sns.store";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   ICPToken,
@@ -14,25 +33,6 @@ import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import {
-  addNeuronPermissions,
-  participateInSnsSwap,
-  queryAllSnsMetadata,
-  querySnsMetadata,
-  querySnsNeuron,
-  querySnsNeurons,
-  querySnsSwapCommitment,
-  querySnsSwapState,
-  querySnsSwapStates,
-  removeNeuronPermissions,
-} from "../../../lib/api/sns.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { NotAuthorizedError } from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-} from "../../../lib/proxy/api.import.proxy";
-import { snsesCountStore } from "../../../lib/stores/sns.store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
@@ -50,8 +50,8 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
-jest.mock("../../../lib/utils/agent.utils", () => {
+jest.mock("$lib/proxy/api.import.proxy");
+jest.mock("$lib/utils/agent.utils", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };

@@ -28,7 +28,9 @@ export const enumsKeys = <T>({
   obj: T;
   values: T[];
 }): string[] => {
-  return values.map((value: T) => obj[value as unknown as string]);
+  return values.map(
+    (value: T) => obj[value as unknown as keyof T]
+  ) as unknown as string[];
 };
 
 /**
@@ -50,7 +52,7 @@ export const enumsExclude = <T>({
 
   return enumKeys(obj)
     .filter((key: string) => !keys.includes(key))
-    .map((key: string) => obj[key]);
+    .map((key: string) => obj[key as keyof T] as unknown as T);
 };
 
 /**
@@ -61,11 +63,3 @@ export const enumsExclude = <T>({
 export const enumSize = <T>(enm: T): number => {
   return Object.values(enm).filter(isNaN).length;
 };
-
-export const enumFromStringExists = <T>({
-  obj,
-  value,
-}: {
-  obj: T;
-  value: string | null;
-}): boolean => Object.values(obj).includes(value);

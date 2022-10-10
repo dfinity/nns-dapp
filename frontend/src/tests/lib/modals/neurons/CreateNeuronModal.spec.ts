@@ -2,6 +2,17 @@
  * @jest-environment jsdom
  */
 
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import CreateNeuronModal from "$lib/modals/neurons/CreateNeuronModal.svelte";
+import {
+  addHotkeyForHardwareWalletNeuron,
+  stakeNeuron,
+  updateDelay,
+} from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { formatVotingPower } from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import {
@@ -11,17 +22,6 @@ import {
   type queries,
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
-import CreateNeuronModal from "../../../../lib/modals/neurons/CreateNeuronModal.svelte";
-import {
-  addHotkeyForHardwareWalletNeuron,
-  stakeNeuron,
-  updateDelay,
-} from "../../../../lib/services/neurons.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import { formatVotingPower } from "../../../../lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -41,7 +41,7 @@ const newNeuron: NeuronInfo = {
     cachedNeuronStake: neuronStakeE8s,
   },
 };
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     stakeNeuron: jest
       .fn()
@@ -55,19 +55,19 @@ jest.mock("../../../../lib/services/neurons.services", () => {
   };
 });
 
-jest.mock("../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/knownNeurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };
 });
 
-jest.mock("../../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
     toastsShow: jest.fn(),

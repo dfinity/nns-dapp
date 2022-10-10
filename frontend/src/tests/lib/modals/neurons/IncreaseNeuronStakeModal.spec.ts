@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
+import { reloadNeuron } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { LedgerCanister } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import { NNSDappCanister } from "../../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import IncreaseNeuronStakeModal from "../../../../lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
-import { reloadNeuron } from "../../../../lib/services/neurons.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -19,7 +19,7 @@ import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 import { MockNNSDappCanister } from "../../../mocks/nns-dapp.canister.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     reloadNeuron: jest.fn(),
   };

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import Value from "../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import Value from "$lib/components/ui/Value.svelte";
   import type { TokenAmount } from "@dfinity/nns";
 
-  export let feeOnly: boolean = false;
+  export let feeOnly = false;
   export let source: string;
   export let destination: string;
-  export let hardwareWallet: boolean = false;
+  export let hardwareWallet = false;
   export let fee: TokenAmount | undefined = undefined;
 </script>
 

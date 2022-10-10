@@ -1,4 +1,4 @@
-import { isSignedIn } from "../../../lib/utils/auth.utils";
+import { isSignedIn } from "$lib/utils/auth.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 
 describe("auth-utils", () => {

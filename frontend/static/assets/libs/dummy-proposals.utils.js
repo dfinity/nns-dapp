@@ -242,17 +242,17 @@ const makeMotionDummyProposalRequest = ({ title, url, summary, neuronId }) => ({
   action: {
     Motion: {
       motionText:
-        "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+          "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
     },
   },
 });
 
 const makeNetworkEconomicsDummyProposalRequest = ({
-  title,
-  url,
-  summary,
-  neuronId,
-}) => ({
+                                                    title,
+                                                    url,
+                                                    summary,
+                                                    neuronId,
+                                                  }) => ({
   neuronId,
   title,
   url,
@@ -272,11 +272,11 @@ const makeNetworkEconomicsDummyProposalRequest = ({
 });
 
 const makeRewardNodeProviderDummyProposal = ({
-  title,
-  url,
-  summary,
-  neuronId,
-}) => ({
+                                               title,
+                                               url,
+                                               summary,
+                                               neuronId,
+                                             }) => ({
   neuronId,
   title,
   url,
@@ -328,13 +328,13 @@ const makeRewardNodeProviderDummyProposal = ({
 // });
 
 const makeExecuteNnsFunctionDummyProposalRequest = ({
-  title,
-  url,
-  summary,
-  neuronId,
-  nnsFunction,
-  payload,
-}) => ({
+                                                      title,
+                                                      url,
+                                                      summary,
+                                                      neuronId,
+                                                      nnsFunction,
+                                                      payload,
+                                                    }) => ({
   neuronId,
   title,
   url,
@@ -457,7 +457,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
 
     const request1 = makeMotionDummyProposalRequest({
       title:
-        "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
+          "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
       neuronId,
       url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
       summary: DEMO_SUMMARY,
@@ -495,7 +495,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
       title: "Update configuration of subnet: tdb26-",
       url: "",
       summary:
-        "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+          "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
       nnsFunction: 7,
       payload: updateSubnetConfigPayload,
     });
@@ -504,10 +504,10 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
     const request6 = makeExecuteNnsFunctionDummyProposalRequest({
       neuronId,
       title:
-        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
       url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
       summary:
-        "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
       nnsFunction: 11,
       payload: updateSubnetPayload,
     });
@@ -518,7 +518,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
       title: "Initialize datacenter records",
       url: "",
       summary:
-        "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+          "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
       nnsFunction: 21,
       payload: addOrRemoveDataCentersPayload,
     });

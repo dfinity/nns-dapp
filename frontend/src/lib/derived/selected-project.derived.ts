@@ -1,9 +1,9 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { routeStore } from "$lib/stores/route.store";
+import { getContextFromPath } from "$lib/utils/app-path.utils";
+import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
-import { derived } from "svelte/store";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-import { routeStore } from "../stores/route.store";
-import { getContextFromPath } from "../utils/app-path.utils";
-import { isNnsProject } from "../utils/projects.utils";
+import { derived, type Readable } from "svelte/store";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "context" - e.g. display Neurons of Nns or a particular Sns
@@ -16,7 +16,7 @@ export const snsProjectSelectedStore = derived([routeStore], ([{ path }]) => {
   if (maybeContextId !== undefined) {
     try {
       return Principal.fromText(maybeContextId);
-    } catch (error) {
+    } catch (error: unknown) {
       // Add execeptions, maybe bitcoin wallet?
     }
   }
@@ -36,10 +36,9 @@ export const isNnsProjectStore = derived(
 /***
  * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
  */
-export const snsOnlyProjectStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore: Principal) =>
-    isNnsProject($snsProjectSelectedStore)
-      ? undefined
-      : $snsProjectSelectedStore
+export const snsOnlyProjectStore = derived<
+  Readable<Principal>,
+  Principal | undefined
+>(snsProjectSelectedStore, ($snsProjectSelectedStore: Principal) =>
+  isNnsProject($snsProjectSelectedStore) ? undefined : $snsProjectSelectedStore
 );

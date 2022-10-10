@@ -1,17 +1,17 @@
 /**
  * @jest-environment jsdom
  */
-import { get } from "svelte/store";
-import { OWN_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import { AppPath, CONTEXT_PATH } from "../../../lib/constants/routes.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
   accountsPathStore,
   neuronPathStore,
   neuronsPathStore,
   walletPathStore,
-} from "../../../lib/derived/paths.derived";
-import { routeStore } from "../../../lib/stores/route.store";
-import { paths } from "../../../lib/utils/app-path.utils";
+} from "$lib/derived/paths.derived";
+import { routeStore } from "$lib/stores/route.store";
+import { paths } from "$lib/utils/app-path.utils";
+import { get } from "svelte/store";
 
 describe("paths derived stores", () => {
   describe("accountsPathStore", () => {

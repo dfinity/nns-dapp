@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import NewTransactionInfo from "$lib/components/accounts/NewTransactionInfo.svelte";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NewTransactionInfo from "../../../../lib/components/accounts/NewTransactionInfo.svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,

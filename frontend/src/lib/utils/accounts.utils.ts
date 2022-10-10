@@ -1,8 +1,8 @@
+import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { Account } from "$lib/types/account";
+import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { AccountsStore } from "../stores/accounts.store";
-import type { Account } from "../types/account";
-import { InsufficientAmountError } from "../types/common.errors";
 
 /*
  * Returns the principal's main or hardware account
@@ -107,4 +107,12 @@ export const assertEnoughAccountFunds = ({
   if (account.balance.toE8s() < amountE8s) {
     throw new InsufficientAmountError("error.insufficient_funds");
   }
+};
+
+/**
+ * Returns `undefined` if the "main" account was not find.
+ * @param accounts
+ */
+export const mainAccount = (accounts: Account[]): Account | undefined => {
+  return accounts.find((account) => account.type === "main");
 };

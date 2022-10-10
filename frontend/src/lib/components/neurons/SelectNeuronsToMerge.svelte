@@ -1,18 +1,18 @@
 <script lang="ts">
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import { translate } from "../../utils/i18n.utils";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { translate } from "$lib/utils/i18n.utils";
   import {
     mapMergeableNeurons,
     mapNeuronIds,
     type MergeableNeuron,
-  } from "../../utils/neuron.utils";
-  import Tooltip from "../ui/Tooltip.svelte";
+  } from "$lib/utils/neuron.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import NeuronCard from "./NeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];

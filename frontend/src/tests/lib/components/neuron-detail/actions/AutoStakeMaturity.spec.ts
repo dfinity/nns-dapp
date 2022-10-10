@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
+import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import AutoStakeMaturity from "../../../../../lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
-import { toggleAutoStakeMaturity } from "../../../../../lib/services/neurons.services";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 
-jest.mock("../../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     toggleAutoStakeMaturity: jest.fn().mockResolvedValue({ success: true }),
   };

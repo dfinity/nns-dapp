@@ -1,3 +1,25 @@
+import { registerVote } from "$lib/api/proposals.api";
+import { i18n } from "$lib/stores/i18n";
+import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+import { proposalsStore } from "$lib/stores/proposals.store";
+import {
+  toastsError,
+  toastsHide,
+  toastsShow,
+  toastsUpdate,
+} from "$lib/stores/toasts.store";
+import {
+  voteRegistrationStore,
+  type VoteRegistration,
+} from "$lib/stores/vote-registration.store";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { updateNeuronsVote } from "$lib/utils/neuron.utils";
+import {
+  registerVoteErrorDetails,
+  updateProposalVote,
+} from "$lib/utils/proposals.utils";
+import { keyOf } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
   Topic,
@@ -8,27 +30,6 @@ import {
 } from "@dfinity/nns";
 import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { registerVote } from "../api/proposals.api";
-import { i18n } from "../stores/i18n";
-import { definedNeuronsStore, neuronsStore } from "../stores/neurons.store";
-import { proposalsStore } from "../stores/proposals.store";
-import {
-  toastsError,
-  toastsHide,
-  toastsShow,
-  toastsUpdate,
-} from "../stores/toasts.store";
-import {
-  voteRegistrationStore,
-  type VoteRegistration,
-} from "../stores/vote-registration.store";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { replacePlaceholders } from "../utils/i18n.utils";
-import { updateNeuronsVote } from "../utils/neuron.utils";
-import {
-  registerVoteErrorDetails,
-  updateProposalVote,
-} from "../utils/proposals.utils";
 import { getIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 import { loadProposal } from "./proposals.services";
@@ -135,7 +136,7 @@ const createRegisterVotesToast = ({
     spinner: true,
     substitutions: {
       $proposalId: `${id}`,
-      $topic: $i18n.topics[Topic[topic]],
+      $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
       $status: status,
     },
   });
@@ -249,7 +250,7 @@ const updateVoteRegistrationToastMessage = ({
       spinner: true,
       substitutions: {
         $proposalId: `${id}`,
-        $topic: $i18n.topics[Topic[topic]],
+        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
         $status: status,
       },
     },
@@ -358,7 +359,7 @@ const processRegisterVoteErrors = ({
       level: "error",
       substitutions: {
         $proposalId: `${proposalId}`,
-        $topic: $i18n.topics[Topic[topic]],
+        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
       },
       detail: details.join(", "),
     });

@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import ProposalCountdown from "$lib/components/proposals/ProposalCountdown.svelte";
+import { secondsToDuration } from "$lib/utils/date.utils";
 import { render } from "@testing-library/svelte";
-import ProposalCountdown from "../../../../lib/components/proposals/ProposalCountdown.svelte";
-import { secondsToDuration } from "../../../../lib/utils/date.utils";
 import en from "../../../mocks/i18n.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 

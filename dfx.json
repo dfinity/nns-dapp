@@ -88,7 +88,6 @@
   "networks": {
     "mainnet": {
       "config": {
-        "BUILD": "release",
         "FETCH_ROOT_KEY": false,
         "HOST": "https://ic0.app",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
@@ -96,7 +95,8 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": false,
+          "STAKE_MATURITY": false
         }
       },
       "providers": [
@@ -106,12 +106,12 @@
     },
     "staging": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": false,
+          "STAKE_MATURITY": false
         }
       },
       "providers": [
@@ -121,12 +121,12 @@
     },
     "testnet": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -136,12 +136,12 @@
     },
     "small13": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -151,12 +151,12 @@
     },
     "small12": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -166,12 +166,12 @@
     },
     "small11": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -181,12 +181,12 @@
     },
     "small06": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "providers": [
@@ -196,12 +196,12 @@
     },
     "local": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "VOTING_UI": "modern"
+          "ENABLE_SNS_2": true,
+          "STAKE_MATURITY": true
         }
       },
       "bind": "127.0.0.1:8080",

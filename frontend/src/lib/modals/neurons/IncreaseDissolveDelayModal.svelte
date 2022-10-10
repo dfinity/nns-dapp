@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
-  import LegacyWizardModal from "../LegacyWizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
+  import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
+  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -25,7 +25,7 @@
   let currentStep: Step;
   let modal: LegacyWizardModal;
 
-  let delayInSeconds: number = Number(neuron.dissolveDelaySeconds);
+  let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {

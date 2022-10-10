@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NeuronSelectPercentage from "../../components/neuron-detail/NeuronSelectPercentage.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import type { Step, Steps } from "$lib/stores/steps.state";
   import WizardModal from "../WizardModal.svelte";
-  import { stopBusy } from "../../stores/busy.store";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsShow } from "../../stores/toasts.store";
-  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
+  import { spawnNeuron } from "$lib/services/neurons.services";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
+  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
@@ -42,7 +42,7 @@
 
   let currentStep: Step;
 
-  let percentageToSpawn: number = 0;
+  let percentageToSpawn = 0;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({

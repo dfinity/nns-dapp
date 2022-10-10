@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import Followee from "../../../../../lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
-import { knownNeuronsStore } from "../../../../../lib/stores/knownNeurons.store";
 import en from "../../../../mocks/i18n.mock";
 
 describe("Followee", () => {

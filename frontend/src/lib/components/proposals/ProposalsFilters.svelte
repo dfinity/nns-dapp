@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ProposalsFilterModalProps } from "../../types/proposals";
-  import ProposalsFilterModal from "../../modals/proposals/ProposalsFilterModal.svelte";
-  import Checkbox from "../ui/Checkbox.svelte";
-  import { i18n } from "../../stores/i18n";
+  import type { ProposalsFilterModalProps } from "$lib/types/proposals";
+  import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
+  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { enumsExclude } from "../../utils/enum.utils";
-  import FiltersButton from "../ui/FiltersButton.svelte";
+  import { proposalsFiltersStore } from "$lib/stores/proposals.store";
+  import { enumsExclude } from "$lib/utils/enum.utils";
+  import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 

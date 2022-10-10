@@ -1,16 +1,16 @@
 <script lang="ts">
   import NewTransactionInfo from "./NewTransactionInfo.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { NEW_TRANSACTION_CONTEXT_KEY } from "../../types/transaction.context";
-  import type { TransactionContext } from "../../types/transaction.context";
+  import { NEW_TRANSACTION_CONTEXT_KEY } from "$lib/types/transaction.context";
+  import type { TransactionContext } from "$lib/types/transaction.context";
   import { createEventDispatcher, getContext } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { transferICP } from "../../services/accounts.services";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
-  import { toastsSuccess } from "../../stores/toasts.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { transferICP } from "$lib/services/accounts.services";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const context: TransactionContext = getContext<TransactionContext>(
     NEW_TRANSACTION_CONTEXT_KEY

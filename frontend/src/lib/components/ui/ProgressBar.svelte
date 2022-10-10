@@ -1,7 +1,7 @@
 <script lang="ts">
   // Html default is 1 anyway
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress?retiredLocale=ca#attr-max
-  export let max: number = 1;
+  export let max = 1;
   export let value: number;
   export let color: "yellow" | "blue" = "yellow";
 </script>
@@ -36,12 +36,12 @@
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
       border: 0;
 
       &::-moz-progress-bar {
         border-radius: var(--current-height);
-        box-shadow: var(--current-box-inset-shadow);
+        box-shadow: var(--input-box-shadow);
       }
 
       &.yellow {
@@ -73,12 +73,12 @@
 
       height: var(--current-height);
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
     }
 
     &::-webkit-progress-value {
       border-radius: var(--current-height);
-      box-shadow: var(--current-box-inset-shadow);
+      box-shadow: var(--input-box-shadow);
     }
 
     &.yellow {

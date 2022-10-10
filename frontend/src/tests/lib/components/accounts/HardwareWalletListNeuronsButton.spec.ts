@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
+import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
-import { listNeuronsHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
   afterEach(() => {
@@ -23,7 +23,9 @@ describe("HardwareWalletListNeuronsButton", () => {
 
   beforeAll(() => {
     spy = (listNeuronsHardwareWalletProxy as jest.Mock).mockImplementation(
-      async () => ({ neurons: [mockNeuron] })
+      async () => ({
+        neurons: [mockNeuron],
+      })
     );
   });
 

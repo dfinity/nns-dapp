@@ -1,25 +1,24 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDate } from "../../utils/date.utils";
-  import Value from "../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDate } from "$lib/utils/date.utils";
+  import Value from "$lib/components/ui/Value.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
-  } from "../../types/sns-neuron-detail.context";
+  } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
-  import DisburseSnsNeuronModal from "../../modals/neurons/DisburseSnsNeuronModal.svelte";
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,
-  } from "../../utils/sns-neuron.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { isNullish, nonNullish } from "../../utils/utils";
+  } from "$lib/utils/sns-neuron.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
-  import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
+  import DissolveSnsNeuronButton from "$lib/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
+  import DisburseSnsButton from "$lib/components/neuron-detail/actions/DisburseSnsButton.svelte";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -37,10 +36,6 @@
         neuron,
         identity: $authStore.identity,
       });
-
-  const { reload: reloadContext } = getContext<SelectedSnsNeuronContext>(
-    SELECTED_SNS_NEURON_CONTEXT_KEY
-  );
 </script>
 
 {#if nonNullish(neuron)}
@@ -53,11 +48,7 @@
 
       <div class="buttons">
         {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton
-            {neuron}
-            modal={DisburseSnsNeuronModal}
-            {reloadContext}
-          />
+          <DisburseSnsButton {neuron} {reloadContext} />
         {:else if neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked}
           <DissolveSnsNeuronButton
             neuronId={fromDefinedNullable(neuron.id)}

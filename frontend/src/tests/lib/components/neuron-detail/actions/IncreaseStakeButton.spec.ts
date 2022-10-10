@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import IncreaseStakeButton from "../../../../../lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 

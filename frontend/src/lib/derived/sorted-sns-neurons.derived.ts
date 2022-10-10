@@ -1,7 +1,7 @@
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { sortSnsNeuronsByCreatedTimestamp } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
-import { snsNeuronsStore } from "../stores/sns-neurons.store";
-import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
 import { snsProjectSelectedStore } from "./selected-project.derived";
 
 export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(

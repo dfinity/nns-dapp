@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
 
   export let canisterId: Principal | undefined;

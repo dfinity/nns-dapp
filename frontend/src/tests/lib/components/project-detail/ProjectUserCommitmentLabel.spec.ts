@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import ProjectUserCommitmentLabel from "../../../../lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSwapCommitment,

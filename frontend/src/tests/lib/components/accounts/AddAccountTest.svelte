@@ -4,7 +4,7 @@
     AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
     AddAccountContext,
-  } from "../../../../lib/types/add-account.context";
+  } from "$lib/types/add-account.context";
   import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 
   export let testComponent: typeof SvelteComponent;

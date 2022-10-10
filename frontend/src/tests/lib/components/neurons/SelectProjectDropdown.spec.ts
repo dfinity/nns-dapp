@@ -1,21 +1,21 @@
 /**
  * @jest-environment jsdom
  */
+import SelectProjectDropdown from "$lib/components/neurons/SelectProjectDropdown.svelte";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { committedProjectsStore } from "$lib/stores/projects.store";
+import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import SelectProjectDropdown from "../../../../lib/components/neurons/SelectProjectDropdown.svelte";
-import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { snsProjectSelectedStore } from "../../../../lib/derived/selected-project.derived";
-import { committedProjectsStore } from "../../../../lib/stores/projects.store";
-import { routeStore } from "../../../../lib/stores/route.store";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
   };

@@ -1,12 +1,12 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     type AccountType,
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
-  import CardItem from "../ui/CardItem.svelte";
+  } from "$lib/types/add-account.context";
+  import CardItem from "$lib/components/ui/CardItem.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY

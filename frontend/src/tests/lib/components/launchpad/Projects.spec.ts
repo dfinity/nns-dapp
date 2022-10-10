@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
-import Projects from "../../../../lib/components/launchpad/Projects.svelte";
+import Projects from "$lib/components/launchpad/Projects.svelte";
 import {
   snsesCountStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../../../../lib/stores/sns.store";
+} from "$lib/stores/sns.store";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,
@@ -17,7 +17,7 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),

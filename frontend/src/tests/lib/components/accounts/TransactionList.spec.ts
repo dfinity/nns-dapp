@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import TransactionList from "../../../../lib/components/accounts/TransactionList.svelte";
+import TransactionList from "$lib/components/accounts/TransactionList.svelte";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountContext,
   type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
+} from "$lib/types/selected-account.context";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockReceivedFromMainAccountTransaction } from "../../../mocks/transaction.mock";

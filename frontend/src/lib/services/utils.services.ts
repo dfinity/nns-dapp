@@ -1,5 +1,5 @@
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import { logWithTimestamp } from "../utils/dev.utils";
 import { getIdentity } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
@@ -13,7 +13,7 @@ export type QueryAndUpdateOnError<E> = (options: {
 }) => void;
 
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
-let lastIndex: number = 0;
+let lastIndex = 0;
 
 /**
  * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).
