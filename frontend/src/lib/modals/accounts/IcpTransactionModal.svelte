@@ -33,7 +33,7 @@
     const { success } = await transferICP({
       sourceAccount,
       destinationAddress,
-      amount: amount,
+      amount,
     });
 
     if (success) {
