@@ -6,7 +6,6 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
-  anonymizeICP,
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
@@ -129,7 +128,6 @@ const anonymiseStoreState = async () => {
     toasts,
     addAccount,
     hardwareWalletNeurons,
-    transaction,
     selectedAccount,
     selectedProposal,
     selectedProject,
@@ -174,13 +172,6 @@ const anonymiseStoreState = async () => {
       hardwareWalletName: addAccount?.hardwareWalletName,
     },
     hardwareWalletNeurons,
-    transaction: {
-      selectedAccount: await anonymizeAccount(transaction?.selectedAccount),
-      destinationAddress: await cutAndAnonymize(
-        transaction?.destinationAddress
-      ),
-      amount: await anonymizeICP(transaction?.amount),
-    },
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
     },

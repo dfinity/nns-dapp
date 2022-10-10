@@ -13,8 +13,7 @@ import {
 } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
-import type { TransactionStore } from "$lib/types/transaction.context";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { NewTransaction } from "$lib/types/transaction";
 import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
@@ -99,10 +98,10 @@ describe("accounts-services", () => {
       resetIdentity();
     });
 
-    const transferICPParams: TransactionStore = {
-      selectedAccount: mockMainAccount,
+    const transferICPParams: NewTransaction = {
+      sourceAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: TokenAmount.fromE8s({ amount: BigInt(1), token: ICPToken }),
+      amount: 1,
     };
 
     it("should transfer ICP", async () => {
@@ -115,31 +114,6 @@ describe("accounts-services", () => {
       await transferICP(transferICPParams);
 
       expect(spyLoadAccounts).toHaveBeenCalled();
-    });
-
-    it("should throw errors if transfer params not provided", async () => {
-      const { err: errSelectedAccount } = await transferICP({
-        ...transferICPParams,
-        selectedAccount: undefined,
-      });
-
-      expect(errSelectedAccount).toEqual("error.transaction_no_source_account");
-
-      const { err: errDestinationAddress } = await transferICP({
-        ...transferICPParams,
-        destinationAddress: undefined,
-      });
-
-      expect(errDestinationAddress).toEqual(
-        "error.transaction_no_destination_address"
-      );
-
-      const { err: errAmount } = await transferICP({
-        ...transferICPParams,
-        amount: undefined,
-      });
-
-      expect(errAmount).toEqual("error.transaction_invalid_amount");
     });
   });
 
