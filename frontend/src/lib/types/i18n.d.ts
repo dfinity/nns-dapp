@@ -709,6 +709,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nTopics_description {
@@ -724,6 +726,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nRewards {
@@ -821,6 +825,7 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -858,6 +863,7 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18n {
