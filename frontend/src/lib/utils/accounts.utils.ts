@@ -40,6 +40,7 @@ export const invalidAddress = (address: string | undefined): boolean => {
     return false;
   } catch (_) {
     try {
+      // TODO: Find a better solution to check if the address is valid for SNS as well.
       // It might also be an SNS address
       decodeSnsAccount(address);
       return false;
