@@ -49,7 +49,6 @@
 {/if}
 
 <style lang="scss">
-  h4,
   p {
     margin-bottom: var(--padding-2x);
   }
