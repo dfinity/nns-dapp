@@ -3,11 +3,15 @@
  */
 
 import { accountsStore } from "$lib/stores/accounts.store";
-import { derived } from "svelte/store";
+import type { Account } from "$lib/types/account";
+import { derived, type Readable } from "svelte/store";
 import { isNnsProjectStore } from "./selected-project.derived";
 import { snsProjectAccountsStore } from "./sns/sns-project-accounts.derived";
 
-export const accountsListStore = derived(
+/**
+ * Returns the accounts of the project matching the context.
+ */
+export const accountsSelectedProjectStore: Readable<Account[]> = derived(
   [accountsStore, isNnsProjectStore, snsProjectAccountsStore],
   ([{ main, subAccounts, hardwareWallets }, isNns, snsAccounts]) => {
     if (isNns) {
