@@ -9,7 +9,6 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -35,42 +34,41 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount} class="wizard-wrapper">
+<form on:submit|preventDefault={createNewSubAccount}>
   <div>
-    <h4 class="balance">{$i18n.accounts.rename_account_enter_new_name}</h4>
+    <p class="label">{$i18n.accounts.rename_account_enter_new_name}</p>
     <Input
-      inputType="text"
-      placeholderLabelKey="accounts.rename_new_name_placeholder"
-      name="newAccountName"
-      bind:value={newAccountName}
-      disabled={$busy}
+            inputType="text"
+            placeholderLabelKey="accounts.rename_new_name_placeholder"
+            name="newAccountName"
+            bind:value={newAccountName}
+            disabled={$busy}
     />
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button
-      class="secondary"
-      type="button"
-      on:click={() => dispatcher("nnsClose")}
+            class="secondary"
+            type="button"
+            on:click={() => dispatcher("nnsClose")}
     >
       {$i18n.core.cancel}
     </button>
     <button
-      class="primary"
-      type="submit"
-      data-tid="rename-subaccount-button"
-      disabled={newAccountName.length === 0 ||
+            class="primary"
+            type="submit"
+            data-tid="rename-subaccount-button"
+            disabled={newAccountName.length === 0 ||
         $busy ||
         selectedAccount === undefined}
     >
       {$i18n.accounts.rename}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
   }
 </style>

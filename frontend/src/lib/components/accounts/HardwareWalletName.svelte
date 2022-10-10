@@ -8,7 +8,6 @@
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "$lib/constants/accounts.constants";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -40,9 +39,9 @@
   };
 </script>
 
-<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+<form on:submit|preventDefault={onSubmit}>
   <div>
-    <h4>{$i18n.accounts.attach_hardware_enter_name}</h4>
+    <p class="label">{$i18n.accounts.attach_hardware_enter_name}</p>
     <InputWithError
       inputType="text"
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
@@ -56,20 +55,21 @@
         : undefined}
     />
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button class="secondary" type="button" on:click={back}>
       {$i18n.core.back}
     </button>
     <button class="primary" type="submit" {disabled}>
       {$i18n.core.continue}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
+    padding-bottom: var(--padding);
   }
 </style>
+

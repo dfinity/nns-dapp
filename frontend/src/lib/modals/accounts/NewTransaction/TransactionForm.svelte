@@ -87,7 +87,6 @@
 
 <form
   on:submit|preventDefault={goNext}
-  class="wrapper"
   data-tid="transaction-step-1"
 >
   <div class="select-account">
@@ -114,7 +113,7 @@
       </div>
     {/if}
   </div>
-  <div class="wrapper info">
+  <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
@@ -161,10 +160,6 @@
     align-items: stretch;
     justify-content: center;
     gap: var(--padding-3x);
-
-    &.info {
-      gap: var(--padding-2x);
-    }
   }
 
   .account-identifier {
