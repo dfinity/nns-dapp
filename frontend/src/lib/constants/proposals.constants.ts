@@ -1,4 +1,4 @@
-import { Color } from "$lib/types/theme";
+import { Color } from "$lib/types/colors";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 
 // TODO: suggest to move into the store and add typing

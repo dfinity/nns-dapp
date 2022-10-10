@@ -7,9 +7,11 @@ import { AppPath } from "$lib/constants/routes.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import en from "../../mocks/i18n.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -29,6 +31,12 @@ describe("Accounts", () => {
   beforeEach(() => {
     // Reset to default value
     routeStore.update({ path: AppPath.LegacyAccounts });
+
+    snsAccountsStore.setAccounts({
+      rootCanisterId: mockSnsFullProject.rootCanisterId,
+      certified: true,
+      accounts: [mockSnsMainAccount],
+    });
   });
 
   it("should render NnsAccounts by default", () => {
@@ -89,7 +97,7 @@ describe("Accounts", () => {
     );
   });
 
-  it("should open transaction modal", async () => {
+  it("should open nns transaction modal", async () => {
     const { getByTestId } = render(Accounts);
 
     const button = getByTestId("open-new-transaction") as HTMLButtonElement;
@@ -112,6 +120,33 @@ describe("Accounts", () => {
       expect(
         getByText(en.accounts.attach_hardware_title, { exact: false })
       ).toBeInTheDocument();
+    });
+  });
+
+  it("should open sns transaction modal", async () => {
+    const { queryByTestId, getByTestId } = render(Accounts);
+
+    expect(queryByTestId("accounts-body")).toBeInTheDocument();
+
+    const selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
+
+    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: projectCanisterId },
+      });
+
+    await waitFor(() =>
+      expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+    );
+
+    const button = getByTestId("open-new-sns-transaction") as HTMLButtonElement;
+    await fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
   });
 });

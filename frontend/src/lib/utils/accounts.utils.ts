@@ -1,8 +1,11 @@
+import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { decodeSnsAccount } from "@dfinity/sns";
+import { getLastPathDetail, isRoutePath } from "./app-path.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -36,7 +39,17 @@ export const invalidAddress = (address: string | undefined): boolean => {
     checkAccountId(address);
     return false;
   } catch (_) {
-    return true;
+    try {
+      // TODO: Find a better solution to check if the address is valid for SNS as well.
+      // It might also be an SNS address
+      decodeSnsAccount(address);
+      return false;
+    } catch {
+      _;
+    }
+    {
+      return true;
+    }
   }
 };
 
@@ -67,30 +80,16 @@ export const isAccountHardwareWallet = (
 
 export const getAccountFromStore = ({
   identifier,
-  accountsStore: { main, subAccounts, hardwareWallets },
+  accounts,
 }: {
   identifier: string | undefined;
-  accountsStore: AccountsStore;
+  accounts: Account[];
 }): Account | undefined => {
   if (identifier === undefined) {
     return undefined;
   }
 
-  if (main?.identifier === identifier) {
-    return main;
-  }
-
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
-
-  if (subAccount !== undefined) {
-    return subAccount;
-  }
-
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return accounts.find(({ identifier: id }) => id === identifier);
 };
 
 /**
@@ -107,4 +106,38 @@ export const assertEnoughAccountFunds = ({
   if (account.balance.toE8s() < amountE8s) {
     throw new InsufficientAmountError("error.insufficient_funds");
   }
+};
+
+/**
+ * Returns `undefined` if the "main" account was not find.
+ * @param accounts
+ */
+export const mainAccount = (accounts: Account[]): Account | undefined => {
+  return accounts.find((account) => account.type === "main");
+};
+
+/*
+ * @param path current route path
+ * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
+ */
+export const routePathAccountIdentifier = (
+  path: string | undefined
+): { accountIdentifier: string | undefined } | undefined => {
+  if (
+    !isRoutePath({
+      paths: [AppPath.LegacyWallet, AppPath.Wallet],
+      routePath: path,
+    })
+  ) {
+    return undefined;
+  }
+
+  const accountIdentifier: string | undefined = getLastPathDetail(path);
+
+  return {
+    accountIdentifier:
+      accountIdentifier !== undefined && accountIdentifier !== ""
+        ? accountIdentifier
+        : undefined,
+  };
 };

@@ -93,6 +93,6 @@ describe("SnsNeuronHotkeysCard", () => {
     fireEvent.click(removeButtons[0]);
 
     expect(removeHotkey).toBeCalled();
-    await waitFor(() => expect(reload).toBeCalledWith({ forceFetch: true }));
+    await waitFor(() => expect(reload).toBeCalledWith());
   });
 });

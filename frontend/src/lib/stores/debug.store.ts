@@ -4,7 +4,6 @@ import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neur
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
 import type { SelectedAccountStore } from "$lib/types/selected-account.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
-import type { TransactionStore } from "$lib/types/transaction.context";
 import { toastsStore } from "@dfinity/gix-components";
 import { derived, readable, type Readable, type Writable } from "svelte/store";
 import { accountsStore } from "./accounts.store";
@@ -31,10 +30,6 @@ let hardwareWalletNeuronsStore: Readable<HardwareWalletNeuronsStore>;
 export const debugHardwareWalletNeuronsStore = (
   store: Writable<HardwareWalletNeuronsStore>
 ) => (hardwareWalletNeuronsStore = createDerivedStore(store));
-
-let transactionStore: Readable<TransactionStore>;
-export const debugTransactionStore = (store: Writable<TransactionStore>) =>
-  (transactionStore = createDerivedStore(store));
 
 // Context stores might not be initialized when debugger is called.
 // Therefore, we need to initialize them here.
@@ -87,7 +82,6 @@ export const initDebugStore = () =>
       toastsStore,
       addAccountStore,
       hardwareWalletNeuronsStore,
-      transactionStore,
       selectedAccountStore,
       selectedCanisterStore,
       selectedProposalStore,
@@ -107,7 +101,6 @@ export const initDebugStore = () =>
       $toastsStore,
       $addAccountStore,
       $hardwareWalletNeuronsStore,
-      $transactionStore,
       $selectedAccountStore,
       $selectedCanisterStore,
       $selectedProposalStore,
@@ -126,7 +119,6 @@ export const initDebugStore = () =>
       toasts: $toastsStore,
       addAccount: $addAccountStore,
       hardwareWalletNeurons: $hardwareWalletNeuronsStore,
-      transaction: $transactionStore,
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
       selectedProposal: $selectedProposalStore,
