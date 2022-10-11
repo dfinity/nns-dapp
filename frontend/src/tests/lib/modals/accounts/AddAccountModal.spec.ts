@@ -170,7 +170,7 @@ describe("AddAccountModal", () => {
   });
 
   const goBack = async ({ container, getByText, title }) => {
-    const back = container.querySelector("button.back") as HTMLButtonElement;
+    const back = container.getByTestId("transaction-button-back") as HTMLButtonElement;
     fireEvent.click(back);
 
     await waitFor(() =>
