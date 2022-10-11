@@ -21,7 +21,7 @@ jobs:
       - name: Update II
         run: ./scripts/update-ii
       - name: Commit updated Internet Identity
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action
