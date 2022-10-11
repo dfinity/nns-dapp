@@ -6,6 +6,7 @@ import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.d
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
+import type { Account } from "$lib/types/account";
 import { paths } from "$lib/utils/app-path.utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { renderModal } from "../../../mocks/modal.mock";
@@ -21,10 +22,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsTransactionModal", () => {
-  const renderTransactionModal = () =>
+  const renderTransactionModal = (selectedAccount?: Account) =>
     renderModal({
       component: SnsTransactionModal,
-      props: {},
+      props: {
+        selectedAccount,
+      },
     });
 
   beforeEach(() => {
@@ -71,5 +74,14 @@ describe("SnsTransactionModal", () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => expect(snsTransferTokens).toBeCalled());
+  });
+
+  it("should not render the select account dropdown if selected account is passed", async () => {
+    const { queryByTestId } = await renderTransactionModal(mockSnsMainAccount);
+
+    await waitFor(() =>
+      expect(queryByTestId("transaction-step-1")).toBeInTheDocument()
+    );
+    expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
   });
 });
