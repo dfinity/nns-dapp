@@ -68,6 +68,14 @@
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
     },
+    "sns_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-index.did",
+      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "type": "custom"
+    },
     "sns_swap": {
       "build": [
         "true"
