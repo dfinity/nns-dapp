@@ -15,7 +15,9 @@
 
 <div class="wrapper">
   <div>
-    <p class="label" data-tid="hardware-wallet-principal">{$i18n.core.principal}</p>
+    <p class="label" data-tid="hardware-wallet-principal">
+      {$i18n.core.principal}
+    </p>
     <p class="value">{principalText}</p>
   </div>
   <div>
