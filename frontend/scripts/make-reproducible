@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
+# shellcheck disable=SC2094 # Thi sreads the entire file into memory and then writes it out, so is correct.
 cat <<<"$(jq --sort-keys . public/vite-manifest.json)" >public/vite-manifest.json
