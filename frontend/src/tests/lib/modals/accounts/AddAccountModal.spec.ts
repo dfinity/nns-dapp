@@ -169,8 +169,8 @@ describe("AddAccountModal", () => {
     await testSubaccount(extraChecks);
   });
 
-  const goBack = async ({ container, getByText, title }) => {
-    const back = container.querySelector("button.back") as HTMLButtonElement;
+  const goBack = async ({ getByTestId, getByText, title }) => {
+    const back = getByTestId("back") as HTMLButtonElement;
     fireEvent.click(back);
 
     await waitFor(() =>
@@ -206,12 +206,12 @@ describe("AddAccountModal", () => {
     const renderResult = await renderModal({ component: AddAccountModal });
     await shouldNavigateSubaccountStep(renderResult);
 
-    const { container, getByText } = renderResult;
-    await goBack({ container, getByText, title: en.accounts.add_account });
+    const { getByTestId, getByText } = renderResult;
+    await goBack({ getByTestId, getByText, title: en.accounts.add_account });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
-    await goBack({ container, getByText, title: en.accounts.add_account });
+    await goBack({ getByTestId, getByText, title: en.accounts.add_account });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
