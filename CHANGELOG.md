@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXXXX
+* Move to SvelteKit.
+* New transaction modal to top up neurons.
+* Upgrade agent-js libraries.
+* Add new proposal payloads.
+
 ## Proposal 84936
 * New login page.
 * Minor UI improvements.
