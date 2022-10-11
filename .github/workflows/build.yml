@@ -184,7 +184,7 @@ jobs:
 # Disable screenshot saving until screenshots are stable.
 #      - name: Commit screenshots
 #        if: ${{ github.ref != 'refs/heads/main' }}
-#        uses: EndBug/add-and-commit@v7.4.0
+#        uses: EndBug/add-and-commit@v9.1.1
 #        with:
 #          add: e2e-tests/screenshots
 #          author_name: Screenshot Committer
