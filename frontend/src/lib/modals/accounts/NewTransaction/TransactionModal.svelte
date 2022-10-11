@@ -31,7 +31,7 @@
     },
   ];
 
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
   // If destination or source are passed as prop, they are used.
   // But the component doesn't bind them to the props.
