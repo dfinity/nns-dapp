@@ -1,7 +1,7 @@
 # Changelog
 
 ## Proposal XXXXX
-* Move to SvelteKit.
+* Move to SvelteKit (without routing changes).
 * New transaction modal to top up neurons.
 * Upgrade agent-js libraries.
 * Add new proposal payloads.
