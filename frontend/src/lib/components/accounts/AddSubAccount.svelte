@@ -45,7 +45,7 @@
   </div>
 
   <div class="toolbar">
-    <button class="secondary" type="button" on:click={back}>
+    <button class="secondary" type="button" on:click={back} data-tid="back">
       {$i18n.core.back}
     </button>
     <button
