@@ -10,13 +10,13 @@
   import { routeStore } from "$lib/stores/route.store";
   import { AppPath } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import type { Color } from "$lib/types/theme";
-
-  export let proposalInfo: ProposalInfo;
-  export let hidden = false;
+  import type { Color } from "$lib/types/colors";
   import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
+
+  export let proposalInfo: ProposalInfo;
+  export let hidden = false;
 
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;

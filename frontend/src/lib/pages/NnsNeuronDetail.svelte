@@ -1,10 +1,7 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { onDestroy } from "svelte";
-  import {
-    routePathNeuronId,
-    loadNeuron,
-  } from "$lib/services/neurons.services";
+  import { loadNeuron } from "$lib/services/neurons.services";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
@@ -21,6 +18,7 @@
     getNeuronById,
     isSpawning,
     neuronVoting,
+    routePathNeuronId,
   } from "$lib/utils/neuron.utils";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";

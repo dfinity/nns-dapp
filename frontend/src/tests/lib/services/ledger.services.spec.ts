@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
@@ -44,13 +47,13 @@ describe("ledger-services", () => {
     describe("success", () => {
       const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
-      beforeAll(() =>
+      beforeAll(() => {
         jest
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          )
-      );
+          );
+      });
 
       afterAll(() => {
         jest.clearAllMocks();
@@ -84,14 +87,14 @@ describe("ledger-services", () => {
         });
       });
 
-      it("should display a toast for the error assuming the user has cancelled the process", async () => {
+      it("should display a toast for the error assuming the browser is not supported", async () => {
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.access_denied",
+          labelKey: "error__ledger.browser_not_supported",
         });
 
         spyToastError.mockRestore();

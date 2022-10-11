@@ -3,7 +3,7 @@
  */
 
 import Tag from "$lib/components/ui/Tag.svelte";
-import { Color } from "$lib/types/theme";
+import { Color } from "$lib/types/colors";
 import { render } from "@testing-library/svelte";
 import TagTest from "./TagTest.svelte";
 

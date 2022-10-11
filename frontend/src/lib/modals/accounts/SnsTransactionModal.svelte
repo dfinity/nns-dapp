@@ -1,14 +1,18 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { transferICP } from "$lib/services/accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
-  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { snsTransferTokens } from "$lib/services/sns-accounts.services";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { numberToE8s } from "$lib/utils/icp.utils";
+  import type { Account } from "$lib/types/account";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -25,26 +29,19 @@
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "accounts",
-      ...(isAccountHardwareWallet(sourceAccount) && {
-        labelKey: "busy_screen.pending_approval_hw",
-      }),
     });
 
-    const { success } = await transferICP({
-      sourceAccount,
+    const { success } = await snsTransferTokens({
+      source: sourceAccount,
       destinationAddress,
-      amount,
+      e8s: numberToE8s(amount),
+      rootCanisterId: $snsProjectSelectedStore,
     });
-
-    if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
-    }
 
     stopBusy("accounts");
 
-    // We close the modal in case of success or error if the selected source is not a hardware wallet.
-    // In case of hardware wallet, the error messages might contain interesting information for the user such as "your device is idle"
-    if (success || !isAccountHardwareWallet(sourceAccount)) {
+    if (success) {
+      toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsClose");
     }
   };
@@ -54,12 +51,16 @@
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
+  token={$snsTokenSymbolSelectedStore}
+  transactionFee={$snsSelectedTransactionFeeStore}
   sourceAccount={selectedAccount}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
   <p slot="description">
-    {$i18n.accounts.icp_transaction_description}
+    {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+      $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
+    })}
   </p>
 </TransactionModal>

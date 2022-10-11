@@ -3,7 +3,7 @@ import { routeStore } from "$lib/stores/route.store";
 import { getContextFromPath } from "$lib/utils/app-path.utils";
 import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
-import { derived } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "context" - e.g. display Neurons of Nns or a particular Sns
@@ -11,7 +11,7 @@ import { derived } from "svelte/store";
  * The store reads the routeStore and returns the context.
  * It defaults to NNS (OWN_CANISTER_ID) if the path is not a context path.
  */
-export const snsProjectSelectedStore = derived([routeStore], ([{ path }]) => {
+export const snsProjectSelectedStore = derived(routeStore, ({ path }) => {
   const maybeContextId = getContextFromPath(path);
   if (maybeContextId !== undefined) {
     try {
@@ -36,10 +36,9 @@ export const isNnsProjectStore = derived(
 /***
  * Returns undefined if the selected project is NNS, otherwise returns the selected project principal.
  */
-export const snsOnlyProjectStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore: Principal) =>
-    isNnsProject($snsProjectSelectedStore)
-      ? undefined
-      : $snsProjectSelectedStore
+export const snsOnlyProjectStore = derived<
+  Readable<Principal>,
+  Principal | undefined
+>(snsProjectSelectedStore, ($snsProjectSelectedStore: Principal) =>
+  isNnsProject($snsProjectSelectedStore) ? undefined : $snsProjectSelectedStore
 );

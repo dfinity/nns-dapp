@@ -6,9 +6,12 @@ import {
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
+  mainAccount,
+  routePathAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { encodeSnsAccount } from "@dfinity/sns";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
@@ -16,6 +19,10 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "../../mocks/sns-accounts.mock";
 
 describe("accounts-utils", () => {
   describe("getAccountByPrincipal", () => {
@@ -55,6 +62,17 @@ describe("accounts-utils", () => {
 
     it("should be a valid address", () => {
       expect(invalidAddress(mockAddressInputValid)).toBeFalsy();
+    });
+
+    it("should return false for sns accounts", () => {
+      const subaccount = new Uint8Array(32).fill(0);
+      subaccount[31] = 1;
+      const account = {
+        owner: Principal.fromText("2vxsx-fae"),
+        subaccount: subaccount,
+      };
+      const subaccountString = encodeSnsAccount(account);
+      expect(invalidAddress(subaccountString)).toBeFalsy();
     });
   });
 
@@ -101,20 +119,17 @@ describe("accounts-utils", () => {
   });
 
   describe("getAccountFromStore", () => {
-    const accountsStore = {
-      main: mockMainAccount,
-      subAccounts: [mockSubAccount],
-    };
+    const accounts = [mockMainAccount, mockSubAccount];
 
     it("should not return an account if no identifier is provided", () => {
       expect(
-        getAccountFromStore({ identifier: undefined, accountsStore })
+        getAccountFromStore({ identifier: undefined, accounts })
       ).toBeUndefined();
     });
 
     it("should find no account if not matches", () => {
       expect(
-        getAccountFromStore({ identifier: "aaa", accountsStore })
+        getAccountFromStore({ identifier: "aaa", accounts })
       ).toBeUndefined();
     });
 
@@ -122,13 +137,13 @@ describe("accounts-utils", () => {
       expect(
         getAccountFromStore({
           identifier: mockMainAccount.identifier,
-          accountsStore,
+          accounts,
         })
       ).toEqual(mockMainAccount);
       expect(
         getAccountFromStore({
           identifier: mockSubAccount.identifier,
-          accountsStore,
+          accounts,
         })
       ).toEqual(mockSubAccount);
     });
@@ -165,6 +180,43 @@ describe("accounts-utils", () => {
           amountE8s: amountE8s - BigInt(10_000),
         });
       }).not.toThrow();
+    });
+  });
+
+  describe("mainAccount", () => {
+    it("should return `main` nns account", () => {
+      const accounts = [mockSubAccount, mockMainAccount, mockSubAccount];
+      expect(mainAccount(accounts)).toEqual(mockMainAccount);
+    });
+
+    it("should return `main` sns account", () => {
+      const accounts = [
+        mockSnsSubAccount,
+        mockSnsMainAccount,
+        mockSnsSubAccount,
+      ];
+      expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("routePathAccountIdentifier", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
+
+    it("should get account identifier from valid path", () => {
+      expect(
+        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
+      ).toEqual({
+        accountIdentifier: mockMainAccount.identifier,
+      });
+    });
+
+    it("should not get account identifier from invalid path", () => {
+      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
+      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
 });

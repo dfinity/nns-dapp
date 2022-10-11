@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initApp } from "$lib/services/app.services";
 import {

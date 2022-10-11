@@ -4,12 +4,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
@@ -18,16 +17,16 @@
   import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
+  import type { Unsubscriber } from "svelte/store";
+  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
-
-  let destinationAddress: string | undefined;
-  $: destinationAddress = $accountsStore.main?.identifier;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
@@ -38,12 +37,8 @@
     token: $snsTokenSymbolSelectedStore as Token,
   });
 
-  let fee: TokenAmount;
-  $: fee = TokenAmount.fromE8s({
-    // TODO(GIX-1044): update FeesStore with the current sns project value
-    amount: $transactionsFeesStore.main,
-    token: $snsTokenSymbolSelectedStore as Token,
-  });
+  let fee: TokenAmount | undefined;
+  $: fee = $snsSelectedTransactionFeeStore;
 
   const dispatcher = createEventDispatcher();
   // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
@@ -56,7 +51,28 @@
   ];
 
   let currentStep: Step;
-  let loading: boolean = false;
+  let loading = false;
+
+  let destinationAddress: string | undefined;
+  $: destinationAddress = $snsProjectMainAccountStore?.identifier;
+
+  // load project accounts if not available
+  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+    async (selectedProjectCanisterId) => {
+      if (
+        selectedProjectCanisterId === undefined ||
+        $snsProjectMainAccountStore !== undefined
+      ) {
+        return;
+      }
+
+      loading = true;
+      await syncSnsAccounts(selectedProjectCanisterId);
+      loading = false;
+    }
+  );
+
+  onDestroy(unsubscribe);
 
   const executeTransaction = async () => {
     startBusy({
@@ -94,7 +110,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep on:nnsClose>
+<LegacyWizardModal bind:currentStep on:nnsClose {steps}>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
