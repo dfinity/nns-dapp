@@ -97,10 +97,11 @@
         />
       </KeyValuePair>
     {/if}
+
     {#if canSelectSource}
       <SelectAccountDropdown bind:selectedAccount />
     {:else}
-      <div>
+      <div class="given-source">
         <p>
           {selectedAccount?.name ?? $i18n.accounts.main}
         </p>
@@ -110,10 +111,12 @@
       </div>
     {/if}
   </div>
+
   <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
+
   {#if canSelectDestination}
     <SelectDestinationAddress
       filterAccounts={filterDestinationAccounts}
@@ -161,5 +164,11 @@
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .given-source {
+    p {
+      margin: 0;
+    }
   }
 </style>

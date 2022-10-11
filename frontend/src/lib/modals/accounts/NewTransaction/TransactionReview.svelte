@@ -46,7 +46,7 @@
         <AmountDisplay singleLine amount={sourceAccount.balance} />
       </div>
     </KeyValuePair>
-    <div>
+    <div class="source">
       <p>
         {sourceAccount.name ?? $i18n.accounts.main}
       </p>
@@ -140,5 +140,15 @@
 
   .additional-info {
     padding-top: var(--padding-2x);
+  }
+
+  .source {
+    p:first-of-type {
+      margin: 0;
+    }
+
+    p:last-of-type {
+      margin-top: 0;
+    }
   }
 </style>
