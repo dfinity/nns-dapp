@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Update II
         run: ./scripts/update-ii
       - name: Commit updated Internet Identity
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile

@@ -162,7 +162,6 @@ interface I18nAccounts {
   show_info_hardware_wallet: string;
   attach_wallet: string;
   edit_name: string;
-  hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   subAccount: string;

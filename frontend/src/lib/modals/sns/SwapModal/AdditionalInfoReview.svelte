@@ -27,7 +27,6 @@
   .additional-info-review {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
 
     .warning {
       display: grid;

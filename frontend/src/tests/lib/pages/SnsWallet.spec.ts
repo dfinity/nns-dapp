@@ -7,7 +7,7 @@ import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.d
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
-import { render, waitFor } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsAccountsStoreSubscribe,
@@ -73,6 +73,23 @@ describe("SnsWallet", () => {
       await waitFor(() =>
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
       );
+    });
+
+    it("should open new transaction modal", async () => {
+      const { queryByTestId, getByTestId } = render(SnsWallet);
+
+      await waitFor(() =>
+        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+      );
+
+      const button = getByTestId(
+        "open-new-sns-transaction"
+      ) as HTMLButtonElement;
+      await fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+      });
     });
   });
 });

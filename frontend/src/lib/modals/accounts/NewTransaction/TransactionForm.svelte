@@ -85,11 +85,7 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={goNext}
-  class="wrapper"
-  data-tid="transaction-step-1"
->
+<form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
@@ -101,10 +97,11 @@
         />
       </KeyValuePair>
     {/if}
+
     {#if canSelectSource}
       <SelectAccountDropdown bind:selectedAccount />
     {:else}
-      <div>
+      <div class="given-source">
         <p>
           {selectedAccount?.name ?? $i18n.accounts.main}
         </p>
@@ -114,10 +111,12 @@
       </div>
     {/if}
   </div>
-  <div class="wrapper info">
+
+  <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
+
   {#if canSelectDestination}
     <SelectDestinationAddress
       filterAccounts={filterDestinationAccounts}
@@ -126,7 +125,7 @@
     />
   {/if}
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       data-tid="transaction-button-cancel"
@@ -139,7 +138,7 @@
       disabled={disableButton}
       type="submit">{$i18n.accounts.review_action}</button
     >
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
@@ -161,13 +160,15 @@
     align-items: stretch;
     justify-content: center;
     gap: var(--padding-3x);
-
-    &.info {
-      gap: var(--padding-2x);
-    }
   }
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .given-source {
+    p {
+      margin: 0;
+    }
   }
 </style>
