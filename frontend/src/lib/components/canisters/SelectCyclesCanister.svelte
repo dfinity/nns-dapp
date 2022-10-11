@@ -5,7 +5,7 @@
   import {
     convertIcpToTCycles,
     convertTCyclesToIcpNumber,
-  } from "$lib/utils/icp.utils";
+  } from "$lib/utils/token.utils";
   import Input from "$lib/components/ui/Input.svelte";
 
   export let amount: number | undefined = undefined;

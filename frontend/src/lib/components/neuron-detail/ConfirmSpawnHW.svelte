@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,

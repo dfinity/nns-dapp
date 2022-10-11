@@ -6,7 +6,7 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";

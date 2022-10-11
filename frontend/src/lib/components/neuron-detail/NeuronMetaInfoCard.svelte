@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDate } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";

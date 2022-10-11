@@ -4,7 +4,7 @@
 
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import en from "../../../mocks/i18n.mock";
 import {

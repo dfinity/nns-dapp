@@ -11,7 +11,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import { numberToE8s } from "$lib/utils/icp.utils";
+  import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
 
   export let selectedAccount: Account | undefined = undefined;
