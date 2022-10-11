@@ -11,4 +11,3 @@
     <HardwareWalletNeurons />
   </div>
 </Modal>
-
