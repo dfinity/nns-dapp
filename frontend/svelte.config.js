@@ -1,6 +1,12 @@
 import adapter from "@sveltejs/adapter-static";
 import autoprefixer from "autoprefixer";
 import preprocess from "svelte-preprocess";
+import {fileURLToPath} from "url";
+import {readFileSync} from "fs";
+
+const file = fileURLToPath(new URL("package.json", import.meta.url));
+const json = readFileSync(file, "utf8");
+const { version } = JSON.parse(json);
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -22,6 +28,9 @@ const config = {
     serviceWorker: {
       register: false,
     },
+    version: {
+      name: version
+    }
   },
 };
 
