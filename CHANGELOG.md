@@ -3,7 +3,7 @@
 ## Proposal XXXXX
 * Move to SvelteKit (without routing changes).
 * New transaction modal to top up neurons.
-* Upgrade agent-js libraries.
+* Upgrade agent-js libraries to v0.14.0.
 * Add new proposal payloads.
 
 ## Proposal 84936
