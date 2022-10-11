@@ -55,7 +55,7 @@ set +x
 for file in "${assets[@]}"; do
   if test -d "$OUTDIR/$file"; then
     shafile="$OUTDIR/$file.sha256sums"
-    find "$OUTDIR/$file" -type f | grep -v node_modules | xargs sha256sum >"$shafile"
+    find "$OUTDIR/$file" -type f | grep -v node_modules | awk '{print $2, $1}' | sort | xargs sha256sum >"$shafile"
     echo "Shas for dir '$file' are in '$shafile'."
   else
     cp "$OUTDIR/$file" "$file"
