@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -7,7 +10,6 @@ import {
   getAccountIdentityByPrincipal,
   getAccountTransactions,
   renameSubAccount,
-  routePathAccountIdentifier,
   syncAccounts,
   transferICP,
 } from "$lib/services/accounts.services";
@@ -201,27 +203,6 @@ describe("accounts-services", () => {
       });
 
       spyToastError.mockClear();
-    });
-  });
-
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get account identifier from valid path", () => {
-      expect(
-        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual({
-        accountIdentifier: mockMainAccount.identifier,
-      });
-    });
-
-    it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
-      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
 

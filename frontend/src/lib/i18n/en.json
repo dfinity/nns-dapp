@@ -135,6 +135,7 @@
     "balance": "Balance",
     "new_transaction": "New Transaction",
     "icp_transaction_description": "ICP Transaction",
+    "sns_transaction_description": "$token Transaction",
     "review_action": "Review",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",

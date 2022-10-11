@@ -144,6 +144,7 @@ interface I18nAccounts {
   balance: string;
   new_transaction: string;
   icp_transaction_description: string;
+  sns_transaction_description: string;
   review_action: string;
   add_account: string;
   new_linked_title: string;
@@ -707,6 +708,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nTopics_description {
@@ -722,6 +725,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nRewards {
@@ -819,6 +824,7 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -856,6 +862,7 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18n {

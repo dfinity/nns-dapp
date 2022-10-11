@@ -25,7 +25,7 @@
   $: tokenAmount = TokenAmount.fromNumber({
     amount,
     token,
-  }) as TokenAmount;
+  });
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
