@@ -28,14 +28,13 @@
 </script>
 
 {#if connected && ledgerIdentity !== undefined}
-  <h4>{$i18n.accounts.hardware_wallet_connected}</h4>
   <HardwareWalletInfo {ledgerIdentity} />
 {:else}
-  <p>{$i18n.accounts.connect_hardware_wallet_text}</p>
+  <p class="label">{$i18n.accounts.connect_hardware_wallet_text}</p>
   <div class="connect">
     {#if connecting}
       <!-- // TODO(L2-433): spinner processing accessibility -->
-      <Spinner />
+      <Spinner inline />
     {:else}
       <button
         class="primary"
@@ -50,12 +49,12 @@
 {/if}
 
 <style lang="scss">
-  h4,
   p {
     margin-bottom: var(--padding-2x);
   }
 
   .connect {
     min-height: var(--button-min-height);
+    width: fit-content;
   }
 </style>
