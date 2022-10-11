@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+cat <<<"$(jq --sort-keys . public/vite-manifest.json)" > public/vite-manifest.json
