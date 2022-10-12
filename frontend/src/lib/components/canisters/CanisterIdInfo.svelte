@@ -6,8 +6,8 @@
 </script>
 
 <div>
-    <p class="label">{$i18n.canister_detail.title}</p>
-    <p class="value">{canisterId?.toText()}</p>
+  <p class="label">{$i18n.canister_detail.title}</p>
+  <p class="value">{canisterId?.toText()}</p>
 </div>
 
 <style lang="scss">

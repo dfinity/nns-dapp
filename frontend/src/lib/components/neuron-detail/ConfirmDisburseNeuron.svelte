@@ -17,7 +17,6 @@
 
 <form
   on:submit|preventDefault={() => dispatcher("nnsConfirm")}
-  class="wizard-wrapper"
   data-tid="confirm-disburse-screen"
 >
   <div class="amount">
@@ -26,17 +25,21 @@
 
   <TransactionInfo {source} destination={destinationAddress} {fee} />
 
-  <button
-    class="primary full-width"
-    type="submit"
-    data-tid="disburse-neuron-button"
-  >
-    {#if loading}
-      <Spinner />
-    {:else}
-      {$i18n.accounts.confirm_and_send}
-    {/if}
-  </button>
+  <div class="toolbar">
+    <button
+      type="button"
+      class="secondary"
+      on:click={() => dispatcher("nnsBack")}
+      >{$i18n.core.back}</button
+    >
+    <button class="primary" type="submit" data-tid="disburse-neuron-button">
+      {#if loading}
+        <Spinner />
+      {:else}
+        {$i18n.accounts.confirm_and_send}
+      {/if}
+    </button>
+  </div>
 </form>
 
 <style lang="scss">
@@ -51,11 +54,5 @@
     flex-grow: 1;
 
     --token-font-size: var(--font-size-huge);
-
-    @include modal.header;
-  }
-
-  button {
-    margin: var(--padding) 0 0;
   }
 </style>

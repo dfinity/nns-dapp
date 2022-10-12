@@ -68,7 +68,7 @@
       <p>
         {@html replacePlaceholders($i18n.neurons.icp_stake, {
           $amount: valueSpan(
-                  formatToken({ value: neuronStake(neuron), detailed: true })
+            formatToken({ value: neuronStake(neuron), detailed: true })
           ),
         })}
       </p>
@@ -84,10 +84,10 @@
       {$i18n.neurons.merge_neurons_edit_selection}
     </button>
     <button
-            class="primary"
-            data-tid="confirm-merge-neurons-button"
-            disabled={$busy}
-            on:click={merge}
+      class="primary"
+      data-tid="confirm-merge-neurons-button"
+      disabled={$busy}
+      on:click={merge}
     >
       {$i18n.neurons.merge_neurons_modal_confirm}
     </button>

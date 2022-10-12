@@ -43,10 +43,7 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={add}
-  data-tid="new-controller-review-screen"
->
+<form on:submit|preventDefault={add} data-tid="new-controller-review-screen">
   <div>
     <p class="label">{$i18n.canisters.canister_id}</p>
     <p class="value">{$store.details?.id.toText()}</p>
