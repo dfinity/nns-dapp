@@ -63,7 +63,9 @@
 </script>
 
 <Modal on:nnsClose>
-  <svelte:fragment slot="title">{$i18n.neuron_detail.split_neuron}</svelte:fragment>
+  <svelte:fragment slot="title"
+    >{$i18n.neuron_detail.split_neuron}</svelte:fragment
+  >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
 

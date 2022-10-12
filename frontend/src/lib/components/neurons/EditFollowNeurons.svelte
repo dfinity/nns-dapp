@@ -15,7 +15,7 @@
   const topics: Topic[] = topicsToFollow(neuron);
 </script>
 
-<div class="wizard-list" data-tid="edit-followers-screen">
+<div data-tid="edit-followers-screen">
   <p class="description">{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}

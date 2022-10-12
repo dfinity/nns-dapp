@@ -78,20 +78,20 @@
 
     <div class="select-delay-container">
       <InputRange
-              ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-              min={0}
-              max={SECONDS_IN_EIGHT_YEARS}
-              bind:value={delayInSeconds}
-              handleInput={checkMinimum}
+        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
+        min={0}
+        max={SECONDS_IN_EIGHT_YEARS}
+        bind:value={delayInSeconds}
+        handleInput={checkMinimum}
       />
       <div class="details">
         <div>
           <p class="label">
             {formatVotingPower(
-                    votingPower({
-                      stake: neuronICP,
-                      dissolveDelayInSeconds: delayInSeconds,
-                    })
+              votingPower({
+                stake: neuronICP,
+                dissolveDelayInSeconds: delayInSeconds,
+              })
             )}
           </p>
           <p>{$i18n.neurons.voting_power}</p>
