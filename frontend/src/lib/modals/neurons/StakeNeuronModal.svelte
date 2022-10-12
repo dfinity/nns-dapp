@@ -197,6 +197,7 @@
         neuron={newNeuron}
         {delayInSeconds}
         on:nnsUpdated={goNext}
+        on:nnsBack={modal.back}
       />
     {/if}
   {/if}
