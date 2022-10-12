@@ -2,7 +2,7 @@
 
 ## Update labels
 
-- add `NnsFunction` id in `@dfinity/nns/.../governance.enums.d.ts`
+- add `NnsFunction` id in `https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts`
 - update labels in `nns_functions` (could be managed by dashboard team)
   - `nns_functions`
   - `nns_functions_description`
