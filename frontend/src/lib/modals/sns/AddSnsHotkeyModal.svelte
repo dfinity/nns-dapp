@@ -52,15 +52,9 @@
   <svelte:fragment slot="title"
     >{$i18n.neuron_detail.add_hotkey_modal_title}</svelte:fragment
   >
+
   <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
     <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
     <span slot="button">{$i18n.core.confirm}</span>
   </AddPrincipal>
 </Modal>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-  section {
-    @include modal.section;
-  }
-</style>

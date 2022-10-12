@@ -23,7 +23,7 @@
   ];
 
   let currentStep: Step;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
   let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 

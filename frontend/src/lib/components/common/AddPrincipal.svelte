@@ -42,10 +42,3 @@
     </button>
   </div>
 </form>
-
-<style lang="scss">
-  .input {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

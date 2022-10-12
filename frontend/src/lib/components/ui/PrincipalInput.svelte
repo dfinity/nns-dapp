@@ -27,5 +27,5 @@
   errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
   on:blur={showErrorIfAny}
 >
-    <slot name="label" slot="label" />
+  <slot name="label" slot="label" />
 </InputWithError>
