@@ -48,6 +48,7 @@
 </script>
 
 <TransactionModal
+  rootCanisterId={$snsProjectSelectedStore}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep

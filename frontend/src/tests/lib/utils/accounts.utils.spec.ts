@@ -1,8 +1,11 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
+  getAccountByRootCanister,
   getAccountFromStore,
+  getAccountsByRootCanister,
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
@@ -19,6 +22,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -146,6 +150,100 @@ describe("accounts-utils", () => {
           accounts,
         })
       ).toEqual(mockSubAccount);
+    });
+  });
+
+  describe("getAccountByRootCanister", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should not return an account if no identifier is provided", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: undefined,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: "aaa",
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding nns account", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: mockMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(mockMainAccount);
+    });
+
+    it("should return corresponding sns account", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: mockSnsMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("getAccountsByRootCanister", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should return undefined if no accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: Principal.fromText("aaaaa-aa"),
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding nns accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(accounts);
+    });
+
+    it("should return corresponding sns accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(snsAccounts[mockPrincipal.toText()].accounts);
     });
   });
 

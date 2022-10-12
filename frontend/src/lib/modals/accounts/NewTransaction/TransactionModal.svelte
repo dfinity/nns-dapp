@@ -6,7 +6,9 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import type { Principal } from "@dfinity/principal";
 
+  export let rootCanisterId: Principal;
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
@@ -55,6 +57,7 @@
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
+      {rootCanisterId}
       {canSelectDestination}
       {canSelectSource}
       {transactionFee}
