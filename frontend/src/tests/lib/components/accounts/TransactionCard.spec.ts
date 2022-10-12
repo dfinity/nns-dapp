@@ -3,7 +3,7 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { mapTransaction } from "$lib/utils/transactions.utils";
 import { render } from "@testing-library/svelte";
 import {

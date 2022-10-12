@@ -152,8 +152,9 @@ export const getParentPathDetail = (
  *
  * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
  *
- * @param path string - the path to change
- * @param newContext string - the new context to navigate to
+ * @param {Object} params
+ * @param {string} params.path string - the path to change
+ * @param {string} params.newContext string - the new context to navigate to
  * @returns newPath string
  */
 const checkContextPathExceptions = ({
@@ -204,8 +205,9 @@ const checkContextPathExceptions = ({
  * Ex: `/#/neuron/1234` becomes `/#/u/bbbbb-bb/neuron/1234`
  * Ex: `/#/proposals` does nothing because `/#/proposals` is not a context path
  *
- * @param path string - the path to change
- * @param newContext string - the new context to navigate to
+ * @param {Object} params
+ * @param {string} params.path string - the path to change
+ * @param {string} params.newContext string - the new context to navigate to
  */
 export const changePathContext = ({
   path,

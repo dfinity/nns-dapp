@@ -10,8 +10,8 @@ import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
-import { formatToken } from "./icp.utils";
 import { getCommitmentE8s } from "./sns.utils";
+import { formatToken } from "./token.utils";
 
 const filterProjectsStatus = ({
   swapLifecycle,

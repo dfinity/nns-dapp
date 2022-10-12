@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
   import type { TokenAmount } from "@dfinity/nns";
-  import { sumTokenAmounts } from "$lib/utils/icp.utils";
+  import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { walletPathStore } from "$lib/derived/paths.derived";

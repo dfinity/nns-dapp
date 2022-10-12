@@ -3,7 +3,7 @@ import type {
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import { ICP, ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { stringifyJson } from "./utils";
 
 // Value should match the key in i18n "transaction_names"
@@ -31,9 +31,9 @@ export const accountName = ({
 export interface AccountTransaction {
   from: AccountIdentifierString;
   to: AccountIdentifierString;
-  amount: ICP;
+  amount: TokenAmount;
   date: Date;
-  fee: ICP;
+  fee: TokenAmount;
   type: AccountTransactionType;
   memo: bigint;
   incomplete: boolean;

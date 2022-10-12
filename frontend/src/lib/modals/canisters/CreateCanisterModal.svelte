@@ -15,7 +15,7 @@
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import type { Account } from "$lib/types/account";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
 

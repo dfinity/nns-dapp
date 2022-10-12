@@ -9,7 +9,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
 
