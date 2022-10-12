@@ -21,7 +21,7 @@ jobs:
       - name: Update II
         run: ./scripts/update-ii
       - name: Commit updated Internet Identity
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action
@@ -48,7 +48,7 @@ jobs:
           git diff package-lock.json
         working-directory: e2e-tests
       - name: Commit updated chromedriver
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action

@@ -54,7 +54,7 @@ jobs:
         run: cat <<<$(jq . dfx.json) > dfx.json
 
       - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         if: ${{ github.event_name == 'pull_request' }}
         with:
           add: .
