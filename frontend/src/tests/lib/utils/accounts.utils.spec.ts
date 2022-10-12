@@ -1,8 +1,11 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
+  getAccountByProject,
   getAccountFromStore,
+  getAccountsByProject,
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
@@ -19,6 +22,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -146,6 +150,90 @@ describe("accounts-utils", () => {
           accounts,
         })
       ).toEqual(mockSubAccount);
+    });
+  });
+
+  describe("getAccountByProject", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should not return an account if no identifier is provided", () => {
+      expect(
+        getAccountByProject({
+          identifier: undefined,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        getAccountByProject({
+          identifier: "aaa",
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding nns account", () => {
+      expect(
+        getAccountByProject({
+          identifier: mockMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(mockMainAccount);
+    });
+
+    it("should return corresponding sns account", () => {
+      expect(
+        getAccountByProject({
+          identifier: mockSnsMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("getAccountsByProject", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should return corresponding nns accounts", () => {
+      expect(
+        getAccountsByProject({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(accounts);
+    });
+
+    it("should return corresponding sns accounts", () => {
+      expect(
+        getAccountsByProject({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(snsAccounts[mockPrincipal.toText()].accounts);
     });
   });
 
