@@ -29,8 +29,7 @@
     <button
       type="button"
       class="secondary"
-      on:click={() => dispatcher("nnsBack")}
-      >{$i18n.core.back}</button
+      on:click={() => dispatcher("nnsBack")}>{$i18n.core.back}</button
     >
     <button class="primary" type="submit" data-tid="disburse-neuron-button">
       {#if loading}
