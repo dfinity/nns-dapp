@@ -7,6 +7,7 @@ import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.d
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
@@ -23,8 +24,8 @@ describe("SnsAccounts", () => {
   describe("when there are accounts in the store", () => {
     beforeEach(() => {
       jest
-        .spyOn(snsProjectAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe());
+        .spyOn(snsAccountsStore, "subscribe")
+        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
       // Context needs to match the mocked sns accounts
       routeStore.update({
         path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,

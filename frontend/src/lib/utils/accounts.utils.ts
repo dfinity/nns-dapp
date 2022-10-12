@@ -1,11 +1,13 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
 import { getLastPathDetail, isRoutePath } from "./app-path.utils";
+import { isNnsProject } from "./projects.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -90,6 +92,50 @@ export const getAccountFromStore = ({
   }
 
   return accounts.find(({ identifier: id }) => id === identifier);
+};
+
+export const getAccountByRootCanister = ({
+  identifier,
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
+}: {
+  identifier: string | undefined;
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
+}): Account | undefined => {
+  if (identifier === undefined) {
+    return undefined;
+  }
+
+  if (isNnsProject(rootCanisterId)) {
+    return getAccountFromStore({
+      identifier,
+      accounts: nnsAccounts,
+    });
+  }
+
+  return getAccountFromStore({
+    identifier,
+    accounts: snsAccounts[rootCanisterId.toText()]?.accounts ?? [],
+  });
+};
+
+export const getAccountsByRootCanister = ({
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
+}: {
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
+}): Account[] | undefined => {
+  if (isNnsProject(rootCanisterId)) {
+    return nnsAccounts;
+  }
+
+  return snsAccounts[rootCanisterId.toText()]?.accounts;
 };
 
 /**
