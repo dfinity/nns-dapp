@@ -9,7 +9,7 @@
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { sumTokenAmounts } from "$lib/utils/icp.utils";
+  import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { routeStore } from "$lib/stores/route.store";
   import { walletPathStore } from "$lib/derived/paths.derived";

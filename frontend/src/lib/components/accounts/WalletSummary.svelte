@@ -10,7 +10,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 

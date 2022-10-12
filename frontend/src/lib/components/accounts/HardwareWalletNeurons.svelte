@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
   import type {

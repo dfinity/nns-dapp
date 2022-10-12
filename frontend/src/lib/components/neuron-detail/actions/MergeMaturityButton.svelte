@@ -4,7 +4,7 @@
   import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     hasEnoughMaturityToMerge,
     minMaturityMerge,

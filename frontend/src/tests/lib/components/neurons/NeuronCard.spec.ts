@@ -5,7 +5,7 @@
 import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";

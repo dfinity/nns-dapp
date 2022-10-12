@@ -9,7 +9,7 @@
   } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,

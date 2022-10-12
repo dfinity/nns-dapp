@@ -3,7 +3,7 @@
  */
 
 import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render } from "@testing-library/svelte";
 import { mockNeuronStake } from "../../../mocks/hardware-wallet-neurons.store.mock";

@@ -8,7 +8,7 @@
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
-  } from "$lib/utils/icp.utils";
+  } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
