@@ -10,7 +10,6 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import { addController } from "$lib/services/canisters.services";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   export let controller: Principal;
 
@@ -46,16 +45,19 @@
 
 <form
   on:submit|preventDefault={add}
-  class="wizard-wrapper"
   data-tid="new-controller-review-screen"
 >
   <div>
     <p class="label">{$i18n.canisters.canister_id}</p>
     <p class="value">{$store.details?.id.toText()}</p>
+  </div>
+
+  <div>
     <p class="label">{$i18n.canister_detail.new_controller}</p>
     <p class="value">{controller.toText()}</p>
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button
       class="secondary"
       type="button"
@@ -71,18 +73,5 @@
     >
       {$i18n.accounts.confirm_and_send}
     </button>
-  </FooterModal>
+  </div>
 </form>
-
-<style lang="scss">
-  div {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  p {
-    margin-bottom: var(--padding-3x);
-  }
-</style>
