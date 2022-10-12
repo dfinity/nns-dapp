@@ -123,6 +123,12 @@
 </div>
 
 <style lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
   .select-delay-container {
     width: 100%;
 
