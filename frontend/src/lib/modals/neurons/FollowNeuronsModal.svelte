@@ -13,4 +13,3 @@
   >
   <EditFollowNeurons {neuron} />
 </Modal>
-

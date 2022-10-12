@@ -91,20 +91,20 @@
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
     <Input
-            inputType="text"
-            autocomplete="off"
-            placeholderLabelKey="new_followee.address_placeholder"
-            name="new-followee-address"
-            bind:value={followeeAddress}
+      inputType="text"
+      autocomplete="off"
+      placeholderLabelKey="new_followee.address_placeholder"
+      name="new-followee-address"
+      bind:value={followeeAddress}
     >
       <svelte:fragment slot="label"
-      >{$i18n.new_followee.address_placeholder}</svelte:fragment
+        >{$i18n.new_followee.address_placeholder}</svelte:fragment
       >
     </Input>
     <button
-            class="primary"
-            type="submit"
-            disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
+      class="primary"
+      type="submit"
+      disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
     >
       {$i18n.new_followee.follow_neuron}
     </button>
@@ -119,14 +119,14 @@
         {#each $sortedknownNeuronsStore as knownNeuron}
           <li data-tid="known-neuron-item">
             <KnownNeuronFollowItem
-                    on:nnsUpdated={close}
-                    {knownNeuron}
-                    neuronId={neuron.neuronId}
-                    {topic}
-                    isFollowed={followsKnownNeuron({
-                  followees: topicFollowees,
-                  knownNeuronId: knownNeuron.id,
-                })}
+              on:nnsUpdated={close}
+              {knownNeuron}
+              neuronId={neuron.neuronId}
+              {topic}
+              isFollowed={followsKnownNeuron({
+                followees: topicFollowees,
+                knownNeuronId: knownNeuron.id,
+              })}
             />
           </li>
         {/each}
