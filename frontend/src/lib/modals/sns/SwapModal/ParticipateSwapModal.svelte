@@ -128,7 +128,11 @@
       userHasParticipated={userHasParticipatedToSwap}
     />
     <AdditionalInfoReview slot="additional-info-review" bind:accepted />
-    <p slot="destination-info" data-tid="sns-swap-participate-project-name" class="value">
+    <p
+      slot="destination-info"
+      data-tid="sns-swap-participate-project-name"
+      class="value"
+    >
       {$projectDetailStore.summary?.metadata.name}
     </p>
     <p slot="description" class="value">
