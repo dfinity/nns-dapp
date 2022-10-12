@@ -13,4 +13,3 @@
 
   <AttachCanister on:nnsClose />
 </Modal>
-

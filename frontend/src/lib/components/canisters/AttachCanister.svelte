@@ -36,11 +36,13 @@
 
 <form on:submit|preventDefault={attach} data-tid="attach-canister-modal">
   <PrincipalInput
-          bind:principal
-          placeholderLabelKey="canisters.canister_id"
-          name="canister-principal"
+    bind:principal
+    placeholderLabelKey="canisters.canister_id"
+    name="canister-principal"
   >
-    <svelte:fragment slot="label">{$i18n.canisters.enter_canister_id}</svelte:fragment>
+    <svelte:fragment slot="label"
+      >{$i18n.canisters.enter_canister_id}</svelte:fragment
+    >
   </PrincipalInput>
 
   <div class="toolbar">
