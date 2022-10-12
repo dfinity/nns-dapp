@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
@@ -9,7 +8,7 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
+  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";

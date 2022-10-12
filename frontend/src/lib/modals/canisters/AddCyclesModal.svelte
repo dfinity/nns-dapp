@@ -20,7 +20,7 @@
   } from "$lib/types/canister-detail.context";
   import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
 

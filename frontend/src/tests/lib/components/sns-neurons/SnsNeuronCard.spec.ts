@@ -10,8 +10,8 @@ import { authStore } from "$lib/stores/auth.store";
 import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { formatToken } from "$lib/utils/icp.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,

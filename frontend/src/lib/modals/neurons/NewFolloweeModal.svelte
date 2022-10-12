@@ -16,7 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { Modal } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -86,72 +86,63 @@
   };
 </script>
 
-<LegacyModal size="big" on:nnsClose>
-  <span slot="title">{$i18n.new_followee.title}</span>
-  <main data-tid="new-followee-modal">
-    <article>
-      <form on:submit|preventDefault={addFolloweeByAddress}>
-        <Input
-          inputType="text"
-          autocomplete="off"
-          placeholderLabelKey="new_followee.address_placeholder"
-          name="new-followee-address"
-          bind:value={followeeAddress}
-        >
-          <svelte:fragment slot="label"
-            >{$i18n.new_followee.address_placeholder}</svelte:fragment
-          >
-        </Input>
-        <button
-          class="primary"
-          type="submit"
-          disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
-        >
-          {$i18n.new_followee.follow_neuron}
-        </button>
-      </form>
-    </article>
-    <article>
-      <h4>{$i18n.new_followee.options_title}</h4>
-      {#if $sortedknownNeuronsStore === undefined}
-        <Spinner />
-      {:else}
-        <ul>
-          {#each $sortedknownNeuronsStore as knownNeuron}
-            <li data-tid="known-neuron-item">
-              <KnownNeuronFollowItem
-                on:nnsUpdated={close}
-                {knownNeuron}
-                neuronId={neuron.neuronId}
-                {topic}
-                isFollowed={followsKnownNeuron({
-                  followees: topicFollowees,
-                  knownNeuronId: knownNeuron.id,
-                })}
-              />
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </article>
-  </main>
-</LegacyModal>
+<Modal on:nnsClose>
+  <svelte:fragment slot="title">{$i18n.new_followee.title}</svelte:fragment>
+
+  <form on:submit|preventDefault={addFolloweeByAddress}>
+    <Input
+      inputType="text"
+      autocomplete="off"
+      placeholderLabelKey="new_followee.address_placeholder"
+      name="new-followee-address"
+      bind:value={followeeAddress}
+    >
+      <svelte:fragment slot="label"
+        >{$i18n.new_followee.address_placeholder}</svelte:fragment
+      >
+    </Input>
+    <button
+      class="primary"
+      type="submit"
+      disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
+    >
+      {$i18n.new_followee.follow_neuron}
+    </button>
+  </form>
+
+  <div class="following">
+    <h4>{$i18n.new_followee.options_title}</h4>
+    {#if $sortedknownNeuronsStore === undefined}
+      <Spinner />
+    {:else}
+      <ul>
+        {#each $sortedknownNeuronsStore as knownNeuron}
+          <li data-tid="known-neuron-item">
+            <KnownNeuronFollowItem
+              on:nnsUpdated={close}
+              {knownNeuron}
+              neuronId={neuron.neuronId}
+              {topic}
+              isFollowed={followsKnownNeuron({
+                followees: topicFollowees,
+                knownNeuronId: knownNeuron.id,
+              })}
+            />
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
+</Modal>
 
 <style lang="scss">
-  main {
-    padding: var(--padding-3x);
-
-    --input-width: 100%;
-    display: flex;
-    flex-direction: column;
+  form {
     gap: var(--padding-2x);
   }
 
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--padding-2x);
+  button {
+    width: fit-content;
+    align-self: flex-end;
   }
 
   ul {
@@ -159,5 +150,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+    padding: 0;
+  }
+
+  .following {
+    margin: var(--padding-2x) 0;
   }
 </style>

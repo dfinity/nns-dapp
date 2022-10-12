@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { convertIcpToTCycles } from "$lib/utils/icp.utils";
+  import { convertIcpToTCycles } from "$lib/utils/token.utils";
 
   export let amount: number;
   export let account: Account;

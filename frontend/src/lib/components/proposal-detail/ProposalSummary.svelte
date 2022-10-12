@@ -64,5 +64,10 @@
     :global(h6) {
       zoom: 0.8;
     }
+
+    :global(table) {
+      display: block;
+      overflow: auto;
+    }
   }
 </style>

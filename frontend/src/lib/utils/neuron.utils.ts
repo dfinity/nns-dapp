@@ -47,8 +47,8 @@ import { getLastPathDetailId, isRoutePath } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
-import { formatToken } from "./icp.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { formatToken } from "./token.utils";
 import { isDefined, isNullish, nonNullish } from "./utils";
 
 export type StateInfo = {

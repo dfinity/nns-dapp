@@ -9,7 +9,7 @@ import {
   type SelectedAccountStore,
 } from "$lib/types/selected-account.context";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";

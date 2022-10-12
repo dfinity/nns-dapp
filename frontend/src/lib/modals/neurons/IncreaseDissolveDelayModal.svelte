@@ -3,7 +3,7 @@
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import { createEventDispatcher } from "svelte";
 
@@ -23,7 +23,7 @@
   ];
 
   let currentStep: Step;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
   let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
@@ -36,7 +36,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SetDissolveDelay"}
     <SetDissolveDelay
@@ -58,4 +58,4 @@
       on:nnsBack={modal.back}
     />
   {/if}
-</LegacyWizardModal>
+</WizardModal>
