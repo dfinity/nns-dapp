@@ -88,10 +88,4 @@
       opacity: var(--disabled-card-opacity);
     }
   }
-
-  .wizard-list {
-    :global(article:first-of-type) {
-      margin-top: var(--padding);
-    }
-  }
 </style>
