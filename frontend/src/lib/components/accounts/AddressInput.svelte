@@ -26,5 +26,5 @@
   bind:value={address}
   minLength={ACCOUNT_ADDRESS_MIN_LENGTH}
   errorMessage={showError ? $i18n.error.address_not_valid : undefined}
-  on:blur={showErrorIfAny}
-/>
+  on:blur={showErrorIfAny}><slot name="label" slot="label" /></InputWithError
+>

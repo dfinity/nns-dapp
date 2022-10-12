@@ -155,7 +155,8 @@
 
     ul {
       list-style-type: none;
-      padding: 0 var(--padding-3x);
+      padding: 0 var(--padding) 0 0;
+      margin-bottom: var(--padding);
     }
 
     li {
