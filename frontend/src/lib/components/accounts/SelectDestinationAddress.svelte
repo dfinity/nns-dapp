@@ -4,8 +4,8 @@
   import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Account } from "$lib/types/account";
   import {
-    getAccountByProject,
-    getAccountsByProject,
+    getAccountByRootCanister,
+    getAccountsByRootCanister,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
@@ -19,7 +19,7 @@
   export let showManualAddress = true;
 
   // If the component is already initialized with a selectedDestinationAddress
-  let selectedAccount: Account | undefined = getAccountByProject({
+  let selectedAccount: Account | undefined = getAccountByRootCanister({
     identifier: selectedDestinationAddress,
     rootCanisterId,
     nnsAccounts: $nnsAccountsListStore,
@@ -39,11 +39,11 @@
   // Show the toggle if there are more than one account to select from.
   let showToggle = true;
   $: showToggle =
-    getAccountsByProject({
+    (getAccountsByRootCanister({
       rootCanisterId,
       nnsAccounts: $nnsAccountsListStore,
       snsAccounts: $snsAccountsStore,
-    }).filter(filterAccounts).length > 0;
+    })?.filter(filterAccounts).length ?? 0) > 0;
 
   const onToggleManualInput = () => {
     showManualAddress = !showManualAddress;

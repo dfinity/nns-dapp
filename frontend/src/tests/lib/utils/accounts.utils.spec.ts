@@ -3,9 +3,9 @@ import {
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
-  getAccountByProject,
+  getAccountByRootCanister,
   getAccountFromStore,
-  getAccountsByProject,
+  getAccountsByRootCanister,
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
@@ -153,7 +153,7 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("getAccountByProject", () => {
+  describe("getAccountByRootCanister", () => {
     const accounts = [mockMainAccount, mockSubAccount];
     const snsAccounts = {
       [mockPrincipal.toText()]: {
@@ -164,7 +164,7 @@ describe("accounts-utils", () => {
 
     it("should not return an account if no identifier is provided", () => {
       expect(
-        getAccountByProject({
+        getAccountByRootCanister({
           identifier: undefined,
           nnsAccounts: accounts,
           snsAccounts,
@@ -175,7 +175,7 @@ describe("accounts-utils", () => {
 
     it("should find no account if not matches", () => {
       expect(
-        getAccountByProject({
+        getAccountByRootCanister({
           identifier: "aaa",
           nnsAccounts: accounts,
           snsAccounts,
@@ -186,7 +186,7 @@ describe("accounts-utils", () => {
 
     it("should return corresponding nns account", () => {
       expect(
-        getAccountByProject({
+        getAccountByRootCanister({
           identifier: mockMainAccount.identifier,
           nnsAccounts: accounts,
           snsAccounts,
@@ -197,7 +197,7 @@ describe("accounts-utils", () => {
 
     it("should return corresponding sns account", () => {
       expect(
-        getAccountByProject({
+        getAccountByRootCanister({
           identifier: mockSnsMainAccount.identifier,
           nnsAccounts: accounts,
           snsAccounts,
@@ -207,7 +207,7 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("getAccountsByProject", () => {
+  describe("getAccountsByRootCanister", () => {
     const accounts = [mockMainAccount, mockSubAccount];
     const snsAccounts = {
       [mockPrincipal.toText()]: {
@@ -216,9 +216,19 @@ describe("accounts-utils", () => {
       },
     };
 
+    it("should return undefined if no accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: Principal.fromText("aaaaa-aa"),
+        })
+      ).toBeUndefined();
+    });
+
     it("should return corresponding nns accounts", () => {
       expect(
-        getAccountsByProject({
+        getAccountsByRootCanister({
           nnsAccounts: accounts,
           snsAccounts,
           rootCanisterId: OWN_CANISTER_ID,
@@ -228,7 +238,7 @@ describe("accounts-utils", () => {
 
     it("should return corresponding sns accounts", () => {
       expect(
-        getAccountsByProject({
+        getAccountsByRootCanister({
           nnsAccounts: accounts,
           snsAccounts,
           rootCanisterId: mockPrincipal,

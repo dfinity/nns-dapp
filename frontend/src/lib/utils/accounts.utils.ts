@@ -94,7 +94,7 @@ export const getAccountFromStore = ({
   return accounts.find(({ identifier: id }) => id === identifier);
 };
 
-export const getAccountByProject = ({
+export const getAccountByRootCanister = ({
   identifier,
   nnsAccounts,
   snsAccounts,
@@ -122,7 +122,7 @@ export const getAccountByProject = ({
   });
 };
 
-export const getAccountsByProject = ({
+export const getAccountsByRootCanister = ({
   nnsAccounts,
   snsAccounts,
   rootCanisterId,
@@ -130,12 +130,12 @@ export const getAccountsByProject = ({
   nnsAccounts: Account[];
   snsAccounts: SnsAccountsStore;
   rootCanisterId: Principal;
-}): Account[] => {
+}): Account[] | undefined => {
   if (isNnsProject(rootCanisterId)) {
     return nnsAccounts;
   }
 
-  return snsAccounts[rootCanisterId.toText()]?.accounts ?? [];
+  return snsAccounts[rootCanisterId.toText()]?.accounts;
 };
 
 /**

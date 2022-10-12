@@ -3,8 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
-    getAccountByProject,
-    getAccountsByProject,
+    getAccountByRootCanister,
+    getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
   import Dropdown from "$lib/components/ui/Dropdown.svelte";
   import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
@@ -19,18 +19,19 @@
   // To avoid cyclical dependencies, we don't update this if `selectedAccount` changes
   let selectedAccountIdentifier: string | undefined =
     selectedAccount?.identifier;
-  $: selectedAccount = getAccountByProject({
+  $: selectedAccount = getAccountByRootCanister({
     identifier: selectedAccountIdentifier,
     rootCanisterId,
     nnsAccounts: $nnsAccountsListStore,
     snsAccounts: $snsAccountsStore,
   });
 
-  $: selectableAccounts = getAccountsByProject({
-    rootCanisterId,
-    nnsAccounts: $nnsAccountsListStore,
-    snsAccounts: $snsAccountsStore,
-  }).filter(filterAccounts);
+  $: selectableAccounts =
+    getAccountsByRootCanister({
+      rootCanisterId,
+      nnsAccounts: $nnsAccountsListStore,
+      snsAccounts: $snsAccountsStore,
+    })?.filter(filterAccounts) ?? [];
 </script>
 
 {#if selectableAccounts.length === 0}
