@@ -1,7 +1,7 @@
 <script lang="ts">
   import Footer from "$lib/components/common/Footer.svelte";
   import { Toolbar } from "@dfinity/gix-components";
-  import CreateNeuronModal from "$lib/modals/neurons/CreateNeuronModal.svelte";
+  import CreateNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";

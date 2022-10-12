@@ -2,13 +2,12 @@
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { busy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import type { NewTransaction } from "$lib/types/transaction";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -39,24 +38,8 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <KeyValuePair>
-      <span class="label" slot="key">{$i18n.accounts.source}</span>
-      <div class="balance" slot="value">
-        <span class="label">{$i18n.accounts.balance}</span>
-        <AmountDisplay singleLine amount={sourceAccount.balance} />
-      </div>
-    </KeyValuePair>
-    <div class="source">
-      <p>
-        {sourceAccount.name ?? $i18n.accounts.main}
-      </p>
-      <p
-        data-tid="transaction-review-source-account"
-        class="account-identifier"
-      >
-        {sourceAccount.identifier}
-      </p>
-    </div>
+    <TransactionSource account={sourceAccount} />
+
     <div class="highlight">
       <span class="icon">
         <IconSouth />
@@ -69,11 +52,13 @@
         </span>
       </div>
     </div>
+
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
       <slot name="destination-info" />
       <p class="account-identifier">{destinationAddress}</p>
     </div>
+
     <div>
       <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
@@ -106,6 +91,7 @@
     flex-direction: row;
     gap: var(--padding-1_5x);
   }
+
   .account-identifier {
     word-break: break-all;
   }
@@ -140,15 +126,5 @@
 
   .additional-info {
     padding-top: var(--padding-2x);
-  }
-
-  .source {
-    p:first-of-type {
-      margin: 0;
-    }
-
-    p:last-of-type {
-      margin-top: 0;
-    }
   }
 </style>

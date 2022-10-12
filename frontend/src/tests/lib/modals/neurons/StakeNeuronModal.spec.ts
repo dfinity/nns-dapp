@@ -3,7 +3,7 @@
  */
 
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import CreateNeuronModal from "$lib/modals/neurons/CreateNeuronModal.svelte";
+import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
@@ -75,7 +75,7 @@ jest.mock("$lib/stores/toasts.store", () => {
   };
 });
 
-describe("CreateNeuronModal", () => {
+describe("StakeNeuronModal", () => {
   describe("main account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
@@ -98,20 +98,20 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should display modal", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       expect(container.querySelector("div.modal")).not.toBeNull();
     });
 
     it("should display accounts as cards", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       expect(container.querySelector('article[role="button"]')).not.toBeNull();
     });
 
     it("should be able to select an account and move to the next view", async () => {
       const { container, queryByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       const accountCard = container.querySelector('article[role="button"]');
@@ -124,7 +124,7 @@ describe("CreateNeuronModal", () => {
 
     it("should be able to select a subaccount and move to the next view", async () => {
       const { container, queryByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       const accountCards = container.querySelectorAll('article[role="button"]');
@@ -142,7 +142,7 @@ describe("CreateNeuronModal", () => {
 
     it("should have disabled Create neuron button", async () => {
       const { container, queryByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       const accountCard = container.querySelector('article[role="button"]');
@@ -158,7 +158,7 @@ describe("CreateNeuronModal", () => {
 
     it("should have enabled Create neuron button when entering amount", async () => {
       const { container, queryByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       const accountCard = container.querySelector('article[role="button"]');
@@ -178,7 +178,7 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should be able to create a new neuron", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
@@ -198,7 +198,7 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should move to update dissolve delay after creating a neuron", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
@@ -222,7 +222,7 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should have the update delay button disabled", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
@@ -250,7 +250,7 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should have disabled button for dissolve less than six months", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
@@ -283,7 +283,7 @@ describe("CreateNeuronModal", () => {
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
       const { container, getByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       const accountCard = container.querySelector('article[role="button"]');
@@ -311,7 +311,7 @@ describe("CreateNeuronModal", () => {
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
-      const { container } = await renderModal({ component: CreateNeuronModal });
+      const { container } = await renderModal({ component: StakeNeuronModal });
 
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
@@ -363,7 +363,7 @@ describe("CreateNeuronModal", () => {
 
     it("should go to edit followers when skipping dissolve delay", async () => {
       const { container, queryByTestId } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       // SCREEN: Select Account
@@ -447,7 +447,7 @@ describe("CreateNeuronModal", () => {
     it("should create neuron for hardwareWallet and close modal if hotkey is not added", async () => {
       const { container, queryByTestId, queryByText, component } =
         await renderModal({
-          component: CreateNeuronModal,
+          component: StakeNeuronModal,
         });
 
       await createNeuron({ queryByText, container });
@@ -469,7 +469,7 @@ describe("CreateNeuronModal", () => {
     it("should create neuron for hardwareWallet and add dissolve delay", async () => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       const { container, queryByTestId, queryByText } = await renderModal({
-        component: CreateNeuronModal,
+        component: StakeNeuronModal,
       });
 
       await createNeuron({ queryByText, container });

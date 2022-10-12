@@ -37,7 +37,6 @@
 </script>
 
 <div
-  class="wizard-list"
   class:disabled={disableSelection}
   data-tid="select-account-screen"
 >
