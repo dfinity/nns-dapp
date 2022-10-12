@@ -42,8 +42,6 @@
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
   .amount {
     display: flex;
     flex-direction: column;

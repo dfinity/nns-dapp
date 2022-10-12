@@ -83,8 +83,6 @@
 </div>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
   .account-identifier {
     word-break: break-all;
   }

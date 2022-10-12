@@ -141,8 +141,6 @@
 </form>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
   form {
     --dropdown-width: 100%;
   }

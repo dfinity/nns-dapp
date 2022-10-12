@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {Modal} from "@dfinity/gix-components";
+  import { Modal } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -47,4 +47,3 @@
     <Spinner />
   {/if}
 </Modal>
-
