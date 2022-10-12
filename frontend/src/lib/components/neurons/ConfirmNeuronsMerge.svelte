@@ -55,68 +55,61 @@
 </script>
 
 <div class="wrapper">
-  <div>
-    {#each neurons as neuron, index}
-      <div class="main-info">
-        <h3>{sectionTitleMapper[index]}</h3>
-      </div>
-      <div>
-        <p class="label">{$i18n.neurons.neuron_id}</p>
-        <p class="value">{neuron.neuronId}</p>
-      </div>
-      <div>
-        <p class="label">{$i18n.neurons.neuron_balance}</p>
-        <p>
-          {@html replacePlaceholders($i18n.neurons.icp_stake, {
-            $amount: valueSpan(
-              formatToken({ value: neuronStake(neuron), detailed: true })
-            ),
-          })}
-        </p>
-      </div>
-    {/each}
-  </div>
-  <div>
-    <FooterModal>
-      <button class="secondary" on:click={() => dispatcher("nnsBack")}>
-        {$i18n.neurons.merge_neurons_edit_selection}
-      </button>
-      <button
-        class="primary"
-        data-tid="confirm-merge-neurons-button"
-        disabled={$busy}
-        on:click={merge}
-      >
-        {$i18n.neurons.merge_neurons_modal_confirm}
-      </button>
-    </FooterModal>
-    <p class="additional-text">
-      {$i18n.neurons.irreversible_action}
-    </p>
+  {#each neurons as neuron, index}
+    <h3>{sectionTitleMapper[index]}</h3>
+
+    <div>
+      <p class="label">{$i18n.neurons.neuron_id}</p>
+      <p class="value">{neuron.neuronId}</p>
+    </div>
+
+    <div>
+      <p class="label">{$i18n.neurons.neuron_balance}</p>
+      <p>
+        {@html replacePlaceholders($i18n.neurons.icp_stake, {
+          $amount: valueSpan(
+                  formatToken({ value: neuronStake(neuron), detailed: true })
+          ),
+        })}
+      </p>
+    </div>
+  {/each}
+
+  <p class="additional-text description">
+    {$i18n.neurons.irreversible_action}
+  </p>
+
+  <div class="toolbar">
+    <button class="secondary" on:click={() => dispatcher("nnsBack")}>
+      {$i18n.neurons.merge_neurons_edit_selection}
+    </button>
+    <button
+            class="primary"
+            data-tid="confirm-merge-neurons-button"
+            disabled={$busy}
+            on:click={merge}
+    >
+      {$i18n.neurons.merge_neurons_modal_confirm}
+    </button>
   </div>
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-  .wrapper {
-    height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: var(--padding);
+  h3 {
+    margin: 0;
+    line-height: var(--line-height-standard);
   }
 
-  .main-info {
+  .wrapper {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: var(--padding);
   }
 
   .additional-text {
     width: 100%;
-    margin-top: var(--padding-2x);
     text-align: center;
 
     @include media.min-width(medium) {
