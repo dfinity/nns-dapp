@@ -56,7 +56,7 @@
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
       <slot name="destination-info" />
-      <p class="account-identifier">{destinationAddress}</p>
+      <p class="account-identifier value">{destinationAddress}</p>
     </div>
 
     <div>
@@ -84,13 +84,6 @@
 
 <style lang="scss">
   @use "../../../themes/mixins/modal";
-
-  .balance {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: var(--padding-1_5x);
-  }
 
   .account-identifier {
     word-break: break-all;

@@ -63,7 +63,7 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.neurons.top_up_neuron}</svelte:fragment
     >
-    <p slot="description">
+    <p slot="description" class="value">
       {replacePlaceholders($i18n.neurons.top_up_description, {
         $neuronId: neuron.neuronId.toString(),
       })}

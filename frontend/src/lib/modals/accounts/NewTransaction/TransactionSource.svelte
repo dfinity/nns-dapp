@@ -15,7 +15,7 @@
   </div>
 </KeyValuePair>
 
-<div class="source">
+<div class="source value">
   <p>
     {account.name ?? $i18n.accounts.main}
   </p>
@@ -25,6 +25,13 @@
 </div>
 
 <style lang="scss">
+  .balance {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: var(--padding-1_5x);
+  }
+
   .source {
     p:first-of-type {
       margin: 0;
