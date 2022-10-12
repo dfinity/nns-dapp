@@ -139,9 +139,11 @@ export const getLastPathDetail = (
 export const getParentPathDetail = (
   path: string | undefined
 ): string | undefined => {
-  const steps = path?.replace(/\/+$/, "").split("/") ?? [];
+  // TODO(GIX-1071): clean up and edge cases
+
+  const [u, canisterId, context] = path?.replace(/\/+$/, "").split("/").filter((path) => path !== '') ?? [];
   // Do not return empty strings
-  return steps[3] === "" ? undefined : steps[3];
+  return canisterId === "" ? undefined : canisterId;
 };
 
 /**

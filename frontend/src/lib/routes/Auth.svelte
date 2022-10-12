@@ -3,31 +3,19 @@
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
-  import { routeStore } from "$lib/stores/route.store";
+  import { goto } from "$app/navigation";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
   import {
     IconWallet,
     IconPsychology,
     IconHowToVote,
   } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import SignIn from "$lib/components/common/SignIn.svelte";
 
   let signedIn = false;
-
-  // Asks the user to authenticate themselves with a TPM or similar.
-  const signIn = async () => {
-    try {
-      await authStore.signIn();
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error.sign_in",
-        err,
-      });
-    }
-  };
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
     async ({ identity }: AuthStore) => {
@@ -37,14 +25,8 @@
         return;
       }
 
-      // Redirect to previous url or default accounts page, user has signed in
-      const urlParams: URLSearchParams = new URLSearchParams(
-        window.location.search
-      );
-      const redirectPath = `/#/${urlParams.get("redirect") ?? "accounts"}`;
-
-      // We do not want to push to the browser history but only want to update the url to not have two entries for the same page in the browser stack
-      routeStore.replace({ path: redirectPath });
+      // TODO(GIX-1071): constant for /u/ and for /accounts?
+      await goto(`/u/${OWN_CANISTER_ID}/accounts`, { replaceState: true });
     }
   );
 
@@ -84,19 +66,7 @@
   </li>
 </ul>
 
-<button
-  on:click={signIn}
-  data-tid="login-button"
-  class="primary"
-  disabled={signedIn}
->
-  {$i18n.auth.login}
-  {#if signedIn}
-    <div class="spinner">
-      <Spinner size="small" inline />
-    </div>
-  {/if}
-</button>
+<SignIn />
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
@@ -137,25 +107,6 @@
         font-size: var(--font-size-small);
         align-items: center;
       }
-    }
-  }
-
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-self: center;
-
-    width: 100%;
-    max-width: 475px;
-
-    @media (min-width: 768px) and (min-height: 620px) {
-      margin: var(--padding-6x) 0 calc(14 * var(--padding));
-      width: auto;
-    }
-
-    .spinner {
-      margin-left: var(--padding);
     }
   }
 

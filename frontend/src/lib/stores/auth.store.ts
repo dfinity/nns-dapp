@@ -53,7 +53,7 @@ const initAuthStore = () => {
     signIn: () =>
       new Promise<void>((resolve, reject) => {
         // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
-        // @see `Guard.svelte`
+        // @see main `+layout.svelte`
         if (authClient === undefined) {
           reject();
           return;

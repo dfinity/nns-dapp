@@ -73,17 +73,19 @@ const initRouteStore = () => {
      *
      * @param newContext string - the new context to navigate to
      */
-    changeContext: (newContext: string) => {
-      let newPath = "/";
-      update((state: RouteStore) => {
-        newPath = changePathContext({ path: state.path, newContext });
-        return {
-          ...state,
-          path: newPath,
-        };
-      });
+    changeContext: (selectedCanisterId: string) => {
 
-      replaceHistory({ path: newPath });
+      // TODO(GIX-1071): clean up and edge cases
+
+      const [u, canisterId, context] = window.location.pathname.split('/').filter((path) => path !== '');
+      const newPath = `/${[u, selectedCanisterId, context].join('/')}`;
+
+      update((state: RouteStore) => ({
+        ...state,
+        path: newPath,
+      }))
+
+      replaceHistory({ path: newPath});
     },
   };
 };

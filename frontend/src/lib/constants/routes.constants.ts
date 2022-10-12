@@ -16,4 +16,4 @@ export enum AppPath {
   NeuronDetail = "/#/u/:rootCanisterId/neuron",
 }
 
-export const CONTEXT_PATH = "/#/u";
+export const CONTEXT_PATH = "/u";
