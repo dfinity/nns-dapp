@@ -1,5 +1,7 @@
+import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "./auth.store.mock";
 
@@ -37,9 +39,16 @@ export const mockSnsSubAccount: Account = {
   type: "subAccount",
 };
 
+const mockSnsAccountsStore = (principal: Principal): SnsAccountsStore => ({
+  [principal.toText()]: {
+    accounts: [mockSnsMainAccount],
+    certified: true,
+  },
+});
+
 export const mockSnsAccountsStoreSubscribe =
-  (accounts: Account[] = [mockSnsMainAccount]) =>
-  (run: Subscriber<Account[]>): (() => void) => {
-    run(accounts);
+  (principal: Principal = mockPrincipal) =>
+  (run: Subscriber<SnsAccountsStore>): (() => void) => {
+    run(mockSnsAccountsStore(principal));
     return () => undefined;
   };
