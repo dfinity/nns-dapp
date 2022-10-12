@@ -36,11 +36,7 @@
       (hardwareWalletAccounts?.length > 0 && !hideHardwareWalletAccounts));
 </script>
 
-<div
-  class="wizard-list"
-  class:disabled={disableSelection}
-  data-tid="select-account-screen"
->
+<div class:disabled={disableSelection} data-tid="select-account-screen">
   {#if mainAccount}
     {#if showTitle}
       <h4>{$i18n.accounts.my_accounts}</h4>
@@ -90,12 +86,6 @@
     :global(article) {
       pointer-events: none;
       opacity: var(--disabled-card-opacity);
-    }
-  }
-
-  .wizard-list {
-    :global(article:first-of-type) {
-      margin-top: var(--padding);
     }
   }
 </style>

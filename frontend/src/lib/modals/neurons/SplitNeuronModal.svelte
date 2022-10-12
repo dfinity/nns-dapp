@@ -1,6 +1,6 @@
-<script lang="ts">
+<script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
@@ -62,9 +62,11 @@
   };
 </script>
 
-<LegacyModal on:nnsClose size="big">
-  <span slot="title">{$i18n.neuron_detail.split_neuron}</span>
-  <section data-tid="split-neuron-modal">
+<Modal on:nnsClose>
+  <svelte:fragment slot="title"
+    >{$i18n.neuron_detail.split_neuron}</svelte:fragment
+  >
+  <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
 
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
@@ -89,19 +91,13 @@
         {$i18n.neuron_detail.split_neuron_confirm}
       </button>
     </FooterModal>
-  </section>
-</LegacyModal>
+  </div>
+</Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  section {
-    @include modal.section;
+  .wrapper {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
     gap: var(--padding);
-    margin-top: calc(4 * var(--padding));
   }
 </style>

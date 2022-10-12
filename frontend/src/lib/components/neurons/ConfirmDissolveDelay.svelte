@@ -13,7 +13,6 @@
   } from "$lib/utils/neuron.utils";
   import { busy, stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { valueSpan } from "$lib/utils/utils";
 
   export let delayInSeconds: number;
@@ -41,7 +40,7 @@
   };
 </script>
 
-<div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
+<div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
     <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
   </div>
@@ -68,7 +67,7 @@
       )}
     </p>
   </div>
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       disabled={$busy}
@@ -84,10 +83,16 @@
     >
       {confirmButtonText}
     </button>
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
   .main-info {
     display: flex;
     justify-content: center;

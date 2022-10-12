@@ -493,7 +493,7 @@
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
     "add_hotkey_modal_title": "Add Hotkey",
-    "enter_hotkey": "Enter Hotkey:",
+    "enter_hotkey": "Enter Hotkey",
     "remove_hotkey_success": "Hotkey removed successfully.",
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",

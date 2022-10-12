@@ -128,10 +128,14 @@
       userHasParticipated={userHasParticipatedToSwap}
     />
     <AdditionalInfoReview slot="additional-info-review" bind:accepted />
-    <p slot="destination-info" data-tid="sns-swap-participate-project-name">
+    <p
+      slot="destination-info"
+      data-tid="sns-swap-participate-project-name"
+      class="value"
+    >
       {$projectDetailStore.summary?.metadata.name}
     </p>
-    <p slot="description">
+    <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
   </TransactionModal>

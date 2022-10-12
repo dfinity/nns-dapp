@@ -59,7 +59,7 @@
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
-  <p slot="description">
+  <p slot="description" class="value">
     {$i18n.accounts.icp_transaction_description}
   </p>
 </TransactionModal>
