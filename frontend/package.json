@@ -7,7 +7,7 @@
     "build:robots": "node scripts/build.robots.mjs",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
-    "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp",
+    "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp && ./scripts/make-reproducible",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

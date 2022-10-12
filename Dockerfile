@@ -82,3 +82,4 @@ FROM scratch AS scratch
 COPY --from=build /build/nns-dapp.wasm /
 COPY --from=build /build/assets.tar.xz /
 COPY --from=build /build-inputs.txt /
+COPY --from=build /build/frontend /frontend
