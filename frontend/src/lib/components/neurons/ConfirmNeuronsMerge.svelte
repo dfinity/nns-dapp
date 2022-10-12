@@ -2,7 +2,6 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { mergeNeurons } from "$lib/services/neurons.services";
   import { busy, stopBusy } from "$lib/stores/busy.store";
