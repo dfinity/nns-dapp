@@ -3,7 +3,8 @@ set -euxo pipefail
 
 export DFX_NETWORK=small12
 TESTNET=small12
-IC_COMMIT=54a57a1f6f1ed99e66d6cde3100a0565e826385f # dfx.json at 12th October 2022
+IC_COMMIT=08716da25d35ffcf7cc190ca952ad52e269c57a2 # old
+# IC_COMMIT=54a57a1f6f1ed99e66d6cde3100a0565e826385f # dfx.json at 12th October 2022
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME"/dfn/ic-github/
 ND_COMMIT=dab599c6d0b14ac93582f39b31a208a6dc06723a # main Wed Oct 12 14:18:00 2022 +0200
