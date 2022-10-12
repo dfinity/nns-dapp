@@ -16,7 +16,7 @@
 </KeyValuePair>
 
 <div class="source value">
-  <p>
+  <p data-tid="transaction-review-source-account-name">
     {account.name ?? $i18n.accounts.main}
   </p>
   <p data-tid="transaction-review-source-account" class="account-identifier">
