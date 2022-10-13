@@ -14,7 +14,10 @@ const config: UserConfig = {
     target: "es2020",
     rollupOptions: {
       // Polyfill Buffer for production build. The hardware wallet needs Buffer.
-      plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
+      plugins: [inject({
+        include: ['node_modules/@ledgerhq/**'],
+        modules: { Buffer: ['buffer', 'Buffer'], }
+      })],
     },
   },
   define: {
