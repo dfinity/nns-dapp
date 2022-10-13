@@ -8,8 +8,42 @@ import { join } from "path";
 dotenv.config();
 
 const buildCsp = () => {
-  const updatedIndexHTML = updateCSP();
-  writeFileSync("./public/index.html", updatedIndexHTML);
+  const indexHTMLWithoutStartScript = extractStartScript();
+  const indexHTMLWithCSP = updateCSP(indexHTMLWithoutStartScript);
+  writeFileSync("./public/index.html", indexHTMLWithCSP);
+};
+
+/**
+ * Using a CSP with 'strict-dynamic' with SvelteKit breaks in Firefox.
+ * Issue: https://github.com/sveltejs/kit/issues/3558
+ *
+ * As workaround:
+ * 1. we extract the start script that is injected by SvelteKit in index.html into a separate main.js
+ * 2. we remove the script content from index.html but, let the script tag as anchor
+ * 3. we use our custom script loader to load the main.js script
+ */
+const extractStartScript = () => {
+  const indexHtml = readFileSync(
+    join(process.cwd(), "public", "index.html"),
+    "utf-8"
+  );
+
+  const svelteKitStartScript =
+    /(<script type=\"module\" data-sveltekit-hydrate[\s\S]*?>)([\s\S]*?)(<\/script>)/gm;
+
+  // 1. extract SvelteKit start script to a separate main.js file
+  const [_script, _scriptStartTag, content, _scriptEndTag] =
+    svelteKitStartScript.exec(indexHtml);
+  const inlineScript = content.replace(/^\s*/gm, "");
+
+  writeFileSync(
+    join(process.cwd(), "public", "main.js"),
+    inlineScript,
+    "utf-8"
+  );
+
+  // 2. replace SvelteKit script tag content with empty
+  return indexHtml.replace(svelteKitStartScript, "$1$3");
 };
 
 /**
@@ -37,11 +71,7 @@ const buildCsp = () => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-const updateCSP = () => {
-  const indexHtml = readFileSync(
-    join(process.cwd(), "public", "index.html"),
-    "utf-8"
-  );
+const updateCSP = (indexHtml) => {
   const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
   const indexHashes = [];
