@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal XXXXX
+* Enable Stake Maturity for II neurons.
+
 ## Proposal 86090
 * UI fixes for Modal in small devices.
 * Fix Buffer polyfill race condition.
