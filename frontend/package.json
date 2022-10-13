@@ -70,6 +70,7 @@
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.6",
     "@ledgerhq/hw-transport-webhid": "^6.27.6",
     "@zondax/ledger-icp": "^0.6.0",
+    "buffer": "^6.0.3",
     "dompurify": "^2.4.0"
   }
 }
