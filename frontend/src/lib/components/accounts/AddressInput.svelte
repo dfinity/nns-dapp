@@ -23,5 +23,6 @@
   name="accounts-address"
   bind:value={address}
   errorMessage={showError ? $i18n.error.address_not_valid : undefined}
+  showInfo={$$slots.label !== undefined}
   on:blur={showErrorIfAny}><slot name="label" slot="label" /></InputWithError
 >
