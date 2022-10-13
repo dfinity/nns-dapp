@@ -32,9 +32,7 @@ const extractStartScript = () => {
     /(<script type=\"module\" data-sveltekit-hydrate[\s\S]*?>)([\s\S]*?)(<\/script>)/gm;
 
   // 1. extract SvelteKit start script to a separate main.js file
-  const m = svelteKitStartScript.exec(indexHtml);
-  const content = m[2];
-
+  const [_script, _scriptStartTag, content] = svelteKitStartScript.exec(indexHtml);
   const inlineScript = content.replace(/^\s*/gm, "");
 
   writeFileSync(
