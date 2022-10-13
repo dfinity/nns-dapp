@@ -2,7 +2,7 @@
 
 ## Proposal 86090
 * UI fixes for Modal in small devices.
-* Fix polyfill race condition.
+* Fix Buffer polyfill race condition.
 
 ## Proposal 86037
 * SvelteKit implementation (without routing changes).
