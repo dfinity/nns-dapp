@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 86037
 * SvelteKit implementation.
 * New Modal UI.
 * Bump agent-js to v0.14.0
