@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal 86090
+* UI fixes for Modal in small devices.
+* Fix Buffer polyfill race condition.
+
 ## Proposal 86037
 * SvelteKit implementation (without routing changes).
 * New Modal UI.
