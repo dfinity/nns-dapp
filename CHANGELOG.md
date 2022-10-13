@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal 86037
+* SvelteKit implementation (without routing changes).
+* New Modal UI.
+* Bump agent-js to v0.14.0
+* New flow to top up neurons.
+* Fix overflow in proposal details.
+
 ## Proposal 84936
 * New login page.
 * Minor UI improvements.
