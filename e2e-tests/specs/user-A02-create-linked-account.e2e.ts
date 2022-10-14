@@ -57,7 +57,7 @@ describe("Users get a main account", () => {
     await new AccountsTab(browser).getAccountByName(
       linkedAccountName,
       "Checking that the linked account exists after refresh",
-      {timeout: 30_000}
+      { timeout: 30_000 }
     );
   });
 });

@@ -132,7 +132,7 @@ export class AccountsTab extends MyNavigator {
       AccountsTab.DESTINATION_TOGGLE_SELECTOR,
       "Click destination toggle"
     );
-    
+
     // TODO: Select recipient with xpath by recipient name
     // At the moment it will select the first subaccount available
 

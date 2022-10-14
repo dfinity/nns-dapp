@@ -33,7 +33,9 @@ describe("landing page", () => {
     // We wait for the header of the dashboard
     await browser.$("header").waitForExist({ timeout: 20_000 });
 
-    await browser.$('[data-tid="accounts-title"]').waitForExist({ timeout: 30_000 });
+    await browser
+      .$('[data-tid="accounts-title"]')
+      .waitForExist({ timeout: 30_000 });
 
     await waitForImages(browser);
     await browser["screenshot"]("home-page");

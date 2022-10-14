@@ -49,7 +49,7 @@ describe("Makes a proposal and verifies that the filters work", () => {
       // Default status is only "Open".
       // Yet, the proposal Fails immediately in local tests.
       await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
-    
+
       await proposalsTab.filter(filterSelector, selection);
       const proposalMetadataSelector = ProposalsTab.proposalCardSelector(
         proposalId as number

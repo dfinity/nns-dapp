@@ -86,7 +86,7 @@ DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
 
 By default, tests will be executed (or tried to) in Firefox and Chrome.
 
-*Firefox tests are still shaky at the moment.*
+_Firefox tests are still shaky at the moment._
 
 Recommendation: Use only chrome:
 

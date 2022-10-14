@@ -77,8 +77,7 @@ describe("Verifies that neurons can be merged", () => {
     } catch (_) {
       expect(true).toBe(true);
     }
-    const fees =
-      neuron1IcpBefore + neuron2IcpBefore - neuron1IcpAfter;
+    const fees = neuron1IcpBefore + neuron2IcpBefore - neuron1IcpAfter;
     const expectedMaxFees = 0.000101;
     if (fees < 0 || fees > expectedMaxFees) {
       throw new Error(

@@ -43,10 +43,7 @@ describe("Makes a proposal and verifies that it is shown", () => {
     const proposalCardSelector = ProposalsTab.proposalCardSelector(
       proposalId as number
     );
-    await navigator.click(
-      proposalCardSelector,
-      "Navigate to proposal detail"
-    );
+    await navigator.click(proposalCardSelector, "Navigate to proposal detail");
     await navigator.getElement(
       ProposalsTab.PROPOSAL_TALLY_SELECTOR,
       "Waiting for proposal detail"
