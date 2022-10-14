@@ -1,7 +1,8 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 86114
 * Enable Stake Maturity for II neurons.
+* Fix CSP 'strict-dynamic' issue on Firefox.
 
 ## Proposal 86090
 * UI fixes for Modal in small devices.
