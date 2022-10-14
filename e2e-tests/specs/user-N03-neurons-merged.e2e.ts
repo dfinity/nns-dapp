@@ -70,18 +70,21 @@ describe("Verifies that neurons can be merged", () => {
   it("Merged balances are correct", async () => {
     const neuronsTab = new NeuronsTab(browser);
     const neuron1IcpAfter = await neuronsTab.getNeuronBalance(neuronId1);
-    const neuron2IcpAfter = await neuronsTab.getNeuronBalance(neuronId2);
-    expect(neuron2IcpAfter).toBe(0);
-    const fees =
-      neuron1IcpBefore + neuron2IcpBefore - neuron1IcpAfter - neuron2IcpAfter;
+    // Second neuron is not displayed because the stake is 0.
+    try {
+      await neuronsTab.getNeuronBalance(neuronId2);
+      expect(true).toBe(false);
+    } catch (_) {
+      expect(true).toBe(true);
+    }
+    const fees = neuron1IcpBefore + neuron2IcpBefore - neuron1IcpAfter;
     const expectedMaxFees = 0.000101;
-    if (fees < 0 || fees > expectedMaxFees || neuron2IcpAfter !== 0) {
+    if (fees < 0 || fees > expectedMaxFees) {
       throw new Error(
         `Incorrect neuron values: ${JSON.stringify({
           neuron1IcpBefore,
           neuron2IcpBefore,
           neuron1IcpAfter,
-          neuron2IcpAfter,
           fees,
           expectedMaxFees,
         })}`
