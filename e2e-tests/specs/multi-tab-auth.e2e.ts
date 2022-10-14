@@ -40,7 +40,8 @@ describe("multi-tab-auth", () => {
     await Promise.all(
       nnsTabs.map(async (tabId, index) => {
         await browser.switchToWindow(tabId);
-        await navigator.getElement(Header.ACCOUNT_MENU_BUTTON_SELECTOR);
+        await browser.refresh();
+        await navigator.getElement(Header.ACCOUNT_MENU_BUTTON_SELECTOR, "Account menu button");
         await browser["screenshot"](`register-logged-in-tab-${index}`);
       })
     );
@@ -48,14 +49,16 @@ describe("multi-tab-auth", () => {
 
   it("oneTabLogsOut", async () => {
     await browser.switchToWindow(nnsTabs[0]);
-    await navigator.click(Header.ACCOUNT_MENU_BUTTON_SELECTOR, "account-menu");
+    await navigator.click(Header.ACCOUNT_MENU_BUTTON_SELECTOR, "Account menu button");
 
     // Small delay for menu animation
     await browser.pause(500);
 
     await navigator.click(Header.LOGOUT_BUTTON_SELECTOR, "logout");
 
-    await navigator.getElement(AuthPage.SELECTOR);
+    // Wait for the logout to complete
+    await browser.pause(2_000);
+    await navigator.getElement(AuthPage.SELECTOR, "Login page");
   });
 
   it("allTabsLogOut", async () => {

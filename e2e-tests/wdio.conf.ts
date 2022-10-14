@@ -20,7 +20,8 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
     const chrome = {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: ["headless", "disable-gpu"],
+        // args: ["headless", "disable-gpu"],
+        args: ["disable-gpu"],
       },
       acceptInsecureCerts: true,
     };

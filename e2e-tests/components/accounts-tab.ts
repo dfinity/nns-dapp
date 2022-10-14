@@ -7,7 +7,8 @@ export class AccountsTab extends MyNavigator {
   static readonly MAKE_ACCOUNT_HARDWARE_SELECTOR: string = `[data-tid="choose-hardware-wallet-as-account-type"]`;
   static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `#modalContent [data-tid="input-ui-element"]`;
   static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `#modalContent [type="submit"]`;
-  static readonly ICP_VALUE_SELECTOR: string = `[data-tid="icp-value"]`;
+  static readonly ICP_VALUE_SELECTOR: string = `[data-tid="token-value"]`;
+  static readonly DESTINATION_TOGGLE_SELECTOR: string = `[data-tid="select-destination"] [for="toggle"]`;
 
   /**
    * Creates a browser controller for the accounts tab.
@@ -41,7 +42,7 @@ export class AccountsTab extends MyNavigator {
       true
     )}`;
     const icpField = element.$(AccountsTab.ICP_VALUE_SELECTOR);
-    await icpField.waitForExist({ timeoutMsg });
+    await icpField.waitForExist({ timeoutMsg, timeout: 30_000 });
     const icpValue = await icpField.getText();
     const icpNumber = Number(icpValue);
     if (!Number.isFinite(icpNumber)) {
@@ -90,6 +91,8 @@ export class AccountsTab extends MyNavigator {
    */
   async sendIcpToAccountName({
     sender,
+    // TODO: Select recipient with xpath by recipient name
+    /* eslint-disable-next-line */
     recipient,
     icp,
   }: {
@@ -114,17 +117,9 @@ export class AccountsTab extends MyNavigator {
       `[data-tid="new-transaction"]`,
       "Click to start new transaction"
     );
-    const recipientElement = await this.getAccountByName(
-      recipient,
-      "Receivers account in modal"
-    );
-    await recipientElement.waitForEnabled({
-      timeout: 1_000,
-      timeoutMsg: "Waiting for the destination account to be selectable",
-    });
-    await recipientElement.click();
+    // Enter amount
     const valueElement = await this.getElement(
-      `[data-tid="input-ui-element"]`,
+      `[data-tid="input-ui-element"][id="amount"]`,
       "ICP input field"
     );
     await valueElement.waitForEnabled({
@@ -132,8 +127,27 @@ export class AccountsTab extends MyNavigator {
       timeoutMsg: "Waiting to be able to enter value to be transferred",
     });
     await valueElement.setValue(icp);
-    await this.click(`[data-tid="review-transaction"]`, "Click Review");
-    await this.click(`[data-tid="confirm-and-send"]`, "Click confirm");
+    // Click toggle to select destination dropdown
+    await this.click(
+      AccountsTab.DESTINATION_TOGGLE_SELECTOR,
+      "Click destination toggle"
+    );
+    
+    // TODO: Select recipient with xpath by recipient name
+    // At the moment it will select the first subaccount available
+
+    // Move to Review
+    await this.click(
+      '[data-tid="transaction-button-next"]',
+      "Click to move to review"
+    );
+
+    // Execute transaction
+    await this.click(
+      '[data-tid="transaction-button-execute"]',
+      "Click to execute transaction"
+    );
+
     await this.waitForGone(`div.modal`, "Wait for modal to disappear", {
       timeout: 30_000,
     });
