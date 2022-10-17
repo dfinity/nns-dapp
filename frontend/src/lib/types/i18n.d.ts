@@ -475,7 +475,6 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
-  voting_power_tooltip_without_stake: string;
   voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
@@ -493,6 +492,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  stake_maturity_disabled_tooltip: string;
   stake_maturity_tooltip: string;
   merge_maturity_tooltip: string;
   start_dissolve_description: string;

@@ -28,11 +28,13 @@ import {
   followeesNeurons,
   formattedMaturity,
   formattedStakedMaturity,
+  formattedTotalMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToMerge,
+  hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughMaturityToSpawn,
@@ -358,6 +360,65 @@ describe("neuron-utils", () => {
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
+    });
+  });
+
+  describe("formattedTotalMaturity", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("0");
+    });
+
+    it("returns total maturity with two decimals", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("3.00");
+    });
+
+    it("returns maturity when staked maturity is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: BigInt(0),
+        },
+      };
+
+      expect(formattedTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns staked maturity when staked is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "1",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+          stakedMaturityE8sEquivalent: stake.toE8s(),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("1.00");
     });
   });
 
@@ -1603,6 +1664,49 @@ describe("neuron-utils", () => {
         },
       };
       expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("hasEnoughMaturityToStake", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(-100),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
     });
   });
 
