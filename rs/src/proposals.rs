@@ -461,7 +461,7 @@ mod def {
         wasm_sha.finish()
     }
 
-    // NNS function 34 - AddSnsWasm
+    // NNS function 34 - UpdateSnsSubnetListRequest
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
     pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
 }
