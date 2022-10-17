@@ -470,6 +470,7 @@
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
+    "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
     "stake_maturity_tooltip": "When your neuron votes, maturity increases.\nMaturity can either be staked, which increases the voting power of the neuron, or it can be used to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to four days after voting.",
     "merge_maturity_tooltip": "When your neuron votes, maturity increases. For neurons controlled by a hardware wallet, maturity can either be merged, which mints and stakes new ICP, or it can be used to spawn a new neuron containing newly minted ICP. Increases in maturity can take place up to four days after voting.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
