@@ -48,7 +48,7 @@ export class NeuronsTab extends MyNavigator {
       neuronId,
       `Get neuron ${neuronId} to check balance`
     );
-    const icpField = await neuron.$(`[data-tid="icp-value"]`);
+    const icpField = await neuron.$(`[data-tid="token-value"]`);
     const icpValue = Number(await icpField.getText());
     if (Number.isFinite(icpValue)) {
       return icpValue;

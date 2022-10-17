@@ -2,12 +2,17 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import type { Account } from "$lib/types/account";
 import { paths } from "$lib/utils/app-path.utils";
+import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import {
   mockSnsAccountsStoreSubscribe,
@@ -21,18 +26,26 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsTransactionModal", () => {
-  const renderTransactionModal = () =>
+  const renderTransactionModal = (selectedAccount?: Account) =>
     renderModal({
       component: SnsTransactionModal,
-      props: {},
+      props: {
+        selectedAccount,
+      },
     });
 
   beforeEach(() => {
     jest
-      .spyOn(snsProjectAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe([mockSnsMainAccount]));
+      .spyOn(snsAccountsStore, "subscribe")
+      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    jest
+      .spyOn(snsProjectSelectedStore, "subscribe")
+      .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+        run(mockPrincipal);
+        return () => undefined;
+      });
 
-    routeStore.update({ path: paths.accounts("aaaaa-aa") });
+    routeStore.update({ path: paths.accounts(mockPrincipal.toText()) });
   });
 
   it("should transfer tokens", async () => {
@@ -71,5 +84,14 @@ describe("SnsTransactionModal", () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => expect(snsTransferTokens).toBeCalled());
+  });
+
+  it("should not render the select account dropdown if selected account is passed", async () => {
+    const { queryByTestId } = await renderTransactionModal(mockSnsMainAccount);
+
+    await waitFor(() =>
+      expect(queryByTestId("transaction-step-1")).toBeInTheDocument()
+    );
+    expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
   });
 });

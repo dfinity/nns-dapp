@@ -1,3 +1,4 @@
+import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
@@ -11,12 +12,19 @@ const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
     target: "es2020",
+    rollupOptions: {
+      // Polyfill Buffer for production build. The hardware wallet needs Buffer.
+      plugins: [
+        inject({
+          include: ["node_modules/@ledgerhq/**"],
+          modules: { Buffer: ["buffer", "Buffer"] },
+        }),
+      ],
+    },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
   },
-  // Polyfill buffer for development. Thanks solution shared by chovyfu on the Discord channel.
-  // https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis

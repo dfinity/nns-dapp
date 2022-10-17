@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDate } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import NeuronCard from "../neurons/NeuronCard.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
@@ -25,7 +25,6 @@
   import Value from "$lib/components/ui/Value.svelte";
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { sanitize } from "$lib/utils/html.utils";
-  import { STAKE_MATURITY } from "$lib/constants/environment.constants";
 
   export let neuron: NeuronInfo;
 
@@ -71,9 +70,7 @@
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
             {@html sanitize(
               replacePlaceholders(
-                STAKE_MATURITY
-                  ? $i18n.neuron_detail.voting_power_tooltip_with_stake
-                  : $i18n.neuron_detail.voting_power_tooltip_without_stake,
+                $i18n.neuron_detail.voting_power_tooltip_with_stake,
                 {
                   $stake: formatToken({
                     value: neuron.fullNeuron.cachedNeuronStake,

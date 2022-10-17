@@ -1,7 +1,7 @@
 <script lang="ts">
   import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
   import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Steps } from "$lib/stores/steps.state";
   import type { Step } from "$lib/stores/steps.state";
@@ -84,10 +84,10 @@
   });
 
   let currentStep: Step | undefined;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
   >
@@ -106,4 +106,4 @@
       <HardwareWalletConnect on:nnsClose />
     {/if}
   </svelte:fragment>
-</LegacyWizardModal>
+</WizardModal>

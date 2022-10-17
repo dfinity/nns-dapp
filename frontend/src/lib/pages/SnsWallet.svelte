@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner, Toolbar } from "@dfinity/gix-components";
   import { onMount } from "svelte";
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
@@ -17,6 +17,10 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
+  import Footer from "$lib/components/common/Footer.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { busy } from "$lib/stores/busy.store";
+  import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -24,6 +28,8 @@
       routeStore.update({ path: AppPath.LegacyAccounts });
     }
   });
+
+  let showNewTransactionModal = false;
 
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
@@ -76,3 +82,22 @@
     {/if}
   </section>
 </main>
+
+<Footer>
+  <Toolbar>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="open-new-sns-transaction"
+      >{$i18n.accounts.new_transaction}</button
+    >
+  </Toolbar>
+</Footer>
+
+{#if showNewTransactionModal}
+  <SnsTransactionModal
+    on:nnsClose={() => (showNewTransactionModal = false)}
+    selectedAccount={$selectedAccountStore.account}
+  />
+{/if}

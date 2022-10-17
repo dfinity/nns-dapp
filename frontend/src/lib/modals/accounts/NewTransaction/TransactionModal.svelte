@@ -1,12 +1,14 @@
 <script lang="ts">
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "./TransactionForm.svelte";
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import type { Principal } from "@dfinity/principal";
 
+  export let rootCanisterId: Principal;
   export let currentStep: Step | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
@@ -31,7 +33,7 @@
     },
   ];
 
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
   // If destination or source are passed as prop, they are used.
   // But the component doesn't bind them to the props.
@@ -51,10 +53,11 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
+      {rootCanisterId}
       {canSelectDestination}
       {canSelectSource}
       {transactionFee}
@@ -90,4 +93,4 @@
       <slot name="description" slot="description" />
     </TransactionReview>
   {/if}
-</LegacyWizardModal>
+</WizardModal>

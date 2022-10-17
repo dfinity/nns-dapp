@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import Value from "$lib/components/ui/Value.svelte";
   import type { TokenAmount } from "@dfinity/nns";
 
@@ -13,27 +13,33 @@
 </script>
 
 {#if !feeOnly}
-  <p class="label">
-    {$i18n.accounts.source}{hardwareWallet
-      ? ` – ${$i18n.accounts.hardware_wallet_text}`
-      : ""}
-  </p>
-  <p class="value">{source}</p>
+  <div>
+    <p class="label">
+      {$i18n.accounts.source}{hardwareWallet
+        ? ` – ${$i18n.accounts.hardware_wallet_text}`
+        : ""}
+    </p>
+    <p class="value">{source}</p>
+  </div>
 
-  <p class="label">{$i18n.accounts.destination}</p>
-  <p class="value">{destination}</p>
+  <div>
+    <p class="label">{$i18n.accounts.destination}</p>
+    <p class="value">{destination}</p>
+  </div>
 {/if}
 
-<p class="label">{$i18n.accounts.transaction_fee}</p>
+<div>
+  <p class="label">{$i18n.accounts.transaction_fee}</p>
 
-<p class="fee">
-  <Value
-    >{formattedTransactionFeeICP(
-      fee?.toE8s() ?? $mainTransactionFeeStore
-    )}</Value
-  >
-  {fee?.token.symbol ?? $i18n.core.icp}
-</p>
+  <p class="fee">
+    <Value
+      >{formattedTransactionFeeICP(
+        fee?.toE8s() ?? $mainTransactionFeeStore
+      )}</Value
+    >
+    {fee?.token.symbol ?? $i18n.core.icp}
+  </p>
+</div>
 
 <style lang="scss">
   p {

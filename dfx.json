@@ -68,6 +68,14 @@
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
     },
+    "sns_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-index.did",
+      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "type": "custom"
+    },
     "sns_swap": {
       "build": [
         "true"
@@ -95,8 +103,7 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "ENABLE_SNS_2": false,
-          "STAKE_MATURITY": false
+          "ENABLE_SNS_2": false
         }
       },
       "providers": [
@@ -110,8 +117,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "ENABLE_SNS_2": false,
-          "STAKE_MATURITY": false
+          "ENABLE_SNS_2": false
         }
       },
       "providers": [
@@ -125,8 +131,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -140,8 +145,7 @@
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -155,8 +159,7 @@
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -170,8 +173,7 @@
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -185,8 +187,7 @@
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -200,8 +201,7 @@
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "bind": "127.0.0.1:8080",
@@ -222,7 +222,7 @@
       "config": {
         "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "18dc31ca64a4ead42c5d4222e647dce7124eb90e"
+        "IC_COMMIT": "10c0341032ac00c9728ecefa1e82e919f0f09022"
       },
       "packtool": ""
     }

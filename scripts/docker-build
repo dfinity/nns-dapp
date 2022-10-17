@@ -40,7 +40,7 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # In normal production builds, only these files will be generated,
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
-assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt)
+assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt frontend)
 
 set -x
 DOCKER_BUILDKIT=1 docker build \
@@ -48,12 +48,19 @@ DOCKER_BUILDKIT=1 docker build \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
   --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
   -t "$image_name" \
-  -o "$OUTDIR" .
+  -o "$OUTDIR" . \
+  "${@}"
 set +x
 
 for file in "${assets[@]}"; do
-  cp "$OUTDIR/$file" "$file"
-  shasum -a 256 "$file"
+  if test -d "$OUTDIR/$file"; then
+    shafile="$OUTDIR/$file.sha256sums"
+    find "$OUTDIR/$file" -type f | grep -v node_modules | awk '{print $2, $1}' | sort | xargs sha256sum >"$shafile"
+    echo "Shas for dir '$file' are in '$shafile'."
+  else
+    cp "$OUTDIR/$file" "$file"
+    shasum -a 256 "$file"
+  fi
 done
 
 untracked_inputs() {

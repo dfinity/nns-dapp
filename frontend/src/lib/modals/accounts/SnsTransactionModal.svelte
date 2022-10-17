@@ -11,7 +11,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import { numberToE8s } from "$lib/utils/icp.utils";
+  import { numberToE8s } from "$lib/utils/token.utils";
+  import type { Account } from "$lib/types/account";
+
+  export let selectedAccount: Account | undefined = undefined;
 
   let currentStep: Step;
 
@@ -45,16 +48,18 @@
 </script>
 
 <TransactionModal
+  rootCanisterId={$snsProjectSelectedStore}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
   token={$snsTokenSymbolSelectedStore}
   transactionFee={$snsSelectedTransactionFeeStore}
+  sourceAccount={selectedAccount}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
-  <p slot="description">
+  <p slot="description" class="value">
     {replacePlaceholders($i18n.accounts.sns_transaction_description, {
       $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
     })}

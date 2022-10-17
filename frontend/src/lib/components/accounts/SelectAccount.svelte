@@ -37,9 +37,9 @@
 </script>
 
 <div
-  class="wizard-list"
   class:disabled={disableSelection}
   data-tid="select-account-screen"
+  class="legacy"
 >
   {#if mainAccount}
     {#if showTitle}
@@ -90,12 +90,6 @@
     :global(article) {
       pointer-events: none;
       opacity: var(--disabled-card-opacity);
-    }
-  }
-
-  .wizard-list {
-    :global(article:first-of-type) {
-      margin-top: var(--padding);
     }
   }
 </style>

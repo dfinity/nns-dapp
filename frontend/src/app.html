@@ -3,6 +3,8 @@
   <head>
     <!-- CONTENT_SECURITY_POLICY -->
 
+    <!-- ROBOTS -->
+
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -103,6 +105,13 @@
       } catch (error) {
         console.error("Error initializing theme", error);
       }
+    </script>
+
+    <script>
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "./main.js";
+      document.head.appendChild(loader);
     </script>
 
     %sveltekit.head%

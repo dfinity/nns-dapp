@@ -10,6 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Step } from "$lib/stores/steps.state";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   export let neuron: NeuronInfo;
 
@@ -55,6 +56,7 @@
 <!-- That would be an edge case that would not happen becuase then the button won't even be there -->
 {#if neuron.fullNeuron?.accountIdentifier !== undefined}
   <TransactionModal
+    rootCanisterId={OWN_CANISTER_ID}
     on:nnsSubmit={topUp}
     on:nnsClose
     bind:currentStep
@@ -63,7 +65,7 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.neurons.top_up_neuron}</svelte:fragment
     >
-    <p slot="description">
+    <p slot="description" class="value">
       {replacePlaceholders($i18n.neurons.top_up_description, {
         $neuronId: neuron.neuronId.toString(),
       })}

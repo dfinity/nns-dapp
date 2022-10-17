@@ -47,8 +47,8 @@ import { getLastPathDetailId, isRoutePath } from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
-import { formatToken } from "./icp.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { formatToken } from "./token.utils";
 import { isDefined, isNullish, nonNullish } from "./utils";
 
 export type StateInfo = {
@@ -643,6 +643,9 @@ export const votedNeuronDetails = ({
  * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
  */
 export const minMaturityMerge = (fee: number): number => fee;
+
+export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
+  (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
 
 /**
  * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too

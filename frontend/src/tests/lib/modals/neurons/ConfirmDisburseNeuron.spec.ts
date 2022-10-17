@@ -3,7 +3,7 @@
  */
 
 import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 

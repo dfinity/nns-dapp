@@ -15,9 +15,9 @@
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import type { Account } from "$lib/types/account";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -43,7 +43,7 @@
   ];
 
   let currentStep: Step | undefined;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
 
@@ -89,7 +89,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="create-canister-modal-title"
       >{currentStep?.title ?? $i18n.canisters.add_canister}</span
@@ -111,14 +111,16 @@
         on:nnsSelectAmount={selectAmount}
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
-        <p>{$i18n.canisters.minimum_cycles_text_1}</p>
-        <p>
-          {@html replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
-            $amount: valueSpan(
-              formattedTransactionFeeICP($mainTransactionFeeStore)
-            ),
-          })}
-        </p>
+        <div>
+          <p class="description">{$i18n.canisters.minimum_cycles_text_1}</p>
+          <p class="description">
+            {@html replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
+              $amount: valueSpan(
+                formattedTransactionFeeICP($mainTransactionFeeStore)
+              ),
+            })}
+          </p>
+        </div>
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
@@ -132,4 +134,4 @@
       />
     {/if}
   </svelte:fragment>
-</LegacyWizardModal>
+</WizardModal>

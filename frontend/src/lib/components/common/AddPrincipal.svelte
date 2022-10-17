@@ -3,7 +3,6 @@
   import { busy } from "$lib/stores/busy.store";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let principal: Principal | undefined = undefined;
@@ -15,16 +14,17 @@
 </script>
 
 <form on:submit|preventDefault={select}>
-  <div class="input-wrapper">
-    <h5><slot name="title" /></h5>
+  <div>
     <PrincipalInput
       bind:principal
       placeholderLabelKey="core.principal_id"
       name="principal"
-    />
+    >
+      <slot name="title" slot="label" />
+    </PrincipalInput>
   </div>
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       type="button"
@@ -40,27 +40,5 @@
     >
       <slot name="button" />
     </button>
-  </FooterModal>
+  </div>
 </form>
-
-<style lang="scss">
-  h5 {
-    text-align: center;
-  }
-
-  form {
-    max-width: 100%;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
-  .input-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-</style>
