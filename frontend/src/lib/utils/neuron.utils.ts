@@ -170,6 +170,16 @@ export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.maturityE8sEquivalent);
 
 /**
+ * Format the sum of the maturity and staked maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `maturityE8sEquivalent` and `stakedMaturityE8sEquivalent` which will be summed and formatted if a `fullNeuron` is available
+ */
+export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
+  formatMaturity(
+    (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) +
+      (fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0))
+  );
+
+/**
  * Format the staked maturity in a value (token "currency") way.
  * @param {NeuronInfo} neuron The neuron that contains the `stakedMaturityE8sEquivalent` that will be formatted if a `fullNeuron` is available
  */
