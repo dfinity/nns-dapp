@@ -4,7 +4,7 @@
 
 import Markdown from "$lib/components/ui/Markdown.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockWaiting, silentConsoleErrors } from "../../../mocks/utils.mock";
+import { mockWaiting, silentConsoleErrors } from "../../../utils/utils.test-utils";
 
 let transform: (unknown) => Promise<unknown>;
 jest.mock("$lib/utils/html.utils", () => ({

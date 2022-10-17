@@ -11,7 +11,7 @@ import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
-import { clickByTestId } from "../../../mocks/utils.mock";
+import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("ProposalsFilterModal", () => {
   const props: { props: ProposalsFilterModalProps } = {
