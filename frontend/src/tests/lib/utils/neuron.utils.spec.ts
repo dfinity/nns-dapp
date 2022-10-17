@@ -34,6 +34,7 @@ import {
   getNeuronById,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToMerge,
+  hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughMaturityToSpawn,
@@ -1663,6 +1664,49 @@ describe("neuron-utils", () => {
         },
       };
       expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
+    });
+  });
+
+  describe("hasEnoughMaturityToStake", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(-100),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
     });
   });
 

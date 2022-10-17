@@ -654,6 +654,9 @@ export const votedNeuronDetails = ({
  */
 export const minMaturityMerge = (fee: number): number => fee;
 
+export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
+  (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
+
 /**
  * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
  */
