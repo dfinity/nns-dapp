@@ -13,7 +13,7 @@ import {
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../mocks/utils.mock";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../mocks/utils.mock";
 import DropdownTest from "./DropdownTest.svelte";
 
 describe("Dropdown", () => {

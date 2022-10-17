@@ -20,7 +20,7 @@ import {
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../mocks/utils.mock";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = (props?: {

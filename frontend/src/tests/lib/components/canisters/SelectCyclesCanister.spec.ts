@@ -6,7 +6,7 @@ import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../mocks/utils.mock";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
