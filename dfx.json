@@ -103,8 +103,7 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "ENABLE_SNS_2": false,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": false
         }
       },
       "providers": [
@@ -118,8 +117,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": false,
-          "ENABLE_SNS_2": false,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": false
         }
       },
       "providers": [
@@ -133,8 +131,7 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -148,8 +145,7 @@
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -163,8 +159,7 @@
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -178,8 +173,7 @@
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -193,8 +187,7 @@
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "providers": [
@@ -208,8 +201,7 @@
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS": true,
-          "ENABLE_SNS_2": true,
-          "STAKE_MATURITY": true
+          "ENABLE_SNS_2": true
         }
       },
       "bind": "127.0.0.1:8080",
