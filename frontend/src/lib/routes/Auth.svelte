@@ -54,7 +54,7 @@
 <ul>
   <li>
     <IconWallet />
-    {$i18n.auth.secure}
+    {$i18n.auth.wallet}
   </li>
   <li>
     <IconPsychology />

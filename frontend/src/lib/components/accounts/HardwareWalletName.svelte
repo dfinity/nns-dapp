@@ -48,6 +48,7 @@
       name="walletName"
       bind:value={hardwareWalletName}
       on:blur={showInvalidInputLength}
+      showInfo={false}
       errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {
             $length: `${HARDWARE_WALLET_NAME_MIN_LENGTH}`,

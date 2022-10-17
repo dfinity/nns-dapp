@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     convertIcpToTCycles,
@@ -64,41 +63,36 @@
     minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
 </script>
 
-<form
-  on:submit|preventDefault={selectAmount}
-  class="wizard-wrapper wrapper"
-  data-tid="select-cycles-screen"
->
-  <div class="content">
-    <div class="inputs">
-      <Input
-        placeholderLabelKey="core.icp"
-        inputType="icp"
-        name="icp-amount"
-        bind:value={amount}
-        on:focus={() => (isChanging = "icp")}
-        on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesExchangeRate === undefined}
-      >
-        <svelte:fragment slot="label">{$i18n.core.icp}</svelte:fragment>
-      </Input>
-      <Input
-        placeholderLabelKey="canisters.t_cycles"
-        inputType="icp"
-        name="t-cycles-amount"
-        bind:value={amountCycles}
-        on:focus={() => (isChanging = "tCycles")}
-        on:blur={() => (isChanging = undefined)}
-        disabled={icpToCyclesExchangeRate === undefined}
-      >
-        <svelte:fragment slot="label">
-          {$i18n.canisters.t_cycles}
-        </svelte:fragment>
-      </Input>
-    </div>
-    <slot />
+<form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">
+  <div class="inputs">
+    <Input
+      placeholderLabelKey="core.icp"
+      inputType="icp"
+      name="icp-amount"
+      bind:value={amount}
+      on:focus={() => (isChanging = "icp")}
+      on:blur={() => (isChanging = undefined)}
+      disabled={icpToCyclesExchangeRate === undefined}
+    >
+      <svelte:fragment slot="label">{$i18n.core.icp}</svelte:fragment>
+    </Input>
+    <Input
+      placeholderLabelKey="canisters.t_cycles"
+      inputType="icp"
+      name="t-cycles-amount"
+      bind:value={amountCycles}
+      on:focus={() => (isChanging = "tCycles")}
+      on:blur={() => (isChanging = undefined)}
+      disabled={icpToCyclesExchangeRate === undefined}
+    >
+      <svelte:fragment slot="label">
+        {$i18n.canisters.t_cycles}
+      </svelte:fragment>
+    </Input>
   </div>
-  <FooterModal>
+  <slot />
+
+  <div class="toolbar">
     <button
       type="button"
       class="secondary"
@@ -113,26 +107,14 @@
       data-tid="select-cycles-button"
       disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
     >
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  .wizard-wrapper.wrapper {
-    justify-content: space-between;
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--padding-2x);
-
-    flex: 1;
-  }
-
   .inputs {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
     gap: var(--padding-2x);
-    justify-content: center;
+    width: calc(100% - var(--padding-2x));
   }
 </style>

@@ -12,7 +12,6 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;
@@ -78,7 +77,7 @@
       </p>
     </div>
 
-    <FooterModal>
+    <div class="toolbar">
       <button class="secondary" on:click={close}>
         {$i18n.core.cancel}
       </button>
@@ -90,7 +89,7 @@
       >
         {$i18n.neuron_detail.split_neuron_confirm}
       </button>
-    </FooterModal>
+    </div>
   </div>
 </Modal>
 

@@ -15,8 +15,10 @@
   import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
 
   // Tested in the TransactionModal
+  export let rootCanisterId: Principal;
   export let selectedAccount: Account | undefined = undefined;
   export let canSelectDestination: boolean;
   export let canSelectSource: boolean;
@@ -98,7 +100,7 @@
     {/if}
 
     {#if canSelectSource}
-      <SelectAccountDropdown bind:selectedAccount />
+      <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
     {:else}
       <div class="given-source">
         <p>
@@ -118,6 +120,7 @@
 
   {#if canSelectDestination}
     <SelectDestinationAddress
+      {rootCanisterId}
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
@@ -141,8 +144,6 @@
 </form>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
   form {
     --dropdown-width: 100%;
   }

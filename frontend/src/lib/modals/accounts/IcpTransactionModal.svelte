@@ -9,6 +9,7 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -51,6 +52,7 @@
 </script>
 
 <TransactionModal
+  rootCanisterId={OWN_CANISTER_ID}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
