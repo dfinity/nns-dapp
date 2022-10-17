@@ -15,10 +15,10 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
-import type { Step } from "$lib/stores/steps.state";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
+import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
   IconLockClock,
@@ -533,6 +533,7 @@ export type InvalidState<T> = {
   isInvalid: (arg?: T) => boolean;
   onInvalid: () => void;
 };
+
 // Checks if there is an invalid state in a Wizard Step
 export const checkInvalidState = <T>({
   invalidStates,
@@ -540,7 +541,7 @@ export const checkInvalidState = <T>({
   args,
 }: {
   invalidStates: InvalidState<T>[];
-  currentStep?: Step;
+  currentStep?: WizardStep;
   args: T | undefined;
 }): void => {
   invalidStates
