@@ -35,19 +35,24 @@ describe("Makes a proposal and verifies that it is shown", () => {
   it("Can see the new proposal", async () => {
     const navigator = new MyNavigator(browser);
     console.warn({ proposalId });
-    const proposalMetadataSelector = ProposalsTab.proposalIdSelector(
+    // The proposal is Fails immediately in local tests.
+    const proposalsTab = new ProposalsTab(browser);
+    await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
+    // Set to the filter of the proposal type.
+    await proposalsTab.filter("filters-by-topics", ["Subnet Management"]);
+    const proposalCardSelector = ProposalsTab.proposalCardSelector(
       proposalId as number
     );
-    await navigator.click(
-      proposalMetadataSelector,
-      "Navigate to proposal detail"
-    );
+    await navigator.click(proposalCardSelector, "Navigate to proposal detail");
     await navigator.getElement(
       ProposalsTab.PROPOSAL_TALLY_SELECTOR,
       "Waiting for proposal detail"
     );
+    const proposalDetailsSelector = ProposalsTab.proposalDetailsSelector(
+      proposalId as number
+    );
     await navigator.getElement(
-      proposalMetadataSelector,
+      proposalDetailsSelector,
       "Verifying that the proposal detail is for the correct proposal"
     );
     await navigator.click(

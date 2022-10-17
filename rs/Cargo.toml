@@ -20,7 +20,10 @@ lzma-rs = "0.2.0"
 tar = "0.4.37"
 hex = "0.4.3"
 
-# The ic repo depends on chrono but chrono 0.4.22 is broken.  .19 works and satisfies ic. 
+# chrono 0.4.19 has vulnerabilities fixed in 0.4.20
+# but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
+# The Replica returned an error: code 5, message: "Wasm module of canister vo5te-2aaaa-aaaaa-aaazq-cai is not valid: Wasm module has an invalid import section. Module imports function '__wbindgen_describe' from '__wbindgen_placeholder__' that is not exported by the runtime."
+# 0.4.19 works and satisfies ic. 
 chrono = "=0.4.19"
 
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "8ebd832a470195cc52fbb107a908985cbaadc00c" }

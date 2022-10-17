@@ -16,7 +16,6 @@
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { STAKE_MATURITY } from "$lib/constants/environment.constants";
 
   export let neuron: NeuronInfo;
 
@@ -34,7 +33,7 @@
   });
 
   let stakeMaturityEnabled: boolean;
-  $: stakeMaturityEnabled = !controlledByHardwareWallet && STAKE_MATURITY;
+  $: stakeMaturityEnabled = !controlledByHardwareWallet;
 </script>
 
 <CardInfo>

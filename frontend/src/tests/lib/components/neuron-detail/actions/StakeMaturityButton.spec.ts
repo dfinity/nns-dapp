@@ -37,4 +37,22 @@ describe("StakeMaturityButton", () => {
       ).toBeInTheDocument()
     );
   });
+
+  it("should be disabled if no maturity to stake", async () => {
+    const { getByTestId } = render(StakeMaturityButton, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            maturityE8sEquivalent: BigInt(0),
+          },
+        },
+      },
+    });
+
+    const btn = getByTestId("stake-maturity-button") as HTMLButtonElement;
+
+    expect(btn.hasAttribute("disabled")).toBeTruthy();
+  });
 });
