@@ -179,6 +179,7 @@ export const hasPermissions = ({
   return !permissions.some(notFound);
 };
 
+// TODO: Confirm that a hotkey is only a neuron with NEURON_PERMISSION_TYPE_VOTE
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
     // Filter the controller. The controller is the neuron with all permissions
