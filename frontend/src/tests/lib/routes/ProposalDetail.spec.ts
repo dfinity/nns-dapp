@@ -19,7 +19,7 @@ import {
   mockProposals,
 } from "../../mocks/proposals.store.mock";
 import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
-import { silentConsoleErrors } from "../../mocks/utils.mock";
+import { silentConsoleErrors } from "../../utils/utils.test-utils";
 
 describe("ProposalDetail", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
