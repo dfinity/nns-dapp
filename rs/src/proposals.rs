@@ -129,6 +129,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         31 => identity::<ChangeSubnetMembershipPayload>(payload_bytes),
         32 => identity::<UpdateSubnetTypeArgs>(payload_bytes),
         33 => identity::<ChangeSubnetTypeAssignmentArgs>(payload_bytes),
+        34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -459,6 +460,10 @@ mod def {
         wasm_sha.write(bytes);
         wasm_sha.finish()
     }
+
+    // NNS function 34 - AddSnsWasm
+    // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
+    pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
 }
 
 #[cfg(test)]
