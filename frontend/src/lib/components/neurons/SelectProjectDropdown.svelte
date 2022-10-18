@@ -4,11 +4,10 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { committedProjectsStore } from "$lib/stores/projects.store";
-  import { routeStore } from "$lib/stores/route.store";
   import Dropdown from "$lib/components/ui/Dropdown.svelte";
   import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import {goto} from "$app/navigation";
+  import { goto } from "$app/navigation";
 
   let selectedCanisterId: string | undefined;
 
@@ -31,7 +30,7 @@
   $: (async () => {
     if (selectedCanisterId !== undefined) {
       // TODO(GIX-1071): utils?
-      const {pathname} = window.location;
+      const { pathname } = window.location;
       await goto(`${pathname}?u=${selectedCanisterId}`);
     }
   })();

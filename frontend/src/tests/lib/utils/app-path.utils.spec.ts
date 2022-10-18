@@ -16,7 +16,6 @@ describe("routes", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
       expect(isAppPath(AppPath.LegacyAccounts)).toBeTruthy();
-      expect(isAppPath(`${AppPath.LegacyWallet}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.LegacyNeuronDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.Launchpad}`)).toBeTruthy();
@@ -142,41 +141,11 @@ describe("routes", () => {
     it("should compare dynamic paths", () => {
       expect(
         isRoutePath({
-          paths: [AppPath.LegacyWallet],
-          routePath: "/#/wallet/0",
-        })
-      ).toBeTruthy();
-      expect(
-        isRoutePath({
           paths: [AppPath.Wallet],
           routePath:
             "/#/u/qvhpv-4qaaa-aaaaa-aaagq-cai/wallet/8703f867c97952906b676578c2cc9923d26d7aba865008b4478ec9c94f41c2f9",
         })
       ).toBeTruthy();
-      expect(
-        isRoutePath({
-          paths: [AppPath.LegacyWallet],
-          routePath: "/#/wallet/a0",
-        })
-      ).toBeTruthy();
-      expect(
-        isRoutePath({
-          paths: [AppPath.LegacyWallet],
-          routePath: "/#/wallet/",
-        })
-      ).toBeFalsy();
-      expect(
-        isRoutePath({
-          paths: [AppPath.LegacyWallet, AppPath.Wallet],
-          routePath: "/#/wallet",
-        })
-      ).toBeFalsy();
-      expect(
-        isRoutePath({
-          paths: [AppPath.LegacyWallet],
-          routePath: undefined,
-        })
-      ).toBeFalsy();
     });
   });
 

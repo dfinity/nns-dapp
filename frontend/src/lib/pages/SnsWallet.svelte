@@ -8,7 +8,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { routePathAccountIdentifier } from "$lib/utils/accounts.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { routeStore } from "$lib/stores/route.store";
@@ -21,6 +20,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
+  import { routesStore } from "$lib/stores/routes.stores";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -54,10 +54,11 @@
     store: selectedAccountStore,
   });
 
+  // TODO(GIX-1071): technically this can be a property
   let routeAccountIdentifier:
     | { accountIdentifier: string | undefined }
     | undefined;
-  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+  $: routeAccountIdentifier = { accountIdentifier: $routesStore.id };
 
   $: {
     if (routeAccountIdentifier?.accountIdentifier !== undefined) {

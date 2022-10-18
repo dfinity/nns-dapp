@@ -20,10 +20,7 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
-  import {
-    getAccountFromStore,
-    routePathAccountIdentifier,
-  } from "$lib/utils/accounts.utils";
+  import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
@@ -33,7 +30,7 @@
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import {routesStore} from "$lib/stores/routes.stores";
+  import { routesStore } from "$lib/stores/routes.stores";
 
   const goBack = () =>
     routeStore.navigate({
@@ -74,7 +71,7 @@
   let routeAccountIdentifier:
     | { accountIdentifier: string | undefined }
     | undefined;
-  $: routeAccountIdentifier = {accountIdentifier: $routesStore.id};
+  $: routeAccountIdentifier = { accountIdentifier: $routesStore.id };
 
   let selectedAccount: Account | undefined;
   $: selectedAccount = getAccountFromStore({

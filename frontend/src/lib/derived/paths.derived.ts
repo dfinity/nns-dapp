@@ -8,11 +8,6 @@ export const accountsPathStore = derived(
     paths.accounts($snsProjectSelectedStore.toText())
 );
 
-export const walletPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) => paths.wallet($snsProjectSelectedStore.toText())
-);
-
 export const neuronsPathStore = derived(
   snsProjectSelectedStore,
   ($snsProjectSelectedStore) => paths.neurons($snsProjectSelectedStore.toText())

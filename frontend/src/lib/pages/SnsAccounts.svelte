@@ -11,8 +11,9 @@
   import type { Account } from "$lib/types/account";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { walletPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { routesStore } from "$lib/stores/routes.stores";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -36,9 +37,11 @@
           ...$snsProjectAccountsStore.map(({ balance }) => balance)
         );
 
-  const goToDetails = (account: Account) => {
-    routeStore.navigate({ path: `${$walletPathStore}/${account.identifier}` });
-  };
+  // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
+  const goToDetails = async ({ identifier }: Account) =>
+    await goto(
+      `${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`
+    );
 </script>
 
 <section data-tid="sns-accounts-body">

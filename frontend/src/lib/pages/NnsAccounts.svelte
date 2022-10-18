@@ -5,12 +5,10 @@
   import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import type { TokenAmount } from "@dfinity/nns";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
-  import { walletPathStore } from "$lib/derived/paths.derived";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
   import { routesStore } from "$lib/stores/routes.stores";
@@ -23,7 +21,9 @@
 
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const cardClick = async (identifier: string) =>
-    await goto(`${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`);
+    await goto(
+      `${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`
+    );
 
   onDestroy(unsubscribe);
 

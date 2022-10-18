@@ -6,7 +6,6 @@ export enum AppPath {
   Neurons = "/#/u/:rootCanisterId/neurons",
   Proposals = "/#/proposals",
   Canisters = "/#/canisters",
-  LegacyWallet = "/#/wallet",
   Wallet = "/#/u/:rootCanisterId/wallet",
   ProposalDetail = "/#/proposal",
   LegacyNeuronDetail = "/#/neuron",

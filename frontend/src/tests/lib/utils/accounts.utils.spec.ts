@@ -10,7 +10,6 @@ import {
   invalidAddress,
   isAccountHardwareWallet,
   mainAccount,
-  routePathAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -294,27 +293,6 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
-    });
-  });
-
-  describe("routePathAccountIdentifier", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get account identifier from valid path", () => {
-      expect(
-        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual({
-        accountIdentifier: mockMainAccount.identifier,
-      });
-    });
-
-    it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
-      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
 });
