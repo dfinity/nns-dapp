@@ -28,7 +28,7 @@
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import { routesStore } from "$lib/stores/routes.stores";
+  import { pageStore } from "$lib/stores/page.store";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
 
@@ -65,7 +65,7 @@
     store: selectedAccountStore,
   });
 
-  const routeAccountIdentifier = $routesStore.id;
+  const routeAccountIdentifier = $pageStore.id;
 
   const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
     if (account !== undefined) {

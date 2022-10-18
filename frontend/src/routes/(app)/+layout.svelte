@@ -1,13 +1,12 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
-  import type { LayoutData } from "./$types";
-  import { routesStore } from "$lib/stores/routes.stores";
+  import { Page, pageStore } from "$lib/stores/page.store";
 
-  export let data: LayoutData;
+  export let data: Partial<Page>;
 
   $: (() => {
     const { universe, id } = data;
-    routesStore.load({ universe, id });
+    pageStore.load({ universe, id });
   })();
 </script>
 

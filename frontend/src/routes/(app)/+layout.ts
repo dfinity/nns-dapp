@@ -1,13 +1,13 @@
 import { browser } from "$app/environment";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import type { Page } from "$lib/stores/page.store";
 import type { LoadEvent } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
 
-/** @type {import('./$types').PageLoad} */
-export const load: LayoutLoad = ($event: LoadEvent): App.PageData => {
-  // TODO(GIX-1071): constants
+export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
   if (!browser) {
     return {
-      universe: undefined,
+      universe: OWN_CANISTER_ID_TEXT,
       id: undefined,
     };
   }

@@ -19,7 +19,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
-  import { routesStore } from "$lib/stores/routes.stores";
+  import { pageStore } from "$lib/stores/page.store";
   import { goto } from "$app/navigation";
 
   // TODO(GIX-1071): utils?
@@ -59,7 +59,7 @@
   let routeAccountIdentifier:
     | { accountIdentifier: string | undefined }
     | undefined;
-  $: routeAccountIdentifier = { accountIdentifier: $routesStore.id };
+  $: routeAccountIdentifier = { accountIdentifier: $pageStore.id };
 
   $: {
     if (routeAccountIdentifier?.accountIdentifier !== undefined) {

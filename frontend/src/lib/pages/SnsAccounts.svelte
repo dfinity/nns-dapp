@@ -13,7 +13,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
-  import { routesStore } from "$lib/stores/routes.stores";
+  import { pageStore } from "$lib/stores/page.store";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -40,7 +40,7 @@
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const goToDetails = async ({ identifier }: Account) =>
     await goto(
-      `${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`
+      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&id=${identifier}`
     );
 </script>
 

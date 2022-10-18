@@ -1,13 +1,13 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { writable } from "svelte/store";
 
-export interface RoutesStore {
+export interface Page {
   universe: string;
   id: string | undefined | null;
 }
 
-const initRoutesStore = () => {
-  const { subscribe, set } = writable<RoutesStore>({
+const initPageStore = () => {
+  const { subscribe, set } = writable<Page>({
     universe: undefined,
     id: undefined,
   });
@@ -15,7 +15,7 @@ const initRoutesStore = () => {
   return {
     subscribe,
 
-    load: ({ universe, id }: RoutesStore) =>
+    load: ({ universe, id }: Partial<Page>) =>
       set({
         universe: universe ?? OWN_CANISTER_ID_TEXT,
         id: id ?? null,
@@ -23,4 +23,4 @@ const initRoutesStore = () => {
   };
 };
 
-export const routesStore = initRoutesStore();
+export const pageStore = initPageStore();

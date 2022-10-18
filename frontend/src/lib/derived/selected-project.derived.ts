@@ -2,7 +2,7 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { routesStore } from "$lib/stores/routes.stores";
+import { pageStore } from "$lib/stores/page.store";
 import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
@@ -13,7 +13,7 @@ import { derived, type Readable } from "svelte/store";
  * The store reads the routeStore and returns the context.
  * It defaults to NNS (OWN_CANISTER_ID) if the path is not a context path.
  */
-export const snsProjectSelectedStore = derived(routesStore, ({ universe }) => {
+export const snsProjectSelectedStore = derived(pageStore, ({ universe }) => {
   if (![null, undefined, OWN_CANISTER_ID_TEXT].includes(universe)) {
     try {
       return Principal.fromText(universe);

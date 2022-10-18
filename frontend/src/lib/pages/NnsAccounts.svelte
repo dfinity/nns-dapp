@@ -11,7 +11,7 @@
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
-  import { routesStore } from "$lib/stores/routes.stores";
+  import { pageStore } from "$lib/stores/page.store";
 
   let accounts: AccountsStore | undefined;
 
@@ -22,7 +22,7 @@
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const cardClick = async (identifier: string) =>
     await goto(
-      `${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`
+      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&id=${identifier}`
     );
 
   onDestroy(unsubscribe);
