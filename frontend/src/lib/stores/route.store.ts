@@ -77,6 +77,8 @@ const initRouteStore = () => {
 
       // TODO(GIX-1071): clean up and edge cases
 
+      console.log('HERE')
+
       const [u, canisterId, context] = window.location.pathname.split('/').filter((path) => path !== '');
       const newPath = `/${[u, selectedCanisterId, context].join('/')}`;
 

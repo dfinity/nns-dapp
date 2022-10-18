@@ -7,14 +7,12 @@
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
-      try {
-          await authStore.signIn();
-      } catch (err: unknown) {
-          toastsError({
-              labelKey: "error.sign_in",
-              err,
-          });
-      }
+      const onError = (err: unknown) => toastsError({
+        labelKey: "error.sign_in",
+        err,
+      })
+
+      await authStore.signIn(onError);
   };
 
   let signedIn = false;
