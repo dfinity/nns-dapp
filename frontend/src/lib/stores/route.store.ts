@@ -32,34 +32,39 @@ const initRouteStore = () => {
   return {
     subscribe,
 
-    update: ({ path }: { path: string }) =>
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      })),
+    // TODO(GIX-1071): delete
+    update: ({ path }: { path: string }) => {
 
-    navigate: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      }));
-
-      pushHistory({ path, query });
+      // update((state: RouteStore) => ({
+      //   ...state,
+      //   path,
+      //   referrerPath: state.path,
+      //   isKnownPath: isAppPath(path),
+      // }))
     },
 
-    replace: ({ path, query }: { path: string; query?: string }) => {
-      update((state: RouteStore) => ({
-        ...state,
-        path,
-        referrerPath: state.path,
-        isKnownPath: isAppPath(path),
-      }));
+    // TODO(GIX-1071): delete
+    navigate: ({ path, query }: { path: string; query?: string }) => {
+      // update((state: RouteStore) => ({
+      //   ...state,
+      //   path,
+      //   referrerPath: state.path,
+      //   isKnownPath: isAppPath(path),
+      // }));
 
-      replaceHistory({ path, query });
+      // pushHistory({ path, query });
+    },
+
+    // TODO(GIX-1071): delete
+    replace: ({ path, query }: { path: string; query?: string }) => {
+      // update((state: RouteStore) => ({
+      //   ...state,
+      //   path,
+      //   referrerPath: state.path,
+      //   isKnownPath: isAppPath(path),
+      // }));
+
+      // replaceHistory({ path, query });
     },
 
     /**
@@ -75,8 +80,6 @@ const initRouteStore = () => {
      */
     changeContext: (selectedCanisterId: string) => {
       // TODO(GIX-1071): clean up and edge cases
-
-      console.log("HERE");
 
       const [u, canisterId, context] = window.location.pathname
         .split("/")

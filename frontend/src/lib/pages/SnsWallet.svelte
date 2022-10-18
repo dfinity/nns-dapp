@@ -5,12 +5,11 @@
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppRoutes } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
-  import { routeStore } from "$lib/stores/route.store";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
@@ -21,11 +20,13 @@
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { routesStore } from "$lib/stores/routes.stores";
+  import {goto} from "$app/navigation";
 
+  // TODO(GIX-1071): utils?
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (!ENABLE_SNS_2) {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      goto(AppRoutes.Accounts, {replaceState: true});
     }
   });
 
