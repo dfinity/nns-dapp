@@ -10,8 +10,8 @@ import { authStore } from "$lib/stores/auth.store";
 import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { formatToken } from "$lib/utils/icp.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -181,7 +181,7 @@ describe("SnsNeuronCard", () => {
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
-  it("renders the hotkey_control label when user has only voting permissions", async () => {
+  it("renders the hotkey_control label when user has only voting and proposal permissions", async () => {
     const hotkeyneuron: SnsNeuron = {
       ...mockSnsNeuron,
       permissions: [
@@ -189,6 +189,7 @@ describe("SnsNeuronCard", () => {
           principal: [mockIdentity.getPrincipal()],
           permission_type: Int32Array.from([
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
           ]),
         },
       ],

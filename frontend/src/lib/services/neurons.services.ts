@@ -24,7 +24,6 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -46,7 +45,6 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
-import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -61,6 +59,7 @@ import {
   isHotKeyControllable,
   isIdentityController,
   userAuthorizedNeuron,
+  validTopUpAmount,
 } from "$lib/utils/neuron.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import {
@@ -76,6 +75,7 @@ import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   syncAccounts,
+  transferICP,
 } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { assertLedgerVersion } from "./ledger.services";
@@ -916,6 +916,44 @@ export const reloadNeuron = (neuronId: NeuronId) =>
       });
   });
 
+export const topUpNeuron = async ({
+  amount,
+  neuron,
+  sourceAccount,
+}: {
+  amount: number;
+  neuron: NeuronInfo;
+  sourceAccount: Account;
+}): Promise<{ success: boolean }> => {
+  if (neuron.fullNeuron?.accountIdentifier === undefined) {
+    toastsError({
+      labelKey: "errors.neuron_account_not_found",
+    });
+    return { success: false };
+  }
+
+  // TODO: Check the amount when the user enters amount in the input field.
+  // https://dfinity.atlassian.net/browse/GIX-798
+  if (!validTopUpAmount({ neuron, amount })) {
+    toastsError({
+      labelKey: "error.amount_not_enough_top_up_neuron",
+    });
+    return { success: false };
+  }
+
+  const { success } = await transferICP({
+    sourceAccount,
+    destinationAddress: neuron.fullNeuron?.accountIdentifier,
+    amount,
+  });
+
+  if (success) {
+    await reloadNeuron(neuron.neuronId);
+  }
+
+  return { success };
+};
+
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet
   if (!IS_TESTNET) {
@@ -946,16 +984,4 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
   }
-};
-
-export const routePathNeuronId = (path: string): NeuronId | undefined => {
-  if (
-    !isRoutePath({
-      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
-      routePath: path,
-    })
-  ) {
-    return undefined;
-  }
-  return getLastPathDetailId(path);
 };

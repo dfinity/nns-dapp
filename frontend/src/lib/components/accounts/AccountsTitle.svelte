@@ -2,7 +2,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
 

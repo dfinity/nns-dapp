@@ -16,7 +16,7 @@ use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use itertools::Itertools;
 use ledger_canister::Operation::{self, Burn, Mint, Transfer};
-use ledger_canister::{AccountIdentifier, BlockHeight, Memo, Subaccount, Tokens};
+use ledger_canister::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
@@ -36,7 +36,7 @@ pub struct AccountsStore {
 
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
-    block_height_synced_up_to: Option<BlockHeight>,
+    block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
     sub_accounts_count: u64,
@@ -84,7 +84,7 @@ pub struct NamedCanister {
 #[derive(CandidType, Deserialize)]
 struct Transaction {
     transaction_index: TransactionIndex,
-    block_height: BlockHeight,
+    block_height: BlockIndex,
     timestamp: TimeStamp,
     memo: Memo,
     transfer: Operation,
@@ -117,7 +117,7 @@ pub struct RefundTransactionArgs {
     pub recipient_principal: PrincipalId,
     pub from_sub_account: Subaccount,
     pub amount: Tokens,
-    pub original_transaction_block_height: BlockHeight,
+    pub original_transaction_block_height: BlockIndex,
     pub refund_address: AccountIdentifier,
     pub error_message: String,
 }
@@ -526,7 +526,7 @@ impl AccountsStore {
         &mut self,
         from: AccountIdentifier,
         to: AccountIdentifier,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
     ) {
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
@@ -544,7 +544,7 @@ impl AccountsStore {
         &mut self,
         transfer: Operation,
         memo: Memo,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         timestamp: TimeStamp,
     ) -> Result<bool, String> {
         if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
@@ -635,7 +635,7 @@ impl AccountsStore {
             .as_nanos() as u64;
     }
 
-    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockHeight) {
+    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
         if self.block_height_synced_up_to.is_some() {
             panic!("This can only be called to initialize the 'block_height_synced_up_to' value");
         }
@@ -776,7 +776,7 @@ impl AccountsStore {
     pub fn attach_newly_created_canister(
         &mut self,
         principal: PrincipalId,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         canister_id: CanisterId,
     ) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
@@ -803,8 +803,8 @@ impl AccountsStore {
 
     pub fn process_transaction_refund_completed(
         &mut self,
-        original_transaction_block_height: BlockHeight,
-        refund_block_height: BlockHeight,
+        original_transaction_block_height: BlockIndex,
+        refund_block_height: BlockIndex,
         error_message: String,
     ) {
         self.multi_part_transactions_processor.update_status(
@@ -815,7 +815,7 @@ impl AccountsStore {
 
     pub fn process_multi_part_transaction_error(
         &mut self,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         error: String,
         refund_pending: bool,
     ) {
@@ -836,14 +836,14 @@ impl AccountsStore {
         }
     }
 
-    pub fn get_block_height_synced_up_to(&self) -> Option<BlockHeight> {
+    pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
         self.block_height_synced_up_to
     }
 
     pub fn get_multi_part_transaction_status(
         &self,
         caller: PrincipalId,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
     ) -> MultiPartTransactionStatus {
         if self.get_block_height_synced_up_to().unwrap_or(0) < block_height {
             MultiPartTransactionStatus::PendingSync
@@ -856,14 +856,14 @@ impl AccountsStore {
         self.multi_part_transactions_processor.get_errors()
     }
 
-    pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockHeight, MultiPartTransactionToBeProcessed)> {
+    pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.multi_part_transactions_processor.take_next()
     }
 
     pub fn mark_neuron_created(
         &mut self,
         principal: &PrincipalId,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         memo: Memo,
         neuron_id: NeuronId,
     ) {
@@ -873,13 +873,13 @@ impl AccountsStore {
             .update_status(block_height, MultiPartTransactionStatus::NeuronCreated(neuron_id));
     }
 
-    pub fn mark_neuron_topped_up(&mut self, block_height: BlockHeight) {
+    pub fn mark_neuron_topped_up(&mut self, block_height: BlockIndex) {
         self.neurons_topped_up_count += 1;
         self.multi_part_transactions_processor
             .update_status(block_height, MultiPartTransactionStatus::Complete);
     }
 
-    pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockHeight) {
+    pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockIndex) {
         self.multi_part_transactions_processor
             .update_status(original_transaction_block_height, MultiPartTransactionStatus::Complete);
     }
@@ -925,7 +925,7 @@ impl AccountsStore {
     pub fn enqueue_multi_part_transaction(
         &mut self,
         principal: PrincipalId,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         transaction: MultiPartTransactionToBeProcessed,
     ) {
         self.multi_part_transactions_processor
@@ -1127,7 +1127,7 @@ impl AccountsStore {
         }
     }
 
-    fn get_transaction_index(&self, block_height: BlockHeight) -> Option<TransactionIndex> {
+    fn get_transaction_index(&self, block_height: BlockIndex) -> Option<TransactionIndex> {
         if let Some(latest_transaction) = self.transactions.back() {
             let max_block_height = latest_transaction.block_height;
             if block_height <= max_block_height {
@@ -1300,7 +1300,7 @@ impl AccountsStore {
         to: AccountIdentifier,
         memo: Memo,
         amount: Tokens,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
     ) {
         match transaction_type {
             TransactionType::ParticipateSwap(swap_canister_id) => {
@@ -1415,7 +1415,7 @@ impl StableState for AccountsStore {
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
-            Option<BlockHeight>,
+            Option<BlockIndex>,
             MultiPartTransactionsProcessor,
             u64,
             u64,
@@ -1509,7 +1509,7 @@ impl Account {
 impl Transaction {
     pub fn new(
         transaction_index: TransactionIndex,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         timestamp: TimeStamp,
         memo: Memo,
         transfer: Operation,
@@ -1569,7 +1569,7 @@ pub struct GetTransactionsResponse {
 
 #[derive(CandidType)]
 pub struct TransactionResult {
-    block_height: BlockHeight,
+    block_height: BlockIndex,
     timestamp: TimeStamp,
     memo: Memo,
     transfer: TransferResult,
@@ -1646,9 +1646,9 @@ pub struct Stats {
     transactions_count: u64,
     block_height_synced_up_to: Option<u64>,
     earliest_transaction_timestamp_nanos: u64,
-    earliest_transaction_block_height: BlockHeight,
+    earliest_transaction_block_height: BlockIndex,
     latest_transaction_timestamp_nanos: u64,
-    latest_transaction_block_height: BlockHeight,
+    latest_transaction_block_height: BlockIndex,
     seconds_since_last_ledger_sync: u64,
     neurons_created_count: u64,
     neurons_topped_up_count: u64,

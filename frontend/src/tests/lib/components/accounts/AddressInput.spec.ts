@@ -3,7 +3,6 @@
  */
 
 import AddressInput from "$lib/components/accounts/AddressInput.svelte";
-import { ACCOUNT_ADDRESS_MIN_LENGTH } from "$lib/constants/accounts.constants";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("AddressInput", () => {
@@ -14,9 +13,6 @@ describe("AddressInput", () => {
 
     const input = container.querySelector("input");
     expect(input).not.toBeNull();
-    expect(input?.getAttribute("minlength")).toEqual(
-      `${ACCOUNT_ADDRESS_MIN_LENGTH}`
-    );
   });
 
   it("should show error message on blur when invalid address", async () => {

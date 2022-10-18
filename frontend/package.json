@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
+    "build:robots": "node scripts/build.robots.mjs",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
-    "build": "npm run i18n && vite build && npm run build:csp",
+    "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp && ./scripts/make-reproducible",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -18,8 +19,7 @@
     "update:gix": "npm update @dfinity/gix-components"
   },
   "devDependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
-    "@rollup/plugin-inject": "^4.0.4",
+    "@rollup/plugin-inject": "^5.0.0",
     "@sveltejs/adapter-static": "^1.0.0-next.44",
     "@sveltejs/kit": "next",
     "@testing-library/jest-dom": "^5.16.5",
@@ -70,6 +70,7 @@
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.6",
     "@ledgerhq/hw-transport-webhid": "^6.27.6",
     "@zondax/ledger-icp": "^0.6.0",
+    "buffer": "^6.0.3",
     "dompurify": "^2.4.0"
   }
 }

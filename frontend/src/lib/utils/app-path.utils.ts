@@ -1,7 +1,7 @@
 import { ENABLE_SNS, ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
-import { routePathAccountIdentifier } from "$lib/services/accounts.services";
-import { routePathNeuronId } from "$lib/services/neurons.services";
+import { routePathAccountIdentifier } from "$lib/utils/accounts.utils";
+import { routePathNeuronId } from "$lib/utils/neuron.utils";
 
 const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
@@ -152,8 +152,9 @@ export const getParentPathDetail = (
  *
  * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
  *
- * @param path string - the path to change
- * @param newContext string - the new context to navigate to
+ * @param {Object} params
+ * @param {string} params.path string - the path to change
+ * @param {string} params.newContext string - the new context to navigate to
  * @returns newPath string
  */
 const checkContextPathExceptions = ({
@@ -204,8 +205,9 @@ const checkContextPathExceptions = ({
  * Ex: `/#/neuron/1234` becomes `/#/u/bbbbb-bb/neuron/1234`
  * Ex: `/#/proposals` does nothing because `/#/proposals` is not a context path
  *
- * @param path string - the path to change
- * @param newContext string - the new context to navigate to
+ * @param {Object} params
+ * @param {string} params.path string - the path to change
+ * @param {string} params.newContext string - the new context to navigate to
  */
 export const changePathContext = ({
   path,

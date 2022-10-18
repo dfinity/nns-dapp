@@ -17,7 +17,7 @@
   import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
   import type { Unsubscriber } from "svelte/store";
@@ -110,7 +110,7 @@
   };
 </script>
 
-<LegacyWizardModal bind:currentStep on:nnsClose {steps}>
+<WizardModal bind:currentStep on:nnsClose {steps}>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
@@ -126,4 +126,4 @@
       {fee}
     />
   {/if}
-</LegacyWizardModal>
+</WizardModal>

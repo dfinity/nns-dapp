@@ -3,11 +3,12 @@
  */
 
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
-import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
-import { render, waitFor } from "@testing-library/svelte";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { Principal } from "@dfinity/principal";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsAccountsStoreSubscribe,
@@ -23,9 +24,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 describe("SnsWallet", () => {
   describe("accounts not loaded", () => {
     beforeEach(() => {
+      // Load accounts in a different project
       jest
-        .spyOn(snsProjectAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe([]));
+        .spyOn(snsAccountsStore, "subscribe")
+        .mockImplementation(
+          mockSnsAccountsStoreSubscribe(Principal.fromText("aaaaa-aa"))
+        );
       // Context needs to match the mocked sns accounts
       routeStore.update({
         path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
@@ -47,10 +51,8 @@ describe("SnsWallet", () => {
   describe("accounts loaded", () => {
     beforeEach(() => {
       jest
-        .spyOn(snsProjectAccountsStore, "subscribe")
-        .mockImplementation(
-          mockSnsAccountsStoreSubscribe([mockSnsMainAccount])
-        );
+        .spyOn(snsAccountsStore, "subscribe")
+        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
       // Context and identifier needs to match the mocked sns accounts
       routeStore.update({
         path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/wallet/${
@@ -73,6 +75,23 @@ describe("SnsWallet", () => {
       await waitFor(() =>
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
       );
+    });
+
+    it("should open new transaction modal", async () => {
+      const { queryByTestId, getByTestId } = render(SnsWallet);
+
+      await waitFor(() =>
+        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+      );
+
+      const button = getByTestId(
+        "open-new-sns-transaction"
+      ) as HTMLButtonElement;
+      await fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+      });
     });
   });
 });

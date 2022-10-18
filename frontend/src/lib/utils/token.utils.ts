@@ -79,10 +79,11 @@ export const formattedTransactionFeeICP = (fee: number | bigint): string =>
 /**
  * Calculates the maximum amount for a transaction.
  *
- * @param balanceE8s The balance of the account in E8S.
- * @param fee The fee of the transaction in E8S.
- * @param maxAmount The maximum amount of the transaction not counting the fees.
- * @returns
+ * @param {Object} params
+ * @param {bigint | undefined} params.balanceE8s The balance of the account in E8S.
+ * @param {bigint | undefined} params.fee The fee of the transaction in E8S.
+ * @param {bigint | undefined}params.maxAmount The maximum amount of the transaction not counting the fees.
+ * @returns {number} The maximum amount for the transaction.
  */
 export const getMaxTransactionAmount = ({
   balance = BigInt(0),
@@ -121,3 +122,6 @@ export const convertTCyclesToIcpNumber = ({
   tCycles: number;
   exchangeRate: bigint;
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
+
+export const numberToE8s = (amount: number): bigint =>
+  BigInt(Math.floor(amount * E8S_PER_ICP));

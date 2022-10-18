@@ -1,5 +1,4 @@
 <script lang="ts">
-  // TODO: Rename file
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
@@ -8,7 +7,7 @@
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import { stepIndex } from "$lib/utils/step.utils";
   import { createEventDispatcher, tick } from "svelte";
@@ -55,7 +54,7 @@
   ];
 
   let currentStep: Step | undefined;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
 
   let selectedAccount: Account | undefined;
 
@@ -151,7 +150,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
   >
@@ -198,6 +197,7 @@
         neuron={newNeuron}
         {delayInSeconds}
         on:nnsUpdated={goNext}
+        on:nnsBack={modal.back}
       />
     {/if}
   {/if}
@@ -206,4 +206,4 @@
       <EditFollowNeurons neuron={newNeuron} />
     {/if}
   {/if}
-</LegacyWizardModal>
+</WizardModal>

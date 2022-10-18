@@ -11,7 +11,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Step, Steps } from "$lib/stores/steps.state";
   import type { Account } from "$lib/types/account";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import WizardModal from "$lib/modals/WizardModal.svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
@@ -20,9 +20,10 @@
   } from "$lib/types/canister-detail.context";
   import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -51,7 +52,7 @@
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: Step | undefined;
-  let modal: LegacyWizardModal;
+  let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
   let canisterId: Principal | undefined;
@@ -102,7 +103,7 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="top-up-canister-modal-title"
       >{currentStep?.title ?? $i18n.accounts.select_source}</span
@@ -123,7 +124,7 @@
         on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
       >
-        <p>
+        <p class="description">
           {@html replacePlaceholders($i18n.canisters.transaction_fee, {
             $amount: valueSpan(
               formattedTransactionFeeICP($mainTransactionFeeStore)
@@ -131,14 +132,9 @@
           })}
         </p>
         <div>
-          <div>
-            <p class="label">{$i18n.accounts.source}</p>
-            <p class="value">{account?.identifier}</p>
-          </div>
-          <div>
-            <CanisterIdInfo {canisterId} />
-          </div>
+          <TransactionSource {account} />
         </div>
+        <CanisterIdInfo {canisterId} />
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
@@ -147,13 +143,11 @@
         {icpToCyclesExchangeRate}
         {amount}
         on:nnsClose
-        on:nnsBack={() => modal.back()}
+        on:nnsBack={modal.back}
         on:nnsConfirm={addCycles}
       >
-        <div>
-          <CanisterIdInfo {canisterId} />
-        </div>
+        <CanisterIdInfo {canisterId} />
       </ConfirmCyclesCanister>
     {/if}
   </svelte:fragment>
-</LegacyWizardModal>
+</WizardModal>

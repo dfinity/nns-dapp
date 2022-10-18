@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TokenAmount } from "@dfinity/nns";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
 
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;

@@ -5,7 +5,7 @@
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import {

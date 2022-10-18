@@ -191,7 +191,10 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: hotkey,
         rootCanisterId: mockPrincipal,
-        permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
       });
     });
   });
@@ -213,7 +216,10 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
-        permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
       });
     });
   });

@@ -10,13 +10,12 @@
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import AutoStakeMaturity from "./actions/AutoStakeMaturity.svelte";
   import {
-    formattedMaturity,
     isNeuronControllable,
     formattedStakedMaturity,
     isNeuronControlledByHardwareWallet,
+    formattedTotalMaturity,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { STAKE_MATURITY } from "$lib/constants/environment.constants";
 
   export let neuron: NeuronInfo;
 
@@ -34,7 +33,7 @@
   });
 
   let stakeMaturityEnabled: boolean;
-  $: stakeMaturityEnabled = !controlledByHardwareWallet && STAKE_MATURITY;
+  $: stakeMaturityEnabled = !controlledByHardwareWallet;
 </script>
 
 <CardInfo>
@@ -45,7 +44,7 @@
         ? $i18n.neuron_detail.stake_maturity_tooltip
         : $i18n.neuron_detail.merge_maturity_tooltip}</svelte:fragment
     >
-    <h3 slot="value">{formattedMaturity(neuron)}</h3>
+    <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePairInfo>
 
   {#if stakeMaturityEnabled && neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}

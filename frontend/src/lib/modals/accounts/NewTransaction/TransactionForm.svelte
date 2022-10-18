@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
@@ -9,15 +8,17 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
+  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
 
   // Tested in the TransactionModal
+  export let rootCanisterId: Principal;
   export let selectedAccount: Account | undefined = undefined;
   export let canSelectDestination: boolean;
   export let canSelectSource: boolean;
@@ -85,11 +86,7 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={goNext}
-  class="wrapper"
-  data-tid="transaction-step-1"
->
+<form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
     {#if selectedAccount !== undefined}
       <KeyValuePair>
@@ -101,10 +98,11 @@
         />
       </KeyValuePair>
     {/if}
+
     {#if canSelectSource}
-      <SelectAccountDropdown bind:selectedAccount />
+      <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
     {:else}
-      <div>
+      <div class="given-source">
         <p>
           {selectedAccount?.name ?? $i18n.accounts.main}
         </p>
@@ -114,19 +112,22 @@
       </div>
     {/if}
   </div>
-  <div class="wrapper info">
+
+  <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
+
   {#if canSelectDestination}
     <SelectDestinationAddress
+      {rootCanisterId}
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
     />
   {/if}
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       data-tid="transaction-button-cancel"
@@ -139,12 +140,10 @@
       disabled={disableButton}
       type="submit">{$i18n.accounts.review_action}</button
     >
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
   form {
     --dropdown-width: 100%;
   }
@@ -161,13 +160,15 @@
     align-items: stretch;
     justify-content: center;
     gap: var(--padding-3x);
-
-    &.info {
-      gap: var(--padding-2x);
-    }
   }
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .given-source {
+    p {
+      margin: 0;
+    }
   }
 </style>

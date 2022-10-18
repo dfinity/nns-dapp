@@ -29,22 +29,22 @@
   };
 </script>
 
-<div class="wizard-wrapper" data-tid="add-principal-to-hotkeys-modal">
-  <div class="info">
-    <h5>{$i18n.neurons.add_user_as_hotkey_message}</h5>
-    <div>
-      <p class="label">{$i18n.neurons.your_principal}</p>
-      <p>{$authStore.identity?.getPrincipal().toText() ?? ""}</p>
-    </div>
+<div class="wrapper" data-tid="add-principal-to-hotkeys-modal">
+  <p class="description">{$i18n.neurons.add_user_as_hotkey_message}</p>
+
+  <div>
+    <p class="label">{$i18n.neurons.your_principal}</p>
+    <p class="value">{$authStore.identity?.getPrincipal().toText() ?? ""}</p>
   </div>
-  <div class="buttons">
+
+  <div class="toolbar">
     <button
       on:click={skip}
       data-tid="skip-add-principal-to-hotkey-modal"
-      class="primary full-width">{$i18n.neurons.skip}</button
+      class="secondary">{$i18n.neurons.skip}</button
     >
     <button
-      class="primary full-width"
+      class="primary"
       on:click={addCurrentUserToHotkey}
       data-tid="confirm-add-principal-to-hotkey-modal"
       disabled={$authStore.identity?.getPrincipal() === undefined || $busy}
@@ -55,16 +55,9 @@
 </div>
 
 <style lang="scss">
-  .info {
-    flex-grow: 1;
+  .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: var(--padding-3x);
-  }
-
-  .buttons {
-    display: flex;
     gap: var(--padding);
   }
 </style>

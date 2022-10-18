@@ -28,11 +28,13 @@ import {
   followeesNeurons,
   formattedMaturity,
   formattedStakedMaturity,
+  formattedTotalMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToMerge,
+  hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughMaturityToSpawn,
@@ -50,9 +52,11 @@ import {
   minNeuronSplittable,
   neuronCanBeSplit,
   neuronStake,
+  routePathNeuronId,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
+  validTopUpAmount,
   votedNeuronDetails,
   votingPower,
   type InvalidState,
@@ -356,6 +360,65 @@ describe("neuron-utils", () => {
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
+    });
+  });
+
+  describe("formattedTotalMaturity", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("0");
+    });
+
+    it("returns total maturity with two decimals", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("3.00");
+    });
+
+    it("returns maturity when staked maturity is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: BigInt(0),
+        },
+      };
+
+      expect(formattedTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns staked maturity when staked is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "1",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+          stakedMaturityE8sEquivalent: stake.toE8s(),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("1.00");
     });
   });
 
@@ -1604,6 +1667,49 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("hasEnoughMaturityToStake", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(-100),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+  });
+
   describe("hasEnoughMaturityToMerge", () => {
     it("returns false when no full neuron", () => {
       const neuron = {
@@ -1695,6 +1801,71 @@ describe("neuron-utils", () => {
       const store = get(neuronsStore);
       const received = getNeuronById({ neuronsStore: store, neuronId });
       expect(received).toBeUndefined();
+    });
+  });
+
+  describe("validTopUpAmount", () => {
+    it("should return true if neuron has enough stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE * 2),
+        },
+      };
+      expect(validTopUpAmount({ neuron, amount: 0.001 })).toBe(true);
+    });
+
+    it("should return true if amount to top is large enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: (MIN_NEURON_STAKE * 2) / E8S_PER_ICP,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if amount and stake are not big enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("routePathNeuronId", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
+    it("should get neuronId from valid path", async () => {
+      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
+      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
+    });
+
+    it("should not get neuronId from invalid path", async () => {
+      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
+      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
+      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
+      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
+      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
     });
   });
 });

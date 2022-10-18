@@ -1,8 +1,13 @@
+import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { decodeSnsAccount } from "@dfinity/sns";
+import { getLastPathDetail, isRoutePath } from "./app-path.utils";
+import { isNnsProject } from "./projects.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -36,7 +41,17 @@ export const invalidAddress = (address: string | undefined): boolean => {
     checkAccountId(address);
     return false;
   } catch (_) {
-    return true;
+    try {
+      // TODO: Find a better solution to check if the address is valid for SNS as well.
+      // It might also be an SNS address
+      decodeSnsAccount(address);
+      return false;
+    } catch {
+      _;
+    }
+    {
+      return true;
+    }
   }
 };
 
@@ -67,30 +82,60 @@ export const isAccountHardwareWallet = (
 
 export const getAccountFromStore = ({
   identifier,
-  accountsStore: { main, subAccounts, hardwareWallets },
+  accounts,
 }: {
   identifier: string | undefined;
-  accountsStore: AccountsStore;
+  accounts: Account[];
 }): Account | undefined => {
   if (identifier === undefined) {
     return undefined;
   }
 
-  if (main?.identifier === identifier) {
-    return main;
+  return accounts.find(({ identifier: id }) => id === identifier);
+};
+
+export const getAccountByRootCanister = ({
+  identifier,
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
+}: {
+  identifier: string | undefined;
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
+}): Account | undefined => {
+  if (identifier === undefined) {
+    return undefined;
   }
 
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
-
-  if (subAccount !== undefined) {
-    return subAccount;
+  if (isNnsProject(rootCanisterId)) {
+    return getAccountFromStore({
+      identifier,
+      accounts: nnsAccounts,
+    });
   }
 
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return getAccountFromStore({
+    identifier,
+    accounts: snsAccounts[rootCanisterId.toText()]?.accounts ?? [],
+  });
+};
+
+export const getAccountsByRootCanister = ({
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
+}: {
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
+}): Account[] | undefined => {
+  if (isNnsProject(rootCanisterId)) {
+    return nnsAccounts;
+  }
+
+  return snsAccounts[rootCanisterId.toText()]?.accounts;
 };
 
 /**
@@ -115,4 +160,30 @@ export const assertEnoughAccountFunds = ({
  */
 export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
+};
+
+/*
+ * @param path current route path
+ * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
+ */
+export const routePathAccountIdentifier = (
+  path: string | undefined
+): { accountIdentifier: string | undefined } | undefined => {
+  if (
+    !isRoutePath({
+      paths: [AppPath.LegacyWallet, AppPath.Wallet],
+      routePath: path,
+    })
+  ) {
+    return undefined;
+  }
+
+  const accountIdentifier: string | undefined = getLastPathDetail(path);
+
+  return {
+    accountIdentifier:
+      accountIdentifier !== undefined && accountIdentifier !== ""
+        ? accountIdentifier
+        : undefined,
+  };
 };

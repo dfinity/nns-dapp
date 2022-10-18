@@ -158,7 +158,10 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const permissions = [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+    ];
     const identity = await getNeuronIdentity();
     await addNeuronPermissions({
       permissions,
@@ -187,7 +190,10 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const permissions = [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+    ];
     const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({

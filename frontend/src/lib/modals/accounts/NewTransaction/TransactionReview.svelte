@@ -2,13 +2,12 @@
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { IconSouth } from "@dfinity/gix-components";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { busy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -25,7 +24,7 @@
   $: tokenAmount = TokenAmount.fromNumber({
     amount,
     token,
-  }) as TokenAmount;
+  });
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -39,24 +38,8 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <KeyValuePair>
-      <span class="label" slot="key">{$i18n.accounts.source}</span>
-      <div class="balance" slot="value">
-        <span class="label">{$i18n.accounts.balance}</span>
-        <AmountDisplay singleLine amount={sourceAccount.balance} />
-      </div>
-    </KeyValuePair>
-    <div>
-      <p>
-        {sourceAccount.name ?? $i18n.accounts.main}
-      </p>
-      <p
-        data-tid="transaction-review-source-account"
-        class="account-identifier"
-      >
-        {sourceAccount.identifier}
-      </p>
-    </div>
+    <TransactionSource account={sourceAccount} />
+
     <div class="highlight">
       <span class="icon">
         <IconSouth />
@@ -69,43 +52,37 @@
         </span>
       </div>
     </div>
+
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
       <slot name="destination-info" />
-      <p class="account-identifier">{destinationAddress}</p>
+      <p class="account-identifier value">{destinationAddress}</p>
     </div>
+
     <div>
       <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
     </div>
+
+    <div class="additional-info">
+      <slot name="additional-info" />
+    </div>
   </div>
-  <div class="actions">
-    <slot name="additional-info" />
-    <FooterModal>
-      <button
-        class="secondary"
-        data-tid="transaction-button-back"
-        on:click={back}>{$i18n.accounts.edit_transaction}</button
-      >
-      <button
-        class="primary"
-        data-tid="transaction-button-execute"
-        disabled={$busy || disableSubmit}
-        on:click={submit}>{$i18n.accounts.execute}</button
-      >
-    </FooterModal>
+
+  <div class="toolbar">
+    <button class="secondary" data-tid="transaction-button-back" on:click={back}
+      >{$i18n.accounts.edit_transaction}</button
+    >
+    <button
+      class="primary"
+      data-tid="transaction-button-execute"
+      disabled={$busy || disableSubmit}
+      on:click={submit}>{$i18n.accounts.execute}</button
+    >
   </div>
 </div>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
-  .balance {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: var(--padding-1_5x);
-  }
   .account-identifier {
     word-break: break-all;
   }
@@ -138,13 +115,7 @@
     gap: var(--padding);
   }
 
-  .actions {
-    margin-top: var(--padding-4x);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    --select-padding: var(--padding-2x) 0;
+  .additional-info {
+    padding-top: var(--padding-2x);
   }
 </style>

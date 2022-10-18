@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Update II
         run: ./scripts/update-ii
       - name: Commit updated Internet Identity
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
@@ -48,7 +48,7 @@ jobs:
           git diff package-lock.json
         working-directory: e2e-tests
       - name: Commit updated chromedriver
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action

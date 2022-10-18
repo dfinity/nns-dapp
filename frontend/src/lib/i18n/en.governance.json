@@ -18,7 +18,9 @@
     "NetworkCanisterManagement": "System Canister Management",
     "Kyc": "KYC",
     "NodeProviderRewards": "Node Provider Rewards",
-    "SnsDecentralizationSale": "SNS Decentralization Sale"
+    "SnsDecentralizationSale": "SNS Decentralization Sale",
+    "ReplicaVersionManagement": "Replica Version Management",
+    "SubnetReplicaVersionManagement": "Subnet Replica Version Management"
   },
   "topics_description": {
     "Unspecified": "",
@@ -32,7 +34,9 @@
     "NetworkCanisterManagement": "Installing and upgrading “system” Canisters that belong to the network — for example, upgrading the NNS.",
     "Kyc": "Proposals that update KYC information for regulatory purposes — for example, during the initial Genesis distribution of ICP in the form of neurons.",
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
-    "SnsDecentralizationSale": "SNS Decentralization Sale"
+    "SnsDecentralizationSale": "SNS Decentralization Sale",
+    "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
+    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version."
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -122,7 +126,9 @@
     "AddSnsWasm": "Bless new SNS deployment",
     "ChangeSubnetMembership": "Change Subnet Membership",
     "UpdateSubnetType": "Update Subnet Type",
-    "ChangeSubnetTypeAssignment": "Change Subnet Type Assignment"
+    "ChangeSubnetTypeAssignment": "Change Subnet Type Assignment",
+    "UpdateSnsWasmSnsSubnetIds": "Update SNS Wasm Subnet Ids",
+    "RetireReplicaVersion": "Retire Replica Version"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -158,6 +164,8 @@
     "AddSnsWasm": "Add a new SNS canister WASM",
     "ChangeSubnetMembership": "Change the membership (list) of nodes in a subnet by adding and/or removing nodes from the subnet. At the time the proposal is executed, the added nodes (if provided in the proposal) need to be unassigned and the removed nodes (if provided in the proposal) need to be assigned to the subnet. After the proposal is executed, the removed nodes become unassigned, and can be reassigned to other subnets via future proposals or completely removed from the network.",
     "UpdateSubnetType": "Add or remove a subnet type. A new subnet type can be added if it doesn’t already exist. An existing subnet type can be removed if no subnets are assigned to it. Subnet types can be used to choose the kind of subnet a canister should be created on.",
-    "ChangeSubnetTypeAssignment": "Change the assignment of subnets to subnet types by either adding subnets to or removing subnets from a subnet type. A subnet can be assigned to a subnet type if the subnet is not already assigned to a different subnet type and is not already in the authorized subnets list (i.e., subnets authorized for certain principals) or the default subnets list (i.e., default subnets that new canisters are randomly created on). Once a subnet is assigned to a subnet type, it becomes available to users who can specify that they want their canisters to be created on subnets of that type."
+    "ChangeSubnetTypeAssignment": "Change the assignment of subnets to subnet types by either adding subnets to or removing subnets from a subnet type. A subnet can be assigned to a subnet type if the subnet is not already assigned to a different subnet type and is not already in the authorized subnets list (i.e., subnets authorized for certain principals) or the default subnets list (i.e., default subnets that new canisters are randomly created on). Once a subnet is assigned to a subnet type, it becomes available to users who can specify that they want their canisters to be created on subnets of that type.",
+    "UpdateSnsWasmSnsSubnetIds": "Update the list of SNS subnet IDs that SNS WASM will deploy SNS instances to.",
+    "RetireReplicaVersion": "A proposal to retire previously elected and unused replica versions. The specified versions are removed from the list of blessed replica versions in the registry. This ensures that a replica can no longer be upgraded to these versions. The proposal will fail to remove replica version if that version is currently used by a subnet or unassigned node."
   }
 }

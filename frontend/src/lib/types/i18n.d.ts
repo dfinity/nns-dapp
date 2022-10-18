@@ -70,9 +70,6 @@ interface I18nError {
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
   stake_neuron: string;
-  transaction_invalid_amount: string;
-  transaction_no_source_account: string;
-  transaction_no_destination_address: string;
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
@@ -84,6 +81,7 @@ interface I18nError {
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  neuron_account_not_found: string;
   governance_error: string;
   not_mergeable: string;
   invalid_account_id: string;
@@ -134,7 +132,7 @@ interface I18nAuth {
   login: string;
   title: string;
   on_chain: string;
-  secure: string;
+  wallet: string;
   stake: string;
   earn: string;
   ic_logo: string;
@@ -146,6 +144,7 @@ interface I18nAccounts {
   balance: string;
   new_transaction: string;
   icp_transaction_description: string;
+  sns_transaction_description: string;
   review_action: string;
   add_account: string;
   new_linked_title: string;
@@ -163,7 +162,6 @@ interface I18nAccounts {
   show_info_hardware_wallet: string;
   attach_wallet: string;
   edit_name: string;
-  hardware_wallet_connected: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
   subAccount: string;
@@ -264,6 +262,8 @@ interface I18nNeurons {
   enter_neuron_id_prompt: string;
   add_hotkey_prompt_error: string;
   add_hotkey_prompt_success: string;
+  top_up_neuron: string;
+  top_up_description: string;
   stake_amount: string;
 }
 
@@ -475,7 +475,6 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
-  voting_power_tooltip_without_stake: string;
   voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
@@ -493,6 +492,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  stake_maturity_disabled_tooltip: string;
   stake_maturity_tooltip: string;
   merge_maturity_tooltip: string;
   start_dissolve_description: string;
@@ -710,6 +710,8 @@ interface I18nTopics {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nTopics_description {
@@ -725,6 +727,8 @@ interface I18nTopics_description {
   Kyc: string;
   NodeProviderRewards: string;
   SnsDecentralizationSale: string;
+  ReplicaVersionManagement: string;
+  SubnetReplicaVersionManagement: string;
 }
 
 interface I18nRewards {
@@ -822,6 +826,8 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -859,6 +865,8 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
+  RetireReplicaVersion: string;
 }
 
 interface I18n {

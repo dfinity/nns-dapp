@@ -21,9 +21,10 @@
     participateInSwap,
   } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -110,6 +111,7 @@
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
 {#if destinationAddress !== undefined}
   <TransactionModal
+    rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
     on:nnsClose
     on:nnsSubmit={participate}
@@ -128,10 +130,14 @@
       userHasParticipated={userHasParticipatedToSwap}
     />
     <AdditionalInfoReview slot="additional-info-review" bind:accepted />
-    <p slot="destination-info" data-tid="sns-swap-participate-project-name">
+    <p
+      slot="destination-info"
+      data-tid="sns-swap-participate-project-name"
+      class="value"
+    >
       {$projectDetailStore.summary?.metadata.name}
     </p>
-    <p slot="description">
+    <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
   </TransactionModal>
