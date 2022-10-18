@@ -8,6 +8,7 @@
   import Dropdown from "$lib/components/ui/Dropdown.svelte";
   import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
   import { Spinner } from "@dfinity/gix-components";
+  import {goto} from "$app/navigation";
 
   let selectedCanisterId: string | undefined;
 
@@ -29,7 +30,9 @@
 
   $: {
     if (selectedCanisterId !== undefined) {
-      routeStore.changeContext(selectedCanisterId);
+      // TODO(GIX-1071): utils?
+      const {pathname} = window.location;
+      goto(`${pathname}?u=${selectedCanisterId}`);
     }
   }
 
