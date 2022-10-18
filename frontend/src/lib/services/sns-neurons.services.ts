@@ -255,8 +255,6 @@ export const startDissolving = async ({
       neuronId,
     });
 
-    // TODO: await updateSnsNeuron(neuronId);
-
     return { success: true };
   } catch (err) {
     toastsError({
