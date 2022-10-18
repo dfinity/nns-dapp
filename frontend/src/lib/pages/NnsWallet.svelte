@@ -70,6 +70,7 @@
     store: selectedAccountStore,
   });
 
+  // TODO(GIX-1071): technically this can be a property
   let routeAccountIdentifier:
     | { accountIdentifier: string | undefined }
     | undefined;
