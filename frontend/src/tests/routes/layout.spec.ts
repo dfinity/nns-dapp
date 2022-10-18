@@ -5,8 +5,8 @@
 import { initApp } from "$lib/services/app.services";
 import { initWorker } from "$lib/services/worker.services";
 import { authStore } from "$lib/stores/auth.store";
+import App from "$routes/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import App from "../../routes/+layout.svelte";
 import {
   authStoreMock,
   mockIdentity,

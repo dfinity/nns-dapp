@@ -8,7 +8,13 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "strict": false
+    "strict": false,
+    "paths": {
+      "$lib": ["src/lib"],
+      "$lib/*": ["src/lib/*"],
+      "$routes": ["src/routes"],
+      "$routes/*": ["src/routes/*"]
+    }
   },
   "include": [
     ".svelte-kit/ambient.d.ts",
