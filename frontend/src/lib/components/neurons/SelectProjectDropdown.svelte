@@ -28,13 +28,13 @@
     }
   };
 
-  $: {
+  $: (async () => {
     if (selectedCanisterId !== undefined) {
       // TODO(GIX-1071): utils?
       const {pathname} = window.location;
-      goto(`${pathname}?u=${selectedCanisterId}`);
+      await goto(`${pathname}?u=${selectedCanisterId}`);
     }
-  }
+  })();
 
   // Update the selected canister id when we selectableProjects are loaded
   $: selectableProjects, updateSelectedCanisterId();

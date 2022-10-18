@@ -22,8 +22,8 @@
   );
 
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
-  const cardClick = (identifier: string) =>
-    goto(`${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`);
+  const cardClick = async (identifier: string) =>
+    await goto(`${AppRoutes.Wallet}/?u=${$routesStore.universe}&id=${identifier}`);
 
   onDestroy(unsubscribe);
 
