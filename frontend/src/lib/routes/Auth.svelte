@@ -26,7 +26,7 @@
       }
 
       // TODO(GIX-1071): constant for /u/ and for /accounts?
-      await goto(`/u/${OWN_CANISTER_ID}/accounts`, { replaceState: true });
+      await goto(`/accounts?u=${OWN_CANISTER_ID}`, { replaceState: true });
     }
   );
 

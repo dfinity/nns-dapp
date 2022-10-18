@@ -31,6 +31,7 @@ const config = {
     version: {
       name: version,
     },
+    trailingSlash: "always"
   },
 };
 
