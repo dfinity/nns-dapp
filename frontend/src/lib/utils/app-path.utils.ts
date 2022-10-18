@@ -141,7 +141,11 @@ export const getParentPathDetail = (
 ): string | undefined => {
   // TODO(GIX-1071): clean up and edge cases
 
-  const [u, canisterId, context] = path?.replace(/\/+$/, "").split("/").filter((path) => path !== '') ?? [];
+  const [u, canisterId, context] =
+    path
+      ?.replace(/\/+$/, "")
+      .split("/")
+      .filter((path) => path !== "") ?? [];
   // Do not return empty strings
   return canisterId === "" ? undefined : canisterId;
 };

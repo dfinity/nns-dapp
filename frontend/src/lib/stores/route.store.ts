@@ -1,5 +1,5 @@
 import type { AppPath } from "$lib/constants/routes.constants";
-import { changePathContext, isAppPath } from "$lib/utils/app-path.utils";
+import { isAppPath } from "$lib/utils/app-path.utils";
 import { pushHistory, replaceHistory, routePath } from "$lib/utils/route.utils";
 import { writable } from "svelte/store";
 
@@ -74,20 +74,21 @@ const initRouteStore = () => {
      * @param newContext string - the new context to navigate to
      */
     changeContext: (selectedCanisterId: string) => {
-
       // TODO(GIX-1071): clean up and edge cases
 
-      console.log('HERE')
+      console.log("HERE");
 
-      const [u, canisterId, context] = window.location.pathname.split('/').filter((path) => path !== '');
-      const newPath = `/${[u, selectedCanisterId, context].join('/')}`;
+      const [u, canisterId, context] = window.location.pathname
+        .split("/")
+        .filter((path) => path !== "");
+      const newPath = `/${[u, selectedCanisterId, context].join("/")}`;
 
       update((state: RouteStore) => ({
         ...state,
         path: newPath,
-      }))
+      }));
 
-      replaceHistory({ path: newPath});
+      replaceHistory({ path: newPath });
     },
   };
 };

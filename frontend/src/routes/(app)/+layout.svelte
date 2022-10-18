@@ -1,13 +1,13 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
-  import type { LayoutData } from './$types'
+  import type { LayoutData } from "./$types";
+  import { routesStore } from "$lib/stores/routes.stores";
 
   export let data: LayoutData;
 
   $: (() => {
-    const {universe, id} = data;
-
-    // TODO(GIX-1071)
+    const { universe, id } = data;
+    routesStore.load({ universe, id });
   })();
 </script>
 

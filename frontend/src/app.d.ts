@@ -5,10 +5,7 @@
 // and what to do when importing types
 declare namespace App {
   // interface Locals {}
-  interface PageData {
-    universe: string | null | undefined;
-    id: string | null | undefined;
-  }
+  // interface PageData {}
   // interface Error {}
   // interface Platform {}
 }

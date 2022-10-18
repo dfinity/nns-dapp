@@ -1,6 +1,6 @@
+import { browser } from "$app/environment";
 import type { storeLocalStorageKey } from "$lib/constants/stores.constants";
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
-import {browser} from "$app/environment";
 
 type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;

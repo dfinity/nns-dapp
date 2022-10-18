@@ -2,13 +2,13 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
   import { DEV, IS_TESTNET } from "$lib/constants/environment.constants";
-  import {browser} from "$app/environment";
+  import { browser } from "$app/environment";
 
   const localstorageKey = "nnsdapp-testnet-banner-display";
 
-  let visible = browser ? JSON.parse(
-    localStorage.getItem(localstorageKey) ?? "true"
-  ) as boolean : false;
+  let visible = browser
+    ? (JSON.parse(localStorage.getItem(localstorageKey) ?? "true") as boolean)
+    : false;
 
   const testnet = IS_TESTNET;
   const localEnv = DEV;

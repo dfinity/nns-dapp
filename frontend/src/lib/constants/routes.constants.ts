@@ -17,3 +17,17 @@ export enum AppPath {
 }
 
 export const CONTEXT_PATH = "/u";
+
+export enum AppRoutes {
+  Login = "/",
+  Accounts = "/accounts",
+  Wallet = "/wallet",
+  Neurons = "/neurons",
+  NeuronDetail = "/neuron",
+  Proposals = "/proposals",
+  ProposalDetail = "/proposal",
+  Canisters = "/canisters",
+  Canister = "/canister",
+  Launchpad = "/launchpad",
+  Project = "/project",
+}
