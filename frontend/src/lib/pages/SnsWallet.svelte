@@ -62,13 +62,12 @@
     store: selectedAccountStore,
   });
 
-  // TODO(GIX-1071): technically this can be a property
-  let routeAccountIdentifier = $pageStore.id;
+  export let accountIdentifier: string | undefined | null = undefined;
 
   $: {
-    if (routeAccountIdentifier !== undefined) {
+    if (accountIdentifier !== undefined) {
       const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) => identifier === routeAccountIdentifier
+        ({ identifier }) => identifier === accountIdentifier
       );
 
       selectedAccountStore.update(() => ({

@@ -8,13 +8,19 @@
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
+
+  // Preloaded by +page.ts
+  export let data: { account: string | null | undefined };
+
+  let accountIdentifier: string | null | undefined;
+  $: ({ account: accountIdentifier } = data);
 </script>
 
 {#if signedIn}
   {#if $isNnsProjectStore}
-    <NnsWallet />
+    <NnsWallet {accountIdentifier} />
   {:else}
-    <SnsWallet />
+    <SnsWallet {accountIdentifier} />
   {/if}
 {:else}
   <h1>Wallets NOT signed in</h1>

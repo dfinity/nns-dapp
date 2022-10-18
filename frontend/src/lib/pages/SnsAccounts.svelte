@@ -40,7 +40,7 @@
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const goToDetails = async ({ identifier }: Account) =>
     await goto(
-      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&id=${identifier}`
+      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
     );
 </script>
 

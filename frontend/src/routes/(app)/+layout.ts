@@ -8,7 +8,6 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
   if (!browser) {
     return {
       universe: OWN_CANISTER_ID_TEXT,
-      id: undefined,
     };
   }
 
@@ -16,8 +15,8 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
     url: { searchParams },
   } = $event;
 
+  // TODO(GIX-1071): constants for u
   return {
     universe: searchParams?.get("u") ?? undefined,
-    id: searchParams?.get("id"),
   };
 };

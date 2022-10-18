@@ -64,7 +64,7 @@
     store: selectedAccountStore,
   });
 
-  const routeAccountIdentifier = $pageStore.id;
+  export let accountIdentifier: string | undefined | null = undefined;
 
   const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
     if (account !== undefined) {
@@ -76,7 +76,7 @@
     if (account === undefined && $accountsStore.main !== undefined) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
-          $account_identifier: routeAccountIdentifier ?? "",
+          $account_identifier: accountIdentifier ?? "",
         }),
       });
 
@@ -89,7 +89,7 @@
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
   $: selectedAccountStore.set({
     account: getAccountFromStore({
-      identifier: routeAccountIdentifier,
+      identifier: accountIdentifier,
       accounts: $nnsAccountsListStore,
     }),
   });
