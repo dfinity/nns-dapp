@@ -33,6 +33,7 @@
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import {routesStore} from "$lib/stores/routes.stores";
 
   const goBack = () =>
     routeStore.navigate({
@@ -72,7 +73,7 @@
   let routeAccountIdentifier:
     | { accountIdentifier: string | undefined }
     | undefined;
-  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+  $: routeAccountIdentifier = {accountIdentifier: $routesStore.id};
 
   let selectedAccount: Account | undefined;
   $: selectedAccount = getAccountFromStore({
