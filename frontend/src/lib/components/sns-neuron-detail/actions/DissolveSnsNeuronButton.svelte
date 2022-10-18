@@ -15,7 +15,7 @@
   export let neuronState: NeuronState;
   export let reloadContext: () => Promise<void>;
 
-  let isOpen: boolean = false;
+  let isOpen = false;
 
   const showModal = () => (isOpen = true);
   const closeModal = () => (isOpen = false);
@@ -36,7 +36,6 @@
 
     let rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
 
-    // TODO: display HW message (like startBusyNeuron())
     startBusy({ initiator: "dissolve-action" });
 
     await action({ rootCanisterId, neuronId });
@@ -53,7 +52,7 @@
 >
 {#if isOpen}
   <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={dissolveAction}>
-    <div data-tid="dissolve-action-modal">
+    <div data-tid="dissolve-sns-neuron-modal">
       <h4>{$i18n.core.confirm}</h4>
       <p>{$i18n.neuron_detail[descriptionKey]}</p>
     </div>

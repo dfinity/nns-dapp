@@ -1,7 +1,11 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import * as services from "$lib/services/sns-neurons.services";
-import { disburse } from "$lib/services/sns-neurons.services";
+import {
+  disburse,
+  startDissolving,
+  stopDissolving,
+} from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
@@ -220,7 +224,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
-      const spyAdd = jest
+      const spyOnDisburse = jest
         .spyOn(governanceApi, "disburse")
         .mockImplementation(() => Promise.resolve());
 
@@ -231,7 +235,57 @@ describe("sns-neurons-services", () => {
 
       expect(success).toBeTruthy();
 
-      expect(spyAdd).toBeCalledWith({
+      expect(spyOnDisburse).toBeCalledWith({
+        neuronId,
+        identity,
+        rootCanisterId,
+      });
+    });
+  });
+
+  describe("start dissolving", () => {
+    it("should call sns api startDissolving", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+
+      const spyOnStartDissolving = jest
+        .spyOn(governanceApi, "startDissolving")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await startDissolving({
+        rootCanisterId,
+        neuronId,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStartDissolving).toBeCalledWith({
+        neuronId,
+        identity,
+        rootCanisterId,
+      });
+    });
+  });
+
+  describe("stop dissolving", () => {
+    it("should call sns api stopDissolving", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+
+      const spyOnStopDissolving = jest
+        .spyOn(governanceApi, "stopDissolving")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await stopDissolving({
+        rootCanisterId,
+        neuronId,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStopDissolving).toBeCalledWith({
         neuronId,
         identity,
         rootCanisterId,
