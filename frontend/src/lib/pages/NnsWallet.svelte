@@ -39,10 +39,10 @@
 
   let transactions: Transaction[] | undefined;
 
-  const reloadTransactions = async (
+  const reloadTransactions = (
     accountIdentifier: AccountIdentifierString
-  ) =>
-    await getAccountTransactions({
+  ): Promise<void> =>
+    getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
@@ -70,7 +70,6 @@
   const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
-
       return;
     }
 
