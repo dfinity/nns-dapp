@@ -4,6 +4,29 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
+  import {browser} from "$app/environment";
+  import {onMount} from "svelte";
+
+  let initialized = false;
+
+  const syncAuthStore = async () => {
+    try {
+      await authStore.sync();
+    } catch (err) {
+      toastsError({ labelKey: "error.auth_sync", err });
+    }
+  };
+
+  onMount(async () => {
+    if (!browser) {
+      return;
+    }
+
+    // TODO(GIX-1071): handle multiple signin-init buttons in one page
+    await syncAuthStore();
+
+    initialized = true;
+  })
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
@@ -18,16 +41,19 @@
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
+
+  let disabled = true;
+  $: disabled = signedIn || !initialized;
 </script>
 
 <button
   on:click={signIn}
   data-tid="login-button"
   class="primary"
-  disabled={signedIn}
+  {disabled}
 >
   {$i18n.auth.login}
-  {#if signedIn}
+  {#if disabled}
     <div class="spinner">
       <Spinner size="small" inline />
     </div>
