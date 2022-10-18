@@ -1,20 +1,23 @@
 /**
  * @jest-environment jsdom
  */
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import {
   isNnsProjectStore,
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/selected-project.derived";
-import { routeStore } from "$lib/stores/route.store";
+import { pageStore } from "$lib/stores/page.store";
 import { get } from "svelte/store";
+import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 describe("selected project derived stores", () => {
   describe("isNnsProjectStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
     });
 
     it("should be set by default true", () => {
@@ -24,7 +27,7 @@ describe("selected project derived stores", () => {
     });
 
     it("should be false if an sns project is selected", () => {
-      routeStore.update({ path: `${CONTEXT_PATH}/aaaaa-aa/neuron/12344` });
+      pageStore.load({ universe: mockSnsCanisterIdText, id: "12344" });
       const $store = get(isNnsProjectStore);
 
       expect($store).toBe(false);
@@ -33,7 +36,7 @@ describe("selected project derived stores", () => {
 
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
     });
 
     it("should be set by default undefined", () => {
@@ -43,25 +46,20 @@ describe("selected project derived stores", () => {
     });
 
     it("should return project principal if an sns project is selected", () => {
-      const principalString = "aaaaa-aa";
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
-      });
+      pageStore.load({ universe: mockSnsCanisterIdText, id: "12344" });
       const $store = get(snsOnlyProjectStore);
 
-      expect($store?.toText()).toBe(principalString);
+      expect($store?.toText()).toBe(mockSnsCanisterIdText);
     });
 
     it("should return undefined if nns is selected after sns project", () => {
-      const principalString = "aaaaa-aa";
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
-      });
+      pageStore.load({ universe: mockSnsCanisterIdText, id: "12344" });
 
       const $store = get(snsOnlyProjectStore);
-      expect($store?.toText()).toBe(principalString);
+      expect($store?.toText()).toBe(mockSnsCanisterIdText);
 
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
+
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
     });
@@ -69,7 +67,7 @@ describe("selected project derived stores", () => {
 
   describe("snsProjectSelectedStore", () => {
     beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
     });
 
     it("should be set by default to own canister id", () => {
@@ -83,13 +81,10 @@ describe("selected project derived stores", () => {
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
-      const newPrincipalString = "aaaaa-aa";
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${newPrincipalString}/neuron/12344`,
-      });
+      pageStore.load({ universe: mockSnsCanisterIdText, id: "12344" });
 
       const $store2 = get(snsProjectSelectedStore);
-      expect($store2.toText()).toEqual(newPrincipalString);
+      expect($store2.toText()).toEqual(mockSnsCanisterIdText);
     });
 
     it("returns OWN_CANISTER_ID if context is not a valid principal id", () => {
@@ -97,10 +92,7 @@ describe("selected project derived stores", () => {
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
-      const newPrincipalString = "invalid-principal";
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${newPrincipalString}/neuron/12344`,
-      });
+      pageStore.load({ universe: "invalid-principal", id: "12344" });
 
       const $store2 = get(snsProjectSelectedStore);
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());

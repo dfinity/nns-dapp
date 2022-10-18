@@ -1,6 +1,6 @@
 import type { AppPath } from "$lib/constants/routes.constants";
 import { isAppPath } from "$lib/utils/app-path.utils";
-import { replaceHistory, routePath } from "$lib/utils/route.utils";
+import { routePath } from "$lib/utils/route.utils";
 import { writable } from "svelte/store";
 
 export interface RouteStore {
@@ -23,6 +23,7 @@ export interface RouteStore {
  *  - later could be used to display a 404
  *
  */
+// TODO(GIX-1071): delete
 const initRouteStore = () => {
   const { subscribe, update } = writable<RouteStore>({
     path: routePath(),
@@ -32,7 +33,6 @@ const initRouteStore = () => {
   return {
     subscribe,
 
-    // TODO(GIX-1071): delete
     update: ({ path }: { path: string }) => {
       // update((state: RouteStore) => ({
       //   ...state,
@@ -42,7 +42,6 @@ const initRouteStore = () => {
       // }))
     },
 
-    // TODO(GIX-1071): delete
     navigate: ({ path, query }: { path: string; query?: string }) => {
       // update((state: RouteStore) => ({
       //   ...state,
@@ -53,7 +52,6 @@ const initRouteStore = () => {
       // pushHistory({ path, query });
     },
 
-    // TODO(GIX-1071): delete
     replace: ({ path, query }: { path: string; query?: string }) => {
       // update((state: RouteStore) => ({
       //   ...state,
@@ -76,19 +74,17 @@ const initRouteStore = () => {
      * @param newContext string - the new context to navigate to
      */
     changeContext: (selectedCanisterId: string) => {
-      // TODO(GIX-1071): clean up and edge cases
-
-      const [u, canisterId, context] = window.location.pathname
-        .split("/")
-        .filter((path) => path !== "");
-      const newPath = `/${[u, selectedCanisterId, context].join("/")}`;
-
-      update((state: RouteStore) => ({
-        ...state,
-        path: newPath,
-      }));
-
-      replaceHistory({ path: newPath });
+      // const [u, canisterId, context] = window.location.pathname
+      //   .split("/")
+      //   .filter((path) => path !== "");
+      // const newPath = `/${[u, selectedCanisterId, context].join("/")}`;
+      //
+      // update((state: RouteStore) => ({
+      //   ...state,
+      //   path: newPath,
+      // }));
+      //
+      // replaceHistory({ path: newPath });
     },
   };
 };

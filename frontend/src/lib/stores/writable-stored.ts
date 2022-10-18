@@ -1,4 +1,4 @@
-import { browser } from "$app/environment";
+import { prerendering } from "$app/environment";
 import type { storeLocalStorageKey } from "$lib/constants/stores.constants";
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
@@ -14,7 +14,7 @@ export const writableStored = <T>({
   defaultValue: T;
 }): WritableStored<T> => {
   const getInitialValue = (): T => {
-    if (!browser) {
+    if (prerendering) {
       return defaultValue;
     }
 
@@ -38,7 +38,7 @@ export const writableStored = <T>({
   const store = writable<T>(getInitialValue());
 
   const unsubscribeStorage = store.subscribe((store: T) => {
-    if (!browser) {
+    if (prerendering) {
       return;
     }
 

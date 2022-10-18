@@ -2,11 +2,13 @@
  * @jest-environment jsdom
  */
 import SelectProjectDropdown from "$lib/components/neurons/SelectProjectDropdown.svelte";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { pageStore } from "$lib/stores/page.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
@@ -28,7 +30,7 @@ describe("SelectProjectDropdown", () => {
 
   beforeEach(() => {
     // Dropdown changes context only in the Neurons page for now.
-    routeStore.update({ path: AppPath.LegacyNeurons });
+    pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
   });
 
   it("should render NNS and projects as options", () => {

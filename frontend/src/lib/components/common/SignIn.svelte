@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
-  import { browser } from "$app/environment";
+  import { prerendering } from "$app/environment";
   import { onMount } from "svelte";
 
   let initialized = false;
@@ -18,7 +18,7 @@
   };
 
   onMount(async () => {
-    if (!browser) {
+    if (prerendering) {
       return;
     }
 
