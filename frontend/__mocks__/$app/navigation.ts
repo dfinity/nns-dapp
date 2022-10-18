@@ -13,6 +13,5 @@ export const goto = async (
     url instanceof URL ? url : new URL(`http://localhost:8080${url}`);
   pageStore.load({
     universe: searchParams.get("u"),
-    id: null,
   });
 };
