@@ -67,9 +67,7 @@
 
   const routeAccountIdentifier = $routesStore.id;
 
-  const accountDidUpdate = async () => {
-    const account = $selectedAccountStore.account;
-
+  const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
 
@@ -98,7 +96,7 @@
     }),
   });
 
-  $: $selectedAccountStore, (async () => await accountDidUpdate())();
+  $: (async () => await accountDidUpdate($selectedAccountStore))();
 
   let showNewTransactionModal = false;
 
