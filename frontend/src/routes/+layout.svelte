@@ -10,8 +10,6 @@
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { Spinner } from "@dfinity/gix-components";
 
   let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
 
@@ -38,21 +36,9 @@
     unsubscribeAuth();
     unsubscribeVoteInProgress();
   });
-
-  const syncAuthStore = async () => {
-    try {
-      await authStore.sync();
-    } catch (err) {
-      toastsError({ labelKey: "error.auth_sync", err });
-    }
-  };
 </script>
 
-{#await syncAuthStore()}
-  <Spinner />
-{:then}
-  <slot />
-{/await}
+<slot />
 
 <Toasts />
 <BusyScreen />

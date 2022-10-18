@@ -1,3 +1,5 @@
+import {browser} from "$app/environment";
+
 const onBeforeUnload = ($event: BeforeUnloadEvent) => {
   $event.preventDefault();
   return ($event.returnValue = "Are you sure you want to exit?");
@@ -12,6 +14,10 @@ const removeSyncBeforeUnload = () => {
 };
 
 export const syncBeforeUnload = (dirty: boolean) => {
+  if (!browser) {
+    return;
+  }
+
   if (dirty) {
     addSyncBeforeUnload();
   } else {

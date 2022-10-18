@@ -2,12 +2,13 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
   import { DEV, IS_TESTNET } from "$lib/constants/environment.constants";
+  import {browser} from "$app/environment";
 
   const localstorageKey = "nnsdapp-testnet-banner-display";
 
-  let visible = JSON.parse(
+  let visible = browser ? JSON.parse(
     localStorage.getItem(localstorageKey) ?? "true"
-  ) as boolean;
+  ) as boolean : false;
 
   const testnet = IS_TESTNET;
   const localEnv = DEV;
@@ -21,6 +22,10 @@
 
   $: visible,
     (() => {
+      if (!browser) {
+        return;
+      }
+
       if (!banner) {
         // If no banner has to be displayed, setting or removing the header offset can be skipped
         return;

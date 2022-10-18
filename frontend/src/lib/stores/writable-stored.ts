@@ -38,6 +38,10 @@ export const writableStored = <T>({
   const store = writable<T>(getInitialValue());
 
   const unsubscribeStorage = store.subscribe((store: T) => {
+    if (!browser) {
+      return;
+    }
+
     // Do not break UI if local storage fails
     try {
       localStorage.setItem(key, JSON.stringify(store));

@@ -2,11 +2,13 @@
  * The pathname and the hash without base href and without the query string
  */
 export const routePath = (): string => {
-  const base = baseHref();
-  const { pathname, hash } = window.location;
-  return `${pathname.replace(base, "/")}${hash
-    .replace(/\?.*/, "")
-    .toLowerCase()}`;
+  // TODO(GIX-1071)
+  // const base = baseHref();
+  // const { pathname, hash } = window.location;
+  // return `${pathname.replace(base, "/")}${hash
+  // .replace(/\?.*/, "")
+  // .toLowerCase()}`;
+  return "";
 };
 
 // e.g. #/accounts => accounts
@@ -64,7 +66,9 @@ const supportsHistory = (): boolean =>
  * Returns the value of the base href (the root of the svelte app). Always ends with '/'.
  */
 export const baseHref = (): string => {
-  const base: HTMLBaseElement | null = document.querySelector("base");
-  const { origin }: URL = new URL(document.baseURI);
-  return base?.href.replace(origin, "") ?? "/";
+  // TODO(GIX-1071)
+  // const base: HTMLBaseElement | null = document.querySelector("base");
+  // const { origin }: URL = new URL(document.baseURI);
+  // return base?.href.replace(origin, "") ?? "/";
+  return "/";
 };

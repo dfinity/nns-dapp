@@ -1,13 +1,13 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
-  import type { PageData } from './$types'
+  import type { LayoutData } from './$types'
 
-  export let data: PageData;
+  export let data: LayoutData;
 
   $: (() => {
-    const {u, id} = data;
+    const {universe, id} = data;
 
-    // TODO
+    // TODO(GIX-1071)
   })();
 </script>
 
