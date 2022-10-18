@@ -16,7 +16,6 @@
   const loadModule = async (): Promise<typeof SvelteComponent> => {
     switch (path) {
       case AppPath.Accounts:
-      case AppPath.LegacyAccounts:
         return (await import("../../routes/Accounts.svelte")).default;
       case AppPath.LegacyNeurons:
       case AppPath.Neurons:
@@ -25,8 +24,6 @@
         return (await import("../../routes/Proposals.svelte")).default;
       case AppPath.Canisters:
         return (await import("../../routes/Canisters.svelte")).default;
-      case AppPath.Wallet:
-        return (await import("../../routes/Wallet.svelte")).default;
       case AppPath.ProposalDetail:
         return (await import("../../routes/ProposalDetail.svelte")).default;
       case AppPath.LegacyNeuronDetail:
@@ -51,9 +48,6 @@
     [AppPath.Accounts]: {
       title: $i18n.navigation.tokens,
     },
-    [AppPath.LegacyAccounts]: {
-      title: $i18n.navigation.tokens,
-    },
     [AppPath.LegacyNeurons]: {
       title: $i18n.navigation.neurons,
     },
@@ -66,7 +60,6 @@
     [AppPath.Canisters]: {
       title: $i18n.navigation.canisters,
     },
-    [AppPath.Wallet]: { title: $i18n.wallet.title },
     [AppPath.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
     },

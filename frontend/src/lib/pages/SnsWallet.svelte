@@ -23,10 +23,10 @@
   import { goto } from "$app/navigation";
   import { layoutBackStore } from "$lib/stores/layout.store";
 
-  // TODO(GIX-1071): utils?
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (!ENABLE_SNS_2) {
+      // TODO(GIX-1071): utils?
       goto(AppRoutes.Accounts, { replaceState: true });
     }
   });

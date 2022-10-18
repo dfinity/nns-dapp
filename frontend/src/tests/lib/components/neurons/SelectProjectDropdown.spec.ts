@@ -30,7 +30,7 @@ describe("SelectProjectDropdown", () => {
 
   beforeEach(() => {
     // Dropdown changes context only in the Neurons page for now.
-    pageStore.load({ universe: OWN_CANISTER_ID_TEXT, id: null });
+    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
   });
 
   it("should render NNS and projects as options", () => {

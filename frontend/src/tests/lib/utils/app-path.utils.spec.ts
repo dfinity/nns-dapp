@@ -15,7 +15,6 @@ describe("routes", () => {
   describe("isAppPath()", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
-      expect(isAppPath(AppPath.LegacyAccounts)).toBeTruthy();
       expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.LegacyNeuronDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPath.Launchpad}`)).toBeTruthy();
@@ -32,7 +31,6 @@ describe("routes", () => {
     it("should return null for invalid urls", () => {
       expect(isAppPath("/some-invalid-url")).toBeFalsy();
       expect(isAppPath("//")).toBeFalsy();
-      expect(isAppPath(`${AppPath.Wallet}/`)).toBeFalsy();
     });
   });
 
@@ -120,12 +118,6 @@ describe("routes", () => {
       ).toBeTruthy();
       expect(
         isRoutePath({
-          paths: [AppPath.LegacyAccounts],
-          routePath: "/#/accounts",
-        })
-      ).toBeTruthy();
-      expect(
-        isRoutePath({
           paths: [AppPath.Authentication],
           routePath: "",
         })
@@ -137,16 +129,6 @@ describe("routes", () => {
         })
       ).toBeFalsy();
     });
-
-    it("should compare dynamic paths", () => {
-      expect(
-        isRoutePath({
-          paths: [AppPath.Wallet],
-          routePath:
-            "/#/u/qvhpv-4qaaa-aaaaa-aaagq-cai/wallet/8703f867c97952906b676578c2cc9923d26d7aba865008b4478ec9c94f41c2f9",
-        })
-      ).toBeTruthy();
-    });
   });
 
   describe("isContextPath", () => {
@@ -157,7 +139,6 @@ describe("routes", () => {
 
     it("returns false for non context related paths", () => {
       expect(isContextPath(AppPath.Accounts)).toBeFalsy();
-      expect(isContextPath(AppPath.Wallet)).toBeFalsy();
       expect(isContextPath(AppPath.Proposals)).toBeFalsy();
       expect(isContextPath(AppPath.ProposalDetail + "/123")).toBeFalsy();
       expect(isContextPath(AppPath.Authentication)).toBeFalsy();

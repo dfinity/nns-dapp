@@ -1,12 +1,10 @@
 export enum AppPath {
   Authentication = "/",
-  LegacyAccounts = "/#/accounts",
   Accounts = "/#/u/:rootCanisterId/accounts",
   LegacyNeurons = "/#/neurons",
   Neurons = "/#/u/:rootCanisterId/neurons",
   Proposals = "/#/proposals",
   Canisters = "/#/canisters",
-  Wallet = "/#/u/:rootCanisterId/wallet",
   ProposalDetail = "/#/proposal",
   LegacyNeuronDetail = "/#/neuron",
   CanisterDetail = "/#/canister",

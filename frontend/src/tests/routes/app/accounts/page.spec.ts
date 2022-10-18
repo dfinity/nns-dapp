@@ -2,20 +2,24 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import Accounts from "$lib/routes/Accounts.svelte";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import { authStore } from "$lib/stores/auth.store";
+import { pageStore } from "$lib/stores/page.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import Accounts from "$routes/(app)/accounts/+page.svelte";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import en from "../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import en from "../../../mocks/i18n.mock";
+import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+} from "../../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -24,13 +28,21 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Accounts", () => {
+  // TODO(GIX-1071): should render sign-in if not logged in
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyAccounts });
+    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,

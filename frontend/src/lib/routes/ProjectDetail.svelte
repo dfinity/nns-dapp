@@ -3,7 +3,7 @@
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPath, AppRoutes } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import {
@@ -24,10 +24,12 @@
   import { Principal } from "@dfinity/principal";
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/stores/debug.store";
+  import { goto } from "$app/navigation";
 
   onMount(() => {
     if (!IS_TESTNET) {
-      routeStore.replace({ path: AppPath.LegacyAccounts });
+      // TODO(GIX-1071): utils?
+      goto(AppRoutes.Accounts, { replaceState: true });
     }
   });
 

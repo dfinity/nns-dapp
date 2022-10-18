@@ -9,20 +9,19 @@
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { baseHref } from "$lib/utils/route.utils";
   import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPath, AppRoutes } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
   import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
+    canistersPathStore,
     neuronsPathStore,
+    proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
-
-  const baseUrl = baseHref();
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
     isRoutePath({ paths, routePath: $routeStore.path });
@@ -39,11 +38,7 @@
     {
       context: "accounts",
       href: $accountsPathStore,
-      selected: isSelectedPath([
-        AppPath.Accounts,
-        AppPath.LegacyAccounts,
-        AppPath.Wallet,
-      ]),
+      selected: isSelectedPath([AppPath.Accounts]),
       label: "tokens",
       icon: IconWallet,
     },
@@ -61,14 +56,14 @@
     },
     {
       context: "proposals",
-      href: `${baseUrl}#/proposals`,
+      href: $proposalsPathStore,
       selected: isSelectedPath([AppPath.Proposals, AppPath.ProposalDetail]),
       label: "voting",
       icon: IconHowToVote,
     },
     {
       context: "canisters",
-      href: `${baseUrl}#/canisters`,
+      href: $canistersPathStore,
       selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
       label: "canisters",
       icon: IconEngineering,
@@ -78,7 +73,7 @@
       ? [
           {
             context: "launchpad",
-            href: `${baseUrl}#/launchpad`,
+            href: `${AppRoutes.Launchpad}`,
             selected: isSelectedPath([
               AppPath.Launchpad,
               AppPath.ProjectDetail,

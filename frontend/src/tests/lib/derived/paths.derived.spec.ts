@@ -1,72 +1,80 @@
 /**
  * @jest-environment jsdom
  */
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppRoutes } from "$lib/constants/routes.constants";
 import {
   accountsPathStore,
-  neuronPathStore,
+  canistersPathStore,
   neuronsPathStore,
+  proposalsPathStore,
 } from "$lib/derived/paths.derived";
-import { routeStore } from "$lib/stores/route.store";
-import { paths } from "$lib/utils/app-path.utils";
+import { pageStore } from "$lib/stores/page.store";
 import { get } from "svelte/store";
+import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 describe("paths derived stores", () => {
   describe("accountsPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
     it("should return NNS accounts path as default", () => {
-      const $store = get(accountsPathStore);
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
 
-      expect($store).toBe(paths.accounts(OWN_CANISTER_ID.toText()));
+      const $store = get(accountsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${OWN_CANISTER_ID_TEXT}`);
     });
 
     it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(accountsPathStore);
+      pageStore.load({ universe: mockSnsCanisterIdText });
 
-      expect($store).toBe(paths.accounts(context));
+      const $store = get(accountsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${mockSnsCanisterIdText}`);
     });
   });
 
   describe("neuronsPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
-    it("should return NNS accounts path as default", () => {
-      const $store = get(neuronsPathStore);
+    it("should return NNS neurons path as default", () => {
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
 
-      expect($store).toBe(paths.neurons(OWN_CANISTER_ID.toText()));
+      const $store = get(neuronsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${OWN_CANISTER_ID_TEXT}`);
     });
 
-    it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(neuronsPathStore);
+    it("should return SNS neurons path", () => {
+      pageStore.load({ universe: mockSnsCanisterIdText });
 
-      expect($store).toBe(paths.neurons(context));
+      const $store = get(neuronsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${mockSnsCanisterIdText}`);
     });
   });
 
-  describe("neuronPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
-    it("should return NNS accounts path as default", () => {
-      const $store = get(neuronPathStore);
+  describe("proposalsPathStore", () => {
+    it("should return NNS proposals path as default", () => {
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
 
-      expect($store).toBe(paths.neuronDetail(OWN_CANISTER_ID.toText()));
+      const $store = get(proposalsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${OWN_CANISTER_ID_TEXT}`);
     });
 
-    it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(neuronPathStore);
+    it("should return SNS proposals path", () => {
+      pageStore.load({ universe: mockSnsCanisterIdText });
 
-      expect($store).toBe(paths.neuronDetail(context));
+      const $store = get(proposalsPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${mockSnsCanisterIdText}`);
+    });
+  });
+
+  describe("canistersPathStore", () => {
+    it("should return NNS canisters path as default", () => {
+      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+
+      const $store = get(canistersPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${OWN_CANISTER_ID_TEXT}`);
+    });
+
+    it("should return SNS canisters path", () => {
+      pageStore.load({ universe: mockSnsCanisterIdText });
+
+      const $store = get(canistersPathStore);
+      expect($store).toBe(`${AppRoutes.Accounts}/?u=${mockSnsCanisterIdText}`);
     });
   });
 });

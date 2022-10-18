@@ -3,13 +3,14 @@
   import Projects from "$lib/components/launchpad/Projects.svelte";
   import Proposals from "$lib/components/launchpad/Proposals.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppRoutes } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
+  import { goto } from "$app/navigation";
 
   onMount(() => {
     if (!IS_TESTNET) {
-      routeStore.replace({ path: AppPath.LegacyAccounts });
+      // TODO(GIX-1071): utils?
+      goto(AppRoutes.Accounts, { replaceState: true });
     }
   });
 </script>

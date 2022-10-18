@@ -1,4 +1,4 @@
-import { ENABLE_SNS, ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { routePathNeuronId } from "$lib/utils/neuron.utils";
 
@@ -6,7 +6,6 @@ const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPath.Wallet]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/wallet/${IDENTIFIER_REGEX}`,
   [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
   [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
   [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
@@ -29,10 +28,6 @@ export const paths = {
     ENABLE_SNS
       ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
       : AppPath.LegacyNeurons,
-  accounts: (rootCanisterId: string) =>
-    ENABLE_SNS_2
-      ? `${CONTEXT_PATH}/${rootCanisterId}/accounts`
-      : AppPath.LegacyAccounts,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;
@@ -167,9 +162,7 @@ const checkContextPathExceptions = ({
   if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/neurons`;
   }
-  if (isRoutePath({ paths: [AppPath.LegacyAccounts], routePath: path })) {
-    return `${CONTEXT_PATH}/${newContext}/accounts`;
-  }
+
   if (
     isRoutePath({
       paths: [AppPath.LegacyNeuronDetail],
