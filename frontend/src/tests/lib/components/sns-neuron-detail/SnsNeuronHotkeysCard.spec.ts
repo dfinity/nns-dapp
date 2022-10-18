@@ -23,10 +23,11 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsNeuronHotkeysCard", () => {
-  const addVotePermission = (key) => ({
+  const addHotkeiPermissions = (key) => ({
     principal: [Principal.fromText(key)] as [Principal],
     permission_type: Int32Array.from([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
     ]),
   });
   const hotkeys = [
@@ -36,13 +37,13 @@ describe("SnsNeuronHotkeysCard", () => {
   const controlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
     permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-      addVotePermission
+      addHotkeiPermissions
     ),
   };
 
   const unControlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
-    permissions: hotkeys.map(addVotePermission),
+    permissions: hotkeys.map(addHotkeiPermissions),
   };
 
   const reload = jest.fn();
