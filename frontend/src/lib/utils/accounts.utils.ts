@@ -82,10 +82,10 @@ export const getAccountFromStore = ({
   identifier,
   accounts,
 }: {
-  identifier: string | undefined;
+  identifier: string | undefined | null;
   accounts: Account[];
 }): Account | undefined => {
-  if (identifier === undefined) {
+  if (identifier === undefined || identifier === null) {
     return undefined;
   }
 

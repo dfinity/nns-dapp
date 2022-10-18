@@ -17,7 +17,7 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
   } = $event;
 
   return {
-    universe: searchParams?.get("u"),
+    universe: searchParams?.get("u") ?? undefined,
     id: searchParams?.get("id"),
   };
 };

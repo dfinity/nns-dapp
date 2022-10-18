@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
@@ -8,7 +8,6 @@
   import { Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";

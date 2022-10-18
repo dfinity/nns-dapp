@@ -8,7 +8,7 @@ export interface Page {
 
 const initPageStore = () => {
   const { subscribe, set } = writable<Page>({
-    universe: undefined,
+    universe: OWN_CANISTER_ID_TEXT,
     id: undefined,
   });
 
