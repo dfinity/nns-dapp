@@ -67,14 +67,10 @@
 
   const routeAccountIdentifier = $routesStore.id;
 
-  const init = async () => {
-    const {account} = selectedAccount;
+  const accountDidUpdate = async () => {
+    const account = $selectedAccountStore.account;
 
     if (account !== undefined) {
-      selectedAccountStore.update(() => ({
-        account,
-      }));
-
       await reloadTransactions(account.identifier);
 
       return;
@@ -96,13 +92,12 @@
   // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
-  let selectedAccount: {account: Account | undefined};
-  $: selectedAccount = {account: getAccountFromStore({
+  $: selectedAccountStore.set({account: getAccountFromStore({
       identifier: routeAccountIdentifier,
       accounts: $nnsAccountsListStore,
-    })};
+    })});
 
-  $: selectedAccount, (async () => await init())();
+  $: $selectedAccountStore, (async () => await accountDidUpdate())();
 
   let showNewTransactionModal = false;
 
