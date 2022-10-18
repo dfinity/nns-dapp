@@ -1,3 +1,4 @@
+import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import * as services from "$lib/services/sns-neurons.services";
 import { disburse } from "$lib/services/sns-neurons.services";
@@ -172,7 +173,7 @@ describe("sns-neurons-services", () => {
   describe("addHotkey", () => {
     it("should call api.addNeuronPermissions", async () => {
       const spyAdd = jest
-        .spyOn(api, "addNeuronPermissions")
+        .spyOn(governanceApi, "addNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
       const hotkey = Principal.fromText("aaaaa-aa");
       const { success } = await addHotkey({
@@ -194,7 +195,7 @@ describe("sns-neurons-services", () => {
   describe("removeHotkey", () => {
     it("should call api.addNeuronPermissions", async () => {
       const spyAdd = jest
-        .spyOn(api, "removeNeuronPermissions")
+        .spyOn(governanceApi, "removeNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
       const hotkey = "aaaaa-aa";
       const { success } = await removeHotkey({
@@ -220,7 +221,7 @@ describe("sns-neurons-services", () => {
       const rootCanisterId = mockPrincipal;
 
       const spyAdd = jest
-        .spyOn(api, "disburse")
+        .spyOn(governanceApi, "disburse")
         .mockImplementation(() => Promise.resolve());
 
       const { success } = await disburse({

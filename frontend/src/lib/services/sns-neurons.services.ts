@@ -1,12 +1,11 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
-  querySnsNeuron,
-  querySnsNeurons,
   removeNeuronPermissions,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
-} from "$lib/api/sns.api";
+} from "$lib/api/sns-governance.api";
+import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
