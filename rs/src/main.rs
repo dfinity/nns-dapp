@@ -12,7 +12,7 @@ use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
-use ledger_canister::{AccountIdentifier, BlockHeight};
+use ledger_canister::{AccountIdentifier, BlockIndex};
 
 mod accounts_store;
 mod assets;
@@ -227,14 +227,14 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
 /// these actions.
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
-    over(candid, |(principal, block_height): (PrincipalId, BlockHeight)| {
+    over(candid, |(principal, block_height): (PrincipalId, BlockIndex)| {
         get_multi_part_transaction_status_impl(principal, block_height)
     });
 }
 
 fn get_multi_part_transaction_status_impl(
     principal: PrincipalId,
-    block_height: BlockHeight,
+    block_height: BlockIndex,
 ) -> MultiPartTransactionStatus {
     // Returns true if `p2` is a principal of an account owned by `p1`.
     fn is_principal_in_account(account_owner: PrincipalId, principal: PrincipalId) -> bool {
