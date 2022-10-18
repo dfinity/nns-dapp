@@ -36,7 +36,7 @@
 
   let neuronStake: TokenAmount | undefined;
   $: neuronStake =
-    $snsTokenSymbolSelectedStore &&
+    $snsTokenSymbolSelectedStore !== undefined &&
     TokenAmount.fromE8s({
       amount: getSnsNeuronStake(neuron),
       // If we got here is because the token symbol is present.
