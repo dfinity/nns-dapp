@@ -404,7 +404,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("isUserHotkey", () => {
-    it("returns true if user only has voting and proporal permissions but not all permissions", () => {
+    it("returns true if user only has voting and proposal permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [

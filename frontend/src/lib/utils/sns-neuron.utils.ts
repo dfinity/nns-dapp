@@ -185,12 +185,11 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        permission_type.includes(
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
-        ) &&
-        permission_type.includes(
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL
-        )
+        [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ].find((permission) => !permission_type.includes(permission)) ===
+        undefined
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
