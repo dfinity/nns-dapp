@@ -34,7 +34,7 @@
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  let neuronStake: TokenAmount;
+  let neuronStake: TokenAmount | undefined;
   $: neuronStake =
     $snsTokenSymbolSelectedStore &&
     TokenAmount.fromE8s({
@@ -63,7 +63,7 @@
   </div>
 
   <div slot="end" class="currency">
-    {#if neuronStake}
+    {#if neuronStake !== undefined}
       <AmountDisplay amount={neuronStake} detailed />
     {:else}
       <Spinner inline size="small" />
