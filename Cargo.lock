@@ -308,33 +308,6 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.7.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7e4287605536419ac6ce9d76d3aa5733677ca8c7c2891079b2c71a345cc17a3"
-dependencies = [
- "anyhow",
- "binread",
- "byteorder",
- "candid_derive 0.4.5",
- "codespan-reporting",
- "hex",
- "ic-types 0.4.2",
- "lalrpop",
- "lalrpop-util",
- "leb128",
- "logos",
- "num-bigint",
- "num-traits",
- "num_enum",
- "paste",
- "pretty",
- "serde",
- "serde_bytes",
- "thiserror",
-]
-
-[[package]]
-name = "candid"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0571f3777880555f86d8aaa63080162560a8bf183d7853e0cc561d9a75458bbd"
@@ -342,7 +315,7 @@ dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive 0.5.0",
+ "candid_derive",
  "codespan-reporting",
  "crc32fast",
  "data-encoding",
@@ -360,18 +333,6 @@ dependencies = [
  "serde_bytes",
  "sha2 0.10.5",
  "thiserror",
-]
-
-[[package]]
-name = "candid_derive"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e02c03c4d547674a3f3f3109538fb49871fbe636216daa019f06a62faca9061"
-dependencies = [
- "lazy_static",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -703,7 +664,7 @@ dependencies = [
  "base64 0.13.0",
  "build-info",
  "build-info-build",
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "dfn_http_metrics",
@@ -719,7 +680,7 @@ dependencies = [
  "ic-nns-common",
  "ic-nns-constants",
  "ic-protobuf",
- "ic-types 0.8.0",
+ "ic-types",
  "lazy_static",
  "ledger-canister",
  "on_wire",
@@ -858,7 +819,7 @@ name = "dfn_candid"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "dfn_core",
  "ic-base-types",
  "on_wire",
@@ -879,7 +840,7 @@ name = "dfn_http"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "serde",
@@ -1352,7 +1313,7 @@ dependencies = [
  "base32",
  "byte-unit",
  "bytes",
- "candid 0.8.3",
+ "candid",
  "comparable",
  "crc32fast",
  "ic-crypto-sha",
@@ -1369,7 +1330,7 @@ name = "ic-btc-types"
 version = "0.1.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "serde",
  "serde_bytes",
 ]
@@ -1379,7 +1340,7 @@ name = "ic-btc-types-internal"
 version = "0.1.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-btc-types",
  "ic-protobuf",
  "serde",
@@ -1395,7 +1356,7 @@ dependencies = [
  "ic-base-types",
  "ic-crypto-internal-basic-sig-ecdsa-secp256k1",
  "ic-crypto-sha",
- "ic-types 0.8.0",
+ "ic-types",
  "rand",
  "rand_chacha",
 ]
@@ -1406,7 +1367,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ebcbfc8818378990e9a79ee61a2de5d372c97db24a0c27c5f47b08c93786250"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "cfg-if 1.0.0",
  "serde",
 ]
@@ -1417,7 +1378,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "feb7c9d8c91637e09b56c8c413b1892958cb15a6a5a1001870de658962bbf917"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-cdk",
  "proc-macro2",
  "quote",
@@ -1465,7 +1426,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "hex",
- "ic-types 0.8.0",
+ "ic-types",
  "simple_asn1",
 ]
 
@@ -1479,7 +1440,7 @@ dependencies = [
  "ic-crypto-internal-basic-sig-der-utils",
  "ic-crypto-internal-types",
  "ic-crypto-secrets-containers",
- "ic-types 0.8.0",
+ "ic-types",
  "openssl",
  "serde",
  "serde_bytes",
@@ -1501,7 +1462,7 @@ dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-secrets-containers",
  "ic-protobuf",
- "ic-types 0.8.0",
+ "ic-types",
  "rand",
  "rand_chacha",
  "serde",
@@ -1546,7 +1507,7 @@ dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha",
  "ic-protobuf",
- "ic-types 0.8.0",
+ "ic-types",
  "rand",
  "rand_chacha",
  "serde",
@@ -1560,7 +1521,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "hex",
  "ic-crypto-sha",
- "ic-types 0.8.0",
+ "ic-types",
  "rand",
  "rand_chacha",
  "serde",
@@ -1589,7 +1550,7 @@ dependencies = [
  "ic-crypto-internal-threshold-sig-bls12381-der",
  "ic-crypto-internal-types",
  "ic-crypto-sha",
- "ic-types 0.8.0",
+ "ic-types",
  "lazy_static",
  "rand",
  "rand_chacha",
@@ -1620,7 +1581,7 @@ dependencies = [
  "ic-crypto-internal-seed",
  "ic-crypto-internal-types",
  "ic-crypto-sha",
- "ic-types 0.8.0",
+ "ic-types",
  "k256",
  "lazy_static",
  "p256",
@@ -1666,7 +1627,7 @@ dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-tls-cert-validation",
  "ic-protobuf",
- "ic-types 0.8.0",
+ "ic-types",
  "x509-parser 0.12.0",
 ]
 
@@ -1699,7 +1660,7 @@ dependencies = [
  "ic-crypto-internal-basic-sig-ed25519",
  "ic-crypto-internal-types",
  "ic-protobuf",
- "ic-types 0.8.0",
+ "ic-types",
  "x509-parser 0.9.2",
 ]
 
@@ -1745,7 +1706,7 @@ name = "ic-ic00-types"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "float-cmp",
  "ic-base-types",
  "ic-btc-types",
@@ -1765,7 +1726,7 @@ name = "ic-icrc1"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ciborium",
  "hex",
  "ic-base-types",
@@ -1783,7 +1744,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "async-trait",
- "candid 0.8.3",
+ "candid",
  "ic-base-types",
  "ic-icrc1",
  "ic-ledger-core",
@@ -1797,7 +1758,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "async-trait",
- "candid 0.8.3",
+ "candid",
  "ciborium",
  "dfn_core",
  "dfn_http_metrics",
@@ -1817,7 +1778,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "async-trait",
- "candid 0.8.3",
+ "candid",
  "ciborium",
  "dfn_http_metrics",
  "hex",
@@ -1841,7 +1802,7 @@ version = "0.1.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "async-trait",
- "candid 0.8.3",
+ "candid",
  "ic-base-types",
  "ic-constants",
  "ic-ic00-types",
@@ -1856,7 +1817,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "async-trait",
- "candid 0.8.3",
+ "candid",
  "hex",
  "ic-base-types",
  "ic-constants",
@@ -1882,7 +1843,7 @@ dependencies = [
  "build-info",
  "build-info-build",
  "bytes",
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "dfn_protobuf",
@@ -1908,7 +1869,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "ic-base-types",
  "ic-canister-client-sender",
- "ic-types 0.8.0",
+ "ic-types",
  "lazy_static",
  "rand",
  "rand_chacha",
@@ -1919,7 +1880,7 @@ name = "ic-nervous-system-root"
 version = "0.1.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "ic-base-types",
@@ -1936,7 +1897,7 @@ name = "ic-nns-common"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "comparable",
  "dfn_core",
  "ic-base-types",
@@ -1946,7 +1907,7 @@ dependencies = [
  "ic-protobuf",
  "ic-registry-keys",
  "ic-registry-transport",
- "ic-types 0.8.0",
+ "ic-types",
  "lazy_static",
  "on_wire",
  "prost",
@@ -1971,7 +1932,7 @@ dependencies = [
  "async-trait",
  "build-info",
  "build-info-build",
- "candid 0.8.3",
+ "candid",
  "comparable",
  "csv",
  "cycles-minting-canister",
@@ -2007,7 +1968,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "bincode",
- "candid 0.8.3",
+ "candid",
  "erased-serde",
  "maplit",
  "prost",
@@ -2021,10 +1982,10 @@ name = "ic-registry-keys"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-base-types",
  "ic-ic00-types",
- "ic-types 0.8.0",
+ "ic-types",
  "serde",
 ]
 
@@ -2033,7 +1994,7 @@ name = "ic-registry-routing-table"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-base-types",
  "ic-protobuf",
  "serde",
@@ -2044,7 +2005,7 @@ name = "ic-registry-subnet-features"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-ic00-types",
  "ic-protobuf",
  "serde",
@@ -2055,7 +2016,7 @@ name = "ic-registry-subnet-type"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "ic-protobuf",
  "serde",
  "strum 0.23.0",
@@ -2068,7 +2029,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "bytes",
- "candid 0.8.3",
+ "candid",
  "ic-protobuf",
  "prost",
  "serde",
@@ -2083,7 +2044,7 @@ dependencies = [
  "build-info",
  "build-info-build",
  "bytes",
- "candid 0.8.3",
+ "candid",
  "clap",
  "comparable",
  "csv",
@@ -2127,7 +2088,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "anyhow",
  "base64 0.13.0",
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "ic-base-types",
@@ -2160,7 +2121,7 @@ dependencies = [
  "async-trait",
  "build-info",
  "build-info-build",
- "candid 0.8.3",
+ "candid",
  "comparable",
  "dfn_candid",
  "dfn_core",
@@ -2185,7 +2146,7 @@ dependencies = [
  "build-info",
  "build-info-build",
  "bytes",
- "candid 0.8.3",
+ "candid",
  "comparable",
  "dfn_candid",
  "dfn_core",
@@ -2221,7 +2182,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "async-trait",
  "build-info",
- "candid 0.8.3",
+ "candid",
  "dfn_candid",
  "dfn_core",
  "futures",
@@ -2234,7 +2195,7 @@ dependencies = [
  "ic-sns-governance",
  "ic-sns-init",
  "ic-sns-root",
- "ic-types 0.8.0",
+ "ic-types",
  "maplit",
  "prost",
  "serde",
@@ -2257,28 +2218,13 @@ dependencies = [
 
 [[package]]
 name = "ic-types"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a7d9569a4c91d5c9c202c1666f799a9761bab70a2b59464ee78c45b005e47b8"
-dependencies = [
- "crc32fast",
- "data-encoding",
- "hex",
- "serde",
- "serde_bytes",
- "sha2 0.10.5",
- "thiserror",
-]
-
-[[package]]
-name = "ic-types"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
  "base32",
  "base64 0.11.0",
  "bincode",
- "candid 0.8.3",
+ "candid",
  "chrono",
  "derive_more 0.99.8-alpha.0",
  "hex",
@@ -2464,7 +2410,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "async-trait",
  "byteorder",
- "candid 0.8.3",
+ "candid",
  "ciborium",
  "comparable",
  "crc32fast",
@@ -2646,7 +2592,7 @@ name = "nns-dapp"
 version = "0.0.1"
 dependencies = [
  "base64 0.13.0",
- "candid 0.7.16",
+ "candid",
  "chrono",
  "cycles-minting-canister",
  "dfn_candid",
@@ -2988,7 +2934,7 @@ name = "phantom_newtype"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42#f818cf1eb89bcbc9aecb1fb73de8c8de6c258c42"
 dependencies = [
- "candid 0.8.3",
+ "candid",
  "serde",
  "slog",
 ]
@@ -3269,7 +3215,7 @@ source = "git+https://github.com/dfinity/ic?rev=f818cf1eb89bcbc9aecb1fb73de8c8de
 dependencies = [
  "build-info",
  "build-info-build",
- "candid 0.8.3",
+ "candid",
  "cycles-minting-canister",
  "dfn_candid",
  "dfn_core",
@@ -3290,7 +3236,7 @@ dependencies = [
  "ic-registry-subnet-features",
  "ic-registry-subnet-type",
  "ic-registry-transport",
- "ic-types 0.8.0",
+ "ic-types",
  "ipnet",
  "leb128",
  "on_wire",
