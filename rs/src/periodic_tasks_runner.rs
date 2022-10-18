@@ -12,7 +12,7 @@ use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use ic_sns_swap::pb::v1::RefreshBuyerTokensRequest;
 use ledger_canister::{
-    AccountBalanceArgs, AccountIdentifier, BlockHeight, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
+    AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
 
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
@@ -61,7 +61,7 @@ pub async fn run_periodic_tasks() {
 }
 
 async fn handle_participate_swap(
-    block_height: BlockHeight,
+    block_height: BlockIndex,
     principal: PrincipalId,
     from: AccountIdentifier,
     to: AccountIdentifier,
@@ -79,7 +79,7 @@ async fn handle_participate_swap(
     }
 }
 
-async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
+async fn handle_stake_neuron(block_height: BlockIndex, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(neuron_id) => STATE.with(|s| {
             s.accounts_store
@@ -94,7 +94,7 @@ async fn handle_stake_neuron(block_height: BlockHeight, principal: PrincipalId, 
     }
 }
 
-async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId, memo: Memo) {
+async fn handle_top_up_neuron(block_height: BlockIndex, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up(block_height)),
         Err(e) => STATE.with(|s| {
@@ -105,7 +105,7 @@ async fn handle_top_up_neuron(block_height: BlockHeight, principal: PrincipalId,
     }
 }
 
-async fn handle_create_canister_v2(block_height: BlockHeight, controller: PrincipalId) {
+async fn handle_create_canister_v2(block_height: BlockIndex, controller: PrincipalId) {
     match create_canister_v2(block_height, controller).await {
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
@@ -140,7 +140,7 @@ async fn handle_create_canister_v2(block_height: BlockHeight, controller: Princi
     }
 }
 
-async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterArgs) {
+async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterArgs) {
     match create_canister(args.controller, args.amount).await {
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
@@ -187,7 +187,7 @@ async fn handle_create_canister(block_height: BlockHeight, args: CreateCanisterA
     }
 }
 
-async fn handle_top_up_canister_v2(block_height: BlockHeight, principal: PrincipalId, canister_id: CanisterId) {
+async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: PrincipalId, canister_id: CanisterId) {
     match top_up_canister_v2(block_height, canister_id).await {
         Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
         Ok(Err(NotifyError::Processing)) => {
@@ -218,7 +218,7 @@ async fn handle_top_up_canister_v2(block_height: BlockHeight, principal: Princip
     }
 }
 
-async fn handle_top_up_canister(block_height: BlockHeight, args: TopUpCanisterArgs) {
+async fn handle_top_up_canister(block_height: BlockIndex, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
         Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
         Ok(Err(error)) => {
@@ -310,7 +310,7 @@ async fn claim_or_refresh_neuron(principal: PrincipalId, memo: Memo) -> Result<N
 }
 
 async fn create_canister_v2(
-    block_index: BlockHeight,
+    block_index: BlockIndex,
     controller: PrincipalId,
 ) -> Result<Result<CanisterId, NotifyError>, String> {
     let notify_request = NotifyCreateCanister {
@@ -348,7 +348,7 @@ async fn create_canister(principal: PrincipalId, amount: Tokens) -> Result<Resul
 }
 
 async fn top_up_canister_v2(
-    block_index: BlockHeight,
+    block_index: BlockIndex,
     canister_id: CanisterId,
 ) -> Result<Result<Cycles, NotifyError>, String> {
     let notify_request = NotifyTopUp {
@@ -386,7 +386,7 @@ async fn top_up_canister(canister_id: CanisterId, amount: Tokens) -> Result<Resu
 async fn enqueue_create_or_top_up_canister_refund(
     principal: PrincipalId,
     subaccount: Subaccount,
-    block_height: BlockHeight,
+    block_height: BlockIndex,
     refund_address: AccountIdentifier,
     error_message: String,
 ) {

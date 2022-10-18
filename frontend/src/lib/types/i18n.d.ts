@@ -824,6 +824,7 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
   RetireReplicaVersion: string;
 }
 
@@ -862,6 +863,7 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
   RetireReplicaVersion: string;
 }
 
