@@ -21,6 +21,7 @@
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { pageStore } from "$lib/stores/page.store";
   import { goto } from "$app/navigation";
+  import {layoutBackStore} from "$lib/stores/layout.store";
 
   // TODO(GIX-1071): utils?
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
@@ -29,6 +30,11 @@
       goto(AppRoutes.Accounts, { replaceState: true });
     }
   });
+
+  // TODO(GIX-1071): utils?
+  const goBack = (): Promise<void> => goto(`${AppRoutes.Accounts}/?u=${$pageStore.universe}`);
+
+  layoutBackStore.set(goBack);
 
   let showNewTransactionModal = false;
 
@@ -56,16 +62,12 @@
   });
 
   // TODO(GIX-1071): technically this can be a property
-  let routeAccountIdentifier:
-    | { accountIdentifier: string | undefined }
-    | undefined;
-  $: routeAccountIdentifier = { accountIdentifier: $pageStore.id };
+  let routeAccountIdentifier = $pageStore.id;
 
   $: {
-    if (routeAccountIdentifier?.accountIdentifier !== undefined) {
+    if (routeAccountIdentifier !== undefined) {
       const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) =>
-          identifier === routeAccountIdentifier?.accountIdentifier
+        ({ identifier }) => identifier === routeAccountIdentifier
       );
 
       selectedAccountStore.update(() => ({

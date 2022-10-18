@@ -1,6 +1,6 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
-  import { Page, pageStore } from "$lib/stores/page.store";
+  import { type Page, pageStore } from "$lib/stores/page.store";
 
   export let data: Partial<Page>;
 
