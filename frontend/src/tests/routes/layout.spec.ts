@@ -6,12 +6,12 @@ import { initApp } from "$lib/services/app.services";
 import { initWorker } from "$lib/services/worker.services";
 import { authStore } from "$lib/stores/auth.store";
 import { render, waitFor } from "@testing-library/svelte";
-import App from "../routes/+page.svelte";
+import App from "../../routes/+layout.svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "./mocks/auth.store.mock";
+} from "../mocks/auth.store.mock";
 
 jest.mock("$lib/services/worker.services", () => ({
   initWorker: jest.fn(() =>
@@ -27,7 +27,7 @@ jest.mock("$lib/services/app.services", () => ({
   initApp: jest.fn(() => Promise.resolve()),
 }));
 
-describe("App", () => {
+describe("Layout", () => {
   beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
