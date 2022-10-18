@@ -4,8 +4,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
-  import {browser} from "$app/environment";
-  import {onMount} from "svelte";
+  import { browser } from "$app/environment";
+  import { onMount } from "svelte";
 
   let initialized = false;
 
@@ -26,7 +26,7 @@
     await syncAuthStore();
 
     initialized = true;
-  })
+  });
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {
@@ -46,12 +46,7 @@
   $: disabled = signedIn || !initialized;
 </script>
 
-<button
-  on:click={signIn}
-  data-tid="login-button"
-  class="primary"
-  {disabled}
->
+<button on:click={signIn} data-tid="login-button" class="primary" {disabled}>
   {$i18n.auth.login}
   {#if disabled}
     <div class="spinner">
