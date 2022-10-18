@@ -20,13 +20,13 @@
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { routesStore } from "$lib/stores/routes.stores";
-  import {goto} from "$app/navigation";
+  import { goto } from "$app/navigation";
 
   // TODO(GIX-1071): utils?
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (!ENABLE_SNS_2) {
-      goto(AppRoutes.Accounts, {replaceState: true});
+      goto(AppRoutes.Accounts, { replaceState: true });
     }
   });
 

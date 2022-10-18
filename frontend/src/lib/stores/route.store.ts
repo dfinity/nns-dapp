@@ -1,6 +1,6 @@
 import type { AppPath } from "$lib/constants/routes.constants";
 import { isAppPath } from "$lib/utils/app-path.utils";
-import { pushHistory, replaceHistory, routePath } from "$lib/utils/route.utils";
+import { replaceHistory, routePath } from "$lib/utils/route.utils";
 import { writable } from "svelte/store";
 
 export interface RouteStore {
@@ -34,7 +34,6 @@ const initRouteStore = () => {
 
     // TODO(GIX-1071): delete
     update: ({ path }: { path: string }) => {
-
       // update((state: RouteStore) => ({
       //   ...state,
       //   path,
@@ -51,7 +50,6 @@ const initRouteStore = () => {
       //   referrerPath: state.path,
       //   isKnownPath: isAppPath(path),
       // }));
-
       // pushHistory({ path, query });
     },
 
@@ -63,7 +61,6 @@ const initRouteStore = () => {
       //   referrerPath: state.path,
       //   isKnownPath: isAppPath(path),
       // }));
-
       // replaceHistory({ path, query });
     },
 

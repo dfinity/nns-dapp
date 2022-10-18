@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {onMount, setContext} from "svelte";
+  import { onMount, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
@@ -29,8 +29,8 @@
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { routesStore } from "$lib/stores/routes.stores";
-  import {goto} from "$app/navigation";
-  import {AppRoutes} from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
+  import { AppRoutes } from "$lib/constants/routes.constants";
 
   // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> => goto(AppRoutes.Accounts);
@@ -80,22 +80,23 @@
     if (account === undefined && $accountsStore.main !== undefined) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
-          $account_identifier:
-                  routeAccountIdentifier ?? "",
+          $account_identifier: routeAccountIdentifier ?? "",
         }),
       });
 
       await goBack();
     }
-  }
+  };
 
   // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
-  $: selectedAccountStore.set({account: getAccountFromStore({
+  $: selectedAccountStore.set({
+    account: getAccountFromStore({
       identifier: routeAccountIdentifier,
       accounts: $nnsAccountsListStore,
-    })});
+    }),
+  });
 
   $: $selectedAccountStore, (async () => await accountDidUpdate())();
 
