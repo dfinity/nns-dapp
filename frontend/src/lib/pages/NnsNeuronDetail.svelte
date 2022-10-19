@@ -22,9 +22,22 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
 
-  // BEGIN: loading and navigation
+  export let neuronIdText: string | undefined | null;
 
-  export let neuronId: NeuronId | undefined | null;
+  const mapNeuronId = (
+    neuronIdText: string | undefined | null
+  ): NeuronId | undefined => {
+    try {
+      return neuronIdText ? BigInt(neuronIdText) : undefined;
+    } catch (_err: unknown) {
+      return undefined;
+    }
+  };
+
+  let neuronId: NeuronId | undefined;
+  $: neuronId = mapNeuronId(neuronIdText);
+
+  // BEGIN: loading and navigation
 
   // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> => goto(AppPath.Neurons);
@@ -37,7 +50,7 @@
     // handle unknown neuronId from URL
     if (neuron === undefined && $neuronsStore.neurons !== undefined) {
       toastsError({
-        labelKey: $i18n.error.neuron_not_found
+        labelKey: $i18n.error.neuron_not_found,
       });
 
       await goBack();
@@ -47,15 +60,16 @@
   // We need an object to trigger the observer even if undefined is applied after undefined initial value
   let neuronFromStore: NeuronFromStore;
   $: neuronFromStore = {
-    neuron: neuronId !== undefined && neuronId !== null
-      ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
-      : undefined,
+    neuron:
+      neuronId !== undefined && neuronId !== null
+        ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
+        : undefined,
   };
 
   $: (async () => await neuronDidUpdate(neuronFromStore))();
 
   let neuron: NeuronInfo | undefined;
-  $: ({neuron} = neuronFromStore);
+  $: ({ neuron } = neuronFromStore);
 
   // END: loading and navigation
 
@@ -80,7 +94,7 @@
       });
       await goBack();
     }
-  }
+  };
 
   $: (async () => await redirectIfSpawning(neuron))();
 </script>

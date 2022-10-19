@@ -11,9 +11,9 @@
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
-  import {goto} from "$app/navigation";
-  import {AppPath} from "$lib/constants/routes.constants";
-  import {pageStore} from "$lib/derived/page.derived";
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let loading = true;
 
@@ -35,8 +35,10 @@
   // TODO(GIX-1071): extract utils?
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
-    await goto(`${AppPath.Neuron}/?u=${$pageStore.universe}&neuron=${neuronId}`);
-  }
+    await goto(
+      `${AppPath.Neuron}/?u=${$pageStore.universe}&neuron=${neuronId}`
+    );
+  };
 </script>
 
 <section data-tid="sns-neurons-body">

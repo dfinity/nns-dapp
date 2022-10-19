@@ -1,11 +1,10 @@
 import { browser } from "$app/environment";
-import type { NeuronId } from "@dfinity/nns";
 import type { LoadEvent } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = (
   $event: LoadEvent
-): { neuron: NeuronId | null | undefined } => {
+): { neuron: string | null | undefined } => {
   if (!browser) {
     return {
       neuron: undefined,
@@ -16,15 +15,8 @@ export const load: PageLoad = (
     url: { searchParams },
   } = $event;
 
-  // TODO(GIX-1071): constants for neuron
-  try {
-    const id = searchParams?.get("neuron");
-    return {
-      neuron: id ? BigInt(id) : null,
-    };
-  } catch (_err: unknown) {
-    return {
-      neuron: undefined,
-    };
-  }
+  // TODO(GIX-1071): constants for account
+  return {
+    neuron: searchParams?.get("neuron"),
+  };
 };

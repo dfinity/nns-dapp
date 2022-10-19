@@ -3,25 +3,39 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import { layoutBackStore } from "$lib/stores/layout.store";
-  import { routeStore } from "$lib/stores/route.store";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
-  import {
-    routePathSnsNeuronRootCanisterId,
-    routePathSnsNeuronId,
-  } from "$lib/utils/sns-neuron.utils";
   import {
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
   } from "$lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
-  import { setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import {pageStore} from "$lib/derived/page.derived";
+
+  export let neuronId: string | null | undefined;
+
+  const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
+    selected: undefined,
+    neuron: undefined,
+  });
+
+  setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
+    store: selectedSnsNeuronStore,
+    reload: () => loadNeuron({ forceFetch: true }),
+  });
+
+  // BEGIN: loading and navigation
+
+  // TODO(GIX-1071): utils? replaceState: true for error?
+  const goBack = (): Promise<void> => goto(AppPath.Neurons);
+
+  layoutBackStore.set(goBack);
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -39,79 +53,36 @@
           }));
         },
         onError: () => {
-          selectedSnsNeuronStore.update((store) => ({
-            ...store,
-            neuron: undefined,
-          }));
+          toastsError({
+            labelKey: "error.neuron_not_found",
+          });
+
+          // For simplicity reason we do not catch the promise here
+          goBack();
         },
       });
     }
   };
 
-  const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
-    selected: undefined,
-    neuron: undefined,
-  });
-
-  setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
-    store: selectedSnsNeuronStore,
-    reload: () => loadNeuron({ forceFetch: true }),
-  });
-
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (
-      !isRoutePath({ paths: [AppPathLegacy.NeuronDetail], routePath: path })
-    ) {
-      return;
-    }
-    const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
-    const neuronIdMaybe = routePathSnsNeuronId(path);
-    if (neuronIdMaybe === undefined || rootCanisterIdMaybe === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
-      return;
-    }
-    let rootCanisterId: Principal | undefined;
-    try {
-      rootCanisterId = Principal.fromText(rootCanisterIdMaybe);
-    } catch (error: unknown) {
-      toastsError({
-        labelKey: "error__sns.invalid_root_canister_id",
-        substitutions: {
-          $canisterId: rootCanisterIdMaybe,
-        },
-      });
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
+  onMount(async () => {
+    if (neuronId === undefined || neuronId === null) {
+      await goBack();
       return;
     }
 
     // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
     selectedSnsNeuronStore.set({
       selected: {
-        neuronIdHex: neuronIdMaybe,
-        rootCanisterId,
+        neuronIdHex: neuronId,
+        rootCanisterId: Principal.fromText($pageStore.universe),
       },
       neuron: null,
     });
-    loadNeuron();
+
+    await loadNeuron();
   });
 
-  const goBack = () =>
-    routeStore.navigate({
-      path: $neuronsPathStore,
-    });
-
-  layoutBackStore.set(goBack);
-
-  $: {
-    if ($selectedSnsNeuronStore.neuron === undefined) {
-      toastsError({
-        labelKey: "error.neuron_not_found",
-      });
-      // Reset selected project
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
-    }
-  }
+  // END: loading and navigation
 
   let loading: boolean;
   $: loading = $selectedSnsNeuronStore.neuron === null;

@@ -9,9 +9,9 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   // Preloaded by +page.ts
-  export let data: { neuron: NeuronId | null | undefined };
+  export let data: { neuron: string | null | undefined };
 
-  let neuronId: NeuronId | null | undefined;
+  let neuronId: string | null | undefined;
   $: ({ neuron: neuronId } = data);
 </script>
 

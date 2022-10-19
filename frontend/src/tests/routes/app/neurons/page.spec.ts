@@ -2,19 +2,21 @@
  * @jest-environment jsdom
  */
 
-import {OWN_CANISTER_ID, OWN_CANISTER_ID_TEXT} from "$lib/constants/canister-ids.constants";
-import { AppPathLegacy } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
-import {authStore} from "$lib/stores/auth.store";
-import {mockAuthStoreSubscribe} from "../../../mocks/auth.store.mock";
-import {page} from "$mocks/$app/stores";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
@@ -32,9 +34,10 @@ describe("Neurons", () => {
   // TODO(GIX-1071): should render sign-in if not logged in
 
   beforeAll(() =>
-      jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe));
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   jest
     .spyOn(committedProjectsStore, "subscribe")
