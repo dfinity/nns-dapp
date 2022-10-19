@@ -78,7 +78,7 @@
     "AddOrRemoveNodeProvider": "Add or Remove Node Provider",
     "SetDefaultFollowees": "Set Default Followees",
     "Motion": "Motion",
-    "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale",
+    "SetSnsTokenSwapOpenTimeWindow": "Start Decentralization Sale",
     "OpenSnsTokenSwap": "Open Decentralized Token Sale"
   },
   "actions_description": {
@@ -92,7 +92,7 @@
     "SetDefaultFollowees": "Specify the list of followees that a freshly created neuron should have.",
     "Motion": "A motion is a text that can be adopted or rejected. No code is executed when a motion is adopted. An adopted motion should guide the future strategy of the Internet Computer ecosystem.",
     "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale",
-    "OpenSnsTokenSwap": "Open Decentralized Token Sale"
+    "OpenSnsTokenSwap": "Open decentralized token sale"
   },
   "nns_functions": {
     "Unspecified": "Unspecified",
