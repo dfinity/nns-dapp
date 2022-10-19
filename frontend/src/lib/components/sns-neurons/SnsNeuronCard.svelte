@@ -39,7 +39,7 @@
     $snsTokenSymbolSelectedStore !== undefined
       ? TokenAmount.fromE8s({
           amount: getSnsNeuronStake(neuron),
-          // If we got here is because the token symbol is present.
+          // If we get here is because the token symbol is present.
           // The projects without token are discarded filtered out.
           token: $snsTokenSymbolSelectedStore,
         })
