@@ -1,7 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import SelectNeuronsToMerge from "$lib/components/neurons/SelectNeuronsToMerge.svelte";
   import ConfirmNeuronsMerge from "$lib/components/neurons/ConfirmNeuronsMerge.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -15,20 +18,18 @@
 
   let selectedNeurons: NeuronInfo[] | undefined;
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectNeurons",
-      showBackButton: false,
       title: $i18n.neurons.merge_neurons_modal_title,
     },
     {
       name: "ConfirmMerge",
-      showBackButton: true,
       title: $i18n.neurons.merge_neurons_modal_confirm,
     },
   ];
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   const dispatcher = createEventDispatcher();

@@ -10,39 +10,39 @@
   } from "$lib/services/canisters.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step, Steps } from "$lib/stores/steps.state";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import type { Account } from "$lib/types/account";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
     icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectAccount",
       title: $i18n.accounts.select_source,
-      showBackButton: false,
     },
     {
       name: "SelectCycles",
       title: $i18n.canisters.enter_amount,
-      showBackButton: true,
     },
     {
       name: "ConfirmCycles",
       title: $i18n.canisters.review_create_canister,
-      showBackButton: true,
     },
   ];
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;

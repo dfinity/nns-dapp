@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type Token, NeuronState, TokenAmount } from "@dfinity/nns";
+  import { NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
