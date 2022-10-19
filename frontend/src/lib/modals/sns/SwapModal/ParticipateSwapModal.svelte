@@ -12,7 +12,7 @@
     hasUserParticipatedToSwap,
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-  import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
