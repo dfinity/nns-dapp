@@ -9,9 +9,12 @@
     topUpCanister,
   } from "$lib/services/canisters.services";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step, Steps } from "$lib/stores/steps.state";
   import type { Account } from "$lib/types/account";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
@@ -30,28 +33,25 @@
     icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectAccount",
       title: $i18n.canister_detail.top_up_canister,
-      showBackButton: false,
     },
     {
       name: "SelectCycles",
       title: $i18n.canisters.enter_amount,
-      showBackButton: true,
     },
     {
       name: "ConfirmCycles",
       title: $i18n.canisters.review_cycles_purchase,
-      showBackButton: true,
     },
   ];
 
   const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;

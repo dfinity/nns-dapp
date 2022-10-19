@@ -1,8 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -17,20 +20,18 @@
   export let neuron: NeuronInfo;
 
   const dispatcher = createEventDispatcher();
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectDestination",
-      showBackButton: false,
       title: $i18n.neuron_detail.disburse_neuron_title,
     },
     {
       name: "ConfirmDisburse",
-      showBackButton: true,
       title: $i18n.accounts.review_transaction,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let modal: WizardModal;
   let loading = false;
   let amount: TokenAmount;

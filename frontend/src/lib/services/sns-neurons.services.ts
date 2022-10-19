@@ -1,10 +1,11 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
-  querySnsNeuron,
-  querySnsNeurons,
   removeNeuronPermissions,
-} from "$lib/api/sns.api";
+  startDissolving as startDissolvingApi,
+  stopDissolving as stopDissolvingApi,
+} from "$lib/api/sns-governance.api";
+import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -157,7 +158,10 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const permissions = [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+    ];
     const identity = await getNeuronIdentity();
     await addNeuronPermissions({
       permissions,
@@ -186,7 +190,10 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE];
+    const permissions = [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+    ];
     const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
@@ -226,6 +233,58 @@ export const disburse = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_disburse",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const startDissolving = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await startDissolvingApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_start_dissolving",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const stopDissolving = async ({
+  rootCanisterId,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await stopDissolvingApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_stop_dissolving",
       err,
     });
     return { success: false };

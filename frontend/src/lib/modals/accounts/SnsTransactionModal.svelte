@@ -2,7 +2,6 @@
   import { createEventDispatcher } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
@@ -13,10 +12,11 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   $: title =
     currentStep?.name === "Form"
