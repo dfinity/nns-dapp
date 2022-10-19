@@ -8,13 +8,13 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step } from "$lib/stores/steps.state";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   $: title =
     currentStep?.name === "Form"

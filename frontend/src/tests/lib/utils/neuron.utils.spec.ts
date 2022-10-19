@@ -14,7 +14,6 @@ import {
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import type { Step } from "$lib/stores/steps.state";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -61,6 +60,7 @@ import {
   votingPower,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
+import type { WizardStep } from "@dfinity/gix-components";
 import {
   ICPToken,
   NeuronState,
@@ -900,10 +900,9 @@ describe("neuron-utils", () => {
         onInvalid: spyOnInvalid,
       },
     ];
-    const currentStep: Step = {
+    const currentStep: WizardStep = {
       name: stepName,
       title: "some title",
-      showBackButton: false,
     };
     it("does nothing if state is valid", () => {
       checkInvalidState({

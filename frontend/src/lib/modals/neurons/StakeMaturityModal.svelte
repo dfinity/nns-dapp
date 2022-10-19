@@ -7,11 +7,14 @@
   import { stakeMaturity } from "$lib/services/neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import WizardModal from "../WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
@@ -19,20 +22,18 @@
   let neuronId: NeuronId;
   $: ({ neuronId } = neuron);
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
       title: $i18n.neuron_detail.stake_maturity_modal_title,
     },
     {
       name: "ConfirmStake",
-      showBackButton: true,
       title: $i18n.neuron_detail.stake_confirmation_modal_title,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let modal: WizardModal;
 
   let percentageToStake = 0;

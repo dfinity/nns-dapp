@@ -3,26 +3,27 @@
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SetDissolveDelay",
-      showBackButton: false,
       title: $i18n.neurons.set_dissolve_delay,
     },
     {
       name: "ConfirmDissolveDelay",
-      showBackButton: true,
       title: $i18n.neurons.confirm_dissolve_delay,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let modal: WizardModal;
 
   let delayInSeconds = Number(neuron.dissolveDelaySeconds);
