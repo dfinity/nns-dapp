@@ -36,13 +36,14 @@
 
   let neuronStake: TokenAmount | undefined;
   $: neuronStake =
-    $snsTokenSymbolSelectedStore !== undefined &&
-    TokenAmount.fromE8s({
-      amount: getSnsNeuronStake(neuron),
-      // If we got here is because the token symbol is present.
-      // The projects without token are discarded filtered out.
-      token: $snsTokenSymbolSelectedStore,
-    });
+    $snsTokenSymbolSelectedStore !== undefined
+      ? TokenAmount.fromE8s({
+          amount: getSnsNeuronStake(neuron),
+          // If we got here is because the token symbol is present.
+          // The projects without token are discarded filtered out.
+          token: $snsTokenSymbolSelectedStore,
+        })
+      : undefined;
 
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
