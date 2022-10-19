@@ -2,9 +2,7 @@
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
   import { AppPathLegacy } from "$lib/constants/routes.constants";
-  import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
-  import AuthLayout from "./AuthLayout.svelte";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { isNode } from "$lib/utils/dev.utils";
@@ -34,15 +32,10 @@
         return (await import("../../routes/ProjectDetail.svelte")).default;
       case AppPathLegacy.NeuronDetail:
         return (await import("../../routes/NeuronDetail.svelte")).default;
-      default:
-        return (await import("../../routes/Auth.svelte")).default;
     }
   };
 
   const routesConfig: Record<AppPathLegacy, { title: string }> = {
-    [AppPathLegacy.Authentication]: {
-      title: "",
-    },
     [AppPathLegacy.LegacyNeurons]: {
       title: $i18n.navigation.neurons,
     },
@@ -90,20 +83,14 @@
     component = await loadModule();
   });
 
-  let authLayout = true;
-  $: authLayout = path === AppPathLegacy.Authentication;
-
   let layout: typeof SvelteComponent | undefined = undefined;
-  $: layout = authLayout ? AuthLayout : Layout;
+  $: layout = Layout;
 </script>
 
 <svelte:component this={layout}>
   {#if component !== undefined}
     <svelte:component this={component} />
   {:else}
-    <div class:authLayout>
-      <Spinner />
-    </div>
   {/if}
 </svelte:component>
 

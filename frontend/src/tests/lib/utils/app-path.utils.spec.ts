@@ -108,23 +108,6 @@ describe("routes", () => {
     });
   });
 
-  describe("isRoutePath()", () => {
-    it("should compare static paths", () => {
-      expect(
-        isRoutePath({
-          paths: [AppPathLegacy.Authentication],
-          routePath: "/",
-        })
-      ).toBeTruthy();
-      expect(
-        isRoutePath({
-          paths: [AppPathLegacy.Authentication],
-          routePath: "",
-        })
-      ).toBeFalsy();
-    });
-  });
-
   describe("isContextPath", () => {
     it("returns true for context related paths", () => {
       expect(isContextPath(CONTEXT_PATH + "/123")).toBeTruthy();
@@ -134,7 +117,6 @@ describe("routes", () => {
     it("returns false for non context related paths", () => {
       expect(isContextPath(AppPathLegacy.Proposals)).toBeFalsy();
       expect(isContextPath(AppPathLegacy.ProposalDetail + "/123")).toBeFalsy();
-      expect(isContextPath(AppPathLegacy.Authentication)).toBeFalsy();
     });
   });
 

@@ -44,22 +44,4 @@ describe("RouteModule", () => {
       expect(call).toThrow();
     });
   });
-
-  describe("AuthLayout", () => {
-    beforeAll(() =>
-      jest
-        .spyOn(routeStore, "subscribe")
-        .mockImplementation(mockRouteStoreSubscribe(`/`))
-    );
-
-    afterAll(() => jest.clearAllMocks());
-
-    it("should render the auth layout", () => {
-      const { getByTestId } = render(RouteModule, {
-        props: { path: AppPathLegacy.Authentication },
-      });
-
-      expect(getByTestId("auth-layout")).toBeInTheDocument();
-    });
-  });
 });
