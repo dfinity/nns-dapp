@@ -31,7 +31,7 @@
     }
   });
 
-  // TODO(GIX-1071): utils?
+  // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> =>
     goto(`${AppPath.Accounts}/?u=${$pageStore.universe}`);
 

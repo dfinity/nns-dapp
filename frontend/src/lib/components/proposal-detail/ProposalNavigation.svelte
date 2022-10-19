@@ -1,7 +1,6 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import {AppPath} from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
@@ -9,27 +8,27 @@
   } from "$lib/derived/proposals.derived";
   import { onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
+  import {goto} from "$app/navigation";
+  import {pageStore} from "$lib/derived/page.derived";
 
   export let proposalInfo: ProposalInfo | undefined;
 
-  const next = () => {
+  const next = async () => {
     if (nextProposal === undefined) {
       return;
     }
 
-    routeStore.navigate({
-      path: `${AppPathLegacy.ProposalDetail}/${nextProposal.id}`,
-    });
+    // TODO(GIX-1071): this does not work
+    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`);
   };
 
-  const previous = () => {
+  const previous = async () => {
     if (previousProposal === undefined) {
       return;
     }
 
-    routeStore.navigate({
-      path: `${AppPathLegacy.ProposalDetail}/${previousProposal.id}`,
-    });
+    // TODO(GIX-1071): this does not work
+    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`);
   };
 
   let previousProposal: ProposalInfo | undefined;

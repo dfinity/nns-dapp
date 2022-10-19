@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Auth from "$lib/routes/Auth.svelte";
+  import Auth from "$lib/pages/Auth.svelte";
 </script>
 
 <Auth />

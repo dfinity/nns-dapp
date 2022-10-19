@@ -4,10 +4,10 @@ import type { PageLoad } from "./$types";
 
 export const load: PageLoad = (
   $event: LoadEvent
-): { neuron: string | null | undefined } => {
+): { proposal: string | null | undefined } => {
   if (!browser) {
     return {
-      neuron: undefined,
+      proposal: undefined,
     };
   }
 
@@ -15,8 +15,8 @@ export const load: PageLoad = (
     url: { searchParams },
   } = $event;
 
-  // TODO(GIX-1071): constants for neuron
+  // TODO(GIX-1071): constants for proposal
   return {
-    neuron: searchParams?.get("neuron"),
+    proposal: searchParams?.get("proposal"),
   };
 };

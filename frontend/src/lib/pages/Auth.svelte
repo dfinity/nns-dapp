@@ -69,7 +69,7 @@
 <SignIn />
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../node_modules/@dfinity/gix-components/styles/mixins/media";
 
   .nns {
     display: flex;

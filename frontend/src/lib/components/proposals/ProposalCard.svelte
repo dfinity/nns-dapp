@@ -7,12 +7,13 @@
     ProposalStatus,
   } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
@@ -29,11 +30,9 @@
   $: ({ status, id, title, color, topic, proposer, type } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = () => {
-    routeStore.navigate({
-      path: `${AppPathLegacy.ProposalDetail}/${id}`,
-    });
-  };
+  // TODO(GIX-1071): extract utils
+  const showProposal = async () =>
+    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${id}`);
 </script>
 
 <li class:hidden>

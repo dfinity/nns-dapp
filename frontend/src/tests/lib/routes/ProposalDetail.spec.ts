@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
+import ProposalDetail from "$lib/pages/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";

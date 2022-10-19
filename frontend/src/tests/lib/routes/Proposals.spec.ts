@@ -3,7 +3,7 @@
  */
 
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import Proposals from "$lib/routes/Proposals.svelte";
+import Proposals from "$lib/pages/Proposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore, type NeuronsStore } from "$lib/stores/neurons.store";
 import {
