@@ -13,7 +13,6 @@ import { Principal } from "@dfinity/principal";
 import type {
   SnsNeuron,
   SnsNeuronId,
-  SnsNeuronPermissionType,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -336,84 +335,4 @@ export const querySnsNeuron = async ({
 
   logWithTimestamp("Getting sns neuron: done");
   return neuron;
-};
-
-export const addNeuronPermissions = async ({
-  identity,
-  rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Adding neuron permissions: call...");
-  const { addNeuronPermissions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-  await addNeuronPermissions({
-    permissions,
-    principal,
-    neuronId,
-  });
-
-  logWithTimestamp("Adding neuron permissions: done");
-};
-
-export const removeNeuronPermissions = async ({
-  identity,
-  rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Removing neuron permissions: call...");
-  const { removeNeuronPermissions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-  await removeNeuronPermissions({
-    permissions,
-    principal,
-    neuronId,
-  });
-
-  logWithTimestamp("Removing neuron permissions: done");
-};
-
-export const disburse = async ({
-  identity,
-  rootCanisterId,
-  neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp(`Disburse sns neuron call...`);
-
-  const { disburse } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-
-  await disburse({
-    neuronId,
-  });
-
-  logWithTimestamp(`Disburse sns neuron complete.`);
 };

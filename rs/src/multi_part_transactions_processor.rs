@@ -3,7 +3,7 @@ use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ledger_canister::AccountIdentifier;
-use ledger_canister::{BlockHeight, Memo};
+use ledger_canister::{BlockIndex, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
 
@@ -11,8 +11,8 @@ const MAX_ERRORS_TO_HOLD: usize = 500;
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct MultiPartTransactionsProcessor {
-    queue: VecDeque<(BlockHeight, MultiPartTransactionToBeProcessed)>,
-    statuses: BTreeMap<BlockHeight, (PrincipalId, MultiPartTransactionStatus)>,
+    queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
+    statuses: BTreeMap<BlockIndex, (PrincipalId, MultiPartTransactionStatus)>,
     errors: VecDeque<MultiPartTransactionError>,
 }
 
@@ -34,7 +34,7 @@ pub enum MultiPartTransactionStatus {
     NeuronCreated(NeuronId),
     CanisterCreated(CanisterId),
     Complete,
-    Refunded(BlockHeight, String),
+    Refunded(BlockIndex, String),
     Error(String),
     ErrorWithRefundPending(String),
     NotFound,
@@ -44,7 +44,7 @@ pub enum MultiPartTransactionStatus {
 
 #[derive(Clone, CandidType, Deserialize)]
 pub struct MultiPartTransactionError {
-    block_height: BlockHeight,
+    block_height: BlockIndex,
     error_message: String,
 }
 
@@ -52,7 +52,7 @@ impl MultiPartTransactionsProcessor {
     pub fn push(
         &mut self,
         principal: PrincipalId,
-        block_height: BlockHeight,
+        block_height: BlockIndex,
         transaction_to_be_processed: MultiPartTransactionToBeProcessed,
     ) {
         self.queue.push_back((block_height, transaction_to_be_processed));
@@ -60,11 +60,11 @@ impl MultiPartTransactionsProcessor {
             .insert(block_height, (principal, MultiPartTransactionStatus::Queued));
     }
 
-    pub fn take_next(&mut self) -> Option<(BlockHeight, MultiPartTransactionToBeProcessed)> {
+    pub fn take_next(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.queue.pop_front()
     }
 
-    pub fn update_status(&mut self, block_height: BlockHeight, status: MultiPartTransactionStatus) {
+    pub fn update_status(&mut self, block_height: BlockIndex, status: MultiPartTransactionStatus) {
         match &status {
             MultiPartTransactionStatus::Error(msg) => self.append_error(MultiPartTransactionError {
                 block_height,
@@ -82,7 +82,7 @@ impl MultiPartTransactionsProcessor {
         }
     }
 
-    pub fn get_status(&self, principal: PrincipalId, block_height: BlockHeight) -> MultiPartTransactionStatus {
+    pub fn get_status(&self, principal: PrincipalId, block_height: BlockIndex) -> MultiPartTransactionStatus {
         self.statuses
             .get(&block_height)
             .filter(|(p, _)| *p == principal)

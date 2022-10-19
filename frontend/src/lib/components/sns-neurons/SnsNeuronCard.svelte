@@ -18,6 +18,7 @@
   import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
@@ -33,13 +34,15 @@
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  let neuronStake: TokenAmount;
-  $: neuronStake = TokenAmount.fromE8s({
-    amount: getSnsNeuronStake(neuron),
-    // If we got here is because the token symbol is present.
-    // The projects without token are discarded filtered out.
-    token: $snsTokenSymbolSelectedStore as Token,
-  });
+  let neuronStake: TokenAmount | undefined;
+  $: neuronStake =
+    $snsTokenSymbolSelectedStore !== undefined &&
+    TokenAmount.fromE8s({
+      amount: getSnsNeuronStake(neuron),
+      // If we got here is because the token symbol is present.
+      // The projects without token are discarded filtered out.
+      token: $snsTokenSymbolSelectedStore,
+    });
 
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
@@ -60,7 +63,11 @@
   </div>
 
   <div slot="end" class="currency">
-    <AmountDisplay amount={neuronStake} detailed />
+    {#if neuronStake !== undefined}
+      <AmountDisplay amount={neuronStake} detailed />
+    {:else}
+      <Spinner inline size="small" />
+    {/if}
   </div>
 
   <NeuronStateInfo state={neuronState} />
