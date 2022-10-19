@@ -11,7 +11,7 @@
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
-  import { pageStore } from "$lib/stores/page.store";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let accounts: AccountsStore | undefined;
 

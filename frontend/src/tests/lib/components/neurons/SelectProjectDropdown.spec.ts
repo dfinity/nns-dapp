@@ -7,8 +7,8 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-import { pageStore } from "$lib/stores/page.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
@@ -30,7 +30,7 @@ describe("SelectProjectDropdown", () => {
 
   beforeEach(() => {
     // Dropdown changes context only in the Neurons page for now.
-    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ universe: OWN_CANISTER_ID_TEXT });
   });
 
   it("should render NNS and projects as options", () => {

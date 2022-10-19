@@ -1,4 +1,4 @@
-import { pageStore } from "../../src/lib/stores/page.store";
+import { page } from "./stores";
 
 export const goto = async (
   url: string | URL,
@@ -11,7 +11,7 @@ export const goto = async (
 ): Promise<void> => {
   const { searchParams } =
     url instanceof URL ? url : new URL(`http://localhost:8080${url}`);
-  pageStore.load({
+  page.mock({
     universe: searchParams.get("u"),
   });
 };

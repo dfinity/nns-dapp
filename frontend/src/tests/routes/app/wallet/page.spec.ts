@@ -3,7 +3,7 @@
  */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { authStore } from "$lib/stores/auth.store";
-import { pageStore } from "$lib/stores/page.store";
+import { page } from "$mocks/$app/stores";
 import Wallet from "$routes/(app)/wallet/+page.svelte";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
@@ -40,7 +40,7 @@ describe("Wallet", () => {
 
   describe("sns context", () => {
     it("should render SnsWallet", () => {
-      pageStore.load({ universe: mockSnsCanisterIdText });
+      page.mock({ universe: mockSnsCanisterIdText });
 
       const { getByTestId } = render(Wallet, {
         props: {

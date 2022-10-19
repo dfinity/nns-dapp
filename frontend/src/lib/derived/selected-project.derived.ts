@@ -2,7 +2,7 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { pageStore } from "$lib/stores/page.store";
+import { pageStore } from "$lib/derived/page.derived";
 import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";

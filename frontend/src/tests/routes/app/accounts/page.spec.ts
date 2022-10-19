@@ -7,9 +7,9 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { authStore } from "$lib/stores/auth.store";
-import { pageStore } from "$lib/stores/page.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { page } from "$mocks/$app/stores";
 import Accounts from "$routes/(app)/accounts/+page.svelte";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
@@ -42,7 +42,7 @@ describe("Accounts", () => {
 
   beforeEach(() => {
     // Reset to default value
-    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ universe: OWN_CANISTER_ID_TEXT });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,

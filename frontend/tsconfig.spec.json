@@ -13,7 +13,9 @@
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$routes": ["src/routes"],
-      "$routes/*": ["src/routes/*"]
+      "$routes/*": ["src/routes/*"],
+      "$mocks": ["__mocks__"],
+      "$mocks/*": ["__mocks__/*"]
     }
   },
   "include": [

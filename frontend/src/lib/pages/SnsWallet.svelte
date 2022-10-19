@@ -19,7 +19,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
-  import { pageStore } from "$lib/stores/page.store";
+  import { pageStore } from "$lib/derived/page.derived";
   import { goto } from "$app/navigation";
   import { layoutBackStore } from "$lib/stores/layout.store";
 

@@ -4,8 +4,8 @@
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import { pageStore } from "$lib/stores/page.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { page } from "$mocks/$app/stores";
 import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
@@ -17,12 +17,12 @@ describe("currentSnsTokenLabelStore", () => {
   });
   afterEach(() => {
     snsQueryStore.reset();
-    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ universe: OWN_CANISTER_ID_TEXT });
   });
   it("returns token symbol of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
-    pageStore.load({ universe: metadatas[0].rootCanisterId });
+    page.mock({ universe: metadatas[0].rootCanisterId });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
       (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
@@ -38,7 +38,7 @@ describe("currentSnsTokenLabelStore", () => {
 
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
-    pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ universe: OWN_CANISTER_ID_TEXT });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();
@@ -46,7 +46,7 @@ describe("currentSnsTokenLabelStore", () => {
 
   it("returns undefined if current selected project has no data", () => {
     const [metadatas] = data;
-    pageStore.load({ universe: metadatas[0].rootCanisterId });
+    page.mock({ universe: metadatas[0].rootCanisterId });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();

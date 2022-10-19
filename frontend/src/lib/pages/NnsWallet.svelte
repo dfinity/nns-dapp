@@ -27,7 +27,6 @@
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import { pageStore } from "$lib/stores/page.store";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
 

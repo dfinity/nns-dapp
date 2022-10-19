@@ -1,5 +1,5 @@
 import { AppRoutes } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/stores/page.store";
+import { pageStore } from "$lib/derived/page.derived";
 import { paths } from "$lib/utils/app-path.utils";
 import { derived } from "svelte/store";
 import { snsProjectSelectedStore } from "./selected-project.derived";

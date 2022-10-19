@@ -10,14 +10,14 @@ import {
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/selected-project.derived";
-import { pageStore } from "$lib/stores/page.store";
+import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
 import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 describe("selected project derived stores", () => {
   describe("isNnsProjectStore", () => {
     beforeEach(() => {
-      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+      page.mock({ universe: OWN_CANISTER_ID_TEXT });
     });
 
     it("should be set by default true", () => {
@@ -27,7 +27,7 @@ describe("selected project derived stores", () => {
     });
 
     it("should be false if an sns project is selected", () => {
-      pageStore.load({ universe: mockSnsCanisterIdText });
+      page.mock({ universe: mockSnsCanisterIdText });
       const $store = get(isNnsProjectStore);
 
       expect($store).toBe(false);
@@ -36,7 +36,7 @@ describe("selected project derived stores", () => {
 
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {
-      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+      page.mock({ universe: OWN_CANISTER_ID_TEXT });
     });
 
     it("should be set by default undefined", () => {
@@ -46,19 +46,19 @@ describe("selected project derived stores", () => {
     });
 
     it("should return project principal if an sns project is selected", () => {
-      pageStore.load({ universe: mockSnsCanisterIdText });
+      page.mock({ universe: mockSnsCanisterIdText });
       const $store = get(snsOnlyProjectStore);
 
       expect($store?.toText()).toBe(mockSnsCanisterIdText);
     });
 
     it("should return undefined if nns is selected after sns project", () => {
-      pageStore.load({ universe: mockSnsCanisterIdText });
+      page.mock({ universe: mockSnsCanisterIdText });
 
       const $store = get(snsOnlyProjectStore);
       expect($store?.toText()).toBe(mockSnsCanisterIdText);
 
-      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+      page.mock({ universe: OWN_CANISTER_ID_TEXT });
 
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
@@ -67,7 +67,7 @@ describe("selected project derived stores", () => {
 
   describe("snsProjectSelectedStore", () => {
     beforeEach(() => {
-      pageStore.load({ universe: OWN_CANISTER_ID_TEXT });
+      page.mock({ universe: OWN_CANISTER_ID_TEXT });
     });
 
     it("should be set by default to own canister id", () => {
@@ -81,7 +81,7 @@ describe("selected project derived stores", () => {
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
-      pageStore.load({ universe: mockSnsCanisterIdText });
+      page.mock({ universe: mockSnsCanisterIdText });
 
       const $store2 = get(snsProjectSelectedStore);
       expect($store2.toText()).toEqual(mockSnsCanisterIdText);
@@ -92,7 +92,7 @@ describe("selected project derived stores", () => {
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
-      pageStore.load({ universe: "invalid-principal" });
+      page.mock({ universe: "invalid-principal" });
 
       const $store2 = get(snsProjectSelectedStore);
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());

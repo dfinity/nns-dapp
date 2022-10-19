@@ -13,7 +13,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { AppRoutes } from "$lib/constants/routes.constants";
-  import { pageStore } from "$lib/stores/page.store";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(

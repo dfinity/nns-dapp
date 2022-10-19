@@ -6,8 +6,8 @@ import {
   snsProjectAccountsStore,
   snsProjectMainAccountStore,
 } from "$lib/derived/sns/sns-project-accounts.derived";
-import { pageStore } from "$lib/stores/page.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import {
@@ -17,7 +17,7 @@ import {
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {
-    pageStore.load({ universe: mockPrincipal.toText() });
+    page.mock({ universe: mockPrincipal.toText() });
   });
 
   it("should return undefined if project is not set in the store", () => {
