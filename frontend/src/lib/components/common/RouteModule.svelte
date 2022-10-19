@@ -90,8 +90,7 @@
 <svelte:component this={layout}>
   {#if component !== undefined}
     <svelte:component this={component} />
-  {:else}
-  {/if}
+  {:else}{/if}
 </svelte:component>
 
 <style lang="scss">

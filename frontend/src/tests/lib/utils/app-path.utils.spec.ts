@@ -8,7 +8,6 @@ import {
   getParentPathDetail,
   isAppPath,
   isContextPath,
-  isRoutePath,
 } from "$lib/utils/app-path.utils";
 
 describe("routes", () => {

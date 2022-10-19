@@ -1,97 +1,63 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
-  import { onDestroy } from "svelte";
-  import { loadNeuron } from "$lib/services/neurons.services";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
   import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
-  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
   import {
     getNeuronById,
     isSpawning,
     neuronVoting,
-    routePathNeuronId,
   } from "$lib/utils/neuron.utils";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
-  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
 
-  // Neurons are fetch on page load. No need to do it in the route.
+  // BEGIN: loading and navigation
 
-  let neuronId: NeuronId | undefined;
-  let neuron: NeuronInfo | undefined;
-  $: neuron =
-    neuronId !== undefined
-      ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
-      : undefined;
+  export let neuronId: NeuronId | undefined | null;
 
-  $: {
-    // Spawning neuron can't access the details
-    // TODO: Test with a spawning neuron
-    if (neuron && isSpawning(neuron)) {
-      toastsError({
-        labelKey: "error.neuron_spawning",
-      });
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
-    }
-  }
-
-  const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (
-      !isRoutePath({
-        paths: [AppPathLegacy.LegacyNeuronDetail, AppPathLegacy.NeuronDetail],
-        routePath: path,
-      })
-    ) {
-      return;
-    }
-    const neuronIdMaybe = routePathNeuronId(path);
-    if (neuronIdMaybe === undefined) {
-      unsubscribe();
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
-      return;
-    }
-    neuronId = neuronIdMaybe;
-
-    const onError = () => {
-      unsubscribe();
-
-      // Wait a bit before redirection so the user recognizes on which page the error occures
-      setTimeout(() => {
-        routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
-      }, 1500);
-    };
-
-    await loadNeuron({
-      neuronId: neuronIdMaybe,
-      setNeuron: ({ neuron, certified }) =>
-        neuronsStore.pushNeurons({ neurons: [neuron], certified }),
-      handleError: onError,
-    });
-  });
-
-  onDestroy(unsubscribe);
-
-  const goBack = () => {
-    unsubscribe();
-
-    routeStore.navigate({
-      path: $neuronsPathStore,
-    });
-  };
+  // TODO(GIX-1071): utils? replaceState: true for error?
+  const goBack = (): Promise<void> => goto(AppPath.Neurons);
 
   layoutBackStore.set(goBack);
+
+  type NeuronFromStore = { neuron: NeuronInfo | undefined };
+
+  const neuronDidUpdate = async ({ neuron }: NeuronFromStore) => {
+    // handle unknown neuronId from URL
+    if (neuron === undefined && $neuronsStore.neurons !== undefined) {
+      toastsError({
+        labelKey: $i18n.error.neuron_not_found
+      });
+
+      await goBack();
+    }
+  };
+
+  // We need an object to trigger the observer even if undefined is applied after undefined initial value
+  let neuronFromStore: NeuronFromStore;
+  $: neuronFromStore = {
+    neuron: neuronId !== undefined && neuronId !== null
+      ? getNeuronById({ neuronsStore: $neuronsStore, neuronId })
+      : undefined,
+  };
+
+  $: (async () => await neuronDidUpdate(neuronFromStore))();
+
+  let neuron: NeuronInfo | undefined;
+  $: ({neuron} = neuronFromStore);
+
+  // END: loading and navigation
 
   let inVotingProcess = false;
   $: inVotingProcess =
@@ -104,6 +70,19 @@
   $: layoutTitleStore.set(
     neuronId !== undefined ? `${$i18n.core.icp} – ${neuronId}` : ""
   );
+
+  const redirectIfSpawning = async (neuron: NeuronInfo | undefined) => {
+    // Spawning neuron can't access the details
+    // TODO: Test with a spawning neuron
+    if (neuron !== undefined && isSpawning(neuron)) {
+      toastsError({
+        labelKey: "error.neuron_spawning",
+      });
+      await goBack();
+    }
+  }
+
+  $: (async () => await redirectIfSpawning(neuron))();
 </script>
 
 <main class="legacy">
