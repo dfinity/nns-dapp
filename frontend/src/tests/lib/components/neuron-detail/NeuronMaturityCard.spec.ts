@@ -7,8 +7,8 @@ import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import {
-  formattedMaturity,
   formattedStakedMaturity,
+  formattedTotalMaturity,
 } from "$lib/utils/neuron.utils";
 import { render } from "@testing-library/svelte";
 import {
@@ -50,11 +50,11 @@ describe("NeuronMaturityCard", () => {
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
   });
 
-  it("renders formatted maturity", () => {
+  it("renders formatted total maturity", () => {
     const { queryByText } = render(NeuronMaturityCard, {
       props,
     });
-    const formatted = formattedMaturity(props.neuron);
+    const formatted = formattedTotalMaturity(props.neuron);
 
     expect(queryByText(formatted)).toBeInTheDocument();
   });
@@ -85,6 +85,28 @@ describe("NeuronMaturityCard", () => {
     });
 
     const formatted = formattedStakedMaturity(neuron);
+
+    expect(queryByText(formatted)).toBeInTheDocument();
+  });
+
+  it("renders maturity plus staked formatted maturity", () => {
+    const stakedMaturityE8sEquivalent = BigInt(E8S_PER_ICP * 3);
+
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...props.neuron.fullNeuron,
+        stakedMaturityE8sEquivalent,
+      },
+    };
+
+    const { queryByText } = render(NeuronMaturityCard, {
+      props: {
+        neuron,
+      },
+    });
+
+    const formatted = formattedTotalMaturity(neuron);
 
     expect(queryByText(formatted)).toBeInTheDocument();
   });

@@ -15,10 +15,10 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
-import type { Step } from "$lib/stores/steps.state";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
+import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
   IconLockClock,
@@ -168,6 +168,16 @@ export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
  */
 export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.maturityE8sEquivalent);
+
+/**
+ * Format the sum of the maturity and staked maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `maturityE8sEquivalent` and `stakedMaturityE8sEquivalent` which will be summed and formatted if a `fullNeuron` is available
+ */
+export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
+  formatMaturity(
+    (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) +
+      (fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0))
+  );
 
 /**
  * Format the staked maturity in a value (token "currency") way.
@@ -533,6 +543,7 @@ export type InvalidState<T> = {
   isInvalid: (arg?: T) => boolean;
   onInvalid: () => void;
 };
+
 // Checks if there is an invalid state in a Wizard Step
 export const checkInvalidState = <T>({
   invalidStates,
@@ -540,7 +551,7 @@ export const checkInvalidState = <T>({
   args,
 }: {
   invalidStates: InvalidState<T>[];
-  currentStep?: Step;
+  currentStep?: WizardStep;
   args: T | undefined;
 }): void => {
   invalidStates

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { Step, Steps } from "$lib/stores/steps.state";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
@@ -17,7 +16,11 @@
   import { type Token, TokenAmount } from "@dfinity/nns";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { syncAccounts } from "$lib/services/accounts.services";
   import type { Unsubscriber } from "svelte/store";
@@ -42,15 +45,14 @@
 
   const dispatcher = createEventDispatcher();
   // WizardModal was used to add extra steps afterwards to easily support disbursing to other accounts and/or provide custom amount?
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "ConfirmDisburse",
-      showBackButton: false,
       title: $i18n.accounts.review_transaction,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let loading = false;
 
   let destinationAddress: string | undefined;

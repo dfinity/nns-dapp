@@ -7,53 +7,50 @@
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
-  import WizardModal from "$lib/modals/WizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import { stepIndex } from "$lib/utils/step.utils";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { wizardStepIndex } from "@dfinity/gix-components";
   import { createEventDispatcher, tick } from "svelte";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
 
-  const lastSteps: Steps = [
+  const lastSteps: WizardSteps = [
     {
       name: "SetDissolveDelay",
-      showBackButton: false,
       title: $i18n.neurons.set_dissolve_delay,
     },
     {
       name: "ConfirmDissolveDelay",
-      showBackButton: true,
       title: $i18n.neurons.confirm_dissolve_delay,
     },
     {
       name: "EditFollowNeurons",
-      showBackButton: false,
       title: $i18n.neurons.follow_neurons_screen,
     },
   ];
 
-  const extraStepHW: Step = {
+  const extraStepHW: WizardStep = {
     name: "AddUserToHotkeys",
-    showBackButton: false,
     title: $i18n.neurons.add_user_as_hotkey,
   };
 
-  let steps: Steps = [
+  let steps: WizardSteps = [
     {
       name: "SelectAccount",
-      showBackButton: false,
       title: $i18n.accounts.select_source,
     },
     {
       name: "StakeNeuron",
-      showBackButton: true,
       title: $i18n.neurons.stake_neuron,
     },
   ];
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   let selectedAccount: Account | undefined;
@@ -146,7 +143,7 @@
     modal.next();
   };
   const goEditFollowers = () => {
-    modal.set(stepIndex({ name: "EditFollowNeurons", steps }));
+    modal.set(wizardStepIndex({ name: "EditFollowNeurons", steps }));
   };
 </script>
 

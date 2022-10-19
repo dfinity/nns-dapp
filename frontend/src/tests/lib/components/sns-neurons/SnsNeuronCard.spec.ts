@@ -181,7 +181,7 @@ describe("SnsNeuronCard", () => {
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
-  it("renders the hotkey_control label when user has only voting permissions", async () => {
+  it("renders the hotkey_control label when user has only voting and proposal permissions", async () => {
     const hotkeyneuron: SnsNeuron = {
       ...mockSnsNeuron,
       permissions: [
@@ -189,6 +189,7 @@ describe("SnsNeuronCard", () => {
           principal: [mockIdentity.getPrincipal()],
           permission_type: Int32Array.from([
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
           ]),
         },
       ],

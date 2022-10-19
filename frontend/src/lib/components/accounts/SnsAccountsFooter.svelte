@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "../common/Footer.svelte";
-  import { snsProjectAccountsStore } from "../../derived/sns/sns-project-accounts.derived";
+  import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 
   // TODO: Support adding subaccounts

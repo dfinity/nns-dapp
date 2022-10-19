@@ -29,7 +29,7 @@ jobs:
 
       - name: Get cached nns canisters
         id: create_nns_canister_cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             target/ic
@@ -72,7 +72,7 @@ jobs:
       # "restore-keys"-style matching). Because (in case of an exact match)
       # GitHub actions won't (re-)upload the cache after the build, it means that
       # our cache won't just grow forever.
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
@@ -81,7 +81,7 @@ jobs:
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
       # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/ic-cdk-optimizer
@@ -109,7 +109,7 @@ jobs:
 
       - name: Get cached nns canisters
         id: create_nns_canister_cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             target/ic

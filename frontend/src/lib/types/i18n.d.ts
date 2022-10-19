@@ -677,6 +677,8 @@ interface I18nError__sns {
   load_swap_commitment: string;
   sns_remove_hotkey: string;
   sns_disburse: string;
+  sns_start_dissolving: string;
+  sns_stop_dissolving: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;
@@ -824,6 +826,7 @@ interface I18nNns_functions {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
   RetireReplicaVersion: string;
 }
 
@@ -862,6 +865,7 @@ interface I18nNns_functions_description {
   ChangeSubnetMembership: string;
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
+  UpdateSnsWasmSnsSubnetIds: string;
   RetireReplicaVersion: string;
 }
 

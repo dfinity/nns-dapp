@@ -5,7 +5,7 @@ use ic_ledger_core::block::BlockType;
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use lazy_static::lazy_static;
 use ledger_canister::protobuf::ArchiveIndexEntry;
-use ledger_canister::{Block, BlockHeight};
+use ledger_canister::{Block, BlockIndex};
 use std::cmp::{max, min};
 use std::ops::RangeInclusive;
 use std::sync::Mutex;
@@ -65,11 +65,11 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
     }
 }
 
-fn get_block_height_synced_up_to() -> Option<BlockHeight> {
+fn get_block_height_synced_up_to() -> Option<BlockIndex> {
     STATE.with(|s| s.accounts_store.borrow().get_block_height_synced_up_to())
 }
 
-async fn get_blocks(from: BlockHeight, tip_of_chain: BlockHeight) -> Result<Vec<(BlockHeight, Block)>, String> {
+async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(BlockIndex, Block)>, String> {
     let archive_index_entries = ledger::get_archive_index().await?.entries;
 
     let (canister_id, range) = determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
@@ -89,10 +89,10 @@ async fn get_blocks(from: BlockHeight, tip_of_chain: BlockHeight) -> Result<Vec<
 }
 
 fn determine_canister_for_blocks(
-    from: BlockHeight,
-    tip_of_chain: BlockHeight,
+    from: BlockIndex,
+    tip_of_chain: BlockIndex,
     archive_index_entries: Vec<ArchiveIndexEntry>,
-) -> (CanisterId, RangeInclusive<BlockHeight>) {
+) -> (CanisterId, RangeInclusive<BlockIndex>) {
     for archive_index_entry in archive_index_entries.into_iter().rev() {
         if archive_index_entry.height_to < from {
             break;

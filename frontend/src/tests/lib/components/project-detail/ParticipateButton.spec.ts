@@ -16,7 +16,7 @@ import {
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
 import { renderContextCmp } from "../../../mocks/sns.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("ParticipateButton", () => {
   it("should render project participate button", () => {
