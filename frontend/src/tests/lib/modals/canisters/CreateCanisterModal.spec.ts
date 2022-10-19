@@ -19,7 +19,7 @@ import {
 } from "../../../mocks/accounts.store.mock";
 import { mockCanister } from "../../../mocks/canisters.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { clickByTestId } from "../../../utils/utils.test-utils";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
