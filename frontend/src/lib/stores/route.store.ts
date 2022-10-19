@@ -1,11 +1,11 @@
-import type { AppPath } from "$lib/constants/routes.constants";
+import type { AppPathLegacy } from "$lib/constants/routes.constants";
 import { isAppPath } from "$lib/utils/app-path.utils";
 import { routePath } from "$lib/utils/route.utils";
 import { writable } from "svelte/store";
 
 export interface RouteStore {
-  path: AppPath | string;
-  referrerPath?: AppPath | string;
+  path: AppPathLegacy | string;
+  referrerPath?: AppPathLegacy | string;
   isKnownPath: boolean;
 }
 

@@ -8,7 +8,7 @@ import {
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -363,7 +363,9 @@ export const loadProposalPayload = async ({
 export const routePathProposalId = (
   path: string
 ): { proposalId: ProposalId | undefined } | undefined => {
-  if (!isRoutePath({ paths: [AppPath.ProposalDetail], routePath: path })) {
+  if (
+    !isRoutePath({ paths: [AppPathLegacy.ProposalDetail], routePath: path })
+  ) {
     return undefined;
   }
 

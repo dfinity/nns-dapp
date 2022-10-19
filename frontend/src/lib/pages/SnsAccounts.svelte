@@ -12,7 +12,7 @@
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
-  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
 
   let loading = false;
@@ -40,7 +40,7 @@
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const goToDetails = async ({ identifier }: Account) =>
     await goto(
-      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
+      `${AppPath.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
     );
 </script>
 

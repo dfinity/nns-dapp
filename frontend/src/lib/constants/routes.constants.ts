@@ -1,4 +1,4 @@
-export enum AppPath {
+export enum AppPathLegacy {
   Authentication = "/",
   LegacyNeurons = "/#/neurons",
   Neurons = "/#/u/:rootCanisterId/neurons",
@@ -14,14 +14,14 @@ export enum AppPath {
 
 export const CONTEXT_PATH = "/u";
 
-export enum AppRoutes {
+export enum AppPath {
   Login = "/",
   Accounts = "/accounts",
   Wallet = "/wallet",
   Neurons = "/neurons",
-  NeuronDetail = "/neuron",
+  Neuron = "/neuron",
   Proposals = "/proposals",
-  ProposalDetail = "/proposal",
+  Proposal = "/proposal",
   Canisters = "/canisters",
   Canister = "/canister",
   Launchpad = "/launchpad",

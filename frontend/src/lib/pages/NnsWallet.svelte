@@ -28,10 +28,10 @@
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { goto } from "$app/navigation";
-  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   // TODO(GIX-1071): utils? replaceState: true for error?
-  const goBack = (): Promise<void> => goto(AppRoutes.Accounts);
+  const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   layoutBackStore.set(goBack);
 

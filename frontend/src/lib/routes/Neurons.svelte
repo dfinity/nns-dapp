@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import { routeStore } from "$lib/stores/route.store";
   import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 
@@ -19,7 +19,7 @@
     if (
       ENABLE_SNS &&
       isRoutePath({
-        paths: [AppPath.LegacyNeurons],
+        paths: [AppPathLegacy.LegacyNeurons],
         routePath: $routeStore.path,
       })
     ) {

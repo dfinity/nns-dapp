@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
   import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
@@ -18,7 +18,7 @@
     }
 
     routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${nextProposal.id}`,
+      path: `${AppPathLegacy.ProposalDetail}/${nextProposal.id}`,
     });
   };
 
@@ -28,7 +28,7 @@
     }
 
     routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${previousProposal.id}`,
+      path: `${AppPathLegacy.ProposalDetail}/${previousProposal.id}`,
     });
   };
 

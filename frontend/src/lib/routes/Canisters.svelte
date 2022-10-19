@@ -7,7 +7,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -32,7 +32,7 @@
 
   onMount(async () => {
     const reload = reloadRouteData({
-      expectedPreviousPath: AppPath.CanisterDetail,
+      expectedPreviousPath: AppPathLegacy.CanisterDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $canistersStore.canisters,
     });
@@ -46,7 +46,7 @@
 
   const goToCanisterDetails = (canisterId: CanisterId) => () => {
     routeStore.navigate({
-      path: `${AppPath.CanisterDetail}/${canisterId.toText()}`,
+      path: `${AppPathLegacy.CanisterDetail}/${canisterId.toText()}`,
     });
   };
 

@@ -13,7 +13,7 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -257,7 +257,9 @@ export const detachCanister = async (
 export const routePathCanisterId = (
   path: string | undefined
 ): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.CanisterDetail], routePath: path })) {
+  if (
+    !isRoutePath({ paths: [AppPathLegacy.CanisterDetail], routePath: path })
+  ) {
     return undefined;
   }
   const canisterId: string | undefined = getLastPathDetail(path);

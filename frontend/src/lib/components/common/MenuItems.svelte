@@ -1,17 +1,15 @@
 <script lang="ts">
   import {
-    MenuItem,
-    IconWallet,
-    IconHowToVote,
-    IconRocketLaunch,
     IconEngineering,
+    IconHowToVote,
     IconPsychology,
+    IconRocketLaunch,
+    IconWallet,
+    MenuItem,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath, AppRoutes } from "$lib/constants/routes.constants";
-  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
@@ -22,9 +20,10 @@
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
-    isRoutePath({ paths, routePath: $routeStore.path });
+    paths.includes($pageStore.path);
 
   let routes: {
     context: string;
@@ -38,33 +37,28 @@
     {
       context: "accounts",
       href: $accountsPathStore,
-      selected: isSelectedPath([AppPath.Neurons]),
+      selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
       label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
       href: $neuronsPathStore,
-      selected: isSelectedPath([
-        AppPath.LegacyNeurons,
-        AppPath.LegacyNeuronDetail,
-        AppPath.NeuronDetail,
-        AppPath.Neurons,
-      ]),
+      selected: isSelectedPath([AppPath.Neurons, AppPath.Neuron]),
       label: "neurons",
       icon: IconPsychology,
     },
     {
       context: "proposals",
       href: $proposalsPathStore,
-      selected: isSelectedPath([AppPath.Proposals, AppPath.ProposalDetail]),
+      selected: isSelectedPath([AppPath.Proposals, AppPath.Proposal]),
       label: "voting",
       icon: IconHowToVote,
     },
     {
       context: "canisters",
       href: $canistersPathStore,
-      selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
+      selected: isSelectedPath([AppPath.Canisters, AppPath.Canister]),
       label: "canisters",
       icon: IconEngineering,
     },
@@ -73,11 +67,8 @@
       ? [
           {
             context: "launchpad",
-            href: `${AppRoutes.Launchpad}`,
-            selected: isSelectedPath([
-              AppPath.Launchpad,
-              AppPath.ProjectDetail,
-            ]),
+            href: `${AppPath.Launchpad}`,
+            selected: isSelectedPath([AppPath.Launchpad, AppPath.Project]),
             label: "launchpad",
             icon: IconRocketLaunch,
             statusIcon: BadgeNew,

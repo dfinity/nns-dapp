@@ -1,4 +1,4 @@
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { AppPathLegacy, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
   changePathContext,
   getContextDetailsFromPath,
@@ -15,10 +15,10 @@ describe("routes", () => {
   describe("isAppPath()", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
-      expect(isAppPath(`${AppPath.CanisterDetail}/123`)).toBeTruthy();
-      expect(isAppPath(`${AppPath.LegacyNeuronDetail}/123`)).toBeTruthy();
-      expect(isAppPath(`${AppPath.Launchpad}`)).toBeTruthy();
-      expect(isAppPath(`${AppPath.ProjectDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPathLegacy.CanisterDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPathLegacy.LegacyNeuronDetail}/123`)).toBeTruthy();
+      expect(isAppPath(`${AppPathLegacy.Launchpad}`)).toBeTruthy();
+      expect(isAppPath(`${AppPathLegacy.ProjectDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neurons`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neuron/1234`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/accounts`)).toBeTruthy();
@@ -112,13 +112,13 @@ describe("routes", () => {
     it("should compare static paths", () => {
       expect(
         isRoutePath({
-          paths: [AppPath.Authentication],
+          paths: [AppPathLegacy.Authentication],
           routePath: "/",
         })
       ).toBeTruthy();
       expect(
         isRoutePath({
-          paths: [AppPath.Authentication],
+          paths: [AppPathLegacy.Authentication],
           routePath: "",
         })
       ).toBeFalsy();
@@ -132,9 +132,9 @@ describe("routes", () => {
     });
 
     it("returns false for non context related paths", () => {
-      expect(isContextPath(AppPath.Proposals)).toBeFalsy();
-      expect(isContextPath(AppPath.ProposalDetail + "/123")).toBeFalsy();
-      expect(isContextPath(AppPath.Authentication)).toBeFalsy();
+      expect(isContextPath(AppPathLegacy.Proposals)).toBeFalsy();
+      expect(isContextPath(AppPathLegacy.ProposalDetail + "/123")).toBeFalsy();
+      expect(isContextPath(AppPathLegacy.Authentication)).toBeFalsy();
     });
   });
 
@@ -212,9 +212,9 @@ describe("routes", () => {
     });
 
     it("returns same path if it's not a context path", () => {
-      const path1 = AppPath.Canisters;
-      const path2 = AppPath.Launchpad;
-      const path3 = `${AppPath.CanisterDetail}/12345`;
+      const path1 = AppPathLegacy.Canisters;
+      const path2 = AppPathLegacy.Launchpad;
+      const path3 = `${AppPathLegacy.CanisterDetail}/12345`;
       const newContext = "bbbbb-bb";
       expect(changePathContext({ path: path1, newContext })).toBe(path1);
       expect(changePathContext({ path: path2, newContext })).toBe(path2);

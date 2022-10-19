@@ -5,7 +5,7 @@
     routePathProposalId,
   } from "$lib/services/proposals.services";
   import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
@@ -109,9 +109,9 @@
     const { referrerPath } = get(routeStore);
     routeStore.navigate({
       path:
-        referrerPath === AppPath.Launchpad
-          ? AppPath.Launchpad
-          : AppPath.Proposals,
+        referrerPath === AppPathLegacy.Launchpad
+          ? AppPathLegacy.Launchpad
+          : AppPathLegacy.Proposals,
     });
   };
 

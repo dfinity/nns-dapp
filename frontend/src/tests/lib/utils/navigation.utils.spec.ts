@@ -1,12 +1,12 @@
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { reloadRouteData } from "$lib/utils/navigation.utils";
 
 describe("navigation-utils", () => {
   it("should not reload on back", () => {
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
-        effectivePreviousPath: `${AppPath.CanisterDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
+        effectivePreviousPath: `${AppPathLegacy.CanisterDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
         currentData: ["test"],
       })
     ).toBeFalsy();
@@ -15,23 +15,23 @@ describe("navigation-utils", () => {
   it("should reload if not expected route referrer", () => {
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
-        effectivePreviousPath: `${AppPath.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
+        effectivePreviousPath: `${AppPathLegacy.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
         currentData: ["test"],
       })
     ).toBeTruthy();
 
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
-        effectivePreviousPath: AppPath.NeuronDetail,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
+        effectivePreviousPath: AppPathLegacy.NeuronDetail,
         currentData: ["test"],
       })
     ).toBeTruthy();
 
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
         effectivePreviousPath: undefined,
         currentData: ["test"],
       })
@@ -39,7 +39,7 @@ describe("navigation-utils", () => {
 
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
         effectivePreviousPath: "/",
         currentData: ["test"],
       })
@@ -49,16 +49,16 @@ describe("navigation-utils", () => {
   it("should reload if data empty", () => {
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
-        effectivePreviousPath: `${AppPath.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
+        effectivePreviousPath: `${AppPathLegacy.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
         currentData: [],
       })
     ).toBeTruthy();
 
     expect(
       reloadRouteData({
-        expectedPreviousPath: AppPath.CanisterDetail,
-        effectivePreviousPath: `${AppPath.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
+        expectedPreviousPath: AppPathLegacy.CanisterDetail,
+        effectivePreviousPath: `${AppPathLegacy.NeuronDetail}/va76m-bqaaa-aaaaa-aaayq-cai`,
         currentData: undefined,
       })
     ).toBeTruthy();

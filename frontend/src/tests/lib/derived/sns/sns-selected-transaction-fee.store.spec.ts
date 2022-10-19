@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -57,7 +57,7 @@ describe("snsSelectedTransactionFeeStore", () => {
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
     routeStore.update({
-      path: AppPath.LegacyNeurons,
+      path: AppPathLegacy.LegacyNeurons,
     });
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 

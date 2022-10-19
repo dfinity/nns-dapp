@@ -3,7 +3,7 @@
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { AppPath, AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPathLegacy, AppPath } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import {
@@ -29,7 +29,7 @@
   onMount(() => {
     if (!IS_TESTNET) {
       // TODO(GIX-1071): utils?
-      goto(AppRoutes.Accounts, { replaceState: true });
+      goto(AppPath.Accounts, { replaceState: true });
     }
   });
 
@@ -82,7 +82,7 @@
 
   const goBack = () => {
     unsubscribe();
-    routeStore.replace({ path: AppPath.Launchpad });
+    routeStore.replace({ path: AppPathLegacy.Launchpad });
   };
 
   const mapProjectDetail = (rootCanisterId: string) => {
@@ -129,7 +129,9 @@
     (() => {
       const { path } = $routeStore;
 
-      if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
+      if (
+        !isRoutePath({ paths: [AppPathLegacy.ProjectDetail], routePath: path })
+      ) {
         return;
       }
 
@@ -145,7 +147,9 @@
    * We subscribe to the route in a particular function because if not root canister id is provided in the url it redirects to `goBack` which needs the particular usage of `unsubscribe` to avoid loops.
    */
   const unsubscribe = routeStore.subscribe(({ path }) => {
-    if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
+    if (
+      !isRoutePath({ paths: [AppPathLegacy.ProjectDetail], routePath: path })
+    ) {
       return;
     }
 
@@ -172,7 +176,7 @@
       toastsError({
         labelKey: "error__sns.project_not_found",
       });
-      routeStore.replace({ path: AppPath.Launchpad });
+      routeStore.replace({ path: AppPathLegacy.Launchpad });
     }
   }
 </script>

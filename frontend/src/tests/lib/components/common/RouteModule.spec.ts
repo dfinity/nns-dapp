@@ -3,7 +3,7 @@
  */
 
 import RouteModule from "$lib/components/common/RouteModule.svelte";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { routeStore } from "$lib/stores/route.store";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -21,7 +21,7 @@ describe("RouteModule", () => {
 
     it("should render title", () => {
       const { getByText } = render(RouteModule, {
-        props: { path: AppPath.Canisters },
+        props: { path: AppPathLegacy.Canisters },
       });
 
       expect(getByText(en.navigation.canisters)).toBeInTheDocument();
@@ -29,7 +29,7 @@ describe("RouteModule", () => {
 
     it("should render a spinner while loading", () => {
       const { getByTestId } = render(RouteModule, {
-        props: { path: AppPath.Canisters },
+        props: { path: AppPathLegacy.Canisters },
       });
 
       expect(getByTestId("spinner")).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe("RouteModule", () => {
 
     it("should not render the auth layout", () => {
       const { getByTestId } = render(RouteModule, {
-        props: { path: AppPath.Canisters },
+        props: { path: AppPathLegacy.Canisters },
       });
 
       const call = () => getByTestId("auth-layout");
@@ -56,7 +56,7 @@ describe("RouteModule", () => {
 
     it("should render the auth layout", () => {
       const { getByTestId } = render(RouteModule, {
-        props: { path: AppPath.Authentication },
+        props: { path: AppPathLegacy.Authentication },
       });
 
       expect(getByTestId("auth-layout")).toBeInTheDocument();

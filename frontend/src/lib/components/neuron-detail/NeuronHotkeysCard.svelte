@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { IconClose } from "@dfinity/gix-components";
   import { getIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -45,7 +45,7 @@
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
     }
     stopBusy("remove-hotkey-neuron");
   };

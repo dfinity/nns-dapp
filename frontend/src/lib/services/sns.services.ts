@@ -7,7 +7,7 @@ import {
   querySnsSwapState,
   querySnsSwapStates,
 } from "$lib/api/sns.api";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
 import {
   snsProposalsStore,
@@ -221,7 +221,7 @@ export const listSnsProposals = async (): Promise<void> => {
 };
 
 export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
+  if (!isRoutePath({ paths: [AppPathLegacy.ProjectDetail], routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);

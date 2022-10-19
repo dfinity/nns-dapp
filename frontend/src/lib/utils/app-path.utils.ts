@@ -1,17 +1,17 @@
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { AppPathLegacy, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { routePathNeuronId } from "$lib/utils/neuron.utils";
 
 const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPath.ProposalDetail]: `${AppPath.ProposalDetail}/[0-9]+`,
-  [AppPath.LegacyNeuronDetail]: `${AppPath.LegacyNeuronDetail}/[0-9]+`,
-  [AppPath.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
-  [AppPath.CanisterDetail]: `${AppPath.CanisterDetail}/${IDENTIFIER_REGEX}`,
-  [AppPath.ProjectDetail]: `${AppPath.ProjectDetail}/${IDENTIFIER_REGEX}`,
-  [AppPath.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
+  [AppPathLegacy.ProposalDetail]: `${AppPathLegacy.ProposalDetail}/[0-9]+`,
+  [AppPathLegacy.LegacyNeuronDetail]: `${AppPathLegacy.LegacyNeuronDetail}/[0-9]+`,
+  [AppPathLegacy.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
+  [AppPathLegacy.CanisterDetail]: `${AppPathLegacy.CanisterDetail}/${IDENTIFIER_REGEX}`,
+  [AppPathLegacy.ProjectDetail]: `${AppPathLegacy.ProjectDetail}/${IDENTIFIER_REGEX}`,
+  [AppPathLegacy.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
 };
 
 /**
@@ -22,23 +22,23 @@ export const paths = {
   neuronDetail: (rootCanisterId: string) =>
     ENABLE_SNS
       ? `${CONTEXT_PATH}/${rootCanisterId}/neuron`
-      : AppPath.LegacyNeuronDetail,
+      : AppPathLegacy.LegacyNeuronDetail,
   neurons: (rootCanisterId: string) =>
     ENABLE_SNS
       ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
-      : AppPath.LegacyNeurons,
+      : AppPathLegacy.LegacyNeurons,
 };
 
-const pathValidation = (path: AppPath): string => mapper[path] ?? path;
+const pathValidation = (path: AppPathLegacy): string => mapper[path] ?? path;
 
-export const isAppPath = (routePath: string): routePath is AppPath =>
-  isRoutePath({ paths: Object.values(AppPath), routePath });
+export const isAppPath = (routePath: string): routePath is AppPathLegacy =>
+  isRoutePath({ paths: Object.values(AppPathLegacy), routePath });
 
 export const isRoutePath = ({
   paths,
   routePath,
 }: {
-  paths: AppPath[];
+  paths: AppPathLegacy[];
   routePath?: string;
 }): boolean =>
   routePath !== undefined
@@ -158,13 +158,13 @@ const checkContextPathExceptions = ({
   path: string;
   newContext: string;
 }): string => {
-  if (isRoutePath({ paths: [AppPath.LegacyNeurons], routePath: path })) {
+  if (isRoutePath({ paths: [AppPathLegacy.LegacyNeurons], routePath: path })) {
     return `${CONTEXT_PATH}/${newContext}/neurons`;
   }
 
   if (
     isRoutePath({
-      paths: [AppPath.LegacyNeuronDetail],
+      paths: [AppPathLegacy.LegacyNeuronDetail],
       routePath: path,
     })
   ) {

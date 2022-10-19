@@ -12,7 +12,7 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "$lib/constants/neurons.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { Step } from "$lib/stores/steps.state";
@@ -754,7 +754,7 @@ export const validTopUpAmount = ({
 export const routePathNeuronId = (path: string): NeuronId | undefined => {
   if (
     !isRoutePath({
-      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+      paths: [AppPathLegacy.LegacyNeuronDetail, AppPathLegacy.NeuronDetail],
       routePath: path,
     })
   ) {

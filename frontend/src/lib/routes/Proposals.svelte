@@ -10,7 +10,7 @@
   } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "$lib/utils/utils";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -77,7 +77,7 @@
 
   onMount(async () => {
     const reload = reloadRouteData({
-      expectedPreviousPath: AppPath.ProposalDetail,
+      expectedPreviousPath: AppPathLegacy.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,
       currentData: $sortedProposals.proposals,
     });

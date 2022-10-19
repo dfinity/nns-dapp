@@ -3,7 +3,7 @@
  */
 
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { routeStore } from "$lib/stores/route.store";
@@ -33,7 +33,7 @@ describe("Neurons", () => {
 
   beforeEach(() => {
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyNeurons });
+    routeStore.update({ path: AppPathLegacy.LegacyNeurons });
   });
 
   it("should render NnsNeurons by default", () => {

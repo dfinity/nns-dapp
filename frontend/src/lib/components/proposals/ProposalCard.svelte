@@ -8,7 +8,7 @@
   } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Color } from "$lib/types/colors";
   import Value from "$lib/components/ui/Value.svelte";
@@ -32,7 +32,7 @@
 
   const showProposal = () => {
     routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${id}`,
+      path: `${AppPathLegacy.ProposalDetail}/${id}`,
     });
   };
 </script>

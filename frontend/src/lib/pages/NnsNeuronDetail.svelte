@@ -8,7 +8,7 @@
   import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
@@ -43,14 +43,14 @@
       toastsError({
         labelKey: "error.neuron_spawning",
       });
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
     }
   }
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
     if (
       !isRoutePath({
-        paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
+        paths: [AppPathLegacy.LegacyNeuronDetail, AppPathLegacy.NeuronDetail],
         routePath: path,
       })
     ) {
@@ -59,7 +59,7 @@
     const neuronIdMaybe = routePathNeuronId(path);
     if (neuronIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
       return;
     }
     neuronId = neuronIdMaybe;
@@ -69,7 +69,7 @@
 
       // Wait a bit before redirection so the user recognizes on which page the error occures
       setTimeout(() => {
-        routeStore.replace({ path: AppPath.LegacyNeurons });
+        routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
       }, 1500);
     };
 

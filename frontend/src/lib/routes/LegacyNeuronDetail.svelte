@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
   import { routeStore } from "$lib/stores/route.store";
   import { isRoutePath } from "$lib/utils/app-path.utils";
@@ -12,7 +12,7 @@
     if (
       ENABLE_SNS &&
       isRoutePath({
-        paths: [AppPath.LegacyNeuronDetail],
+        paths: [AppPathLegacy.LegacyNeuronDetail],
         routePath: $routeStore.path,
       })
     ) {

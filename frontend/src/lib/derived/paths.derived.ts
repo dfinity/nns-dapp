@@ -1,4 +1,4 @@
-import { AppRoutes } from "$lib/constants/routes.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { paths } from "$lib/utils/app-path.utils";
 import { derived } from "svelte/store";
@@ -8,22 +8,22 @@ import { snsProjectSelectedStore } from "./selected-project.derived";
 
 export const accountsPathStore = derived(
   pageStore,
-  ({ universe }) => `${AppRoutes.Accounts}/?u=${universe}`
+  ({ universe }) => `${AppPath.Accounts}/?u=${universe}`
 );
 
 export const neuronsPathStore = derived(
   pageStore,
-  ({ universe }) => `${AppRoutes.Neurons}/?u=${universe}`
+  ({ universe }) => `${AppPath.Neurons}/?u=${universe}`
 );
 
 export const proposalsPathStore = derived(
   pageStore,
-  ({ universe }) => `${AppRoutes.Proposals}/?u=${universe}`
+  ({ universe }) => `${AppPath.Proposals}/?u=${universe}`
 );
 
 export const canistersPathStore = derived(
   pageStore,
-  ({ universe }) => `${AppRoutes.Canisters}/?u=${universe}`
+  ({ universe }) => `${AppPath.Canisters}/?u=${universe}`
 );
 
 export const neuronPathStore = derived(

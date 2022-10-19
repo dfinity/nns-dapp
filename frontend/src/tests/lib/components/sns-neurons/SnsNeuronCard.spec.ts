@@ -4,7 +4,7 @@
 
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { AppPathLegacy, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
 import { routeStore } from "$lib/stores/route.store";
@@ -56,7 +56,7 @@ describe("SnsNeuronCard", () => {
   afterEach(() => {
     snsQueryStore.reset();
     routeStore.update({
-      path: AppPath.LegacyNeurons,
+      path: AppPathLegacy.LegacyNeurons,
     });
   });
   it("renders a Card", () => {

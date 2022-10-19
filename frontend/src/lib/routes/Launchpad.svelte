@@ -3,14 +3,14 @@
   import Projects from "$lib/components/launchpad/Projects.svelte";
   import Proposals from "$lib/components/launchpad/Proposals.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
 
   onMount(() => {
     if (!IS_TESTNET) {
       // TODO(GIX-1071): utils?
-      goto(AppRoutes.Accounts, { replaceState: true });
+      goto(AppPath.Accounts, { replaceState: true });
     }
   });
 </script>

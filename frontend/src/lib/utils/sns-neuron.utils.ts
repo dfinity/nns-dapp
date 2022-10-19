@@ -1,4 +1,4 @@
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPathLegacy } from "$lib/constants/routes.constants";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
@@ -96,7 +96,7 @@ export const getSnsNeuronIdAsHexString = ({
   bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
 
 export const routePathSnsNeuronId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
+  if (!isRoutePath({ paths: [AppPathLegacy.NeuronDetail], routePath: path })) {
     return undefined;
   }
   return getLastPathDetail(path);
@@ -105,7 +105,7 @@ export const routePathSnsNeuronId = (path: string): string | undefined => {
 export const routePathSnsNeuronRootCanisterId = (
   path: string
 ): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
+  if (!isRoutePath({ paths: [AppPathLegacy.NeuronDetail], routePath: path })) {
     return undefined;
   }
   return getParentPathDetail(path);

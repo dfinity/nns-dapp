@@ -8,9 +8,9 @@
   import { routeStore } from "$lib/stores/route.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { isRoutePath } from "$lib/utils/app-path.utils";
-  import type { AppPath } from "$lib/constants/routes.constants";
+  import type { AppPathLegacy } from "$lib/constants/routes.constants";
 
-  export let path: AppPath;
+  export let path: AppPathLegacy;
 
   let signedIn = false;
 

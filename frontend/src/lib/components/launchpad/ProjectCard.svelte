@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
@@ -31,7 +31,7 @@
 
   const showProject = () => {
     routeStore.navigate({
-      path: `${AppPath.ProjectDetail}/${project.rootCanisterId.toText()}`,
+      path: `${AppPathLegacy.ProjectDetail}/${project.rootCanisterId.toText()}`,
     });
   };
 </script>

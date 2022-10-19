@@ -3,7 +3,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import { routeStore } from "$lib/stores/route.store";
@@ -59,14 +59,16 @@
   });
 
   const unsubscribe = routeStore.subscribe(async ({ path }) => {
-    if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
+    if (
+      !isRoutePath({ paths: [AppPathLegacy.NeuronDetail], routePath: path })
+    ) {
       return;
     }
     const rootCanisterIdMaybe = routePathSnsNeuronRootCanisterId(path);
     const neuronIdMaybe = routePathSnsNeuronId(path);
     if (neuronIdMaybe === undefined || rootCanisterIdMaybe === undefined) {
       unsubscribe();
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
       return;
     }
     let rootCanisterId: Principal | undefined;
@@ -79,7 +81,7 @@
           $canisterId: rootCanisterIdMaybe,
         },
       });
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
       return;
     }
 
@@ -107,7 +109,7 @@
         labelKey: "error.neuron_not_found",
       });
       // Reset selected project
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
     }
   }
 

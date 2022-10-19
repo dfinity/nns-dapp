@@ -10,7 +10,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
-  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
 
   let accounts: AccountsStore | undefined;
@@ -22,7 +22,7 @@
   // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const cardClick = async (identifier: string) =>
     await goto(
-      `${AppRoutes.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
+      `${AppPath.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
     );
 
   onDestroy(unsubscribe);

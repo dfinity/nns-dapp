@@ -4,11 +4,11 @@
   import { routeStore } from "$lib/stores/route.store";
   import type { RouteStore } from "$lib/stores/route.store";
   import { onDestroy } from "svelte";
-  import type { AppPath } from "$lib/constants/routes.constants";
+  import type { AppPathLegacy } from "$lib/constants/routes.constants";
   import RouteModule from "./RouteModule.svelte";
   import { isRoutePath } from "$lib/utils/app-path.utils";
 
-  export let path: AppPath;
+  export let path: AppPathLegacy;
 
   let currentPath = routePath();
 

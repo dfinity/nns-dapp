@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { detachCanister } from "$lib/services/canisters.services";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -25,7 +25,7 @@
       toastsSuccess({
         labelKey: "canister_detail.detach_success",
       });
-      routeStore.replace({ path: AppPath.Canisters });
+      routeStore.replace({ path: AppPathLegacy.Canisters });
     }
   };
 </script>

@@ -12,7 +12,7 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
@@ -71,7 +71,7 @@
         },
       });
       close();
-      routeStore.navigate({ path: AppPath.LegacyNeurons });
+      routeStore.navigate({ path: AppPathLegacy.LegacyNeurons });
     }
 
     stopBusy("spawn-neuron");

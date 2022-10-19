@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
   import { onMount } from "svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import { Spinner } from "@dfinity/gix-components";
   import Layout from "./Layout.svelte";
   import AuthLayout from "./AuthLayout.svelte";
@@ -9,68 +9,68 @@
   import { i18n } from "$lib/stores/i18n";
   import { isNode } from "$lib/utils/dev.utils";
 
-  export let path: AppPath;
+  export let path: AppPathLegacy;
 
   let component: typeof SvelteComponent | undefined = undefined;
 
   const loadModule = async (): Promise<typeof SvelteComponent> => {
     switch (path) {
-      case AppPath.LegacyNeurons:
-      case AppPath.Neurons:
+      case AppPathLegacy.LegacyNeurons:
+      case AppPathLegacy.Neurons:
         return (await import("../../routes/Neurons.svelte")).default;
-      case AppPath.Proposals:
+      case AppPathLegacy.Proposals:
         return (await import("../../routes/Proposals.svelte")).default;
-      case AppPath.Canisters:
+      case AppPathLegacy.Canisters:
         return (await import("../../routes/Canisters.svelte")).default;
-      case AppPath.ProposalDetail:
+      case AppPathLegacy.ProposalDetail:
         return (await import("../../routes/ProposalDetail.svelte")).default;
-      case AppPath.LegacyNeuronDetail:
+      case AppPathLegacy.LegacyNeuronDetail:
         return (await import("../../routes/LegacyNeuronDetail.svelte")).default;
-      case AppPath.CanisterDetail:
+      case AppPathLegacy.CanisterDetail:
         return (await import("../../routes/CanisterDetail.svelte")).default;
-      case AppPath.Launchpad:
+      case AppPathLegacy.Launchpad:
         return (await import("../../routes/Launchpad.svelte")).default;
-      case AppPath.ProjectDetail:
+      case AppPathLegacy.ProjectDetail:
         return (await import("../../routes/ProjectDetail.svelte")).default;
-      case AppPath.NeuronDetail:
+      case AppPathLegacy.NeuronDetail:
         return (await import("../../routes/NeuronDetail.svelte")).default;
       default:
         return (await import("../../routes/Auth.svelte")).default;
     }
   };
 
-  const routesConfig: Record<AppPath, { title: string }> = {
-    [AppPath.Authentication]: {
+  const routesConfig: Record<AppPathLegacy, { title: string }> = {
+    [AppPathLegacy.Authentication]: {
       title: "",
     },
-    [AppPath.LegacyNeurons]: {
+    [AppPathLegacy.LegacyNeurons]: {
       title: $i18n.navigation.neurons,
     },
-    [AppPath.Neurons]: {
+    [AppPathLegacy.Neurons]: {
       title: $i18n.navigation.neurons,
     },
-    [AppPath.Proposals]: {
+    [AppPathLegacy.Proposals]: {
       title: $i18n.navigation.voting,
     },
-    [AppPath.Canisters]: {
+    [AppPathLegacy.Canisters]: {
       title: $i18n.navigation.canisters,
     },
-    [AppPath.ProposalDetail]: {
+    [AppPathLegacy.ProposalDetail]: {
       title: $i18n.proposal_detail.title,
     },
-    [AppPath.LegacyNeuronDetail]: {
+    [AppPathLegacy.LegacyNeuronDetail]: {
       title: $i18n.neuron_detail.title,
     },
-    [AppPath.CanisterDetail]: {
+    [AppPathLegacy.CanisterDetail]: {
       title: $i18n.canister_detail.title,
     },
-    [AppPath.Launchpad]: {
+    [AppPathLegacy.Launchpad]: {
       title: $i18n.sns_launchpad.header,
     },
-    [AppPath.NeuronDetail]: {
+    [AppPathLegacy.NeuronDetail]: {
       title: $i18n.sns_neuron_detail.header,
     },
-    [AppPath.ProjectDetail]: { title: "" },
+    [AppPathLegacy.ProjectDetail]: { title: "" },
   };
 
   onMount(async () => {
@@ -91,7 +91,7 @@
   });
 
   let authLayout = true;
-  $: authLayout = path === AppPath.Authentication;
+  $: authLayout = path === AppPathLegacy.Authentication;
 
   let layout: typeof SvelteComponent | undefined = undefined;
   $: layout = authLayout ? AuthLayout : Layout;

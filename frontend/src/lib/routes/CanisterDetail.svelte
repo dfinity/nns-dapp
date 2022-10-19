@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPathLegacy } from "$lib/constants/routes.constants";
   import {
     getCanisterDetails,
     routePathCanisterId,
@@ -63,7 +63,7 @@
 
   const goBack = () =>
     routeStore.navigate({
-      path: AppPath.Canisters,
+      path: AppPathLegacy.Canisters,
     });
 
   layoutBackStore.set(goBack);

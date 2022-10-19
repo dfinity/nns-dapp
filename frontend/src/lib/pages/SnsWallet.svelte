@@ -5,7 +5,7 @@
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
-  import { AppRoutes } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -27,13 +27,13 @@
   onMount(() => {
     if (!ENABLE_SNS_2) {
       // TODO(GIX-1071): utils?
-      goto(AppRoutes.Accounts, { replaceState: true });
+      goto(AppPath.Accounts, { replaceState: true });
     }
   });
 
   // TODO(GIX-1071): utils?
   const goBack = (): Promise<void> =>
-    goto(`${AppRoutes.Accounts}/?u=${$pageStore.universe}`);
+    goto(`${AppPath.Accounts}/?u=${$pageStore.universe}`);
 
   layoutBackStore.set(goBack);
 
