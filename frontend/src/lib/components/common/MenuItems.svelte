@@ -22,7 +22,7 @@
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
 
-  const isSelectedPath = (paths: AppPath[]): boolean =>
+  const isSelectedPath = (paths: (AppPath | null)[]): boolean =>
     paths.includes($pageStore.path);
 
   let routes: {

@@ -20,7 +20,11 @@ const pathForRouteId = (routeId: string): AppPath => {
     routeId.replace("(app)", "") as unknown as AppPath
   );
   const key = Object.keys(AppPath)[index];
-  return AppPath[key];
+
+  // TODO: solve eslint type checking
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore-line
+  return AppPath[key as keyof AppPath];
 };
 
 export const pageStore = derived<Readable<PageType>, Page>(
