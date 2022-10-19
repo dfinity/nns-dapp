@@ -40,8 +40,8 @@
   }
 
   .join {
-    --select-label-order: 1;
-    --select-padding: var(--padding) 0;
+    --checkbox-label-order: 1;
+    --checkbox-padding: var(--padding) 0;
   }
 
   .info {

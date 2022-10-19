@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
