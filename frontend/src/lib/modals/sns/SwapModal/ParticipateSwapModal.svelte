@@ -24,7 +24,7 @@
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);

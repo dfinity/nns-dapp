@@ -12,7 +12,7 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
-  import { type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
 

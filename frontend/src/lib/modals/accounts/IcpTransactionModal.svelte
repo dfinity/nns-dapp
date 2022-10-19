@@ -9,7 +9,7 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
 

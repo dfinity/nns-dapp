@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
