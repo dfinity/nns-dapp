@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 87079
 * Support for new payload type.
 * Support for new proposal topic.
 * UI Improvements in Stake Maturity.
