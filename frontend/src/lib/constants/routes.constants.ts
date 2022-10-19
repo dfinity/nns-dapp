@@ -1,10 +1,7 @@
 export enum AppPathLegacy {
-  LegacyNeurons = "/#/neurons",
-  Neurons = "/#/u/:rootCanisterId/neurons",
   Proposals = "/#/proposals",
   Canisters = "/#/canisters",
   ProposalDetail = "/#/proposal",
-  LegacyNeuronDetail = "/#/neuron",
   CanisterDetail = "/#/canister",
   Launchpad = "/#/launchpad",
   ProjectDetail = "/#/u",

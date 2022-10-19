@@ -12,7 +12,8 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { routeStore } from "$lib/stores/route.store";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
@@ -71,7 +72,9 @@
         },
       });
       close();
-      routeStore.navigate({ path: AppPathLegacy.LegacyNeurons });
+
+      // TODO(GIX-1071): utils?
+      await goto(AppPath.Neurons);
     }
 
     stopBusy("spawn-neuron");

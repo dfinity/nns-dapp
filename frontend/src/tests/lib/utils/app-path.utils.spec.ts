@@ -1,6 +1,5 @@
 import { AppPathLegacy, CONTEXT_PATH } from "$lib/constants/routes.constants";
 import {
-  changePathContext,
   getContextDetailsFromPath,
   getContextFromPath,
   getLastPathDetail,
@@ -15,7 +14,6 @@ describe("routes", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
       expect(isAppPath(`${AppPathLegacy.CanisterDetail}/123`)).toBeTruthy();
-      expect(isAppPath(`${AppPathLegacy.LegacyNeuronDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPathLegacy.Launchpad}`)).toBeTruthy();
       expect(isAppPath(`${AppPathLegacy.ProjectDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neurons`)).toBeTruthy();
@@ -152,54 +150,6 @@ describe("routes", () => {
         getContextDetailsFromPath("/#/u/wxns6-qiaaa-aaaaa-aaaqa-cai/neurons")
       ).toBe("/neurons");
       expect(getContextDetailsFromPath("/#/u/123444")).toBe("");
-    });
-  });
-
-  describe("changePathContext", () => {
-    it("returns same path with new context", () => {
-      const path1 = `${CONTEXT_PATH}/aaaaa-aa/neuron/12344`;
-      const path2 = `${CONTEXT_PATH}/aaaaa-aa/neurons`;
-      const path3 = `${CONTEXT_PATH}/aaaaa-aa/accounts`;
-      const newContext = "bbbbb-bb";
-      expect(changePathContext({ path: path1, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/neuron/12344`
-      );
-      expect(changePathContext({ path: path2, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/neurons`
-      );
-      expect(changePathContext({ path: path3, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/accounts`
-      );
-    });
-
-    it("returns path with context for exceptions", () => {
-      const path1 = "/#/neuron/12344";
-      const path2 = "/#/neurons";
-      const path3 = "/#/accounts";
-      const path4 = "/#/wallet/12344";
-      const newContext = "bbbbb-bb";
-      expect(changePathContext({ path: path1, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/neuron/12344`
-      );
-      expect(changePathContext({ path: path2, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/neurons`
-      );
-      expect(changePathContext({ path: path3, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/accounts`
-      );
-      expect(changePathContext({ path: path4, newContext })).toBe(
-        `${CONTEXT_PATH}/${newContext}/wallet/12344`
-      );
-    });
-
-    it("returns same path if it's not a context path", () => {
-      const path1 = AppPathLegacy.Canisters;
-      const path2 = AppPathLegacy.Launchpad;
-      const path3 = `${AppPathLegacy.CanisterDetail}/12345`;
-      const newContext = "bbbbb-bb";
-      expect(changePathContext({ path: path1, newContext })).toBe(path1);
-      expect(changePathContext({ path: path2, newContext })).toBe(path2);
-      expect(changePathContext({ path: path3, newContext })).toBe(path3);
     });
   });
 

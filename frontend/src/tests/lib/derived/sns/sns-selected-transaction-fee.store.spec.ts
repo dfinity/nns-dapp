@@ -2,12 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { paths } from "$lib/utils/app-path.utils";
+import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -21,17 +19,12 @@ describe("snsSelectedTransactionFeeStore", () => {
   });
   afterEach(() => {
     snsQueryStore.reset();
-    routeStore.update({
-      path: paths.neurons(mockPrincipal.toText()),
-    });
+    page.mock({ universe: mockPrincipal.toText() });
   });
   it("returns transaction fee of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
-    routeStore.update({
-      // path: `${CONTEXT_PATH}/${metadatas[0].rootCanisterId}/neurons`,
-      path: paths.neurons(metadatas[0].rootCanisterId),
-    });
+    page.mock({ universe: metadatas[0].rootCanisterId });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
       (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
@@ -56,9 +49,7 @@ describe("snsSelectedTransactionFeeStore", () => {
 
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
-    routeStore.update({
-      path: AppPathLegacy.LegacyNeurons,
-    });
+    page.mock({ universe: mockPrincipal.toText() });
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
     expect(actualFeeTokens).toBeUndefined();
@@ -66,9 +57,7 @@ describe("snsSelectedTransactionFeeStore", () => {
 
   it("returns undefined if current selected project has no data", () => {
     const [metadatas] = data;
-    routeStore.update({
-      path: paths.neurons(metadatas[0].rootCanisterId),
-    });
+    page.mock({ universe: metadatas[0].rootCanisterId });
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
     expect(actualFeeTokens).toBeUndefined();

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
   import { IconClose } from "@dfinity/gix-components";
   import { getIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -15,6 +15,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Value from "$lib/components/ui/Value.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
 
@@ -45,7 +46,9 @@
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPathLegacy.LegacyNeurons });
+
+      // TODO(GIX-1071): utils?
+      await goto(AppPath.Neurons);
     }
     stopBusy("remove-hotkey-neuron");
   };

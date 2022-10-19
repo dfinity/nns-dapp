@@ -1,8 +1,6 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { paths } from "$lib/utils/app-path.utils";
 import { derived } from "svelte/store";
-import { snsProjectSelectedStore } from "./selected-project.derived";
 
 // TODO(GIX-1071): constant for u and adapt related text too
 
@@ -24,10 +22,4 @@ export const proposalsPathStore = derived(
 export const canistersPathStore = derived(
   pageStore,
   ({ universe }) => `${AppPath.Canisters}/?u=${universe}`
-);
-
-export const neuronPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) =>
-    paths.neuronDetail($snsProjectSelectedStore.toText())
 );

@@ -1,32 +1,13 @@
-import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { AppPathLegacy, CONTEXT_PATH } from "$lib/constants/routes.constants";
-import { routePathNeuronId } from "$lib/utils/neuron.utils";
 
 const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
   [AppPathLegacy.ProposalDetail]: `${AppPathLegacy.ProposalDetail}/[0-9]+`,
-  [AppPathLegacy.LegacyNeuronDetail]: `${AppPathLegacy.LegacyNeuronDetail}/[0-9]+`,
-  [AppPathLegacy.Neurons]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neurons`,
   [AppPathLegacy.CanisterDetail]: `${AppPathLegacy.CanisterDetail}/${IDENTIFIER_REGEX}`,
   [AppPathLegacy.ProjectDetail]: `${AppPathLegacy.ProjectDetail}/${IDENTIFIER_REGEX}`,
   [AppPathLegacy.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
-};
-
-/**
- * Helpers to build the paths for the app.
- * It interpolates the context and returns the path.
- */
-export const paths = {
-  neuronDetail: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/neuron`
-      : AppPathLegacy.LegacyNeuronDetail,
-  neurons: (rootCanisterId: string) =>
-    ENABLE_SNS
-      ? `${CONTEXT_PATH}/${rootCanisterId}/neurons`
-      : AppPathLegacy.LegacyNeurons,
 };
 
 const pathValidation = (path: AppPathLegacy): string => mapper[path] ?? path;
@@ -136,73 +117,4 @@ export const getParentPathDetail = (
       .filter((path) => path !== "") ?? [];
   // Do not return empty strings
   return canisterId === "" ? undefined : canisterId;
-};
-
-/**
- * Checks whether the path is a legacy context path.
- * Returns a new path with the new context path if it is a legacy context path.
- * Returns same path if not a legacy context path.
- * This needs to be updated when we support more legacy context paths.
- *
- * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
- *
- * @param {Object} params
- * @param {string} params.path string - the path to change
- * @param {string} params.newContext string - the new context to navigate to
- * @returns newPath string
- */
-const checkContextPathExceptions = ({
-  path,
-  newContext,
-}: {
-  path: string;
-  newContext: string;
-}): string => {
-  if (isRoutePath({ paths: [AppPathLegacy.LegacyNeurons], routePath: path })) {
-    return `${CONTEXT_PATH}/${newContext}/neurons`;
-  }
-
-  if (
-    isRoutePath({
-      paths: [AppPathLegacy.LegacyNeuronDetail],
-      routePath: path,
-    })
-  ) {
-    const neuronId = routePathNeuronId(path);
-    return `${CONTEXT_PATH}/${newContext}/neuron/${neuronId}`;
-  }
-  // Returns same path if no exception
-  return path;
-};
-
-/**
- * Returns a new path with the new context.
- * Doesn't do anything if the current path is not a context path.
- *
- * When called with `bbbbb-bb`
- * Ex: `/#/u/aaaaa-aa/neurons` becomes `/#/u/bbbbb-bb/neurons`
- * Ex: `/#/u/aaaaa-aa/account/1234` becomes `/#/u/bbbbb-bb/account/1234`
- * Ex: `/#/neurons` becomes `/#/u/bbbbb-bb/neurons`
- * Ex: `/#/neuron/1234` becomes `/#/u/bbbbb-bb/neuron/1234`
- * Ex: `/#/proposals` does nothing because `/#/proposals` is not a context path
- *
- * @param {Object} params
- * @param {string} params.path string - the path to change
- * @param {string} params.newContext string - the new context to navigate to
- */
-export const changePathContext = ({
-  path,
-  newContext,
-}: {
-  path: string;
-  newContext: string;
-}) => {
-  // Check exceptions or return same path
-  let newPath = checkContextPathExceptions({ path, newContext });
-  // Check if the path is a context path and perform the change
-  if (isContextPath(path)) {
-    const contextDetails = getContextDetailsFromPath(path);
-    newPath = `${CONTEXT_PATH}/${newContext}${contextDetails}`;
-  }
-  return newPath;
 };
