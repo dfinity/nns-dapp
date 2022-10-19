@@ -7,28 +7,29 @@
   import { mergeMaturity } from "$lib/services/neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
 
   export let neuron: NeuronInfo;
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
       title: $i18n.neuron_detail.merge_maturity_modal_title,
     },
     {
       name: "ConfirmMerge",
-      showBackButton: true,
       title: $i18n.neuron_detail.merge_confirmation_modal_title,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let modal: WizardModal;
 
   let percentageToMerge = 0;
