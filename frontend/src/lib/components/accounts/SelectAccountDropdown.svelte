@@ -6,8 +6,7 @@
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
-  import Dropdown from "$lib/components/ui/Dropdown.svelte";
-  import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
+  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Principal } from "@dfinity/principal";
 

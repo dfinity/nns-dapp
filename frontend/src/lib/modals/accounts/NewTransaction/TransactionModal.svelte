@@ -1,6 +1,6 @@
 <script lang="ts">
-  import WizardModal from "$lib/modals/WizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import { WizardModal } from "@dfinity/gix-components";
+  import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "./TransactionForm.svelte";
   import TransactionReview from "./TransactionReview.svelte";
@@ -9,7 +9,7 @@
   import type { Principal } from "@dfinity/principal";
 
   export let rootCanisterId: Principal;
-  export let currentStep: Step | undefined = undefined;
+  export let currentStep: WizardStep | undefined = undefined;
   export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
   export let token: Token = ICPToken;
@@ -20,15 +20,13 @@
   export let skipHardwareWallets = false;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "Form",
-      showBackButton: false,
       title: "",
     },
     {
       name: "Review",
-      showBackButton: true,
       title: "",
     },
   ];

@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -66,8 +66,8 @@
   .auto-stake {
     padding: var(--padding-2x) 0 0;
 
-    --select-label-order: 1;
-    --select-padding: var(--padding) 0;
+    --checkbox-label-order: 1;
+    --checkbox-padding: var(--padding) 0;
   }
 
   .wrapper {

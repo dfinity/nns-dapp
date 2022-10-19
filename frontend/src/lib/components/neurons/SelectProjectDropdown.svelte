@@ -4,8 +4,7 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { committedProjectsStore } from "$lib/stores/projects.store";
-  import Dropdown from "$lib/components/ui/Dropdown.svelte";
-  import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
+  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
 

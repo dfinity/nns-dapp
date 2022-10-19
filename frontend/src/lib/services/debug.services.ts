@@ -40,7 +40,7 @@ export enum LogType {
 }
 
 /**
- * Action function to bind debug logger tigger to the node (6 clicks in 2 seconds)
+ * Action function to bind debug logger trigger to the node (6 clicks in 2 seconds)
  */
 export function triggerDebugReport(node: HTMLElement) {
   const TWO_SECONDS = 2 * 1000;

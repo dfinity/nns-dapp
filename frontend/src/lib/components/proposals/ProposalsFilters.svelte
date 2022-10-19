@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
   import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -77,9 +77,7 @@
     inputId="hide-unavailable-proposals"
     checked={excludeVotedProposals}
     on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
-    text="block"
-    selector="hide-unavailable-proposals"
-    >{$i18n.voting.hide_unavailable_proposals}</Checkbox
+    text="block">{$i18n.voting.hide_unavailable_proposals}</Checkbox
   >
 </div>
 
@@ -94,7 +92,8 @@
     flex-wrap: wrap;
     padding: 0 0 var(--padding-3x);
 
-    --select-flex-direction: row-reverse;
+    --checkbox-flex-direction: row-reverse;
+    --checkbox-font-size: var(--font-size-small);
 
     :global(button) {
       margin: var(--padding) var(--padding) 0 0;
@@ -113,10 +112,6 @@
     > :global(div.checkbox input) {
       margin-right: var(--padding);
     }
-  }
-
-  :global(div.hide-unavailable-proposals) {
-    --select-font-size: var(--font-size-small);
   }
 
   :global(section > div.checkbox) {

@@ -5,7 +5,7 @@
     ProposalsFilterModalProps,
     ProposalsFilters,
   } from "$lib/types/proposals";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { enumValues } from "$lib/utils/enum.utils";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -115,6 +115,6 @@
 
 <style lang="scss">
   .filters {
-    --select-padding: var(--padding-2x) var(--padding) var(--padding-2x);
+    --checkbox-padding: var(--padding-2x) var(--padding) var(--padding-2x);
   }
 </style>

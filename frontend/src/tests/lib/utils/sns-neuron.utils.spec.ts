@@ -331,10 +331,11 @@ describe("sns-neuron utils", () => {
   });
 
   describe("getSnsNeuronHotkeys", () => {
-    const addVotePermission = (key) => ({
+    const addVoteProposalPermission = (key) => ({
       principal: [Principal.fromText(key)] as [Principal],
       permission_type: Int32Array.from([
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
       ]),
     });
     const hotkeys = [
@@ -351,7 +352,7 @@ describe("sns-neuron utils", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: hotkeys
-          .map(addVotePermission)
+          .map(addVoteProposalPermission)
           .concat(controllerPermission),
       };
       expect(getSnsNeuronHotkeys(controlledNeuron)).toEqual(hotkeys);
@@ -361,7 +362,7 @@ describe("sns-neuron utils", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: hotkeys
-          .map(addVotePermission)
+          .map(addVoteProposalPermission)
           .concat(controllerPermission),
       };
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
@@ -369,10 +370,39 @@ describe("sns-neuron utils", () => {
         expectedHotkeys.includes(mockIdentity.getPrincipal().toText())
       ).toBe(false);
     });
+
+    it("doesn't return if only voting permission", () => {
+      const nonHotkey =
+        "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+      const hotkey =
+        "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(nonHotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
+      expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
+      expect(expectedHotkeys.includes(hotkey)).toBe(true);
+    });
   });
 
   describe("isUserHotkey", () => {
-    it("returns true if user only has voting permissions but not all permissions", () => {
+    it("returns true if user only has voting and proposal permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
@@ -380,6 +410,7 @@ describe("sns-neuron utils", () => {
             principal: [mockIdentity.getPrincipal()],
             permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
             ]),
           },
         ],
@@ -391,13 +422,14 @@ describe("sns-neuron utils", () => {
         })
       ).toBe(true);
     });
-    it("returns true if user has voting permissions but not all permissions", () => {
+    it("returns true if user has voting and proposal permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
             permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
             ]),
@@ -411,7 +443,7 @@ describe("sns-neuron utils", () => {
         })
       ).toBe(true);
     });
-    it("returns false if user has all the voting permissions", () => {
+    it("returns false if user has all the permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
@@ -430,13 +462,14 @@ describe("sns-neuron utils", () => {
         })
       ).toBe(false);
     });
-    it("returns false if user has permissions but not the voting one", () => {
+    it("returns false if user has voting but not proposal permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
             permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
             ]),

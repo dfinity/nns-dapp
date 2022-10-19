@@ -3,17 +3,17 @@
   import { transferICP } from "$lib/services/accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   $: title =
     currentStep?.name === "Form"

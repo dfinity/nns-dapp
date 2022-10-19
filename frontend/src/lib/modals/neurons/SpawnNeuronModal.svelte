@@ -2,8 +2,11 @@
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "$lib/services/neurons.services";
@@ -18,30 +21,27 @@
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
 
-  const hardwareWalletSteps: Steps = [
+  const hardwareWalletSteps: WizardSteps = [
     {
       name: "ConfirmSpawn",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const nnsDappAccountSteps: Steps = [
+  const nnsDappAccountSteps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_neuron_modal_title,
     },
     {
       name: "ConfirmSpawn",
-      showBackButton: true,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: Steps = controlledByHardwareWallet
+  const steps: WizardSteps = controlledByHardwareWallet
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   let percentageToSpawn = 0;
 

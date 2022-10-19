@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { Step } from "$lib/stores/steps.state";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import {
@@ -13,7 +12,7 @@
     hasUserParticipatedToSwap,
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-  import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
@@ -25,6 +24,7 @@
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { WizardStep } from "@dfinity/gix-components";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -54,7 +54,7 @@
     swap: { params },
   } = summary);
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let title: string | undefined;
   $: title =
     currentStep?.name === "Form"

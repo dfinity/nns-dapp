@@ -183,10 +183,13 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
     // Filter the controller. The controller is the neuron with all permissions
     .filter(({ permission_type }) => !hasAllPermissions(permission_type))
-    .filter(({ permission_type }) =>
-      permission_type.includes(
-        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE
-      )
+    .filter(
+      ({ permission_type }) =>
+        [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ].find((permission) => !permission_type.includes(permission)) ===
+        undefined
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);

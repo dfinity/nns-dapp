@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuron } from "@dfinity/sns";
-  import DisburseSnsNeuronModal from "../../../modals/neurons/DisburseSnsNeuronModal.svelte";
+  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
