@@ -2,17 +2,19 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {OWN_CANISTER_ID, OWN_CANISTER_ID_TEXT} from "$lib/constants/canister-ids.constants";
 import { AppPathLegacy } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+} from "../../../mocks/sns-projects.mock";
+import {authStore} from "$lib/stores/auth.store";
+import {mockAuthStoreSubscribe} from "../../../mocks/auth.store.mock";
+import {page} from "$mocks/$app/stores";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
@@ -27,13 +29,20 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("Neurons", () => {
+  // TODO(GIX-1071): should render sign-in if not logged in
+
+  beforeAll(() =>
+      jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe));
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
     // Reset to default value
-    routeStore.update({ path: AppPathLegacy.LegacyNeurons });
+    page.mock({ universe: OWN_CANISTER_ID_TEXT });
   });
 
   it("should render NnsNeurons by default", () => {
