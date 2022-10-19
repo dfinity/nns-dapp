@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { isNnsProjectStore } from "$lib/derived/selected-project.derived";
-  import NnsWallet from "$lib/pages/NnsWallet.svelte";
-  import SnsWallet from "$lib/pages/SnsWallet.svelte";
+  import Wallet from "$lib/routes/Wallet.svelte";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
@@ -17,11 +15,7 @@
 </script>
 
 {#if signedIn}
-  {#if $isNnsProjectStore}
-    <NnsWallet {accountIdentifier} />
-  {:else}
-    <SnsWallet {accountIdentifier} />
-  {/if}
+  <Wallet {accountIdentifier} />
 {:else}
   <h1>Wallets NOT signed in</h1>
 
