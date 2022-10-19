@@ -3,7 +3,6 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import type { NeuronId } from "@dfinity/nns";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

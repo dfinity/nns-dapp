@@ -16,7 +16,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
-  import {pageStore} from "$lib/derived/page.derived";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let neuronId: string | null | undefined;
 

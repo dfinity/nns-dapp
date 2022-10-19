@@ -53,7 +53,7 @@
         <NeuronCard
           role="link"
           ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
+          on:click={async () => await goToNeuronDetails(neuron.neuronId)}
           {neuron}
         />
       {/if}
