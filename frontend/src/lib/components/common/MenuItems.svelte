@@ -38,7 +38,7 @@
     {
       context: "accounts",
       href: $accountsPathStore,
-      selected: isSelectedPath([AppPath.Accounts]),
+      selected: isSelectedPath([AppPath.Neurons]),
       label: "tokens",
       icon: IconWallet,
     },

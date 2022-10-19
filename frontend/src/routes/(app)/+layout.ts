@@ -17,6 +17,6 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
 
   // TODO(GIX-1071): constants for u
   return {
-    universe: searchParams?.get("u") ?? undefined,
+    universe: searchParams?.get("u") ?? undefined
   };
 };

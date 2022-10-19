@@ -15,8 +15,6 @@
 
   const loadModule = async (): Promise<typeof SvelteComponent> => {
     switch (path) {
-      case AppPath.Accounts:
-        return (await import("../../routes/Accounts.svelte")).default;
       case AppPath.LegacyNeurons:
       case AppPath.Neurons:
         return (await import("../../routes/Neurons.svelte")).default;
@@ -44,9 +42,6 @@
   const routesConfig: Record<AppPath, { title: string }> = {
     [AppPath.Authentication]: {
       title: "",
-    },
-    [AppPath.Accounts]: {
-      title: $i18n.navigation.tokens,
     },
     [AppPath.LegacyNeurons]: {
       title: $i18n.navigation.neurons,
@@ -79,8 +74,11 @@
   };
 
   onMount(async () => {
+    // TODO(GIX-1071): move to app layout
     layoutTitleStore.set(routesConfig[path].title);
 
+    // TODO(GIX-1071): move to views layout or layout component
+    // TODO(GIX-1071): inline layout component?
     // Reset back action because only detail routes have such feature other views use the menu
     layoutBackStore.set(undefined);
 

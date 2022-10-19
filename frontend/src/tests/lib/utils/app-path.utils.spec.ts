@@ -122,12 +122,6 @@ describe("routes", () => {
           routePath: "",
         })
       ).toBeFalsy();
-      expect(
-        isRoutePath({
-          paths: [AppPath.Accounts, AppPath.Canisters],
-          routePath: "/#/neurons",
-        })
-      ).toBeFalsy();
     });
   });
 
@@ -138,7 +132,6 @@ describe("routes", () => {
     });
 
     it("returns false for non context related paths", () => {
-      expect(isContextPath(AppPath.Accounts)).toBeFalsy();
       expect(isContextPath(AppPath.Proposals)).toBeFalsy();
       expect(isContextPath(AppPath.ProposalDetail + "/123")).toBeFalsy();
       expect(isContextPath(AppPath.Authentication)).toBeFalsy();
