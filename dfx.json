@@ -23,13 +23,23 @@
       "type": "custom",
       "candid": "rs/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "build": "./build.sh",
+      "remote": {
+        "id": {
+          "local": "qsgjb-riaaa-aaaaa-aaaga-cai"
+        }
+      }
     },
     "internet_identity": {
       "type": "custom",
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-25/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-25/internet_identity_dev.wasm\" -o internet_identity.wasm",
+      "remote": {
+        "id": {
+          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
+        }
+      }
     },
     "nns-sns-wasm": {
       "build": [
@@ -40,7 +50,7 @@
       "type": "custom",
       "remote": {
         "id": {
-          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },

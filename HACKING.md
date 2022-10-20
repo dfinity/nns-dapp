@@ -9,14 +9,104 @@ NNS-dapp frontend uses an `.env` file to read various environment information an
 The repo itself does **not** contain any such file because the source of truth we are using is `dfx.json`.
 That is why we are providing a `./config.sh` script that generate the above environment file automatically.
 
-## Local
+## Local NNS Dapp Frontend
+
+Local development of the Frontend of the NNS Dapp.
+
+### (Temporary) Requirements
+
+**NOTE: Update with new DFX version release.**
+
+Install DFX version `0.12.0-snsdemo.5`:
+
+```bash
+export DFX_VERSION="0.12.0-snsdemo.5"
+dfx --version | grep "$DFX_VERSION" || sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+dfx cache install
+```
+
+You should be able to have access to the `nns` command:
+
+```bash
+dfx nns install --help
+```
+
+Make sure that your `$HOME/.config/dfx/networks.json` has the following configuration for the "local" network:
+
+```bash
+{
+  "local": {
+    "bind": "127.0.0.1:8080",
+    "type": "ephemeral",
+    "replica": {
+      "subnet_type": "system"
+    }
+  }
+}
+```
+
+### (Temporary) Steps
+
+**NOTE: Update with new DFX version release.**
 
 To run the dapp against canisters deployed locally on a simulated IC network, proceed as following:
 
-- Deploy the Nns, and optionally Sns, backend canisters locally. The [snsdemo](https://github.com/dfinity/snsdemo) provides command lines and an handy tutorial to achieve such goal
-- Once deployed, the canister IDs should be collected the "local" network of `dfx.json` should be updated accordingly
-- Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file
-- Start `npm run dev` in the `./frontend/` folder to serve the application
+### Change dfx version
+
+This "temporary" way to develop locally uses a new dfx version not yet officially published and not tested for deployment.
+
+Therefore, the `dfx.json` has not yet been updated accordingly.
+
+You need to change the version before developing locally in `dfx.json`:
+
+```json
+{
+  "dfx": "0.12.0-snsdemo.5",
+  //...
+```
+
+**IMPORTANT: DO NOT COMMIT THESE CHANGE.**
+
+### Start dfx
+
+```bash
+dfx start
+```
+
+If you want to clean the local replica state:
+
+```bash
+dfx start --clean
+```
+
+### Install NNS
+
+In case you start with a clean replica:
+
+```bash
+dfx nns install
+```
+
+### Create local configuration file
+
+```bash
+DFX_NETWORK=local ./config.sh
+```
+
+### Run Frontend Local Server
+
+If you haven't installed the frontend:
+
+```bash
+cd frontend
+npm ci
+```
+
+Start development server:
+
+```bash
+npm run dev
+```
 
 ## Testnet
 
