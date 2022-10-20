@@ -14,6 +14,7 @@ import * as busyStore from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
+import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -1018,10 +1019,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: TokenAmount.fromE8s({
-          amount: BigInt(Math.round(amountWithFee * E8S_PER_ICP)),
-          token: ICPToken,
-        }),
+        amount: numberToE8s(amountWithFee),
       });
     });
 

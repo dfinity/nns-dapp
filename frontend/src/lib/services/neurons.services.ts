@@ -554,7 +554,7 @@ export const splitNeuron = async ({
     );
 
     const feeE8s = get(mainTransactionFeeE8sStore);
-    const amountE8s = numberToE8s(amount);
+    const amountE8s = numberToE8s(amount) + feeE8s;
 
     if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
       throw new InsufficientAmountError();

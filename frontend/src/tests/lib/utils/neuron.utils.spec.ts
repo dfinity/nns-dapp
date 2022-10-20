@@ -861,7 +861,7 @@ describe("neuron-utils", () => {
 
   describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
-      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(30_000_000) })).toBe(
+      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(300_000_000) })).toBe(
         true
       );
     });
