@@ -68,3 +68,8 @@ export const mainTransactionFeeStore = derived(
   transactionsFeesStore,
   ($store) => Number($store.main)
 );
+
+export const mainTransactionFeeE8sStore = derived(
+  transactionsFeesStore,
+  ($store) => $store.main
+);
