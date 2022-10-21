@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -18,10 +18,7 @@
 
   let disabled: boolean;
   $: disabled = !isEnoughToStakeNeuron({
-    stake: TokenAmount.fromE8s({
-      amount: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
-      token: ICPToken,
-    }),
+    stakeE8s: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
   });
 
   const dispatcher = createEventDispatcher();

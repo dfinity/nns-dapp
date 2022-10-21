@@ -11,7 +11,6 @@ import type {
   KnownNeuron,
   NeuronId,
   NeuronInfo,
-  TokenAmount,
   Topic,
 } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
@@ -243,7 +242,7 @@ export const splitNeuron = async ({
   identity,
 }: {
   neuronId: NeuronId;
-  amount: TokenAmount;
+  amount: bigint;
   identity: Identity;
 }): Promise<NeuronId> => {
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) call...`);
@@ -251,7 +250,7 @@ export const splitNeuron = async ({
 
   const response = await canister.splitNeuron({
     neuronId,
-    amount: amount.toE8s(),
+    amount,
   });
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) complete.`);
   return response;
@@ -361,7 +360,7 @@ export const stakeNeuron = async ({
   identity,
   fromSubAccount,
 }: {
-  stake: TokenAmount;
+  stake: bigint;
   controller: Principal;
   ledgerCanisterIdentity: Identity;
   identity: Identity;
@@ -376,7 +375,7 @@ export const stakeNeuron = async ({
   });
 
   const response = await canister.stakeNeuron({
-    stake: stake.toE8s(),
+    stake: stake,
     principal: controller,
     fromSubAccount,
     ledgerCanister,
