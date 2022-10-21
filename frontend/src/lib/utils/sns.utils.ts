@@ -1,3 +1,4 @@
+import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -81,7 +82,7 @@ const mapOptionalMetadata = ({
   }
 
   return {
-    logo: nullishLogo ?? "/assets/sns-logo-default.svg",
+    logo: nullishLogo ?? DEFAULT_SNS_LOGO,
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
