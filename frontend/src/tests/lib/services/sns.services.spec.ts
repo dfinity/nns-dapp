@@ -52,11 +52,14 @@ describe("sns-services", () => {
       snsQueryStore.reset();
     });
 
-    it("should call api.participateInSnsSwap, sync accounts and return success true", async () => {
+    it("should fetch swap state call api.participateInSnsSwap, sync accounts and return success true", async () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
+        .mockImplementation(() => Promise.resolve(undefined));
+      const spyQueryState = jest
+        .spyOn(api, "querySnsSwapState")
         .mockImplementation(() => Promise.resolve(undefined));
       const { success } = await participateInSwap({
         amount: TokenAmount.fromString({
@@ -67,6 +70,7 @@ describe("sns-services", () => {
         account: mockMainAccount,
       });
       expect(success).toBe(true);
+      expect(spyQueryState).toBeCalled();
       expect(spyParticipate).toBeCalled();
       expect(syncAccounts).toBeCalled();
     });
