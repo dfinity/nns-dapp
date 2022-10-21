@@ -81,8 +81,7 @@ const mapOptionalMetadata = ({
   }
 
   return {
-    // TODO: Use default logo if logo is nullish https://dfinity.atlassian.net/browse/GIX-1048
-    logo: nullishLogo ?? "",
+    logo: nullishLogo ?? "/assets/sns-logo-default.svg",
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
