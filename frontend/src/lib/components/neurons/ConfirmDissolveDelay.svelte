@@ -14,6 +14,7 @@
   import { busy, stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { valueSpan } from "$lib/utils/utils";
+  import { Html } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -51,9 +52,11 @@
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p>
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-      })}
+      <Html
+        html={replacePlaceholders($i18n.neurons.icp_stake, {
+          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        })}
+      />
     </p>
   </div>
   <div class="voting-power">

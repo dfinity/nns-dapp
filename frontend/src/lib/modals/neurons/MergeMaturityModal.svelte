@@ -15,6 +15,7 @@
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
+  import { Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -81,15 +82,17 @@
       on:nnsConfirm={mergeNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      {@html replacePlaceholders(
-        $i18n.neuron_detail.merge_maturity_confirmation,
-        {
-          $percentage: formatPercentage(percentageToMerge / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          }),
-        }
-      )}
+      <Html
+        html={replacePlaceholders(
+          $i18n.neuron_detail.merge_maturity_confirmation,
+          {
+            $percentage: formatPercentage(percentageToMerge / 100, {
+              minFraction: 0,
+              maxFraction: 0,
+            }),
+          }
+        )}
+      />
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>

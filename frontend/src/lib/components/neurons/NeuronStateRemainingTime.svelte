@@ -5,6 +5,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { valueSpan } from "$lib/utils/utils";
   import Value from "$lib/components/ui/Value.svelte";
+  import { Html } from "@dfinity/gix-components";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
@@ -13,9 +14,11 @@
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     <p class="duration">
-      {@html replacePlaceholders($i18n.neurons.remaining, {
-        $duration: valueSpan(secondsToDuration(timeInSeconds)),
-      })}
+      <Html
+        html={replacePlaceholders($i18n.neurons.remaining, {
+          $duration: valueSpan(secondsToDuration(timeInSeconds)),
+        })}
+      />
     </p>
   {:else if state === NeuronState.Locked}
     <p class="duration">

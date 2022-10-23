@@ -1,0 +1,83 @@
+{
+  "__Candid_UI": {
+    "local": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small06": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small11": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small12": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small13": "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+    "small14": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai",
+    "testnet": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "unreal": "qhbym-qaaaa-aaaaa-aaafq-cai"
+  },
+  "internet_identity": {
+    "local": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "_small13": "txssk-maaaa-aaaaa-aaanq-cai",
+    "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small11": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "small13": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "small14": "qhbym-qaaaa-aaaaa-aaafq-cai",
+    "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+  },
+  "nns-dapp": {
+    "local": "qsgjb-riaaa-aaaaa-aaaga-cai",
+    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+    "small06": "s24we-diaaa-aaaaa-aaaka-cai",
+    "small11": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small12": "3xvh2-qyaaa-aaaaa-aab3a-cai",
+    "small13": "x2dwq-7aaaa-aaaaa-aaaxq-cai",
+    "small14": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "staging": "wmio3-kqaaa-aaaaa-aaasq-cai",
+    "testnet": "wxns6-qiaaa-aaaaa-aaaqa-cai"
+  },
+  "nns-governance": {
+    "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+  },
+  "nns-sns-wasm": {
+    "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+    "small06": "sp3hj-caaaa-aaaaa-aaajq-cai",
+    "small11": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "small12": "qvhpv-4qaaa-aaaaa-aaagq-cai",
+    "small13": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "small14": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "testnet": "qvhpv-4qaaa-aaaaa-aaagq-cai"
+  },
+  "sns_governance": {
+    "local": "st75y-vaaaa-aaaaa-aaalq-cai",
+    "small06": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small11": "sgymv-uiaaa-aaaaa-aaaia-cai",
+    "small14": "",
+    "testnet": "s24we-diaaa-aaaaa-aaaka-cai"
+  },
+  "sns_ledger": {
+    "local": "t6rzw-2iaaa-aaaaa-aaama-cai",
+    "small06": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+    "small11": "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+    "small14": "",
+    "testnet": "s55qq-oqaaa-aaaaa-aaakq-cai"
+  },
+  "sns_root": {
+    "local": "su63m-yyaaa-aaaaa-aaala-cai",
+    "small06": "q3fc5-haaaa-aaaaa-aaahq-cai",
+    "small11": "q3fc5-haaaa-aaaaa-aaahq-cai",
+    "small12": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small14": "",
+    "testnet": "sp3hj-caaaa-aaaaa-aaajq-cai"
+  },
+  "sns_swap": {
+    "local": "tzq7c-xqaaa-aaaaa-aaamq-cai",
+    "small06": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small11": "si2b5-pyaaa-aaaaa-aaaja-cai",
+    "small13": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "small14": "q4eej-kyaaa-aaaaa-aaaha-cai",
+    "testnet": "su63m-yyaaa-aaaaa-aaala-cai"
+  }
+}
