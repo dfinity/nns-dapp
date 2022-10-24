@@ -61,6 +61,11 @@
       goBack();
     };
 
+    // Technically should not happen has the proposalId is checked in the auto subscriber
+    if (proposalId === undefined) {
+      return;
+    }
+
     await loadProposal({
       proposalId,
       setProposal: (proposalInfo: ProposalInfo) =>

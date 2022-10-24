@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount, setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
