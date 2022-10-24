@@ -125,7 +125,7 @@
     "UpdateFirewallRules": "Update Firewall Rules",
     "PrepareCanisterMigration": "Prepare Canister Migration",
     "CompleteCanisterMigration": "Complete Canister Migration",
-    "AddSnsWasm": "Bless new SNS deployment",
+    "AddSnsWasm": "Bless New SNS Deployment",
     "ChangeSubnetMembership": "Change Subnet Membership",
     "UpdateSubnetType": "Update Subnet Type",
     "ChangeSubnetTypeAssignment": "Change Subnet Type Assignment",
