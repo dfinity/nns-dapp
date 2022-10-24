@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import { loadProposal } from "$lib/services/proposals.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
@@ -30,7 +30,8 @@
     }
   };
 
-  let proposalId: ProposalId | undefined = mapProposalId(proposalIdText);
+  let proposalId: ProposalId | undefined;
+  $: proposalId = mapProposalId(proposalIdText);
 
   const selectedProposalStore = writable<SelectedProposalStore>({
     proposalId: undefined,
@@ -74,7 +75,7 @@
     });
   };
 
-  onMount(async () => {
+  $: proposalId, (async () => {
     if (proposalId === undefined) {
       await goBack();
       return;
@@ -89,7 +90,7 @@
     // TODO: find from store
 
     await findProposal();
-  });
+  })();
 
   // END: loading and navigation
 

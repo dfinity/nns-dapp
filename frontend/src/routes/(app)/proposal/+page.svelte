@@ -23,7 +23,7 @@
 {#if signedIn}
   <ProposalDetail proposalIdText={proposalId} />
 {:else}
-  <h1>Neuron NOT signed in</h1>
+  <h1>Proposal NOT signed in</h1>
 
   <SignIn />
 {/if}

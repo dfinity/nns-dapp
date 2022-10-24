@@ -8,8 +8,8 @@
   } from "$lib/derived/proposals.derived";
   import { onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {goto} from "$app/navigation";
-  import {pageStore} from "$lib/derived/page.derived";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let proposalInfo: ProposalInfo | undefined;
 
@@ -18,7 +18,6 @@
       return;
     }
 
-    // TODO(GIX-1071): this does not work
     await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`);
   };
 
@@ -27,7 +26,6 @@
       return;
     }
 
-    // TODO(GIX-1071): this does not work
     await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`);
   };
 
