@@ -10,7 +10,7 @@
   } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "$lib/utils/utils";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
@@ -24,6 +24,8 @@
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
+
+  export let referrerPath: AppPath | undefined = undefined;
 
   let loading = false;
   let hidden = false;
@@ -76,6 +78,7 @@
   };
 
   onMount(async () => {
+    // TODO(GIX-1071): use referrerPath
     const reload = reloadRouteData({
       expectedPreviousPath: AppPathLegacy.ProposalDetail,
       effectivePreviousPath: $routeStore.referrerPath,

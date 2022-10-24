@@ -18,7 +18,7 @@
   $: ({ proposal: proposalId } = data);
 
   let referrerPath: AppPath | undefined = undefined;
-  afterNavigate(({ from: {routeId} }: Navigation) => (referrerPath = routeId ? pathForRouteId(routeId) : undefined));
+  afterNavigate(({ from }: Navigation) => (referrerPath = from?.routeId !== null && from?.routeId !== undefined ? pathForRouteId(from.routeId) : undefined));
 </script>
 
 {#if signedIn}
