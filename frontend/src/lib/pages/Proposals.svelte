@@ -10,7 +10,7 @@
   } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "$lib/utils/utils";
-  import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
+  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,

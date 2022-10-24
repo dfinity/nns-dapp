@@ -3,7 +3,7 @@
  */
 
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { routeStore } from "$lib/stores/route.store";
 import { fireEvent } from "@testing-library/dom";
@@ -141,9 +141,7 @@ describe("ProposalNavigation", () => {
       fireEvent.click(btn);
 
       const { path } = get(routeStore);
-      expect(path).toEqual(
-        `${AppPath.Proposal}/${mockProposals[0].id}`
-      );
+      expect(path).toEqual(`${AppPath.Proposal}/${mockProposals[0].id}`);
     });
   });
 });

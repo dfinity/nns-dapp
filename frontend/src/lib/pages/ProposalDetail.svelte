@@ -48,9 +48,7 @@
 
   // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> =>
-    goto(
-      referrerPath !== undefined ? referrerPath : AppPath.Proposals
-    );
+    goto(referrerPath !== undefined ? referrerPath : AppPath.Proposals);
 
   layoutBackStore.set(goBack);
 
@@ -75,22 +73,23 @@
     });
   };
 
-  $: proposalId, (async () => {
-    if (proposalId === undefined) {
-      await goBack();
-      return;
-    }
+  $: proposalId,
+    (async () => {
+      if (proposalId === undefined) {
+        await goBack();
+        return;
+      }
 
-    // So we gonna load proposalId xxx and we set the id in store to avoid to load it multiple times
-    selectedProposalStore.set({
-      proposalId,
-      proposal: undefined,
-    });
+      // So we gonna load proposalId xxx and we set the id in store to avoid to load it multiple times
+      selectedProposalStore.set({
+        proposalId,
+        proposal: undefined,
+      });
 
-    // TODO: find from store
+      // TODO: find from store
 
-    await findProposal();
-  })();
+      await findProposal();
+    })();
 
   // END: loading and navigation
 

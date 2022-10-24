@@ -1,6 +1,6 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import {AppPath} from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
@@ -18,7 +18,9 @@
       return;
     }
 
-    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`);
+    await goto(
+      `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`
+    );
   };
 
   const previous = async () => {
@@ -26,7 +28,9 @@
       return;
     }
 
-    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`);
+    await goto(
+      `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`
+    );
   };
 
   let previousProposal: ProposalInfo | undefined;

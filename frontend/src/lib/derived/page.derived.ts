@@ -1,9 +1,9 @@
 import { page } from "$app/stores";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { AppPath } from "$lib/constants/routes.constants";
+import { pathForRouteId } from "$lib/utils/page.utils";
 import type { Page as PageType } from "@sveltejs/kit";
 import { derived, type Readable } from "svelte/store";
-import {pathForRouteId} from "$lib/utils/page.utils";
 
 /**
  * Derived stores which contain the information we need for the pages with strong types.
