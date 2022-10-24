@@ -7,7 +7,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -16,6 +16,10 @@
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+
+  export let referrerPath: AppPath | undefined = undefined;
 
   const loadCanisters = async () => {
     try {
@@ -31,6 +35,7 @@
   };
 
   onMount(async () => {
+    // TODO(GIX-1071): use referrerPath
     const reload = reloadRouteData({
       expectedPreviousPath: AppPathLegacy.CanisterDetail,
       effectivePreviousPath: $routeStore.referrerPath,
@@ -44,11 +49,12 @@
     await loadCanisters();
   });
 
-  const goToCanisterDetails = (canisterId: CanisterId) => () => {
-    routeStore.navigate({
-      path: `${AppPathLegacy.CanisterDetail}/${canisterId.toText()}`,
-    });
-  };
+  const goToCanisterDetails = (canisterId: CanisterId) => async () =>
+    await goto(
+      `${AppPath.Canister}/?u=${
+        $pageStore.universe
+      }&canister=${canisterId.toText()}`
+    );
 
   let loading: boolean;
   $: loading = $canistersStore.canisters === undefined;

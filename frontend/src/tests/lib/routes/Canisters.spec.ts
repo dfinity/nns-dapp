@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import Canisters from "$lib/routes/Canisters.svelte";
+import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
