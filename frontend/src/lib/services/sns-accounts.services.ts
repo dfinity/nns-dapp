@@ -1,3 +1,4 @@
+import { getTransactions } from "$lib/api/sns-index.api";
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -89,4 +90,29 @@ export const snsTransferTokens = async ({
     );
     return { success: false };
   }
+};
+
+// TODO: Pass rootcanister id and use wrapper https://dfinity.atlassian.net/browse/GIX-1093
+export const loadAccountTransactions = async ({
+  account,
+  rootCanisterId,
+}: {
+  account: Account;
+  rootCanisterId: Principal;
+}) => {
+  // Only load transactions for one SNS project which we know the index canister id
+  if (rootCanisterId.toText() !== "su63m-yyaaa-aaaaa-aaala-cai") {
+    return;
+  }
+  const identity = await getAccountIdentity(account);
+  const snsAccount = decodeSnsAccount(account.identifier);
+  const transactions = await getTransactions({
+    identity,
+    account: {
+      ...snsAccount,
+      subaccount: [],
+    },
+    maxResults: BigInt(50),
+  });
+  console.log(transactions);
 };
