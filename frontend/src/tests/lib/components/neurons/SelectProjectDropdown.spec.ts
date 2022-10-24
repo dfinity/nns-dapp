@@ -30,7 +30,7 @@ describe("SelectProjectDropdown", () => {
 
   beforeEach(() => {
     // Dropdown changes context only in the Neurons page for now.
-    page.mock({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
   it("should render NNS and projects as options", () => {

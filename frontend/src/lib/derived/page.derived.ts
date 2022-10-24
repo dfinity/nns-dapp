@@ -17,7 +17,7 @@ export interface Page {
 
 export const pageStore = derived<Readable<PageType>, Page>(
   page,
-  ({ data: { universe }, routeId }) => ({
+  ({ data: { universe }, routeId, params }) => ({
     universe: universe ?? OWN_CANISTER_ID_TEXT,
     path: routeId ? pathForRouteId(routeId) : null,
   })

@@ -17,12 +17,12 @@ describe("currentSnsTokenLabelStore", () => {
   });
   afterEach(() => {
     snsQueryStore.reset();
-    page.mock({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
   it("returns token symbol of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
-    page.mock({ universe: metadatas[0].rootCanisterId });
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
       (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
@@ -38,7 +38,7 @@ describe("currentSnsTokenLabelStore", () => {
 
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
-    page.mock({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();
@@ -46,7 +46,7 @@ describe("currentSnsTokenLabelStore", () => {
 
   it("returns undefined if current selected project has no data", () => {
     const [metadatas] = data;
-    page.mock({ universe: metadatas[0].rootCanisterId });
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();

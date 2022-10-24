@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
+import { page } from "$app/stores";
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { proposalsStore } from "$lib/stores/proposals.store";
-import { routeStore } from "$lib/stores/route.store";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -128,8 +129,13 @@ describe("ProposalNavigation", () => {
       const btn = getByTestId("proposal-nav-next") as HTMLButtonElement;
       fireEvent.click(btn);
 
-      const { path } = get(routeStore);
-      expect(path).toEqual(`${AppPath.Proposal}/${proposalId}`);
+      const { path } = get(pageStore);
+      expect(path).toEqual(AppPath.Proposal);
+
+      const {
+        data: { proposal },
+      } = get(page);
+      expect(proposal).toEqual(`${proposalId}`);
     });
 
     it("should go to previous", () => {
@@ -140,8 +146,13 @@ describe("ProposalNavigation", () => {
       const btn = getByTestId("proposal-nav-previous") as HTMLButtonElement;
       fireEvent.click(btn);
 
-      const { path } = get(routeStore);
-      expect(path).toEqual(`${AppPath.Proposal}/${mockProposals[0].id}`);
+      const { path } = get(pageStore);
+      expect(path).toEqual(AppPath.Proposal);
+
+      const {
+        data: { proposal },
+      } = get(page);
+      expect(proposal).toEqual(`${mockProposals[0].id}`);
     });
   });
 });

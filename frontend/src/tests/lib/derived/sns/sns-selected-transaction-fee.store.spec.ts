@@ -19,12 +19,12 @@ describe("snsSelectedTransactionFeeStore", () => {
   });
   afterEach(() => {
     snsQueryStore.reset();
-    page.mock({ universe: mockPrincipal.toText() });
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
   it("returns transaction fee of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
-    page.mock({ universe: metadatas[0].rootCanisterId });
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
       (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
@@ -49,7 +49,7 @@ describe("snsSelectedTransactionFeeStore", () => {
 
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
-    page.mock({ universe: mockPrincipal.toText() });
+    page.mock({ data: { universe: mockPrincipal.toText() } });
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
     expect(actualFeeTokens).toBeUndefined();
@@ -57,7 +57,7 @@ describe("snsSelectedTransactionFeeStore", () => {
 
   it("returns undefined if current selected project has no data", () => {
     const [metadatas] = data;
-    page.mock({ universe: metadatas[0].rootCanisterId });
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
     expect(actualFeeTokens).toBeUndefined();

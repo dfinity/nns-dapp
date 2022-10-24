@@ -42,7 +42,7 @@ describe("Accounts", () => {
 
   beforeEach(() => {
     // Reset to default value
-    page.mock({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,

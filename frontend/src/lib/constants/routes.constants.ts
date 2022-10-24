@@ -1,5 +1,3 @@
-export const CONTEXT_PATH = "/u";
-
 export enum AppPath {
   Authentication = "/",
   Accounts = "/accounts",
@@ -13,3 +11,5 @@ export enum AppPath {
   Launchpad = "/launchpad",
   Project = "/project",
 }
+
+export const CONTEXT_PATH = "/u";

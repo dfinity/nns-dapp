@@ -1,10 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { sortedSnsNeuronStore } from "$lib/derived/sorted-sns-neurons.derived";
-import { routeStore } from "$lib/stores/route.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { tick } from "svelte";
@@ -47,9 +46,8 @@ describe("sortedSnsNeuronStore", () => {
       neurons,
       certified: true,
     });
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/neurons`,
-    });
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await tick();
     expect(get(sortedSnsNeuronStore)).toEqual([
@@ -117,9 +115,9 @@ describe("sortedSnsNeuronStore", () => {
       neurons: neurons2,
       certified: true,
     });
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/neurons`,
-    });
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
+
     await tick();
     expect(get(sortedSnsNeuronStore)).toEqual([
       neurons1[1],
@@ -127,10 +125,8 @@ describe("sortedSnsNeuronStore", () => {
       neurons1[0],
     ]);
 
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${principal2.toText()}/neurons`,
-    });
-    routeStore.update({ path: `${CONTEXT_PATH}/aaaaa-aa/neurons` });
+    page.mock({ data: { universe: principal2.toText() } });
+
     await tick();
     expect(get(sortedSnsNeuronStore)).toEqual([
       neurons2[2],

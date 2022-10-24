@@ -70,16 +70,21 @@
       return;
     }
 
-    // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
-    selectedSnsNeuronStore.set({
-      selected: {
-        neuronIdHex: neuronId,
-        rootCanisterId: Principal.fromText($pageStore.universe),
-      },
-      neuron: null,
-    });
+    try {
+      // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
+      selectedSnsNeuronStore.set({
+        selected: {
+          neuronIdHex: neuronId,
+          rootCanisterId: Principal.fromText($pageStore.universe),
+        },
+        neuron: null,
+      });
 
-    await loadNeuron();
+      await loadNeuron();
+    } catch (err) {
+      // $pageStore.universe might be an invalid principal, like empty or yolo
+      await goBack();
+    }
   });
 
   // END: loading and navigation

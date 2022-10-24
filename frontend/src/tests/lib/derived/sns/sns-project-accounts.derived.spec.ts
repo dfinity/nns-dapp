@@ -17,7 +17,7 @@ import {
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {
-    page.mock({ universe: mockPrincipal.toText() });
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
   it("should return undefined if project is not set in the store", () => {

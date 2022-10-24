@@ -9,9 +9,19 @@ export const goto = async (
     state?: any;
   }
 ): Promise<void> => {
-  const { searchParams } =
+  const { search, pathname: routeId } =
     url instanceof URL ? url : new URL(`http://localhost:8080${url}`);
+
+  const { u: universe, ...rest }: Record<string, string> = Object.fromEntries(
+    new URLSearchParams(search)
+  );
+  console.log("params", universe, rest);
+
   page.mock({
-    universe: searchParams.get("u"),
+    data: {
+      universe,
+      ...rest,
+    },
+    routeId,
   });
 };

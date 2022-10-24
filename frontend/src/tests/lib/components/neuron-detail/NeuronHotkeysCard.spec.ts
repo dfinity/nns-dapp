@@ -3,10 +3,12 @@
  */
 
 import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { removeHotkey } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -97,9 +99,6 @@ describe("NeuronHotkeysCard", () => {
   });
 
   it("user is redirected if it removes itself from hotkeys", async () => {
-    const spyReplace = jest
-      .spyOn(routeStore, "replace")
-      .mockImplementation(jest.fn());
     const neuron = {
       ...controlledNeuron,
       fullNeuron: {
@@ -118,8 +117,7 @@ describe("NeuronHotkeysCard", () => {
 
     await fireEvent.click(firstButton);
     expect(removeHotkey).toBeCalled();
-    waitFor(() => {
-      expect(spyReplace).toBeCalled();
-    });
+
+    await waitFor(() => expect(get(pageStore).path).toEqual(AppPath.Neurons));
   });
 });

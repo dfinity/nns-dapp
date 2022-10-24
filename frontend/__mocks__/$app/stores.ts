@@ -6,17 +6,23 @@ const initPageStoreMock = () => {
   const { subscribe, set } = writable<Partial<Page>>({
     data: {
       universe: OWN_CANISTER_ID_TEXT,
+      path: undefined,
     },
   });
 
   return {
     subscribe,
 
-    mock: (params: Record<string, string>) =>
+    mock: ({
+      routeId = undefined,
+      data = { universe: OWN_CANISTER_ID_TEXT },
+    }: {
+      routeId?: string;
+      data?: { universe: string } & Record<string, string>;
+    }) =>
       set({
-        data: {
-          universe: params.universe ?? OWN_CANISTER_ID_TEXT,
-        },
+        data,
+        routeId: `(app)${routeId}`,
       }),
   };
 };

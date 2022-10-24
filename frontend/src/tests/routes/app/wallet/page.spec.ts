@@ -40,7 +40,7 @@ describe("Wallet", () => {
 
   describe("sns context", () => {
     it("should render SnsWallet", () => {
-      page.mock({ universe: mockSnsCanisterIdText });
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const { getByTestId } = render(Wallet, {
         props: {

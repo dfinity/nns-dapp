@@ -44,7 +44,7 @@ describe("SnsTransactionModal", () => {
         return () => undefined;
       });
 
-    page.mock({ universe: mockPrincipal.toText() });
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
   it("should transfer tokens", async () => {

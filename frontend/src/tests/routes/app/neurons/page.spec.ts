@@ -45,7 +45,7 @@ describe("Neurons", () => {
 
   beforeEach(() => {
     // Reset to default value
-    page.mock({ universe: OWN_CANISTER_ID_TEXT });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
   it("should render NnsNeurons by default", () => {

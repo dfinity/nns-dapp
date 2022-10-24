@@ -3,7 +3,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 // TODO(GIX-1071): test + constant for (app)
 export const pathForRouteId = (routeId: string): AppPath => {
   const index = Object.values(AppPath).indexOf(
-    routeId.replace("(app)", "") as unknown as AppPath
+    routeId.replace("(app)", "").replace(/\/$/, "") as unknown as AppPath
   );
   const key = Object.keys(AppPath)[index];
 
