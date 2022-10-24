@@ -3,17 +3,18 @@
  */
 
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
 } from "$lib/services/sns.services";
-import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
+import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
+import { get } from "svelte/store";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
@@ -31,13 +32,7 @@ jest.mock("$lib/services/sns.services", () => {
 
 describe("ProjectDetail", () => {
   describe("present project in store", () => {
-    jest
-      .spyOn(routeStore, "subscribe")
-      .mockImplementation(
-        mockRouteStoreSubscribe(
-          `${AppPath.Project}/${mockSnsFullProject.rootCanisterId.toText()}`
-        )
-      );
+    page.mock({ data: { universe: null } });
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -59,20 +54,25 @@ describe("ProjectDetail", () => {
       snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
     });
+
+    const props = {
+      rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
+    };
+
     it("should load summary", () => {
-      render(ProjectDetail);
+      render(ProjectDetail, props);
 
       waitFor(() => expect(loadSnsSummary).toBeCalled());
     });
 
     it("should load swap state", () => {
-      render(ProjectDetail);
+      render(ProjectDetail, props);
 
       waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
     });
 
     it("should render info section", async () => {
-      const { queryByTestId } = render(ProjectDetail);
+      const { queryByTestId } = render(ProjectDetail, props);
 
       await waitFor(() =>
         expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
@@ -80,7 +80,7 @@ describe("ProjectDetail", () => {
     });
 
     it("should render status section", async () => {
-      const { queryByTestId } = render(ProjectDetail);
+      const { queryByTestId } = render(ProjectDetail, props);
 
       await waitFor(() =>
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
@@ -89,30 +89,36 @@ describe("ProjectDetail", () => {
   });
 
   describe("invalid root canister id", () => {
-    jest
-      .spyOn(routeStore, "subscribe")
-      .mockImplementation(
-        mockRouteStoreSubscribe(`${AppPath.Project}/invalid-project`)
-      );
-    jest.spyOn(routeStore, "replace");
-    it("should rediret to launchpad", () => {
-      render(ProjectDetail);
+    page.mock({ data: { universe: null } });
 
-      waitFor(() => expect(routeStore.replace).toBeCalled());
+    it("should redirect to launchpad", () => {
+      render(ProjectDetail, {
+        props: {
+          rootCanisterId: "invalid-project",
+        },
+      });
+
+      waitFor(() => {
+        const { path } = get(pageStore);
+        expect(path).toEqual(AppPath.Launchpad);
+      });
     });
   });
 
   describe("not found canister id", () => {
-    jest
-      .spyOn(routeStore, "subscribe")
-      .mockImplementation(
-        mockRouteStoreSubscribe(`${AppPath.Project}/aaaaa-aa`)
-      );
-    jest.spyOn(routeStore, "replace");
-    it("should rediret to launchpad", () => {
-      render(ProjectDetail);
+    page.mock({ data: { universe: null } });
 
-      waitFor(() => expect(routeStore.replace).toBeCalled());
+    it("should redirect to launchpad", () => {
+      render(ProjectDetail, {
+        props: {
+          rootCanisterId: "aaaaa-aa",
+        },
+      });
+
+      waitFor(() => {
+        const { path } = get(pageStore);
+        expect(path).toEqual(AppPath.Launchpad);
+      });
     });
   });
 });

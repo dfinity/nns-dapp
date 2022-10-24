@@ -15,7 +15,6 @@ export const goto = async (
   const { u: universe, ...rest }: Record<string, string> = Object.fromEntries(
     new URLSearchParams(search)
   );
-  console.log("params", universe, rest);
 
   page.mock({
     data: {

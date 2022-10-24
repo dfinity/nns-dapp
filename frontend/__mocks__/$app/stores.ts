@@ -18,7 +18,7 @@ const initPageStoreMock = () => {
       data = { universe: OWN_CANISTER_ID_TEXT },
     }: {
       routeId?: string;
-      data?: { universe: string } & Record<string, string>;
+      data?: { universe: string | null } & Record<string, string>;
     }) =>
       set({
         data,

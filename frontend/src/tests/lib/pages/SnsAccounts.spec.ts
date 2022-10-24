@@ -2,12 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
@@ -26,10 +25,8 @@ describe("SnsAccounts", () => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-      // Context needs to match the mocked sns accounts
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
-      });
+
+      page.mock({ data: { universe: mockPrincipal.toText() } });
     });
 
     it("should render accounts title", () => {
