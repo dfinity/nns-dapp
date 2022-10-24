@@ -2,10 +2,12 @@ import { page } from "./stores";
 
 export const goto = async (
   url: string | URL,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   opts?: {
     replaceState?: boolean;
     noscroll?: boolean;
     keepfocus?: boolean;
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     state?: any;
   }
 ): Promise<void> => {
