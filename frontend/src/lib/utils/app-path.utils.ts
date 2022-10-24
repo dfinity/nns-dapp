@@ -4,9 +4,7 @@ const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPathLegacy.CanisterDetail]: `${AppPathLegacy.CanisterDetail}/${IDENTIFIER_REGEX}`,
   [AppPathLegacy.ProjectDetail]: `${AppPathLegacy.ProjectDetail}/${IDENTIFIER_REGEX}`,
-  [AppPathLegacy.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,
 };
 
 const pathValidation = (path: AppPathLegacy): string => mapper[path] ?? path;

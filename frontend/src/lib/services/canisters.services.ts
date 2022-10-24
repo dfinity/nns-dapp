@@ -254,18 +254,6 @@ export const detachCanister = async (
   }
 };
 
-export const routePathCanisterId = (
-  path: string | undefined
-): string | undefined => {
-  if (
-    !isRoutePath({ paths: [AppPathLegacy.CanisterDetail], routePath: path })
-  ) {
-    return undefined;
-  }
-  const canisterId: string | undefined = getLastPathDetail(path);
-  return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
-};
-
 /**
  * Makes a call to the IC Management "canister" to get the canister details
  *

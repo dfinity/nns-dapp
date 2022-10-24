@@ -13,7 +13,6 @@ describe("routes", () => {
   describe("isAppPath()", () => {
     it("should translate valid urls", () => {
       expect(isAppPath("/")).toBeTruthy();
-      expect(isAppPath(`${AppPathLegacy.CanisterDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${AppPathLegacy.Launchpad}`)).toBeTruthy();
       expect(isAppPath(`${AppPathLegacy.ProjectDetail}/123`)).toBeTruthy();
       expect(isAppPath(`${CONTEXT_PATH}/123/neurons`)).toBeTruthy();

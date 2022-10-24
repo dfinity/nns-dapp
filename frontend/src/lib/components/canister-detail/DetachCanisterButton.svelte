@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import {AppPath} from "$lib/constants/routes.constants";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { detachCanister } from "$lib/services/canisters.services";
   import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import {goto} from "$app/navigation";
 
   export let canisterId: Principal;
 
@@ -25,7 +25,9 @@
       toastsSuccess({
         labelKey: "canister_detail.detach_success",
       });
-      routeStore.replace({ path: AppPathLegacy.Canisters });
+
+      // TODO(GIX-1071): utils?
+      await goto(AppPath.Canisters);
     }
   };
 </script>

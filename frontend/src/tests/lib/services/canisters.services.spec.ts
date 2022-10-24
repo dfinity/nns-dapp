@@ -10,7 +10,6 @@ import {
   getIcpToCyclesExchangeRate,
   listCanisters,
   removeController,
-  routePathCanisterId,
   topUpCanister,
   updateSettings,
 } from "$lib/services/canisters.services";
@@ -299,26 +298,6 @@ describe("canisters-services", () => {
       expect(spyUpdateSettings).not.toBeCalled();
 
       resetIdentity();
-    });
-  });
-
-  describe("routePathCanisterId", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get canister id from valid path", () => {
-      expect(
-        routePathCanisterId(`/#/canister/${mockCanister.canister_id.toText()}`)
-      ).toEqual(mockCanister.canister_id.toText());
-    });
-
-    it("should not get canister id from invalid path", () => {
-      expect(routePathCanisterId("/#/canister/")).toBeUndefined();
-      expect(routePathCanisterId("/#/canisters")).toBeUndefined();
-      expect(routePathCanisterId(undefined)).toBeUndefined();
     });
   });
 
