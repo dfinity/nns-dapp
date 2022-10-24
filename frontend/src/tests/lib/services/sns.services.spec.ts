@@ -52,7 +52,7 @@ describe("sns-services", () => {
       snsQueryStore.reset();
     });
 
-    it("should fetch swap state call api.participateInSnsSwap, sync accounts and return success true", async () => {
+    it("should fetch swap state, call api.participateInSnsSwap, sync accounts and return success true", async () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       const spyParticipate = jest
