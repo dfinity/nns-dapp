@@ -25,7 +25,6 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
-  TokenAmount,
   Topic,
   Vote,
   votedNeurons,
@@ -323,12 +322,12 @@ export const isValidInputAmount = ({
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
 export const isEnoughToStakeNeuron = ({
-  stake,
-  fee = 0,
+  stakeE8s,
+  feeE8s = BigInt(0),
 }: {
-  stake: TokenAmount;
-  fee?: number;
-}): boolean => stake.toE8s() >= MIN_NEURON_STAKE + fee;
+  stakeE8s: bigint;
+  feeE8s?: bigint;
+}): boolean => stakeE8s >= BigInt(MIN_NEURON_STAKE) + feeE8s;
 
 export const isEnoughMaturityToSpawn = ({
   neuron: { fullNeuron },

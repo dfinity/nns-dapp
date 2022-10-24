@@ -64,7 +64,15 @@ const initTransactionFeesStore = () => {
 
 export const transactionsFeesStore = initTransactionFeesStore();
 
+/**
+ * @deprecated prefer mainTransactionFeeE8sStore to use e8s for amount of tokens instead of Number.
+ */
 export const mainTransactionFeeStore = derived(
   transactionsFeesStore,
   ($store) => Number($store.main)
+);
+
+export const mainTransactionFeeE8sStore = derived(
+  transactionsFeesStore,
+  ($store) => $store.main
 );

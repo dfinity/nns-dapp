@@ -22,7 +22,6 @@ import {
 } from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -33,7 +32,7 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import {
@@ -61,14 +60,9 @@ import {
   userAuthorizedNeuron,
   validTopUpAmount,
 } from "$lib/utils/neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import {
-  ICPToken,
-  TokenAmount,
-  Topic,
-  type NeuronId,
-  type NeuronInfo,
-} from "@dfinity/nns";
+import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import {
@@ -206,16 +200,13 @@ export const stakeNeuron = async ({
   loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
-    const stake = TokenAmount.fromNumber({
-      amount,
-      token: ICPToken,
-    });
+    const stake = numberToE8s(amount);
     assertEnoughAccountFunds({
       account,
-      amountE8s: stake.toE8s(),
+      amountE8s: stake,
     });
 
-    if (!isEnoughToStakeNeuron({ stake })) {
+    if (!isEnoughToStakeNeuron({ stakeE8s: stake })) {
       toastsError({
         labelKey: "error.amount_not_enough_stake_neuron",
       });
@@ -562,18 +553,14 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const fee = get(mainTransactionFeeStore);
-    const transactionFeeAmount = fee / E8S_PER_ICP;
-    const stake = TokenAmount.fromNumber({
-      amount: amount + transactionFeeAmount,
-      token: ICPToken,
-    });
+    const feeE8s = get(mainTransactionFeeE8sStore);
+    const amountE8s = numberToE8s(amount) + feeE8s;
 
-    if (!isEnoughToStakeNeuron({ stake, fee })) {
+    if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
       throw new InsufficientAmountError();
     }
 
-    await splitNeuronApi({ neuronId, identity, amount: stake });
+    await splitNeuronApi({ neuronId, identity, amount: amountE8s });
 
     await listNeurons();
 

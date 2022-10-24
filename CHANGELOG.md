@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 87079
+* Support for new payload type.
+* Support for new proposal topic.
+* UI Improvements in Stake Maturity.
+* Reduce bundle by removing imported test script.
+
 ## Proposal 86114
 * Enable Stake Maturity for II neurons.
 * Fix CSP 'strict-dynamic' issue on Firefox.
