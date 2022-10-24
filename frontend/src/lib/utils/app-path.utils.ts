@@ -4,7 +4,6 @@ const IDENTIFIER_REGEX = "[a-zA-Z0-9-]+";
 
 const mapper: Record<string, string> = {
   // exceptions only
-  [AppPathLegacy.ProposalDetail]: `${AppPathLegacy.ProposalDetail}/[0-9]+`,
   [AppPathLegacy.CanisterDetail]: `${AppPathLegacy.CanisterDetail}/${IDENTIFIER_REGEX}`,
   [AppPathLegacy.ProjectDetail]: `${AppPathLegacy.ProjectDetail}/${IDENTIFIER_REGEX}`,
   [AppPathLegacy.NeuronDetail]: `${CONTEXT_PATH}/${IDENTIFIER_REGEX}/neuron/${IDENTIFIER_REGEX}`,

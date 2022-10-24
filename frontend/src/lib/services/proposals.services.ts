@@ -359,16 +359,3 @@ export const loadProposalPayload = async ({
     });
   }
 };
-
-export const routePathProposalId = (
-  path: string
-): { proposalId: ProposalId | undefined } | undefined => {
-  if (
-    !isRoutePath({ paths: [AppPathLegacy.ProposalDetail], routePath: path })
-  ) {
-    return undefined;
-  }
-
-  const proposalId: ProposalId | undefined = getLastPathDetailId(path);
-  return { proposalId };
-};

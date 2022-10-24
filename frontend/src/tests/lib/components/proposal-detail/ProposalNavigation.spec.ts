@@ -3,7 +3,7 @@
  */
 
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-import { AppPathLegacy } from "$lib/constants/routes.constants";
+import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { routeStore } from "$lib/stores/route.store";
 import { fireEvent } from "@testing-library/dom";
@@ -129,7 +129,7 @@ describe("ProposalNavigation", () => {
       fireEvent.click(btn);
 
       const { path } = get(routeStore);
-      expect(path).toEqual(`${AppPathLegacy.ProposalDetail}/${proposalId}`);
+      expect(path).toEqual(`${AppPath.Proposal}/${proposalId}`);
     });
 
     it("should go to previous", () => {
@@ -142,7 +142,7 @@ describe("ProposalNavigation", () => {
 
       const { path } = get(routeStore);
       expect(path).toEqual(
-        `${AppPathLegacy.ProposalDetail}/${mockProposals[0].id}`
+        `${AppPath.Proposal}/${mockProposals[0].id}`
       );
     });
   });

@@ -1,5 +1,4 @@
 export enum AppPathLegacy {
-  Proposals = "/#/proposals",
   Canisters = "/#/canisters",
   ProposalDetail = "/#/proposal",
   CanisterDetail = "/#/canister",

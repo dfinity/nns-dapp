@@ -13,7 +13,6 @@ import {
   listProposals,
   loadProposal,
   loadProposalPayload,
-  routePathProposalId,
 } from "$lib/services/proposals.services";
 import {
   proposalPayloadsStore,
@@ -195,26 +194,6 @@ describe("proposals-services", () => {
         paginationOver: true,
         certified: true,
       });
-    });
-  });
-
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-    it("should get proposalId from valid path", () => {
-      let result = routePathProposalId("/#/proposal/123");
-      expect(result?.proposalId).toEqual(BigInt(123));
-      result = routePathProposalId("/#/proposal/0");
-      expect(result?.proposalId).toEqual(BigInt(0));
-    });
-
-    it("should not get proposalId from invalid path", () => {
-      expect(routePathProposalId("/#/proposal/")).toBeUndefined();
-      expect(routePathProposalId("/#/proposal/1.5")).toBeUndefined();
-      expect(routePathProposalId("/#/proposal/123n")).toBeUndefined();
     });
   });
 

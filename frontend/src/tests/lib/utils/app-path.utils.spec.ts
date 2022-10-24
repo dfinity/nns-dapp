@@ -110,11 +110,6 @@ describe("routes", () => {
       expect(isContextPath(CONTEXT_PATH + "/123")).toBeTruthy();
       expect(isContextPath(CONTEXT_PATH + "/123/neuron/123")).toBeTruthy();
     });
-
-    it("returns false for non context related paths", () => {
-      expect(isContextPath(AppPathLegacy.Proposals)).toBeFalsy();
-      expect(isContextPath(AppPathLegacy.ProposalDetail + "/123")).toBeFalsy();
-    });
   });
 
   describe("getContextFromPath", () => {
