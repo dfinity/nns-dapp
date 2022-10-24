@@ -27,7 +27,7 @@ let timer: NodeJS.Timeout | undefined = undefined;
  * The timer is executed only if user has signed in
  */
 export const startIdleTimer = () =>
-  (timer = setInterval(async () => await onIdleSignOut(), 5000));
+    (timer = setInterval(async () => await onIdleSignOut(), 1000));
 
 export const stopIdleTimer = () => {
   if (!timer) {
@@ -59,7 +59,7 @@ const onIdleSignOut = async () => {
  */
 const checkAuthentication = async (): Promise<boolean> => {
   const authClient: AuthClient = await createAuthClient();
-  return false;
+  return authClient.isAuthenticated();
 };
 
 /**
@@ -70,12 +70,12 @@ const checkAuthentication = async (): Promise<boolean> => {
 const checkDelegationChain = async (): Promise<boolean> => {
   const idbStorage: IdbStorage = new IdbStorage();
   const delegationChain: string | null = await idbStorage.get(
-    KEY_STORAGE_DELEGATION
+      KEY_STORAGE_DELEGATION
   );
 
   return (
-    delegationChain !== null &&
-    isDelegationValid(DelegationChain.fromJSON(delegationChain))
+      delegationChain !== null &&
+      isDelegationValid(DelegationChain.fromJSON(delegationChain))
   );
 };
 
