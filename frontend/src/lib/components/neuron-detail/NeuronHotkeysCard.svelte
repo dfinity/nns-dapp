@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { IconClose } from "@dfinity/gix-components";
   import { getIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -9,7 +9,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";

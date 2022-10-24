@@ -1,14 +1,7 @@
-export enum AppPathLegacy {
-  ProposalDetail = "/#/proposal",
-  CanisterDetail = "/#/canister",
-  ProjectDetail = "/#/u",
-  NeuronDetail = "/#/u/:rootCanisterId/neuron",
-}
-
 export const CONTEXT_PATH = "/u";
 
 export enum AppPath {
-  Login = "/",
+  Authentication = "/",
   Accounts = "/accounts",
   Wallet = "/wallet",
   Neurons = "/neurons",

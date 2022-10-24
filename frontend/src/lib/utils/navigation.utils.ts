@@ -1,5 +1,4 @@
-import type { AppPathLegacy } from "$lib/constants/routes.constants";
-import { isRoutePath } from "./app-path.utils";
+import type { AppPath } from "$lib/constants/routes.constants";
 import { isArrayEmpty } from "./utils";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
@@ -9,14 +8,15 @@ export const reloadRouteData = <T>({
   effectivePreviousPath,
   currentData,
 }: {
-  expectedPreviousPath: AppPathLegacy;
-  effectivePreviousPath: AppPathLegacy | string | undefined;
+  expectedPreviousPath: AppPath;
+  effectivePreviousPath: AppPath | undefined;
   currentData: T[] | undefined;
 }): boolean => {
-  const isReferrerDetail = isRoutePath({
-    paths: [expectedPreviousPath],
-    routePath: effectivePreviousPath,
-  });
+  const isRoutePath = (): boolean =>
+    effectivePreviousPath !== undefined &&
+    effectivePreviousPath === expectedPreviousPath;
+
+  const isReferrerDetail = isRoutePath();
 
   return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };

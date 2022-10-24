@@ -14,8 +14,7 @@
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;

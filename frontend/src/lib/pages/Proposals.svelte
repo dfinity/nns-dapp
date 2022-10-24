@@ -10,13 +10,12 @@
   } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { debounce } from "$lib/utils/utils";
-  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import {
     listNextProposals,
     listProposals,
   } from "$lib/services/proposals.services";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import ProposalsList from "$lib/components/proposals/ProposalsList.svelte";
@@ -78,10 +77,9 @@
   };
 
   onMount(async () => {
-    // TODO(GIX-1071): use referrerPath
     const reload = reloadRouteData({
-      expectedPreviousPath: AppPathLegacy.ProposalDetail,
-      effectivePreviousPath: $routeStore.referrerPath,
+      expectedPreviousPath: AppPath.Proposal,
+      effectivePreviousPath: referrerPath,
       currentData: $sortedProposals.proposals,
     });
 

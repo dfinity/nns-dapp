@@ -1,16 +1,14 @@
 <script lang="ts">
-  import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import type { SnsFullProject } from "$lib/stores/projects.store";
   import { Card } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import {goto} from "$app/navigation";
-  import {pageStore} from "$lib/derived/page.derived";
+  import { goto } from "$app/navigation";
 
   export let project: SnsFullProject;
 
@@ -32,7 +30,10 @@
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
   // TODO(GIX-1071): utils?
-  const showProject = async () => await goto(`${AppPath.Project}/?project=${project.rootCanisterId.toText()}`);
+  const showProject = async () =>
+    await goto(
+      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
+    );
 </script>
 
 <Card

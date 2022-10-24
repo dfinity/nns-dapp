@@ -11,11 +11,11 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/neurons.services";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
 
@@ -71,9 +71,8 @@
         labelKey: "neuron_detail.disburse_success",
       });
 
-      routeStore.replace({
-        path: $neuronsPathStore,
-      });
+      // TODO(GIX-1071): utils?
+      await goto($neuronsPathStore);
     }
 
     dispatcher("nnsClose");

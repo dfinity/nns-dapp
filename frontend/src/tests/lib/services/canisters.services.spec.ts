@@ -26,7 +26,6 @@ import {
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
 import {
-  mockCanister,
   mockCanisterDetails,
   mockCanisters,
   mockCanisterSettings,

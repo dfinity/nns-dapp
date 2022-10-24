@@ -7,11 +7,10 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { AppPath, AppPathLegacy } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { routeStore } from "$lib/stores/route.store";
   import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
@@ -35,10 +34,9 @@
   };
 
   onMount(async () => {
-    // TODO(GIX-1071): use referrerPath
     const reload = reloadRouteData({
-      expectedPreviousPath: AppPathLegacy.CanisterDetail,
-      effectivePreviousPath: $routeStore.referrerPath,
+      expectedPreviousPath: AppPath.Canister,
+      effectivePreviousPath: referrerPath,
       currentData: $canistersStore.canisters,
     });
 

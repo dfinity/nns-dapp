@@ -13,13 +13,11 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AppPathLegacy } from "$lib/constants/routes.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { isController } from "$lib/utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,

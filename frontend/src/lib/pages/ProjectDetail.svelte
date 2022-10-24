@@ -3,15 +3,12 @@
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { AppPathLegacy, AppPath } from "$lib/constants/routes.constants";
-  import { routeStore } from "$lib/stores/route.store";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
-    routePathRootCanisterId,
   } from "$lib/services/sns.services";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -76,7 +73,6 @@
     store: projectDetailStore,
     reload,
   });
-
 
   const goBack = (): Promise<void> => goto(AppPath.Launchpad);
 
@@ -148,7 +144,7 @@
 
       await goBack();
     }
-  })()
+  })();
 </script>
 
 <main>

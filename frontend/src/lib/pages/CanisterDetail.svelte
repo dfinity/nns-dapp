@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import {AppPath} from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
   import {
     getCanisterDetails,
     listCanisters,
@@ -34,7 +34,7 @@
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import Footer from "$lib/components/common/Footer.svelte";
-  import {goto} from "$app/navigation";
+  import { goto } from "$app/navigation";
 
   // BEGIN: loading and navigation
 
