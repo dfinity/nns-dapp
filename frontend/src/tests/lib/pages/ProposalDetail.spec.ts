@@ -6,7 +6,6 @@ import ProposalDetail from "$lib/pages/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
-import { routeStore } from "$lib/stores/route.store";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
@@ -18,7 +17,6 @@ import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
 } from "../../mocks/proposals.store.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 import { silentConsoleErrors } from "../../utils/utils.test-utils";
 
 describe("ProposalDetail", () => {
@@ -33,12 +31,6 @@ describe("ProposalDetail", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-
-    jest
-      .spyOn(routeStore, "subscribe")
-      .mockImplementation(
-        mockRouteStoreSubscribe(`/#/proposal/${mockProposals[0].id}`)
-      );
 
     jest
       .spyOn(proposalsStore, "subscribe")
@@ -57,8 +49,12 @@ describe("ProposalDetail", () => {
       .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
   });
 
+  const props = {
+    proposalIdText: `${mockProposals[0].id}`,
+  }
+
   it("should render loading neurons", async () => {
-    const { getByText } = render(ProposalDetail);
+    const { getByText } = render(ProposalDetail, props);
 
     await waitFor(() =>
       expect(
