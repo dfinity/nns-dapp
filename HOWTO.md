@@ -116,11 +116,11 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
 - Build: `cargo build`
 - Deploy and test on available proposals
 
-#### Payload Definition Search Sample (UpdateSnsWasmSnsSubnetIds)
+#### Payload Definition Search Sample Steps for `UpdateSnsWasmSnsSubnetIds`
 
 1. Search for the new nnsFunction ID
    - `UpdateSnsWasmSnsSubnetIds = 34` https://github.com/dfinity/ic/blob/b41a71c4e1a78795f6e0fd13284a6b0ea6a95efc/rs/nns/governance/gen/ic_nns_governance.pb.v1.rs#L2472
-2. Find its definition
+2. Find its request type definition
    1. type `UpdateSnsWasmSnsSubnetIds`:
       - ```
           NnsFunction::UpdateSnsWasmSnsSubnetIds => {
@@ -143,3 +143,5 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
         };
         ```
         https://github.com/dfinity/ic/blob/72b96bc88f8d76c16ade62189a6ff81dee9e58ee/rs/nns/sns-wasm/canister/sns-wasm.did#L107
+
+ By the request definition we can decide what kind of transformation should be applied (e.g. `identity` (`34 => identity...`) or custom implementation (e.g. `30 => transform::<AddWasmRequest...`))  
