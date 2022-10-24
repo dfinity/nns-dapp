@@ -86,8 +86,6 @@
         proposal: undefined,
       });
 
-      // TODO: find from store
-
       await findProposal();
     })();
 
