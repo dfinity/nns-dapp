@@ -4,7 +4,7 @@
 
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-import CanisterDetail from "$lib/routes/CanisterDetail.svelte";
+import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
 import {
   getCanisterDetails,
   listCanisters,

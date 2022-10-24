@@ -2,7 +2,7 @@
   import { onMount, setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
   import {
     getCanisterDetails,
     routePathCanisterId,
@@ -36,6 +36,9 @@
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import Footer from "$lib/components/common/Footer.svelte";
+  import {goto} from "$app/navigation";
+
+  // BEGIN: loading and navigation
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
@@ -61,11 +64,9 @@
     }
   });
 
-  const goBack = () =>
-    routeStore.navigate({
-      path: AppPathLegacy.Canisters,
-    });
+  const goBack = (): Promise<void> => goto(AppPath.Canisters);
 
+  // TODO(GIX-1071): double check promises
   layoutBackStore.set(goBack);
 
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({
@@ -123,24 +124,20 @@
     reloadDetails,
   });
 
-  let routeCanisterId: string | undefined;
-  $: routeCanisterId = routePathCanisterId($routeStore.path);
+  export let canisterId: string | undefined | null;
 
   let selectedCanister: CanisterInfo | undefined;
   $: selectedCanister = getCanisterFromStore({
-    canisterId: routeCanisterId,
+    canisterId,
     canistersStore: $canistersStore,
   });
 
-  // TODO: The way the route path and the loading of the data are handled (following function) is really close to what is developed in Wallet.svelte
-  // Therefore, there are probably ways to make this generic and refactor both routes
-
-  $: routeCanisterId,
+  $: canisterId,
     selectedCanister,
     canistersReady,
-    (() => {
-      // When detaching, this is also executed but there is no `routeCanisterId`.
-      if (!canistersReady || routeCanisterId === undefined) {
+    (async () => {
+      // When detaching, this is also executed but there is no `canisterId`.
+      if (!canistersReady || canisterId === undefined) {
         return;
       }
 
@@ -164,7 +161,7 @@
         }));
 
         if (selectedCanister !== undefined) {
-          reloadDetails(selectedCanister.canister_id);
+          await reloadDetails(selectedCanister.canister_id);
         }
       }
 
@@ -175,16 +172,19 @@
         if (storeCanister === undefined) {
           toastsError({
             labelKey: replacePlaceholders($i18n.error.canister_not_found, {
-              $canister_id: routeCanisterId ?? "",
+              $canister_id: canisterId ?? "",
             }),
           });
         }
-        goBack();
+
+        await goBack();
       }
     })();
 
   $: ({ details: canisterDetails, info: canisterInfo } =
     $selectedCanisterStore);
+
+  // END: loading and navigation
 </script>
 
 <main class="legacy">
@@ -233,7 +233,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../node_modules/@dfinity/gix-components/styles/mixins/media";
 
   .actions {
     margin-bottom: var(--padding-3x);

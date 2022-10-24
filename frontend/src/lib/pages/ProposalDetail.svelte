@@ -46,7 +46,7 @@
 
   // BEGIN: loading and navigation
 
-  // TODO(GIX-1071): utils? replaceState: true for error?
+  // TODO(GIX-1071): utils?
   const goBack = (): Promise<void> =>
     goto(referrerPath !== undefined ? referrerPath : AppPath.Proposals);
 
