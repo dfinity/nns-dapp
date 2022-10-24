@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppPathLegacy } from "$lib/constants/routes.constants";
+  import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
@@ -9,6 +9,8 @@
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import {goto} from "$app/navigation";
+  import {pageStore} from "$lib/derived/page.derived";
 
   export let project: SnsFullProject;
 
@@ -29,11 +31,8 @@
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
-  const showProject = () => {
-    routeStore.navigate({
-      path: `${AppPathLegacy.ProjectDetail}/${project.rootCanisterId.toText()}`,
-    });
-  };
+  // TODO(GIX-1071): utils?
+  const showProject = async () => await goto(`${AppPath.Project}/?u=${$pageStore.universe}&project=${project.rootCanisterId.toText()}`);
 </script>
 
 <Card

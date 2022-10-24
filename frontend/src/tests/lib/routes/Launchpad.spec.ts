@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import Launchpad from "$lib/routes/Launchpad.svelte";
+import Launchpad from "$lib/pages/Launchpad.svelte";
 import { render } from "@testing-library/svelte";
 import en from "../../mocks/i18n.mock";
 

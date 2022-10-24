@@ -54,14 +54,11 @@
     });
 
   const reload = async () => {
-    const { path } = $routeStore;
-
-    const rootCanisterId = routePathRootCanisterId(path);
-
-    if (rootCanisterId === undefined) {
+    if (rootCanisterId === undefined || rootCanisterId === null) {
       // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
       return;
     }
+
     await Promise.all([
       loadSummary(rootCanisterId),
       loadSwapState(rootCanisterId),
@@ -80,10 +77,8 @@
     reload,
   });
 
-  const goBack = () => {
-    unsubscribe();
-    routeStore.replace({ path: AppPathLegacy.Launchpad });
-  };
+
+  const goBack = (): Promise<void> => goto(AppPath.Launchpad);
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
@@ -121,64 +116,39 @@
         : undefined;
   };
 
+  export let rootCanisterId: string | undefined | null;
+
   /**
    * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
    */
   $: $snsSummariesStore,
     $snsSwapCommitmentsStore,
-    (() => {
-      const { path } = $routeStore;
-
-      if (
-        !isRoutePath({ paths: [AppPathLegacy.ProjectDetail], routePath: path })
-      ) {
-        return;
-      }
-
-      // Edge case, the previous check already ensures that `routePathRootCanisterId` will return a defined value.
-      const rootCanisterId = routePathRootCanisterId(path);
-      if (rootCanisterId === undefined) {
+    (async () => {
+      if (rootCanisterId === undefined || rootCanisterId === null) {
+        await goBack();
         return;
       }
       mapProjectDetail(rootCanisterId);
     })();
 
-  /**
-   * We subscribe to the route in a particular function because if not root canister id is provided in the url it redirects to `goBack` which needs the particular usage of `unsubscribe` to avoid loops.
-   */
-  const unsubscribe = routeStore.subscribe(({ path }) => {
-    if (
-      !isRoutePath({ paths: [AppPathLegacy.ProjectDetail], routePath: path })
-    ) {
-      return;
-    }
-
-    const rootCanisterId = routePathRootCanisterId(path);
-    if (rootCanisterId === undefined) {
-      goBack();
-      return;
-    }
-
-    mapProjectDetail(rootCanisterId);
-  });
-
-  onDestroy(unsubscribe);
-
+  // TODO(GIX-1071): double check promises
   layoutBackStore.set(goBack);
 
+  // TODO(GIX-1071)
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;
 
-  $: {
+  $: (async () => {
     if (notFound) {
       toastsError({
         labelKey: "error__sns.project_not_found",
       });
-      routeStore.replace({ path: AppPathLegacy.Launchpad });
+
+      await goBack();
     }
-  }
+  })()
 </script>
 
 <main>
@@ -195,7 +165,7 @@
 </main>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../node_modules/@dfinity/gix-components/styles/mixins/media";
   .stretch-mobile {
     min-height: 100%;
 

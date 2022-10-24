@@ -3,7 +3,7 @@
  */
 
 import { AppPathLegacy } from "$lib/constants/routes.constants";
-import ProjectDetail from "$lib/routes/ProjectDetail.svelte";
+import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,

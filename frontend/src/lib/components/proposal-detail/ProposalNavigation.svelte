@@ -18,6 +18,7 @@
       return;
     }
 
+    // TODO(GIX-1071): utils?
     await goto(
       `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`
     );
@@ -28,6 +29,7 @@
       return;
     }
 
+    // TODO(GIX-1071): utils?
     await goto(
       `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`
     );
