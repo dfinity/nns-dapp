@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { AppPathLegacy } from "$lib/constants/routes.constants";
+import {AppPath, AppPathLegacy} from "$lib/constants/routes.constants";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import {
   loadSnsSummary,
@@ -36,7 +36,7 @@ describe("ProjectDetail", () => {
       .mockImplementation(
         mockRouteStoreSubscribe(
           `${
-            AppPathLegacy.ProjectDetail
+              AppPath.Project
           }/${mockSnsFullProject.rootCanisterId.toText()}`
         )
       );
@@ -95,7 +95,7 @@ describe("ProjectDetail", () => {
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
         mockRouteStoreSubscribe(
-          `${AppPathLegacy.ProjectDetail}/invalid-project`
+          `${AppPath.Project}/invalid-project`
         )
       );
     jest.spyOn(routeStore, "replace");
@@ -110,7 +110,7 @@ describe("ProjectDetail", () => {
     jest
       .spyOn(routeStore, "subscribe")
       .mockImplementation(
-        mockRouteStoreSubscribe(`${AppPathLegacy.ProjectDetail}/aaaaa-aa`)
+        mockRouteStoreSubscribe(`${AppPath.Project}/aaaaa-aa`)
       );
     jest.spyOn(routeStore, "replace");
     it("should rediret to launchpad", () => {
