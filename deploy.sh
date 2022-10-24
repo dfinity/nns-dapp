@@ -301,7 +301,7 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
     echo "Deploying SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
-    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; } )' --no-wallet
+    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; allowed_principals = vec { principal "hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe"; }; } )' --no-wallet
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
