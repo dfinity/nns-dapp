@@ -30,7 +30,7 @@
     "Governance": "All proposals that administer governance — for example, motions and the configuration of certain parameters.",
     "NodeAdmin": "All proposals that administer node machines somehow, including but not limited to upgrading or configuring the OS, upgrading or configuring the virtual machine framework, and upgrading or configuring the node replica software.",
     "ParticipantManagement": "All proposals that administer network participants — for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities).",
-    "SubnetManagement": "All proposals that administer network subnets — for example, creating new subnets, adding and removing subnet nodes, and splitting subnets",
+    "SubnetManagement": "All proposals that administer network subnets — for example, creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     "NetworkCanisterManagement": "Installing and upgrading “system” Canisters that belong to the network — for example, upgrading the NNS.",
     "Kyc": "Proposals that update KYC information for regulatory purposes — for example, during the initial Genesis distribution of ICP in the form of neurons.",
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
