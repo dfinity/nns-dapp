@@ -10,10 +10,8 @@ import {
   listCanisters,
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { routeStore } from "$lib/stores/route.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockCanister, mockCanisterDetails } from "../../mocks/canisters.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;
@@ -33,22 +31,17 @@ jest.mock("$lib/services/canisters.services", () => {
 });
 
 describe("CanisterDetail", () => {
-  jest
-    .spyOn(routeStore, "subscribe")
-    .mockImplementation(
-      mockRouteStoreSubscribe(
-        `/#/canister/${mockCanister.canister_id.toText()}`
-      )
-    );
-
   afterEach(() => {
-    jest.clearAllMocks();
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   });
 
+  const props = {
+    canisterId: mockCanister.canister_id.toText(),
+  };
+
   it("should render title once loaded", async () => {
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { container } = render(CanisterDetail);
+    const { container } = render(CanisterDetail, props);
 
     const title = container.querySelector("h1");
 
@@ -59,20 +52,20 @@ describe("CanisterDetail", () => {
   });
 
   it("should fetch canisters from nns-dapp if store is not loaded yet", async () => {
-    render(CanisterDetail);
+    render(CanisterDetail, props);
     await waitFor(() => expect(listCanisters).toBeCalled());
   });
 
   it("should get canister details", async () => {
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    render(CanisterDetail);
+    render(CanisterDetail, props);
     await waitFor(() => expect(getCanisterDetails).toBeCalled());
   });
 
   it("should render canister id", async () => {
     // Need to be the same that routePathCanisterId returns.
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryAllByText } = render(CanisterDetail);
+    const { queryAllByText } = render(CanisterDetail, props);
 
     await waitFor(() =>
       expect(
@@ -84,7 +77,7 @@ describe("CanisterDetail", () => {
   it("should render cards", async () => {
     // Need to be the same that routePathCanisterId returns.
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryByTestId } = render(CanisterDetail);
+    const { queryByTestId } = render(CanisterDetail, props);
 
     await waitFor(() =>
       expect(queryByTestId("canister-cycles-card")).toBeInTheDocument()
@@ -97,7 +90,7 @@ describe("CanisterDetail", () => {
     setGetCanisterDetailReturn(Promise.reject(new UserNotTheControllerError()));
     // Need to be the same that routePathCanisterId returns.
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryByTestId } = render(CanisterDetail);
+    const { queryByTestId } = render(CanisterDetail, props);
 
     await waitFor(() =>
       expect(queryByTestId("canister-details-error-card")).toBeInTheDocument()

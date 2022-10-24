@@ -81,7 +81,7 @@
       });
 
       await loadNeuron();
-    } catch (err) {
+    } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack();
     }

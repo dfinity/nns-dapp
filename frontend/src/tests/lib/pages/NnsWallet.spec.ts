@@ -5,7 +5,6 @@
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { routeStore } from "$lib/stores/route.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import {
@@ -14,7 +13,6 @@ import {
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
 jest.mock("$lib/services/accounts.services", () => ({
   ...(jest.requireActual("$lib/services/accounts.services") as object),
@@ -58,18 +56,12 @@ describe("NnsWallet", () => {
   });
 
   describe("no accounts", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(routeStore, "subscribe")
-        .mockImplementation(
-          mockRouteStoreSubscribe(`/#/wallet/${mockMainAccount.identifier}`)
-        );
-    });
-
-    afterAll(() => jest.clearAllMocks());
+    const props = {
+      accountIdentifier: mockMainAccount.identifier,
+    };
 
     it("new transaction should remain disabled if route is valid but store is not loaded", async () => {
-      const { container } = render(NnsWallet);
+      const { container } = render(NnsWallet, props);
 
       // init
       testToolbarButton({ container, disabled: true });
@@ -86,18 +78,16 @@ describe("NnsWallet", () => {
       jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-
-      jest
-        .spyOn(routeStore, "subscribe")
-        .mockImplementation(
-          mockRouteStoreSubscribe(`/#/wallet/${mockMainAccount.identifier}`)
-        );
     });
 
     afterAll(() => jest.clearAllMocks());
 
+    const props = {
+      accountIdentifier: mockMainAccount.identifier,
+    };
+
     it("should hide spinner when selected account is loaded", async () => {
-      const { container } = render(NnsWallet);
+      const { container } = render(NnsWallet, props);
 
       await waitFor(() =>
         expect(container.querySelector('[data-tid="spinner"]')).toBeNull()
@@ -105,7 +95,7 @@ describe("NnsWallet", () => {
     });
 
     it("should enable new transaction action for route and store", async () => {
-      const { container } = render(NnsWallet);
+      const { container } = render(NnsWallet, props);
 
       await waitFor(() => testToolbarButton({ container, disabled: false }));
     });
@@ -122,13 +112,13 @@ describe("NnsWallet", () => {
     };
 
     it("should open transaction modal", async () => {
-      const { container } = render(NnsWallet);
+      const { container } = render(NnsWallet, props);
 
       await testModal(container);
     });
 
     it("should open transaction modal on step select destination because selected account is current account", async () => {
-      const { container, getByTestId } = render(NnsWallet);
+      const { container, getByTestId } = render(NnsWallet, props);
 
       await testModal(container);
 
@@ -138,7 +128,7 @@ describe("NnsWallet", () => {
     });
 
     it("should display SkeletonCard while loading transactions", async () => {
-      const { getByTestId } = render(NnsWallet);
+      const { getByTestId } = render(NnsWallet, props);
 
       expect(getByTestId("skeleton-card")).toBeInTheDocument();
     });
@@ -151,20 +141,16 @@ describe("NnsWallet", () => {
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         );
-
-      jest
-        .spyOn(routeStore, "subscribe")
-        .mockImplementation(
-          mockRouteStoreSubscribe(
-            `/#/wallet/${mockHardwareWalletAccount.identifier}`
-          )
-        );
     });
+
+    const props = {
+      accountIdentifier: mockHardwareWalletAccount.identifier,
+    };
 
     afterAll(() => jest.clearAllMocks());
 
     it("should display principal", async () => {
-      const { queryByText } = render(NnsWallet);
+      const { queryByText } = render(NnsWallet, props);
       const principal = mockHardwareWalletAccount?.principal?.toString();
 
       expect(principal?.length).toBeGreaterThan(0);
