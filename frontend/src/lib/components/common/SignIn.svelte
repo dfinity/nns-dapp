@@ -6,6 +6,7 @@
   import { Spinner } from "@dfinity/gix-components";
   import { prerendering } from "$app/environment";
   import { onMount } from "svelte";
+  import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 
   let initialized = false;
 
@@ -24,6 +25,8 @@
 
     // TODO(GIX-1071): handle multiple signin-init buttons in one page
     await syncAuthStore();
+
+    displayAndCleanLogoutMsg();
 
     initialized = true;
   });

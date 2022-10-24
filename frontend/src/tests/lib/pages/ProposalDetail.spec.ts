@@ -51,7 +51,7 @@ describe("ProposalDetail", () => {
 
   const props = {
     proposalIdText: `${mockProposals[0].id}`,
-  }
+  };
 
   it("should render loading neurons", async () => {
     const { getByText } = render(ProposalDetail, props);

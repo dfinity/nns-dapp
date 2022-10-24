@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/types/runtime/store";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { goto } from "$app/navigation";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
   import {
     IconWallet,
     IconPsychology,
@@ -29,8 +28,6 @@
       await goto(`/accounts?u=${OWN_CANISTER_ID}`, { replaceState: true });
     }
   );
-
-  onMount(() => displayAndCleanLogoutMsg());
 
   onDestroy(unsubscribe);
 </script>

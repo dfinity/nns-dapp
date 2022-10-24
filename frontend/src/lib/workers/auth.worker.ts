@@ -27,7 +27,7 @@ let timer: NodeJS.Timeout | undefined = undefined;
  * The timer is executed only if user has signed in
  */
 export const startIdleTimer = () =>
-  (timer = setInterval(async () => await onIdleSignOut(), 1000));
+  (timer = setInterval(async () => await onIdleSignOut(), 5000));
 
 export const stopIdleTimer = () => {
   if (!timer) {
@@ -59,7 +59,7 @@ const onIdleSignOut = async () => {
  */
 const checkAuthentication = async (): Promise<boolean> => {
   const authClient: AuthClient = await createAuthClient();
-  return authClient.isAuthenticated();
+  return false;
 };
 
 /**

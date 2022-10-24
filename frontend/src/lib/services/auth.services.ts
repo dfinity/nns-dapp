@@ -52,19 +52,17 @@ export const getIdentity = async (): Promise<Identity> => {
 };
 
 /**
- * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timedout - append the information to the url as query params
+ * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timed-out - append the information to the url as query params
  */
 const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
   const { labelKey, level } = msg;
 
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.append(msgParam, encodeURI(labelKey));
-  urlParams.append(levelParam, level);
+  url.searchParams.append(msgParam, encodeURI(labelKey));
+  url.searchParams.append(levelParam, level);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
 
 /**
@@ -91,18 +89,10 @@ export const displayAndCleanLogoutMsg = () => {
 };
 
 const cleanUpMsgUrl = () => {
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.delete(msgParam);
-  urlParams.delete(levelParam);
+  url.searchParams.delete(msgParam);
+  url.searchParams.delete(levelParam);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
-
-const updateAuthUrl = (urlParams: URLSearchParams) =>
-  replaceHistory({
-    path: "/",
-    query: urlParams.toString(),
-  });

@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -42,8 +41,8 @@ describe("NeuronDetail", () => {
   });
 
   const props = {
-    neuronIdText: `${neuronId}`
-  }
+    neuronIdText: `${neuronId}`,
+  };
 
   it("should display skeletons", () => {
     const { container } = render(NeuronDetail, props);
