@@ -32,7 +32,7 @@
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
   // TODO(GIX-1071): utils?
-  const showProject = async () => await goto(`${AppPath.Project}/?u=${$pageStore.universe}&project=${project.rootCanisterId.toText()}`);
+  const showProject = async () => await goto(`${AppPath.Project}/?project=${project.rootCanisterId.toText()}`);
 </script>
 
 <Card
