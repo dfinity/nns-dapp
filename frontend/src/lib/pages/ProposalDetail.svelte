@@ -49,7 +49,7 @@
   // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> =>
     goto(
-      referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
+      referrerPath !== undefined ? referrerPath : AppPath.Proposals
     );
 
   layoutBackStore.set(goBack);

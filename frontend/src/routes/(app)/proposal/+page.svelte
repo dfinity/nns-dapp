@@ -4,6 +4,9 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import type { Navigation } from "@sveltejs/kit";
+  import {afterNavigate} from "$app/navigation";
+  import type {AppPath} from "$lib/constants/routes.constants";
+  import {pathForRouteId} from "$lib/utils/page.utils";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -14,14 +17,12 @@
   let proposalId: string | null | undefined;
   $: ({ proposal: proposalId } = data);
 
-  // TODO(GIX-1071): referer path
-  const afterNavigate = ({ from }: Navigation) => {
-    console.log("afterNavigate", from);
-  };
+  let referrerPath: AppPath | undefined = undefined;
+  afterNavigate(({ from: {routeId} }: Navigation) => (referrerPath = routeId ? pathForRouteId(routeId) : undefined));
 </script>
 
 {#if signedIn}
-  <ProposalDetail proposalIdText={proposalId} />
+  <ProposalDetail proposalIdText={proposalId} {referrerPath} />
 {:else}
   <h1>Proposal NOT signed in</h1>
 
