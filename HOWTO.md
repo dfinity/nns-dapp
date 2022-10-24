@@ -80,7 +80,7 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 
 ### How To Update
 
-- Add to topic entre in the [governance enum](https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts#L15).
+- Add to topic entry in the [governance enum](https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts#L15).
 - Add i18n labels in `en.governance.json`. "topics" and "topics_description".
 
 ## New `nnsFunction`
