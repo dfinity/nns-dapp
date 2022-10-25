@@ -1,4 +1,6 @@
 import { writable } from "svelte/store";
 
 export const layoutTitleStore = writable<string>("");
-export const layoutBackStore = writable<(() => Promise<void>) | undefined>(undefined);
+export const layoutBackStore = writable<(() => Promise<void>) | undefined>(
+  undefined
+);
