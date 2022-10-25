@@ -68,11 +68,18 @@
 
     await loadProposal({
       proposalId,
-      setProposal: (proposalInfo: ProposalInfo) =>
+      setProposal: (proposalInfo: ProposalInfo) => {
+        // User might navigate quickly between proposals - previous / next.
+        // e.g. the update call of previous proposal id 3n might be fetched after user has navigated to next proposal id 2n
+        if (proposalInfo.id !== proposalId) {
+          return;
+        }
+
         selectedProposalStore.update(({ proposalId }) => ({
           proposalId,
           proposal: proposalInfo,
-        })),
+        }))
+      },
       handleError: onError,
       silentUpdateErrorMessages: true,
     });
