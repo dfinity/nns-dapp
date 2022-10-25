@@ -60,7 +60,7 @@ describe("sns-services", () => {
         .mockImplementation(() => Promise.resolve(undefined));
       const spyQueryState = jest
         .spyOn(api, "querySnsSwapState")
-        .mockImplementation(() => Promise.resolve(undefined));
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const { success } = await participateInSwap({
         amount: TokenAmount.fromString({
           amount: "3",
@@ -92,6 +92,9 @@ describe("sns-services", () => {
       querySnsSwapStates[0].swap[0]!.params[0]!.max_icp_e8s = maxE8s;
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() =>
@@ -117,6 +120,9 @@ describe("sns-services", () => {
     it("should return success false if api call fails", async () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.reject(new Error("test")));
@@ -147,6 +153,9 @@ describe("sns-services", () => {
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
@@ -177,6 +186,9 @@ describe("sns-services", () => {
         BigInt(200_000_000_000);
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
@@ -202,6 +214,9 @@ describe("sns-services", () => {
           token: ICPToken,
         }),
       };
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
@@ -224,6 +239,9 @@ describe("sns-services", () => {
       const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
       snsQueryStore.setData([metadatas, querySnsSwapStates]);
       setNoAccountIdentity();
+      jest
+        .spyOn(api, "querySnsSwapState")
+        .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));

@@ -227,8 +227,8 @@ describe("sns.store", () => {
       expect(
         updatedStore?.swaps.find(
           (swap) => swap.rootCanisterId === rootCanisterId
-        )?.swap[0]?.lifecycle
-      ).toBe(SnsSwapLifecycle.Open);
+        )
+      ).toEqual(updatedSwapData);
     });
   });
 });

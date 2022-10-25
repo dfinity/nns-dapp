@@ -236,13 +236,10 @@ const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
       identity,
       certified: true,
     });
-    // Ignore if swap data is undefined
-    if (swapData !== undefined) {
-      snsQueryStore.updateSwapState({
-        swapData,
-        rootCanisterId: rootCanisterId.toText(),
-      });
-    }
+    snsQueryStore.updateSwapState({
+      swapData,
+      rootCanisterId: rootCanisterId.toText(),
+    });
   } catch (err) {
     // Ignore error
     console.error("Error reloading swap state", err);
