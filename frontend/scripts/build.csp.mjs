@@ -3,15 +3,35 @@
 import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
-import { join, dirname } from "path";
+import { dirname, join } from "path";
 import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
 const buildCsp = (htmlFile) => {
+  // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
-  const indexHTMLWithCSP = updateCSP(indexHTMLWithoutStartScript);
+  // 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
+  const indexHTMLWithScriptLoader = injectScriptLoader(indexHTMLWithoutStartScript);
+  // 3. We calculate the sha256 values for these scripts and update the CSP
+  const indexHTMLWithCSP = updateCSP(indexHTMLWithScriptLoader);
+
   writeFileSync(htmlFile, indexHTMLWithCSP);
+};
+
+/**
+ * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
+ */
+const injectScriptLoader = (indexHtml) => {
+  return indexHtml.replace(
+    "<!-- SCRIPT_LOADER -->",
+    `<script>
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "main.js";
+      document.head.appendChild(loader);
+    </script>`
+  );
 };
 
 /**
@@ -38,11 +58,7 @@ const extractStartScript = (htmlFile) => {
   // i.e. the routeId and a particular id for the querySelector use to attach the content
   const folderPath = dirname(htmlFile);
 
-  writeFileSync(
-    join(folderPath, "main.js"),
-    inlineScript,
-    "utf-8"
-  );
+  writeFileSync(join(folderPath, "main.js"), inlineScript, "utf-8");
 
   // 2. replace SvelteKit script tag content with empty
   return indexHtml.replace(svelteKitStartScript, "$1$3");
