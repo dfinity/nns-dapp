@@ -1,6 +1,7 @@
 import { getTransactions } from "$lib/api/sns-index.api";
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
@@ -32,6 +33,7 @@ export const loadSnsAccounts = async (
 
       // hide unproven data
       snsAccountsStore.resetProject(rootCanisterId);
+      snsTransactionsStore.resetProject(rootCanisterId);
 
       toastsError(
         toToastError({
@@ -92,7 +94,6 @@ export const snsTransferTokens = async ({
   }
 };
 
-// TODO: Pass rootcanister id and use wrapper https://dfinity.atlassian.net/browse/GIX-1093
 export const loadAccountTransactions = async ({
   account,
   rootCanisterId,
@@ -106,10 +107,15 @@ export const loadAccountTransactions = async ({
   }
   const identity = await getAccountIdentity(account);
   const snsAccount = decodeSnsAccount(account.identifier);
-  const transactions = await getTransactions({
+  const { transactions, oldestTxId } = await getTransactions({
     identity,
     account: snsAccount,
     maxResults: BigInt(50),
   });
-  console.log(transactions);
+  snsTransactionsStore.addTransactions({
+    accountIdentifier: account.identifier,
+    rootCanisterId,
+    transactions,
+    oldestTxId: oldestTxId ?? transactions[transactions.length - 1].id,
+  });
 };
