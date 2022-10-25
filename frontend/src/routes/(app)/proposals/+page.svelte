@@ -7,6 +7,9 @@
   import type { Navigation } from "@sveltejs/kit";
   import type { AppPath } from "$lib/constants/routes.constants";
   import { pathForRouteId } from "$lib/utils/page.utils";
+  import {onMount} from "svelte";
+  import {layoutBackStore, layoutTitleStore} from "$lib/stores/layout.store";
+  import {i18n} from "$lib/stores/i18n";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -20,6 +23,13 @@
           ? pathForRouteId(from.routeId)
           : undefined)
   );
+
+  onMount(() => {
+    layoutTitleStore.set($i18n.wallet.title);
+
+    // Reset back action because only detail routes have such feature other views use the menu
+    layoutBackStore.set(undefined);
+  });
 </script>
 
 {#if signedIn}
