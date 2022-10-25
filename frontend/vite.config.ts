@@ -21,6 +21,7 @@ const config: UserConfig = {
         }),
       ],
     },
+    modulePreload: false
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
