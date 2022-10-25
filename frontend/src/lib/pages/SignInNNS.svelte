@@ -2,6 +2,7 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
 
   // TODO(GIX-1071): this is a static generic temporary component that needs to be replace with designed, branded and useful content for each pages
+  // TODO(GIX-1071): in particular case of the "Voting" screens, the list and details should be made public
 </script>
 
 <main>
