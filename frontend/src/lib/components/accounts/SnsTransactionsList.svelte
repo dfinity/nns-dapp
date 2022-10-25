@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { loadAccountTransactions } from "$lib/services/sns-accounts.services";
+  import { loadAccountTransactions } from "$lib/services/sns-transactions.services";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
