@@ -3,6 +3,17 @@
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { onMount } from "svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
+
+  onMount(() => {
+    if (!IS_TESTNET) {
+      // TODO(GIX-1071): utils?
+      goto(AppPath.Accounts, { replaceState: true });
+    }
+  });
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

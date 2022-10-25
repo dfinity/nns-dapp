@@ -72,7 +72,7 @@
       });
 
       // TODO(GIX-1071): utils?
-      await goto($neuronsPathStore);
+      await goto($neuronsPathStore, { replaceState: true });
     }
 
     dispatcher("nnsClose");

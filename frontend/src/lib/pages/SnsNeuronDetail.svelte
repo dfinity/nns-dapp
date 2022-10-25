@@ -32,10 +32,11 @@
 
   // BEGIN: loading and navigation
 
-  // TODO(GIX-1071): utils? replaceState: true for error?
-  const goBack = (): Promise<void> => goto(AppPath.Neurons);
+  // TODO(GIX-1071): utils?
+  const goBack = (replaceState: boolean): Promise<void> =>
+    goto(AppPath.Neurons, { replaceState });
 
-  layoutBackStore.set(goBack);
+  layoutBackStore.set(async () => goBack(false));
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -58,7 +59,7 @@
           });
 
           // For simplicity reason we do not catch the promise here
-          goBack();
+          goBack(true);
         },
       });
     }
@@ -66,7 +67,7 @@
 
   onMount(async () => {
     if (neuronId === undefined || neuronId === null) {
-      await goBack();
+      await goBack(true);
       return;
     }
 
@@ -83,7 +84,7 @@
       await loadNeuron();
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
-      await goBack();
+      await goBack(true);
     }
   });
 

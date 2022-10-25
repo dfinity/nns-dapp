@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import {
@@ -23,20 +22,13 @@
   import { debugSelectedProjectStore } from "$lib/stores/debug.store";
   import { goto } from "$app/navigation";
 
-  onMount(() => {
-    if (!IS_TESTNET) {
-      // TODO(GIX-1071): utils?
-      goto(AppPath.Accounts, { replaceState: true });
-    }
-  });
-
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
       rootCanisterId,
       onError: () => {
         // Set to not found
         $projectDetailStore.summary = undefined;
-        goBack();
+        goBack(true);
       },
     });
 
@@ -46,7 +38,7 @@
       onError: () => {
         // Set to not found
         $projectDetailStore.swapCommitment = undefined;
-        goBack();
+        goBack(true);
       },
     });
 
@@ -74,7 +66,8 @@
     reload,
   });
 
-  const goBack = (): Promise<void> => goto(AppPath.Launchpad);
+  const goBack = (replaceState: boolean): Promise<void> =>
+    goto(AppPath.Launchpad, { replaceState });
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
@@ -121,14 +114,14 @@
     $snsSwapCommitmentsStore,
     (async () => {
       if (rootCanisterId === undefined || rootCanisterId === null) {
-        await goBack();
+        await goBack(true);
         return;
       }
       mapProjectDetail(rootCanisterId);
     })();
 
   // TODO(GIX-1071): double check promises
-  layoutBackStore.set(goBack);
+  layoutBackStore.set(async () => goBack(false));
 
   // TODO(GIX-1071)
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
@@ -142,7 +135,7 @@
         labelKey: "error__sns.project_not_found",
       });
 
-      await goBack();
+      await goBack(true);
     }
   })();
 </script>

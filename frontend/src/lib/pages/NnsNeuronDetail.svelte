@@ -39,10 +39,11 @@
 
   // BEGIN: loading and navigation
 
-  // TODO(GIX-1071): utils? replaceState: true for error?
-  const goBack = (): Promise<void> => goto(AppPath.Neurons);
+  // TODO(GIX-1071): utils?
+  const goBack = (replaceState: boolean): Promise<void> =>
+    goto(AppPath.Neurons, { replaceState });
 
-  layoutBackStore.set(goBack);
+  layoutBackStore.set(async () => goBack(false));
 
   type NeuronFromStore = { neuron: NeuronInfo | undefined };
 
@@ -53,7 +54,7 @@
         labelKey: $i18n.error.neuron_not_found,
       });
 
-      await goBack();
+      await goBack(false);
     }
   };
 
@@ -92,7 +93,7 @@
       toastsError({
         labelKey: "error.neuron_spawning",
       });
-      await goBack();
+      await goBack(true);
     }
   };
 

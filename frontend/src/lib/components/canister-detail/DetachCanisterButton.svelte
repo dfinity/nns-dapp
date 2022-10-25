@@ -27,7 +27,7 @@
       });
 
       // TODO(GIX-1071): utils?
-      await goto(AppPath.Canisters);
+      await goto(AppPath.Canisters, { replaceState: true });
     }
   };
 </script>
