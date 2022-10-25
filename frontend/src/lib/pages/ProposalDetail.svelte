@@ -1,17 +1,20 @@
 <script lang="ts">
-  import {setContext} from "svelte";
-  import {loadProposal} from "$lib/services/proposals.services";
-  import {AppPath} from "$lib/constants/routes.constants";
-  import type {ProposalId, ProposalInfo} from "@dfinity/nns";
-  import {neuronsStore} from "$lib/stores/neurons.store";
-  import {layoutBackStore, layoutTitleStore} from "$lib/stores/layout.store";
-  import {writable} from "svelte/store";
-  import type {SelectedProposalContext, SelectedProposalStore,} from "$lib/types/selected-proposal.context";
-  import {SELECTED_PROPOSAL_CONTEXT_KEY} from "$lib/types/selected-proposal.context";
-  import {debugSelectedProposalStore} from "$lib/stores/debug.store";
+  import { setContext } from "svelte";
+  import { loadProposal } from "$lib/services/proposals.services";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { writable } from "svelte/store";
+  import type {
+    SelectedProposalContext,
+    SelectedProposalStore,
+  } from "$lib/types/selected-proposal.context";
+  import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
+  import { debugSelectedProposalStore } from "$lib/stores/debug.store";
   import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
-  import {i18n} from "$lib/stores/i18n";
-  import {goto} from "$app/navigation";
+  import { i18n } from "$lib/stores/i18n";
+  import { goto } from "$app/navigation";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
@@ -45,7 +48,9 @@
 
   // TODO(GIX-1071): utils?
   const goBack = (): Promise<void> =>
-    goto(referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals);
+    goto(
+      referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
+    );
 
   layoutBackStore.set(goBack);
 
@@ -75,7 +80,7 @@
         selectedProposalStore.update(({ proposalId }) => ({
           proposalId,
           proposal: proposalInfo,
-        }))
+        }));
       },
       handleError: onError,
       silentUpdateErrorMessages: true,

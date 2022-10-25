@@ -4,13 +4,14 @@ import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
+import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
-const buildCsp = () => {
-  const indexHTMLWithoutStartScript = extractStartScript();
+const buildCsp = (htmlFile) => {
+  const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
   const indexHTMLWithCSP = updateCSP(indexHTMLWithoutStartScript);
-  writeFileSync("./public/index.html", indexHTMLWithCSP);
+  writeFileSync(htmlFile, indexHTMLWithCSP);
 };
 
 /**
@@ -22,11 +23,8 @@ const buildCsp = () => {
  * 2. we remove the script content from index.html but, let the script tag as anchor
  * 3. we use our custom script loader to load the main.js script
  */
-const extractStartScript = () => {
-  const indexHtml = readFileSync(
-    join(process.cwd(), "public", "index.html"),
-    "utf-8"
-  );
+const extractStartScript = (htmlFile) => {
+  const indexHtml = readFileSync(htmlFile, "utf-8");
 
   const svelteKitStartScript =
     /(<script type=\"module\" data-sveltekit-hydrate[\s\S]*?>)([\s\S]*?)(<\/script>)/gm;
@@ -120,4 +118,5 @@ const cspConnectSrc = () => {
     .trim();
 };
 
-buildCsp();
+const htmlFiles = findHtmlFiles();
+htmlFiles.forEach((htmlFile) => buildCsp(htmlFile));
