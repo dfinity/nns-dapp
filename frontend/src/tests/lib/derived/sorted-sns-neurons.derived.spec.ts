@@ -59,6 +59,44 @@ describe("sortedSnsNeuronStore", () => {
     ]);
   });
 
+  it("should filter out neurons with no stake nor maturity", async () => {
+    const neurons: SnsNeuron[] = [
+      {
+        ...createMockSnsNeuron({
+          stake: BigInt(0),
+          id: [1, 5, 3, 9, 1, 1, 1],
+        }),
+        created_timestamp_seconds: BigInt(1),
+        maturity_e8s_equivalent: BigInt(0),
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: BigInt(2_000_000_000),
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
+        created_timestamp_seconds: BigInt(3),
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: BigInt(10_000_000_000),
+          id: [1, 2, 2, 9, 9, 3, 2],
+        }),
+        created_timestamp_seconds: BigInt(2),
+      },
+    ];
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockPrincipal,
+      neurons,
+      certified: true,
+    });
+    routeStore.update({
+      path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/neurons`,
+    });
+
+    await tick();
+    expect(get(sortedSnsNeuronStore)).toEqual([neurons[1], neurons[2]]);
+  });
+
   it("should return the sorted neurons of the selected project", async () => {
     const neurons1: SnsNeuron[] = [
       {
