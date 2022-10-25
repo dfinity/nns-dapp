@@ -15,11 +15,17 @@ const buildCsp = (htmlFile) => {
   const indexHTMLWithScriptLoader = injectScriptLoader(
     indexHTMLWithoutStartScript
   );
-  // 3. We calculate the sha256 values for these scripts and update the CSP
-  const indexHTMLWithCSP = updateCSP(indexHTMLWithScriptLoader);
+  // 3. remove the content-security-policy tag injected by SvelteKit
+  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithScriptLoader);
+  // 4. We calculate the sha256 values for these scripts and update the CSP
+  const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
 
   writeFileSync(htmlFile, indexHTMLWithCSP);
 };
+
+const removeDefaultCspTag = (indexHtml) => {
+  return indexHtml.replace('<meta http-equiv="content-security-policy" content="">', '');
+}
 
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
