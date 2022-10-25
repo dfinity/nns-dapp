@@ -12,7 +12,9 @@ const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
   // 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
-  const indexHTMLWithScriptLoader = injectScriptLoader(indexHTMLWithoutStartScript);
+  const indexHTMLWithScriptLoader = injectScriptLoader(
+    indexHTMLWithoutStartScript
+  );
   // 3. We calculate the sha256 values for these scripts and update the CSP
   const indexHTMLWithCSP = updateCSP(indexHTMLWithScriptLoader);
 
