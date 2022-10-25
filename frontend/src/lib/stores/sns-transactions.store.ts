@@ -19,11 +19,11 @@ export interface SnsTransactionsStore {
 }
 
 /**
- * A store that contains the sns accounts for each project.
+ * A store that contains the transactions for each account in sns projects.
  *
- * - setAccounts: replace the current list of accounts for a specific sns project with a new list.
+ * - addTransactions: adds new transactions for a specific account in a specific sns project. If the state does not exist, it will be created.
  * - reset: reset the store to an empty state.
- * - resetProject: removed the accounts for a specific project.
+ * - resetProject: removed the transactions for a specific project.
  */
 const initSnsAccountsStore = () => {
   const { subscribe, update, set } = writable<SnsTransactionsStore>({});
@@ -31,7 +31,7 @@ const initSnsAccountsStore = () => {
   return {
     subscribe,
 
-    setAccounts({
+    addTransactions({
       accountIdentifier,
       rootCanisterId,
       transactions,
