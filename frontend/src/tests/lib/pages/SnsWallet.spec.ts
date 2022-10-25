@@ -18,6 +18,7 @@ import {
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    loadAccountTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
