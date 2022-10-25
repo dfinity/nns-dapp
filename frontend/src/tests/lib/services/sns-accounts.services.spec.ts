@@ -2,22 +2,15 @@
  * @jest-environment jsdom
  */
 
-import * as indexApi from "$lib/api/sns-index.api";
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { Principal } from "@dfinity/principal";
-import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import {
-  mockSnsMainAccount,
-  mockSnsTransactionWithId,
-} from "../../mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 
 describe("sns-accounts-services", () => {
   describe("loadSnsAccounts", () => {
@@ -133,38 +126,10 @@ describe("sns-accounts-services", () => {
     });
   });
 
-  describe("loadAccountTransactions", () => {
-    it("loads transactions in the store", async () => {
-      const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
-        .mockResolvedValue({
-          oldestTxId: BigInt(1234),
-          transactions: [mockSnsTransactionWithId],
-        });
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountTransactions({
-        rootCanisterId,
-        account: mockSnsMainAccount,
-      });
-
-      const snsAccount = {
-        owner: mockSnsMainAccount.principal,
-      };
-      // await tick();
-      await waitFor(() =>
-        expect(spyGetTransactions).toBeCalledWith({
-          identity: mockIdentity,
-          account: snsAccount,
-          maxResults: services.TRANSACTION_PAGE_SIZE,
-        })
-      );
-
-      const storeData = get(snsTransactionsStore);
-      expect(
-        storeData[rootCanisterId.toText()]?.[
-          mockSnsMainAccount.principal.toText()
-        ].transactions[0]
-      ).toEqual(mockSnsTransactionWithId);
+  describe("getSnsAccountIdentity", () => {
+    it("returns identity", async () => {
+      const identity = await services.getSnsAccountIdentity(mockSnsMainAccount);
+      expect(identity).toEqual(mockIdentity);
     });
   });
 });

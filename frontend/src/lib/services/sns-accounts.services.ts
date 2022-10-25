@@ -1,4 +1,3 @@
-import { getTransactions } from "$lib/api/sns-index.api";
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
@@ -56,7 +55,7 @@ export const syncSnsAccounts = async (rootCanisterId: Principal) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getAccountIdentity = async (_: Account): Promise<Identity> => {
+export const getSnsAccountIdentity = async (_: Account): Promise<Identity> => {
   // TODO: Support Hardware Wallets
   const identity = await getIdentity();
   return identity;
@@ -74,7 +73,7 @@ export const snsTransferTokens = async ({
   e8s: bigint;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getAccountIdentity(source);
+    const identity: Identity = await getSnsAccountIdentity(source);
     const to = decodeSnsAccount(destinationAddress);
 
     await transfer({
@@ -94,31 +93,4 @@ export const snsTransferTokens = async ({
     );
     return { success: false };
   }
-};
-
-export const loadAccountTransactions = async ({
-  account,
-  rootCanisterId,
-}: {
-  account: Account;
-  rootCanisterId: Principal;
-}) => {
-  // Only load transactions for one SNS project which we know the index canister id
-  // TODO: Remove https://dfinity.atlassian.net/browse/GIX-1093
-  if (rootCanisterId.toText() !== "tmxop-wyaaa-aaaaa-aaapa-cai") {
-    return;
-  }
-  const identity = await getAccountIdentity(account);
-  const snsAccount = decodeSnsAccount(account.identifier);
-  const { transactions, oldestTxId } = await getTransactions({
-    identity,
-    account: snsAccount,
-    maxResults: TRANSACTION_PAGE_SIZE,
-  });
-  snsTransactionsStore.addTransactions({
-    accountIdentifier: account.identifier,
-    rootCanisterId,
-    transactions,
-    oldestTxId: oldestTxId ?? transactions[transactions.length - 1].id,
-  });
 };

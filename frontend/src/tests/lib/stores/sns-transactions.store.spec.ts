@@ -5,8 +5,8 @@ import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-  mockSnsTransactionWithId,
 } from "../../mocks/sns-accounts.mock";
+import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("SNS Transactions store", () => {
   describe("snsTransactionsStore", () => {

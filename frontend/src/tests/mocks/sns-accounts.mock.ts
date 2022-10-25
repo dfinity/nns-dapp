@@ -1,12 +1,8 @@
 import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import {
-  encodeSnsAccount,
-  type SnsTransaction,
-  type SnsTransactionWithId,
-} from "@dfinity/sns";
+import type { Principal } from "@dfinity/principal";
+import { encodeSnsAccount } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "./auth.store.mock";
 
@@ -59,29 +55,3 @@ export const mockSnsAccountsStoreSubscribe =
     run(mockSnsAccountsStore(principal));
     return () => undefined;
   };
-
-const fakeAccount = {
-  owner: Principal.fromText("aaaaa-aa"),
-  subaccount: [] as [],
-};
-
-const mockSnsTransaction: SnsTransaction = {
-  kind: "transfer",
-  timestamp: BigInt(12354),
-  burn: [],
-  mint: [],
-  transfer: [
-    {
-      to: fakeAccount,
-      from: fakeAccount,
-      memo: [],
-      created_at_time: [BigInt(123)],
-      amount: BigInt(33),
-    },
-  ],
-};
-
-export const mockSnsTransactionWithId: SnsTransactionWithId = {
-  id: BigInt(123),
-  transaction: mockSnsTransaction,
-};
