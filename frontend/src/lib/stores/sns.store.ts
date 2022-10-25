@@ -133,6 +133,28 @@ const initSnsQueryStore = () => {
               ),
       }));
     },
+
+    /**
+     * Updates only the swap state of a sale.
+     *
+     * @param {Object} params
+     * @param {QuerySnsSwapState} params.swapData new swap data.
+     * @param {string} params.rootCanisterId canister id in text format.
+     */
+    updateSwapState({
+      swapData,
+      rootCanisterId,
+    }: {
+      swapData: QuerySnsSwapState;
+      rootCanisterId: string;
+    }) {
+      update((store: SnsQueryStore) => ({
+        metadata: store?.metadata ?? [],
+        swaps: (store?.swaps ?? []).map((swap) =>
+          swap.rootCanisterId === rootCanisterId ? swapData : swap
+        ),
+      }));
+    },
   };
 };
 
