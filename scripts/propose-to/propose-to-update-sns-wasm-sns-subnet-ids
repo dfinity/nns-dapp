@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SNS_SUBNET="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq '.[0]')"
+set ic-admin --nns-url "$NNS_URL" propose-to-update-sns-subnet-ids-in-sns-wasm --test-neuron-proposer --sns-subnet-ids-to-add "$SNS_SUBNET"
