@@ -5,9 +5,10 @@
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
     "build:robots": "node scripts/build.robots.mjs",
+    "build:preload": "node scripts/build.preload.mjs",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
-    "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp && ./scripts/make-reproducible",
+    "build": "npm run i18n && vite build && npm run build:robots && npm run build:preload && npm run build:csp && ./scripts/make-reproducible",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
