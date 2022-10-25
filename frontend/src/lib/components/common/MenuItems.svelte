@@ -26,9 +26,9 @@
     paths,
     currentPath,
   }: {
-    currentPath: AppPath;
+    currentPath: AppPath | null;
     paths: (AppPath | null)[];
-  }): boolean => paths.includes(currentPath);
+  }): boolean => currentPath !== null && paths.includes(currentPath);
 
   let routes: {
     context: string;
