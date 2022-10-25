@@ -101,17 +101,14 @@ export const loadAccountTransactions = async ({
   rootCanisterId: Principal;
 }) => {
   // Only load transactions for one SNS project which we know the index canister id
-  if (rootCanisterId.toText() !== "su63m-yyaaa-aaaaa-aaala-cai") {
+  if (rootCanisterId.toText() !== "tmxop-wyaaa-aaaaa-aaapa-cai") {
     return;
   }
   const identity = await getAccountIdentity(account);
   const snsAccount = decodeSnsAccount(account.identifier);
   const transactions = await getTransactions({
     identity,
-    account: {
-      ...snsAccount,
-      subaccount: [],
-    },
+    account: snsAccount,
     maxResults: BigInt(50),
   });
   console.log(transactions);

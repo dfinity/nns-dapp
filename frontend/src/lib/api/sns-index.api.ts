@@ -8,6 +8,7 @@ import {
   type SnsAccount,
   type SnsTransactionWithId,
 } from "@dfinity/sns";
+import { fromNullable, toNullable } from "@dfinity/utils";
 
 interface GetTransactionsParams {
   identity: Identity;
@@ -19,8 +20,8 @@ interface GetTransactionsParams {
 }
 
 interface GetTransactionsResponse {
-  oldestTxId: bigint;
-  transactions: SnsTransactionWithId;
+  oldestTxId?: bigint;
+  transactions: SnsTransactionWithId[];
 }
 
 export const getTransactions = async ({
@@ -33,18 +34,22 @@ export const getTransactions = async ({
   const agent = await createAgent({ identity, host: HOST });
   // TODO: Use wrapper https://dfinity.atlassian.net/browse/GIX-1093
   const { getTransactions: getTransactionsApi } = SnsIndexCanister.create({
-    canisterId: Principal.fromText("tqtu6-byaaa-aaaaa-aaana-cai"),
+    canisterId: Principal.fromText("wzp7w-lyaaa-aaaaa-aaara-cai"),
     agent,
   });
+  // TODO: Change the type of `account` to be `SnsAccount`
   const { oldest_tx_id, transactions } = await getTransactionsApi({
     max_results: maxResults,
     start,
-    account,
+    account: {
+      owner: account.owner,
+      subaccount: toNullable(account.subaccount),
+    },
   });
 
   logWithTimestamp("");
   return {
-    oldestTxId: oldest_tx_id,
+    oldestTxId: fromNullable(oldest_tx_id),
     transactions,
   };
 };
