@@ -65,14 +65,6 @@
     align-items: center;
     align-self: center;
 
-    width: 100%;
-    max-width: 475px;
-
-    @media (min-width: 768px) and (min-height: 620px) {
-      margin: var(--padding-6x) 0 calc(14 * var(--padding));
-      width: auto;
-    }
-
     .spinner {
       margin-left: var(--padding);
     }

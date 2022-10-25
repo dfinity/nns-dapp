@@ -1,7 +1,7 @@
 <script lang="ts">
   import { authStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
-  import SignIn from "$lib/components/common/SignIn.svelte";
+  import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import Launchpad from "$lib/pages/Launchpad.svelte";
   import { onMount } from "svelte";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
@@ -21,7 +21,5 @@
 {#if signedIn}
   <Launchpad />
 {:else}
-  <h1>Canisters NOT signed in</h1>
-
-  <SignIn />
+  <SignInNNS />
 {/if}

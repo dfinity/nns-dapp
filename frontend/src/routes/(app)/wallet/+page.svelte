@@ -1,6 +1,6 @@
 <script lang="ts">
   import Wallet from "$lib/routes/Wallet.svelte";
-  import SignIn from "$lib/components/common/SignIn.svelte";
+  import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
 
@@ -17,7 +17,5 @@
 {#if signedIn}
   <Wallet {accountIdentifier} />
 {:else}
-  <h1>Wallets NOT signed in</h1>
-
-  <SignIn />
+  <SignInNNS />
 {/if}

@@ -63,7 +63,9 @@
   </li>
 </ul>
 
-<SignIn />
+<div class="sign-in">
+  <SignIn />
+</div>
 
 <style lang="scss">
   @use "../../../node_modules/@dfinity/gix-components/styles/mixins/media";
@@ -166,6 +168,16 @@
       vertical-align: bottom;
       margin: 0 var(--padding-1_5x) 0 0;
       color: var(--primary);
+    }
+  }
+
+  .sign-in {
+    width: 100%;
+    max-width: 475px;
+
+    @media (min-width: 768px) and (min-height: 620px) {
+      margin: var(--padding-6x) 0 calc(14 * var(--padding));
+      width: auto;
     }
   }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
-  import SignIn from "$lib/components/common/SignIn.svelte";
+  import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
 
@@ -17,7 +17,5 @@
 {#if signedIn}
   <CanisterDetail {canisterId} />
 {:else}
-  <h1>Proposal NOT signed in</h1>
-
-  <SignIn />
+  <SignInNNS />
 {/if}

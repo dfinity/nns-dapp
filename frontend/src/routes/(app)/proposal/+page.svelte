@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProposalDetail from "$lib/pages/ProposalDetail.svelte";
-  import SignIn from "$lib/components/common/SignIn.svelte";
+  import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import type { Navigation } from "@sveltejs/kit";
@@ -31,7 +31,5 @@
 {#if signedIn}
   <ProposalDetail proposalIdText={proposalId} {referrerPath} />
 {:else}
-  <h1>Proposal NOT signed in</h1>
-
-  <SignIn />
+  <SignInNNS />
 {/if}
