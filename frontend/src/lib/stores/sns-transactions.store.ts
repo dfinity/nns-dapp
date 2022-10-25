@@ -47,8 +47,9 @@ const initSnsAccountsStore = () => {
         const accountState = projectState?.[accountIdentifier];
         const uniquePreviousTransactions = (
           accountState?.transactions ?? []
-        ).filter(({ id: oldTxId }) =>
-          transactions.some(({ id: newTxId }) => newTxId !== oldTxId)
+        ).filter(
+          ({ id: oldTxId }) =>
+            !transactions.some(({ id: newTxId }) => newTxId === oldTxId)
         );
         return {
           ...currentState,

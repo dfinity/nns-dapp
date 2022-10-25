@@ -12,6 +12,8 @@ import { getIdentity } from "./auth.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
+export const TRANSACTION_PAGE_SIZE = BigInt(50);
+
 export const loadSnsAccounts = async (
   rootCanisterId: Principal
 ): Promise<void> => {
@@ -102,6 +104,7 @@ export const loadAccountTransactions = async ({
   rootCanisterId: Principal;
 }) => {
   // Only load transactions for one SNS project which we know the index canister id
+  // TODO: Remove https://dfinity.atlassian.net/browse/GIX-1093
   if (rootCanisterId.toText() !== "tmxop-wyaaa-aaaaa-aaapa-cai") {
     return;
   }
@@ -110,7 +113,7 @@ export const loadAccountTransactions = async ({
   const { transactions, oldestTxId } = await getTransactions({
     identity,
     account: snsAccount,
-    maxResults: BigInt(50),
+    maxResults: TRANSACTION_PAGE_SIZE,
   });
   snsTransactionsStore.addTransactions({
     accountIdentifier: account.identifier,

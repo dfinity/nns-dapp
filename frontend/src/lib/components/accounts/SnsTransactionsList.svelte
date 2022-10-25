@@ -13,6 +13,8 @@
       rootCanisterId,
     });
   });
+
+  // TODO: GIX-996 Render transactions.
 </script>
 
-<div />
+<div data-tid="sns-transactions-list" />

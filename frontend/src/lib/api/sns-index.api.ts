@@ -24,6 +24,7 @@ interface GetTransactionsResponse {
   transactions: SnsTransactionWithId[];
 }
 
+// TODO: Add test when we use the wrapper https://dfinity.atlassian.net/browse/GIX-1093
 export const getTransactions = async ({
   identity,
   account,

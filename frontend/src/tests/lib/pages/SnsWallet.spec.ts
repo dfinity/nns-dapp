@@ -70,11 +70,14 @@ describe("SnsWallet", () => {
       await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
     });
 
-    it("should render wallet summary", async () => {
+    it("should render wallet summary and transactions", async () => {
       const { queryByTestId } = render(SnsWallet);
 
       await waitFor(() =>
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+      );
+      await waitFor(() =>
+        expect(queryByTestId("sns-transactions-list")).toBeInTheDocument()
       );
     });
 
