@@ -22,8 +22,13 @@
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
 
-  const isSelectedPath = ({paths, currentPath}: {currentPath: AppPath, paths: (AppPath | null)[]}): boolean =>
-    paths.includes(currentPath);
+  const isSelectedPath = ({
+    paths,
+    currentPath,
+  }: {
+    currentPath: AppPath;
+    paths: (AppPath | null)[];
+  }): boolean => paths.includes(currentPath);
 
   let routes: {
     context: string;
@@ -37,28 +42,40 @@
     {
       context: "accounts",
       href: $accountsPathStore,
-      selected: isSelectedPath({currentPath: $pageStore.path, paths: [AppPath.Accounts, AppPath.Wallet]}),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Accounts, AppPath.Wallet],
+      }),
       label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
       href: $neuronsPathStore,
-      selected: isSelectedPath({currentPath: $pageStore.path, paths: [AppPath.Neurons, AppPath.Neuron]}),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Neurons, AppPath.Neuron],
+      }),
       label: "neurons",
       icon: IconPsychology,
     },
     {
       context: "proposals",
       href: $proposalsPathStore,
-      selected: isSelectedPath({currentPath: $pageStore.path, paths: [AppPath.Proposals, AppPath.Proposal]}),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Proposals, AppPath.Proposal],
+      }),
       label: "voting",
       icon: IconHowToVote,
     },
     {
       context: "canisters",
       href: $canistersPathStore,
-      selected: isSelectedPath({currentPath: $pageStore.path, paths: [AppPath.Canisters, AppPath.Canister]}),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
       label: "canisters",
       icon: IconEngineering,
     },
@@ -68,7 +85,10 @@
           {
             context: "launchpad",
             href: `${AppPath.Launchpad}`,
-            selected: isSelectedPath({currentPath: $pageStore.path, paths: [AppPath.Launchpad, AppPath.Project]}),
+            selected: isSelectedPath({
+              currentPath: $pageStore.path,
+              paths: [AppPath.Launchpad, AppPath.Project],
+            }),
             label: "launchpad",
             icon: IconRocketLaunch,
             statusIcon: BadgeNew,

@@ -3,9 +3,9 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import Accounts from "$lib/routes/Accounts.svelte";
-  import {onMount} from "svelte";
-  import {layoutBackStore, layoutTitleStore} from "$lib/stores/layout.store";
-  import {i18n} from "$lib/stores/i18n";
+  import { onMount } from "svelte";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

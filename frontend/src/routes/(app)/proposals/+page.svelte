@@ -7,9 +7,9 @@
   import type { Navigation } from "@sveltejs/kit";
   import type { AppPath } from "$lib/constants/routes.constants";
   import { pathForRouteId } from "$lib/utils/page.utils";
-  import {onMount} from "svelte";
-  import {layoutBackStore, layoutTitleStore} from "$lib/stores/layout.store";
-  import {i18n} from "$lib/stores/i18n";
+  import { onMount } from "svelte";
+  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

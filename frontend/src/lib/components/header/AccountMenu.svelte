@@ -2,9 +2,14 @@
   import { IconAccount, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 <button
@@ -20,7 +25,10 @@
 <Popover bind:visible anchor={button} direction="rtl">
   <div class="info">
     <ThemeToggle />
-    <Logout />
+
+    {#if signedIn}
+      <Logout />
+    {/if}
   </div>
 </Popover>
 
