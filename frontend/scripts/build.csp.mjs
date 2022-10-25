@@ -3,7 +3,7 @@
 import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { join, dirname } from "path";
 import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
@@ -34,8 +34,12 @@ const extractStartScript = (htmlFile) => {
     svelteKitStartScript.exec(indexHtml);
   const inlineScript = content.replace(/^\s*/gm, "");
 
+  // Each file needs its own main.js because the script that calls the SvelteKit start function contains information dedicated to the route
+  // i.e. the routeId and a particular id for the querySelector use to attach the content
+  const folderPath = dirname(htmlFile);
+
   writeFileSync(
-    join(process.cwd(), "public", "main.js"),
+    join(folderPath, "main.js"),
     inlineScript,
     "utf-8"
   );
