@@ -218,6 +218,32 @@ export const listSnsProposals = async (): Promise<void> => {
   });
 };
 
+/**
+ * Requests swap state and loads it in the store.
+ * Ignores possible undefined. This is used only to recheck the data with up-to-date information.
+ * This should be used only when the data is already in the store.
+ * That's why if an error happens, we want to rely on the data that it's already in the store.
+ *
+ * @param {Principal} rootCanisterId Root canister id of the project.
+ */
+const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
+  try {
+    const identity = await getIdentity();
+    const swapData = await querySnsSwapState({
+      rootCanisterId: rootCanisterId.toText(),
+      identity,
+      certified: true,
+    });
+    snsQueryStore.updateSwapState({
+      swapData,
+      rootCanisterId: rootCanisterId.toText(),
+    });
+  } catch (err) {
+    // Ignore error
+    console.error("Error reloading swap state", err);
+  }
+};
+
 export const getSwapAccount = async (
   swapCanisterId: Principal
 ): Promise<AccountIdentifier> => {
@@ -251,6 +277,14 @@ export const participateInSwap = async ({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
+    // TODO: Move the logic to the `catch` for a faster participation.
+    // At the moment we can't move it to the `catch`
+    // because it's hard for us to differentiate when the error comes from stale data or the second notify for the last participation.
+    //
+    // Reload the sale state before validating the participation.
+    // The current state might have change since it was loaded.
+    // This might prevent transferring funds that will not be accepted as participation and avoid refunds.
+    await reloadSnsState(rootCanisterId);
     const project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
       project,
