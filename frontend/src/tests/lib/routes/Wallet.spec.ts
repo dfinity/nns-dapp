@@ -4,11 +4,11 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import Wallet from "$routes/(app)/wallet/+page.svelte";
+import Wallet from "$lib/routes/Wallet.svelte";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { principal } from "../../../mocks/sns-projects.mock";
-import { mockSnsCanisterIdText } from "../../../mocks/sns.api.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import { principal } from "../../mocks/sns-projects.mock";
+import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -17,8 +17,6 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Wallet", () => {
-  // TODO(GIX-1071): should render sign-in if not logged in
-
   beforeAll(() =>
     jest
       .spyOn(authStore, "subscribe")
@@ -29,9 +27,7 @@ describe("Wallet", () => {
     it("should render NnsWallet", () => {
       const { getByTestId } = render(Wallet, {
         props: {
-          data: {
-            account: OWN_CANISTER_ID_TEXT,
-          },
+          accountIdentifier: OWN_CANISTER_ID_TEXT,
         },
       });
       expect(getByTestId("nns-wallet")).toBeInTheDocument();
@@ -44,9 +40,7 @@ describe("Wallet", () => {
 
       const { getByTestId } = render(Wallet, {
         props: {
-          data: {
-            account: principal(0).toText(),
-          },
+          accountIdentifier: principal(0).toText(),
         },
       });
       expect(getByTestId("sns-wallet")).toBeInTheDocument();

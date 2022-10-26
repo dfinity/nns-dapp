@@ -1,11 +1,11 @@
 <script lang="ts">
-  import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { onMount } from "svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { goto } from "$app/navigation";
+  import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
 
   onMount(() => {
@@ -26,7 +26,7 @@
 </script>
 
 {#if signedIn}
-  <ProjectDetail {rootCanisterId} />
+  <RouteModule path={AppPath.Project} params={{ rootCanisterId }} />
 {:else}
   <SignInNNS />
 {/if}

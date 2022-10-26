@@ -12,11 +12,11 @@ import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {

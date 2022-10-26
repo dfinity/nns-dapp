@@ -1,8 +1,9 @@
 <script lang="ts">
-  import Wallet from "$lib/routes/Wallet.svelte";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import RouteModule from "$lib/components/common/RouteModule.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -15,7 +16,7 @@
 </script>
 
 {#if signedIn}
-  <Wallet {accountIdentifier} />
+  <RouteModule path={AppPath.Wallet} params={{ accountIdentifier }} />
 {:else}
   <SignInNNS />
 {/if}

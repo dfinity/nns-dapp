@@ -1,8 +1,9 @@
 <script lang="ts">
-  import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import RouteModule from "$lib/components/common/RouteModule.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -15,7 +16,7 @@
 </script>
 
 {#if signedIn}
-  <CanisterDetail {canisterId} />
+  <RouteModule path={AppPath.Canister} params={{ canisterId }} />
 {:else}
   <SignInNNS />
 {/if}

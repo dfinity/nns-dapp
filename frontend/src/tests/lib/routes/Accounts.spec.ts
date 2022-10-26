@@ -10,16 +10,16 @@ import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
-import Accounts from "$routes/(app)/accounts/+page.svelte";
+import Accounts from "$lib/routes/Accounts.svelte";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -28,8 +28,6 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Accounts", () => {
-  // TODO(GIX-1071): should render sign-in if not logged in
-
   beforeAll(() =>
     jest
       .spyOn(authStore, "subscribe")

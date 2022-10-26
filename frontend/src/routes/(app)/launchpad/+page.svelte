@@ -2,12 +2,12 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
-  import Launchpad from "$lib/pages/Launchpad.svelte";
   import { onMount } from "svelte";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { goto } from "$app/navigation";
+  import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
@@ -27,7 +27,7 @@
 </script>
 
 {#if signedIn}
-  <Launchpad />
+  <RouteModule path={AppPath.Launchpad} />
 {:else}
   <SignInNNS />
 {/if}

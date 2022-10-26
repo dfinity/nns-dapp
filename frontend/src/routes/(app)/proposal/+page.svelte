@@ -1,12 +1,12 @@
 <script lang="ts">
-  import ProposalDetail from "$lib/pages/ProposalDetail.svelte";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import type { Navigation } from "@sveltejs/kit";
   import { afterNavigate } from "$app/navigation";
-  import type { AppPath } from "$lib/constants/routes.constants";
   import { pathForRouteId } from "$lib/utils/page.utils";
+  import RouteModule from "$lib/components/common/RouteModule.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -29,7 +29,10 @@
 </script>
 
 {#if signedIn}
-  <ProposalDetail proposalIdText={proposalId} {referrerPath} />
+  <RouteModule
+    path={AppPath.Proposal}
+    params={{ proposalIdText: proposalId, referrerPath }}
+  />
 {:else}
   <SignInNNS />
 {/if}
