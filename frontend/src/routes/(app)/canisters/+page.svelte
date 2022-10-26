@@ -2,27 +2,18 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
-  import { afterNavigate } from "$app/navigation";
-  import type { Navigation } from "@sveltejs/kit";
-  import { pathForRouteId } from "$lib/utils/page.utils";
   import { onMount } from "svelte";
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import {pageReferrerStore} from "$lib/stores/page.store";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
   // TODO(GIX-1071): utils
-  let referrerPath: AppPath | undefined = undefined;
-  afterNavigate(
-    ({ from }: Navigation) =>
-      (referrerPath =
-        from?.routeId !== null && from?.routeId !== undefined
-          ? pathForRouteId(from.routeId)
-          : undefined)
-  );
+  let referrerPath: AppPath | undefined = $pageReferrerStore;
 
   onMount(() => {
     layoutTitleStore.set($i18n.navigation.canisters);

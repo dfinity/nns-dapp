@@ -6,17 +6,18 @@
   import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { goto } from "$app/navigation";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  onMount(() => {
+  onMount(async () => {
     if (!IS_TESTNET) {
       // TODO(GIX-1071): utils?
-      goto(AppPath.Accounts, { replaceState: true });
+      // SvelteKit issue: https://github.com/sveltejs/kit/issues/1485#issuecomment-1291882125
+      const { goto } = await import("$app/navigation");
+      await goto(AppPath.Accounts, { replaceState: true });
     }
 
     layoutTitleStore.set($i18n.sns_launchpad.header);

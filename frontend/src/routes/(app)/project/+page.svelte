@@ -4,14 +4,15 @@
   import { authStore } from "$lib/stores/auth.store";
   import { onMount } from "svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { goto } from "$app/navigation";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
 
-  onMount(() => {
+  onMount(async () => {
     if (!IS_TESTNET) {
       // TODO(GIX-1071): utils?
-      goto(AppPath.Accounts, { replaceState: true });
+      // SvelteKit issue: https://github.com/sveltejs/kit/issues/1485#issuecomment-1291882125
+      const { goto } = await import("$app/navigation");
+      await goto(AppPath.Accounts, { replaceState: true });
     }
   });
 

@@ -1,12 +1,10 @@
 <script lang="ts">
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import type { Navigation } from "@sveltejs/kit";
-  import { afterNavigate } from "$app/navigation";
-  import { pathForRouteId } from "$lib/utils/page.utils";
+  import {isSignedIn} from "$lib/utils/auth.utils";
+  import {authStore} from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import {AppPath} from "$lib/constants/routes.constants";
+  import {pageReferrerStore} from "$lib/stores/page.store";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -18,14 +16,7 @@
   $: ({ proposal: proposalId } = data);
 
   // TODO(GIX-1071): utils
-  let referrerPath: AppPath | undefined = undefined;
-  afterNavigate(
-    ({ from }: Navigation) =>
-      (referrerPath =
-        from?.routeId !== null && from?.routeId !== undefined
-          ? pathForRouteId(from.routeId)
-          : undefined)
-  );
+  let referrerPath: AppPath | undefined = $pageReferrerStore;
 </script>
 
 {#if signedIn}
