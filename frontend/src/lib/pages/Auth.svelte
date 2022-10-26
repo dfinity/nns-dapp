@@ -174,6 +174,11 @@
   .sign-in {
     width: 100%;
     max-width: 475px;
+    align-self: center;
+
+    :global(button) {
+      width: 100%;
+    }
 
     @media (min-width: 768px) and (min-height: 620px) {
       margin: var(--padding-6x) 0 calc(14 * var(--padding));
