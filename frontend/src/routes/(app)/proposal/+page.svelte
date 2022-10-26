@@ -1,10 +1,10 @@
 <script lang="ts">
   import SignInNNS from "$lib/pages/SignInNNS.svelte";
-  import {isSignedIn} from "$lib/utils/auth.utils";
-  import {authStore} from "$lib/stores/auth.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import {AppPath} from "$lib/constants/routes.constants";
-  import {pageReferrerStore} from "$lib/stores/page.store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageReferrerStore } from "$lib/stores/page.store";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

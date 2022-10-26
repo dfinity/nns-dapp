@@ -1,5 +1,5 @@
-import {writable} from "svelte/store";
-import type {AppPath} from "$lib/constants/routes.constants";
+import type { AppPath } from "$lib/constants/routes.constants";
+import { writable } from "svelte/store";
 
 // -- Workaround --
 // I wish we could use afterNavigate in +page but, it would lead to SvelteKit issue https://github.com/sveltejs/kit/issues/1485#issuecomment-1291882125

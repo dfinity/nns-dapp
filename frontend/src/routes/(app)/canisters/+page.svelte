@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {pageReferrerStore} from "$lib/stores/page.store";
+  import { pageReferrerStore } from "$lib/stores/page.store";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);

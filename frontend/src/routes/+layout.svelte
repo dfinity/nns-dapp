@@ -3,9 +3,9 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initWorker } from "$lib/services/worker.services";
-  import {pageReferrerStore} from "$lib/stores/page.store";
-  import {pathForRouteId} from "$lib/utils/page.utils";
-  import {page} from "$app/stores";
+  import { pageReferrerStore } from "$lib/stores/page.store";
+  import { pathForRouteId } from "$lib/utils/page.utils";
+  import { page } from "$app/stores";
 
   let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
 
@@ -24,7 +24,7 @@
 
   onDestroy(() => unsubscribeAuth());
 
-  $: (() => pageReferrerStore.set(pathForRouteId($page.routeId)))()
+  $: (() => pageReferrerStore.set(pathForRouteId($page.routeId)))();
 </script>
 
 <slot />

@@ -4,5 +4,5 @@
 </script>
 
 <AuthLayout>
-    <Auth />
+  <Auth />
 </AuthLayout>
