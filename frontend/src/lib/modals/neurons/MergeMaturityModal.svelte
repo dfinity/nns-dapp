@@ -83,7 +83,7 @@
       on:nnsCancel={modal.back}
     >
       <Html
-        html={replacePlaceholders(
+        text={replacePlaceholders(
           $i18n.neuron_detail.merge_maturity_confirmation,
           {
             $percentage: formatPercentage(percentageToMerge / 100, {

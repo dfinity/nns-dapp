@@ -69,7 +69,7 @@
         <svelte:fragment slot="info">
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
             <Html
-              html={replacePlaceholders(
+              text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip_with_stake,
                 {
                   $stake: formatToken({

@@ -116,7 +116,7 @@
           <p class="description">{$i18n.canisters.minimum_cycles_text_1}</p>
           <p class="description">
             <Html
-              html={replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
+              text={replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
                 $amount: valueSpan(
                   formattedTransactionFeeICP($mainTransactionFeeStore)
                 ),

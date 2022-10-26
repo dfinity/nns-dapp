@@ -38,7 +38,7 @@
       <p class="label">{$i18n.neuron_detail.current_stake}</p>
       <p data-tid="neuron-stake">
         <Html
-          html={replacePlaceholders($i18n.neurons.icp_stake, {
+          text={replacePlaceholders($i18n.neurons.icp_stake, {
             $amount: valueSpan(
               formatToken({ value: neuronICP, detailed: true })
             ),

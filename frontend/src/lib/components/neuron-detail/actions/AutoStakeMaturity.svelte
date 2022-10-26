@@ -53,7 +53,7 @@
       <h4>{$i18n.core.confirm}</h4>
       <p>
         <Html
-          html={hasAutoStakeOn
+          text={hasAutoStakeOn
             ? $i18n.neuron_detail.auto_stake_maturity_off
             : $i18n.neuron_detail.auto_stake_maturity_on}
         />

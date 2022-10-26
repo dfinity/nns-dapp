@@ -87,7 +87,7 @@
       on:nnsCancel={modal.back}
     >
       <Html
-        html={replacePlaceholders(
+        text={replacePlaceholders(
           $i18n.neuron_detail.stake_maturity_confirmation,
           {
             $percentage: formatPercentage(percentageToStake / 100, {

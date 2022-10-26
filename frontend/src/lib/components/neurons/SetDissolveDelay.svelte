@@ -56,7 +56,7 @@
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p data-tid="neuron-stake">
       <Html
-        html={replacePlaceholders($i18n.neurons.icp_stake, {
+        text={replacePlaceholders($i18n.neurons.icp_stake, {
           $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
         })}
       />
@@ -68,7 +68,7 @@
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
       <p class="duration">
         <Html
-          html={`${valueSpan(
+          text={`${valueSpan(
             secondsToDuration(neuron.dissolveDelaySeconds)
           )} - ${$i18n.neurons.staked}`}
         />

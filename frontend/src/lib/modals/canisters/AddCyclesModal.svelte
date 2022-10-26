@@ -127,7 +127,7 @@
       >
         <p class="description">
           <Html
-            html={replacePlaceholders($i18n.canisters.transaction_fee, {
+            text={replacePlaceholders($i18n.canisters.transaction_fee, {
               $amount: valueSpan(
                 formattedTransactionFeeICP($mainTransactionFeeStore)
               ),

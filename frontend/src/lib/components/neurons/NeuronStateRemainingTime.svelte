@@ -15,7 +15,7 @@
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     <p class="duration">
       <Html
-        html={replacePlaceholders($i18n.neurons.remaining, {
+        text={replacePlaceholders($i18n.neurons.remaining, {
           $duration: valueSpan(secondsToDuration(timeInSeconds)),
         })}
       />
