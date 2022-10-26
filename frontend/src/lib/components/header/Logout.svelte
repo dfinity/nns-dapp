@@ -2,14 +2,14 @@
   import { i18n } from "$lib/stores/i18n";
   import { logout } from "$lib/services/auth.services";
   import { IconExit } from "@dfinity/gix-components";
-  import {createEventDispatcher} from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
 
   const signOut = () => {
     dispatcher("nnsLogoutTriggered");
     logout({});
-  }
+  };
 </script>
 
 <button data-tid="logout" on:click={signOut} class="text">

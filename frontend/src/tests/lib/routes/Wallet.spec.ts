@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import Wallet from "$lib/routes/Wallet.svelte";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { principal } from "../../mocks/sns-projects.mock";

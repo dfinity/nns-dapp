@@ -6,11 +6,11 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import Accounts from "$lib/routes/Accounts.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
-import Accounts from "$lib/routes/Accounts.svelte";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";

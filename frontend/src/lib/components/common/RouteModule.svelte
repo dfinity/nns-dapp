@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { Spinner } from "@dfinity/gix-components";
-  import { fade } from 'svelte/transition';
+  import { fade } from "svelte/transition";
 
   export let path: AppPath;
   export let params: Record<string, string> | undefined = undefined;
@@ -41,7 +41,7 @@
 
   onMount(async () => {
     // We defer the display of the spinner to avoid brief glitch when pages chunks are loaded quickly
-    setTimeout(() => spinner = true, 250);
+    setTimeout(() => (spinner = true), 250);
 
     component = await loadModule();
   });

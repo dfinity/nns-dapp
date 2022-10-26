@@ -11,7 +11,7 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  const toggle = () => visible = !visible;
+  const toggle = () => (visible = !visible);
 </script>
 
 <button

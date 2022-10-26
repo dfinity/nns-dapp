@@ -12,17 +12,14 @@ import { findHtmlFiles } from "./build.utils.mjs";
  * On VM boundary nodes it seems that preloading is better support.
  */
 const removePreloadScripts = (htmlFile) => {
-    const updatedIndexHTML = removePreloadedScript(htmlFile);
-    writeFileSync(htmlFile, updatedIndexHTML);
+  const updatedIndexHTML = removePreloadedScript(htmlFile);
+  writeFileSync(htmlFile, updatedIndexHTML);
 };
 
 const removePreloadedScript = (htmlFile) => {
-    const content = readFileSync(htmlFile, "utf-8");
+  const content = readFileSync(htmlFile, "utf-8");
 
-    return content.replace(
-        /\s*(<link rel="(?:module)?preload".*?>)\s*/gi,
-        ""
-    );
+  return content.replace(/\s*(<link rel="(?:module)?preload".*?>)\s*/gi, "");
 };
 
 const htmlFiles = findHtmlFiles();
