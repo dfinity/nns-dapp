@@ -31,7 +31,7 @@ export const getTransactions = async ({
   start,
   maxResults,
 }: GetTransactionsParams): Promise<GetTransactionsResponse> => {
-  logWithTimestamp("Getting sns accounts: call...");
+  logWithTimestamp("Getting sns accounts transactions: call...");
   const agent = await createAgent({ identity, host: HOST });
   // TODO: Use wrapper https://dfinity.atlassian.net/browse/GIX-1093
   const { getTransactions: getTransactionsApi } = SnsIndexCanister.create({
@@ -48,7 +48,7 @@ export const getTransactions = async ({
     },
   });
 
-  logWithTimestamp("");
+  logWithTimestamp("Getting sns account transactions: done");
   return {
     oldestTxId: fromNullable(oldest_tx_id),
     transactions,
