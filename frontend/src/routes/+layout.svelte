@@ -8,18 +8,16 @@
 
   onMount(async () => (worker = await initWorker()));
 
-  const unsubscribeAuth = authStore.subscribe(
-    async (auth: AuthStore) => {
-      worker?.syncAuthIdle(auth);
+  const unsubscribeAuth = authStore.subscribe(async (auth: AuthStore) => {
+    worker?.syncAuthIdle(auth);
 
-      if (!auth.identity) {
-        return;
-      }
-
-      const {initApp} = await import("../lib/services/app.services");
-      await initApp();
+    if (!auth.identity) {
+      return;
     }
-  );
+
+    const { initApp } = await import("../lib/services/app.services");
+    await initApp();
+  });
 
   onDestroy(() => unsubscribeAuth());
 </script>
