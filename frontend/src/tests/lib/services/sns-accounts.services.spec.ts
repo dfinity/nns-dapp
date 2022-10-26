@@ -5,8 +5,10 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -44,9 +46,12 @@ describe("sns-accounts-services", () => {
 
       await services.loadSnsAccounts(mockPrincipal);
 
-      await tick();
-      const store = get(snsAccountsStore);
-      expect(store[mockPrincipal.toText()]).toBeUndefined();
+      await waitFor(() => {
+        const store = get(snsAccountsStore);
+        return expect(store[mockPrincipal.toText()]).toBeUndefined();
+      });
+      const transactionsStore = get(snsTransactionsStore);
+      return expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });

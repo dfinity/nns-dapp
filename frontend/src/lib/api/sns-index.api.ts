@@ -27,7 +27,7 @@ interface GetTransactionsResponse {
 // TODO: Add test when we use the wrapper https://dfinity.atlassian.net/browse/GIX-1093
 export const getTransactions = async ({
   identity,
-  account,
+  account: { owner, subaccount },
   start,
   maxResults,
 }: GetTransactionsParams): Promise<GetTransactionsResponse> => {
@@ -43,8 +43,8 @@ export const getTransactions = async ({
     max_results: maxResults,
     start,
     account: {
-      owner: account.owner,
-      subaccount: toNullable(account.subaccount),
+      owner,
+      subaccount: toNullable(subaccount),
     },
   });
 

@@ -8,7 +8,7 @@ interface SnsTransactions {
   // We use the account string representation as the key to identify the transactions.
   [accountIdentifier: string]: {
     transactions: SnsTransactionWithId[];
-    oldestTxId: bigint;
+    oldestTxId?: bigint;
   };
 }
 
@@ -40,7 +40,7 @@ const initSnsAccountsStore = () => {
       accountIdentifier: string;
       rootCanisterId: Principal;
       transactions: SnsTransactionWithId[];
-      oldestTxId: bigint;
+      oldestTxId?: bigint;
     }) {
       update((currentState: SnsTransactionsStore) => {
         const projectState = currentState[rootCanisterId.toText()];

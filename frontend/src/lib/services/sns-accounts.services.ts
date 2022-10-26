@@ -11,8 +11,6 @@ import { getIdentity } from "./auth.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const TRANSACTION_PAGE_SIZE = BigInt(50);
-
 export const loadSnsAccounts = async (
   rootCanisterId: Principal
 ): Promise<void> => {

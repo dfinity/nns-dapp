@@ -1,13 +1,12 @@
 import { getTransactions } from "$lib/api/sns-index.api";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
 import { getSnsAccountIdentity } from "./sns-accounts.services";
 
-export const TRANSACTION_PAGE_SIZE = BigInt(50);
-
-export const loadAccountTransactions = async ({
+export const loadAccountNextTransactions = async ({
   account,
   rootCanisterId,
 }: {
@@ -24,12 +23,12 @@ export const loadAccountTransactions = async ({
   const { transactions, oldestTxId } = await getTransactions({
     identity,
     account: snsAccount,
-    maxResults: TRANSACTION_PAGE_SIZE,
+    maxResults: BigInt(DEFAULT_TRANSACTION_PAGE_LIMIT),
   });
   snsTransactionsStore.addTransactions({
     accountIdentifier: account.identifier,
     rootCanisterId,
     transactions,
-    oldestTxId: oldestTxId ?? transactions[transactions.length - 1].id,
+    oldestTxId,
   });
 };

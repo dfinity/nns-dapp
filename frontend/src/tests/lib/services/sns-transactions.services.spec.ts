@@ -3,6 +3,7 @@
  */
 
 import * as indexApi from "$lib/api/sns-index.api";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/sns-transactions.services";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { Principal } from "@dfinity/principal";
@@ -13,7 +14,7 @@ import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("sns-transactions-services", () => {
-  describe("loadAccountTransactions", () => {
+  describe("loadAccountNextTransactions", () => {
     it("loads transactions in the store", async () => {
       const spyGetTransactions = jest
         .spyOn(indexApi, "getTransactions")
@@ -22,7 +23,7 @@ describe("sns-transactions-services", () => {
           transactions: [mockSnsTransactionWithId],
         });
       const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountTransactions({
+      await services.loadAccountNextTransactions({
         rootCanisterId,
         account: mockSnsMainAccount,
       });
@@ -30,12 +31,12 @@ describe("sns-transactions-services", () => {
       const snsAccount = {
         owner: mockSnsMainAccount.principal,
       };
-      // await tick();
+
       await waitFor(() =>
         expect(spyGetTransactions).toBeCalledWith({
           identity: mockIdentity,
           account: snsAccount,
-          maxResults: services.TRANSACTION_PAGE_SIZE,
+          maxResults: BigInt(DEFAULT_LIST_PAGINATION_LIMIT),
         })
       );
 
