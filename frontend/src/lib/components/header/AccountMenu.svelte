@@ -10,13 +10,15 @@
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
+
+  const toggle = () => visible = !visible;
 </script>
 
 <button
   data-tid="account-menu"
   class="icon-only toggle"
   bind:this={button}
-  on:click={() => (visible = !visible)}
+  on:click={toggle}
   aria-label={$i18n.header.account_menu}
 >
   <IconAccount />
@@ -27,7 +29,7 @@
     <ThemeToggle />
 
     {#if signedIn}
-      <Logout />
+      <Logout on:nnsLogoutTriggered={toggle} />
     {/if}
   </div>
 </Popover>
