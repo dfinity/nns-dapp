@@ -16,7 +16,7 @@
   let referrerPath: AppPath | undefined = $pageReferrerStore;
 
   onMount(() => {
-    layoutTitleStore.set($i18n.wallet.title);
+    layoutTitleStore.set($i18n.navigation.voting);
 
     // Reset back action because only detail routes have such feature other views use the menu
     layoutBackStore.set(undefined);
