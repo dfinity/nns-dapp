@@ -1,6 +1,8 @@
 <script lang="ts">
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import Auth from "$lib/pages/Auth.svelte";
+  import AuthLayout from "$lib/components/common/AuthLayout.svelte";
 </script>
 
-<RouteModule path={AppPath.Authentication} />
+<AuthLayout>
+    <Auth />
+</AuthLayout>
