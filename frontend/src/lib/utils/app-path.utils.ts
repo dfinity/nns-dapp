@@ -39,6 +39,8 @@ export const paths = {
     ENABLE_SNS_2
       ? `${CONTEXT_PATH}/${rootCanisterId}/wallet`
       : AppPath.LegacyWallet,
+  projectDetail: (rootCanisterId: string) =>
+    `${CONTEXT_PATH}/${rootCanisterId}`,
 };
 
 const pathValidation = (path: AppPath): string => mapper[path] ?? path;

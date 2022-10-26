@@ -10,7 +10,7 @@
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { baseHref } from "$lib/utils/route.utils";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
+  import { isRoutePath, paths } from "$lib/utils/app-path.utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import { routeStore } from "$lib/stores/route.store";
   import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
@@ -21,11 +21,18 @@
     neuronsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   const baseUrl = baseHref();
 
   const isSelectedPath = (paths: AppPath[]): boolean =>
     isRoutePath({ paths, routePath: $routeStore.path });
+
+  let isProjectDetailPath: boolean;
+  $: isProjectDetailPath = isRoutePath({
+    paths: [AppPath.ProjectDetail],
+    routePath: $routeStore.path,
+  });
 
   let routes: {
     context: string;
@@ -38,7 +45,9 @@
   $: routes = [
     {
       context: "accounts",
-      href: $accountsPathStore,
+      href: isProjectDetailPath
+        ? paths.accounts(OWN_CANISTER_ID.toText())
+        : $accountsPathStore,
       selected: isSelectedPath([
         AppPath.Accounts,
         AppPath.LegacyAccounts,
@@ -50,7 +59,9 @@
     },
     {
       context: "neurons",
-      href: $neuronsPathStore,
+      href: isProjectDetailPath
+        ? paths.neurons(OWN_CANISTER_ID.toText())
+        : $neuronsPathStore,
       selected: isSelectedPath([
         AppPath.LegacyNeurons,
         AppPath.LegacyNeuronDetail,
