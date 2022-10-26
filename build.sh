@@ -59,7 +59,7 @@ set -x
 ###################
 # frontend # (output: frontend/public/)
 ###################
-(cd "$TOPLEVEL/frontend" && npm ci --force && npm run build)
+(cd "$TOPLEVEL/frontend" && npm ci && npm run build)
 
 #################
 # assets.tar.xz #
