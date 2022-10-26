@@ -20,7 +20,7 @@ const config: UserConfig = {
           modules: { Buffer: ["buffer", "Buffer"] },
         }),
       ],
-    }
+    },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),

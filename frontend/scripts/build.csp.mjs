@@ -24,8 +24,11 @@ const buildCsp = (htmlFile) => {
 };
 
 const removeDefaultCspTag = (indexHtml) => {
-  return indexHtml.replace('<meta http-equiv="content-security-policy" content="">', '');
-}
+  return indexHtml.replace(
+    '<meta http-equiv="content-security-policy" content="">',
+    ""
+  );
+};
 
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
