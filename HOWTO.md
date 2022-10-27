@@ -72,7 +72,7 @@ type ProposalInfo = record {
 };
 ```
 
-### Backwards Compatiblity
+### Backwards Compatibility
 
 A new topic does not break backwards compatibility. Therefore, there is no need to synchronize releases.
 
@@ -91,7 +91,7 @@ The `nnsFunction` is a property of the `Action` variant `ExecuteNnsFunction`. Fi
 type ExecuteNnsFunction = record { nns_function : int32; payload : vec nat8 };
 ```
 
-### Backwards Compatiblity
+### Backwards Compatibility
 
 A new `nnsFunction` does not break backwards compatibility. Therefore, there is no need to synchronize releases.
 
