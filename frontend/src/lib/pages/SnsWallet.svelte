@@ -23,6 +23,7 @@
   import { goto } from "$app/navigation";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import { buildUrl } from "$lib/utils/navigation.utils";
+  import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(async () => {
@@ -78,8 +79,12 @@
 
 <main class="legacy" data-tid="sns-wallet">
   <section>
-    {#if $selectedAccountStore.account !== undefined}
+    {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
       <WalletSummary />
+      <SnsTransactionsList
+        rootCanisterId={$snsOnlyProjectStore}
+        account={$selectedAccountStore.account}
+      />
     {:else}
       <Spinner />
     {/if}

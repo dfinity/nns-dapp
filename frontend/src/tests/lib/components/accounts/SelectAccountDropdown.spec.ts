@@ -15,7 +15,10 @@ import {
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
+import {
+  mockSnsAccountsStoreSubscribe,
+  mockSnsMainAccount,
+} from "../../../mocks/sns-accounts.mock";
 
 describe("SelectAccountDropdown", () => {
   describe("nns accounts", () => {
@@ -94,7 +97,7 @@ describe("SelectAccountDropdown", () => {
       });
 
       expect(container.querySelector("select")?.value).toBe(
-        mockMainAccount.identifier
+        mockSnsMainAccount.identifier
       );
     });
   });
