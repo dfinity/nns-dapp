@@ -23,7 +23,7 @@
       return;
     }
 
-    // TODO(GIX-1071): handle multiple signin-init buttons in one page
+    // TODO(GIX-1071): handle multiple sign-in buttons in one page. Only only one should initialize the auth.
     await syncAuthStore();
 
     displayAndCleanLogoutMsg();

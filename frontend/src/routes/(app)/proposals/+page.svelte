@@ -12,7 +12,6 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  // TODO(GIX-1071): utils
   let referrerPath: AppPath | undefined = $pageReferrerStore;
 
   onMount(() => {

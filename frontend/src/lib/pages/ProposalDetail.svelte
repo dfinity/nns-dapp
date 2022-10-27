@@ -19,7 +19,6 @@
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
 
-  // TODO(GIX-1071): refactor getLastPathDetailId to map bigint for here and in neuron detail
   const mapProposalId = (
     proposalIdText: string | undefined | null = undefined
   ): ProposalId | undefined => {

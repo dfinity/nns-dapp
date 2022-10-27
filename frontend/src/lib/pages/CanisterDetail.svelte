@@ -64,7 +64,6 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
 
-  // TODO(GIX-1071): double check promises
   layoutBackStore.set(goBack);
 
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({

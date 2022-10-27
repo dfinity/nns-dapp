@@ -120,10 +120,8 @@
       mapProjectDetail(rootCanisterId);
     })();
 
-  // TODO(GIX-1071): double check promises
   layoutBackStore.set(async () => goBack(false));
 
-  // TODO(GIX-1071)
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
   let notFound: boolean;

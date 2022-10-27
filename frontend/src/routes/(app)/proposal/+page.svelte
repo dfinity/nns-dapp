@@ -15,7 +15,6 @@
   let proposalId: string | null | undefined;
   $: ({ proposal: proposalId } = data);
 
-  // TODO(GIX-1071): utils
   let referrerPath: AppPath | undefined = $pageReferrerStore;
 </script>
 

@@ -1,4 +1,5 @@
 import { browser } from "$app/environment";
+import { PROPOSAL_PARAM } from "$lib/constants/routes.constants";
 import type { LoadEvent } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
@@ -15,8 +16,7 @@ export const load: PageLoad = (
     url: { searchParams },
   } = $event;
 
-  // TODO(GIX-1071): constants for proposal
   return {
-    proposal: searchParams?.get("proposal"),
+    proposal: searchParams?.get(PROPOSAL_PARAM),
   };
 };

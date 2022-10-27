@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import type { LoadEvent } from "@sveltejs/kit";
 // Polyfill Buffer for development purpose. node_modules/@ledgerhq needs buffer.
@@ -20,8 +21,7 @@ export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
     url: { searchParams },
   } = $event;
 
-  // TODO(GIX-1071): constants for u
   return {
-    universe: searchParams?.get("u") ?? undefined,
+    universe: searchParams?.get(UNIVERSE_PARAM) ?? undefined,
   };
 };

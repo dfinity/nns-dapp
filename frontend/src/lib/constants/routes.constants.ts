@@ -13,3 +13,9 @@ export enum AppPath {
 }
 
 export const UNIVERSE_PARAM = "u";
+
+export const CANISTER_PARAM = "canister";
+export const NEURON_PARAM = "neuron";
+export const PROJECT_PARAM = "project";
+export const PROPOSAL_PARAM = "proposal";
+export const ACCOUNT_PARAM = "account";
