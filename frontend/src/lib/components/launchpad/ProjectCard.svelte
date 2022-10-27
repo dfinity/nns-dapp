@@ -29,7 +29,6 @@
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
-  // TODO(GIX-1071): utils?
   const showProject = async () =>
     await goto(
       `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`

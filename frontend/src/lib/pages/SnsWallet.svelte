@@ -26,12 +26,10 @@
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
     if (!ENABLE_SNS_2) {
-      // TODO(GIX-1071): utils?
       goto(AppPath.Accounts, { replaceState: true });
     }
   });
 
-  // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> =>
     goto(`${AppPath.Accounts}/?u=${$pageStore.universe}`);
 

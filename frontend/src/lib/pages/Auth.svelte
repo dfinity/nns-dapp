@@ -12,6 +12,7 @@
   } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
+  import { gotoProxy } from "$lib/proxy/app.services.proxy";
 
   let signedIn = false;
 
@@ -24,9 +25,7 @@
       }
 
       // TODO(GIX-1071): constant for /u/ and for /accounts?
-      // SvelteKit issue: https://github.com/sveltejs/kit/issues/1485#issuecomment-1291882125
-      const { goto } = await import("$app/navigation");
-      await goto(`/accounts?u=${OWN_CANISTER_ID}`, { replaceState: true });
+      await gotoProxy(`/accounts?u=${OWN_CANISTER_ID}`, { replaceState: true });
     }
   );
 

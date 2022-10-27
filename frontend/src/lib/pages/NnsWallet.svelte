@@ -30,7 +30,6 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
 
-  // TODO(GIX-1071): utils? replaceState: true for error?
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   layoutBackStore.set(goBack);

@@ -72,7 +72,6 @@
       });
       close();
 
-      // TODO(GIX-1071): utils?
       await goto(AppPath.Neurons);
     }
 

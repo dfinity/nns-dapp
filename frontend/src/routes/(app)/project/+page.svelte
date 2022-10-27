@@ -6,13 +6,11 @@
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { gotoProxy } from "$lib/proxy/app.services.proxy";
 
   onMount(async () => {
     if (!IS_TESTNET) {
-      // TODO(GIX-1071): utils?
-      // SvelteKit issue: https://github.com/sveltejs/kit/issues/1485#issuecomment-1291882125
-      const { goto } = await import("$app/navigation");
-      await goto(AppPath.Accounts, { replaceState: true });
+      await gotoProxy(AppPath.Accounts, { replaceState: true });
     }
   });
 

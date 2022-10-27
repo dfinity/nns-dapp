@@ -26,7 +26,6 @@
         labelKey: "canister_detail.detach_success",
       });
 
-      // TODO(GIX-1071): utils?
       await goto(AppPath.Canisters, { replaceState: true });
     }
   };

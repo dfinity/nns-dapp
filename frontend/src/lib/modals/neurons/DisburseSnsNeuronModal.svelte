@@ -103,7 +103,6 @@
         labelKey: "neuron_detail.disburse_success",
       });
 
-      // TODO(GIX-1071): utils?
       await goto($neuronsPathStore, { replaceState: true });
     }
 

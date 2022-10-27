@@ -28,7 +28,6 @@
 
   $: (async () => {
     if (selectedCanisterId !== undefined) {
-      // TODO(GIX-1071): utils?
       const { pathname } = window.location;
       await goto(`${pathname}?u=${selectedCanisterId}`);
     }

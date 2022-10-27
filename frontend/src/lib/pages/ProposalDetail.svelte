@@ -46,7 +46,6 @@
 
   // BEGIN: loading and navigation
 
-  // TODO(GIX-1071): utils?
   const goBack = (): Promise<void> =>
     goto(
       referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals

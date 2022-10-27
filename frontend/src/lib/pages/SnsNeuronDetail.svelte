@@ -32,7 +32,6 @@
 
   // BEGIN: loading and navigation
 
-  // TODO(GIX-1071): utils?
   const goBack = (replaceState: boolean): Promise<void> =>
     goto(AppPath.Neurons, { replaceState });
 

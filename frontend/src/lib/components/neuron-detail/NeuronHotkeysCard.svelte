@@ -46,7 +46,6 @@
         labelKey: "neurons.remove_hotkey_success",
       });
 
-      // TODO(GIX-1071): utils?
       await goto(AppPath.Neurons, { replaceState: true });
     }
     stopBusy("remove-hotkey-neuron");
