@@ -31,8 +31,6 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("Neurons", () => {
-  // TODO(GIX-1071): should render sign-in if not logged in
-
   beforeAll(() =>
     jest
       .spyOn(authStore, "subscribe")
