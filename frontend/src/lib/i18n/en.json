@@ -293,6 +293,12 @@
     "topic_10_subtitle": "Proposals that reward node providers",
     "topic_11_title": "SNS Decentralization Sale",
     "topic_11_subtitle": "Proposals for SNS",
+    "topic_12_title": "Subnet Replica Version Management",
+    "topic_12_subtitle": "Proposals handling updates of a subnet's replica version",
+    "topic_13_title": "Replica Version Management",
+    "topic_13_subtitle": "Proposals dealing with blessing and retirement of replica versions",
+    "topic_14_title": "SNS & Community Fund",
+    "topic_14_subtitle": "Proposals related to SNS and Community Fund",
     "current_followees": "Currently Following",
     "add": "Add Followee"
   },

@@ -305,6 +305,12 @@ interface I18nFollow_neurons {
   topic_10_subtitle: string;
   topic_11_title: string;
   topic_11_subtitle: string;
+  topic_12_title: string;
+  topic_12_subtitle: string;
+  topic_13_title: string;
+  topic_13_subtitle: string;
+  topic_14_title: string;
+  topic_14_subtitle: string;
   current_followees: string;
   add: string;
 }

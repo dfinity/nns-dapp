@@ -2,9 +2,9 @@
 
 There are parts that usually change in a proposal:
 
-* A new `Action` variant.
-* A new proposal topic.
-* A new `nnsFunction`.
+- A new `Action` variant.
+- A new proposal topic.
+- A new `nnsFunction`.
 
 The change is not always just in one section. Many times you need to fix two sections simulataneously. For example, a new topic comes with a new `nnsFunction`.
 
@@ -88,6 +88,9 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 **Changes in nns-dapp:**
 
 - Add i18n labels in `en.governance.json`. "topics" and "topics_description".
+- Add i18n labels in `en.json`: "follow_neurons.topic_XX_title" and "follow_neurons.topic_XX_description"
+
+The topic descriptions can be found in [governance.proto](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
 
 ## New `nnsFunction`
 
@@ -132,7 +135,7 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
           NnsFunction::UpdateSnsWasmSnsSubnetIds => {
             (SNS_WASM_CANISTER_ID, "update_sns_subnet_list")
           }
-         ``` 
+        ```
         https://github.com/dfinity/ic/blob/72b96bc88f8d76c16ade62189a6ff81dee9e58e/rs/nns/governance/src/governance.rs#L509e
    2. type `update_sns_subnet_list`:
       - ```
@@ -141,7 +144,7 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
         );
         ```
         https://github.com/dfinity/ic/blob/72b96bc88f8d76c16ade62189a6ff81dee9e58ee/rs/nns/sns-wasm/canister/sns-wasm.did#L126
-   3. Request type `UpdateSnsSubnetListRequest`: 
+   3. Request type `UpdateSnsSubnetListRequest`:
       - ```
         type UpdateSnsSubnetListRequest = record {
           sns_subnet_ids_to_add : vec principal;
@@ -150,4 +153,4 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
         ```
         https://github.com/dfinity/ic/blob/72b96bc88f8d76c16ade62189a6ff81dee9e58ee/rs/nns/sns-wasm/canister/sns-wasm.did#L107
 
- By the request definition we can decide what kind of transformation should be applied (e.g. `identity` (`34 => identity...`) or custom implementation (e.g. `30 => transform::<AddWasmRequest...`))  
+By the request definition we can decide what kind of transformation should be applied (e.g. `identity` (`34 => identity...`) or custom implementation (e.g. `30 => transform::<AddWasmRequest...`))
