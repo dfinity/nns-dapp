@@ -12,6 +12,9 @@ export enum AppPath {
   Project = "/project",
 }
 
+// SvelteKit uses the group defined in src/routes/(app)/ as part of the routeId
+export const ROUTE_ID_GROUP_APP = "(app)";
+
 export const UNIVERSE_PARAM = "u";
 
 export const CANISTER_PARAM = "canister";
