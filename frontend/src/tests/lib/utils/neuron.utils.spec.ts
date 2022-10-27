@@ -10,6 +10,7 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
+  DEPRECATED_TOPICS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
@@ -1548,17 +1549,25 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should return topics without ManageNeuron", () => {
+    it("should return non deprecated topics without ManageNeuron", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
       );
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => !DEPRECATED_TOPICS.includes(topic))
+      );
     });
   });
 

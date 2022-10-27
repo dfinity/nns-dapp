@@ -80,7 +80,13 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 
 ### How To Update
 
+**Changes in nns-js:**
+
 - Add to topic entry in the [governance enum](https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts#L15).
+- Add topic entry in the `Topic` for [proto files](https://github.com/dfinity/ic-js/tree/main/packages/nns/proto). You can search for `TOPIC_NEURON_MANAGEMENT` to better see where to add them.
+
+**Changes in nns-dapp:**
+
 - Add i18n labels in `en.governance.json`. "topics" and "topics_description".
 
 ## New `nnsFunction`

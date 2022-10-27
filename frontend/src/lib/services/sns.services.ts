@@ -192,7 +192,7 @@ export const listSnsProposals = async (): Promise<void> => {
       loadProposalsByTopic({
         certified,
         identity,
-        topic: Topic.SnsDecentralizationSale,
+        topic: Topic.SnsAndCommunityFund,
       }),
     onLoad: ({ response: proposals, certified }) =>
       snsProposalsStore.setProposals({

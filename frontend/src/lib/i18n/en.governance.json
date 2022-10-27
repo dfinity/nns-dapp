@@ -20,7 +20,8 @@
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Sale",
     "ReplicaVersionManagement": "Replica Version Management",
-    "SubnetReplicaVersionManagement": "Subnet Replica Version Management"
+    "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
+    "SnsAndCommunityFund": "SNS & Community Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -36,7 +37,8 @@
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
     "SnsDecentralizationSale": "SNS Decentralization Sale.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
-    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version."
+    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
   },
   "rewards": {
     "Unknown": "Unknown",

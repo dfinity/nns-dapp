@@ -713,6 +713,7 @@ interface I18nTopics {
   SnsDecentralizationSale: string;
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
+  SnsAndCommunityFund: string;
 }
 
 interface I18nTopics_description {
@@ -730,6 +731,7 @@ interface I18nTopics_description {
   SnsDecentralizationSale: string;
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
+  SnsAndCommunityFund: string;
 }
 
 interface I18nRewards {

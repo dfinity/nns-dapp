@@ -8,6 +8,7 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
+  DEPRECATED_TOPICS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
@@ -589,11 +590,14 @@ export const followeesByTopic = ({
  * NeuronManagement proposals are not public so we hide this topic
  * (unless the neuron already has followees on this topic)
  * https://github.com/dfinity/nns-dapp/pull/511
+ *
+ * Filter out deprecated topics.
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
-  followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
+  (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
-    : enumValues(Topic);
+    : enumValues(Topic)
+  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
