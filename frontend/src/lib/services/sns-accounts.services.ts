@@ -1,5 +1,6 @@
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
@@ -31,6 +32,7 @@ export const loadSnsAccounts = async (
 
       // hide unproven data
       snsAccountsStore.resetProject(rootCanisterId);
+      snsTransactionsStore.resetProject(rootCanisterId);
 
       toastsError(
         toToastError({
@@ -51,7 +53,7 @@ export const syncSnsAccounts = async (rootCanisterId: Principal) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getAccountIdentity = async (_: Account): Promise<Identity> => {
+export const getSnsAccountIdentity = async (_: Account): Promise<Identity> => {
   // TODO: Support Hardware Wallets
   const identity = await getIdentity();
   return identity;
@@ -69,7 +71,7 @@ export const snsTransferTokens = async ({
   e8s: bigint;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getAccountIdentity(source);
+    const identity: Identity = await getSnsAccountIdentity(source);
     const to = decodeSnsAccount(destinationAddress);
 
     await transfer({

@@ -18,6 +18,9 @@
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
+  export let validateAmount: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   const steps: WizardSteps = [
@@ -59,6 +62,7 @@
       {canSelectDestination}
       {canSelectSource}
       {transactionFee}
+      {validateAmount}
       bind:selectedDestinationAddress
       bind:selectedAccount
       bind:amount
