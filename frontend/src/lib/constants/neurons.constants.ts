@@ -8,6 +8,4 @@ export const SPAWN_VARIANCE_PERCENTAGE = 0.95;
 
 export const MIN_VERSION_MERGE_MATURITY = "2.0.6";
 
-export const DEPRECATED_TOPICS = [
-  Topic.SnsDecentralizationSale
-];
+export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];
