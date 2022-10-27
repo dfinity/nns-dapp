@@ -12,6 +12,7 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
+  import { buildUrl } from "$lib/utils/navigation.utils";
 
   let accounts: AccountsStore | undefined;
 
@@ -19,10 +20,13 @@
     async (storeData: AccountsStore) => (accounts = storeData)
   );
 
-  // TODO(GIX-1071): extract utils to navigate or at least build the url to goto
   const cardClick = async (identifier: string) =>
     await goto(
-      `${AppPath.Wallet}/?u=${$pageStore.universe}&account=${identifier}`
+      buildUrl({
+        path: AppPath.Wallet,
+        universe: $pageStore.universe,
+        params: { account: identifier },
+      })
     );
 
   onDestroy(unsubscribe);

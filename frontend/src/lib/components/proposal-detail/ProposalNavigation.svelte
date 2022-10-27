@@ -10,6 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import { buildUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo | undefined;
 
@@ -19,7 +20,11 @@
     }
 
     await goto(
-      `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${nextProposal.id}`
+      buildUrl({
+        path: AppPath.Proposal,
+        universe: $pageStore.universe,
+        params: { proposal: `${nextProposal.id}` },
+      })
     );
   };
 
@@ -29,7 +34,11 @@
     }
 
     await goto(
-      `${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${previousProposal.id}`
+      buildUrl({
+        path: AppPath.Proposal,
+        universe: $pageStore.universe,
+        params: { proposal: `${previousProposal.id}` },
+      })
     );
   };
 

@@ -14,6 +14,7 @@
   import { keyOfOptional } from "$lib/utils/utils";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import { buildUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
@@ -30,9 +31,14 @@
   $: ({ status, id, title, color, topic, proposer, type } =
     mapProposalInfo(proposalInfo));
 
-  // TODO(GIX-1071): extract utils
   const showProposal = async () =>
-    await goto(`${AppPath.Proposal}/?u=${$pageStore.universe}&proposal=${id}`);
+    await goto(
+      buildUrl({
+        path: AppPath.Proposal,
+        universe: $pageStore.universe,
+        params: { proposal: `${id}` },
+      })
+    );
 </script>
 
 <li class:hidden>

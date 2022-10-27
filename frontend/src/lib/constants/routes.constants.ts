@@ -12,4 +12,4 @@ export enum AppPath {
   Project = "/project",
 }
 
-export const CONTEXT_PATH = "/u";
+export const UNIVERSE_PARAM = "u";

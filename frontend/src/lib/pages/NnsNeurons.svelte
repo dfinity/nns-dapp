@@ -11,6 +11,7 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
+  import { buildUrl } from "$lib/utils/navigation.utils";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -20,9 +21,14 @@
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  // TODO(GIX-1071): extract utils
   const goToNeuronDetails = async (id: NeuronId) =>
-    await goto(`${AppPath.Neuron}/?u=${$pageStore.universe}&neuron=${id}`);
+    await goto(
+      buildUrl({
+        path: AppPath.Neuron,
+        universe: $pageStore.universe,
+        params: { neuron: `${id}` },
+      })
+    );
 </script>
 
 <section data-tid="neurons-body">

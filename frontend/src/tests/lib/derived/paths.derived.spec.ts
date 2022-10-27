@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import {
   accountsPathStore,
   canistersPathStore,
@@ -19,14 +19,18 @@ describe("paths derived stores", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(accountsPathStore);
-      expect($store).toBe(`${AppPath.Accounts}/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect($store).toBe(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
     it("should return SNS accounts path", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(accountsPathStore);
-      expect($store).toBe(`${AppPath.Accounts}/?u=${mockSnsCanisterIdText}`);
+      expect($store).toBe(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 
@@ -35,14 +39,18 @@ describe("paths derived stores", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(neuronsPathStore);
-      expect($store).toBe(`${AppPath.Neurons}/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect($store).toBe(
+        `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
     it("should return SNS neurons path", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(neuronsPathStore);
-      expect($store).toBe(`${AppPath.Neurons}/?u=${mockSnsCanisterIdText}`);
+      expect($store).toBe(
+        `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 
@@ -51,14 +59,18 @@ describe("paths derived stores", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(proposalsPathStore);
-      expect($store).toBe(`${AppPath.Proposals}/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
     it("should return SNS proposals path", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(proposalsPathStore);
-      expect($store).toBe(`${AppPath.Proposals}/?u=${mockSnsCanisterIdText}`);
+      expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 
@@ -67,14 +79,18 @@ describe("paths derived stores", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(canistersPathStore);
-      expect($store).toBe(`${AppPath.Canisters}/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect($store).toBe(
+        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
     it("should return SNS canisters path", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(canistersPathStore);
-      expect($store).toBe(`${AppPath.Canisters}/?u=${mockSnsCanisterIdText}`);
+      expect($store).toBe(
+        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 });

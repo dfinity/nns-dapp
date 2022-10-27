@@ -1,4 +1,5 @@
 import type { AppPath } from "$lib/constants/routes.constants";
+import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import { isArrayEmpty } from "./utils";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
@@ -20,3 +21,16 @@ export const reloadRouteData = <T>({
 
   return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };
+
+export const buildUrl = ({
+  path,
+  universe,
+  params = {},
+}: {
+  path: AppPath;
+  universe: string;
+  params?: Record<string, string>;
+}): string =>
+  `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
+    .map(([key, value]) => `&${key}=${value}`)
+    .join("")}`;

@@ -22,16 +22,17 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { goto } from "$app/navigation";
   import { layoutBackStore } from "$lib/stores/layout.store";
+  import { buildUrl } from "$lib/utils/navigation.utils";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
-  onMount(() => {
+  onMount(async () => {
     if (!ENABLE_SNS_2) {
-      goto(AppPath.Accounts, { replaceState: true });
+      await goto(AppPath.Accounts, { replaceState: true });
     }
   });
 
   const goBack = (): Promise<void> =>
-    goto(`${AppPath.Accounts}/?u=${$pageStore.universe}`);
+    goto(buildUrl({ path: AppPath.Accounts, universe: $pageStore.universe }));
 
   layoutBackStore.set(goBack);
 

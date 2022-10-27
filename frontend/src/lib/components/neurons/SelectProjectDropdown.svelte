@@ -7,6 +7,7 @@
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
+  import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 
   let selectedCanisterId: string | undefined;
 
@@ -29,7 +30,7 @@
   $: (async () => {
     if (selectedCanisterId !== undefined) {
       const { pathname } = window.location;
-      await goto(`${pathname}?u=${selectedCanisterId}`);
+      await goto(`${pathname}?${UNIVERSE_PARAM}=${selectedCanisterId}`);
     }
   })();
 

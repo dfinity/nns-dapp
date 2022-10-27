@@ -12,7 +12,7 @@
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
-  import { reloadRouteData } from "$lib/utils/navigation.utils";
+  import { buildUrl, reloadRouteData } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import Value from "$lib/components/ui/Value.svelte";
   import { goto } from "$app/navigation";
@@ -49,9 +49,11 @@
 
   const goToCanisterDetails = (canisterId: CanisterId) => async () =>
     await goto(
-      `${AppPath.Canister}/?u=${
-        $pageStore.universe
-      }&canister=${canisterId.toText()}`
+      buildUrl({
+        path: AppPath.Canister,
+        universe: $pageStore.universe,
+        params: { canister: canisterId.toText() },
+      })
     );
 
   let loading: boolean;
