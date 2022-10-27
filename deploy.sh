@@ -7,7 +7,7 @@ help_text() {
 
 	Deploys the nns-dapp to a network or to local dfx:
 	- Starts dfx (optional)
-	- Installs goverance canisters (optional)
+	- Installs governance canisters (optional)
 	- Installs Internet Identity (optional)
 	- Installs the NNS Dapp
 	- Opens the NNS dapp in a browser (optional)
@@ -73,7 +73,7 @@ help_text() {
 	  Create an SNS canister set.
 
 	--nns-dapp
-	  Depoy the NNS dapp.
+	  Deploy the NNS dapp.
 
 	--populate
 	  Create sample users with ICP, neurons and follow relationships.
