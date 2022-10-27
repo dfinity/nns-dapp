@@ -30,6 +30,9 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+  export let validateAmount: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -68,7 +71,7 @@
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
-      errorMessage = undefined;
+      errorMessage = validateAmount(amount);
     } catch (error: unknown) {
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
