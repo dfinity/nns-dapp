@@ -40,14 +40,14 @@
       "type": "custom",
       "remote": {
         "id": {
-          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "mainnet": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "testnet": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "small06": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "small11": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "small12": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "small13": "qjdve-lqaaa-aaaaa-aaaeq-cai",
-          "staging": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small13": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
