@@ -12,6 +12,7 @@ import {
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
+import {initAppProxy} from "$lib/proxy/app.services.proxy";
 
 jest.mock("$lib/services/worker.services", () => ({
   initWorker: jest.fn(() =>
@@ -48,7 +49,7 @@ describe("Layout", () => {
       identity: mockIdentity,
     });
 
-    await waitFor(() => expect(initApp).toHaveBeenCalled());
+    await waitFor(() => expect(initAppProxy).toHaveBeenCalled());
   });
 
   it("should register auth worker sync after sign in", () => {

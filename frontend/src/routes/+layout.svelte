@@ -6,6 +6,7 @@
   import { pageReferrerStore } from "$lib/stores/page.store";
   import { pathForRouteId } from "$lib/utils/page.utils";
   import { page } from "$app/stores";
+  import {initAppProxy} from "$lib/proxy/app.services.proxy";
 
   let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
 
@@ -18,8 +19,7 @@
       return;
     }
 
-    const { initApp } = await import("../lib/services/app.services");
-    await initApp();
+    await initAppProxy();
   });
 
   onDestroy(() => unsubscribeAuth());
