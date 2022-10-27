@@ -5,7 +5,8 @@
   import { Spinner } from "@dfinity/gix-components";
 
   export let path: AppPath;
-  export let params: Record<string, string> | undefined = undefined;
+  export let params: Record<string, string | undefined | null> | undefined =
+    undefined;
 
   let component: typeof SvelteComponent | undefined = undefined;
 
