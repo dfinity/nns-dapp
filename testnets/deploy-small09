@@ -6,7 +6,7 @@ TESTNET=small09
 IC_COMMIT=2de9321857b3a713144932d8fd08f791f37e228f
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=fb45e07d7b1c555add855b48e8df6ad16e6ec520
+ND_COMMIT=9058a2c51a71eca1ec3308fbe92e1802720fc90e # Head of main + small09 + patch
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 
@@ -67,27 +67,12 @@ echo Setting the cycles exchange rate...
   say deployed frontends
 ) || say fail fail fail
 
+# ./mk-sns-config
+# ./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
 
 
-( set -euxo pipefail
-  ./deploy.sh --sns-wasm --ctl-nobuild-nns "$DFX_NETWORK"
-  say deployed sns-wasm
-) || say fail fail fail
-
-
-( set -euxo pipefail
-  ./deploy.sh --ii "$DFX_NETWORK"
-  ./deploy.sh --nns-dapp "$DFX_NETWORK"
-  say redeployed frontends
-) || say fail fail fail
-
-
-./mk-sns-config
-./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
-
-
-"$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
-jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
+# "$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
+#jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
 
 
 

@@ -3,36 +3,29 @@ set -euxo pipefail
 
 export DFX_NETWORK=small14
 TESTNET=small14
-IC_COMMIT=18dc31ca64a4ead42c5d4222e647dce7124eb90e # master Wed Sep 21 22:44:00 2022 +0000
+IC_COMMIT=2de9321857b3a713144932d8fd08f791f37e228f
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=79a0c17f2f3b23d5882af83b42c85ad50fa15828 # patched main Wed Sep 21 17:48:41 2022 +0200
+ND_COMMIT=780ab967ca6375258713ef8f38317ee97ab12cd9 # Head of main + small09 + patch
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+
 cd "$ND_DIR"
-dfx identity use default
+dfx identity use ident-1
 
 
 ( set -euxo pipefail
-	cd "$ND_DIR"
-	git fetch
-	git stash
-	git checkout "$ND_COMMIT"
-	git reset --hard "$ND_COMMIT"
-	"$SCRIPT_DIR/mk-network" "$DFX_NETWORK"
-)
-
-
-( set -euxo pipefail
-	cd "$ND_DIR"
-	rm -fr target/
-	IC_COMMIT=$IC_DOWNLOAD jq '.defaults.build.config.IC_COMMIT="\(env.IC_COMMIT)"' dfx.json >dfx.json.new
-	mv dfx.json.new dfx.json
-	tail dfx.json
-	./e2e-tests/scripts/nns-canister-download --ic-commit "$IC_DOWNLOAD"
-	./e2e-tests/scripts/nns-canister-build --ic-commit "$IC_COMMIT"
-	say Created canisters
+  cd "$ND_DIR"
+  git fetch
+  git checkout "$ND_COMMIT"
+git reset --hard "$ND_COMMIT"
+rm -fr target/
+IC_COMMIT=$IC_DOWNLOAD jq '.defaults.build.config.IC_COMMIT="\(env.IC_COMMIT)"' dfx.json >dfx.json.new
+mv dfx.json.new dfx.json
+tail dfx.json
+./e2e-tests/scripts/nns-canister-download --ic-commit "$IC_DOWNLOAD"
+./e2e-tests/scripts/nns-canister-build --ic-commit "$IC_COMMIT"
+say Created canisters
 ) || say fail fail fail
 
 
@@ -74,27 +67,12 @@ echo Setting the cycles exchange rate...
   say deployed frontends
 ) || say fail fail fail
 
+# ./mk-sns-config
+# ./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
 
 
-( set -euxo pipefail
-  ./deploy.sh --sns-wasm --ctl-nobuild-nns "$DFX_NETWORK"
-  say deployed sns-wasm
-) || say fail fail fail
-
-
-( set -euxo pipefail
-  ./deploy.sh --ii "$DFX_NETWORK"
-  ./deploy.sh --nns-dapp "$DFX_NETWORK"
-  say redeployed frontends
-) || say fail fail fail
-
-
-./mk-sns-config
-./deploy.sh --sns --ctl-nobuild-nns "$DFX_NETWORK"
-
-
-"$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
-jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
+# "$HOME"/dfn/nns-dapp/branches/testnet-updates/scripts/testnet-set-canister-ids
+#jq 'to_entries | map({key:.key, value: { (env.DFX_NETWORK): .value[env.DFX_NETWORK] }}) | del(..|nulls) | from_entries' canister_ids.json
 
 
 
