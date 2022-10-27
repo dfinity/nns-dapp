@@ -36,7 +36,8 @@ describe("ProposalsFilters", () => {
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
-      totalFilters: enumSize(Topic) - 1,
+      // Unspecified and SnsDecentralizationSale are not rendered
+      totalFilters: enumSize(Topic) - 2,
       text: en.voting.topics,
     });
   });
