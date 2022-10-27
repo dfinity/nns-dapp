@@ -27,6 +27,8 @@ jest.mock("$lib/services/app.services", () => ({
   initApp: jest.fn(() => Promise.resolve()),
 }));
 
+jest.mock("$lib/proxy/app.services.proxy");
+
 describe("Layout", () => {
   beforeAll(() => {
     jest

@@ -1,7 +1,11 @@
 import { AppPath } from "$lib/constants/routes.constants";
 
 // TODO(GIX-1071): test + constant for (app)
-export const pathForRouteId = (routeId: string): AppPath => {
+export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
+  if (routeId === null || routeId === undefined) {
+    return AppPath.Authentication;
+  }
+
   const index = Object.values(AppPath).indexOf(
     routeId.replace("(app)", "").replace(/\/$/, "") as unknown as AppPath
   );
