@@ -60,6 +60,9 @@ echo Setting the cycles exchange rate...
     ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK" --jfdi
   }
 
+
+export NNS_URL="$(jq -r '.networks[env.DFX_NETWORK].providers[0]' dfx.json)"
+
 $(dfx cache show)/ic-admin \
   --nns-url "$NNS_URL" \
   propose-to-update-sns-subnet-ids-in-sns-wasm \
