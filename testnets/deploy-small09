@@ -3,15 +3,15 @@ set -euxo pipefail
 
 export DFX_NETWORK=small09
 TESTNET=small09
-IC_COMMIT=10c0341032ac00c9728ecefa1e82e919f0f09022
+IC_COMMIT=2de9321857b3a713144932d8fd08f791f37e228f
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=b9fe4c80756761e11d55d84ff43a1a21c862dabb
+ND_COMMIT=fb45e07d7b1c555add855b48e8df6ad16e6ec520
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 
 cd "$ND_DIR"
-dfx identity use default
+dfx identity use ident-1
 
 
 ( set -euxo pipefail
