@@ -88,9 +88,8 @@ describe("sortedSnsNeuronStore", () => {
       neurons,
       certified: true,
     });
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/neurons`,
-    });
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
       expect(get(sortedSnsNeuronStore)).toEqual([neurons[1], neurons[2]])

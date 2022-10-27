@@ -3,7 +3,9 @@
  */
 
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
@@ -22,12 +24,12 @@ describe("AccountMenu", () => {
     await show(renderResult);
   });
 
-  it("should display logout button", async () => {
+  it("should not display logout button if not signed in", async () => {
     const renderResult = render(AccountMenu);
 
     await show(renderResult);
 
-    expect(renderResult.getByTestId("logout")).not.toBeNull();
+    expect(() => renderResult.getByTestId("logout")).toThrow();
   });
 
   it("should display theme toggle", async () => {
@@ -36,5 +38,21 @@ describe("AccountMenu", () => {
     await show(renderResult);
 
     expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+  });
+
+  describe("signed in", () => {
+    beforeAll(() =>
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe)
+    );
+
+    it("should display logout button if signed in", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      expect(renderResult.getByTestId("logout")).not.toBeNull();
+    });
   });
 });
