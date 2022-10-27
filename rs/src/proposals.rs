@@ -5,11 +5,12 @@ use crate::proposals::def::{
     ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload,
     CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
-    RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
-    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest,
-    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
-    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed, RetireReplicaVersionPayload, UpdateAllowedPrincipalsRequest
+    RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest, UpdateSubnetPayload,
+    UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
 use ic_base_types::CanisterId;
@@ -473,7 +474,8 @@ mod def {
 
     // NNS function 36 - RetireReplicaVersion
     // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
-    pub type RetireReplicaVersionPayload = registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
+    pub type RetireReplicaVersionPayload =
+        registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
 }
 
 #[cfg(test)]
