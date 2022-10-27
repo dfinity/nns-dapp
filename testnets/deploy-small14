@@ -6,7 +6,7 @@ TESTNET=small14
 IC_COMMIT=2de9321857b3a713144932d8fd08f791f37e228f
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=780ab967ca6375258713ef8f38317ee97ab12cd9 # Head of main + small09 + patch
+ND_COMMIT=8c496b47c4b0b2fbbbd9359019b331e015339863 # Head of main + small09 + patch
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 
@@ -60,6 +60,11 @@ echo Setting the cycles exchange rate...
     ./scripts/propose --to set-authorized-subnetworks --dfx-network "$DFX_NETWORK" --jfdi
   }
 
+$(dfx cache show)/ic-admin \
+  --nns-url "$NNS_URL" \
+  propose-to-update-sns-subnet-ids-in-sns-wasm \
+  --test-neuron-proposer \
+  $(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r 'map("--sns-subnet-ids-to-add " + . + " ") | .[]')
 
 ( set -euxo pipefail
   ./deploy.sh --ii "$DFX_NETWORK"
