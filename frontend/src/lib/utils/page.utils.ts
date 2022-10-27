@@ -1,4 +1,4 @@
-import {AppPath, ROUTE_ID_GROUP_APP} from "$lib/constants/routes.constants";
+import { AppPath, ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
 
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   if (routeId === null || routeId === undefined) {
@@ -6,7 +6,9 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   }
 
   const index = Object.values(AppPath).indexOf(
-    routeId.replace(ROUTE_ID_GROUP_APP, "").replace(/\/$/, "") as unknown as AppPath
+    routeId
+      .replace(ROUTE_ID_GROUP_APP, "")
+      .replace(/\/$/, "") as unknown as AppPath
   );
   const key = Object.keys(AppPath)[index];
 
