@@ -6,7 +6,7 @@
   import { pageReferrerStore } from "$lib/stores/page.store";
   import { pathForRouteId } from "$lib/utils/page.utils";
   import { page } from "$app/stores";
-  import {initAppProxy} from "$lib/proxy/app.services.proxy";
+  import { initAppProxy } from "$lib/proxy/app.services.proxy";
 
   let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
 

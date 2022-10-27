@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { initApp } from "$lib/services/app.services";
+import { initAppProxy } from "$lib/proxy/app.services.proxy";
 import { initWorker } from "$lib/services/worker.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
@@ -12,7 +12,6 @@ import {
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
-import {initAppProxy} from "$lib/proxy/app.services.proxy";
 
 jest.mock("$lib/services/worker.services", () => ({
   initWorker: jest.fn(() =>
