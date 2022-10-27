@@ -13,6 +13,7 @@ import {
   SnsMetadataResponseEntries,
   SnsSwapLifecycle,
   type SnsGetMetadataResponse,
+  type SnsParams,
   type SnsSwap,
   type SnsSwapBuyerState,
   type SnsSwapDerivedState,
@@ -81,9 +82,10 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const mockSnsParams = {
+export const mockSnsParams: SnsParams = {
   min_participant_icp_e8s: BigInt(150000000),
   max_icp_e8s: BigInt(3000 * 100000000),
+  neuron_basket_construction_parameters: [],
   swap_due_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
   min_participants: 1,
   sns_token_e8s: BigInt(150000000),

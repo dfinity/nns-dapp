@@ -18,6 +18,7 @@ import {
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    loadAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -69,11 +70,14 @@ describe("SnsWallet", () => {
       await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
     });
 
-    it("should render wallet summary", async () => {
+    it("should render wallet summary and transactions", async () => {
       const { queryByTestId } = render(SnsWallet);
 
       await waitFor(() =>
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+      );
+      await waitFor(() =>
+        expect(queryByTestId("sns-transactions-list")).toBeInTheDocument()
       );
     });
 
