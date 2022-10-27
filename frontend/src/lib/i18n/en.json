@@ -100,6 +100,7 @@
     "limit_exceeded_topping_up_canister": "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not.",
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
+    "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -649,7 +650,7 @@
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
-    "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
+    "commitment_too_large": "Sorry, your new commitment of $newCommitment ICP is too high. You have already committed $currentCommitment ICP and the maximum is $maxCommitment ICP.",
     "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",

@@ -104,6 +104,7 @@ interface I18nError {
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
   sns_loading_commited_projects: string;
+  swap_not_loaded: string;
   canister_invalid_transaction: string;
 }
 

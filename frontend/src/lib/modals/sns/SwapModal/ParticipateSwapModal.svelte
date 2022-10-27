@@ -10,6 +10,7 @@
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
+    validParticipation,
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
@@ -25,6 +26,7 @@
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
+  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -106,6 +108,32 @@
       stopBusy("project-participate");
     }
   };
+
+  // Used for form inline validation
+  let validateAmount: (amount: number | undefined) => string | undefined;
+  $: validateAmount = (amount: number | undefined) => {
+    if (
+      swapCommitment !== undefined &&
+      swapCommitment !== null &&
+      amount !== undefined
+    ) {
+      const { valid, labelKey, substitutions } = validParticipation({
+        project: {
+          rootCanisterId: summary.rootCanisterId,
+          summary,
+          swapCommitment,
+        },
+        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+      });
+      // `validParticipation` does not return `valid` as `false` without a labelKey.
+      // But we need to check because of type safety.
+      return valid || labelKey === undefined
+        ? undefined
+        : replacePlaceholders(translate({ labelKey }), substitutions ?? {});
+    }
+    // We allow the user to try to participate even though the swap commitment is not yet available.
+    return undefined;
+  };
 </script>
 
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
@@ -115,6 +143,7 @@
     bind:currentStep
     on:nnsClose
     on:nnsSubmit={participate}
+    {validateAmount}
     {destinationAddress}
     disableSubmit={!accepted}
     skipHardwareWallets
