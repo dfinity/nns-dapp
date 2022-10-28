@@ -65,7 +65,7 @@
 
   <div slot="end" class="currency">
     {#if neuronStake !== undefined}
-      <AmountDisplay amount={neuronStake} detailed />
+      <AmountDisplay amount={neuronStake} />
     {:else}
       <Spinner inline size="small" />
     {/if}

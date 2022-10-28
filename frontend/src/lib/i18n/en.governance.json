@@ -20,7 +20,8 @@
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Sale",
     "ReplicaVersionManagement": "Replica Version Management",
-    "SubnetReplicaVersionManagement": "Subnet Replica Version Management"
+    "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
+    "SnsAndCommunityFund": "SNS & Community Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -36,7 +37,8 @@
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
     "SnsDecentralizationSale": "SNS Decentralization Sale.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
-    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version."
+    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -79,7 +81,7 @@
     "SetDefaultFollowees": "Set Default Followees",
     "Motion": "Motion",
     "SetSnsTokenSwapOpenTimeWindow": "Start Decentralization Sale",
-    "OpenSnsTokenSwap": "Open Decentralized Token Sale"
+    "OpenSnsTokenSwap": "Open Decentralization Sale"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -92,7 +94,7 @@
     "SetDefaultFollowees": "Specify the list of followees that a freshly created neuron should have.",
     "Motion": "A motion is a text that can be adopted or rejected. No code is executed when a motion is adopted. An adopted motion should guide the future strategy of the Internet Computer ecosystem.",
     "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale.",
-    "OpenSnsTokenSwap": "Open decentralized token sale."
+    "OpenSnsTokenSwap": "Open decentralization sale."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",
@@ -130,6 +132,7 @@
     "UpdateSubnetType": "Update Subnet Type",
     "ChangeSubnetTypeAssignment": "Change Subnet Type Assignment",
     "UpdateSnsWasmSnsSubnetIds": "Update SNS Wasm Subnet Ids",
+    "UpdateAllowedPrincipals": "Update Allowed Principals",
     "RetireReplicaVersion": "Retire Replica Version"
   },
   "nns_functions_description": {
@@ -168,6 +171,7 @@
     "UpdateSubnetType": "Add or remove a subnet type. A new subnet type can be added if it doesn’t already exist. An existing subnet type can be removed if no subnets are assigned to it. Subnet types can be used to choose the kind of subnet a canister should be created on.",
     "ChangeSubnetTypeAssignment": "Change the assignment of subnets to subnet types by either adding subnets to or removing subnets from a subnet type. A subnet can be assigned to a subnet type if the subnet is not already assigned to a different subnet type and is not already in the authorized subnets list (i.e., subnets authorized for certain principals) or the default subnets list (i.e., default subnets that new canisters are randomly created on). Once a subnet is assigned to a subnet type, it becomes available to users who can specify that they want their canisters to be created on subnets of that type.",
     "UpdateSnsWasmSnsSubnetIds": "Update the list of SNS subnet IDs that SNS WASM will deploy SNS instances to.",
+    "UpdateAllowedPrincipals": "Update the SNS-wasm canister's list of allowed principals. This list guards which principals can deploy an SNS.",
     "RetireReplicaVersion": "A proposal to retire previously elected and unused replica versions. The specified versions are removed from the list of blessed replica versions in the registry. This ensures that a replica can no longer be upgraded to these versions. The proposal will fail to remove replica version if that version is currently used by a subnet or unassigned node."
   }
 }
