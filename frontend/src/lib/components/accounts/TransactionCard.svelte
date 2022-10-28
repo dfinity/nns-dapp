@@ -1,52 +1,27 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import type { TokenAmount } from "@dfinity/nns";
-  import type {
-    AccountIdentifierString,
-    Transaction,
-  } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { i18n } from "$lib/stores/i18n";
   import {
     AccountTransactionType,
-    mapTransaction,
+    type Transaction,
     transactionName,
   } from "$lib/utils/transactions.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
 
-  export let account: Account;
   export let transaction: Transaction;
   export let toSelfTransaction = false;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
   let isSend: boolean;
-  let from: AccountIdentifierString | undefined;
-  let to: AccountIdentifierString | undefined;
+  let from: string | undefined;
+  let to: string | undefined;
   let displayAmount: TokenAmount;
   let date: Date;
-
-  $: account,
-    transaction,
-    (() => {
-      try {
-        ({ type, isReceive, isSend, from, to, displayAmount, date } =
-          mapTransaction({
-            transaction,
-            toSelfTransaction,
-            account,
-          }));
-      } catch (err: unknown) {
-        toastsError(
-          err instanceof Error
-            ? { labelKey: err.message }
-            : { labelKey: "error.unknown", err }
-        );
-      }
-    })();
+  $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
 
   let headline: string;
   $: headline = transactionName({
@@ -67,8 +42,6 @@
   let seconds: number;
   $: seconds = date.getTime() / 1000;
 </script>
-
-<hr />
 
 <CardInfo testId="transaction-card">
   <div slot="start" class="title">

@@ -1,6 +1,6 @@
 import type {
   AccountIdentifierString,
-  Transaction,
+  Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -19,29 +19,8 @@ export enum AccountTransactionType {
   ParticipateSwap = "participateSwap",
 }
 
-export const accountName = ({
-  account,
-  mainName,
-}: {
-  account: Account | undefined;
-  mainName: string;
-}): string =>
-  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
-
-export interface AccountTransaction {
-  from: AccountIdentifierString;
-  to: AccountIdentifierString;
-  amount: TokenAmount;
-  date: Date;
-  fee: TokenAmount;
-  type: AccountTransactionType;
-  memo: bigint;
-  incomplete: boolean;
-  blockHeight: bigint;
-}
-
 export const transactionType = (
-  transaction: Transaction
+  transaction: NnsTransaction
 ): AccountTransactionType => {
   const { transaction_type } = transaction;
   if (transaction_type.length === 0) {
@@ -120,23 +99,27 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
-export const mapTransaction = ({
+export interface Transaction {
+  type: AccountTransactionType;
+  isReceive: boolean;
+  isSend: boolean;
+  // Account string representation
+  from: string | undefined;
+  // Account string representation
+  to: string | undefined;
+  displayAmount: TokenAmount;
+  date: Date;
+}
+
+export const mapNnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
 }: {
-  transaction: Transaction;
+  transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
-}): {
-  type: AccountTransactionType;
-  isReceive: boolean;
-  isSend: boolean;
-  from: AccountIdentifierString | undefined;
-  to: AccountIdentifierString | undefined;
-  displayAmount: TokenAmount;
-  date: Date;
-} => {
+}): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
@@ -216,10 +199,10 @@ export const transactionName = ({
       : labels.send
     : labels[type] ?? type;
 
-/** (from==to workaround) Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = (
-  transactions: Transaction[]
-): { transaction: Transaction; toSelfTransaction: boolean }[] => {
+/** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
+export const mapToSelfNnsTransaction = (
+  transactions: NnsTransaction[]
+): { transaction: NnsTransaction; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.map((transaction) => ({
     transaction: { ...transaction },
     toSelfTransaction: false,
