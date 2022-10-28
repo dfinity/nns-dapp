@@ -16,7 +16,7 @@
   } from "@dfinity/nns";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
-  import { DEPRECATED_TOPICS } from "$lib/constants/neurons.constants";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 
   export let props: ProposalsFilterModalProps | undefined;
 

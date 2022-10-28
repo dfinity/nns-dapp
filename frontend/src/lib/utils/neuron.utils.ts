@@ -8,11 +8,11 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  DEPRECATED_TOPICS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "$lib/constants/neurons.constants";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";

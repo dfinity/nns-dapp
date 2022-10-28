@@ -3,7 +3,11 @@
  */
 
 import ProposalsFilters from "$lib/components/proposals/ProposalsFilters.svelte";
-import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import {
+  DEFAULT_PROPOSALS_FILTERS,
+  DEPRECATED_TOPICS,
+} from "$lib/constants/proposals.constants";
+import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -33,11 +37,15 @@ describe("ProposalsFilters", () => {
   it("should render topics filters", () => {
     const { container } = render(ProposalsFilters);
 
+    const nonShownTopicsLength = [
+      PROPOSAL_FILTER_UNSPECIFIED_VALUE,
+      ...DEPRECATED_TOPICS,
+    ].length;
+
     shouldRenderFilter({
       container,
       activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
-      // Unspecified and SnsDecentralizationSale are not rendered
-      totalFilters: enumSize(Topic) - 2,
+      totalFilters: enumSize(Topic) - nonShownTopicsLength,
       text: en.voting.topics,
     });
   });
