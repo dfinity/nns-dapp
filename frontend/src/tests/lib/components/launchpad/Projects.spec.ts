@@ -50,7 +50,7 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
-        status: "Open",
+        status: SnsSwapLifecycle.Open,
       },
     });
 
@@ -81,7 +81,7 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
-        status: "Committed",
+        status: SnsSwapLifecycle.Committed,
       },
     });
 
@@ -101,7 +101,7 @@ describe("Projects", () => {
 
     const { queryByText } = render(Projects, {
       props: {
-        status: "Open",
+        status: SnsSwapLifecycle.Open,
       },
     });
 
@@ -119,7 +119,7 @@ describe("Projects", () => {
 
     const { queryByText } = render(Projects, {
       props: {
-        status: "Committed",
+        status: SnsSwapLifecycle.Committed,
       },
     });
 
@@ -131,7 +131,7 @@ describe("Projects", () => {
   it("should render skeletons", async () => {
     const { getAllByTestId } = render(Projects, {
       props: {
-        status: "Open",
+        status: SnsSwapLifecycle.Open,
       },
     });
 

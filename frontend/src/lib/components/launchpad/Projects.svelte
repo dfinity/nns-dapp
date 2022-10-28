@@ -14,14 +14,11 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
 
-  export let status: "Committed" | "Open";
+  export let status: SnsSwapLifecycle;
 
   let projects: SnsFullProject[] | undefined;
   $: projects = filterProjectsStatus({
-    swapLifecycle:
-      status === "Committed"
-        ? SnsSwapLifecycle.Committed
-        : SnsSwapLifecycle.Open,
+    swapLifecycle: status,
     projects: $activePadProjectsStore,
   });
 
@@ -31,7 +28,7 @@
 
   let noProjectsMessage: string;
   $: noProjectsMessage =
-    status === "Committed"
+    status === SnsSwapLifecycle.Committed
       ? $i18n.sns_launchpad.no_committed_projects
       : $i18n.sns_launchpad.no_open_projects;
 </script>

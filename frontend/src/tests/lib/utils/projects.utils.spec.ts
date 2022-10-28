@@ -63,16 +63,17 @@ describe("project-utils", () => {
           swapLifecycle: SnsSwapLifecycle.Pending,
         })
       ).toEqual([]);
-    }),
-      it("should return no committed projects", () =>
-        expect(
-          filterCommittedProjects([
-            {
-              ...mockSnsFullProject,
-              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-            },
-          ])?.length
-        ).toEqual(0));
+    });
+
+    it("should return no committed projects", () =>
+      expect(
+        filterCommittedProjects([
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          },
+        ])?.length
+      ).toEqual(0));
 
     it("should return committed projects", () =>
       expect(
