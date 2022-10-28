@@ -16,6 +16,7 @@
   onMount(async () => {
     if (!IS_TESTNET) {
       await gotoProxy(AppPath.Accounts, { replaceState: true });
+      return;
     }
 
     layoutTitleStore.set($i18n.sns_launchpad.header);
