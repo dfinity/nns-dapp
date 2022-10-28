@@ -13,9 +13,19 @@
     activePadProjectsStore,
     type SnsFullProject,
   } from "$lib/stores/projects.store";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { filterProjectsStatus } from "$lib/utils/projects.utils";
+
+  export let status: "Committed" | "Open";
 
   let projects: SnsFullProject[] | undefined;
-  $: projects = $activePadProjectsStore;
+  $: projects = filterProjectsStatus({
+    swapLifecycle:
+      status === "Committed"
+        ? SnsSwapLifecycle.Committed
+        : SnsSwapLifecycle.Open,
+    projects: $activePadProjectsStore,
+  });
 
   let projectCount: number | undefined;
   $: projectCount = $snsesCountStore;
@@ -23,6 +33,12 @@
   let loading = false;
   $: loading =
     isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
+
+  let noProjectsMessage: string;
+  $: noProjectsMessage =
+    status === "Committed"
+      ? $i18n.sns_launchpad.no_committed_projects
+      : $i18n.sns_launchpad.no_open_projects;
 </script>
 
 {#if loading}
@@ -44,7 +60,7 @@
     {/each}
   </div>
   {#if projects.length === 0}
-    <p class="no-projects">{$i18n.sns_launchpad.no_projects}</p>
+    <p class="no-projects">{noProjectsMessage}</p>
   {/if}
 {/if}
 

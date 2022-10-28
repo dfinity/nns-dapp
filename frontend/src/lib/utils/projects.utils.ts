@@ -13,7 +13,7 @@ import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
 import { formatToken } from "./token.utils";
 
-const filterProjectsStatus = ({
+export const filterProjectsStatus = ({
   swapLifecycle,
   projects,
 }: {

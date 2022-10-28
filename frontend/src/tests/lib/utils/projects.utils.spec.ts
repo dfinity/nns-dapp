@@ -9,6 +9,7 @@ import {
   durationTillSwapDeadline,
   filterActiveProjects,
   filterCommittedProjects,
+  filterProjectsStatus,
   hasUserParticipatedToSwap,
   isNnsProject,
   projectRemainingAmount,
@@ -30,15 +31,48 @@ import {
 
 describe("project-utils", () => {
   describe("filter", () => {
-    it("should return no committed projects", () =>
+    it("should filter by status", () => {
       expect(
-        filterCommittedProjects([
-          {
-            ...mockSnsFullProject,
-            summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-          },
-        ])?.length
-      ).toEqual(0));
+        filterProjectsStatus({
+          projects: [
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+            },
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+            },
+          ],
+          swapLifecycle: SnsSwapLifecycle.Open,
+        })[0].summary.swap.lifecycle
+      ).toEqual(SnsSwapLifecycle.Open);
+
+      expect(
+        filterProjectsStatus({
+          projects: [
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+            },
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+            },
+          ],
+          swapLifecycle: SnsSwapLifecycle.Pending,
+        })
+      ).toEqual([]);
+    }),
+      it("should return no committed projects", () =>
+        expect(
+          filterCommittedProjects([
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+            },
+          ])?.length
+        ).toEqual(0));
 
     it("should return committed projects", () =>
       expect(

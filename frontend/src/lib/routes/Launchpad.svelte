@@ -15,8 +15,11 @@
 </script>
 
 <main>
-  <h2>{$i18n.sns_launchpad.projects}</h2>
-  <Projects />
+  <h2>{$i18n.sns_launchpad.open_projects}</h2>
+  <Projects status="Open" />
+
+  <h2>{$i18n.sns_launchpad.committed_projects}</h2>
+  <Projects status="Committed" />
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>
   <Proposals />
