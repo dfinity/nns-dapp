@@ -24,7 +24,7 @@
 
   let totalFiltersTopic = enumsExclude({
     obj: Topic as unknown as Topic,
-    values: [Topic.Unspecified],
+    values: [Topic.Unspecified, Topic.SnsDecentralizationSale],
   }).length;
   let totalFiltersProposalRewardStatus = enumsExclude({
     obj: ProposalRewardStatus as unknown as ProposalRewardStatus,

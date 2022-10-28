@@ -187,3 +187,12 @@ export const routePathAccountIdentifier = (
         : undefined,
   };
 };
+
+export const accountName = ({
+  account,
+  mainName,
+}: {
+  account: Account | undefined;
+  mainName: string;
+}): string =>
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");

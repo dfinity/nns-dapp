@@ -44,7 +44,10 @@ describe("ProposalsFilterModal", () => {
     });
 
     enumKeys(Topic)
-      .filter((key: string) => key !== "Unspecified")
+      .filter(
+        (key: string) =>
+          key !== "Unspecified" && key !== "SnsDecentralizationSale"
+      )
       .forEach((key: string) =>
         expect(getByText(en.topics[key])).toBeInTheDocument()
       );
