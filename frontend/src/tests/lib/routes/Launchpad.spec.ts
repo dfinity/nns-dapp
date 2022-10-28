@@ -18,7 +18,9 @@ describe("Launchpad", () => {
   it("should render titles", () => {
     const { getByText } = render(Launchpad);
 
-    expect(getByText(en.sns_launchpad.projects)).toBeInTheDocument();
+    // TBU
+    expect(getByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
+    expect(getByText(en.sns_launchpad.committed_projects)).toBeInTheDocument();
     expect(getByText(en.sns_launchpad.proposals)).toBeInTheDocument();
   });
 });
