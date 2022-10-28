@@ -18,7 +18,6 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import { snsesCountStore } from "$lib/stores/sns.store";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   ICPToken,
@@ -29,7 +28,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
-import { get } from "svelte/store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
@@ -128,17 +126,6 @@ describe("sns-api", () => {
     expect(metadata).not.toBeNull();
     expect(metadata.length).toEqual(1);
     expect(metadata).toEqual([mockQueryMetadata]);
-  });
-
-  it("should update snsesCountStore", async () => {
-    await queryAllSnsMetadata({
-      identity: mockIdentity,
-      certified: true,
-    });
-
-    const $snsesCountStore = get(snsesCountStore);
-
-    expect($snsesCountStore).toEqual(deployedSnsMock.length);
   });
 
   it("should query swap state", async () => {

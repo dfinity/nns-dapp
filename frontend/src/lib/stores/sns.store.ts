@@ -220,8 +220,3 @@ const initSnsSwapCommitmentsStore = () => {
 };
 
 export const snsSwapCommitmentsStore = initSnsSwapCommitmentsStore();
-
-// ************** Goodies for UX/UI **************
-
-// used to improve loading state display only
-export const snsesCountStore = writable<number | undefined>(undefined);
