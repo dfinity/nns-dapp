@@ -138,7 +138,7 @@ export const querySnsSwapState = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<QuerySnsSwapState | undefined> => {
+}): Promise<QuerySnsSwapState> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );

@@ -3,6 +3,9 @@
  */
 
 import MenuItems from "$lib/components/common/MenuItems.svelte";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { routeStore } from "$lib/stores/route.store";
+import { paths } from "$lib/utils/app-path.utils";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
@@ -36,5 +39,20 @@ describe("MenuItems", () => {
     const { getByTestId } = renderResult;
 
     expect(() => getByTestId("get-icp-button")).toThrow();
+  });
+
+  it("should point Tokens and Neurons to NNS from the project page", () => {
+    routeStore.update({ path: paths.projectDetail("aaaaa-aa") });
+    const { getByTestId } = render(MenuItems);
+
+    const accountsLink = getByTestId("menuitem-accounts");
+    expect(accountsLink.getAttribute("href")).toEqual(
+      paths.accounts(OWN_CANISTER_ID.toText())
+    );
+
+    const neuronsLink = getByTestId("menuitem-neurons");
+    expect(neuronsLink.getAttribute("href")).toEqual(
+      paths.neurons(OWN_CANISTER_ID.toText())
+    );
   });
 });

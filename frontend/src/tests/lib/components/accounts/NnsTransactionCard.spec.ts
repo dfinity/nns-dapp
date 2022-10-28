@@ -2,28 +2,36 @@
  * @jest-environment jsdom
  */
 
-import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
 import { formatToken } from "$lib/utils/token.utils";
+import { mapNnsTransaction } from "$lib/utils/transactions.utils";
 import { render } from "@testing-library/svelte";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import {
-  mockTransactionReceiveDataFromMain,
-  mockTransactionSendDataFromMain,
+  mockReceivedFromMainAccountTransaction,
+  mockSentToSubAccountTransaction,
 } from "../../../mocks/transaction.mock";
 
-describe("TransactionCard", () => {
+describe("NnsTransactionCard", () => {
   const renderTransactionCard = (
-    transaction = mockTransactionSendDataFromMain
+    account = mockMainAccount,
+    transaction = mockReceivedFromMainAccountTransaction
   ) =>
-    render(TransactionCard, {
+    render(NnsTransactionCard, {
       props: {
+        account,
         transaction,
       },
     });
 
   it("renders received headline", () => {
     const { container } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
+      mockSubAccount,
+      mockReceivedFromMainAccountTransaction
     );
 
     expect(container.querySelector(".title")?.textContent).toBe(
@@ -33,7 +41,8 @@ describe("TransactionCard", () => {
 
   it("renders sent headline", () => {
     const { container } = renderTransactionCard(
-      mockTransactionSendDataFromMain
+      mockMainAccount,
+      mockSentToSubAccountTransaction
     );
 
     expect(container.querySelector(".title")?.textContent).toBe(
@@ -42,59 +51,58 @@ describe("TransactionCard", () => {
   });
 
   it("renders transaction ICPs with - sign", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionSendDataFromMain
-    );
+    const account = mockMainAccount;
+    const transaction = mockSentToSubAccountTransaction;
+    const { getByTestId } = renderTransactionCard(account, transaction);
+    const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `-${formatToken({
-        value: mockTransactionSendDataFromMain.displayAmount.toE8s(),
-        detailed: true,
-      })}`
+      `-${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
     );
   });
 
   it("renders transaction ICPs with + sign", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
-    );
+    const account = mockSubAccount;
+    const transaction = mockReceivedFromMainAccountTransaction;
+    const { getByTestId } = renderTransactionCard(account, transaction);
+    const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({
-        value: mockTransactionReceiveDataFromMain.displayAmount.toE8s(),
-        detailed: true,
-      })}`
+      `+${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
     );
   });
 
   it("displays transaction date and time", () => {
     const { container } = renderTransactionCard(
-      mockTransactionSendDataFromMain
+      mockMainAccount,
+      mockSentToSubAccountTransaction
     );
 
     expect(container.querySelector("p")?.textContent).toContain(
-      "March 14, 2021 12:00 AM"
+      "January 1, 1970"
     );
     expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
   });
 
-  it("displays identifier for received", () => {
+  it("displays identifier for reseived", () => {
     const { getByTestId } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
+      mockSubAccount,
+      mockReceivedFromMainAccountTransaction
     );
     const identifier = getByTestId("identifier")?.textContent;
 
-    expect(identifier).toContain(mockTransactionReceiveDataFromMain.from);
+    expect(identifier).toContain(mockMainAccount.identifier);
     expect(identifier).toContain(en.wallet.direction_from);
   });
 
   it("displays identifier for sent", () => {
     const { getByTestId } = renderTransactionCard(
-      mockTransactionSendDataFromMain
+      mockMainAccount,
+      mockSentToSubAccountTransaction
     );
     const identifier = getByTestId("identifier")?.textContent;
 
-    expect(identifier).toContain(mockTransactionSendDataFromMain.to);
+    expect(identifier).toContain(mockSubAccount.identifier);
     expect(identifier).toContain(en.wallet.direction_to);
   });
 });

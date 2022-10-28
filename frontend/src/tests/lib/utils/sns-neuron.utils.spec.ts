@@ -11,6 +11,7 @@ import {
   getSnsNeuronState,
   hasPermissions,
   hasPermissionToDisburse,
+  hasValidStake,
   isSnsNeuron,
   isUserHotkey,
   routePathSnsNeuronId,
@@ -661,6 +662,44 @@ describe("sns-neuron utils", () => {
     it("returns false for NeuronInfo (nnsNeuron)", () => {
       const neuron: NeuronInfo = { ...mockNeuron };
       expect(isSnsNeuron(neuron)).toBeFalsy();
+    });
+  });
+
+  describe("hasValidStake", () => {
+    it("returns true if neuron has stake greater than 0", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(10_000_000),
+        maturity_e8s_equivalent: BigInt(0),
+      };
+      expect(hasValidStake(neuron)).toBeTruthy();
+    });
+
+    it("returns true if neuron has maturity greater than 0", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(0),
+        maturity_e8s_equivalent: BigInt(10_000_000),
+      };
+      expect(hasValidStake(neuron)).toBeTruthy();
+    });
+
+    it("returns true if neuron has maturity and stake greater than 0", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(10_000_000),
+        maturity_e8s_equivalent: BigInt(10_000_000),
+      };
+      expect(hasValidStake(neuron)).toBeTruthy();
+    });
+
+    it("returns false if neuron has no maturity and no stake", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(0),
+        maturity_e8s_equivalent: BigInt(0),
+      };
+      expect(hasValidStake(neuron)).toBeFalsy();
     });
   });
 });

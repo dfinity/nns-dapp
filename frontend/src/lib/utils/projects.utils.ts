@@ -189,7 +189,10 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $commitment: formatToken({ value: totalCommitment }),
+        $newCommitment: formatToken({ value: amount.toE8s() }),
+        $currentCommitment: formatToken({
+          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        }),
         $maxCommitment: formatToken({
           value: project.summary.swap.params.max_participant_icp_e8s,
         }),

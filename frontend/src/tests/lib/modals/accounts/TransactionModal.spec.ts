@@ -28,6 +28,7 @@ describe("TransactionModal", () => {
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
+    validateAmount?: (amount: number | undefined) => string | undefined;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -148,6 +149,28 @@ describe("TransactionModal", () => {
 
       await waitFor(() =>
         expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+    });
+
+    it("should not enable button when input value is not validated with the prop `validateAmount`", async () => {
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        validateAmount: () => "error__sns.not_enough_amount",
+      });
+
+      const participateButton = getByTestId("transaction-button-next");
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: "10" } });
+
+      // Choose select account
+      // It will choose the fist subaccount as default
+      const toggle = container.querySelector("input[id='toggle']");
+      toggle && fireEvent.click(toggle);
+
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeTruthy()
       );
     });
 
