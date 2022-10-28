@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { accountName as getAccountName } from "$lib/utils/transactions.utils";
+  import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
