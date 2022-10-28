@@ -27,6 +27,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -147,6 +148,7 @@
     {destinationAddress}
     disableSubmit={!accepted}
     skipHardwareWallets
+    transactionFee={$mainTransactionFeeStoreAsToken}
     maxAmount={currentUserMaxCommitment({ summary, swapCommitment })}
   >
     <svelte:fragment slot="title"

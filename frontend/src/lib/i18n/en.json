@@ -101,6 +101,7 @@
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
+    "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {

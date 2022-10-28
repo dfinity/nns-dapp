@@ -105,6 +105,7 @@ interface I18nError {
   limit_exceeded_creating_canister: string;
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
+  transaction_fee_not_found: string;
   canister_invalid_transaction: string;
 }
 
