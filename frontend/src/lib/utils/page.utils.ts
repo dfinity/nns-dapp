@@ -1,7 +1,8 @@
 import { AppPath, ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
+import {isNullish} from "$lib/utils/utils";
 
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
-  if (routeId === null || routeId === undefined) {
+  if (isNullish(routeId)) {
     return AppPath.Authentication;
   }
 
