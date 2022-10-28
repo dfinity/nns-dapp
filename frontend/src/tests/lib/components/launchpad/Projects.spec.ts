@@ -3,11 +3,7 @@
  */
 
 import Projects from "$lib/components/launchpad/Projects.svelte";
-import {
-  snsesCountStore,
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -132,26 +128,15 @@ describe("Projects", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render spinner on loading", () => {
-    const { queryByTestId } = render(Projects, {
-      props: {
-        status: "Open",
-      },
-    });
-    expect(queryByTestId("spinner")).toBeInTheDocument();
-  });
-
-  it("should render skeletons after snsesCountStore update", async () => {
+  it("should render skeletons", async () => {
     const { getAllByTestId } = render(Projects, {
       props: {
         status: "Open",
       },
     });
 
-    snsesCountStore.set(3);
-
     await waitFor(() =>
-      expect(getAllByTestId("skeleton-card").length).toBeGreaterThanOrEqual(3)
+      expect(getAllByTestId("skeleton-card").length).toBeGreaterThan(0)
     );
   });
 });
