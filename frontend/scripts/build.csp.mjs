@@ -19,8 +19,8 @@ const buildCsp = () => {
  */
 const removeDefaultCspTag = (indexHtml) => {
   return indexHtml.replace(
-      '<meta http-equiv="content-security-policy" content="">',
-      ""
+    '<meta http-equiv="content-security-policy" content="">',
+    ""
   );
 };
 
