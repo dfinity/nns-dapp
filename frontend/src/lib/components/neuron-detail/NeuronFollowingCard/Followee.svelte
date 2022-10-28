@@ -8,6 +8,7 @@
 
   export let followee: FolloweesNeuron;
 
+  // TODO: Align with `en.governance.json` "topics.[topic]"
   const topicTitle = (topic: Topic) =>
     $i18n.follow_neurons[`topic_${topic}_title`];
 

@@ -9,8 +9,19 @@ dotenv.config();
 
 const buildCsp = () => {
   const indexHTMLWithoutStartScript = extractStartScript();
-  const indexHTMLWithCSP = updateCSP(indexHTMLWithoutStartScript);
+  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithoutStartScript);
+  const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
   writeFileSync("./public/index.html", indexHTMLWithCSP);
+};
+
+/**
+ * Remove the empty content-security-policy tag injected by SvelteKit
+ */
+const removeDefaultCspTag = (indexHtml) => {
+  return indexHtml.replace(
+    '<meta http-equiv="content-security-policy" content="">',
+    ""
+  );
 };
 
 /**

@@ -31,3 +31,5 @@ export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
   [ProposalStatus.Accepted]: undefined,
   [ProposalStatus.Failed]: Color.ERROR,
 };
+
+export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];

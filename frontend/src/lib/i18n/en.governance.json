@@ -20,7 +20,8 @@
     "NodeProviderRewards": "Node Provider Rewards",
     "SnsDecentralizationSale": "SNS Decentralization Sale",
     "ReplicaVersionManagement": "Replica Version Management",
-    "SubnetReplicaVersionManagement": "Subnet Replica Version Management"
+    "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
+    "SnsAndCommunityFund": "SNS & Community Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -30,13 +31,14 @@
     "Governance": "All proposals that administer governance — for example, motions and the configuration of certain parameters.",
     "NodeAdmin": "All proposals that administer node machines somehow, including but not limited to upgrading or configuring the OS, upgrading or configuring the virtual machine framework, and upgrading or configuring the node replica software.",
     "ParticipantManagement": "All proposals that administer network participants — for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities).",
-    "SubnetManagement": "All proposals that administer network subnets — for example, creating new subnets, adding and removing subnet nodes, and splitting subnets",
+    "SubnetManagement": "All proposals that administer network subnets — for example, creating new subnets, adding and removing subnet nodes, and splitting subnets.",
     "NetworkCanisterManagement": "Installing and upgrading “system” Canisters that belong to the network — for example, upgrading the NNS.",
     "Kyc": "Proposals that update KYC information for regulatory purposes — for example, during the initial Genesis distribution of ICP in the form of neurons.",
     "NodeProviderRewards": "Topic for proposals to reward node providers.",
-    "SnsDecentralizationSale": "SNS Decentralization Sale",
+    "SnsDecentralizationSale": "SNS Decentralization Sale.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
-    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version."
+    "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -79,7 +81,7 @@
     "SetDefaultFollowees": "Set Default Followees",
     "Motion": "Motion",
     "SetSnsTokenSwapOpenTimeWindow": "Start Decentralization Sale",
-    "OpenSnsTokenSwap": "Open Decentralized Token Sale"
+    "OpenSnsTokenSwap": "Open Decentralization Sale"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -91,8 +93,8 @@
     "AddOrRemoveNodeProvider": "Assign (or revoke) an identity to a node provider, associating key information regarding the legal person associated that should provide a way to uniquely identify it.",
     "SetDefaultFollowees": "Specify the list of followees that a freshly created neuron should have.",
     "Motion": "A motion is a text that can be adopted or rejected. No code is executed when a motion is adopted. An adopted motion should guide the future strategy of the Internet Computer ecosystem.",
-    "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale",
-    "OpenSnsTokenSwap": "Open decentralized token sale"
+    "SetSnsTokenSwapOpenTimeWindow": "Start decentralization sale.",
+    "OpenSnsTokenSwap": "Open decentralization sale."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",
@@ -125,7 +127,7 @@
     "UpdateFirewallRules": "Update Firewall Rules",
     "PrepareCanisterMigration": "Prepare Canister Migration",
     "CompleteCanisterMigration": "Complete Canister Migration",
-    "AddSnsWasm": "Bless new SNS deployment",
+    "AddSnsWasm": "Bless New SNS Deployment",
     "ChangeSubnetMembership": "Change Subnet Membership",
     "UpdateSubnetType": "Update Subnet Type",
     "ChangeSubnetTypeAssignment": "Change Subnet Type Assignment",
@@ -164,7 +166,7 @@
     "UpdateFirewallRules": "Update firewall rules in the registry. Nodes use a firewall to protect themselves from network attacks.",
     "PrepareCanisterMigration": "Insert or update canister migrations entries. Such entries specify that a migration of canister ID ranges is currently ongoing.<br/><br/>The steps of canister migration are:<ol><li>Prepare Canister Migration</li><li>Reroute Canister Ranges</li><li>Complete Canister Migration</li></ol>",
     "CompleteCanisterMigration": "Remove canister migrations entries. Such entries specify that a migration of canister ID ranges is currently ongoing.<br/><br/>The steps of canister migration are:<ol><li>Prepare Canister Migration</li><li>Reroute Canister Ranges</li><li>Complete Canister Migration</li></ol>",
-    "AddSnsWasm": "Add a new SNS canister WASM",
+    "AddSnsWasm": "Add a new SNS canister WASM.",
     "ChangeSubnetMembership": "Change the membership (list) of nodes in a subnet by adding and/or removing nodes from the subnet. At the time the proposal is executed, the added nodes (if provided in the proposal) need to be unassigned and the removed nodes (if provided in the proposal) need to be assigned to the subnet. After the proposal is executed, the removed nodes become unassigned, and can be reassigned to other subnets via future proposals or completely removed from the network.",
     "UpdateSubnetType": "Add or remove a subnet type. A new subnet type can be added if it doesn’t already exist. An existing subnet type can be removed if no subnets are assigned to it. Subnet types can be used to choose the kind of subnet a canister should be created on.",
     "ChangeSubnetTypeAssignment": "Change the assignment of subnets to subnet types by either adding subnets to or removing subnets from a subnet type. A subnet can be assigned to a subnet type if the subnet is not already assigned to a different subnet type and is not already in the authorized subnets list (i.e., subnets authorized for certain principals) or the default subnets list (i.e., default subnets that new canisters are randomly created on). Once a subnet is assigned to a subnet type, it becomes available to users who can specify that they want their canisters to be created on subnets of that type.",
