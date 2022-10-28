@@ -12,6 +12,7 @@
   export let topic: Topic;
   export let neuron: NeuronInfo;
 
+  // TODO: Align with `en.governance.json` "topics.[topic]"
   let title: string;
   $: title = $i18n.follow_neurons[`topic_${topic}_title`];
   let subtitle: string;

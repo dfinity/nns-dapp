@@ -1,10 +1,9 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { enumKeys } from "$lib/utils/enum.utils";
 import {
-  accountName,
   AccountTransactionType,
-  mapToSelfTransaction,
-  mapTransaction,
+  mapNnsTransaction,
+  mapToSelfNnsTransaction,
   showTransactionFee,
   transactionDisplayAmount,
   transactionName,
@@ -157,9 +156,9 @@ describe("transactions-utils", () => {
     });
   });
 
-  describe("mapToSelfTransaction", () => {
+  describe("mapToSelfNnsTransaction", () => {
     it("should map to self transactions", () => {
-      const transactions = mapToSelfTransaction([
+      const transactions = mapToSelfNnsTransaction([
         {
           ...mockSentToSubAccountTransaction,
           timestamp: { timestamp_nanos: BigInt("111") },
@@ -194,10 +193,10 @@ describe("transactions-utils", () => {
     });
   });
 
-  describe("mapTransaction", () => {
+  describe("mapNnsTransaction", () => {
     it("should map Send transaction", () => {
       const { type, isReceive, isSend, from, to, displayAmount, date } =
-        mapTransaction({
+        mapNnsTransaction({
           transaction: mockSentToSubAccountTransaction,
           account: mockMainAccount,
         });
@@ -230,7 +229,7 @@ describe("transactions-utils", () => {
 
     it("should map Receive transaction", () => {
       const { type, isReceive, isSend, from, to, displayAmount, date } =
-        mapTransaction({
+        mapNnsTransaction({
           transaction: mockReceivedFromMainAccountTransaction,
           account: mockSubAccount,
         });
@@ -264,7 +263,7 @@ describe("transactions-utils", () => {
     });
 
     it("should support toSelfTransaction", () => {
-      const { isReceive, isSend, displayAmount } = mapTransaction({
+      const { isReceive, isSend, displayAmount } = mapNnsTransaction({
         transaction: mockSentToSubAccountTransaction,
         account: mockSubAccount,
         toSelfTransaction: true,
@@ -285,35 +284,6 @@ describe("transactions-utils", () => {
       );
       expect(isSend).toBeFalsy();
       expect(isReceive).toBeTruthy();
-    });
-  });
-
-  describe("accountName", () => {
-    it("returns subAccount name", () => {
-      expect(
-        accountName({
-          account: mockSubAccount,
-          mainName: "main",
-        })
-      ).toBe(mockSubAccount.name);
-    });
-
-    it("returns main account name", () => {
-      expect(
-        accountName({
-          account: mockMainAccount,
-          mainName: "main",
-        })
-      ).toBe("main");
-    });
-
-    it('returns "" if no account', () => {
-      expect(
-        accountName({
-          account: undefined,
-          mainName: "main",
-        })
-      ).toBe("");
     });
   });
 
