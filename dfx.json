@@ -16,6 +16,7 @@
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -207,6 +208,20 @@
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small14": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small14.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:a4ff:fe4f:a75e]:8080"
       ],
       "type": "persistent"
     },
