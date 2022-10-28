@@ -21,6 +21,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
+  import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(() => {
@@ -75,8 +76,12 @@
 
 <main class="legacy" data-tid="sns-wallet">
   <section>
-    {#if $selectedAccountStore.account !== undefined}
+    {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
       <WalletSummary />
+      <SnsTransactionsList
+        rootCanisterId={$snsOnlyProjectStore}
+        account={$selectedAccountStore.account}
+      />
     {:else}
       <Spinner />
     {/if}

@@ -214,3 +214,12 @@ export const isSnsNeuron = (
 ): neuron is SnsNeuron =>
   Array.isArray((neuron as SnsNeuron).id) &&
   Array.isArray((neuron as SnsNeuron).permissions);
+
+/**
+ * Checks whether the neuron has either stake or maturity greater than zero.
+ *
+ * @param {SnsNeuron} neuron
+ * @returns {boolean}
+ */
+export const hasValidStake = (neuron: SnsNeuron): boolean =>
+  neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);

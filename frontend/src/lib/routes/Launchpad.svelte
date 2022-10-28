@@ -6,6 +6,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   onMount(() => {
     if (!IS_TESTNET) {
@@ -15,8 +16,11 @@
 </script>
 
 <main>
-  <h2>{$i18n.sns_launchpad.projects}</h2>
-  <Projects />
+  <h2>{$i18n.sns_launchpad.open_projects}</h2>
+  <Projects status={SnsSwapLifecycle.Open} />
+
+  <h2>{$i18n.sns_launchpad.committed_projects}</h2>
+  <Projects status={SnsSwapLifecycle.Committed} />
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>
   <Proposals />

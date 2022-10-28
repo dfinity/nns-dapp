@@ -4,7 +4,6 @@ import {
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
 } from "$lib/proxy/api.import.proxy";
-import { snsesCountStore } from "$lib/stores/sns.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { createAgent } from "$lib/utils/agent.utils";
@@ -99,8 +98,6 @@ const loadSnsWrappers = async ({
   });
 
   const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
-
-  snsesCountStore.set(rootCanisterIds.length);
 
   const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
     rootCanisterIds.map((rootCanisterId: Principal) =>

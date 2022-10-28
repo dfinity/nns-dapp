@@ -100,6 +100,7 @@
     "limit_exceeded_topping_up_canister": "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not.",
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
+    "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -292,6 +293,12 @@
     "topic_10_subtitle": "Proposals that reward node providers",
     "topic_11_title": "SNS Decentralization Sale",
     "topic_11_subtitle": "Proposals for SNS",
+    "topic_12_title": "Subnet Replica Version Management",
+    "topic_12_subtitle": "Proposals handling updates of a subnet's replica version",
+    "topic_13_title": "Replica Version Management",
+    "topic_13_subtitle": "Proposals dealing with blessing and retirement of replica versions",
+    "topic_14_title": "SNS & Community Fund",
+    "topic_14_subtitle": "Proposals related to SNS and Community Fund",
     "current_followees": "Currently Following",
     "add": "Add Followee"
   },
@@ -528,8 +535,10 @@
   },
   "sns_launchpad": {
     "header": "Launch Pad",
-    "projects": "Current Launches",
-    "no_projects": "No current launches at the moment",
+    "committed_projects": "Launched",
+    "no_committed_projects": "No launched projects at the moment",
+    "open_projects": "Current Launches",
+    "no_open_projects": "No current launches at the moment",
     "proposals": "Proposals",
     "project_logo": "project logo",
     "no_proposals": "No current proposals at the moment"
@@ -555,7 +564,7 @@
     "status_aborted": "Aborted",
     "status_pending": "Upcoming sale",
     "status_unspecified": "Unspecified",
-    "participate_swap_description": "Participate in Decentralized Sale",
+    "participate_swap_description": "Participate in decentralization sale",
     "participate_swap_warning": "Your participation cannot be withdrawn by you. If the sale is not successful, your commitment will be automatically transferred back to your main ICP account.",
     "understand_agree": "I understand and want to proceed.",
     "participate_success": "Your participation has been successfully committed.",
@@ -649,7 +658,7 @@
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
-    "commitment_too_large": "Sorry, your commitment of $commitment ICP is too high. The maximum is $maxCommitment ICP.",
+    "commitment_too_large": "Sorry, your new commitment of $newCommitment ICP is too high. You have already committed $currentCommitment ICP and the maximum is $maxCommitment ICP.",
     "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
