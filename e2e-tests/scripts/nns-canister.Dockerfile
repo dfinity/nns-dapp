@@ -52,7 +52,7 @@ RUN binary=sns-wasm-canister && \
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
-COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.did
+COPY --from=builder /ic/rs/rosetta-api/ledger_canister/icp_ledger/ledger.did /ledger.did
 COPY --from=builder /ic/rs/rosetta-api/icrc1/ledger/icrc1.did /ic-icrc1-ledger.did
 COPY --from=builder /ic/rs/rosetta-api/icrc1/index/index.did /ic-icrc1-ledger-index.did
 COPY --from=builder /ic/rs/nns/gtc/canister/gtc.did /genesis_token.did
