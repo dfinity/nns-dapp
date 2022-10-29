@@ -62,10 +62,10 @@ dfx_network_check_valid
 
 export DFX_NETWORK=$DFX_NETWORK
 TESTNET=$DFX_NETWORK
-IC_COMMIT=0cae81039809b9f13125b19981cb992e6b8e9657 # master Fri Sep 16
+IC_COMMIT=d1d0f4d7dacef8770d37cb65799505394cd978be
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME"/tmp/ic/
-ND_COMMIT=7ce57b2d0c931e2911296241a3b86b501969fa95 # release Sep 14
+ND_COMMIT=53b8613255261664aa9a4c6133cb7f896f3d01ac
 ND_DIR="$HOME"/tmp/nns-dapp
 
 #cd "$ND_DIR"
@@ -117,30 +117,21 @@ esay() {
   cd $ND_DIR
   echo "Setting the cycles exchange rate..."
   ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK" --jfdi
-
   esay "Set the cycles exchange rate..."
+  esay "Setting SNS-WASM subnet ids..."
+  ./scripts/propose --to propose-to-update-sns-wasm-sns-subnet-ids --dfx-network "$DFX_NETWORK" --jfdi
+  esay "Set SNS-WASM subnet ids..."
+  esay "Populating SNS-WASM wasms..."
+  ./scripts/propose --to propose-to-add-wasm-to-sns-wasm --dfx-network "$DFX_NETWORK" --jfdi
+  esay "Populated SNS-WASM wasms..."
 ) || esay fail fail fail
 
 ( set -euxo pipefail
   cd $ND_DIR
   echo "Deploying II and creating nns-dapp"
   ./deploy.sh --ii "$DFX_NETWORK"
-  # We just need to create the canister in this step. Deployment can be done later (since nn-dapp needs to know
-  # where sns-wasm is deployed)
-  dfx canister --network "$DFX_NETWORK" create nns-dapp
-  esay deployed frontends
-) || esay fail fail fail
-
-( set -euxo pipefail
-  cd $ND_DIR
-  ./deploy.sh --sns-wasm --ctl-nobuild-nns "$DFX_NETWORK"
-  esay deployed sns-wasmw
-) || esay fail fail fail
-
-( set -euxo pipefail
-    cd $ND_DIR
   ./deploy.sh --nns-dapp "$DFX_NETWORK"
-  esay redeployed frontends
+  esay deployed frontends
 ) || esay fail fail fail
 
 (
