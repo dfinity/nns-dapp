@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Propose to populate the SNS-WASM canister with a wasm for each of the SNS Canister Types.
+# This requires testnet NNS Governance to be setup with the test-neuron-proposer.
+# This ic-admin command targets the fixed canister id of the SNS-WASM canister (qaa6y-5yaaa-aaaaa-aaafa-cai).
+
 for canister in root governance ledger swap archive index; do
   WASM_FILE="$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)"
   WASM_FILE_SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
