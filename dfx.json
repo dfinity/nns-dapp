@@ -259,7 +259,7 @@
       "config": {
         "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "2de9321857b3a713144932d8fd08f791f37e228f"
+        "IC_COMMIT": "3f343ec219808f5be1e9daa878c1da624b4f8d37"
       },
       "packtool": ""
     }
