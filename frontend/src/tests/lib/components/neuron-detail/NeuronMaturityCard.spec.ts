@@ -154,9 +154,16 @@ describe("NeuronMaturityCard", () => {
       props,
     });
 
-    expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
-      en.neuron_detail.stake_maturity_tooltip
+    const description = getByTestId("maturity-description");
+
+    const div = document.createElement("div");
+    div.innerHTML = en.neuron_detail.stake_maturity_tooltip;
+
+    expect(description?.textContent?.trim()).toEqual(
+      div.textContent.trim()
     );
+
+    expect(description?.querySelector("a")).not.toBeNull();
   });
 
   it("should render auto stake maturity action", async () => {
