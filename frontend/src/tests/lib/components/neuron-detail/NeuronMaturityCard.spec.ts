@@ -159,9 +159,7 @@ describe("NeuronMaturityCard", () => {
     const div = document.createElement("div");
     div.innerHTML = en.neuron_detail.stake_maturity_tooltip;
 
-    expect(description?.textContent?.trim()).toEqual(
-      div.textContent.trim()
-    );
+    expect(description?.textContent?.trim()).toEqual(div.textContent.trim());
 
     expect(description?.querySelector("a")).not.toBeNull();
   });
