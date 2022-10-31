@@ -46,7 +46,9 @@
     {/each}
   </div>
   {#if projects.length === 0}
-    <p class="no-projects">{@html noProjectsMessageLabel}</p>
+    <p data-tid="no-projects-message" class="no-projects">
+      {@html noProjectsMessageLabel}
+    </p>
   {/if}
 {/if}
 
