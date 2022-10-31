@@ -22,9 +22,7 @@
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import Value from "$lib/components/ui/Value.svelte";
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, Value, KeyValuePairInfo } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 

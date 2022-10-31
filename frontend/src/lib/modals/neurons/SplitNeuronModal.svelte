@@ -1,6 +1,6 @@
 <script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal, Value } from "@dfinity/gix-components";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
@@ -12,7 +12,6 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import Value from "$lib/components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;
 

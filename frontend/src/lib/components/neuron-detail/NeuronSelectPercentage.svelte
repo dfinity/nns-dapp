@@ -3,9 +3,8 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formattedMaturity } from "$lib/utils/neuron.utils";
   import { formatPercentage } from "$lib/utils/format.utils";
-  import { InputRange } from "@dfinity/gix-components";
+  import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
 
   export let neuron: NeuronInfo;
   export let percentage: number;

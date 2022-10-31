@@ -2,7 +2,7 @@
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";

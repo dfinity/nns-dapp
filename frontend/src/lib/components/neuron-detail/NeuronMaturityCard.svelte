@@ -3,8 +3,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
+  import { KeyValuePair, KeyValuePairInfo } from "@dfinity/gix-components";
   import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";

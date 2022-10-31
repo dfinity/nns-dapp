@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { IconInfoOutline } from "@dfinity/gix-components";
-  import Collapsible from "./Collapsible.svelte";
-  import KeyValuePair from "./KeyValuePair.svelte";
+  import {
+    IconInfoOutline,
+    Collapsible,
+    KeyValuePair,
+  } from "@dfinity/gix-components";
 
   export let testId: string | undefined = undefined;
 
