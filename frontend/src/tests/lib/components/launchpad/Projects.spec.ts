@@ -6,7 +6,6 @@ import Projects from "$lib/components/launchpad/Projects.svelte";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
@@ -99,13 +98,13 @@ describe("Projects", () => {
       certified: false,
     });
 
-    const { queryByText } = render(Projects, {
+    const { queryByTestId } = render(Projects, {
       props: {
         status: SnsSwapLifecycle.Open,
       },
     });
 
-    expect(queryByText(en.sns_launchpad.no_open_projects)).toBeInTheDocument();
+    expect(queryByTestId("no-projects-message")).toBeInTheDocument();
   });
 
   it("should render a message when no committed projects available", () => {
@@ -117,15 +116,13 @@ describe("Projects", () => {
       certified: false,
     });
 
-    const { queryByText } = render(Projects, {
+    const { queryByTestId } = render(Projects, {
       props: {
         status: SnsSwapLifecycle.Committed,
       },
     });
 
-    expect(
-      queryByText(en.sns_launchpad.no_committed_projects)
-    ).toBeInTheDocument();
+    expect(queryByTestId("no-projects-message")).toBeInTheDocument();
   });
 
   it("should render skeletons", async () => {

@@ -574,6 +574,7 @@ interface I18nSns_project {
 interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
+  total_tokens: string;
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
