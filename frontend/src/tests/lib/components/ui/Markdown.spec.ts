@@ -9,7 +9,7 @@ import { silentConsoleErrors } from "../../../utils/utils.test-utils";
 
 let transform: (unknown) => Promise<unknown>;
 jest.mock("$lib/utils/html.utils", () => ({
-  markdownToSanitizedHTML: (value) => transform(value),
+  markdownToHTML: (value) => transform(value),
 }));
 
 describe("Markdown", () => {

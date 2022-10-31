@@ -1,9 +1,9 @@
 <script lang="ts">
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
-  import { sanitize } from "$lib/utils/html.utils";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import { Html } from "@dfinity/gix-components";
 
   export let proposer: NeuronId | undefined;
 
@@ -27,7 +27,7 @@
     </button>
 
     <svelte:fragment slot="info">
-      {@html sanitize($i18n.proposal_detail.proposer_description)}
+      <Html text={$i18n.proposal_detail.proposer_description} />
     </svelte:fragment>
   </KeyValuePairInfo>
 
