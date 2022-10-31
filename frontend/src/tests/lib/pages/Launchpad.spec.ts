@@ -9,6 +9,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
+import {committedProjectsStore} from "$lib/stores/projects.store";
 
 jest.mock("$lib/services/sns.services", () => {
   return {

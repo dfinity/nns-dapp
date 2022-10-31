@@ -297,27 +297,6 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("routePathAccountIdentifier", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get account identifier from valid path", () => {
-      expect(
-        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual({
-        accountIdentifier: mockMainAccount.identifier,
-      });
-    });
-
-    it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
-      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
-    });
-  });
-
   describe("accountName", () => {
     it("returns subAccount name", () => {
       expect(
