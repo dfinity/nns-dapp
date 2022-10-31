@@ -25,7 +25,7 @@ import type {
   SnsTransferableAmount,
 } from "@dfinity/sns";
 import { digestText } from "./dev.utils";
-import { mapTransaction } from "./transactions.utils";
+import { mapNnsTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";
 
 const anonymiseAvailability = (value: unknown): "yes" | "no" =>
@@ -260,7 +260,7 @@ export const anonymizeTransaction = async ({
   const { transaction_type, memo, timestamp, block_height } = transaction;
 
   const { isReceive, isSend, type, from, to, displayAmount, date } =
-    mapTransaction({
+    mapNnsTransaction({
       transaction,
       account,
     });

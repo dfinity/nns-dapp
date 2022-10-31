@@ -5,10 +5,11 @@ use crate::proposals::def::{
     ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload,
     CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
-    RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
-    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest,
-    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest, UpdateSubnetPayload,
+    UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::CandidType;
@@ -130,6 +131,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         32 => identity::<UpdateSubnetTypeArgs>(payload_bytes),
         33 => identity::<ChangeSubnetTypeAssignmentArgs>(payload_bytes),
         34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
+        35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
+        36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -464,6 +467,15 @@ mod def {
     // NNS function 34 - UpdateSnsSubnetListRequest
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
     pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
+
+    // NNS function 35 - UpdateAllowedPrincipals
+    // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
+    pub type UpdateAllowedPrincipalsRequest = ic_sns_wasm::pb::v1::UpdateAllowedPrincipalsRequest;
+
+    // NNS function 36 - RetireReplicaVersion
+    // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
+    pub type RetireReplicaVersionPayload =
+        registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
 }
 
 #[cfg(test)]

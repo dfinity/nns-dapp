@@ -305,6 +305,12 @@ interface I18nFollow_neurons {
   topic_10_subtitle: string;
   topic_11_title: string;
   topic_11_subtitle: string;
+  topic_12_title: string;
+  topic_12_subtitle: string;
+  topic_13_title: string;
+  topic_13_subtitle: string;
+  topic_14_title: string;
+  topic_14_subtitle: string;
   current_followees: string;
   add: string;
 }
@@ -552,8 +558,10 @@ interface I18nNeuron_detail {
 
 interface I18nSns_launchpad {
   header: string;
-  projects: string;
-  no_projects: string;
+  committed_projects: string;
+  no_committed_projects: string;
+  open_projects: string;
+  no_open_projects: string;
   proposals: string;
   project_logo: string;
   no_proposals: string;
@@ -713,6 +721,7 @@ interface I18nTopics {
   SnsDecentralizationSale: string;
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
+  SnsAndCommunityFund: string;
 }
 
 interface I18nTopics_description {
@@ -730,6 +739,7 @@ interface I18nTopics_description {
   SnsDecentralizationSale: string;
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
+  SnsAndCommunityFund: string;
 }
 
 interface I18nRewards {
@@ -830,6 +840,7 @@ interface I18nNns_functions {
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
+  UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
 }
 
@@ -869,6 +880,7 @@ interface I18nNns_functions_description {
   UpdateSubnetType: string;
   ChangeSubnetTypeAssignment: string;
   UpdateSnsWasmSnsSubnetIds: string;
+  UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
 }
 

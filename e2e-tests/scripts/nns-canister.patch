@@ -58,3 +58,20 @@ index 2c02d80dc..5a6072dc7 100644
  
      let mut state = STATE.write().unwrap();
      over(
+--- a/rs/nns/sns-wasm/src/sns_wasm.rs
++++ b/rs/nns/sns-wasm/src/sns_wasm.rs
+@@ -323,12 +323,14 @@ where
+         deploy_new_sns_payload: DeployNewSnsRequest,
+         caller: PrincipalId,
+     ) -> DeployNewSnsResponse {
++        /*
+         if !thread_safe_sns.with(|sns_wasm| sns_wasm.borrow().allowed_to_deploy_sns(caller)) {
+             return validation_deploy_error(
+                 "Caller is not in allowed principals list. Cannot deploy an sns.".to_string(),
+             )
+             .into();
+         }
++        */
+         match Self::do_deploy_new_sns(thread_safe_sns, canister_api, deploy_new_sns_payload).await {
+             Ok((subnet_id, canisters)) => DeployNewSnsResponse {
+                 subnet_id: Some(subnet_id.get()),
