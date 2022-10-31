@@ -1,4 +1,5 @@
 import { page } from "./stores";
+import type {Navigation} from "@sveltejs/kit";
 
 export const goto = async (
   url: string | URL,
@@ -26,3 +27,7 @@ export const goto = async (
     routeId,
   });
 };
+
+export const afterNavigate = (_callback: (navigation: Navigation) => void) => {
+    // Do nothing for test
+}
