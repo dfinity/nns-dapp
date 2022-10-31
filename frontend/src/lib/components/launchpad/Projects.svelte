@@ -46,7 +46,7 @@
     {/each}
   </div>
   {#if projects.length === 0}
-    <p class="no-projects">{noProjectsMessage}</p>
+    <p class="no-projects">{@html noProjectsMessage}</p>
   {/if}
 {/if}
 
