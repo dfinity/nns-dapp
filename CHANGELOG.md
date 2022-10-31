@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXXXX
+* Text improvments in Maturity card.
+* Two new NNS Proposal topics.
+* Two new nnsFunctions.
+* Fix Android issues with CSP policy.
+
 ## Proposal 87079
 * Support for new payload type.
 * Support for new proposal topic.
