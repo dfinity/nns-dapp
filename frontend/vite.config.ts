@@ -1,6 +1,7 @@
 import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 
@@ -15,33 +16,33 @@ const config: UserConfig = {
     rollupOptions: {
       output: {
         manualChunks: (id) => {
+          const folder = dirname(id);
+
           if (
-            [
-              "@dfinity/nns",
-              "@dfinity/sns",
-              "@dfinity/utils",
-              "@dfinity/cmc",
-            ].find((module) => id.includes(module)) !== undefined
-          ) {
-            return "ic";
-          } else if (
-            [
-              "@dfinity/agent",
-              "@dfinity/auth-client",
-              "@dfinity/authentication",
-              "@dfinity/candid",
-              "@dfinity/identity",
-              "@dfinity/principal",
-            ].find((module) => id.includes(module)) !== undefined
-          ) {
-            return "agent";
-          } else if (
-            ["svelte", "@dfinity/gix-components"].find((module) =>
-              id.includes(module)
+            ["@sveltejs", "svelte", "@dfinity/gix-components"].find((lib) =>
+              folder.includes(lib)
             ) === undefined &&
-            id.includes("node_modules")
+            folder.includes("node_modules")
           ) {
             return "vendor";
+          }
+
+          if (
+            [
+              "frontend/src/lib/api",
+              "frontend/src/lib/canisters",
+              "frontend/src/lib/constants",
+              "frontend/src/lib/derived",
+              "frontend/src/lib/identities",
+              "frontend/src/lib/keys",
+              "frontend/src/lib/proxy",
+              "frontend/src/lib/services",
+              "frontend/src/lib/stores",
+              "frontend/src/lib/types",
+              "frontend/src/lib/utils",
+            ].find((module) => folder.includes(module)) !== undefined
+          ) {
+            return "dapp";
           }
         },
       },
