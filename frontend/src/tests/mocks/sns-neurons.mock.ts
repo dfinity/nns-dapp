@@ -14,6 +14,7 @@ export const createMockSnsNeuron = ({
 }): SnsNeuron => ({
   id: [{ id: arrayOfNumberToUint8Array(id) }],
   permissions: [],
+  source_nns_neuron_id: [],
   maturity_e8s_equivalent: BigInt(0),
   cached_neuron_stake_e8s: stake,
   created_timestamp_seconds: BigInt(

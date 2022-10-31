@@ -12,6 +12,7 @@
   import type { Account } from "$lib/types/account";
   import {
     WizardModal,
+    Html,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
@@ -125,11 +126,13 @@
         on:nnsSelectAmount={selectAmount}
       >
         <p class="description">
-          {@html replacePlaceholders($i18n.canisters.transaction_fee, {
-            $amount: valueSpan(
-              formattedTransactionFeeICP($mainTransactionFeeStore)
-            ),
-          })}
+          <Html
+            text={replacePlaceholders($i18n.canisters.transaction_fee, {
+              $amount: valueSpan(
+                formattedTransactionFeeICP($mainTransactionFeeStore)
+              ),
+            })}
+          />
         </p>
         <div>
           <TransactionSource {account} />

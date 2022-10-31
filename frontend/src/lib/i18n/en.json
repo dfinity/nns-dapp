@@ -538,7 +538,7 @@
     "committed_projects": "Launched",
     "no_committed_projects": "No launched projects at the moment",
     "open_projects": "Current Launches",
-    "no_open_projects": "No current launches at the moment",
+    "no_open_projects": "Looks like there's no SNSs launching right now. <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">More about creating SNSs.</a>",
     "proposals": "Proposals",
     "project_logo": "project logo",
     "no_proposals": "No current proposals at the moment"
@@ -549,6 +549,7 @@
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
+    "total_tokens": "Total Tokens",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",

@@ -13,7 +13,7 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectSwapDetails", () => {
-  it("should render min commitment", () => {
+  it("should render total tokens", () => {
     const { container } = renderContextCmp({
       summary: mockSummary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -23,6 +23,22 @@ describe("ProjectSwapDetails", () => {
     const element = Array.from(
       container.querySelectorAll('[data-tid="token-value"]')
     )[0];
+
+    expect(element?.innerHTML).toEqual(
+      `${(Number(mockSnsParams.sns_token_e8s) / 100000000).toFixed(2)}`
+    );
+  });
+
+  it("should render min commitment", () => {
+    const { container } = renderContextCmp({
+      summary: mockSummary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectSwapDetails,
+    });
+
+    const element = Array.from(
+      container.querySelectorAll('[data-tid="token-value"]')
+    )[1];
 
     expect(element?.innerHTML).toEqual(
       `${(Number(mockSnsParams.min_participant_icp_e8s) / 100000000).toFixed(
@@ -40,7 +56,7 @@ describe("ProjectSwapDetails", () => {
 
     const element = Array.from(
       container.querySelectorAll('[data-tid="token-value"]')
-    )[1];
+    )[2];
 
     expect(element?.innerHTML).toEqual(
       `${(Number(mockSnsParams.max_participant_icp_e8s) / 100000000).toFixed(

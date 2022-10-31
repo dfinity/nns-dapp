@@ -17,6 +17,7 @@
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import {
+    Html,
     WizardModal,
     type WizardSteps,
     type WizardStep,
@@ -114,11 +115,13 @@
         <div>
           <p class="description">{$i18n.canisters.minimum_cycles_text_1}</p>
           <p class="description">
-            {@html replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
-              $amount: valueSpan(
-                formattedTransactionFeeICP($mainTransactionFeeStore)
-              ),
-            })}
+            <Html
+              text={replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
+                $amount: valueSpan(
+                  formattedTransactionFeeICP($mainTransactionFeeStore)
+                ),
+              })}
+            />
           </p>
         </div>
       </SelectCyclesCanister>
