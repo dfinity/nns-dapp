@@ -11,6 +11,7 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.SubnetManagement,
     Topic.NetworkCanisterManagement,
     Topic.NodeProviderRewards,
+    Topic.SnsAndCommunityFund,
   ],
   rewards: [
     ProposalRewardStatus.AcceptVotes,

@@ -7,20 +7,26 @@
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { committedProjectsStore } from "$lib/stores/projects.store";
 
   onMount(() => {
     if (!IS_TESTNET) {
       routeStore.replace({ path: AppPath.LegacyAccounts });
     }
   });
+
+  let showCommitted = false;
+  $: showCommitted = ($committedProjectsStore?.length ?? []) > 0;
 </script>
 
 <main>
   <h2>{$i18n.sns_launchpad.open_projects}</h2>
   <Projects status={SnsSwapLifecycle.Open} />
 
-  <h2>{$i18n.sns_launchpad.committed_projects}</h2>
-  <Projects status={SnsSwapLifecycle.Committed} />
+  {#if showCommitted}
+    <h2>{$i18n.sns_launchpad.committed_projects}</h2>
+    <Projects status={SnsSwapLifecycle.Committed} />
+  {/if}
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>
   <Proposals />

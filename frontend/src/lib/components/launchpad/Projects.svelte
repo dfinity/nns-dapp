@@ -26,8 +26,8 @@
   $: loading =
     isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
 
-  let noProjectsMessage: string;
-  $: noProjectsMessage =
+  let noProjectsMessageLabel: string;
+  $: noProjectsMessageLabel =
     status === SnsSwapLifecycle.Committed
       ? $i18n.sns_launchpad.no_committed_projects
       : $i18n.sns_launchpad.no_open_projects;
@@ -46,7 +46,9 @@
     {/each}
   </div>
   {#if projects.length === 0}
-    <p class="no-projects">{noProjectsMessage}</p>
+    <p data-tid="no-projects-message" class="no-projects">
+      {@html noProjectsMessageLabel}
+    </p>
   {/if}
 {/if}
 
