@@ -1,5 +1,6 @@
 import { AppPath, ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
-import {isNullish} from "$lib/utils/utils";
+import { isNullish } from "$lib/utils/utils";
+import type { Navigation } from "@sveltejs/kit";
 
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   if (isNullish(routeId)) {
@@ -18,3 +19,8 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   // @ts-ignore-line
   return AppPath[key as keyof AppPath] ?? AppPath.Authentication;
 };
+
+export const referrerPathForNav = ({ from }: Navigation): AppPath | undefined =>
+  from?.routeId !== null && from?.routeId !== undefined
+    ? pathForRouteId(from.routeId)
+    : undefined;

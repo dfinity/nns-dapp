@@ -4,7 +4,9 @@
   import { authStore } from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { pageReferrerStore } from "$lib/stores/page.store";
+  import { afterNavigate } from "$app/navigation";
+  import type { Navigation } from "@sveltejs/kit";
+  import { referrerPathForNav } from "$lib/utils/page.utils";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -15,7 +17,8 @@
   let proposalId: string | null | undefined;
   $: ({ proposal: proposalId } = data);
 
-  let referrerPath: AppPath | undefined = $pageReferrerStore;
+  let referrerPath: AppPath | undefined = undefined;
+  afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 </script>
 
 {#if signedIn}

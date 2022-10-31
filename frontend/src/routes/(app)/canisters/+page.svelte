@@ -7,12 +7,15 @@
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { pageReferrerStore } from "$lib/stores/page.store";
+  import { afterNavigate } from "$app/navigation";
+  import type { Navigation } from "@sveltejs/kit";
+  import { referrerPathForNav } from "$lib/utils/page.utils";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  let referrerPath: AppPath | undefined = $pageReferrerStore;
+  let referrerPath: AppPath | undefined = undefined;
+  afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 
   onMount(() => {
     layoutTitleStore.set($i18n.navigation.canisters);

@@ -12,9 +12,9 @@
   } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
-  import { gotoProxy } from "$lib/proxy/app.services.proxy";
   import { buildUrl } from "$lib/utils/navigation.utils";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
 
   let signedIn = false;
 
@@ -26,7 +26,7 @@
         return;
       }
 
-      await gotoProxy(
+      await goto(
         buildUrl({ path: AppPath.Accounts, universe: OWN_CANISTER_ID_TEXT }),
         { replaceState: true }
       );

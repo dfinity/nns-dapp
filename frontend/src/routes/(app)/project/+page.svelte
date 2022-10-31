@@ -6,11 +6,11 @@
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { gotoProxy } from "$lib/proxy/app.services.proxy";
+  import { goto } from "$app/navigation";
 
   onMount(async () => {
     if (!IS_TESTNET) {
-      await gotoProxy(AppPath.Accounts, { replaceState: true });
+      await goto(AppPath.Accounts, { replaceState: true });
       return;
     }
   });
