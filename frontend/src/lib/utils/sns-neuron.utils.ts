@@ -11,6 +11,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
+import {formatToken} from "$lib/utils/token.utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -223,3 +224,12 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+/**
+ * Format the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
+ */
+export const formattedSnsMaturity = ({ maturity_e8s_equivalent: value }: SnsNeuron): string =>
+  formatToken({
+    value: value ?? BigInt(0),
+  });

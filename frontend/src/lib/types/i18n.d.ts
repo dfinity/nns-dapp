@@ -29,6 +29,7 @@ interface I18nCore {
   nns: string;
   previous: string;
   next: string;
+  token: string;
 }
 
 interface I18nError {

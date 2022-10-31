@@ -122,6 +122,7 @@
       <SkeletonCard cardType="info" />
     {:else}
       <SnsNeuronMetaInfoCard />
+      <SnsNeuronMaturityCard />
       <SnsNeuronHotkeysCard />
     {/if}
   </section>
