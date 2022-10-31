@@ -13,6 +13,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -1547,17 +1548,28 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should return topics without ManageNeuron", () => {
+    it("should not return deprecated topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
+      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => !DEPRECATED_TOPICS.includes(topic))
       );
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => !DEPRECATED_TOPICS.includes(topic))
+      );
     });
   });
 

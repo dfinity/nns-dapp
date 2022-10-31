@@ -159,3 +159,12 @@ export const assertEnoughAccountFunds = ({
 export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
 };
+
+export const accountName = ({
+  account,
+  mainName,
+}: {
+  account: Account | undefined;
+  mainName: string;
+}): string =>
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");

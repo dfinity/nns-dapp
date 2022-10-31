@@ -24,7 +24,7 @@
   import { accountsStore } from "$lib/stores/accounts.store";
   import Value from "$lib/components/ui/Value.svelte";
   import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
-  import { sanitize } from "$lib/utils/html.utils";
+  import { Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -68,8 +68,8 @@
         >
         <svelte:fragment slot="info">
           {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-            {@html sanitize(
-              replacePlaceholders(
+            <Html
+              text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip_with_stake,
                 {
                   $stake: formatToken({
@@ -84,8 +84,8 @@
                     Number(neuron.ageSeconds)
                   ).toFixed(2),
                 }
-              )
-            )}
+              )}
+            />
           {/if}
         </svelte:fragment>
       </KeyValuePairInfo>

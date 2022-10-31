@@ -37,6 +37,7 @@ describe("sns-transactions-services", () => {
           identity: mockIdentity,
           account: snsAccount,
           maxResults: BigInt(DEFAULT_LIST_PAGINATION_LIMIT),
+          rootCanisterId,
         })
       );
 

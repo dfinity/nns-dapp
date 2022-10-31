@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
+  accountName,
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
@@ -293,6 +294,56 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("routePathAccountIdentifier", () => {
+    beforeAll(() => {
+      // Avoid to print errors during test
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+    afterAll(() => jest.clearAllMocks());
+
+    it("should get account identifier from valid path", () => {
+      expect(
+        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
+      ).toEqual({
+        accountIdentifier: mockMainAccount.identifier,
+      });
+    });
+
+    it("should not get account identifier from invalid path", () => {
+      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
+      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
+    });
+  });
+
+  describe("accountName", () => {
+    it("returns subAccount name", () => {
+      expect(
+        accountName({
+          account: mockSubAccount,
+          mainName: "main",
+        })
+      ).toBe(mockSubAccount.name);
+    });
+
+    it("returns main account name", () => {
+      expect(
+        accountName({
+          account: mockMainAccount,
+          mainName: "main",
+        })
+      ).toBe("main");
+    });
+
+    it('returns "" if no account', () => {
+      expect(
+        accountName({
+          account: undefined,
+          mainName: "main",
+        })
+      ).toBe("");
     });
   });
 });

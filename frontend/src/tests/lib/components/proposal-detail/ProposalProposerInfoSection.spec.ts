@@ -8,7 +8,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 jest.mock("$lib/utils/html.utils", () => ({
-  markdownToSanitizedHTML: (value) => Promise.resolve(value),
+  markdownToHTML: (value) => Promise.resolve(value),
 }));
 
 describe("ProposalProposerInfoSection", () => {

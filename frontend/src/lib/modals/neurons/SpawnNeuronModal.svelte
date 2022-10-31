@@ -4,6 +4,7 @@
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import {
     WizardModal,
+    Html,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
@@ -97,10 +98,10 @@
       >
       <svelte:fragment slot="description">
         <p class="description">
-          {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
         </p>
         <p class="description">
-          {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
         </p>
       </svelte:fragment>
     </NeuronSelectPercentage>

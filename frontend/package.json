@@ -25,7 +25,6 @@
     "@sveltejs/kit": "next",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/svelte": "^3.1.1",
-    "@types/dompurify": "^2.3.4",
     "@types/jest": "^29.1.1",
     "@types/marked": "^4.0.7",
     "@types/wicg-file-system-access": "^2020.9.5",
@@ -53,7 +52,7 @@
     "svelte2tsx": "^0.5.19",
     "ts-jest": "^29.0.3",
     "typescript": "^4.6.4",
-    "vite": "^3.1.8"
+    "vite": "^3.2.2"
   },
   "type": "module",
   "dependencies": {
@@ -71,7 +70,6 @@
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.6",
     "@ledgerhq/hw-transport-webhid": "^6.27.6",
     "@zondax/ledger-icp": "^0.6.0",
-    "buffer": "^6.0.3",
-    "dompurify": "^2.4.0"
+    "buffer": "^6.0.3"
   }
 }
