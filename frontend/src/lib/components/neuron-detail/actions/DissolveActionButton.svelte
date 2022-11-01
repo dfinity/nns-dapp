@@ -6,7 +6,7 @@
     startDissolving,
     stopDissolving,
   } from "$lib/services/neurons.services";
-  import { stopBusy } from "$lib/stores/busy.store";
+  import { stopBusy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { keyOf } from "$lib/utils/utils";

@@ -4,7 +4,6 @@
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
@@ -15,7 +14,7 @@
     mainTransactionFeeStore,
     transactionsFeesStore,
   } from "$lib/stores/transaction-fees.store";
-  import { Value } from "@dfinity/gix-components";
+  import { Value, busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let account: Account;

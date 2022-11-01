@@ -3,7 +3,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { detachCanister } from "$lib/services/canisters.services";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";

@@ -1,8 +1,7 @@
 <script lang="ts">
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { IconSouth } from "@dfinity/gix-components";
-  import { busy } from "$lib/stores/busy.store";
+  import { IconSouth, busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";

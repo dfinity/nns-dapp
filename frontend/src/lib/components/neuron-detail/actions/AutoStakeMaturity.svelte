@@ -2,11 +2,10 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
-  import { Checkbox, Html } from "@dfinity/gix-components";
+  import { Checkbox, Html, stopBusy, startBusy } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 

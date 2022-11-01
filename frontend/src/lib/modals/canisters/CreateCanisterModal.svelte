@@ -8,7 +8,6 @@
     createCanister,
     getIcpToCyclesExchangeRate,
   } from "$lib/services/canisters.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
@@ -19,6 +18,8 @@
   import {
     Html,
     WizardModal,
+    startBusy,
+    stopBusy,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";

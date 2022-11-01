@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuronId } from "@dfinity/sns";
   import {

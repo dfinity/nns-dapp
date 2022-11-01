@@ -3,7 +3,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { stopBusy } from "$lib/stores/busy.store";
+  import { stopBusy } from "@dfinity/gix-components";
   import { stakeMaturity } from "$lib/services/neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";

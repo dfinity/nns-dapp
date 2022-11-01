@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "$lib/stores/i18n";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy, Modal } from "@dfinity/gix-components";
   import { addHotkey } from "$lib/services/sns-neurons.services";
   import { createEventDispatcher, getContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";

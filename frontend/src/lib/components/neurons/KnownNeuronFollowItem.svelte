@@ -2,7 +2,7 @@
   import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
   export let knownNeuron: KnownNeuron;

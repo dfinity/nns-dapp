@@ -9,7 +9,7 @@
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import { stopBusy } from "$lib/stores/busy.store";
+  import { stopBusy } from "@dfinity/gix-components";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";

@@ -1,6 +1,7 @@
 import { accountsStore } from "$lib/stores/accounts.store";
-import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
+import type { BusyStateInitiatorType } from "$lib/types/busy-state";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
+import { startBusy } from "@dfinity/gix-components";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getNeuronFromStore } from "./neurons.services";
