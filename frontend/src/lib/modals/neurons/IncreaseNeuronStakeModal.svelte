@@ -11,6 +11,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 
@@ -61,6 +62,7 @@
     on:nnsClose
     bind:currentStep
     destinationAddress={neuron.fullNeuron?.accountIdentifier}
+    transactionFee={$mainTransactionFeeStoreAsToken}
   >
     <svelte:fragment slot="title"
       >{title ?? $i18n.neurons.top_up_neuron}</svelte:fragment

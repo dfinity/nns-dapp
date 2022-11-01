@@ -5,7 +5,7 @@
   import type { Account } from "$lib/types/account";
   import type { NeuronId } from "@dfinity/nns";
   import { authStore } from "$lib/stores/auth.store";
-  import { busy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
 
   export let account: Account;
   export let neuronId: NeuronId;

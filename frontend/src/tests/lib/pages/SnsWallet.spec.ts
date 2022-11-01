@@ -3,6 +3,7 @@
  */
 
 import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
@@ -14,6 +15,7 @@ import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
 } from "../../mocks/sns-accounts.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -36,6 +38,10 @@ describe("SnsWallet", () => {
         .mockImplementation(
           mockSnsAccountsStoreSubscribe(Principal.fromText("aaaaa-aa"))
         );
+
+      jest
+        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
       // Context needs to match the mocked sns accounts
       routeStore.update({
         path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,

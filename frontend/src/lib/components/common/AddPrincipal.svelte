@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { busy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
