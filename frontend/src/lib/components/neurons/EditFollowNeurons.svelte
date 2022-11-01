@@ -23,9 +23,9 @@
     {/each}
   </div>
  
-  <div>
+  <h3>
     {$i18n.topics_description.Advanced}
-  </div>
+  </h3>
   <div>
      <FollowTopicSection {neuron} topic={1} />
   </div>
