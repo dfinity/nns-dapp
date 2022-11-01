@@ -3,7 +3,12 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
-  import { IconClose, IconInfo, IconWarning } from "@dfinity/gix-components";
+  import {
+    IconClose,
+    IconInfo,
+    IconWarning,
+    Value,
+  } from "@dfinity/gix-components";
   import { removeHotkey } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -19,7 +24,6 @@
   } from "$lib/utils/sns-neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   const { reload, store }: SelectedSnsNeuronContext =

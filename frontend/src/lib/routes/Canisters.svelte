@@ -2,7 +2,7 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
+  import { Toolbar, Value } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
@@ -15,7 +15,6 @@
   import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
 
   const loadCanisters = async () => {
     try {
