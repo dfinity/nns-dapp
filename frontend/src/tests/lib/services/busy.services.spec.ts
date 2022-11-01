@@ -4,11 +4,12 @@
 import { startBusyNeuron } from "$lib/services/busy.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import * as busyStore from "@dfinity/gix-components";
+import * as busyStore from "@dfinity/gix-components/stores/busy.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 describe("busy-services", () => {
@@ -60,7 +61,7 @@ describe("busy-services", () => {
     });
     expect(startBusySpy).toBeCalledWith({
       initiator,
-      labelKey: "busy_screen.pending_approval_hw",
+      text: en.busy_screen.pending_approval_hw,
     });
   });
 });

@@ -15,7 +15,7 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import * as busyStore from "@dfinity/gix-components";
+import * as busyStore from "@dfinity/gix-components/stores/busy.store";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
@@ -32,6 +32,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
@@ -822,7 +823,7 @@ describe("neurons-services", () => {
 
       expect(spyBusyStart).toBeCalledWith({
         initiator: "add-hotkey-neuron",
-        labelKey: "busy_screen.pending_approval_hw",
+        text: en.busy_screen.pending_approval_hw,
       });
       expect(spyBusyStop).toBeCalledWith("add-hotkey-neuron");
     });
