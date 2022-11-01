@@ -2,11 +2,13 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
-  import Collapsible from "$lib/components/ui/Collapsible.svelte";
   import type { VoteRegistration } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import Value from "$lib/components/ui/Value.svelte";
+  import {
+    IconExpandCircleDown,
+    Collapsible,
+    Value,
+  } from "@dfinity/gix-components";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
 

@@ -9,7 +9,7 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import {
@@ -23,7 +23,16 @@ import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock"
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("TransactionModal", () => {
-  const renderTransactionModal = (props?: {
+  const renderTransactionModal = ({
+    destinationAddress,
+    sourceAccount,
+    transactionFee = TokenAmount.fromE8s({
+      amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+      token: ICPToken,
+    }),
+    rootCanisterId,
+    validateAmount,
+  }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
@@ -32,7 +41,13 @@ describe("TransactionModal", () => {
   }) =>
     renderModal({
       component: TransactionModal,
-      props: props ?? {},
+      props: {
+        destinationAddress,
+        sourceAccount,
+        transactionFee,
+        rootCanisterId,
+        validateAmount,
+      },
     });
 
   beforeEach(() => {

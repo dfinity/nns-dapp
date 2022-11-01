@@ -3,6 +3,7 @@
  */
 
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
 import { routeStore } from "$lib/stores/route.store";
@@ -18,6 +19,7 @@ import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
 } from "../../../mocks/sns-accounts.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -38,6 +40,9 @@ describe("SnsTransactionModal", () => {
     jest
       .spyOn(snsAccountsStore, "subscribe")
       .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    jest
+      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
     jest
       .spyOn(snsProjectSelectedStore, "subscribe")
       .mockImplementation((run: Subscriber<Principal>): (() => void) => {

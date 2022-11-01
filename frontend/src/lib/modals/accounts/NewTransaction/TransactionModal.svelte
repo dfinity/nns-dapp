@@ -5,7 +5,6 @@
   import TransactionForm from "./TransactionForm.svelte";
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
-  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import type { Principal } from "@dfinity/principal";
 
   export let rootCanisterId: Principal;
@@ -13,7 +12,7 @@
   export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
   export let token: Token = ICPToken;
-  export let transactionFee: TokenAmount = $mainTransactionFeeStoreAsToken;
+  export let transactionFee: TokenAmount;
   export let disableSubmit = false;
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;

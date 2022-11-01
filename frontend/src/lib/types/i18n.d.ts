@@ -105,6 +105,8 @@ interface I18nError {
   limit_exceeded_creating_canister: string;
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
+  transaction_fee_not_found: string;
+  fetch_transactions: string;
   canister_invalid_transaction: string;
 }
 
@@ -574,6 +576,7 @@ interface I18nSns_project {
 interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
+  total_tokens: string;
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;

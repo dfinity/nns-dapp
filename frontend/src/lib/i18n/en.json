@@ -101,6 +101,8 @@
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
+    "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
+    "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -478,7 +480,7 @@
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
-    "stake_maturity_tooltip": "When your neuron votes, maturity increases.\nMaturity can either be staked, which increases the voting power of the neuron, or it can be used to spawn a new neuron containing newly minted ICP.\nIncreases in maturity can take place up to four days after voting.",
+    "stake_maturity_tooltip": "Merge Maturity has been replaced by Stake Maturity. <a href=\"https://wiki.internetcomputer.org/wiki/NNS_neuron_operations_related_to_maturity\" rel=\"noopener noreferrer\" aria-label=\"Find more information about the new stake maturity\" target=\"_blank\">Learn more.</a>",
     "merge_maturity_tooltip": "When your neuron votes, maturity increases. For neurons controlled by a hardware wallet, maturity can either be merged, which mints and stakes new ICP, or it can be used to spawn a new neuron containing newly minted ICP. Increases in maturity can take place up to four days after voting.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",
@@ -538,7 +540,7 @@
     "committed_projects": "Launched",
     "no_committed_projects": "No launched projects at the moment",
     "open_projects": "Current Launches",
-    "no_open_projects": "No current launches at the moment",
+    "no_open_projects": "Looks like there's no SNSs launching right now. <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">More about creating SNSs.</a>",
     "proposals": "Proposals",
     "project_logo": "project logo",
     "no_proposals": "No current proposals at the moment"
@@ -549,6 +551,7 @@
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
+    "total_tokens": "Total Tokens",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",

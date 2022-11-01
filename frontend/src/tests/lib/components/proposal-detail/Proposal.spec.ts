@@ -7,8 +7,7 @@ import { mockProposalInfo } from "../../../mocks/proposal.mock";
 import ProposalTest from "./ProposalTest.svelte";
 
 jest.mock("$lib/utils/html.utils", () => ({
-  markdownToSanitizedHTML: (value) => Promise.resolve(value),
-  sanitize: (value) => value,
+  markdownToHTML: (value) => Promise.resolve(value),
 }));
 
 describe("Proposal", () => {

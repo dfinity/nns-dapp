@@ -5,7 +5,7 @@
   import { isNeuronControllableByUser } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -23,7 +23,7 @@
 
       <svelte:fragment slot="info"
         ><div class="info">
-          {@html $i18n.neuron_detail.community_fund_more_info}
+          <Html text={$i18n.neuron_detail.community_fund_more_info} />
         </div></svelte:fragment
       >
     </KeyValuePairInfo>

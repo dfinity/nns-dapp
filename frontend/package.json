@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
@@ -24,7 +24,6 @@
     "@sveltejs/kit": "next",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/svelte": "^3.1.1",
-    "@types/dompurify": "^2.3.4",
     "@types/jest": "^29.1.1",
     "@types/marked": "^4.0.7",
     "@types/wicg-file-system-access": "^2020.9.5",
@@ -70,7 +69,6 @@
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.6",
     "@ledgerhq/hw-transport-webhid": "^6.27.6",
     "@zondax/ledger-icp": "^0.6.0",
-    "buffer": "^6.0.3",
-    "dompurify": "^2.4.0"
+    "buffer": "^6.0.3"
   }
 }

@@ -75,7 +75,7 @@ const extractStartScript = () => {
  *
  * - script-src and 'strict-dynamic':
  * Chrome 40+ / Firefox 31+ / Safari 15.4+ / Edge 15+ supports 'strict-dynamic'.
- * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' and https: to the rules for backwards compatibility.
+ * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' to the rules for backwards compatibility.
  * Browsers that supports the 'strict-dynamic' rule will ignore these backwards directives (CSP 3).
  *
  * - style-src 'unsafe-inline' is required because:
@@ -103,7 +103,7 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data: https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
           " "
         )};
         base-uri 'self';
