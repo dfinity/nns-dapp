@@ -1,5 +1,5 @@
 // TODO: we used to use that type for the busy.store but, the type is now a string as the store has been moved in gix-cmp.
-// Therefore we don't really use or need this type anymore but, maybe we can transform it to an enum or constant?
+// Therefore we don't really use or need this type anymore but, maybe we can transform it to an enum or constant or else?
 export type BusyStateInitiatorType =
   | "stake-neuron"
   | "update-delay"
