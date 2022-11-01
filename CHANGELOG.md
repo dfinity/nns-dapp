@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 89325
 * Text improvments in Maturity card.
 * Two new NNS Proposal topics.
 * Two new nnsFunctions.
