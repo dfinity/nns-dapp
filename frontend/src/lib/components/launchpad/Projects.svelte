@@ -13,6 +13,7 @@
   } from "$lib/stores/projects.store";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
+  import { Html } from "@dfinity/gix-components";
 
   export let status: SnsSwapLifecycle;
 
@@ -47,7 +48,7 @@
   </div>
   {#if projects.length === 0}
     <p data-tid="no-projects-message" class="no-projects">
-      {@html noProjectsMessageLabel}
+      <Html text={noProjectsMessageLabel} />
     </p>
   {/if}
 {/if}
