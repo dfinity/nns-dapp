@@ -68,5 +68,9 @@
   </TransactionModal>
 {:else}
   <!-- A toast error is shown if there is an error fetching the transaction fee -->
-  <Modal on:nnsClose><Spinner /></Modal>
+  <Modal on:nnsClose>
+    <svelte:fragment slot="title"
+      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
+    ><Spinner /></Modal
+  >
 {/if}

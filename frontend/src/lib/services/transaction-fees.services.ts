@@ -39,7 +39,6 @@ export const loadSnsTransactionFee = async (rootCanisterId: Principal) => {
         labelKey: "error.transaction_fee_not_found",
         err,
       });
-      console.error(err);
     },
   });
 };
