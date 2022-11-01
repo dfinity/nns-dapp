@@ -67,9 +67,7 @@ describe("CanisterCard", () => {
 
     const button = queryByRole("button");
 
-    expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy to clipboard`
-    );
+    expect(button?.getAttribute("aria-label")).toEqual(`Copy to clipboard`);
   });
 
   it("renders copy if name present", async () => {
