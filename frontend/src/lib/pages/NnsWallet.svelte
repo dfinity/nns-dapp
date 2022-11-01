@@ -6,14 +6,13 @@
   import { routeStore } from "$lib/stores/route.store";
   import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner, busy } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { busy } from "$lib/stores/busy.store";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,

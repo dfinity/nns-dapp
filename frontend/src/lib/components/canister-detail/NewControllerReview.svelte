@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher, getContext } from "svelte";
