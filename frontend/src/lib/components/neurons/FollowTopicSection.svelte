@@ -3,10 +3,11 @@
   import { type NeuronId, Topic, type NeuronInfo } from "@dfinity/nns";
   import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import { followeesByTopic } from "$lib/utils/neuron.utils";
-  import { Collapsible, stopBusy, startBusy } from "@dfinity/gix-components";
+  import { Collapsible } from "@dfinity/gix-components";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;

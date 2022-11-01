@@ -4,6 +4,7 @@
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
@@ -14,7 +15,7 @@
     mainTransactionFeeStore,
     transactionsFeesStore,
   } from "$lib/stores/transaction-fees.store";
-  import { Value, busy, startBusy, stopBusy } from "@dfinity/gix-components";
+  import { Value, busy } from "@dfinity/gix-components";
   import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let account: Account;
@@ -26,9 +27,9 @@
     const isHardwareWallet = isAccountHardwareWallet(account);
     startBusy({
       initiator: "stake-neuron",
-      text: isHardwareWallet
-        ? $i18n.busy_screen.pending_approval_hw
-        : $i18n.neurons.may_take_while,
+      labelKey: isHardwareWallet
+        ? "busy_screen.pending_approval_hw"
+        : "neurons.may_take_while",
     });
 
     const neuronId = await stakeNeuron({

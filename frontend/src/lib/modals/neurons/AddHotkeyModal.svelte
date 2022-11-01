@@ -3,7 +3,7 @@
   import type { Principal } from "@dfinity/principal";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { stopBusy } from "@dfinity/gix-components";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { addHotkey } from "$lib/services/neurons.services";
   import { createEventDispatcher } from "svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";

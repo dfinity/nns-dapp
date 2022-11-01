@@ -1,8 +1,6 @@
 import { accountsStore } from "$lib/stores/accounts.store";
-import { i18n } from "$lib/stores/i18n";
-import type { BusyStateInitiatorType } from "$lib/types/busy-state";
+import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
-import { startBusy } from "@dfinity/gix-components";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getNeuronFromStore } from "./neurons.services";
@@ -26,7 +24,7 @@ export const startBusyNeuron = ({
   startBusy({
     initiator,
     ...(hardwareWalletNeuron && {
-      text: get(i18n).busy_screen.pending_approval_hw,
+      labelKey: "busy_screen.pending_approval_hw",
     }),
   });
 };

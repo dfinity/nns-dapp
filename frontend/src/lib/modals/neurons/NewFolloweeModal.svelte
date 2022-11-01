@@ -8,7 +8,7 @@
   import { addFollowee } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
-  import { busy, startBusy, stopBusy, Modal } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import {
@@ -16,6 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
+  import { busy, Modal } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;

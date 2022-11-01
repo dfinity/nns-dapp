@@ -4,8 +4,6 @@
     Modal,
     Value,
     busy,
-    startBusy,
-    stopBusy,
   } from "@dfinity/gix-components";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
@@ -13,6 +11,7 @@
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";

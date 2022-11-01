@@ -1,10 +1,11 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import { IconClose, startBusy, stopBusy } from "@dfinity/gix-components";
+  import { IconClose } from "@dfinity/gix-components";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { removeController } from "$lib/services/canisters.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import {

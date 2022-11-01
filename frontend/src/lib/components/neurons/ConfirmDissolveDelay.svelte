@@ -11,9 +11,10 @@
     neuronStake,
     votingPower,
   } from "$lib/utils/neuron.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { valueSpan } from "$lib/utils/utils";
-  import { Html, busy, stopBusy } from "@dfinity/gix-components";
+  import { Html, busy } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;

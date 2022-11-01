@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
@@ -11,13 +12,7 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
-  import {
-    Modal,
-    Spinner,
-    stopBusy,
-    startBusy,
-    type WizardStep,
-  } from "@dfinity/gix-components";
+  import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
 

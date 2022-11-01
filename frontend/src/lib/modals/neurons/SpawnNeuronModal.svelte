@@ -8,7 +8,7 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import { stopBusy } from "@dfinity/gix-components";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "$lib/services/neurons.services";
   import { toastsShow } from "$lib/stores/toasts.store";

@@ -8,6 +8,7 @@
     createCanister,
     getIcpToCyclesExchangeRate,
   } from "$lib/services/canisters.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
@@ -18,8 +19,6 @@
   import {
     Html,
     WizardModal,
-    startBusy,
-    stopBusy,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
@@ -71,7 +70,7 @@
     }
     startBusy({
       initiator: "create-canister",
-      text: $i18n.busy_screen.take_long,
+      labelKey: "busy_screen.take_long",
     });
     const canisterId = await createCanister({
       amount,

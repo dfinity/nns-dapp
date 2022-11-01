@@ -2,13 +2,12 @@ import { HOST } from "$lib/constants/environment.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { i18n } from "$lib/stores/i18n";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { createAgent } from "$lib/utils/agent.utils";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
 import { bytesToHexString } from "$lib/utils/utils";
-import { startBusy, stopBusy } from "@dfinity/gix-components";
 import { GenesisTokenCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -34,7 +33,7 @@ export const claimSeedNeurons = async () => {
   try {
     startBusy({
       initiator: "claim_seed_neurons",
-      text: get(i18n).busy_screen.pending_approval_hw,
+      labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getLedgerIdentityProxy(hardwareWallet?.identifier);
     const governance = GenesisTokenCanister.create({

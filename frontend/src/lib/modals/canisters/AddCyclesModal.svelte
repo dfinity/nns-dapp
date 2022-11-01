@@ -17,7 +17,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { startBusy, stopBusy } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,

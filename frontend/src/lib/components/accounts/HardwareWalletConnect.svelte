@@ -10,7 +10,8 @@
   } from "$lib/types/add-account.context";
   import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-  import { busy, startBusy, stopBusy } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;

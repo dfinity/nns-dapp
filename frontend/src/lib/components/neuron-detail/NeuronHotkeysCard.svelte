@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { IconClose, Value, stopBusy } from "@dfinity/gix-components";
+  import { IconClose, Value } from "@dfinity/gix-components";
   import { getIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { routeStore } from "$lib/stores/route.store";
   import { toastsShow } from "$lib/stores/toasts.store";

@@ -4,7 +4,7 @@ import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neur
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
 import type { SelectedAccountStore } from "$lib/types/selected-account.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { toastsStore, busyStore } from "@dfinity/gix-components";
 import { derived, readable, type Readable, type Writable } from "svelte/store";
 import { accountsStore } from "./accounts.store";
 import { canistersStore } from "./canisters.store";

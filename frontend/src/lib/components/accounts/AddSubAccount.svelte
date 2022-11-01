@@ -3,7 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
   import { addSubAccount } from "$lib/services/accounts.services";
-  import { busy, startBusy, stopBusy } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,

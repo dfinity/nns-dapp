@@ -4,16 +4,13 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import TransactionModal from "../accounts/NewTransaction/TransactionModal.svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import {
-    type WizardStep,
-    stopBusy,
-    startBusy,
-  } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
@@ -31,9 +28,9 @@
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "top-up-neuron",
-      text: isAccountHardwareWallet(sourceAccount)
-        ? $i18n.busy_screen.pending_approval_hw
-        : $i18n.neurons.may_take_while,
+      labelKey: isAccountHardwareWallet(sourceAccount)
+        ? "busy_screen.pending_approval_hw"
+        : "neurons.may_take_while",
     });
 
     const { success } = await topUpNeuron({

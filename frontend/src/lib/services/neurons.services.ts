@@ -25,7 +25,7 @@ import { IS_TESTNET } from "$lib/constants/environment.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { i18n } from "$lib/stores/i18n";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
@@ -62,7 +62,6 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import { startBusy, stopBusy } from "@dfinity/gix-components";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -434,7 +433,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
   try {
     startBusy({
       initiator: "add-hotkey-neuron",
-      text: get(i18n).busy_screen.pending_approval_hw,
+      labelKey: "busy_screen.pending_approval_hw",
     });
 
     const identity: Identity = await getIdentity();

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { startBusy, stopBusy } from "@dfinity/gix-components";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher, onDestroy } from "svelte";

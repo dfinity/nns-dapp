@@ -3,12 +3,12 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { mergeMaturity } from "$lib/services/neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import {
     WizardModal,
-    stopBusy,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";

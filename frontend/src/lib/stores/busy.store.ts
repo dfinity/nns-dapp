@@ -1,5 +1,10 @@
-// TODO: we used to use that type for the busy.store but, the type is now a string as the store has been moved in gix-cmp.
-// Therefore we don't really use or need this type anymore but, maybe we can transform it to an enum or constant or else?
+import { i18n } from "$lib/stores/i18n";
+import {
+  startBusy as startBusyStore,
+  stopBusy as stopBusyStore,
+} from "@dfinity/gix-components";
+import { get } from "svelte/store";
+
 export type BusyStateInitiatorType =
   | "stake-neuron"
   | "update-delay"
@@ -29,3 +34,17 @@ export type BusyStateInitiatorType =
   | "disburse-neuron"
   | "top-up-neuron"
   | "disburse-sns-neuron";
+
+export interface BusyState {
+  initiator: BusyStateInitiatorType;
+  labelKey?: string;
+}
+
+export const startBusy = ({ initiator, labelKey }: BusyState) =>
+  startBusyStore({
+    initiator,
+    ...(labelKey !== undefined && { text: get(i18n)[labelKey] }),
+  });
+
+export const stopBusy = (initiatorToRemove: BusyStateInitiatorType) =>
+  stopBusyStore(initiatorToRemove);

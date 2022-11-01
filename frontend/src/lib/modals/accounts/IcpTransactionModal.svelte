@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { transferICP } from "$lib/services/accounts.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
@@ -8,11 +9,7 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import {
-    stopBusy,
-    startBusy,
-    type WizardStep,
-  } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let selectedAccount: Account | undefined = undefined;
@@ -31,7 +28,7 @@
     startBusy({
       initiator: "accounts",
       ...(isAccountHardwareWallet(sourceAccount) && {
-        text: $i18n.busy_screen.pending_approval_hw,
+        labelKey: "busy_screen.pending_approval_hw",
       }),
     });
 
