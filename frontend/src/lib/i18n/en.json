@@ -102,6 +102,7 @@
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
+    "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
