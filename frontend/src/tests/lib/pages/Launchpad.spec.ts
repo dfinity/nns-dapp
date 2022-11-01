@@ -3,13 +3,13 @@
  */
 
 import Launchpad from "$lib/pages/Launchpad.svelte";
+import { committedProjectsStore } from "$lib/stores/projects.store";
 import { render } from "@testing-library/svelte";
 import en from "../../mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
-import {committedProjectsStore} from "$lib/stores/projects.store";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
