@@ -9,8 +9,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import type {
-    WizardStep,
+  import {
+    type WizardStep,
     stopBusy,
     startBusy,
   } from "@dfinity/gix-components";
@@ -31,9 +31,9 @@
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "top-up-neuron",
-      labelKey: isAccountHardwareWallet(sourceAccount)
-        ? "busy_screen.pending_approval_hw"
-        : "neurons.may_take_while",
+      text: isAccountHardwareWallet(sourceAccount)
+        ? $i18n.busy_screen.pending_approval_hw
+        : $i18n.neurons.may_take_while,
     });
 
     const { success } = await topUpNeuron({

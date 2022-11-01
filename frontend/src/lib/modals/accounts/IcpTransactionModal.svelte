@@ -31,7 +31,7 @@
     startBusy({
       initiator: "accounts",
       ...(isAccountHardwareWallet(sourceAccount) && {
-        labelKey: "busy_screen.pending_approval_hw",
+        text: $i18n.busy_screen.pending_approval_hw,
       }),
     });
 

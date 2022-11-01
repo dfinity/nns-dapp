@@ -71,7 +71,7 @@
     }
     startBusy({
       initiator: "create-canister",
-      labelKey: "busy_screen.take_long",
+      text: $i18n.busy_screen.take_long,
     });
     const canisterId = await createCanister({
       amount,

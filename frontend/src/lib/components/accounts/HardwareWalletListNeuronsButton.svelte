@@ -36,7 +36,7 @@
   const listNeurons = async () => {
     startBusy({
       initiator: "accounts",
-      labelKey: "busy_screen.pending_approval_hw",
+      text: $i18n.busy_screen.pending_approval_hw,
     });
 
     const { neurons, err } = await listNeuronsHardwareWalletProxy();

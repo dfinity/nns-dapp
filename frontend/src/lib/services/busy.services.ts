@@ -1,4 +1,5 @@
 import { accountsStore } from "$lib/stores/accounts.store";
+import { i18n } from "$lib/stores/i18n";
 import type { BusyStateInitiatorType } from "$lib/types/busy-state";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
 import { startBusy } from "@dfinity/gix-components";
@@ -25,7 +26,7 @@ export const startBusyNeuron = ({
   startBusy({
     initiator,
     ...(hardwareWalletNeuron && {
-      labelKey: "busy_screen.pending_approval_hw",
+      text: get(i18n).busy_screen.pending_approval_hw,
     }),
   });
 };

@@ -26,9 +26,9 @@
     const isHardwareWallet = isAccountHardwareWallet(account);
     startBusy({
       initiator: "stake-neuron",
-      labelKey: isHardwareWallet
-        ? "busy_screen.pending_approval_hw"
-        : "neurons.may_take_while",
+      text: isHardwareWallet
+        ? $i18n.busy_screen.pending_approval_hw
+        : $i18n.neurons.may_take_while,
     });
 
     const neuronId = await stakeNeuron({
