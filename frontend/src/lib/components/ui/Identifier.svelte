@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Copy from "./Copy.svelte";
-  import { Value } from "@dfinity/gix-components";
+  import { Value, Copy } from "@dfinity/gix-components";
 
   export let identifier: string;
   export let label: string | undefined = undefined;

@@ -67,9 +67,7 @@ describe("CanisterCard", () => {
 
     const button = queryByRole("button");
 
-    expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
-    );
+    expect(button?.getAttribute("aria-label")).toEqual(`Copy to clipboard`);
   });
 
   it("renders copy if name present", async () => {
@@ -81,8 +79,6 @@ describe("CanisterCard", () => {
 
     const button = queryByRole("button");
 
-    expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
-    );
+    expect(button?.getAttribute("aria-label")).toEqual(`Copy to clipboard`);
   });
 });
