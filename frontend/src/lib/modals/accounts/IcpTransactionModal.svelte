@@ -10,6 +10,7 @@
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -57,6 +58,7 @@
   on:nnsClose
   bind:currentStep
   sourceAccount={selectedAccount}
+  transactionFee={$mainTransactionFeeStoreAsToken}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
