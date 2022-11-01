@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import Copy from "$lib/components/ui/Copy.svelte";
+  import { Copy } from "@dfinity/gix-components";
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
