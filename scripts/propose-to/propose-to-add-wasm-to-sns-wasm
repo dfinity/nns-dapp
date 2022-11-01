@@ -8,5 +8,5 @@ set -euo pipefail
 for canister in root governance ledger swap archive index; do
   WASM_FILE="$(CANISTER="sns_$canister" jq -r '.canisters[env.CANISTER].wasm' dfx.json)"
   WASM_FILE_SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
-  ic-admin --nns-url "$NNS_URL" propose-to-add-wasm-to-sns-wasm --test-neuron-proposer --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$WASM_FILE_SHA" --canister-type "$canister" > /dev/null
+  ic-admin --nns-url "$NNS_URL" propose-to-add-wasm-to-sns-wasm --test-neuron-proposer --wasm-module-path "$WASM_FILE" --wasm-module-sha256 "$WASM_FILE_SHA" --canister-type "$canister" >/dev/null
 done
