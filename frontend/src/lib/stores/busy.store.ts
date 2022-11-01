@@ -1,9 +1,8 @@
-import { i18n } from "$lib/stores/i18n";
+import { translate } from "$lib/utils/i18n.utils";
 import {
   startBusy as startBusyStore,
   stopBusy as stopBusyStore,
 } from "@dfinity/gix-components";
-import { get } from "svelte/store";
 
 export type BusyStateInitiatorType =
   | "stake-neuron"
@@ -43,7 +42,7 @@ export interface BusyState {
 export const startBusy = ({ initiator, labelKey }: BusyState) =>
   startBusyStore({
     initiator,
-    ...(labelKey !== undefined && { text: get(i18n)[labelKey] }),
+    ...(labelKey !== undefined && { text: translate({ labelKey }) }),
   });
 
 export const stopBusy = (initiatorToRemove: BusyStateInitiatorType) =>
