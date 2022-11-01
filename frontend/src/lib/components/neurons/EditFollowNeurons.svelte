@@ -22,6 +22,13 @@
       <FollowTopicSection {neuron} {topic} />
     {/each}
   </div>
+ 
+  <div>
+    {$i18n.topics_description.Advanced}
+  </div>
+  <div>
+     <FollowTopicSection {neuron} topic={1} />
+  </div>
 </div>
 
 <style lang="scss">
