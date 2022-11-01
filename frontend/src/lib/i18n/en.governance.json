@@ -26,6 +26,8 @@
   "topics_description": {
     "Unspecified": "",
     "ManageNeuron": "A special topic by means of which a neuron can be managed by the followees for this topic (in this case, there is no fallback to default). Votes on this topic are not included in the voting history of the neuron. For proposals on this topic, only the neuron’s followees on the topic that the proposals pertain to are allowed to vote. Because the set of eligible voters of proposals on this topic is restricted, proposals on this topic have a shorter than normal voting period.",
+    "ManageNeuronWarning": "Warning: The neurons you follow on this topic will be able to control your neruon including harvesting the maturity.",
+    "Advanced": "Advanced",
     "ExchangeRate": "All proposals provide information in “real time” about the market value of ICP, as measured by an International Monetary Fund (IMF) Special Drawing Right (SDR) , which allows the NNS to convert ICP to cycles (which power computation) at a rate that keeps their real-world cost constant. Because proposals on this topic are very frequent, they have a shorter voting period, and votes on this topic are not included in the voting history of the neuron.",
     "NetworkEconomics": "Proposals that administer network economics — for example, determining what rewards should be paid to node providers.",
     "Governance": "All proposals that administer governance — for example, motions and the configuration of certain parameters.",
