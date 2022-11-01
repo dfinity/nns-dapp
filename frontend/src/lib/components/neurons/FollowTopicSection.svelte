@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import { followeesByTopic } from "$lib/utils/neuron.utils";
-  import Collapsible from "$lib/components/ui/Collapsible.svelte";
+  import { Collapsible } from "@dfinity/gix-components";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;

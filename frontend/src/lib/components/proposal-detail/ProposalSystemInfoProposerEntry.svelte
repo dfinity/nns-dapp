@@ -1,9 +1,8 @@
 <script lang="ts">
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
 
   export let proposer: NeuronId | undefined;
 
