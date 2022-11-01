@@ -64,6 +64,9 @@
       <div>
         <h3>{title}</h3>
         <p class="subtitle description">{subtitle}</p>
+        {#if topic == 1}
+          <p class="subtitle description">{$i18n.ManageNeuronWarning.topics_description}</p>
+        {/if}
       </div>
       <div class="toolbar">
         <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
