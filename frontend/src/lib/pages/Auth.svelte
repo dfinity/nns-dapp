@@ -28,7 +28,7 @@
 
       // TODO: to be removed
       // Backwards compatibility until the dashboard has migrated to the new query parameters URL
-      const { hash } = new URL(window.location);
+      const { hash } = new URL(window.location.href);
       if (/#\/proposal\/\d+/.test(hash)) {
         const { length, [length - 1]: last } = hash.split("/");
         await goto(

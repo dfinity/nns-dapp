@@ -12,7 +12,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildUrl } from "$lib/utils/navigation.utils";
   import { Value } from "@dfinity/gix-components";
-  import { neuronPathStore } from "$lib/derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
