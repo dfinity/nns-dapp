@@ -10,9 +10,8 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
 
   let accounts: AccountsStore | undefined;
 
@@ -22,10 +21,9 @@
 
   const cardClick = async (identifier: string) =>
     await goto(
-      buildUrl({
-        path: AppPath.Wallet,
+      buildWalletUrl({
         universe: $pageStore.universe,
-        params: { account: identifier },
+        account: identifier,
       })
     );
 

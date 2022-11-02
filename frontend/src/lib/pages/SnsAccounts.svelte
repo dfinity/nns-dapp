@@ -12,9 +12,8 @@
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -40,10 +39,9 @@
 
   const goToDetails = async ({ identifier }: Account) =>
     await goto(
-      buildUrl({
-        path: AppPath.Wallet,
+      buildWalletUrl({
         universe: $pageStore.universe,
-        params: { account: identifier },
+        account: identifier,
       })
     );
 </script>

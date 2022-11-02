@@ -12,8 +12,10 @@
   } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
-  import { buildUrl } from "$lib/utils/navigation.utils";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import {
+    buildAccountsUrl,
+    buildProposalUrl,
+  } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
 
   let signedIn = false;
@@ -32,20 +34,18 @@
       if (/#\/proposal\/\d+/.test(hash)) {
         const { length, [length - 1]: last } = hash.split("/");
         await goto(
-          buildUrl({
-            path: AppPath.Proposal,
-            params: { proposal: last },
+          buildProposalUrl({
             universe: OWN_CANISTER_ID_TEXT,
+            proposalId: last,
           }),
           { replaceState: true }
         );
         return;
       }
 
-      await goto(
-        buildUrl({ path: AppPath.Accounts, universe: OWN_CANISTER_ID_TEXT }),
-        { replaceState: true }
-      );
+      await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
+        replaceState: true,
+      });
     }
   );
 

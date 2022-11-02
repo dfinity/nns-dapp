@@ -1,5 +1,12 @@
-import type { AppPath } from "$lib/constants/routes.constants";
-import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
+import {
+  ACCOUNT_PARAM,
+  AppPath,
+  CANISTER_PARAM,
+  NEURON_PARAM,
+  PROPOSAL_PARAM,
+  UNIVERSE_PARAM,
+} from "$lib/constants/routes.constants";
+import type { NeuronId, ProposalId } from "@dfinity/nns";
 import { isArrayEmpty } from "./utils";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
@@ -22,7 +29,7 @@ export const reloadRouteData = <T>({
   return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };
 
-export const buildUrl = ({
+const buildUrl = ({
   path,
   universe,
   params = {},
@@ -34,3 +41,64 @@ export const buildUrl = ({
   `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
     .map(([key, value]) => `&${key}=${value}`)
     .join("")}`;
+
+export const buildAccountsUrl = ({ universe }: { universe: string }) =>
+  buildUrl({ path: AppPath.Accounts, universe });
+export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
+  buildUrl({ path: AppPath.Neurons, universe });
+export const buildProposalsUrl = ({ universe }: { universe: string }) =>
+  buildUrl({ path: AppPath.Proposals, universe });
+export const buildCanistersUrl = ({ universe }: { universe: string }) =>
+  buildUrl({ path: AppPath.Canisters, universe });
+
+export const buildWalletUrl = ({
+  universe,
+  account,
+}: {
+  universe: string;
+  account: string;
+}): string =>
+  buildUrl({
+    path: AppPath.Wallet,
+    universe,
+    params: { [ACCOUNT_PARAM]: account },
+  });
+
+export const buildNeuronUrl = ({
+  universe,
+  neuronId,
+}: {
+  universe: string;
+  neuronId: NeuronId | string;
+}): string =>
+  buildUrl({
+    path: AppPath.Neuron,
+    universe,
+    params: { [NEURON_PARAM]: `${neuronId}` },
+  });
+
+export const buildProposalUrl = ({
+  universe,
+  proposalId,
+}: {
+  universe: string;
+  proposalId: ProposalId | string;
+}): string =>
+  buildUrl({
+    path: AppPath.Proposal,
+    universe,
+    params: { [PROPOSAL_PARAM]: `${proposalId}` },
+  });
+
+export const buildCanisterUrl = ({
+  universe,
+  canister,
+}: {
+  universe: string;
+  canister: string;
+}): string =>
+  buildUrl({
+    path: AppPath.Canister,
+    universe,
+    params: { [CANISTER_PARAM]: canister },
+  });

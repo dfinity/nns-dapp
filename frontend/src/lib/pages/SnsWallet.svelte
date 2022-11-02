@@ -21,7 +21,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { goto } from "$app/navigation";
   import { layoutBackStore } from "$lib/stores/layout.store";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
@@ -32,7 +32,7 @@
   });
 
   const goBack = (): Promise<void> =>
-    goto(buildUrl({ path: AppPath.Accounts, universe: $pageStore.universe }));
+    goto(buildAccountsUrl({ universe: $pageStore.universe }));
 
   layoutBackStore.set(goBack);
 

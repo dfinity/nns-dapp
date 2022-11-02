@@ -1,6 +1,23 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
-import { buildUrl, reloadRouteData } from "$lib/utils/navigation.utils";
+import {
+  ACCOUNT_PARAM,
+  AppPath,
+  CANISTER_PARAM,
+  NEURON_PARAM,
+  PROPOSAL_PARAM,
+  UNIVERSE_PARAM,
+} from "$lib/constants/routes.constants";
+import {
+  buildAccountsUrl,
+  buildCanistersUrl,
+  buildCanisterUrl,
+  buildNeuronsUrl,
+  buildNeuronUrl,
+  buildProposalsUrl,
+  buildProposalUrl,
+  buildWalletUrl,
+  reloadRouteData,
+} from "$lib/utils/navigation.utils";
 
 describe("navigation-utils", () => {
   describe("reload", () => {
@@ -68,24 +85,87 @@ describe("navigation-utils", () => {
   });
 
   describe("url", () => {
-    it("should build url", () => {
+    it("should build wallet url", () => {
       expect(
-        buildUrl({
-          path: AppPath.Proposal,
+        buildWalletUrl({
           universe: OWN_CANISTER_ID_TEXT,
-          params: { proposal: `123` },
+          account: "123",
         })
       ).toEqual(
-        `${AppPath.Proposal}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&proposal=123`
+        `${AppPath.Wallet}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${ACCOUNT_PARAM}=123`
       );
+    });
 
+    it("should build neuron url", () => {
       expect(
-        buildUrl({
-          path: AppPath.Proposal,
+        buildNeuronUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          neuronId: "123",
+        })
+      ).toEqual(
+        `${AppPath.Neuron}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${NEURON_PARAM}=123`
+      );
+    });
+
+    it("should build proposal url", () => {
+      expect(
+        buildProposalUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          proposalId: "123",
+        })
+      ).toEqual(
+        `${AppPath.Proposal}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${PROPOSAL_PARAM}=123`
+      );
+    });
+
+    it("should build canister url", () => {
+      expect(
+        buildCanisterUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          canister: "123",
+        })
+      ).toEqual(
+        `${AppPath.Canister}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${CANISTER_PARAM}=123`
+      );
+    });
+
+    it("should build accounts url", () => {
+      expect(
+        buildAccountsUrl({
           universe: OWN_CANISTER_ID_TEXT,
         })
       ).toEqual(
-        `${AppPath.Proposal}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build neurons url", () => {
+      expect(
+        buildNeuronsUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+        })
+      ).toEqual(
+        `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build voting url", () => {
+      expect(
+        buildProposalsUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+        })
+      ).toEqual(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build canisters url", () => {
+      expect(
+        buildCanistersUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+        })
+      ).toEqual(
+        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
       );
     });
   });

@@ -12,9 +12,8 @@
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 
   let loading = true;
 
@@ -36,10 +35,9 @@
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
     await goto(
-      buildUrl({
-        path: AppPath.Neuron,
+      buildNeuronUrl({
         universe: $pageStore.universe,
-        params: { neuron: `${neuronId}` },
+        neuronId,
       })
     );
   };

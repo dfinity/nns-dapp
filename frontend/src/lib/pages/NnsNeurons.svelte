@@ -8,9 +8,8 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { isSpawning } from "$lib/utils/neuron.utils";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { Value } from "@dfinity/gix-components";
 
   // Neurons are fetch on page load. No need to do it in the route.
@@ -23,10 +22,9 @@
 
   const goToNeuronDetails = async (id: NeuronId) =>
     await goto(
-      buildUrl({
-        path: AppPath.Neuron,
+      buildNeuronUrl({
         universe: $pageStore.universe,
-        params: { neuron: `${id}` },
+        neuronId: id,
       })
     );
 </script>

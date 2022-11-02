@@ -1,6 +1,5 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
@@ -10,34 +9,34 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildUrl } from "$lib/utils/navigation.utils";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo | undefined;
 
   const next = async () => {
-    if (nextProposal === undefined) {
+    // Type safety check only
+    if (nextProposal === undefined || nextProposal.id === undefined) {
       return;
     }
 
     await goto(
-      buildUrl({
-        path: AppPath.Proposal,
+      buildProposalUrl({
         universe: $pageStore.universe,
-        params: { proposal: `${nextProposal.id}` },
+        proposalId: nextProposal.id,
       })
     );
   };
 
   const previous = async () => {
-    if (previousProposal === undefined) {
+    // Type safety check only
+    if (previousProposal === undefined || previousProposal.id === undefined) {
       return;
     }
 
     await goto(
-      buildUrl({
-        path: AppPath.Proposal,
+      buildProposalUrl({
         universe: $pageStore.universe,
-        params: { proposal: `${previousProposal.id}` },
+        proposalId: previousProposal.id,
       })
     );
   };
