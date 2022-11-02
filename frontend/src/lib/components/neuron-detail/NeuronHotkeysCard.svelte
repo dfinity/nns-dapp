@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { IconClose } from "@dfinity/gix-components";
+  import { IconClose, Value } from "@dfinity/gix-components";
   import { getIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
@@ -12,7 +12,6 @@
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
 

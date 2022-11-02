@@ -1,6 +1,6 @@
 <script lang="ts">
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
+  import { Value } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
   import { sortedSnsNeuronStore } from "$lib/derived/sorted-sns-neurons.derived";
   import { i18n } from "$lib/stores/i18n";

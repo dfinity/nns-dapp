@@ -1,7 +1,6 @@
 <script lang="ts">
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import Copy from "./Copy.svelte";
-
+  import { Copy } from "@dfinity/gix-components";
   import Tooltip from "./Tooltip.svelte";
 
   export let tagName: "h3" | "p" = "h3";

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
 
   export let labelKey: string;
   export let testId: string;

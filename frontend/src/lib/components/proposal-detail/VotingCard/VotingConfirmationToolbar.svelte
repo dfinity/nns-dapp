@@ -5,8 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
-  import { busy } from "$lib/stores/busy.store";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner, busy } from "@dfinity/gix-components";
   import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();

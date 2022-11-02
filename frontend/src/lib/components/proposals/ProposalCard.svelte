@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, type Color } from "@dfinity/gix-components";
+  import { Card, Value, type Color } from "@dfinity/gix-components";
   import {
     type ProposalInfo,
     type NeuronId,
@@ -9,7 +9,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import Value from "$lib/components/ui/Value.svelte";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
   import { goto } from "$app/navigation";

@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText, busy, Toolbar } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
@@ -23,10 +23,8 @@
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
-  import { Toolbar } from "@dfinity/gix-components";
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { busy } from "$lib/stores/busy.store";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";

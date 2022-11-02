@@ -4,8 +4,7 @@
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { onDestroy } from "svelte";
-  import { Toasts } from "@dfinity/gix-components";
-  import BusyScreen from "$lib/components/ui/BusyScreen.svelte";
+  import { Toasts, BusyScreen } from "@dfinity/gix-components";
 
   const unsubscribeVoteInProgress = voteRegistrationStore.subscribe(
     ({ registrations }) =>

@@ -2,7 +2,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import IcpText from "$lib/components/ic/ICPText.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 

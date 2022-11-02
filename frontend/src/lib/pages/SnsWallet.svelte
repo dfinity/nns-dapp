@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Spinner, Toolbar } from "@dfinity/gix-components";
+  import { Spinner, Toolbar, busy } from "@dfinity/gix-components";
   import { onMount } from "svelte";
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
@@ -17,7 +17,6 @@
   } from "$lib/types/selected-account.context";
   import Footer from "$lib/components/common/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { busy } from "$lib/stores/busy.store";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { goto } from "$app/navigation";

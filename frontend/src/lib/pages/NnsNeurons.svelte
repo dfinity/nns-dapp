@@ -7,11 +7,12 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { isSpawning } from "$lib/utils/neuron.utils";
-  import Value from "$lib/components/ui/Value.svelte";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildUrl } from "$lib/utils/navigation.utils";
+  import { Value } from "@dfinity/gix-components";
+  import { neuronPathStore } from "$lib/derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 

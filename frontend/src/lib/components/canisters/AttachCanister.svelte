@@ -1,7 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { attachCanister } from "$lib/services/canisters.services";
   import { createEventDispatcher } from "svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
