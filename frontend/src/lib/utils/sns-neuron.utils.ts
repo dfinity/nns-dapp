@@ -1,4 +1,5 @@
 import { AppPath } from "$lib/constants/routes.constants";
+import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
@@ -11,7 +12,6 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
-import {formatToken} from "$lib/utils/token.utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -229,7 +229,9 @@ export const hasValidStake = (neuron: SnsNeuron): boolean =>
  * Format the maturity in a value (token "currency") way.
  * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
  */
-export const formattedSnsMaturity = ({ maturity_e8s_equivalent: value }: SnsNeuron): string =>
+export const formattedSnsMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
   formatToken({
-    value: value ?? BigInt(0),
+    value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
   });

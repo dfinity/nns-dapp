@@ -22,6 +22,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import SnsNeuronMaturityCard from "$lib/components/neuron-detail/SnsNeuronMaturityCard.svelte";
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
