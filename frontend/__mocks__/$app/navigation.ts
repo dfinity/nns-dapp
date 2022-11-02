@@ -13,7 +13,7 @@ export const goto = async (
   }
 ): Promise<void> => {
   const { search, pathname: routeId } =
-    url instanceof URL ? url : new URL(`http://localhost:8080${url}`);
+    url instanceof URL ? url : new URL(`http://_${url}`);
 
   const { u: universe, ...rest }: Record<string, string> = Object.fromEntries(
     new URLSearchParams(search)
