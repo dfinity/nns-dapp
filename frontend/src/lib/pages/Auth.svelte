@@ -26,6 +26,22 @@
         return;
       }
 
+      // TODO: to be removed
+      // Backwards compatibility until the dashboard has migrated to the new query parameters URL
+      const { hash } = new URL(window.location);
+      if (/#\/proposal\/\d+/.test(hash)) {
+        const { length, [length - 1]: last } = hash.split("/");
+        await goto(
+          buildUrl({
+            path: AppPath.Proposal,
+            params: { proposal: last },
+            universe: OWN_CANISTER_ID_TEXT,
+          }),
+          { replaceState: true }
+        );
+        return;
+      }
+
       await goto(
         buildUrl({ path: AppPath.Accounts, universe: OWN_CANISTER_ID_TEXT }),
         { replaceState: true }
