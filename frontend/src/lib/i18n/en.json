@@ -25,8 +25,7 @@
     "badgeNew": "New",
     "nns": "Network Nervous System",
     "previous": "Previous",
-    "next": "Next",
-    "token": "Token"
+    "next": "Next"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
