@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDate } from "$lib/utils/date.utils";
-  import Value from "$lib/components/ui/Value.svelte";
+  import { Value } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {

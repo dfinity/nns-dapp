@@ -6,7 +6,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsParams } from "@dfinity/sns";

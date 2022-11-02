@@ -12,7 +12,7 @@
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";

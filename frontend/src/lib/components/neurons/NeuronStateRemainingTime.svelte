@@ -4,8 +4,7 @@
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { valueSpan } from "$lib/utils/utils";
-  import Value from "$lib/components/ui/Value.svelte";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, Value } from "@dfinity/gix-components";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;

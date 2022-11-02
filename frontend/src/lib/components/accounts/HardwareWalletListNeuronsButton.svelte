@@ -2,7 +2,8 @@
   import { i18n } from "$lib/stores/i18n";
   import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
   import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { writable } from "svelte/store";
   import { setContext } from "svelte";
   import type {

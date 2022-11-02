@@ -5,7 +5,7 @@
   } from "$lib/utils/proposals.utils";
   import type { Proposal } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
 
   export let proposal: Proposal | undefined;
 

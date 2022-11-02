@@ -4,10 +4,12 @@
 
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import en from "../../mocks/i18n.mock";
@@ -16,6 +18,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -29,6 +32,10 @@ describe("Accounts", () => {
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
+    jest
+      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+
     // Reset to default value
     routeStore.update({ path: AppPath.LegacyAccounts });
 
@@ -124,6 +131,11 @@ describe("Accounts", () => {
   });
 
   it("should open sns transaction modal", async () => {
+    transactionsFeesStore.setFee({
+      rootCanisterId: mockSnsFullProject.rootCanisterId,
+      fee: BigInt(10_000),
+      certified: true,
+    });
     const { queryByTestId, getByTestId } = render(Accounts);
 
     expect(queryByTestId("accounts-body")).toBeInTheDocument();
