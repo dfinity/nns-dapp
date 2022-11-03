@@ -246,4 +246,4 @@ export const formattedSnsMaturity = (
  * @returns {boolean}
  */
 export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
-  !isNullish(fromNullable(source_nns_neuron_id));
+  nonNullish(fromNullable(source_nns_neuron_id));
