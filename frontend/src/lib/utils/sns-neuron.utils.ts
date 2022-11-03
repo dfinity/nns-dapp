@@ -235,3 +235,15 @@ export const formattedSnsMaturity = (
   formatToken({
     value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
   });
+
+/**
+ * Returns true if the neuron comes from a Community Fund investment.
+ *
+ * A CF neuron can be identified using the source_nns_neuron_id
+ * which is the NNS neuron that joined the CF for the investment.
+ *
+ * @param {SnsNeuron} neuron
+ * @returns {boolean}
+ */
+export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
+  !isNullish(fromNullable(source_nns_neuron_id));
