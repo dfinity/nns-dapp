@@ -1,6 +1,7 @@
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   hasValidStake,
+  isCommunityFund,
   sortSnsNeuronsByCreatedTimestamp,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -17,4 +18,15 @@ export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
           projectStore.neurons.filter(hasValidStake)
         );
   }
+);
+
+export const sortedSnsUserNeuronsStore: Readable<SnsNeuron[]> = derived(
+  [sortedSnsNeuronStore],
+  ([sortedNeurons]) =>
+    sortedNeurons.filter((neuron) => !isCommunityFund(neuron))
+);
+
+export const sortedSnsCFNeuronsStore: Readable<SnsNeuron[]> = derived(
+  [sortedSnsNeuronStore],
+  ([sortedNeurons]) => sortedNeurons.filter(isCommunityFund)
 );

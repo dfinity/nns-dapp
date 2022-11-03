@@ -13,6 +13,7 @@ import {
   hasPermissions,
   hasPermissionToDisburse,
   hasValidStake,
+  isCommunityFund,
   isSnsNeuron,
   isUserHotkey,
   routePathSnsNeuronId,
@@ -721,6 +722,23 @@ describe("sns-neuron utils", () => {
     it("returns 0 when no neuron provided", () => {
       expect(formattedSnsMaturity(null)).toBe("0");
       expect(formattedSnsMaturity(undefined)).toBe("0");
+    });
+  });
+
+  describe("isCommunityFund", () => {
+    it("returns true if the neurons is from the community fund", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        source_nns_neuron_id: [BigInt(2)],
+      };
+      expect(isCommunityFund(neuron)).toBeTruthy();
+    });
+    it("returns true if the neurons is from the community fund", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        source_nns_neuron_id: [],
+      };
+      expect(isCommunityFund(neuron)).toBeFalsy();
     });
   });
 });

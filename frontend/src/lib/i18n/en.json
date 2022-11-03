@@ -257,6 +257,7 @@
     "add_hotkey_prompt_success": "Hotkey added successfully.",
     "top_up_neuron": "Increase Neuron Stake",
     "top_up_description": "Increase stake of neuron $neuronId",
+    "community_fund_title": "Community Fund",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
