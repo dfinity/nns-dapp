@@ -1,1 +1,1 @@
-export type Png = string;
+export type PngDataUrl = string;

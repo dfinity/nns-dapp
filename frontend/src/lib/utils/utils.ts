@@ -1,4 +1,4 @@
-import type { Png } from "$lib/types/assets";
+import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
 import { errorToString } from "./error.utils";
 
@@ -308,5 +308,8 @@ export const keyOfOptional = <T>({
  * @param {string} src
  * @returns boolean
  */
-export const isPngAsset = (asset: string | undefined | Png): asset is Png =>
-  asset?.startsWith("data:image/png;base64,") ?? false;
+export const isPngAsset = (
+  asset: string | undefined | PngDataUrl
+): asset is PngDataUrl =>
+  nonNullish(asset) &&
+  /data:image\/png;(charset=[-a-z0-9]+;|)base64,/i.test(asset);

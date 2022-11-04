@@ -1,5 +1,5 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
-import type { Png } from "$lib/types/assets";
+import type { PngDataUrl } from "$lib/types/assets";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -86,7 +86,9 @@ const mapOptionalMetadata = ({
   // We have to check if the logo is a png asset for security reasons.
   // Default logo can be svg.
   return {
-    logo: isPngAsset(nullishLogo) ? nullishLogo : (DEFAULT_SNS_LOGO as Png),
+    logo: isPngAsset(nullishLogo)
+      ? nullishLogo
+      : (DEFAULT_SNS_LOGO as PngDataUrl),
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
