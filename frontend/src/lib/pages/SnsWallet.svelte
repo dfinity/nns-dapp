@@ -28,6 +28,7 @@
   onMount(async () => {
     if (!ENABLE_SNS_2) {
       await goto(AppPath.Accounts, { replaceState: true });
+      return;
     }
   });
 
