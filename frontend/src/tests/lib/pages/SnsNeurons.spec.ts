@@ -8,8 +8,7 @@ import {
 } from "$lib/derived/sorted-sns-neurons.derived";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { routeStore } from "$lib/stores/route.store";
-import { paths } from "$lib/utils/app-path.utils";
+import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import {
@@ -20,6 +19,7 @@ import {
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
+import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -32,7 +32,7 @@ describe("SnsNeurons", () => {
   let authStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
-    routeStore.update({ path: paths.neurons("aaaaa-aa") });
+    page.mock({ data: { universe: rootCanisterIdMock.toText() } });
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
