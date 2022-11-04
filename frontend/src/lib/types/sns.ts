@@ -7,12 +7,13 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
+import type { PngDataUrl } from "./assets";
 
 /**
  * Metadata are full optional in Candid files but mandatory currently in NNS-dapp
  */
 export interface SnsSummaryMetadata {
-  url: string;
+  url: PngDataUrl;
   logo: string;
   name: string;
   description: string;
