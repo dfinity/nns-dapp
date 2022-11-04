@@ -444,8 +444,11 @@ describe("utils", () => {
         "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
       const jpg1 =
         "data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const pngFake =
+        "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5Edata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
       expect(isPngAsset(svg1)).toBe(false);
       expect(isPngAsset(jpg1)).toBe(false);
+      expect(isPngAsset(pngFake)).toBe(false);
     });
   });
 });

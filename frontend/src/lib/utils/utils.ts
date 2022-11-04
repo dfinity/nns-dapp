@@ -311,5 +311,4 @@ export const keyOfOptional = <T>({
 export const isPngAsset = (
   asset: string | undefined | PngDataUrl
 ): asset is PngDataUrl =>
-  nonNullish(asset) &&
-  /data:image\/png;(charset=[-a-z0-9]+;|)base64,/i.test(asset);
+  nonNullish(asset) && asset.startsWith("data:image/png;base64,");
