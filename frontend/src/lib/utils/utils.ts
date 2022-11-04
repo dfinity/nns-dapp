@@ -1,3 +1,4 @@
+import type { Png } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
 import { errorToString } from "./error.utils";
 
@@ -300,3 +301,12 @@ export const keyOfOptional = <T>({
   obj: T | undefined;
   key: string | keyof T;
 }): T[keyof T] | undefined => obj?.[key as keyof T];
+
+/**
+ * Returns whether an asset is PNG or not.
+ *
+ * @param {string} src
+ * @returns boolean
+ */
+export const isPngAsset = (asset: string | undefined | Png): asset is Png =>
+  asset?.startsWith("data:image/png;base64,") ?? false;

@@ -6,6 +6,7 @@ import {
   isDefined,
   isHash,
   isNullish,
+  isPngAsset,
   nonNullish,
   poll,
   PollingLimitExceededError,
@@ -425,6 +426,26 @@ describe("utils", () => {
         c: 3,
       };
       expect(removeKeys({ obj, keysToRemove: ["b", "d"] })).toEqual(expected);
+    });
+  });
+
+  describe("isPngAsset", () => {
+    it("returns true for png assets", () => {
+      const png1 =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const png2 =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      expect(isPngAsset(png1)).toBe(true);
+      expect(isPngAsset(png2)).toBe(true);
+    });
+
+    it("returns false for non png assets", () => {
+      const svg1 =
+        "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const jpg1 =
+        "data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      expect(isPngAsset(svg1)).toBe(false);
+      expect(isPngAsset(jpg1)).toBe(false);
     });
   });
 });
