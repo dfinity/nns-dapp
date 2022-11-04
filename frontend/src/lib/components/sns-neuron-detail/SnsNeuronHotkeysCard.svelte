@@ -13,7 +13,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -61,7 +61,7 @@
     const { success } = await removeHotkey({
       neuronId,
       hotkey,
-      rootCanisterId: $snsProjectSelectedStore,
+      rootCanisterId: $snsProjectIdSelectedStore,
     });
     if (success) {
       await reload();

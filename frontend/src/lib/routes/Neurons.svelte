@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
+  import SnsNeuronsFooter from "$lib/components/neurons/SnsNeuronsFooter.svelte";
   import {
     isNnsProjectStore,
-    snsProjectSelectedStore,
+    snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 </script>
@@ -17,11 +18,13 @@
 
   {#if $isNnsProjectStore}
     <NnsNeurons />
-  {:else if $snsProjectSelectedStore !== undefined}
+  {:else if $snsProjectIdSelectedStore !== undefined}
     <SnsNeurons />
   {/if}
 </main>
 
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
+{:else if $snsProjectIdSelectedStore !== undefined && IS_TESTNET}
+  <SnsNeuronsFooter />
 {/if}

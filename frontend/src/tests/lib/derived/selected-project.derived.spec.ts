@@ -8,7 +8,7 @@ import {
 import {
   isNnsProjectStore,
   snsOnlyProjectStore,
-  snsProjectSelectedStore,
+  snsProjectIdSelectedStore,
 } from "$lib/derived/selected-project.derived";
 import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
@@ -65,19 +65,19 @@ describe("selected project derived stores", () => {
     });
   });
 
-  describe("snsProjectSelectedStore", () => {
+  describe("snsProjectIdSelectedStore", () => {
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
     });
 
     it("should be set by default to own canister id", () => {
-      const $store = get(snsProjectSelectedStore);
+      const $store = get(snsProjectIdSelectedStore);
 
       expect($store).toEqual(OWN_CANISTER_ID);
     });
 
     it("should able to set it to another project id", () => {
-      const $store1 = get(snsProjectSelectedStore);
+      const $store1 = get(snsProjectIdSelectedStore);
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
@@ -88,13 +88,13 @@ describe("selected project derived stores", () => {
     });
 
     it("returns OWN_CANISTER_ID if context is not a valid principal id", () => {
-      const $store1 = get(snsProjectSelectedStore);
+      const $store1 = get(snsProjectIdSelectedStore);
 
       expect($store1).toEqual(OWN_CANISTER_ID);
 
       page.mock({ data: { universe: "invalid-principal" } });
 
-      const $store2 = get(snsProjectSelectedStore);
+      const $store2 = get(snsProjectIdSelectedStore);
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());
     });
   });

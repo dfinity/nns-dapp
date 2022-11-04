@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
@@ -43,7 +43,7 @@ describe("SnsTransactionModal", () => {
       .spyOn(snsSelectedTransactionFeeStore, "subscribe")
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
     jest
-      .spyOn(snsProjectSelectedStore, "subscribe")
+      .spyOn(snsProjectIdSelectedStore, "subscribe")
       .mockImplementation((run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
