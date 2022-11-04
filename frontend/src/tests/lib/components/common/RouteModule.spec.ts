@@ -20,11 +20,13 @@ describe("RouteModule", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render title", () => {
-      const { getByText } = render(RouteModule, {
+      const { container } = render(RouteModule, {
         props: { path: AppPath.Canisters },
       });
 
-      expect(getByText(en.navigation.canisters)).toBeInTheDocument();
+      expect(container.querySelector("h4")?.textContent ?? "").toEqual(
+        en.navigation.canisters
+      );
     });
 
     it("should render a spinner while loading", () => {
