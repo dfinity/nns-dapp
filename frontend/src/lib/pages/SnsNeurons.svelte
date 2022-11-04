@@ -2,7 +2,10 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { Value } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
-  import { sortedSnsNeuronStore } from "$lib/derived/sorted-sns-neurons.derived";
+  import {
+    sortedSnsCFNeuronsStore,
+    sortedSnsUserNeuronsStore,
+  } from "$lib/derived/sorted-sns-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
   import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
@@ -53,7 +56,7 @@
     <SkeletonCard />
     <SkeletonCard />
   {:else}
-    {#each $sortedSnsNeuronStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+    {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
       <SnsNeuronCard
         role="link"
         {neuron}
@@ -61,11 +64,31 @@
         on:click={async () => await goToNeuronDetails(neuron)}
       />
     {/each}
+    {#if $sortedSnsCFNeuronsStore.length > 0}
+      <h2
+        data-tid="community-fund-title"
+        class={$sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""}
+      >
+        {$i18n.neurons.community_fund_title}
+      </h2>
+      {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+        <SnsNeuronCard
+          role="link"
+          {neuron}
+          ariaLabel={$i18n.neurons.aria_label_neuron_card}
+          on:click={goToNeuronDetails(neuron)}
+        />
+      {/each}
+    {/if}
   {/if}
 </section>
 
 <style lang="scss">
   p:last-of-type {
     margin-bottom: var(--padding-3x);
+  }
+
+  .top-margin {
+    margin-top: var(--padding-4x);
   }
 </style>

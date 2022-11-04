@@ -2,6 +2,7 @@ import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
+  formattedSnsMaturity,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -12,6 +13,7 @@ import {
   hasPermissions,
   hasPermissionToDisburse,
   hasValidStake,
+  isCommunityFund,
   isSnsNeuron,
   isUserHotkey,
   sortSnsNeuronsByCreatedTimestamp,
@@ -662,6 +664,43 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
       expect(hasValidStake(neuron)).toBeFalsy();
+    });
+  });
+
+  describe("formattedSnsMaturity", () => {
+    it("returns maturity with two decimals", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+      };
+      expect(formattedSnsMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns 0 when maturity is 0", () => {
+      const neuron = { ...mockSnsNeuron, maturity_e8s_equivalent: BigInt(0) };
+      expect(formattedSnsMaturity(neuron)).toBe("0");
+    });
+
+    it("returns 0 when no neuron provided", () => {
+      expect(formattedSnsMaturity(null)).toBe("0");
+      expect(formattedSnsMaturity(undefined)).toBe("0");
+    });
+  });
+
+  describe("isCommunityFund", () => {
+    it("returns true if the neurons is from the community fund", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        source_nns_neuron_id: [BigInt(2)],
+      };
+      expect(isCommunityFund(neuron)).toBeTruthy();
+    });
+    it("returns true if the neurons is from the community fund", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        source_nns_neuron_id: [],
+      };
+      expect(isCommunityFund(neuron)).toBeFalsy();
     });
   });
 });

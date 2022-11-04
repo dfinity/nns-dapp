@@ -1,3 +1,4 @@
+import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
@@ -201,3 +202,26 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+/**
+ * Format the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
+ */
+export const formattedSnsMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
+  formatToken({
+    value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
+  });
+
+/**
+ * Returns true if the neuron comes from a Community Fund investment.
+ *
+ * A CF neuron can be identified using the source_nns_neuron_id
+ * which is the NNS neuron that joined the CF for the investment.
+ *
+ * @param {SnsNeuron} neuron
+ * @returns {boolean}
+ */
+export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
+  nonNullish(fromNullable(source_nns_neuron_id));

@@ -17,6 +17,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import SnsNeuronMaturityCard from "$lib/components/neuron-detail/SnsNeuronMaturityCard.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -100,6 +101,7 @@
       <SkeletonCard cardType="info" />
     {:else}
       <SnsNeuronMetaInfoCard />
+      <SnsNeuronMaturityCard />
       <SnsNeuronHotkeysCard />
     {/if}
   </section>

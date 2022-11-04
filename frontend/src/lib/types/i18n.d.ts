@@ -267,6 +267,7 @@ interface I18nNeurons {
   add_hotkey_prompt_success: string;
   top_up_neuron: string;
   top_up_description: string;
+  community_fund_title: string;
   stake_amount: string;
 }
 
