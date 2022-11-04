@@ -18,7 +18,7 @@
   import { NeuronState } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import DisburseSnsButton from "$lib/components/neuron-detail/actions/DisburseSnsButton.svelte";
+  import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

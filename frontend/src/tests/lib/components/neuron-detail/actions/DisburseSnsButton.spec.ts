@@ -3,7 +3,7 @@
  */
 
 import { fireEvent, render } from "@testing-library/svelte";
-import DisburseSnsButton from "../../../../../lib/components/neuron-detail/actions/DisburseSnsButton.svelte";
+import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 
