@@ -213,8 +213,8 @@
     padding: var(--padding-1_5x) 0;
 
     :global(svg) {
-      height: 24px;
-      width: 24px;
+      height: 20px;
+      width: 20px;
       vertical-align: bottom;
       margin: 0 var(--padding-1_5x) 0 0;
       color: var(--primary);
