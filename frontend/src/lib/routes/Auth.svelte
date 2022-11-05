@@ -117,7 +117,7 @@
       flex-direction: column;
       align-items: flex-start;
 
-      font-size: var(--font-size-ultra-small);
+      font-size: var(--font-size-small);
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.1rem;
     }

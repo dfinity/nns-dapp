@@ -103,7 +103,7 @@
     padding: 4px 6px;
     border-radius: 4px;
 
-    font-size: var(--font-size-ultra-small);
+    font-size: var(--font-size-small);
 
     background: var(--card-background-contrast);
     color: var(--card-background);
