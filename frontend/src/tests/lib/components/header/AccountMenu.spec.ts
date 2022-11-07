@@ -18,26 +18,10 @@ describe("AccountMenu", () => {
     expect(() => getByRole("menu")).toThrow();
   });
 
-  it("should be open", async () => {
-    const renderResult = render(AccountMenu);
+  it("should display a sign-in button if not signed in", () => {
+    const { getByTestId } = render(AccountMenu);
 
-    await show(renderResult);
-  });
-
-  it("should not display logout button if not signed in", async () => {
-    const renderResult = render(AccountMenu);
-
-    await show(renderResult);
-
-    expect(() => renderResult.getByTestId("logout")).toThrow();
-  });
-
-  it("should display theme toggle", async () => {
-    const renderResult = render(AccountMenu);
-
-    await show(renderResult);
-
-    expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+    expect(getByTestId("toolbar-login")).not.toBeNull();
   });
 
   describe("signed in", () => {
@@ -46,6 +30,20 @@ describe("AccountMenu", () => {
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe)
     );
+
+    it("should be open", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+    });
+
+    it("should display theme toggle", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+    });
 
     it("should display logout button if signed in", async () => {
       const renderResult = render(AccountMenu);
