@@ -4,9 +4,10 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { committedProjectsStore } from "$lib/stores/projects.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { Spinner } from "@dfinity/gix-components";
+  import { goto } from "$app/navigation";
+  import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 
   let selectedCanisterId: string | undefined;
 
@@ -26,11 +27,12 @@
     }
   };
 
-  $: {
+  $: (async () => {
     if (selectedCanisterId !== undefined) {
-      routeStore.changeContext(selectedCanisterId);
+      const { pathname } = window.location;
+      await goto(`${pathname}?${UNIVERSE_PARAM}=${selectedCanisterId}`);
     }
-  }
+  })();
 
   // Update the selected canister id when we selectableProjects are loaded
   $: selectableProjects, updateSelectedCanisterId();

@@ -2,18 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { routeStore } from "$lib/stores/route.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
 jest.mock("$lib/services/knownNeurons.services", () => {
   return {
@@ -38,27 +35,23 @@ describe("NeuronDetail", () => {
   const querySkeleton = (container: HTMLElement): HTMLElement | null =>
     container.querySelector('[data-tid="skeleton-card"]');
 
-  jest
-    .spyOn(routeStore, "subscribe")
-    .mockImplementation(
-      mockRouteStoreSubscribe(`${CONTEXT_PATH}/aaaaa-aa/neuron/${neuronId}`)
-    );
-
   afterEach(() => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
-
-    jest.clearAllMocks();
   });
 
+  const props = {
+    neuronIdText: `${neuronId}`,
+  };
+
   it("should display skeletons", () => {
-    const { container } = render(NeuronDetail);
+    const { container } = render(NeuronDetail, props);
 
     expect(querySkeleton(container)).not.toBeNull();
   });
 
   it("should render a title with neuron ID", () => {
-    render(NeuronDetail);
+    render(NeuronDetail, props);
 
     const title = get(layoutTitleStore);
 
@@ -66,7 +59,7 @@ describe("NeuronDetail", () => {
   });
 
   it("should hide skeletons after neuron data are available", async () => {
-    const { container } = render(NeuronDetail);
+    const { container } = render(NeuronDetail, props);
 
     fillNeuronStore();
 
@@ -74,7 +67,7 @@ describe("NeuronDetail", () => {
   });
 
   it("should show skeletons when neuron is in voting process", async () => {
-    const { container } = render(NeuronDetail);
+    const { container } = render(NeuronDetail, props);
 
     fillNeuronStore();
 

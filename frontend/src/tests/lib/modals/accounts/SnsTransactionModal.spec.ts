@@ -6,10 +6,9 @@ import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
-import { paths } from "$lib/utils/app-path.utils";
+import { page } from "$mocks/$app/stores";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -50,7 +49,7 @@ describe("SnsTransactionModal", () => {
         return () => undefined;
       });
 
-    routeStore.update({ path: paths.accounts(mockPrincipal.toText()) });
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
   it("should transfer tokens", async () => {

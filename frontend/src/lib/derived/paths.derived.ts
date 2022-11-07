@@ -1,25 +1,28 @@
-import { paths } from "$lib/utils/app-path.utils";
-import { derived } from "svelte/store";
-import { snsProjectSelectedStore } from "./selected-project.derived";
+import { pageStore, type Page } from "$lib/derived/page.derived";
+import {
+  buildAccountsUrl,
+  buildCanistersUrl,
+  buildNeuronsUrl,
+  buildProposalsUrl,
+} from "$lib/utils/navigation.utils";
+import { derived, type Readable } from "svelte/store";
 
-export const accountsPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) =>
-    paths.accounts($snsProjectSelectedStore.toText())
+export const accountsPathStore = derived<Readable<Page>, string>(
+  pageStore,
+  ({ universe }) => buildAccountsUrl({ universe })
 );
 
-export const walletPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) => paths.wallet($snsProjectSelectedStore.toText())
+export const neuronsPathStore = derived<Readable<Page>, string>(
+  pageStore,
+  ({ universe }) => buildNeuronsUrl({ universe })
 );
 
-export const neuronsPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) => paths.neurons($snsProjectSelectedStore.toText())
+export const proposalsPathStore = derived<Readable<Page>, string>(
+  pageStore,
+  ({ universe }) => buildProposalsUrl({ universe })
 );
 
-export const neuronPathStore = derived(
-  snsProjectSelectedStore,
-  ($snsProjectSelectedStore) =>
-    paths.neuronDetail($snsProjectSelectedStore.toText())
+export const canistersPathStore = derived<Readable<Page>, string>(
+  pageStore,
+  ({ universe }) => buildCanistersUrl({ universe })
 );

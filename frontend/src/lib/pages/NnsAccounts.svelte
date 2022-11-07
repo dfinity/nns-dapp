@@ -5,12 +5,13 @@
   import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import type { TokenAmount } from "@dfinity/nns";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
-  import { walletPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
 
   let accounts: AccountsStore | undefined;
 
@@ -18,8 +19,13 @@
     async (storeData: AccountsStore) => (accounts = storeData)
   );
 
-  const cardClick = (identifier: string) =>
-    routeStore.navigate({ path: `${$walletPathStore}/${identifier}` });
+  const cardClick = async (identifier: string) =>
+    await goto(
+      buildWalletUrl({
+        universe: $pageStore.universe,
+        account: identifier,
+      })
+    );
 
   onDestroy(unsubscribe);
 

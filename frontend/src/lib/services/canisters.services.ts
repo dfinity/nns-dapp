@@ -13,13 +13,11 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AppPath } from "$lib/constants/routes.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { isController } from "$lib/utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,
@@ -252,16 +250,6 @@ export const detachCanister = async (
     );
     return { success };
   }
-};
-
-export const routePathCanisterId = (
-  path: string | undefined
-): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.CanisterDetail], routePath: path })) {
-    return undefined;
-  }
-  const canisterId: string | undefined = getLastPathDetail(path);
-  return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };
 
 /**

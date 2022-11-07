@@ -122,7 +122,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
 
@@ -133,11 +132,16 @@ jobs:
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
+      - name: Provide a config
+        run: ./config.sh
+
       - name: Install dependencies
         run: npm ci
+        working-directory: ./frontend
 
       - name: Compile typescript
         run: npm run build
+        working-directory: ./frontend
 
       # Temporarily disabled:
       #- name: Run linter
@@ -145,6 +149,7 @@ jobs:
 
       - name: Test
         run: npm run test
+        working-directory: ./frontend
 
   svelte-lint:
     needs: formatting
@@ -152,7 +157,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
 
@@ -163,14 +167,20 @@ jobs:
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
+      - name: Provide a config
+        run: ./config.sh
+
       - name: Install dependencies
         run: npm ci
+        working-directory: ./frontend
 
       - name: Compile typescript
         run: npm run build
+        working-directory: ./frontend
 
       - name: Run linter
         run: npm run check
+        working-directory: ./frontend
 
   e2e-lint:
     needs: formatting

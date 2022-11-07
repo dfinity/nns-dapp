@@ -11,8 +11,9 @@
   import type { Account } from "$lib/types/account";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { walletPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -36,9 +37,13 @@
           ...$snsProjectAccountsStore.map(({ balance }) => balance)
         );
 
-  const goToDetails = (account: Account) => {
-    routeStore.navigate({ path: `${$walletPathStore}/${account.identifier}` });
-  };
+  const goToDetails = async ({ identifier }: Account) =>
+    await goto(
+      buildWalletUrl({
+        universe: $pageStore.universe,
+        account: identifier,
+      })
+    );
 </script>
 
 <section data-tid="sns-accounts-body">

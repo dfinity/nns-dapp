@@ -12,6 +12,8 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let visible = false;
   let transferring = false;
@@ -64,17 +66,22 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore || ICPToken;
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
-<button
-  role="menuitem"
-  data-tid="get-icp-button"
-  on:click|preventDefault|stopPropagation={() => (visible = true)}
-  class="open"
->
-  <IconAccountBalance />
-  <span>{`Get ${token.symbol}`}</span>
-</button>
+{#if signedIn}
+  <button
+    role="menuitem"
+    data-tid="get-icp-button"
+    on:click|preventDefault|stopPropagation={() => (visible = true)}
+    class="open"
+  >
+    <IconAccountBalance />
+    <span>{`Get ${token.symbol}`}</span>
+  </button>
+{/if}
 
 <Modal {visible} role="alert" on:nnsClose={onClose}>
   <span slot="title">{`Get ${token.symbol}`}</span>

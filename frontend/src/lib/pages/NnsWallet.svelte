@@ -3,13 +3,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
-  import { routeStore } from "$lib/stores/route.store";
   import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
@@ -19,33 +17,28 @@
     type SelectedAccountContext,
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
-  import {
-    getAccountFromStore,
-    routePathAccountIdentifier,
-  } from "$lib/utils/accounts.utils";
+  import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import { layoutBackStore } from "$lib/stores/layout.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import { accountsPathStore } from "$lib/derived/paths.derived";
   import type {
     AccountIdentifierString,
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
 
-  const goBack = () =>
-    routeStore.navigate({
-      path: $accountsPathStore,
-    });
+  const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   layoutBackStore.set(goBack);
 
   let transactions: Transaction[] | undefined;
 
-  const reloadTransactions = async (
+  const reloadTransactions = (
     accountIdentifier: AccountIdentifierString
-  ) =>
-    await getAccountTransactions({
+  ): Promise<void> =>
+    getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
@@ -68,59 +61,37 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier:
-    | { accountIdentifier: string | undefined }
-    | undefined;
-  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+  export let accountIdentifier: string | undefined | null = undefined;
 
-  let selectedAccount: Account | undefined;
-  $: selectedAccount = getAccountFromStore({
-    identifier: routeAccountIdentifier?.accountIdentifier,
-    accounts: $nnsAccountsListStore,
+  const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
+    if (account !== undefined) {
+      await reloadTransactions(account.identifier);
+      return;
+    }
+
+    // handle unknown accountIdentifier from URL
+    if (account === undefined && $accountsStore.main !== undefined) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_found, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+      });
+
+      await goBack();
+    }
+  };
+
+  // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
+  // First call: identifier is set, accounts store is empty, selectedAccount is undefined
+  // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
+  $: selectedAccountStore.set({
+    account: getAccountFromStore({
+      identifier: accountIdentifier,
+      accounts: $nnsAccountsListStore,
+    }),
   });
 
-  $: routeAccountIdentifier,
-    selectedAccount,
-    (() => {
-      // Not /wallet route
-      if (routeAccountIdentifier === undefined) {
-        return;
-      }
-
-      const storeAccount = $selectedAccountStore.account;
-
-      if (storeAccount !== selectedAccount) {
-        // If we select another account, then the transactions are set separately to update the UI with the account and
-        // display the loader - skeleton - while we load the transactions.
-        //
-        // On the contrary, if we reload the transactions of the same account, we keep the current list to avoid a flickering of the screen.
-        // This can happen when user transfer ICP to another account - i.e. a new transaction will be added to the list at the top so we don't want the list to flicker while updating.
-        const sameAccount: boolean =
-          selectedAccount !== undefined &&
-          storeAccount?.identifier === selectedAccount.identifier;
-
-        selectedAccountStore.update(() => ({
-          account: selectedAccount,
-        }));
-
-        transactions = sameAccount ? transactions : undefined;
-
-        if (selectedAccount !== undefined) {
-          reloadTransactions(selectedAccount.identifier);
-        }
-      }
-
-      // handle unknown accountIdentifier from URL
-      if (selectedAccount === undefined && $accountsStore.main !== undefined) {
-        toastsError({
-          labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            $account_identifier:
-              routeAccountIdentifier?.accountIdentifier ?? "",
-          }),
-        });
-        goBack();
-      }
-    })();
+  $: (async () => await accountDidUpdate($selectedAccountStore))();
 
   let showNewTransactionModal = false;
 

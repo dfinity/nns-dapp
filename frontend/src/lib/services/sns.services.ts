@@ -7,7 +7,6 @@ import {
   querySnsSwapState,
   querySnsSwapStates,
 } from "$lib/api/sns.api";
-import { AppPath } from "$lib/constants/routes.constants";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
 import {
   snsProposalsStore,
@@ -21,7 +20,6 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   commitmentExceedsAmountLeft,
@@ -244,13 +242,6 @@ const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
     // Ignore error
     console.error("Error reloading swap state", err);
   }
-};
-
-export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
-    return undefined;
-  }
-  return getLastPathDetail(path);
 };
 
 export const getSwapAccount = async (

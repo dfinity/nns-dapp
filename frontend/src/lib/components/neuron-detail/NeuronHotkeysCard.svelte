@@ -9,11 +9,11 @@
   import { authStore } from "$lib/stores/auth.store";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
 
@@ -44,7 +44,8 @@
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+
+      await goto(AppPath.Neurons, { replaceState: true });
     }
     stopBusy("remove-hotkey-neuron");
   };

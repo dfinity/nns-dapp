@@ -8,10 +8,8 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { routePathAccountIdentifier } from "$lib/utils/accounts.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
-  import { routeStore } from "$lib/stores/route.store";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
@@ -20,14 +18,24 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { goto } from "$app/navigation";
+  import { layoutBackStore } from "$lib/stores/layout.store";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
-  onMount(() => {
+  onMount(async () => {
     if (!ENABLE_SNS_2) {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+      await goto(AppPath.Accounts, { replaceState: true });
+      return;
     }
   });
+
+  const goBack = (): Promise<void> =>
+    goto(buildAccountsUrl({ universe: $pageStore.universe }));
+
+  layoutBackStore.set(goBack);
 
   let showNewTransactionModal = false;
 
@@ -54,16 +62,12 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier:
-    | { accountIdentifier: string | undefined }
-    | undefined;
-  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+  export let accountIdentifier: string | undefined | null = undefined;
 
   $: {
-    if (routeAccountIdentifier?.accountIdentifier !== undefined) {
+    if (accountIdentifier !== undefined) {
       const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) =>
-          identifier === routeAccountIdentifier?.accountIdentifier
+        ({ identifier }) => identifier === accountIdentifier
       );
 
       selectedAccountStore.update(() => ({

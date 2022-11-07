@@ -2,13 +2,17 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -27,13 +31,19 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("Neurons", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyNeurons });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
   it("should render NnsNeurons by default", () => {

@@ -2,16 +2,20 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
@@ -27,6 +31,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Accounts", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
@@ -37,7 +47,7 @@ describe("Accounts", () => {
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
 
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyAccounts });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,

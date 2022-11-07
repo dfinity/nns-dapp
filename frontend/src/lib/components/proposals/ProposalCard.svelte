@@ -7,11 +7,12 @@
     ProposalStatus,
   } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
@@ -28,11 +29,13 @@
   $: ({ status, id, title, color, topic, proposer, type } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = () => {
-    routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${id}`,
-    });
-  };
+  const showProposal = async () =>
+    await goto(
+      buildProposalUrl({
+        universe: $pageStore.universe,
+        proposalId: `${id}`,
+      })
+    );
 </script>
 
 <li class:hidden>

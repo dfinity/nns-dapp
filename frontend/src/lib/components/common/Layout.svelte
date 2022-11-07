@@ -12,7 +12,7 @@
 
 <Banner />
 
-<Layout {back} on:nnsBack={() => $layoutBackStore?.()}>
+<Layout {back} on:nnsBack={async () => await $layoutBackStore?.()}>
   <div use:triggerDebugReport slot="title">
     <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
   </div>
