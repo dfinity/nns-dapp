@@ -33,7 +33,7 @@
     align-items: baseline;
 
     span:first-of-type {
-      font-weight: 700;
+      font-weight: var(--font-weight-bold);
       font-size: var(--token-font-size, var(--font-size-h3));
     }
 
