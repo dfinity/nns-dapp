@@ -7,8 +7,7 @@
   import { browser, prerendering } from "$app/environment";
   import { onMount } from "svelte";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
-
-  let initialized = false;
+  import { layoutAuthReady } from "$lib/stores/layout.store";
 
   const syncAuthStore = async () => {
     try {
@@ -28,7 +27,7 @@
 
     displayAndCleanLogoutMsg();
 
-    initialized = true;
+    layoutAuthReady.set(true);
   });
 
   // Asks the user to authenticate themselves with a TPM or similar.
@@ -46,7 +45,7 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   let disabled = true;
-  $: disabled = signedIn || !initialized;
+  $: disabled = signedIn || !$layoutAuthReady;
 </script>
 
 <button on:click={signIn} data-tid="login-button" class="primary" {disabled}>
