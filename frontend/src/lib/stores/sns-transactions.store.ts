@@ -9,6 +9,7 @@ interface SnsTransactions {
   [accountIdentifier: string]: {
     transactions: SnsTransactionWithId[];
     oldestTxId?: bigint;
+    completed: boolean;
   };
 }
 
@@ -25,7 +26,7 @@ export interface SnsTransactionsStore {
  * - reset: reset the store to an empty state.
  * - resetProject: removed the transactions for a specific project.
  */
-const initSnsAccountsStore = () => {
+const initSnsTransactionsStore = () => {
   const { subscribe, update, set } = writable<SnsTransactionsStore>({});
 
   return {
@@ -36,11 +37,13 @@ const initSnsAccountsStore = () => {
       rootCanisterId,
       transactions,
       oldestTxId,
+      completed,
     }: {
       accountIdentifier: string;
       rootCanisterId: Principal;
       transactions: SnsTransactionWithId[];
       oldestTxId?: bigint;
+      completed: boolean;
     }) {
       update((currentState: SnsTransactionsStore) => {
         const projectState = currentState[rootCanisterId.toText()];
@@ -58,6 +61,7 @@ const initSnsAccountsStore = () => {
             [accountIdentifier]: {
               transactions: [...uniquePreviousTransactions, ...transactions],
               oldestTxId,
+              completed,
             },
           },
         };
@@ -80,4 +84,4 @@ const initSnsAccountsStore = () => {
   };
 };
 
-export const snsTransactionsStore = initSnsAccountsStore();
+export const snsTransactionsStore = initSnsTransactionsStore();

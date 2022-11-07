@@ -107,6 +107,7 @@ interface I18nError {
   swap_not_loaded: string;
   transaction_fee_not_found: string;
   fetch_transactions: string;
+  transaction_data: string;
   canister_invalid_transaction: string;
 }
 

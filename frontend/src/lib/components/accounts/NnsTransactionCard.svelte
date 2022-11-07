@@ -7,6 +7,7 @@
   } from "$lib/utils/transactions.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   export let account: Account;
   export let transaction: NnsTransaction;
@@ -35,5 +36,9 @@
 </script>
 
 {#if transactionData !== undefined}
-  <TransactionCard transaction={transactionData} {toSelfTransaction} />
+  <TransactionCard
+    transaction={transactionData}
+    {toSelfTransaction}
+    token={ICPToken}
+  />
 {/if}

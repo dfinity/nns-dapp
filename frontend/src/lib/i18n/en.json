@@ -103,6 +103,7 @@
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
+    "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -368,10 +369,10 @@
     "add_controller": "Add Controller"
   },
   "transaction_names": {
-    "receive": "Received ICP",
-    "send": "Sent ICP",
-    "mint": "Received ICP",
-    "burn": "Sent ICP",
+    "receive": "Received $tokenSymbol",
+    "send": "Sent $tokenSymbol",
+    "mint": "Received $tokenSymbol",
+    "burn": "Sent $tokenSymbol",
     "stakeNeuron": "Stake Neuron",
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",

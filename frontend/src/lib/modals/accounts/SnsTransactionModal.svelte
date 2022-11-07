@@ -15,6 +15,7 @@
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
 
   export let selectedAccount: Account | undefined = undefined;
+  export let loadTransactions = false;
 
   let currentStep: WizardStep;
 
@@ -36,6 +37,7 @@
       destinationAddress,
       e8s: numberToE8s(amount),
       rootCanisterId: $snsProjectSelectedStore,
+      loadTransactions,
     });
 
     stopBusy("accounts");

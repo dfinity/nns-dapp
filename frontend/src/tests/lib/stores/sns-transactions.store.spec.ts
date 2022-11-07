@@ -17,6 +17,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -32,6 +33,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       snsTransactionsStore.addTransactions({
@@ -39,6 +41,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsSubAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -70,12 +73,14 @@ describe("SNS Transactions store", () => {
         transactions: [tx1, tx2],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       snsTransactionsStore.addTransactions({
         rootCanisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -91,6 +96,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -112,6 +118,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       const accountsInStore = get(snsTransactionsStore);
       expect(
@@ -124,6 +131,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       const accountsInStore2 = get(snsTransactionsStore);
       expect(
