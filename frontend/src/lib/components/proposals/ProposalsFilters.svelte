@@ -110,14 +110,6 @@
       padding: var(--padding) calc(0.75 * var(--padding));
       margin: var(--padding) 0 0;
     }
-
-    > :global(div.checkbox label) {
-      width: 100%;
-    }
-
-    > :global(div.checkbox input) {
-      margin-right: var(--padding);
-    }
   }
 
   :global(section > div.checkbox) {
