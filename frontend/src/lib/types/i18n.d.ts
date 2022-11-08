@@ -702,6 +702,32 @@ interface I18nError__sns {
   sns_add_hotkey: string;
 }
 
+interface I18nAuth_accounts {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_neurons {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_proposals {
+  title: string;
+  text: string;
+  sign_in: string;
+}
+
+interface I18nAuth_canisters {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_sns {
+  title: string;
+  text: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -921,6 +947,11 @@ interface I18n {
   error__canister: I18nError__canister;
   theme: I18nTheme;
   error__sns: I18nError__sns;
+  auth_accounts: I18nAuth_accounts;
+  auth_neurons: I18nAuth_neurons;
+  auth_proposals: I18nAuth_proposals;
+  auth_canisters: I18nAuth_canisters;
+  auth_sns: I18nAuth_sns;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SignInNNS from "$lib/pages/SignInNNS.svelte";
+  import SignInNeurons from "$lib/pages/SignInNeurons.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
@@ -18,5 +18,5 @@
 {#if signedIn}
   <RouteModule path={AppPath.Neuron} params={{ neuronId }} />
 {:else}
-  <SignInNNS />
+  <SignInNeurons />
 {/if}
