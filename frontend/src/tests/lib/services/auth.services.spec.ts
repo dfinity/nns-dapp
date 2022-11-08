@@ -3,9 +3,10 @@
  */
 
 import { displayAndCleanLogoutMsg, logout } from "$lib/services/auth.services";
+import * as busyStore from "$lib/stores/busy.store";
 import * as routeUtils from "$lib/utils/route.utils";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
-import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 
@@ -138,7 +139,7 @@ describe("auth-services", () => {
 
       await logout({});
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
 
       spy.mockClear();
     });
