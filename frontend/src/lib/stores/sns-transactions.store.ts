@@ -54,13 +54,20 @@ const initSnsTransactionsStore = () => {
           ({ id: oldTxId }) =>
             !transactions.some(({ id: newTxId }) => newTxId === oldTxId)
         );
+        // Ids are in increasing order. We want to keep the oldest id.
+        const newOldestTxId =
+          oldestTxId === undefined
+            ? accountState?.oldestTxId
+            : oldestTxId <= (accountState?.oldestTxId ?? oldestTxId)
+            ? oldestTxId
+            : accountState?.oldestTxId;
         return {
           ...currentState,
           [rootCanisterId.toText()]: {
             ...projectState,
             [accountIdentifier]: {
               transactions: [...uniquePreviousTransactions, ...transactions],
-              oldestTxId,
+              oldestTxId: newOldestTxId,
               completed,
             },
           },
