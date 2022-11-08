@@ -49,7 +49,7 @@
 </script>
 
 <button on:click={signIn} data-tid="login-button" class="primary" {disabled}>
-  {$i18n.auth.login}
+  <slot>{$i18n.auth.login}</slot>
   {#if disabled}
     <div class="spinner">
       <Spinner size="small" inline />

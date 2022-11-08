@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SignInNNS from "$lib/pages/SignInNNS.svelte";
+  import SignInSns from "$lib/pages/SignInSns.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { onMount } from "svelte";
@@ -28,5 +28,5 @@
 {#if signedIn}
   <RouteModule path={AppPath.Project} params={{ rootCanisterId }} />
 {:else}
-  <SignInNNS />
+  <SignInSns />
 {/if}

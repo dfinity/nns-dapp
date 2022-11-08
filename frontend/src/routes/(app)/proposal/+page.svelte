@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SignInNNS from "$lib/pages/SignInNNS.svelte";
+  import SignInProposals from "$lib/pages/SignInProposals.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
@@ -27,5 +27,5 @@
     params={{ proposalIdText: proposalId, referrerPath }}
   />
 {:else}
-  <SignInNNS />
+  <SignInProposals />
 {/if}
