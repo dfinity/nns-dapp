@@ -129,13 +129,13 @@
 
     @include fonts.h5;
 
-    color: var(--label-color);
+    color: var(--body-color);
 
     padding: var(--padding-2x);
 
     &:focus,
     &:hover {
-      color: var(--content-color);
+      color: var(--value-color);
     }
 
     span {
