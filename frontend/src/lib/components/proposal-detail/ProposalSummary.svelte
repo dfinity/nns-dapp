@@ -31,8 +31,6 @@
 
     :global(a) {
       font-size: inherit;
-      color: var(--primary-tint);
-      text-decoration: none;
     }
 
     :global(pre) {
