@@ -23,7 +23,7 @@
   let stakeNeuronText = replacePlaceholders(
     $i18n.sns_neurons.stake_sns_neuron,
     {
-      $tokenName: token.symbol,
+      $tokenSymbol: token.symbol,
     }
   );
   $: title =
@@ -49,7 +49,7 @@
       toastsSuccess({
         labelKey: "sns_neurons.stake_sns_neuron_success",
         substitutions: {
-          $$tokenName: token.symbol,
+          $$tokenSymbol: token.symbol,
         },
       });
       dispatcher("nnsClose");
