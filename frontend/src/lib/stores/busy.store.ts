@@ -5,6 +5,7 @@ import {
 } from "@dfinity/gix-components";
 
 export type BusyStateInitiatorType =
+  | "logout"
   | "stake-neuron"
   | "update-delay"
   | "attach-canister"

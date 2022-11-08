@@ -5,7 +5,7 @@
 import { displayAndCleanLogoutMsg, logout } from "$lib/services/auth.services";
 import * as routeUtils from "$lib/utils/route.utils";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
-import { toastsStore } from "@dfinity/gix-components";
+import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 
@@ -129,6 +129,16 @@ describe("auth-services", () => {
         writable: true,
         value: { ...location },
       });
+
+      spy.mockClear();
+    });
+
+    it("should display a busy screen", async () => {
+      const spy = jest.spyOn(busyStore, "startBusy");
+
+      await logout({});
+
+      expect(spy).not.toHaveBeenCalled();
 
       spy.mockClear();
     });
