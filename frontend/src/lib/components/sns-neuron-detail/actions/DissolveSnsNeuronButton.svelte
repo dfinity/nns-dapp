@@ -48,7 +48,7 @@
   };
 </script>
 
-<button on:click={showModal} class="warning"
+<button on:click={showModal} class="secondary"
   >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button
 >
 {#if isOpen}
