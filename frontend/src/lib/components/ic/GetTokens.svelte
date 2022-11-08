@@ -120,20 +120,22 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .open {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
-    font-size: var(--font-size-h5);
-    font-weight: var(--font-weight-bold);
+    @include fonts.h5;
+
+    color: var(--label-color);
 
     padding: var(--padding-2x);
 
     &:focus,
     &:hover {
-      background: var(--background-tint);
+      color: var(--content-color);
     }
 
     span {

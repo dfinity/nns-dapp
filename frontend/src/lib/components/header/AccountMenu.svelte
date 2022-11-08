@@ -53,6 +53,6 @@
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--brand-sea-buckthorn);
+    @include header.button(--primary-tint);
   }
 </style>
