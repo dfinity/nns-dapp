@@ -1,4 +1,5 @@
 import { authStore } from "$lib/stores/auth.store";
+import { startBusy } from "$lib/stores/busy.store";
 import { toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
@@ -14,6 +15,9 @@ export const logout = async ({
 }: {
   msg?: Pick<ToastMsg, "labelKey" | "level">;
 }) => {
+  // To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
+  startBusy({ initiator: "logout" });
+
   await authStore.signOut();
 
   if (msg) {

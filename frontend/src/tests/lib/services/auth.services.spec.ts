@@ -3,6 +3,7 @@
  */
 
 import { displayAndCleanLogoutMsg, logout } from "$lib/services/auth.services";
+import * as busyStore from "$lib/stores/busy.store";
 import * as routeUtils from "$lib/utils/route.utils";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
@@ -129,6 +130,16 @@ describe("auth-services", () => {
         writable: true,
         value: { ...location },
       });
+
+      spy.mockClear();
+    });
+
+    it("should display a busy screen", async () => {
+      const spy = jest.spyOn(busyStore, "startBusy");
+
+      await logout({});
+
+      expect(spy).toHaveBeenCalled();
 
       spy.mockClear();
     });
