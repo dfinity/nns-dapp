@@ -57,7 +57,7 @@
   };
 </script>
 
-<!-- TODO: Use minimum token to stake from data -->
+<!-- TODO: Fetch SNS params and use minimum neuron stake for validation -->
 <TransactionModal
   {rootCanisterId}
   on:nnsSubmit={stake}
