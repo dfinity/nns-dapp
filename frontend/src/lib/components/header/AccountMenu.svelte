@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconAccount, ThemeToggle, Popover } from "@dfinity/gix-components";
+  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -23,7 +23,7 @@
     on:click={toggle}
     aria-label={$i18n.header.account_menu}
   >
-    <IconAccount />
+    <IconUser />
   </button>
 
   <Popover bind:visible anchor={button} direction="rtl">

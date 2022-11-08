@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
-    IconEngineering,
-    IconHowToVote,
-    IconPsychology,
+    IconExplore,
+    IconUsers,
+    IconPassword,
     IconRocketLaunch,
     IconWallet,
     MenuItem,
@@ -57,7 +57,7 @@
         paths: [AppPath.Neurons, AppPath.Neuron],
       }),
       label: "neurons",
-      icon: IconPsychology,
+      icon: IconPassword,
     },
     {
       context: "proposals",
@@ -67,7 +67,7 @@
         paths: [AppPath.Proposals, AppPath.Proposal],
       }),
       label: "voting",
-      icon: IconHowToVote,
+      icon: IconUsers,
     },
     {
       context: "canisters",
@@ -77,7 +77,7 @@
         paths: [AppPath.Canisters, AppPath.Canister],
       }),
       label: "canisters",
-      icon: IconEngineering,
+      icon: IconExplore,
     },
     // Launchpad should not be visible on mainnet
     ...(ENABLE_SNS
