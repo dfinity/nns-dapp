@@ -119,7 +119,6 @@
 </Modal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .open {
@@ -129,26 +128,17 @@
 
     @include fonts.h5;
 
-    color: var(--body-color);
+    color: var(--menu-color);
 
     padding: var(--padding-2x);
 
     &:focus,
     &:hover {
-      color: var(--value-color);
+      color: var(--menu-select-color);
     }
 
     span {
       margin: 0 0 0 var(--padding);
-    }
-  }
-
-  @include media.light-theme() {
-    .open {
-      &:focus,
-      &:hover {
-        background: var(--background-shade);
-      }
     }
   }
 
