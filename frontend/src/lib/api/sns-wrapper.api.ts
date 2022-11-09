@@ -1,4 +1,5 @@
 import { HOST, WASM_CANISTER_ID } from "$lib/constants/environment.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -11,7 +12,12 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
+import type {
+  InitSnsWrapper,
+  SnsAccount,
+  SnsNeuronId,
+  SnsWrapper,
+} from "@dfinity/sns";
 
 let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
 let snsUpdateWrappers:
@@ -176,4 +182,39 @@ export const wrapper = async ({
   }
 
   return snsWrapper;
+};
+
+export const stakeNeuron = async ({
+  controller,
+  stakeE8s,
+  rootCanisterId,
+  identity,
+  source,
+}: {
+  controller: Principal;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: SnsAccount;
+}): Promise<SnsNeuronId> => {
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call`
+  );
+
+  const { stakeNeuron: stakeNeuronApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  const newNeuronId = await stakeNeuronApi({
+    stakeE8s,
+    source,
+    controller,
+  });
+
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+  return newNeuronId;
 };

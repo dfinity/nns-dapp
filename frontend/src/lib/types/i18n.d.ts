@@ -698,6 +698,7 @@ interface I18nError__sns {
   sns_disburse: string;
   sns_start_dissolving: string;
   sns_stop_dissolving: string;
+  sns_stake: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;
