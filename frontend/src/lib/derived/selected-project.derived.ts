@@ -53,10 +53,9 @@ export const snsOnlyProjectStore = derived<
 export const snsProjectSelectedStore: Readable<SnsFullProject | undefined> =
   derived(
     [snsProjectIdSelectedStore, projectsStore],
-    ([$snsProjectIdSelectedStore, $projectsStore]) => {
-      return $projectsStore?.find(
+    ([$snsProjectIdSelectedStore, $projectsStore]) =>
+      $projectsStore?.find(
         ({ rootCanisterId }) =>
           rootCanisterId.toText() === $snsProjectIdSelectedStore.toText()
-      );
-    }
+      )
   );
