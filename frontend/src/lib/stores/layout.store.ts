@@ -1,6 +1,9 @@
 import { writable } from "svelte/store";
 
 export const layoutTitleStore = writable<string>("");
+
+// TODO(GIX-1071): can be inlined in each +layout.svelte
+// @deprecated
 export const layoutBackStore = writable<(() => Promise<void>) | undefined>(
   undefined
 );
