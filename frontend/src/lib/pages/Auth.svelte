@@ -7,8 +7,8 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     IconWallet,
-    IconPsychology,
-    IconHowToVote,
+    IconPassword,
+    IconUsers,
   } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
@@ -74,11 +74,11 @@
     {$i18n.auth.wallet}
   </li>
   <li>
-    <IconPsychology />
+    <IconPassword />
     {$i18n.auth.stake}
   </li>
   <li>
-    <IconHowToVote />
+    <IconUsers />
     {$i18n.auth.earn}
   </li>
 </ul>
