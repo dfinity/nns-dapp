@@ -6,7 +6,7 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -80,10 +80,10 @@ describe("SelectProjectDropdown", () => {
     selectElement && expect(selectElement.value).toBe(projectCanisterId);
   });
 
-  it("changes in dropdown are propagated to the snsProjectSelectedStore", async () => {
+  it("changes in dropdown are propagated to the snsProjectIdSelectedStore", async () => {
     const { container } = render(SelectProjectDropdown);
 
-    const $store1 = get(snsProjectSelectedStore);
+    const $store1 = get(snsProjectIdSelectedStore);
     expect($store1.toText()).toEqual(OWN_CANISTER_ID.toText());
 
     const selectElement = container.querySelector("select");
@@ -94,7 +94,7 @@ describe("SelectProjectDropdown", () => {
       });
 
     await waitFor(() => {
-      const $store2 = get(snsProjectSelectedStore);
+      const $store2 = get(snsProjectIdSelectedStore);
       return expect($store2.toText()).toEqual(projectCanisterId);
     });
   });

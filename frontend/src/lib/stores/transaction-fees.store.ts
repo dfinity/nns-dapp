@@ -59,6 +59,11 @@ const initTransactionFeesStore = () => {
         },
       }));
     },
+
+    // Used for testing
+    reset() {
+      update(() => defaultTransactionFees);
+    },
   };
 };
 

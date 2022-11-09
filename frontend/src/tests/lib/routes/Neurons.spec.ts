@@ -30,6 +30,12 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
+jest.mock("$lib/services/sns-accounts.services", () => {
+  return {
+    syncSnsAccounts: jest.fn().mockReturnValue(undefined),
+  };
+});
+
 describe("Neurons", () => {
   beforeAll(() =>
     jest

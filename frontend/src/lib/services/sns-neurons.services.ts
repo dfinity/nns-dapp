@@ -11,6 +11,7 @@ import {
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
@@ -289,4 +290,23 @@ export const stopDissolving = async ({
     });
     return { success: false };
   }
+};
+
+// TODO: Implement in sns-js, create an api function and use it here
+export const stakeNeuron = async ({
+  rootCanisterId,
+  amount,
+  account,
+}: {
+  rootCanisterId: Principal;
+  amount: bigint;
+  account: Account;
+}): Promise<{ success: boolean }> => {
+  console.log(
+    "Staking neuron",
+    rootCanisterId.toText(),
+    amount,
+    account.identifier
+  );
+  return { success: true };
 };

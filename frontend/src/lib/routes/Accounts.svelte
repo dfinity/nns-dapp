@@ -4,7 +4,7 @@
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import {
     isNnsProjectStore,
-    snsProjectSelectedStore,
+    snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
@@ -18,7 +18,7 @@
 
   {#if $isNnsProjectStore}
     <NnsAccounts />
-  {:else if $snsProjectSelectedStore !== undefined}
+  {:else if $snsProjectIdSelectedStore !== undefined}
     <SnsAccounts />
   {/if}
 </main>
