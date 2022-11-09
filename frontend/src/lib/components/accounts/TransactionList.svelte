@@ -9,7 +9,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import { mapToSelfNnsTransaction } from "$lib/utils/transactions.utils";
+  import { mapToSelfTransaction } from "$lib/utils/transactions.utils";
 
   export let transactions: NnsTransaction[] | undefined;
 
@@ -24,7 +24,7 @@
     transaction: NnsTransaction;
     toSelfTransaction: boolean;
   }[];
-  $: extendedTransactions = mapToSelfNnsTransaction(transactions ?? []);
+  $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
 </script>
 
 {#if account === undefined || transactions === undefined}
@@ -32,7 +32,7 @@
 {:else if transactions.length === 0}
   {$i18n.wallet.no_transactions}
 {:else}
-  {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}${toSelfTransaction}`)}
+  {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
     <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
   {/each}
 {/if}

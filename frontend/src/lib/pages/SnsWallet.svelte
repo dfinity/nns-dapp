@@ -107,5 +107,6 @@
   <SnsTransactionModal
     on:nnsClose={() => (showNewTransactionModal = false)}
     selectedAccount={$selectedAccountStore.account}
+    loadTransactions
   />
 {/if}

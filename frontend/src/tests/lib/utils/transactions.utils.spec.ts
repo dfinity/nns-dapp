@@ -1,9 +1,10 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { enumKeys } from "$lib/utils/enum.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   AccountTransactionType,
   mapNnsTransaction,
-  mapToSelfNnsTransaction,
+  mapToSelfTransaction,
   showTransactionFee,
   transactionDisplayAmount,
   transactionName,
@@ -156,9 +157,9 @@ describe("transactions-utils", () => {
     });
   });
 
-  describe("mapToSelfNnsTransaction", () => {
+  describe("mapToSelfTransaction", () => {
     it("should map to self transactions", () => {
-      const transactions = mapToSelfNnsTransaction([
+      const transactions = mapToSelfTransaction([
         {
           ...mockSentToSubAccountTransaction,
           timestamp: { timestamp_nanos: BigInt("111") },
@@ -327,8 +328,14 @@ describe("transactions-utils", () => {
             type: key as AccountTransactionType,
             isReceive: false,
             labels: en.transaction_names,
+            tokenSymbol: ICPToken.symbol,
           })
-        ).toBe(en.transaction_names[key as AccountTransactionType]);
+        ).toBe(
+          replacePlaceholders(
+            en.transaction_names[key as AccountTransactionType],
+            { $tokenSymbol: ICPToken.symbol }
+          )
+        );
       }
     });
 
@@ -338,8 +345,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
           labels: en.transaction_names,
+          tokenSymbol: ICPToken.symbol,
         })
-      ).toBe(en.transaction_names.receive);
+      ).toBe(
+        replacePlaceholders(en.transaction_names.receive, {
+          $tokenSymbol: ICPToken.symbol,
+        })
+      );
     });
 
     it("returns raw type if not label", () => {
@@ -348,6 +360,7 @@ describe("transactions-utils", () => {
           type: "test" as AccountTransactionType,
           isReceive: true,
           labels: en.transaction_names,
+          tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
     });
