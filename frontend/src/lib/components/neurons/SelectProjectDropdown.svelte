@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { committedProjectsStore } from "$lib/stores/projects.store";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
@@ -20,10 +20,10 @@
   const updateSelectedCanisterId = () => {
     if (
       selectableProjects.find(
-        ({ canisterId }) => $snsProjectSelectedStore.toText() === canisterId
+        ({ canisterId }) => $snsProjectIdSelectedStore.toText() === canisterId
       ) !== undefined
     ) {
-      selectedCanisterId = $snsProjectSelectedStore.toText();
+      selectedCanisterId = $snsProjectIdSelectedStore.toText();
     }
   };
 

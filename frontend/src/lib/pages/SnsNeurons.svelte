@@ -17,6 +17,7 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 
   let loading = true;
 
@@ -24,7 +25,10 @@
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
-        await loadSnsNeurons(selectedProjectCanisterId);
+        await Promise.all([
+          loadSnsNeurons(selectedProjectCanisterId),
+          syncSnsAccounts(selectedProjectCanisterId),
+        ]);
         loading = false;
       }
     }

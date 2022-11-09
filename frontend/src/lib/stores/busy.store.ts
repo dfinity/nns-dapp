@@ -5,6 +5,7 @@ import {
 } from "@dfinity/gix-components";
 
 export type BusyStateInitiatorType =
+  | "logout"
   | "stake-neuron"
   | "update-delay"
   | "attach-canister"
@@ -32,6 +33,7 @@ export type BusyStateInitiatorType =
   | "remove-sns-hotkey-neuron"
   | "disburse-neuron"
   | "top-up-neuron"
+  | "stake-sns-neuron"
   | "disburse-sns-neuron";
 
 export interface BusyState {

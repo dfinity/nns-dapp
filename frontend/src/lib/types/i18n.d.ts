@@ -107,6 +107,7 @@ interface I18nError {
   swap_not_loaded: string;
   transaction_fee_not_found: string;
   fetch_transactions: string;
+  transaction_data: string;
   canister_invalid_transaction: string;
 }
 
@@ -612,6 +613,11 @@ interface I18nSns_neuron_detail {
   add_hotkey_tooltip: string;
 }
 
+interface I18nSns_neurons {
+  stake_sns_neuron: string;
+  stake_sns_neuron_success: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -940,6 +946,7 @@ interface I18n {
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   sns_neuron_detail: I18nSns_neuron_detail;
+  sns_neurons: I18nSns_neurons;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;

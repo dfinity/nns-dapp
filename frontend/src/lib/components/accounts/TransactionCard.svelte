@@ -3,7 +3,7 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import {
     AccountTransactionType,
@@ -13,6 +13,7 @@
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
+  export let token: Token;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
@@ -28,6 +29,7 @@
     type,
     isReceive: isReceive || toSelfTransaction,
     labels: $i18n.transaction_names,
+    tokenSymbol: token.symbol,
   });
 
   let label: string | undefined;

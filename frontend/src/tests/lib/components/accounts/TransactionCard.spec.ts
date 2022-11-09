@@ -3,7 +3,9 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { ICPToken } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import {
@@ -18,27 +20,30 @@ describe("TransactionCard", () => {
     render(TransactionCard, {
       props: {
         transaction,
+        token: ICPToken,
       },
     });
 
   it("renders received headline", () => {
-    const { container } = renderTransactionCard(
+    const { getByText } = renderTransactionCard(
       mockTransactionReceiveDataFromMain
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.receive
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.receive, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders sent headline", () => {
-    const { container } = renderTransactionCard(
+    const { getByText } = renderTransactionCard(
       mockTransactionSendDataFromMain
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.send
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.send, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders transaction ICPs with - sign", () => {

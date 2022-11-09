@@ -103,6 +103,7 @@
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
+    "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -368,10 +369,10 @@
     "add_controller": "Add Controller"
   },
   "transaction_names": {
-    "receive": "Received ICP",
-    "send": "Sent ICP",
-    "mint": "Received ICP",
-    "burn": "Sent ICP",
+    "receive": "Received $tokenSymbol",
+    "send": "Sent $tokenSymbol",
+    "mint": "Received $tokenSymbol",
+    "burn": "Sent $tokenSymbol",
     "stakeNeuron": "Stake Neuron",
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",
@@ -585,6 +586,10 @@
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
+  "sns_neurons": {
+    "stake_sns_neuron": "Stake $tokenSymbol Neuron",
+    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully."
+  },
   "time": {
     "year": "year",
     "year_plural": "years",
@@ -677,7 +682,7 @@
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals."
   },
   "auth_proposals": {
-    "title": "Be part of the IC community!",
+    "title": "Be part of the ICP community!",
     "text": "Participate in the governance of the Internet Computer and receive voting rewards. Shape the future of the web by submitting your own proposals.",
     "sign_in": "Sign in to vote"
   },
