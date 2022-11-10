@@ -92,6 +92,7 @@
     if (nonNullish($projectDetailStore.summary)) {
       startBusy({
         initiator: "project-participate",
+        labelKey: "neurons.may_take_while",
       });
       const { success } = await participateInSwap({
         account: sourceAccount,

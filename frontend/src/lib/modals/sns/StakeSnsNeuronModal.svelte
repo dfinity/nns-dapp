@@ -34,6 +34,7 @@
   const stake = async ({ detail }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "stake-sns-neuron",
+      labelKey: "neurons.may_take_while",
     });
 
     const { success } = await stakeNeuron({
@@ -48,7 +49,7 @@
       toastsSuccess({
         labelKey: "sns_neurons.stake_sns_neuron_success",
         substitutions: {
-          $$tokenSymbol: token.symbol,
+          $tokenSymbol: token.symbol,
         },
       });
       dispatcher("nnsClose");
