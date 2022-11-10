@@ -186,7 +186,7 @@
       height: 20px;
       width: 20px;
       vertical-align: bottom;
-      margin: 0 var(--padding-1_5x) 0 0;
+      margin: 0 var(--padding-0_5x) 0 0;
       color: var(--primary);
     }
   }
