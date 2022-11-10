@@ -10,28 +10,28 @@
   let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
 
   const syncAuth = async (auth: AuthStore) => {
-      worker?.syncAuthIdle(auth);
+    worker?.syncAuthIdle(auth);
 
-      if (!auth.identity) {
-          ready = false;
-          return;
-      }
+    if (!auth.identity) {
+      ready = false;
+      return;
+    }
 
-      // syncAuth is triggered each time the auth changes but also when the worker is initialized to avoid race condition.
-      // As the function can be called twice with a valid identity, we use a flag to only init the data once.
-      if (ready) {
-          return;
-      }
+    // syncAuth is triggered each time the auth changes but also when the worker is initialized to avoid race condition.
+    // As the function can be called twice with a valid identity, we use a flag to only init the data once.
+    if (ready) {
+      return;
+    }
 
-      ready = true;
+    ready = true;
 
-      // Load app global stores data
-      await initAppProxy();
-  }
+    // Load app global stores data
+    await initAppProxy();
+  };
 
   onMount(async () => {
-      worker = await initWorker();
-      await syncAuth($authStore);
+    worker = await initWorker();
+    await syncAuth($authStore);
   });
 
   const unsubscribeAuth = authStore.subscribe(syncAuth);
