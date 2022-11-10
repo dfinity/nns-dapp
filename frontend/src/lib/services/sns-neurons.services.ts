@@ -5,8 +5,11 @@ import {
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
-import { stakeNeuron as stakeNeuronApi } from "$lib/api/sns-wrapper.api";
-import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
+import {
+  querySnsNeuron,
+  querySnsNeurons,
+  stakeNeuron as stakeNeuronApi,
+} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,

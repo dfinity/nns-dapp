@@ -1,4 +1,5 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
@@ -11,6 +12,7 @@ import type { Identity } from "@dfinity/agent";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsAccount,
   SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
@@ -336,4 +338,39 @@ export const querySnsNeuron = async ({
 
   logWithTimestamp("Getting sns neuron: done");
   return neuron;
+};
+
+export const stakeNeuron = async ({
+  controller,
+  stakeE8s,
+  rootCanisterId,
+  identity,
+  source,
+}: {
+  controller: Principal;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: SnsAccount;
+}): Promise<SnsNeuronId> => {
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
+
+  const { stakeNeuron: stakeNeuronApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  const newNeuronId = await stakeNeuronApi({
+    stakeE8s,
+    source,
+    controller,
+  });
+
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+  return newNeuronId;
 };
