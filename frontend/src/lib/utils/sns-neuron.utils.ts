@@ -71,6 +71,14 @@ export const getSnsLockedTimeInSeconds = (
   }
 };
 
+export const getSnsDissolveDelaySeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const delay =
+    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
+  return delay;
+};
+
 export const getSnsNeuronStake = ({
   cached_neuron_stake_e8s,
   neuron_fees_e8s,
@@ -126,6 +134,20 @@ export const canIdentityManageHotkeys = ({
   });
 
 export const hasPermissionToDisburse = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
+  });
+
+// TODO: add unit test
+export const hasPermissionToDissolve = ({
   neuron,
   identity,
 }: {

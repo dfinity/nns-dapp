@@ -32,6 +32,7 @@ export type BusyStateInitiatorType =
   | "remove-sns-hotkey-neuron"
   | "disburse-neuron"
   | "top-up-neuron"
+  | "dissolve-sns-action"
   | "disburse-sns-neuron";
 
 export interface BusyState {

@@ -12,6 +12,7 @@
   import {
     getSnsNeuronState,
     hasPermissionToDisburse,
+    hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
@@ -19,6 +20,7 @@
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
+  import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -36,6 +38,14 @@
         neuron,
         identity: $authStore.identity,
       });
+
+  let allowedToDissolve: boolean;
+  $: allowedToDissolve = isNullish(neuron)
+    ? false
+    : hasPermissionToDissolve({
+        neuron,
+        identity: $authStore.identity,
+      });
 </script>
 
 {#if nonNullish(neuron)}
@@ -47,6 +57,9 @@
       </p>
 
       <div class="buttons">
+        {#if allowedToDissolve}
+          <IncreaseSnsDissolveDelayButton {neuron} />
+        {/if}
         {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseSnsButton {neuron} {reloadContext} />
         {:else if neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked}
