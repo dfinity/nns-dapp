@@ -25,6 +25,7 @@
 
       ready = true;
 
+      // Load app global stores data
       await initAppProxy();
   }
 
