@@ -198,7 +198,7 @@ export const stakeNeuron = async ({
   source: SnsAccount;
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(
-    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call`
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
   );
 
   const { stakeNeuron: stakeNeuronApi } = await wrapper({

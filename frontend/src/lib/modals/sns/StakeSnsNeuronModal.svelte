@@ -9,14 +9,13 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Token, TokenAmount } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import { encodeSnsAccount, type SnsAccount } from "@dfinity/sns";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
 
   export let token: Token;
   export let rootCanisterId: Principal;
+  export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
-  export let destination: SnsAccount;
 
   let currentStep: WizardStep;
 
@@ -65,11 +64,14 @@
   bind:currentStep
   {token}
   {transactionFee}
-  destinationAddress={encodeSnsAccount(destination)}
+  destinationAddress={governanceCanisterId.toText()}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
+  <svelte:fragment slot="destination-info">
+    {$i18n.sns_neurons.sns_neuron_destination}
+  </svelte:fragment>
   <p slot="description" class="value">
     {stakeNeuronText}
   </p>
