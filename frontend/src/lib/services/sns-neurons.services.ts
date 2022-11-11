@@ -330,6 +330,8 @@ export const updateDelay = async ({
       labelKey: "error__sns.sns_dissolve_delay_action",
       err,
     });
+
+    return { success: false };
   }
 };
 
