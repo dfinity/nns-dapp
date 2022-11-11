@@ -29,15 +29,13 @@ describe("StakeSnsNeuronModal", () => {
     renderModal({
       component: StakeSnsNeuronModal,
       props: {
-        destination: {
-          owner: mockPrincipal,
-        },
         token,
         transactionFee: TokenAmount.fromE8s({
           amount: BigInt(10_000),
           token,
         }),
         rootCanisterId: mockPrincipal,
+        governanceCanisterId: mockPrincipal,
       },
     });
 

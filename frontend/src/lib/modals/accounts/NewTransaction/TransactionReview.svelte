@@ -54,8 +54,10 @@
 
     <div>
       <p class="label">{$i18n.accounts.destination}</p>
-      <slot name="destination-info" />
-      <p class="account-identifier value">{destinationAddress}</p>
+      <p class="account-identifier value">
+        <slot name="destination-info" />
+        {destinationAddress}
+      </p>
     </div>
 
     <div>
