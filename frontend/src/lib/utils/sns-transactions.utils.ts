@@ -134,6 +134,8 @@ const getTransactionInformation = (
   if (data === undefined) {
     throw new Error(`Unknown transaction type ${JSON.stringify(transaction)}`);
   }
+  // Fee is only present in "transfer" transactions.
+  const fee = fromNullable(transaction.transfer[0]?.fee ?? []);
   return {
     from:
       "from" in data
@@ -152,7 +154,7 @@ const getTransactionInformation = (
     memo: fromNullable(data?.memo),
     created_at_time: fromNullable(data?.created_at_time),
     amount: data?.amount,
-    fee: "fee" in data ? fromNullable(data.fee) : undefined,
+    fee,
   };
 };
 
