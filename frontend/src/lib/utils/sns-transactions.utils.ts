@@ -120,6 +120,7 @@ interface TransactionInfo {
   memo?: Uint8Array;
   created_at_time?: bigint;
   amount: bigint;
+  fee?: bigint;
 }
 
 const getTransactionInformation = (
@@ -151,6 +152,7 @@ const getTransactionInformation = (
     memo: fromNullable(data?.memo),
     created_at_time: fromNullable(data?.created_at_time),
     amount: data?.amount,
+    fee: "fee" in data ? fromNullable(data.fee) : undefined,
   };
 };
 
@@ -158,12 +160,10 @@ export const mapSnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
-  fee,
 }: {
   transaction: SnsTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
-  fee?: TokenAmount;
 }): Transaction | undefined => {
   try {
     const type = getSnsTransactionType(transaction.transaction);
@@ -180,7 +180,8 @@ export const mapSnsTransaction = ({
       toSelfTransaction === true
         ? false
         : showTransactionFee({ type, isReceive });
-    const feeApplied = useFee && fee !== undefined ? fee.toE8s() : BigInt(0);
+    const feeApplied =
+      useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
 
     // Timestamp is in nano seconds
     const timestampMilliseconds =

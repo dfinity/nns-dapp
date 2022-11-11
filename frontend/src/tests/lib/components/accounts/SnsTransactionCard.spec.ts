@@ -6,7 +6,6 @@ import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svel
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mapSnsTransaction } from "$lib/utils/sns-transactions.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
@@ -17,17 +16,12 @@ import {
 import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
 describe("SnsTransactionCard", () => {
-  const transactoinFee = TokenAmount.fromE8s({
-    amount: BigInt(10_000),
-    token: { name: "Test", symbol: "TST" },
-  });
   const renderTransactionCard = (account, transactionWithId) =>
     render(SnsTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
-        fee: transactoinFee,
       },
     });
 
